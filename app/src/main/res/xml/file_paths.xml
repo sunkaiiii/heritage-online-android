@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--external-path 就是用来指定URI共享的
+    name属性的值可以随便写
+    path属性的值表示共享的具体位置，设置空就表示将整个SD卡进行共享
+    用该路径保存的好处是，文件会随着应用的卸载而删除,file/header/为自定义路径
+Android/data/com.bugull.cameratakedemo/files/header/
+     -->
+
+    <!--<external-path  name = "my-images" path = "demo"/>-->
+
+    <paths>
+        <external-path path="demo" name="camera_photos" />
+    </paths>
+</paths>

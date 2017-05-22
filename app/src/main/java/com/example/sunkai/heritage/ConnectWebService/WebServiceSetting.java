@@ -1,0 +1,23 @@
+package com.example.sunkai.heritage.ConnectWebService;
+
+/**
+ * Created by sunkai on 2017/3/22.
+ */
+
+/**
+ * 此类是所有连接Webservice的类的基类，用于配置连接Webservice的IP地址和命名空间
+ */
+
+
+
+public class WebServiceSetting {
+    protected static String namespace = "http://Handle";
+    protected static String url = "http://114.115.142.198" +
+            ":8088/services/Heritage?wsdl";
+//    protected static String url = "http://192.168.199.126" +
+//        ":8088/services/Heritage?wsdl";
+//    protected static String url = "http://172.18.244.4" +
+//            ":8088/services/Heritage?wsdl";
+//        protected static String url = "http://192.168.1.8" +
+//            ":8088/services/Heritage?wsdl";
+}

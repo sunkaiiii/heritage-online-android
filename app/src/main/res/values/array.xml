@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="heritages">
+        <item>请选择</item>
+        <item>传统手工</item>
+        <item>表演艺术 </item>
+        <item>民间文学</item>
+        <item>民间美术</item>
+    </string-array>
+    <string-array name="location">
+        <item>请选择</item>
+        <item>华东</item>
+        <item>华南</item>
+        <item>华北</item>
+        <item>西北</item>
+        <item>西南</item>
+        <item>东北</item>
+    </string-array>
+    <string-array name="find_select">
+        <item>全部内容</item>
+        <item>我的关注</item>
+    </string-array>
+</resources>

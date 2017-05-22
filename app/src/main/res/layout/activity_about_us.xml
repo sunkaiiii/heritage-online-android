@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AboutUSActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/base_line"
+        android:layout_centerVertical="true"/>
+    <ImageView
+        android:layout_width="48sp"
+        android:layout_height="48sp"
+        android:src="@mipmap/app_logo"
+        android:layout_above="@id/base_line"
+        android:layout_marginBottom="12sp"
+        android:layout_centerInParent="true"
+        android:id="@+id/base_logo"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Version 1.0"
+        android:layout_below="@id/base_line"
+        android:layout_centerInParent="true"
+        android:id="@+id/base_version"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="E迹项目小组:李悦 孙楷 王倩"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/base_version"
+        android:layout_marginTop="6dp"
+        android:id="@+id/base_people"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/base_people"
+        android:layout_marginTop="6dp"
+        android:text="联合出品"/>
+</RelativeLayout>
