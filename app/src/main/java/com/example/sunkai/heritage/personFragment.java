@@ -70,10 +70,11 @@ public class personFragment extends Fragment implements View.OnClickListener{
     Uri outputUri;//剪裁后的图片的uri
 
 
-    private static final int REQUEST_PICK_IMAGE = 1; //相册选取
-    private static final int REQUEST_CAPTURE = 2;  //拍照
-    private static final int REQUEST_PICTURE_CUT = 3;  //剪裁图片
-    private static final int REQUEST_PERMISSION = 4;  //权限请求
+    private static final int IS_INTO_LOGIN=1;
+    private static final int REQUEST_PICK_IMAGE = 11; //相册选取
+    private static final int REQUEST_CAPTURE = 12;  //拍照
+    private static final int REQUEST_PICTURE_CUT = 13;  //剪裁图片
+    private static final int REQUEST_PERMISSION = 14;  //权限请求
     private PermissionsChecker mPermissionsChecker; // 权限检测器
     static final String[] PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -123,7 +124,12 @@ public class personFragment extends Fragment implements View.OnClickListener{
         orderLinear.setOnClickListener(this);
         myOwnTiezi.setOnClickListener(this);
         userName=(TextView)view.findViewById(R.id.sign_name_textview);
-        userName.setText(LoginActivity.userName);
+        if(LoginActivity.userName==null){
+            userName.setText("没有登录");
+        }
+        else{
+            userName.setText(LoginActivity.userName);
+        }
         follow=(TextView)view.findViewById(R.id.person_follow);
         followNumber=(TextView)view.findViewById(R.id.person_follow_number);
         fans=(TextView)view.findViewById(R.id.person_fans);
@@ -139,6 +145,9 @@ public class personFragment extends Fragment implements View.OnClickListener{
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("android.intent.action.focusAndFansCountChange");
         getActivity().registerReceiver(focusAndFansCountChange,intentFilter);
+        intentFilter=new IntentFilter();
+        intentFilter.addAction("android.intent.action.refreInfomation");
+        getActivity().registerReceiver(refreshInfo,intentFilter);
         return view;
     }
 
@@ -149,10 +158,20 @@ public class personFragment extends Fragment implements View.OnClickListener{
     private void GetUserInfo(){
         new Thread(getFollowCount).start();
     }
+    private void toLogin(){
+        Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(getActivity(),LoginActivity.class);
+        intent.putExtra("isInto",1);
+        startActivityForResult(intent,1);
+    }
 
     @Override
     public void onClick(View v){
         Intent intent;
+        if(LoginActivity.userID==0){
+            toLogin();
+            return;
+        }
         switch (v.getId()){
             case R.id.fragment_person_oder_linner:
                 intent=new Intent(getActivity(),MyOrderActivity.class);
@@ -380,6 +399,10 @@ public class personFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case IS_INTO_LOGIN:
+                userName.setText(LoginActivity.userName);
+                GetUserInfo();
+                break;
             case REQUEST_PICK_IMAGE://从相册选择
                 if (Build.VERSION.SDK_INT >= 19) {
                     handleImageOnKitKat(data);
@@ -418,6 +441,7 @@ public class personFragment extends Fragment implements View.OnClickListener{
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(focusAndFansCountChange);
+        getActivity().unregisterReceiver(refreshInfo);
     }
 
 
@@ -457,6 +481,10 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.action_setting:
+                if(LoginActivity.userID==0){
+                    toLogin();
+                    break;
+                }
                 intent=new Intent(getActivity(),SettingActivity.class);
                 userImage.setDrawingCacheEnabled(true);
                 intent.putExtra("userImage",userImage.getDrawingCache());
@@ -569,6 +597,13 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 Toast.makeText(getActivity(),"出现错误，请稍后再试",Toast.LENGTH_SHORT).show();
                 userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
             }
+        }
+    };
+    BroadcastReceiver refreshInfo=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            userName.setText(LoginActivity.userName);
+            GetUserInfo();
         }
     };
 }

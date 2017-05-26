@@ -125,6 +125,9 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         intentFilter=new IntentFilter();
         intentFilter.addAction("android.intent.action.animationStop");
         getActivity().registerReceiver(animationStopReceiver,intentFilter);
+        intentFilter=new IntentFilter();
+        intentFilter.addAction("andrid.intent.action.refreshList");
+        getActivity().registerReceiver(refreshList,intentFilter);
         /**
          * 程序默认显示广场的全部帖子
          */
@@ -153,6 +156,14 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
                         listView.setAdapter(adapter);
                         break;
                     case 1:
+                        if(LoginActivity.userID==0){
+                            Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent(getActivity(),LoginActivity.class);
+                            intent.putExtra("isInto",1);
+                            startActivityForResult(intent,1);
+                            selectSpiner.setSelection(0);
+                            return;
+                        }
                         adapter=new findFragmentAdapter(getActivity(),2);
                         listView.setAdapter(adapter);
                         break;
@@ -171,6 +182,13 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         addCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(LoginActivity.userID==0){
+                    Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(getActivity(),LoginActivity.class);
+                    intent.putExtra("isInto",1);
+                    startActivityForResult(intent,1);
+                    return;
+                }
                 Intent intent=new Intent(getActivity(),AddFindCommentActivity.class);
                 /**
                  * 当成功添加帖子的时候，页面刷新
@@ -307,6 +325,7 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         super.onDestroy();
         getActivity().unregisterReceiver(getReplyCountReceiver);
         getActivity().unregisterReceiver(animationStopReceiver);
+        getActivity().unregisterReceiver(refreshList);
     }
 
     @Override
@@ -345,6 +364,13 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         Intent intent;
         switch (item.getItemId()){
             case R.id.action_search_user:
+                if(LoginActivity.userID==0){
+                    Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
+                    intent=new Intent(getActivity(),LoginActivity.class);
+                    intent.putExtra("isInto",1);
+                    startActivityForResult(intent,1);
+                    break;
+                }
                 intent=new Intent(getActivity(),SearchActivity.class);
                 startActivity(intent);
                 break;
@@ -427,6 +453,16 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
             Toast.makeText(getActivity(),"刷新成功",Toast.LENGTH_SHORT).show();
             refreshBtn.clearAnimation();
             refreshBtn.setEnabled(true);
+        }
+    };
+
+    BroadcastReceiver refreshList=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            btnAnimation= AnimationUtils.loadAnimation(getContext(),R.anim.refresh_button_rotate);
+            refreshBtn.startAnimation(btnAnimation);
+            refreshBtn.setEnabled(false);
+            adapter.reFreshList();
         }
     };
 

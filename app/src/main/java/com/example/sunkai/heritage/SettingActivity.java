@@ -84,6 +84,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.setting_changepassword_img:
             case R.id.setting_changepassword_text:
+                if(LoginActivity.userID==0){
+                    Toast.makeText(this,"没有登录",Toast.LENGTH_SHORT).show();
+                    intent=new Intent(this,LoginActivity.class);
+                    intent.putExtra("isInto",1);
+                    startActivityForResult(intent,1);
+                    return;
+                }
                 changePassword();
                 break;
             case R.id.setting_about_us_img:

@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -128,6 +129,13 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
     private void submit(){
         if(TextUtils.isEmpty(replyEdit.getText().toString().trim())){
             Toast.makeText(userCommentDetail.this,"回复不能为空",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(LoginActivity.userID==0){
+            Toast.makeText(this,"没有登录",Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(this,LoginActivity.class);
+            intent.putExtra("isInto",1);
+            startActivityForResult(intent,1);
             return;
         }
         String content=replyEdit.getText().toString();
@@ -248,5 +256,12 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
     };
     class Holder{
         TextView name,time,content;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case 1:
+
+        }
     }
 }

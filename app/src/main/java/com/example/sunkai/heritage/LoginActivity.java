@@ -78,10 +78,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private AlertDialog ad;
     public static String userName;
 
+    int isIntoMainpage=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        isIntoMainpage=getIntent().getIntExtra("isInto",0);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -116,6 +119,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         jumpSignIn=(TextView)findViewById(R.id.activity_login_jump_login);
+        if(isIntoMainpage==0){
+            jumpSignIn.setVisibility(View.VISIBLE);
+        }
+        else{
+            jumpSignIn.setVisibility(View.GONE);
+        }
         jumpSignIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -501,11 +510,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             if (success) {
-                userName=mEmail.toString();
+                userName = mEmail.toString();
                 new Thread(getUserID).start();
-                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
-                finish();
             } else {
                 showProgress(false);
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -523,6 +529,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         public void run() {
             userID=HandleUser.Get_User_ID(userName);
+            if(userID>0){
+                getUserIDHandler.sendEmptyMessage(1);
+            }
+            else{
+                getUserIDHandler.sendEmptyMessage(0);
+            }
+        }
+    };
+    Handler getUserIDHandler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what==1){
+                if(isIntoMainpage==0) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                    return;
+                }
+                Intent intent=new Intent("andrid.intent.action.refreshList");
+                sendBroadcast(intent);
+                intent=new Intent("android.intent.action.refreInfomation");
+                sendBroadcast(intent);
+                setResult(1,getIntent());
+                finish();
+            }
+            else{
+                Toast.makeText(LoginActivity.this,"出现错误",Toast.LENGTH_SHORT).show();
+            }
         }
     };
     @Override

@@ -49,6 +49,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         /**
          * 在页面显示的时候判断此用户是否已经预约此活动
          */
+        join_activity_btn.setEnabled(false);
         new Thread(CheckUserOrderThread).start();
     }
 
@@ -73,6 +74,13 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
              * 根据用户是否已经预约，执行取消预约、预约
              */
             case R.id.join_activity_btn:
+                if(LoginActivity.userID==0){
+                    Toast.makeText(JoinActivity.this,"没有登录",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(JoinActivity.this,LoginActivity.class);
+                    intent.putExtra("isInto",1);
+                    startActivity(intent);
+                    return;
+                }
                 if(isOrderd) {
                     new Thread(AddUserOrderThread).start();
                 }
@@ -136,6 +144,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     Handler CheckUserOrderHandler=new Handler(){
         @Override
         public void handleMessage(Message msg){
+            join_activity_btn.setEnabled(true);
             if(msg.what==1){
                 isOrderd=false;
                 changeButton();
@@ -188,5 +197,12 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
             join_activity_btn.setTextColor(Color.GRAY);
             join_activity_btn.setText("已预约,点击取消");
         }
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        join_activity_btn.setEnabled(false);
+        new Thread(CheckUserOrderThread).start();
     }
 }

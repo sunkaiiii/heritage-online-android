@@ -370,6 +370,9 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
          */
         switch (requestCode) {
             case REQUEST_PICK_IMAGE://从相册选择
+                if(data==null){
+                    return;
+                }
                 if (Build.VERSION.SDK_INT >= 19) {
                     handleImageOnKitKat(data);
                 } else {

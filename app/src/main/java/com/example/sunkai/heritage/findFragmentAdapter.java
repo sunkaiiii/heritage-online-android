@@ -183,6 +183,13 @@ public class findFragmentAdapter extends BaseAdapter{
             }
         }
         private void SetOrCancelLike(){
+            if(LoginActivity.userID==0){
+                Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(context,LoginActivity.class);
+                intent.putExtra("isInto",1);
+                context.startActivity(intent);
+                return;
+            }
             if(isUserLike){
                 new Thread(cancelLike).start();
             }
@@ -280,6 +287,13 @@ public class findFragmentAdapter extends BaseAdapter{
 
         @Override
         public void onClick(View v) {
+            if(LoginActivity.userID==0){
+                Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(context,LoginActivity.class);
+                intent.putExtra("isInto",1);
+                context.startActivity(intent);
+                return;
+            }
             if(data.isUserFocusUser){
                 new Thread(cancelFocus).start();
             }
