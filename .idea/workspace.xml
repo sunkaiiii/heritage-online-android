@@ -41,25 +41,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="JoinActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/JoinActivity.java">
+      <file leaf-file-name="mySqlLite.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/mySqlLite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="81" selection-end-column="27" />
-              <folding />
+            <state relative-caret-position="268">
+              <caret line="23" column="47" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="47" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="findFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragment.java">
+      <file leaf-file-name="WelcomeActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1320">
-              <caret line="367" column="0" selection-start-line="367" selection-start-column="0" selection-end-line="370" selection-end-column="53" />
-              <folding>
-                <element signature="e#16536#16888#0" expanded="true" />
-                <element signature="e#16887#16888#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="318">
+              <caret line="58" column="39" selection-start-line="58" selection-start-column="39" selection-end-line="58" selection-end-column="39" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -67,90 +66,12 @@
       <file leaf-file-name="LoginActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="552" column="38" selection-start-line="552" selection-start-column="38" selection-end-line="552" selection-end-column="38" />
+            <state relative-caret-position="124">
+              <caret line="88" column="24" selection-start-line="88" selection-start-column="24" selection-end-line="88" selection-end-column="24" />
               <folding>
-                <element signature="e#20821#21132#0" expanded="true" />
-                <element signature="e#21131#21132#0" expanded="true" />
-                <element signature="e#21163#21967#0" expanded="true" />
-                <element signature="e#21966#21967#0" expanded="true" />
+                <element signature="e#21648#22884#0" expanded="true" />
+                <element signature="e#22883#22884#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_about_us.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="android-designer2">
-            <state />
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AddFindCommentActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/AddFindCommentActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-94">
-              <caret line="375" column="29" selection-start-line="375" selection-start-column="29" selection-end-line="375" selection-end-column="29" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="userCommentDetail.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/userCommentDetail.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="findFragmentAdapter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragmentAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="491">
-              <caret line="480" column="0" selection-start-line="480" selection-start-column="0" selection-end-line="481" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="personFragment.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/personFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="149" column="65" selection-start-line="149" selection-start-column="65" selection-end-line="149" selection-end-column="65" />
-              <folding>
-                <element signature="e#22715#22919#0" expanded="true" />
-                <element signature="e#22918#22919#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.gradle" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/build.gradle">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SettingActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
-              <caret line="100" column="12" selection-start-line="100" selection-start-column="12" selection-end-line="100" selection-end-column="12" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -161,9 +82,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="resourceFile" />
         <option value="layoutResourceFile_vertical" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -1700,7 +1621,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="D:\Document\AndroidStudioProjects\heritage-online" value="4481401125397" />
+        <entry key="D:\Document\AndroidStudioProjects\heritage-online" value="4481857822883" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -2004,7 +1925,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/FindActivityData.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/MainActivityData.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/orderData.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity2Fragment.java" />
@@ -2024,7 +1944,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/MyOrderActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/PermissionsActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SearchActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_folk.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/folkFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/HandlePic.java" />
@@ -2052,9 +1971,11 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/userCommentDetail.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/AddFindCommentActivity.java" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/personFragment.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/mySqlLite.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
       </list>
     </option>
   </component>
@@ -2089,11 +2010,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches">
+      <pane id="PackagesPane">
         <subPane />
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane">
+      <pane id="Scratches">
         <subPane />
       </pane>
       <pane id="AndroidView">
@@ -2117,73 +2037,10 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heritage-online" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heritage-online" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heritage-online" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heritage" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heritage-online" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane />
       </pane>
@@ -2191,12 +2048,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="http.proxy" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-    <property name="device.picker.selection" value="98895a38324f593255" />
+    <property name="device.picker.selection" value="Nexus_5X_API_25" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
-    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/GitHub, Inc/GitHub.appref-ms" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../myNoteBook" />
+    <property name="show.do.not.copy.http.proxy.settings.to.gradle" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -2551,8 +2409,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1096" extended-state="7" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -2560,19 +2418,19 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32977587" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32123798" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24946696" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3160981" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -2595,6 +2453,11 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <option name="time" value="20" />
@@ -2602,31 +2465,69 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/AddFindCommentActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7119">
+          <caret line="375" column="29" selection-start-line="375" selection-start-column="29" selection-end-line="375" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/userCommentDetail.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4914">
+          <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragmentAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9324">
+          <caret line="480" column="0" selection-start-line="480" selection-start-column="0" selection-end-line="481" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/personFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2205">
+          <caret line="149" column="65" selection-start-line="149" selection-start-column="65" selection-end-line="149" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1701">
+          <caret line="100" column="12" selection-start-line="100" selection-start-column="12" selection-end-line="100" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleFind.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="651">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2634,21 +2535,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="567">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2656,13 +2542,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2670,22 +2549,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2706,41 +2569,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3444">
           <caret line="164" column="21" selection-start-line="164" selection-start-column="21" selection-end-line="164" selection-end-column="21" />
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleFind.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="589">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2748,21 +2590,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4066">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2770,13 +2597,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2784,22 +2604,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2823,27 +2627,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="775">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2851,21 +2634,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="675">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2873,13 +2641,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2887,22 +2648,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="325">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2926,27 +2671,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="589">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2954,21 +2678,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="513">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2976,13 +2685,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2990,22 +2692,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3029,27 +2715,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="589">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3057,21 +2722,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4066">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3079,13 +2729,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3093,22 +2736,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="247">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3132,13 +2759,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
           <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#ReadMainActivity#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetActivityCount#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelInformation#0;class#HandleMainFragment#0" expanded="false" />
-            <element signature="method#GetChannelImage#0;class#HandleMainFragment#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3146,22 +2766,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="273">
           <caret line="43" column="5" selection-start-line="43" selection-start-column="5" selection-end-line="43" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#Json_To_focusData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Json_To_SearchData#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Update_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_User_Image#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Number#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Follow_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Fans_Information#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Add_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Cancel_Focus#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Check_Follow_Eachohter#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#Get_Search_UserInfo#0;class#HandlePerson#0" expanded="false" />
-            <element signature="method#is_User_Follow#0;class#HandlePerson#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3182,41 +2786,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1168">
           <caret line="83" column="38" selection-start-line="83" selection-start-column="38" selection-end-line="83" selection-end-column="38" />
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleFind.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="651">
           <caret line="267" column="5" selection-start-line="267" selection-start-column="5" selection-end-line="267" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_UserCommentData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_UserCommentReplyData#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindAcitivityID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Json_To_FindActivityInformation#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_ID#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_Find_Activity_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_User#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Information_By_Own#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Image#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Is_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Set_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Cancel_User_Like#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Add_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Update_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Delete_User_Comment_Reply#0;class#HandleFind#0" expanded="false" />
-            <element signature="method#Get_User_Comment_Count#0;class#HandleFind#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -3224,27 +2807,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="567">
           <caret line="214" column="5" selection-start-line="214" selection-start-column="5" selection-end-line="214" selection-end-column="5" />
-          <folding>
-            <element signature="method#Json_To_FolkList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_OrderList#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Json_To_SingleFolkData#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkCount#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkInforMation#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#GetFolkImage#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Search_Folk_Info#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Add_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Cancel_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Check_User_Order#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders_ID#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Order_Information#0;class#HandleFolk#0" expanded="false" />
-            <element signature="method#Get_User_Orders#0;class#HandleFolk#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/JoinActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
+        <state relative-caret-position="1260">
           <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="81" selection-end-column="27" />
           <folding />
         </state>
@@ -3252,7 +2820,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
+        <state relative-caret-position="1701">
           <caret line="100" column="12" selection-start-line="100" selection-start-column="12" selection-end-line="100" selection-end-column="12" />
           <folding />
         </state>
@@ -3260,7 +2828,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragmentAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
+        <state relative-caret-position="9324">
           <caret line="480" column="0" selection-start-line="480" selection-start-column="0" selection-end-line="481" selection-end-column="50" />
           <folding />
         </state>
@@ -3268,70 +2836,80 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/userCommentDetail.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
+        <state relative-caret-position="4914">
           <caret line="263" column="0" selection-start-line="263" selection-start-column="0" selection-end-line="263" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/AddFindCommentActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-94">
-          <caret line="375" column="29" selection-start-line="375" selection-start-column="29" selection-end-line="375" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="10" column="24" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1320">
+        <state relative-caret-position="6783">
           <caret line="367" column="0" selection-start-line="367" selection-start-column="0" selection-end-line="370" selection-end-column="53" />
-          <folding>
-            <element signature="e#16536#16888#0" expanded="true" />
-            <element signature="e#16887#16888#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/personFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
+        <state relative-caret-position="2205">
           <caret line="149" column="65" selection-start-line="149" selection-start-column="65" selection-end-line="149" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="483">
+          <caret line="23" column="33" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/AddFindCommentActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="836">
+          <caret line="375" column="29" selection-start-line="375" selection-start-column="29" selection-end-line="375" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="58" column="39" selection-start-line="58" selection-start-column="39" selection-end-line="58" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/mySqlLite.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="23" column="47" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="47" />
           <folding>
-            <element signature="e#22715#22919#0" expanded="true" />
-            <element signature="e#22918#22919#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="14" column="17" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="552" column="38" selection-start-line="552" selection-start-column="38" selection-end-line="552" selection-end-column="38" />
+        <state relative-caret-position="124">
+          <caret line="88" column="24" selection-start-line="88" selection-start-column="24" selection-end-line="88" selection-end-column="24" />
           <folding>
-            <element signature="e#20821#21132#0" expanded="true" />
-            <element signature="e#21131#21132#0" expanded="true" />
-            <element signature="e#21163#21967#0" expanded="true" />
-            <element signature="e#21966#21967#0" expanded="true" />
+            <element signature="e#21648#22884#0" expanded="true" />
+            <element signature="e#22883#22884#0" expanded="true" />
           </folding>
         </state>
       </provider>

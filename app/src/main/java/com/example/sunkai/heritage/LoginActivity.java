@@ -2,11 +2,13 @@ package com.example.sunkai.heritage;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -84,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        resetLoginSql();
         isIntoMainpage=getIntent().getIntExtra("isInto",0);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -253,6 +256,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
+    private void resetLoginSql(){
+        SQLiteDatabase db=WelcomeActivity.myHelper.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put("user_id",0);
+        values.put("user_name","0");
+        values.put("user_password","0");
+        String[] whereString={"1"};
+        db.update("user_login_info",values,"id=?",whereString);
+    }
     private void changePassword(){
         builder=new AlertDialog.Builder(LoginActivity.this).setTitle("修改密码").setView(R.layout.change_password);
         ad=builder.create();
@@ -541,6 +553,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==1){
+                SQLiteDatabase db=WelcomeActivity.myHelper.getWritableDatabase();
+                ContentValues values=new ContentValues();
+                values.put("user_id",userID);
+                values.put("user_name",userName);
+                values.put("user_password",mPasswordView.getText().toString());
+                String[] whereString={"1"};
+                db.update("user_login_info",values,"id=?",whereString);
                 if(isIntoMainpage==0) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);

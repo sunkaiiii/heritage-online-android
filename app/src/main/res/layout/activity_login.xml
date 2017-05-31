@@ -144,7 +144,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.031"
+        app:layout_constraintHorizontal_bias="0.1"
         android:layout_marginStart="8dp"
         app:layout_constraintLeft_toRightOf="@+id/activity_login_jump_login" />
 
