@@ -1,12 +1,16 @@
 package com.example.sunkai.heritage;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -405,8 +409,30 @@ public class findFragmentAdapter extends BaseAdapter{
     Runnable getIamge=new Runnable() {
         @Override
         public void run() {
+            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+            String table="find_comment_image";
+            String selection="imageID=?";
+            byte[] img;
+            Cursor cursor;
             for(int i=0;i<datas.size();i++){
-                byte[] img=HandleFind.Get_User_Comment_Image(datas.get(i).id);
+                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).id)};
+                cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+                cursor.moveToFirst();
+                if(!cursor.isAfterLast()){
+                    int imageIndex=cursor.getColumnIndex("image");
+                    img=cursor.getBlob(imageIndex);
+                }
+                else {
+                    img = HandleFind.Get_User_Comment_Image(datas.get(i).id);
+                    if(null==img){
+                        continue;
+                    }
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("imageID",datas.get(i).id);
+                    contentValues.put("image",img);
+                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db.insert(table,null,contentValues);
+                }
                 if(null==img){
                     getImagehandler.sendEmptyMessage(0);
                 }
@@ -442,16 +468,68 @@ public class findFragmentAdapter extends BaseAdapter{
     Runnable getUserImage=new Runnable() {
         @Override
         public void run() {
+            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+            Cursor cursor;
             for(int i=0;i<datas.size();i++){
-                String result=HandlePerson.Get_User_Image(datas.get(i).user_id);
+                String table="person_image";
+                String selection="imageID=?";
+                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).user_id)};
+                cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+                String result=null;
+                String serverUpdateTime=HandlePerson.Get_User_Update_Time(datas.get(i).user_id);
+                int ok=-1;
+                cursor.moveToFirst();
+                if(!cursor.isAfterLast()){
+                    int updateTime=cursor.getColumnIndex("update_time");
+                    String localUpdateTime=cursor.getString(updateTime);
+                    if(localUpdateTime.equals(serverUpdateTime)){
+                        result="success";
+                        int imageIndex=cursor.getColumnIndex("image");
+                        byte[] image=cursor.getBlob(imageIndex);
+                        datas.get(i).userImage=image;
+                        ok=1;
+                    }
+                    else{
+                        ok=0;
+                    }
+                }
+                cursor.close();
+                if(ok==-1){
+                    result = HandlePerson.Get_User_Image(datas.get(i).user_id);
+                    if(null==result||"Error".equals(result)){
+                       continue;
+                    }
+                    byte[] image=Base64.decode(result);
+                    datas.get(i).userImage= image;
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("imageID",datas.get(i).user_id);
+                    contentValues.put("image",image);
+                    contentValues.put("update_time",serverUpdateTime);
+                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db.insert(table,null,contentValues);
+                }
+                else if(ok==0){
+                    result = HandlePerson.Get_User_Image(datas.get(i).user_id);
+                    if(null==result||"Error".equals(result)){
+                        continue;
+                    }
+                    byte[] image=Base64.decode(result);
+                    datas.get(i).userImage= image;
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("update_time",serverUpdateTime);
+                    contentValues.put("image",image);
+                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    String[] wheres={String.valueOf(datas.get(i).user_id)};
+                    db.update(table,contentValues,"imageID=?",wheres);
+                }
                 if(null==result||"Error".equals(result)){
                     getUserImageHandler.sendEmptyMessage(0);
                 }
                 else{
-                    datas.get(i).userImage= Base64.decode(result);
                     getUserImageHandler.sendEmptyMessage(1);
                 }
             }
+//            db.close();
         }
     };
     Handler getUserImageHandler=new Handler(){

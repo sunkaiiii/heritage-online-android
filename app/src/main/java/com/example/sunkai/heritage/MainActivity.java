@@ -260,4 +260,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WelcomeActivity.myHelper.close();
+    }
 }

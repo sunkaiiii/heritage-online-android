@@ -189,4 +189,12 @@ public class HandlePerson extends BaseSetting {
             return false;
         }
     }
+    public static String Get_User_Update_Time(int userID){
+        methodName="Get_User_Update_Time";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        String result=Get_Post(soapObject);
+        return result;
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService;
 
+import android.support.annotation.Nullable;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
@@ -27,6 +29,7 @@ public class BaseSetting extends WebServiceSetting{
         envelope.setOutputSoapObject(soapObject);
         return envelope;
     }
+    @Nullable
     protected static String Get_Post(SoapObject soapObject){
         try{
             HttpTransportSE transport=new HttpTransportSE(url);
@@ -36,7 +39,7 @@ public class BaseSetting extends WebServiceSetting{
             if(envelope.bodyIn instanceof SoapObject) {
                 SoapObject object = (SoapObject) envelope.bodyIn;
                 System.out.println(object.toString());
-                if (null==object||null == object.getProperty(0).toString()) {
+                if (null==object||null==object.getProperty(0)||null == object.getProperty(0).toString()) {
                     return null;
                 } else {
                     return object.getProperty(0).toString();

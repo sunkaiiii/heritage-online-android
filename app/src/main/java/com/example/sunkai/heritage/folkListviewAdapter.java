@@ -1,7 +1,10 @@
 package com.example.sunkai.heritage;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -134,8 +137,27 @@ public class folkListviewAdapter extends BaseAdapter {
         @Override
         public void run() {
             bitmap=new Bitmap[datas.size()];
+            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
             for(int i=0;i<datas.size();i++){
-                byte[] img=HandleFolk.GetFolkImage(datas.get(i).id);
+                String table="folk_image";
+                String selection="id=?";
+                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).id)};
+                Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+                cursor.moveToFirst();
+                byte[] img=null;
+                if(!cursor.isAfterLast()){
+                    int imageIndex=cursor.getColumnIndex("image");
+                    img=cursor.getBlob(imageIndex);
+                }
+                else {
+                    img = HandleFolk.GetFolkImage(datas.get(i).id);
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("id",datas.get(i).id);
+                    contentValues.put("image",img);
+                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db.insert(table,null,contentValues);
+                }
+                cursor.close();
                 if(null==img){
                     getFolkImageHandler.sendEmptyMessage(0);
                 }
@@ -144,6 +166,7 @@ public class folkListviewAdapter extends BaseAdapter {
                 bitmap[i]= HandlePic.handlePic(context,in,0);
                 getFolkImageHandler.sendEmptyMessage(1);
             }
+//            db.close();
             getFolkImageHandler.sendEmptyMessage(2);
 
         }

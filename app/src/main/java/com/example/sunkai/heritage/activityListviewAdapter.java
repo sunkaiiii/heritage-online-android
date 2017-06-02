@@ -1,6 +1,9 @@
 package com.example.sunkai.heritage;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -144,9 +147,38 @@ public class activityListviewAdapter extends BaseAdapter {
     Runnable getChannelImage=new Runnable() {
         @Override
         public void run() {
+            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
             for(int i=0;i<activityDatas.size();i++){
-                byte[] imgByte=HandleMainFragment.GetChannelImage(activityDatas.get(i).id);
+                String table="channel_activity_image";
+                String selection="imageID=?";
+                String[] selectionArgs=new String[]{String.valueOf(activityDatas.get(i).id)};
+                Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+                cursor.moveToFirst();
                 Message msg=new Message();
+                byte[] imgByte=null;
+                if(!cursor.isAfterLast()){
+                    int image=cursor.getColumnIndex("image");
+                    imgByte=cursor.getBlob(image);
+                    if(null==imgByte){
+                        getChannelImageHandler.sendEmptyMessage(0);
+                    }
+                    else{
+                        activityDatas.get(i).activityImage = imgByte;
+                        InputStream is = new ByteArrayInputStream(imgByte);
+                        bitmap[i] = HandlePic.handlePic(context, is, 0);
+                        apearCount[i]++;
+                        getChannelImageHandler.sendEmptyMessage(1);
+                    }
+                }
+                else{
+                    imgByte=HandleMainFragment.GetChannelImage(activityDatas.get(i).id);
+                    ContentValues contentValues=new ContentValues();
+                    contentValues.put("imageID",activityDatas.get(i).id);
+                    contentValues.put("image",imgByte);
+                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db.insert("channel_activity_image",null,contentValues);
+                }
+                cursor.close();
                 if(null==imgByte){
                     msg.what=0;
                     getChannelImageHandler.handleMessage(msg);
@@ -160,6 +192,7 @@ public class activityListviewAdapter extends BaseAdapter {
                     getChannelImageHandler.sendMessage(msg);
                 }
             }
+//            db.close();
         }
     };
     Handler getChannelImageHandler=new Handler(){

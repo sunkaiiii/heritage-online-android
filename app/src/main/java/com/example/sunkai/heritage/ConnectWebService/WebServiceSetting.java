@@ -16,7 +16,7 @@ public class WebServiceSetting {
             ":8088/services/Heritage?wsdl";
 //    protected static String url = "http://192.168.199.126" +
 //        ":8088/services/Heritage?wsdl";
-//    protected static String url = "http://172.18.244.4" +
+//    protected static String url = "http://10.100.241.124" +
 //            ":8088/services/Heritage?wsdl";
 //        protected static String url = "http://192.168.1.8" +
 //            ":8088/services/Heritage?wsdl";

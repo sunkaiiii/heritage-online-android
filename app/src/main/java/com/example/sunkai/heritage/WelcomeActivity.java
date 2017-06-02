@@ -58,6 +58,7 @@ public class WelcomeActivity extends AppCompatActivity {
             else{
                 LoginActivity.userID=0;
             }
+            db.close();
             if(msg.what==gotoLogin){
                 Intent intent;
                 switch (LoginActivity.userID){
