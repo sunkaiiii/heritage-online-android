@@ -482,7 +482,7 @@ public class findFragmentAdapter extends BaseAdapter{
                 if(!cursor.isAfterLast()){
                     int updateTime=cursor.getColumnIndex("update_time");
                     String localUpdateTime=cursor.getString(updateTime);
-                    if(localUpdateTime.equals(serverUpdateTime)){
+                    if(localUpdateTime!=null&&localUpdateTime.equals(serverUpdateTime)){
                         result="success";
                         int imageIndex=cursor.getColumnIndex("image");
                         byte[] image=cursor.getBlob(imageIndex);
