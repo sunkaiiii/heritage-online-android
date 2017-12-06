@@ -189,11 +189,9 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     }
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter=new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        adapter.insertNewFragment(new activity1Fragment());
-        adapter.insertNewFragment(new activity2Fragment());
-        adapter.insertNewFragment(new activity3Fragment());
-        adapter.insertNewFragment(new activity4Fragment());
-        adapter.insertNewFragment(new activity5Fragment());
+        for(String channelName:ClassifyActivityDivide.divide){
+            adapter.insertNewFragment(ActivityFragment.newInstance(channelName));
+        }
         viewPager.setAdapter(adapter);
     }
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -253,16 +251,6 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         }
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
 
     @Override
     public void onDetach() {
