@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment;
@@ -16,6 +18,7 @@ import com.example.sunkai.heritage.Data.ClassifyActivityDivide;
 import com.example.sunkai.heritage.Data.classifyActiviyData;
 import com.example.sunkai.heritage.OverrideClass.BaseFragment;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -173,6 +176,12 @@ public class activity2Fragment extends BaseFragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         classifyActiviyData activitydata=(classifyActiviyData)parent.getAdapter().getItem(position);
+                        ImageView imageView=(ImageView)view.findViewById(R.id.activity_layout_img);
+                        imageView.setDrawingCacheEnabled(true);
+                        Bitmap bitmap=imageView.getDrawingCache();
+                        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+                        activitydata.activityImage=byteArrayOutputStream.toByteArray();
                         Intent intent=new Intent(getActivity(),activityInformationActivity.class);
                         Bundle bundle=new Bundle();
                         bundle.putSerializable("activity",activitydata);
