@@ -2,13 +2,16 @@ package com.example.sunkai.heritage;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk;
@@ -27,12 +30,15 @@ import java.util.List;
 public class myOrderListViewAdapter extends BaseAdapter {
     private Context context;
     private List<folkData> datas;
-    Bitmap[] bitmap;
+    LruCache<Integer,Bitmap> lruCache;
+    private ListView thisListView;
     public myOrderListViewAdapter(Context context,List<folkData> datas){
         this.context=context;
         this.datas=datas;
-        bitmap=new Bitmap[datas.size()];
-        new Thread(getFolkImage).start();
+        int maxMemory=(int)Runtime.getRuntime().maxMemory();
+        int avilableMemory=maxMemory/8;
+        lruCache=new LruCache<>(avilableMemory);
+//        new Thread(getFolkImage).start();
     }
     public int getCount(){
         return datas.size();
@@ -44,6 +50,9 @@ public class myOrderListViewAdapter extends BaseAdapter {
         return position;
     }
     public View getView(int position, View convertView, ViewGroup parent){
+        if(thisListView==null){
+            thisListView=(ListView)parent;
+        }
         Holder vh;
         if(convertView==null) {
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -66,7 +75,13 @@ public class myOrderListViewAdapter extends BaseAdapter {
         vh.v1.setText("        " + content);
         vh.v2.setText(location);
         vh.v3.setText(title);
-        vh.v4.setImageBitmap(bitmap[position]);
+//        vh.v4.setImageBitmap(bitmap[position]);
+        Bitmap bitmap=lruCache.get(data.id);
+        vh.v4.setTag(data.id);
+        if(null==bitmap)
+            new LoadImageAsync(data.id,position).execute();
+        else
+            vh.v4.setImageBitmap(bitmap);
         return convertView;
     }
 
@@ -75,29 +90,31 @@ public class myOrderListViewAdapter extends BaseAdapter {
         ImageView v4;
     }
 
-
-    Runnable getFolkImage=new Runnable() {
-        @Override
-        public void run() {
-            for(int i=0;i<datas.size();i++){
-                byte[] img=HandleFolk.GetFolkImage(datas.get(i).id);
-                if(null==img){
-                    getFolkImageHandler.sendEmptyMessage(0);
-                }
-                datas.get(i).image=img;
-                InputStream in=new ByteArrayInputStream(img);
-                bitmap[i]= HandlePic.handlePic(context,in,0);
-                getFolkImageHandler.sendEmptyMessage(1);
-            }
+    class LoadImageAsync extends AsyncTask<Void,Void,Bitmap>{
+        int id;
+        int position;
+        public LoadImageAsync(int id,int position){
+            this.id=id;
+            this.position=position;
         }
-    };
 
-    Handler getFolkImageHandler=new Handler(){
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                notifyDataSetChanged();
-            }
+        protected Bitmap doInBackground(Void... voids) {
+            byte[] img=HandleFolk.GetFolkImage(id);
+            if(null==img)
+                return null;
+            datas.get(position).image=img;
+            InputStream in=new ByteArrayInputStream(img);
+            Bitmap bitmap=HandlePic.handlePic(context,in,0);
+            lruCache.put(id,bitmap);
+            return bitmap;
         }
-    };
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            ImageView imageView=(ImageView) thisListView.findViewWithTag(id);
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
 }
