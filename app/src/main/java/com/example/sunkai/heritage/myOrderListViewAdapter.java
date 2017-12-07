@@ -37,7 +37,12 @@ public class myOrderListViewAdapter extends BaseAdapter {
         this.datas=datas;
         int maxMemory=(int)Runtime.getRuntime().maxMemory();
         int avilableMemory=maxMemory/8;
-        lruCache=new LruCache<>(avilableMemory);
+        lruCache=new LruCache<Integer,Bitmap>(avilableMemory){
+            @Override
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
 //        new Thread(getFolkImage).start();
     }
     public int getCount(){

@@ -55,7 +55,11 @@ public class activityListviewAdapter extends BaseAdapter {
         this.channel=channel;
         int maxMemory=(int)Runtime.getRuntime().maxMemory();
         int avilableMemory=maxMemory/32;
-        lruCache=new LruCache<>(avilableMemory);
+        lruCache=new LruCache<Integer,Bitmap>(avilableMemory){
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
         new Thread(()->{
             this.activityDatas= HandleMainFragment.GetChannelInformation(channel);

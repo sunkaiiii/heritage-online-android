@@ -40,7 +40,11 @@ public class folkListviewAdapter extends BaseAdapter {
         this.context=context;
         int maxSize=(int)Runtime.getRuntime().maxMemory();
         int avilibleMemory=maxSize/16;
-        lruCache=new LruCache<>(avilibleMemory);
+        lruCache=new LruCache<Integer,Bitmap>(avilibleMemory){
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
         this.folkFragment=folkFragment;
         if(this.folkFragment!=null) {
             setProgress(true);
