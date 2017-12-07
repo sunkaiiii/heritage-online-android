@@ -189,6 +189,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     }
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter=new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容
         for(String channelName:ClassifyActivityDivide.divide){
             adapter.insertNewFragment(ActivityFragment.newInstance(channelName));
         }

@@ -40,7 +40,9 @@ public class ActivityFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    /**
+    创建一个此instance的实例，传入的参数为channel的名字，用于Fragment里面的ListView获取对应通道的内容
+     */
     public static ActivityFragment newInstance(String channelName) {
         ActivityFragment fragment = new ActivityFragment();
         Bundle args = new Bundle();

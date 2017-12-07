@@ -64,6 +64,8 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
 
         join_activity_btn.setOnClickListener(this);
 
+        join_activity_img.setScaleType(ImageView.ScaleType.FIT_XY);
+
 
     }
 

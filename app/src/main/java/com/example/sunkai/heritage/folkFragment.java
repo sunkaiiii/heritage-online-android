@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +30,7 @@ import android.widget.Toast;
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk;
 import com.example.sunkai.heritage.Data.folkData;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,10 +46,7 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     List<folkData> datas;
     folkListviewAdapter folkListviewAdapter;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
     private EditText folk_edit;
     private Spinner folk_heritages_spinner;
     private Spinner folk_location_spinner;
@@ -62,8 +63,6 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -78,8 +77,6 @@ public class folkFragment extends Fragment implements View.OnClickListener{
          */
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("android.intent.action.adpterGetDataBroadCast");
-        getActivity().registerReceiver(changeDataReciver,intentFilter);
-        new Thread(GetFolkCountThred).start();
         folk_location_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -100,6 +97,27 @@ public class folkFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
+            }
+        });
+        folkListviewAdapter=new folkListviewAdapter(getActivity(),folkFragment.this);
+        folk_show_listview.setAdapter(folkListviewAdapter);
+        folk_show_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Bundle bundle=new Bundle();
+                folkData folkData=(folkData)folkListviewAdapter.getItem(position);
+                ImageView imageView=(ImageView)view.findViewById(R.id.list_img);
+                imageView.setDrawingCacheEnabled(true);
+                Drawable drawable=imageView.getDrawable();
+                BitmapDrawable bitmapDrawable=(BitmapDrawable)drawable;
+                Bitmap bitmap=bitmapDrawable.getBitmap();
+                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+                folkData.image=byteArrayOutputStream.toByteArray();
+                bundle.putSerializable("activity",folkData);
+                Intent intent=new Intent(getActivity(),JoinActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
         return view;
@@ -151,8 +169,6 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-        getActivity().unregisterReceiver(changeDataReciver);
     }
 
     private void initView(View view) {
@@ -256,7 +272,6 @@ public class folkFragment extends Fragment implements View.OnClickListener{
 //                    folkListviewAdapter.setNewDatas(searchData);
                     getDatas=searchData;
                     SelectAdpterInformation();
-                    new Thread(folkListviewAdapter.getFolkImage).start();
                 }
             }
         };
@@ -266,52 +281,9 @@ public class folkFragment extends Fragment implements View.OnClickListener{
         void onFragmentInteraction(Uri uri);
     }
 
-    /**
-     * 处理方式类似首页，并不是一个好方法
-     * 首先获取数量，并初始化相应数量的空类，以填充list
-     */
-    private Runnable GetFolkCountThred=new Runnable() {
-        @Override
-        public void run() {
-            Message msg=new Message();
-            msg.what= HandleFolk.GetFolkCount();
-            GetFolkCountHandler.sendMessage(msg);
-        }
-    };
 
-    private Handler GetFolkCountHandler=new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            if(msg.what>0){
-                int folkCount=msg.what;
-                datas=new ArrayList<>();
-                for(int i=0;i<folkCount;i++){
-                    datas.add(new folkData());
-                }
-                folkListviewAdapter=new folkListviewAdapter(getActivity(),datas,folkFragment.this);
-                folk_show_listview.setAdapter(folkListviewAdapter);
-                folk_show_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Bundle bundle=new Bundle();
-                        bundle.putSerializable("activity",(folkData)parent.getItemAtPosition(position));
-                        Intent intent=new Intent(getActivity(),JoinActivity.class);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                });
-            }
-        }
-    };
-
-    BroadcastReceiver changeDataReciver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(null!=intent.getStringExtra("message")&&"changed".equals(intent.getStringExtra("message"))){
-                changeData=true;
-                datas=folkListviewAdapter.getDatas();
-                getDatas=datas;
-            }
-        }
-    };
+    public void setData(boolean changeData,List<folkData> datas){
+        this.changeData=changeData;
+        this.datas=datas;
+    }
 }
