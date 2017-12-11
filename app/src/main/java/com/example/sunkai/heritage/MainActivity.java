@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage;
 
+import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         initViews();
         fragmentManager=getSupportFragmentManager();
         setTabSelection(0);
+//0        ActionBar actionBarr = getActionBar();
+//        actionBar.hide();
     }
 
     private void initViews() {

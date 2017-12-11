@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,12 +35,13 @@ import com.example.sunkai.heritage.Data.folkData;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
  * 民间页的类
  */
-public class folkFragment extends Fragment implements View.OnClickListener{
+public class folkFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -52,11 +55,11 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     private Spinner folk_location_spinner;
     private ListView folk_show_listview;
     private ImageView folk_search_btn;
-    public  ProgressBar loadProgress;
-    List<folkData> getDatas=new ArrayList<>();//用于处理搜索的List
-    public static boolean isLoadData=false;
+    public ProgressBar loadProgress;
+    List<folkData> getDatas = new ArrayList<>();//用于处理搜索的List
+    public static boolean isLoadData = false;
 
-    boolean changeData=false;
+    boolean changeData = false;
 
 
     @Override
@@ -75,7 +78,7 @@ public class folkFragment extends Fragment implements View.OnClickListener{
         /**
          * 当预约发生改变的时候，通知个人中心我的预约重新加载我的预约
          */
-        IntentFilter intentFilter=new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.adpterGetDataBroadCast");
         folk_location_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -99,23 +102,23 @@ public class folkFragment extends Fragment implements View.OnClickListener{
 
             }
         });
-        folkListviewAdapter=new folkListviewAdapter(getActivity(),folkFragment.this);
+        folkListviewAdapter = new folkListviewAdapter(getActivity(), folkFragment.this);
         folk_show_listview.setAdapter(folkListviewAdapter);
         folk_show_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle=new Bundle();
-                folkData folkData=(folkData)folkListviewAdapter.getItem(position);
-                ImageView imageView=(ImageView)view.findViewById(R.id.list_img);
+                Bundle bundle = new Bundle();
+                folkData folkData = (folkData) folkListviewAdapter.getItem(position);
+                ImageView imageView = (ImageView) view.findViewById(R.id.list_img);
                 imageView.setDrawingCacheEnabled(true);
-                Drawable drawable=imageView.getDrawable();
-                BitmapDrawable bitmapDrawable=(BitmapDrawable)drawable;
-                Bitmap bitmap=bitmapDrawable.getBitmap();
-                ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-                folkData.image=byteArrayOutputStream.toByteArray();
-                bundle.putSerializable("activity",folkData);
-                Intent intent=new Intent(getActivity(),JoinActivity.class);
+                Drawable drawable = imageView.getDrawable();
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                folkData.image = byteArrayOutputStream.toByteArray();
+                bundle.putSerializable("activity", folkData);
+                Intent intent = new Intent(getActivity(), JoinActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -124,7 +127,7 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     }
 
 
-    private void SelectAdpterInformation(){
+    private void SelectAdpterInformation() {
         /**
          * datas作为原始数据保证期不做任何改变
          * getDatas在搜索框为空的时候即使datas，不为空的时候即为搜索出来的结果
@@ -132,37 +135,65 @@ public class folkFragment extends Fragment implements View.OnClickListener{
          * finalData对第二个spinner的内容与selectData中的内容进行比对，筛选出结果
          * 将finalData传递个adpter
          */
-        List<folkData> selectDatas=new ArrayList<>();
-        if(folk_location_spinner.getSelectedItemPosition()==0){
-            if(null!=folkListviewAdapter) {
+
+        List<folkData> selectDatas = new ArrayList<>();
+        if (folk_location_spinner.getSelectedItemPosition() == 0) {
+            if (null != folkListviewAdapter) {
                 selectDatas = getDatas;
             }
+        } else {
+            String selectLocation = (String) folk_location_spinner.getSelectedItem();
+            selectDatas=filterLoacation(getDatas,selectLocation);
         }
-        else{
-            String selectString=(String)folk_location_spinner.getSelectedItem();
-            for (int i = 0; i < getDatas.size(); i++) {
-//                        System.out.println(datas.get(i).title);
-                if (getDatas.get(i).location.equals(selectString)) {
-                    selectDatas.add(getDatas.get(i));
-                }
+        if (folk_heritages_spinner.getSelectedItemPosition() != 0) {
+            String selectHeritage = (String) folk_heritages_spinner.getSelectedItem();
+            selectDatas=filterHeritage(selectDatas,selectHeritage);
+        }
+        if (null != folkListviewAdapter && isLoadData) {
+            folkListviewAdapter.setNewDatas(selectDatas);
+        }
+    }
+
+//    private List<folkData> filterData(List<folkData> Datas,String dataString,String filterString){
+//        if(Build.VERSION.SDK_INT>=24){
+//            return Datas.stream().filter().collect(Collectors.toList());
+//        }
+//        List<folkData> selectDatas=new ArrayList<>();
+//        for (folkData folkData:Datas) {
+//            if () {
+//                selectDatas.add(folkData);
+//            }
+//        }
+//        return selectDatas;
+//    }
+
+    private static boolean CompareString(String str1,String str2){
+        return str1.equals(str2);
+    }
+
+    private List<folkData> filterLoacation(List<folkData> Datas,String locationString){
+        if(Build.VERSION.SDK_INT>=24){
+            return Datas.stream().filter(eachData->eachData.location.equals(locationString)).collect(Collectors.toList());
+        }
+        List<folkData> selectDatas=new ArrayList<>();
+        for (folkData folkData:Datas) {
+            if (folkData.location.equals(locationString)) {
+                selectDatas.add(folkData);
             }
         }
-        List<folkData> finalData=new ArrayList<>();
-        if(folk_heritages_spinner.getSelectedItemPosition()==0){
-            finalData=selectDatas;
-        }
-        else{
-            String selectString=(String)folk_heritages_spinner.getSelectedItem();
-            for (int i = 0; i < selectDatas.size(); i++) {
-//                        System.out.println(datas.get(i).title);
-                if (selectDatas.get(i).divide.equals(selectString)) {
-                    finalData.add(selectDatas.get(i));
-                }
+        return selectDatas;
+    }
+
+    private List<folkData> filterHeritage(List<folkData> Datas,String heritageString){
+        if(Build.VERSION.SDK_INT>=24)
+            return Datas.stream().filter(eachData->eachData.divide.equals(heritageString)).collect(Collectors.toList());
+        List<folkData> selectDatas=new ArrayList<>();
+        for (folkData folkData:Datas) {
+            if (folkData.divide.equals(heritageString)) {
+                selectDatas.add(folkData);
             }
         }
-        if(null!=folkListviewAdapter&&isLoadData) {
-            folkListviewAdapter.setNewDatas(finalData);
-        }
+        return selectDatas;
     }
 
 
@@ -176,8 +207,8 @@ public class folkFragment extends Fragment implements View.OnClickListener{
         folk_heritages_spinner = (Spinner) view.findViewById(R.id.folk_heritages_spinner);
         folk_location_spinner = (Spinner) view.findViewById(R.id.folk_location_spinner);
         folk_show_listview = (ListView) view.findViewById(R.id.folk_show_listview);
-        folk_search_btn=(ImageView)view.findViewById(R.id.folk_searchbtn);
-        loadProgress=(ProgressBar)view.findViewById(R.id.folk_load_progress);
+        folk_search_btn = (ImageView) view.findViewById(R.id.folk_searchbtn);
+        loadProgress = (ProgressBar) view.findViewById(R.id.folk_load_progress);
         folk_search_btn.setOnClickListener(this);
         folk_edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -196,9 +227,9 @@ public class folkFragment extends Fragment implements View.OnClickListener{
                  * 当搜索框被清空的时候，自动的将getData的内容清空并还原为datas的数据
                  * 刷新list使得list继续显示全部的内容
                  */
-                if(TextUtils.isEmpty(folk_edit.getText())){
+                if (TextUtils.isEmpty(folk_edit.getText())) {
 //                    folkListviewAdapter.setNewDatas(datas);
-                    getDatas=datas;
+                    getDatas = datas;
                     SelectAdpterInformation();
                 }
             }
@@ -206,8 +237,8 @@ public class folkFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View v){
-        switch (v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.folk_searchbtn:
                 submit();
         }
@@ -221,9 +252,53 @@ public class folkFragment extends Fragment implements View.OnClickListener{
             return;
         }
         hideKeyboard();
-        HandleSearch handleSearch=new HandleSearch(edit);
-        handleSearch.seachInfo();
+        setWidgetEnable(false);
+        new HandleSearch(edit).execute();
     }
+
+    public void setData(boolean changeData, List<folkData> datas) {
+        this.changeData = changeData;
+        this.datas = datas;
+        getDatas=datas;
+    }
+
+    class HandleSearch extends AsyncTask<Void, Void, Integer> {
+        String searInfo;
+        List<folkData> searchData;
+
+        /**
+         * 此类用于处理搜索的相关内容
+         *
+         * @param searInfo 搜索框的文本
+         */
+        HandleSearch(String searInfo) {
+            this.searInfo = searInfo;
+        }
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            searchData = HandleFolk.Search_Folk_Info(searInfo);
+            return searchData == null ? 0 : 1;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            if (integer == 1) {
+                getDatas = searchData;
+                SelectAdpterInformation();
+            }
+            setWidgetEnable(true);
+        }
+    }
+
+    public void setWidgetEnable(boolean enable) {
+        folk_heritages_spinner.setEnabled(enable);
+        folk_location_spinner.setEnabled(enable);
+        folk_search_btn.setEnabled(enable);
+        folk_edit.setEnabled(enable);
+    }
+
+
     //隐藏键盘
     private void hideKeyboard() {
         View view = getActivity().getCurrentFocus();
@@ -231,59 +306,5 @@ public class folkFragment extends Fragment implements View.OnClickListener{
             ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).
                     hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-    public void setWidgetEnable(boolean enable){
-        folk_heritages_spinner.setEnabled(enable);
-        folk_location_spinner.setEnabled(enable);
-        folk_search_btn.setEnabled(enable);
-        folk_edit.setEnabled(enable);
-    }
-    class HandleSearch{
-        String searInfo;
-        List<folkData> searchData;
-
-        /**
-         * 此类用于处理搜索的相关内容
-         * @param searInfo 搜索框的文本
-         */
-        HandleSearch(String searInfo){
-            this.searInfo=searInfo;
-        }
-        void seachInfo(){
-            new Thread(getSearchInfomation).start();
-        }
-        Runnable getSearchInfomation=new Runnable() {
-            @Override
-            public void run() {
-                searchData=HandleFolk.Search_Folk_Info(searInfo);
-                if(null==searchData){
-                    getSearchInfomationHandler.sendEmptyMessage(0);
-                }
-                else{
-                    getSearchInfomationHandler.sendEmptyMessage(1);
-                }
-            }
-        };
-        Handler getSearchInfomationHandler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                if(msg.what==1){
-//                    folkListviewAdapter.setNewDatas(searchData);
-                    getDatas=searchData;
-                    SelectAdpterInformation();
-                }
-            }
-        };
-    }
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-
-    public void setData(boolean changeData,List<folkData> datas){
-        this.changeData=changeData;
-        this.datas=datas;
     }
 }

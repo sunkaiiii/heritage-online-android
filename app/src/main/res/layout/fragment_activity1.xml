@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sunkai.heritage.ActivityFragment">
-    <ListView
+    <com.example.sunkai.heritage.View.NestedListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12sp"
-        android:id="@+id/activity_listview"></ListView>
+        android:id="@+id/activity_listview"></com.example.sunkai.heritage.View.NestedListView>
 
 </FrameLayout>
