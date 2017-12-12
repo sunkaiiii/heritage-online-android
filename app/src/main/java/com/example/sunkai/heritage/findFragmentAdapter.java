@@ -41,8 +41,6 @@ public class findFragmentAdapter extends BaseAdapter{
     private Context context;
     private List<userCommentData> datas;
     Bitmap[] bitmap;
-    Holder nowvh;
-    int i;
     int[] apearCount;
     int count=0;
 //    Animation imageAnimation;
@@ -556,8 +554,7 @@ public class findFragmentAdapter extends BaseAdapter{
                 resetApear();
                 resetBitmap();
                 if(msg.what==1&&count>0){
-                    Intent intent=new Intent("android.intent.action.animationStop");
-                    context.sendBroadcast(intent);
+
                 }
                 else{
                     count++;

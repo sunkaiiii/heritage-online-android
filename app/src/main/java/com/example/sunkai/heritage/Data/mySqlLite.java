@@ -48,6 +48,13 @@ public class mySqlLite extends SQLiteOpenHelper{
                 "image mediumblob," +
                 "update_time varchar)");
 
+        db.execSQL("create table if not exists find_fragment_activity("+
+                "id integer primary key,"+
+                "imageID integer,"+
+                "title varchar,"+
+                "content varchar,"+
+                "image mediumblob)");
+
     }
     public  void onUpgrade(SQLiteDatabase db,int oldVersion,int newVersion)
     {}

@@ -154,21 +154,8 @@ public class folkFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    private List<folkData> filterData(List<folkData> Datas,String dataString,String filterString){
-//        if(Build.VERSION.SDK_INT>=24){
-//            return Datas.stream().filter().collect(Collectors.toList());
-//        }
-//        List<folkData> selectDatas=new ArrayList<>();
-//        for (folkData folkData:Datas) {
-//            if () {
-//                selectDatas.add(folkData);
-//            }
-//        }
-//        return selectDatas;
-//    }
-
-    private static boolean CompareString(String str1,String str2){
-        return str1.equals(str2);
+    private boolean compare(String folkDataString,String compareString){
+        return folkDataString.equals(compareString);
     }
 
     private List<folkData> filterLoacation(List<folkData> Datas,String locationString){

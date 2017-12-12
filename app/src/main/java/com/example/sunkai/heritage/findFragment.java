@@ -1,11 +1,15 @@
 package com.example.sunkai.heritage;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,20 +49,12 @@ import java.util.List;
  */
 
 public class findFragment extends Fragment implements ViewPager.OnPageChangeListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = "findFragment";
     private ViewPager viewPager;
     private ImageView[] tips;
     private ImageView[] mImageViews;
     private int[] imgIdArray;
     private View view;
-    private OnFragmentInteractionListener mListener;
     private findFragmentAdapter adapter;
     private ListView listView;
     private FloatingActionButton refreshBtn;
@@ -70,15 +66,6 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
     int count=0;
     int count2=0;
 
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,34 +87,27 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         viewPager.setCurrentItem((mImageViews.length) * 100);;
         listView=(ListView)view.findViewById(R.id.fragment_find_listview);
         activityDatas=new ArrayList<>();
-        for(int i=0;i<4;i++){
-            activityDatas.add(new FindActivityData());
-        }
         loadMyPage();
         viewPager.setAdapter(new MyAdapter());
-        new Thread(getActivityID).start();
-//测试用图片
-//        int[] imgID={R.mipmap.find1,R.mipmap.find2,R.mipmap.find3,R.mipmap.find4,R.mipmap.find5,R.mipmap.find9,R.mipmap.find7,R.mipmap.find8};
-//        List<findData> datas=new ArrayList<>();
-//        for(int i=0;i<imgID.length;i++){
-//            findData data=new findData();
-//            data.imgID=imgID[i];
-//            datas.add(data);
-//        }
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        /**
-         * 生命两个广播，一个用于在点击list进入下一页面之后，用户回帖，发现页重新加载回复数（adpterGetReplyCount)
-         * 另一个用于点击刷新按钮，刷新按钮动画运行，在adpter刷新内容之后，发送广播让动画停止运行（animationStop）
-         */
-        IntentFilter intentFilter=new IntentFilter();
-        intentFilter.addAction("android.intent.action.adpterGetReplyCount");
-        getActivity().registerReceiver(getReplyCountReceiver,intentFilter);
-        intentFilter=new IntentFilter();
-        intentFilter.addAction("android.intent.action.animationStop");
-        getActivity().registerReceiver(animationStopReceiver,intentFilter);
-        intentFilter=new IntentFilter();
-        intentFilter.addAction("andrid.intent.action.refreshList");
-        getActivity().registerReceiver(refreshList,intentFilter);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                new getActivityID(position%4).execute();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        //加载轮播页第一张图片
+        new getActivityID(0).execute();
+
         /**
          * 程序默认显示广场的全部帖子
          */
@@ -287,12 +267,6 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         setImageBackground(arg0 % mImageViews.length);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     private void setImageBackground(int selectItems){
         for(int i=0; i<tips.length; i++){
             if(i == selectItems){
@@ -303,62 +277,8 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         }
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
+    
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onDestroy(){
-        super.onDestroy();
-        getActivity().unregisterReceiver(getReplyCountReceiver);
-        getActivity().unregisterReceiver(animationStopReceiver);
-        getActivity().unregisterReceiver(refreshList);
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-//        adapter.reFreshList();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.find_fragment_menu, menu);
-        setIconVisible(menu,true);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-    public void setIconVisible(Menu menu, boolean visable){
-        Field field;
-        try {
-            field = menu.getClass().getDeclaredField("mOptionalIconsVisible");
-
-            Log.d("TAG"," setIconVisible1() field="+field);
-            field.setAccessible(true);
-            field.set(menu, visable);
-        } catch (NoSuchFieldException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -378,93 +298,55 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         return super.onOptionsItemSelected(item);
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     /**
-     * 首先获取轮转窗的id
+     * 获取首页浮窗信息
      */
-    Runnable getActivityID=new Runnable() {
-        @Override
-        public void run() {
-            activityDatas= HandleFind.Get_Find_Activity_ID(activityDatas);
-            getActivityIDHandler.sendEmptyMessage(1);
+    class getActivityID extends AsyncTask<Void,Void,Bitmap>{
+        int index;
+        SQLiteDatabase db;
+        public getActivityID(int index){
+            this.index=index;
         }
-    };
-    Handler getActivityIDHandler=new Handler(){
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                new Thread(getAcitivtyInformaiton).start();
-            }
-        }
-    };
-
-    /**
-     * 获取轮转窗的信息
-     */
-    Runnable getAcitivtyInformaiton=new Runnable() {
-        @Override
-        public void run() {
-            for(int i=0;i<activityDatas.size();i++){
-                FindActivityData data=HandleFind.Get_Find_Activity_Information(activityDatas.get(i));
-                activityDatas.get(i).title=data.title;
-                activityDatas.get(i).content=data.content;
-                activityDatas.get(i).image=data.image;
-                if(data.image!=null) {
-                    InputStream in = new ByteArrayInputStream(data.image);
-                    bitmaps[i]=HandlePic.handlePic(getActivity(),in,0);
+        protected Bitmap doInBackground(Void... voids) {
+            if(activityDatas.size()==0)
+                activityDatas= HandleFind.Get_Find_Activity_ID(activityDatas);
+            db=WelcomeActivity.myHelper.getReadableDatabase();
+            String table="find_fragment_activity";
+            String selection="id=?";
+            String[] selectionArgs=new String[]{String.valueOf(activityDatas.get(index).id)};
+            Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+            cursor.moveToFirst();
+            if(!cursor.isAfterLast()){
+                int imageIndex=cursor.getColumnIndex("image");
+                byte[] img=cursor.getBlob(imageIndex);
+                cursor.close();
+                if(img!=null) {
+                    InputStream in=new ByteArrayInputStream(img);
+                    return HandlePic.handlePic(getActivity(),in,0);
                 }
-                getActivityInformaitonHandler.sendEmptyMessage(i);
             }
+            FindActivityData data=HandleFind.Get_Find_Activity_Information(activityDatas.get(index).id);
+            activityDatas.get(index).title=data.title;
+            activityDatas.get(index).content=data.content;
+            activityDatas.get(index).image=data.image;
+            InputStream in=new ByteArrayInputStream(activityDatas.get(index).image);
+            Bitmap bitmap=HandlePic.handlePic(getActivity(),in,0);
+            db=WelcomeActivity.myHelper.getWritableDatabase();
+            ContentValues contentValues=new ContentValues();
+            contentValues.put("id",data.id);
+            contentValues.put("title",data.title);
+            contentValues.put("image",data.image);
+            contentValues.put("content",data.content);
+            db.insert(table,null,contentValues);
+            return bitmap;
         }
-    };
-
-    Handler getActivityInformaitonHandler=new Handler(){
         @Override
-        public void handleMessage(Message msg) {
-            /**
-             * msg.what传递过来对应位置的bitmap加载完成，对对应位置的imageview时期加载图片，并提醒viewpager刷新
-             */
-            mImageViews[msg.what].setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mImageViews[msg.what].setImageBitmap(bitmaps[msg.what]);
-            viewPager.getAdapter().notifyDataSetChanged();
+        protected void onPostExecute(Bitmap bitmap) {
+            mImageViews[index].setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mImageViews[index].setImageBitmap(bitmap);
         }
-    };
-
-    BroadcastReceiver getReplyCountReceiver=new BroadcastReceiver() {
-        int commentID;
-        int position;
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            commentID=intent.getIntExtra("commentID",0);
-            position=intent.getIntExtra("position",0);
-            if(commentID==0||position==0){
-                return;
-            }
-            adapter.getReplyCount(commentID,position);
-        }
-    };
-    BroadcastReceiver animationStopReceiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Toast.makeText(getActivity(),"刷新成功",Toast.LENGTH_SHORT).show();
-            refreshBtn.clearAnimation();
-            refreshBtn.setEnabled(true);
-        }
-    };
-
-    BroadcastReceiver refreshList=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            btnAnimation= AnimationUtils.loadAnimation(getContext(),R.anim.refresh_button_rotate);
-            refreshBtn.startAnimation(btnAnimation);
-            refreshBtn.setEnabled(false);
-            adapter.reFreshList();
-        }
-    };
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

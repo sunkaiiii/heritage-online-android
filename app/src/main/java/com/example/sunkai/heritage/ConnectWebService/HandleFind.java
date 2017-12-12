@@ -77,9 +77,10 @@ public class HandleFind extends BaseSetting {
         try{
             JSONObject js=new JSONObject(json);
             JSONArray replys=js.getJSONArray("id");
-            for(int i=0;i<datas.size();i++){
-                int id=(int)replys.get(i);
-                datas.get(i).id=id;
+            for(int i=0;i<replys.length();i++){
+                FindActivityData data=new FindActivityData();
+                data.id=(int)replys.get(i);
+                datas.add(data);
             }
             return datas;
         }catch (JSONException e){
@@ -87,9 +88,10 @@ public class HandleFind extends BaseSetting {
         }
         return null;
     }
-    private static FindActivityData Json_To_FindActivityInformation(FindActivityData data,String json){
+    private static FindActivityData Json_To_FindActivityInformation(int id,String json){
         try{
-            FindActivityData getdata=data;
+            FindActivityData getdata=new FindActivityData();
+            getdata.id=id;
             JSONObject js=new JSONObject(json);
             getdata.title=js.getString("title");
             getdata.content=js.getString("content");
@@ -99,7 +101,7 @@ public class HandleFind extends BaseSetting {
         }catch (JSONException e){
             e.printStackTrace();
         }
-        return data;
+        return null;
     }
     public static List<FindActivityData> Get_Find_Activity_ID(List<FindActivityData> datas){
         methodName="Get_Find_Activity_ID";
@@ -108,13 +110,13 @@ public class HandleFind extends BaseSetting {
         String result=Get_Post(soapObject);
         return Json_To_FindAcitivityID(datas,result);
     }
-    public static FindActivityData Get_Find_Activity_Information(FindActivityData data){
+    public static FindActivityData Get_Find_Activity_Information(int id){
         methodName="Get_Find_Activity_Information";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
-        soapObject.addProperty("id",data.id);
+        soapObject.addProperty("id",id);
         String result=Get_Post(soapObject);
-        return Json_To_FindActivityInformation(data,result);
+        return Json_To_FindActivityInformation(id,result);
     }
     public static boolean Add_User_Comment_Information(int user_id,String comment_title,String comment_content,String comment_image) {
         methodName="Add_User_Comment_Information";
