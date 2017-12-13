@@ -68,10 +68,10 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
         Bundle bundle = getIntent().getExtras();
         if (bundle.getSerializable("data") instanceof userCommentData) {
             data = (userCommentData) bundle.getSerializable("data");
-            if(data.userCommentIamge!=null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data.userCommentIamge, 0, data.userCommentIamge.length);
-                information_img.setImageBitmap(bitmap);
-            }
+//            if(data.userCommentIamge!=null) {
+//                Bitmap bitmap = BitmapFactory.decodeByteArray(data.userCommentIamge, 0, data.userCommentIamge.length);
+//                information_img.setImageBitmap(bitmap);
+//            }
             commentID=data.id;
             inListPosition=data.inListPosition;
             information_title.setText(data.commentTitle);

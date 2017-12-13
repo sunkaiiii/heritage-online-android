@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class userCommentData implements Serializable {
     public int id,inListPosition,user_id;
     public String commentTime,commentTitle,commentContent,commentLikeNum,commentReplyNum,userName;
-    public byte[] userCommentIamge;
     public byte[] userImage;
     public boolean isUserLike=false;
     public boolean isUserFocusUser=false;
