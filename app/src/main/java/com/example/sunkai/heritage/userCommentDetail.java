@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,8 @@ import java.util.List;
  * 此类用于处理用户发帖详细信息页面
  */
 public class userCommentDetail extends AppCompatActivity implements View.OnClickListener{
-
+    public static final int ADD_COMMENT=1;
+    private boolean isReply=false;
 
     private ImageView information_img;
     private TextView information_title;
@@ -212,15 +214,9 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
                     vh.content.setText(data.replyContent);
                     LinearLayout_reply.addView(view);
                     Toast.makeText(userCommentDetail.this,"回复成功",Toast.LENGTH_SHORT).show();
-                    /**
-                     * 当用户回复内容，发送广播给发现页，发现页刷新回复数量
-                     */
-                    Intent intent=new Intent("android.intent.action.adpterGetReplyCount");
-                    intent.putExtra("commentID",commentID);
-                    intent.putExtra("position",inListPosition);
-                    sendBroadcast(intent);
                     information_reply_num.setText(String.valueOf(Integer.parseInt(information_reply_num.getText().toString())+1));
                     replyEdit.setText("");
+                    isReply=true;
                 }
                 else{
                     Toast.makeText(userCommentDetail.this,"发生错误，请稍后再试",Toast.LENGTH_SHORT).show();
@@ -263,5 +259,20 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
             case 1:
 
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode==KeyEvent.KEYCODE_BACK&&isReply){
+            Bundle bundle=new Bundle();
+            bundle.putInt("commentID",commentID);
+            bundle.putInt("position",inListPosition);
+            Intent backIntent=new Intent();
+            backIntent.putExtras(bundle);
+            setResult(ADD_COMMENT,backIntent);
+            finish();
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 }

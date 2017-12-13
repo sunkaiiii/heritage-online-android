@@ -155,10 +155,6 @@ public class findFragmentAdapter extends BaseAdapter{
                 vh.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp);
             }
         }
-        showInfobuttonClick showInfoClick=new showInfobuttonClick(data,position);
-        vh.img.setOnClickListener(showInfoClick);
-        vh.comment.setOnClickListener(showInfoClick);
-        vh.commentImage.setOnClickListener(showInfoClick);
         return convertView;
     }
     class Holder{
@@ -256,29 +252,29 @@ public class findFragmentAdapter extends BaseAdapter{
             }
         };
     }
-    class showInfobuttonClick implements View.OnClickListener{
-        userCommentData data;
-        showInfobuttonClick(userCommentData data,int position){
-            this.data=data;
-            data.inListPosition=position;
-        }
-        @Override
-        public void onClick(View v){
-            switch (v.getId()){
-                case R.id.testview_comment:
-                case R.id.fragment_find_litview_img:
-                case R.id.fragment_find_comment:
-                    Intent intent=new Intent(context,userCommentDetail.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putSerializable("data",data);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+//    class showInfobuttonClick implements View.OnClickListener{
+//        userCommentData data;
+//        showInfobuttonClick(userCommentData data,int position){
+//            this.data=data;
+//            data.inListPosition=position;
+//        }
+//        @Override
+//        public void onClick(View v){
+//            switch (v.getId()){
+//                case R.id.testview_comment:
+//                case R.id.fragment_find_litview_img:
+//                case R.id.fragment_find_comment:
+//                    Intent intent=new Intent(context,userCommentDetail.class);
+//                    Bundle bundle=new Bundle();
+//                    bundle.putSerializable("data",data);
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    }
     class addFocusButtonClick implements View.OnClickListener{
         userCommentData data;
         int position;
