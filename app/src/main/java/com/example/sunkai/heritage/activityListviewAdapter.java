@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.classifyActiviyData;
 
 import org.w3c.dom.Text;
@@ -61,15 +62,8 @@ public class activityListviewAdapter extends BaseAdapter {
             }
         };
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
-        new Thread(()->{
-            this.activityDatas= HandleMainFragment.GetChannelInformation(channel);
-            new Handler(context.getMainLooper(),(message)->{
-                notifyDataSetChanged();
-                return true;
-            }).sendEmptyMessage(0);
-        }).start();
+        new getChannelInformation().execute();
     }
-
     public int getCount() {
         if(null!=activityDatas)
             return activityDatas.size();
@@ -115,9 +109,22 @@ public class activityListviewAdapter extends BaseAdapter {
         TextView textView;
     }
 
+    class getChannelInformation extends AsyncTask<Void,Void,Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            activityDatas=HandleMainFragment.GetChannelInformation(channel);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            notifyDataSetChanged();
+        }
+    }
+
 
     class getChannelImage extends AsyncTask<Void,Void,Bitmap>{
-        SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+        SQLiteDatabase db= MySqliteHandler.INSTANCE.GetReadableDatabase();
         String table="channel_activity_image";
         String selection="imageID=?";
         int id;
@@ -149,7 +156,7 @@ public class activityListviewAdapter extends BaseAdapter {
             ContentValues contentValues=new ContentValues();
             contentValues.put("imageID",id);
             contentValues.put("image",imgByte);
-            db=WelcomeActivity.myHelper.getWritableDatabase();
+            db=MySqliteHandler.INSTANCE.GetWritableDatabase();
             db.insert("channel_activity_image",null,contentValues);
             InputStream in=new ByteArrayInputStream(imgByte);
             bitmap=HandlePic.handlePic(context,in,0);

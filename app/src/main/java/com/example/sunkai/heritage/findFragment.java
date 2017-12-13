@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
 import com.example.sunkai.heritage.Data.FindActivityData;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
 
 import java.io.ByteArrayInputStream;
@@ -326,7 +327,7 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         protected Bitmap doInBackground(Void... voids) {
             if (activityDatas.size() == 0)
                 activityDatas = HandleFind.Get_Find_Activity_ID(activityDatas);
-            db = WelcomeActivity.myHelper.getReadableDatabase();
+            db = MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table = "find_fragment_activity";
             String selection = "id=?";
             String[] selectionArgs = new String[]{String.valueOf(activityDatas.get(index).id)};
@@ -347,7 +348,7 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
             activityDatas.get(index).image = data.image;
             InputStream in = new ByteArrayInputStream(activityDatas.get(index).image);
             Bitmap bitmap = HandlePic.handlePic(getActivity(), in, 0);
-            db = WelcomeActivity.myHelper.getWritableDatabase();
+            db = MySqliteHandler.INSTANCE.GetWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("id", data.id);
             contentValues.put("title", data.title);

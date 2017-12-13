@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -403,7 +404,7 @@ public class findFragmentAdapter extends BaseAdapter{
     Runnable getIamge=new Runnable() {
         @Override
         public void run() {
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+            SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table="find_comment_image";
             String selection="imageID=?";
             byte[] img;
@@ -424,7 +425,7 @@ public class findFragmentAdapter extends BaseAdapter{
                     ContentValues contentValues=new ContentValues();
                     contentValues.put("imageID",datas.get(i).id);
                     contentValues.put("image",img);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db=MySqliteHandler.INSTANCE.GetWritableDatabase();
                     db.insert(table,null,contentValues);
                 }
                 if(null==img){
@@ -462,7 +463,7 @@ public class findFragmentAdapter extends BaseAdapter{
     Runnable getUserImage=new Runnable() {
         @Override
         public void run() {
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+            SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
             Cursor cursor;
             for(int i=0;i<datas.size();i++){
                 String table="person_image";
@@ -499,7 +500,7 @@ public class findFragmentAdapter extends BaseAdapter{
                     contentValues.put("imageID",datas.get(i).user_id);
                     contentValues.put("image",image);
                     contentValues.put("update_time",serverUpdateTime);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db=MySqliteHandler.INSTANCE.GetWritableDatabase();
                     db.insert(table,null,contentValues);
                 }
                 else if(ok==0){
@@ -512,7 +513,7 @@ public class findFragmentAdapter extends BaseAdapter{
                     ContentValues contentValues=new ContentValues();
                     contentValues.put("update_time",serverUpdateTime);
                     contentValues.put("image",image);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
+                    db= MySqliteHandler.INSTANCE.GetWritableDatabase();
                     String[] wheres={String.valueOf(datas.get(i).user_id)};
                     db.update(table,contentValues,"imageID=?",wheres);
                 }

@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.folkData;
 
 import java.io.ByteArrayInputStream;
@@ -142,7 +143,7 @@ public class folkListviewAdapter extends BaseAdapter {
 
     private class getFolkImage extends AsyncTask<Void,Void,Bitmap>{
         int id;
-        SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
+        SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
         public getFolkImage(int id){this.id=id;}
         @Override
         protected Bitmap doInBackground(Void... voids) {
@@ -171,7 +172,7 @@ public class folkListviewAdapter extends BaseAdapter {
             ContentValues contentValues=new ContentValues();
             contentValues.put("id",id);
             contentValues.put("image",img);
-            db=WelcomeActivity.myHelper.getWritableDatabase();
+            db= MySqliteHandler.INSTANCE.GetWritableDatabase();
             db.insert(table,null,contentValues);
             bitmap=HandlePic.handlePic(context,in,0);
             lruCache.put(id,bitmap);

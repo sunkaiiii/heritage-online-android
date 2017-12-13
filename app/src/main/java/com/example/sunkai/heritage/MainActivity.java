@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage;
 
-import android.app.ActionBar;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -12,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 
 /**
  * 此类用于处理登陆
@@ -267,6 +268,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WelcomeActivity.myHelper.close();
+        MySqliteHandler.INSTANCE.Close();
     }
 }

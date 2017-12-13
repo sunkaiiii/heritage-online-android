@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -257,7 +258,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void resetLoginSql(){
-        SQLiteDatabase db=WelcomeActivity.myHelper.getWritableDatabase();
+        SQLiteDatabase db= MySqliteHandler.INSTANCE.GetWritableDatabase();
         ContentValues values=new ContentValues();
         values.put("user_id",0);
         values.put("user_name","0");
@@ -553,7 +554,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         public void handleMessage(Message msg) {
             if(msg.what==1){
-                SQLiteDatabase db=WelcomeActivity.myHelper.getWritableDatabase();
+                SQLiteDatabase db=MySqliteHandler.INSTANCE.GetWritableDatabase();
                 ContentValues values=new ContentValues();
                 values.put("user_id",userID);
                 values.put("user_name",userName);

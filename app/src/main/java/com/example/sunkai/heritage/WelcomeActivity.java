@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.mySqlLite;
 
 /**
@@ -17,7 +18,6 @@ import com.example.sunkai.heritage.Data.mySqlLite;
  */
 public class WelcomeActivity extends AppCompatActivity {
     private static int gotoLogin=0;
-    public static mySqlLite myHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,6 @@ public class WelcomeActivity extends AppCompatActivity {
 //        catch (InterruptedException e){
 //            e.printStackTrace();
 //        }
-        myHelper = new mySqlLite(this, "heritage.db", null, 1);
         welcomeHandler.sendEmptyMessageDelayed(gotoLogin,1000);
     }
     private Handler welcomeHandler=new Handler(){
@@ -41,7 +40,7 @@ public class WelcomeActivity extends AppCompatActivity {
             /**
              * 判断用户是否登陆过，如果登陆，则跳过登陆
              */
-            SQLiteDatabase db=myHelper.getReadableDatabase();
+            SQLiteDatabase db= MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table="user_login_info";
             String[] columns=new String[]{"user_id","user_name","user_password"};
             String selection="id=?";
