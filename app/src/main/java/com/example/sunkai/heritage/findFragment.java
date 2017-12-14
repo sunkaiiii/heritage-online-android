@@ -1,27 +1,17 @@
 package com.example.sunkai.heritage;
 
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,10 +30,9 @@ import com.example.sunkai.heritage.Data.FindActivityData;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.lang.reflect.Field;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +40,8 @@ import java.util.List;
  * 发现页面的类
  */
 
-public class findFragment extends Fragment implements ViewPager.OnPageChangeListener {
-    private static final String TAG = "findFragment";
+public class findFragment extends Fragment {
     private static final int FROM_USER_COMMENT_DETAIL=2;
-    private ViewPager viewPager;
     private ImageView[] tips;
     private ImageView[] mImageViews;
     private int[] imgIdArray;
@@ -63,7 +50,8 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
     private ListView listView;
     private FloatingActionButton refreshBtn;
     private Spinner selectSpiner;
-    private Button addCommentBtn;
+    public Button addCommentBtn;
+    public ViewPager viewPager;
     List<FindActivityData> activityDatas;
     Animation btnAnimation;
     private Bitmap[] bitmaps; //装载首页轮转窗的Bitmap[]
@@ -86,10 +74,8 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         //设置Adapter
         viewPager.setAdapter(new MyAdapter());
         //设置监听，主要是设置点点的背景
-        viewPager.setOnPageChangeListener(this);
         //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
         viewPager.setCurrentItem((mImageViews.length) * 100);
-        ;
         listView = (ListView) view.findViewById(R.id.fragment_find_listview);
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent=new Intent(getActivity(),userCommentDetail.class);
@@ -109,7 +95,8 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
 
             @Override
             public void onPageSelected(int position) {
-                new getActivityID(position % 4).execute();
+                new getActivityID(position % 4,findFragment.this).execute();
+                setImageBackground(position % mImageViews.length);
             }
 
             @Override
@@ -118,25 +105,22 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         });
         //加载轮播页第一张图片
-        new getActivityID(0).execute();
+        new getActivityID(0,this).execute();
 
-        /**
+        /*
          * 程序默认显示广场的全部帖子
          */
         adapter = new findFragmentAdapter(getActivity(), 1);
         listView.setAdapter(adapter);
         refreshBtn = (FloatingActionButton) view.findViewById(R.id.fragment_find_refreshbtn);
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
-                refreshBtn.startAnimation(btnAnimation);
-                refreshBtn.setEnabled(false);
-                adapter.reFreshList();
-            }
+        refreshBtn.setOnClickListener(v -> {
+            btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
+            refreshBtn.startAnimation(btnAnimation);
+            refreshBtn.setEnabled(false);
+            adapter.reFreshList();
         });
 
-        /**
+        /*
          * Spinear切换，重新加载adpater的数据
          */
         selectSpiner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -170,26 +154,23 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
 
 
 
-        /**
+        /*
          * 发帖
          */
         addCommentBtn = (Button) view.findViewById(R.id.btn_add_comment);
-        addCommentBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (LoginActivity.userID == 0) {
-                    Toast.makeText(getActivity(), "没有登录", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    intent.putExtra("isInto", 1);
-                    startActivityForResult(intent, 1);
-                    return;
-                }
-                Intent intent = new Intent(getActivity(), AddFindCommentActivity.class);
-                /**
-                 * 当成功添加帖子的时候，页面刷新
-                 */
+        addCommentBtn.setOnClickListener(v -> {
+            if (LoginActivity.userID == 0) {
+                Toast.makeText(getActivity(), "没有登录", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                intent.putExtra("isInto", 1);
                 startActivityForResult(intent, 1);
+                return;
             }
+            Intent intent = new Intent(getActivity(), AddFindCommentActivity.class);
+            /*
+             * 当成功添加帖子的时候，页面刷新
+             */
+            startActivityForResult(intent, 1);
         });
         return view;
     }
@@ -228,13 +209,6 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
             }
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageBitmap(bitmaps[i]);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    Intent intent=new Intent(getActivity(),RegistActivity.class);
-//                    startActivity(intent);
-                }
-            });
         }
     }
 
@@ -266,22 +240,6 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
         }
     }
 
-
-    @Override
-    public void onPageScrollStateChanged(int arg0) {
-
-    }
-
-    @Override
-    public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-    }
-
-    @Override
-    public void onPageSelected(int arg0) {
-        setImageBackground(arg0 % mImageViews.length);
-    }
-
     private void setImageBackground(int selectItems) {
         for (int i = 0; i < tips.length; i++) {
             if (i == selectItems) {
@@ -291,7 +249,6 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -315,22 +272,26 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
     /**
      * 按照图片的id获取首页浮窗信息
      */
-    class getActivityID extends AsyncTask<Void, Void, Bitmap> {
+    static class getActivityID extends AsyncTask<Void, Void, Bitmap> {
         int index;
         SQLiteDatabase db;
-
-        public getActivityID(int index) {
+        WeakReference<findFragment> findFragmentWeakReference;
+        private getActivityID(int index,findFragment findFragment) {
             this.index = index;
+            findFragmentWeakReference=new WeakReference<>(findFragment);
         }
 
         @Override
         protected Bitmap doInBackground(Void... voids) {
-            if (activityDatas.size() == 0)
-                activityDatas = HandleFind.Get_Find_Activity_ID(activityDatas);
+            findFragment findFragment=findFragmentWeakReference.get();
+            if(findFragment==null)
+                return null;
+            if (findFragment.activityDatas.size() == 0)
+                findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas);
             db = MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table = "find_fragment_activity";
             String selection = "id=?";
-            String[] selectionArgs = new String[]{String.valueOf(activityDatas.get(index).id)};
+            String[] selectionArgs = new String[]{String.valueOf(findFragment.activityDatas.get(index).id)};
             Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
@@ -339,15 +300,15 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
                 cursor.close();
                 if (img != null) {
                     InputStream in = new ByteArrayInputStream(img);
-                    return HandlePic.handlePic(getActivity(), in, 0);
+                    return HandlePic.handlePic(findFragment.getActivity(), in, 0);
                 }
             }
-            FindActivityData data = HandleFind.Get_Find_Activity_Information(activityDatas.get(index).id);
-            activityDatas.get(index).title = data.title;
-            activityDatas.get(index).content = data.content;
-            activityDatas.get(index).image = data.image;
-            InputStream in = new ByteArrayInputStream(activityDatas.get(index).image);
-            Bitmap bitmap = HandlePic.handlePic(getActivity(), in, 0);
+            FindActivityData data = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas.get(index).id);
+            findFragment.activityDatas.get(index).title = data.title;
+            findFragment.activityDatas.get(index).content = data.content;
+            findFragment.activityDatas.get(index).image = data.image;
+            InputStream in = new ByteArrayInputStream(findFragment.activityDatas.get(index).image);
+            Bitmap bitmap = HandlePic.handlePic(findFragment.getActivity(), in, 0);
             db = MySqliteHandler.INSTANCE.GetWritableDatabase();
             ContentValues contentValues = new ContentValues();
             contentValues.put("id", data.id);
@@ -360,8 +321,11 @@ public class findFragment extends Fragment implements ViewPager.OnPageChangeList
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            mImageViews[index].setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mImageViews[index].setImageBitmap(bitmap);
+            findFragment findFragment=findFragmentWeakReference.get();
+            if(findFragment==null)
+                return;
+            findFragment.mImageViews[index].setScaleType(ImageView.ScaleType.CENTER_CROP);
+            findFragment.mImageViews[index].setImageBitmap(bitmap);
         }
     }
 
