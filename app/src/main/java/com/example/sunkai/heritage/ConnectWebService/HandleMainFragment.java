@@ -101,10 +101,10 @@ public class HandleMainFragment extends BaseSetting  {
             for(int i=0;i<activities.length();i++){
                 classifyActiviyData data=new classifyActiviyData();
                 JSONObject activity=(JSONObject)activities.get(i);
-                data.id=Integer.valueOf((String)activity.get("id"));
-                data.activityTitle=(String)activity.get("activity_title");
-                data.activitContent=(String)activity.get("activity_content");
-                data.activityChannel=(String)activity.get("activity_channel");
+                data.setId(Integer.valueOf((String)activity.get("id")));
+                data.setActivityTitle((String)activity.get("activity_title"));
+                data.setActivityContent((String)activity.get("activity_content"));
+                data.setActivityChannel((String)activity.get("activity_channel"));
                 activityDatas.add(data);
             }
             return activityDatas;

@@ -291,7 +291,7 @@ public class findFragment extends Fragment {
             db = MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table = "find_fragment_activity";
             String selection = "id=?";
-            String[] selectionArgs = new String[]{String.valueOf(findFragment.activityDatas.get(index).id)};
+            String[] selectionArgs = new String[]{String.valueOf(findFragment.activityDatas.get(index).getId())};
             Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
@@ -303,18 +303,18 @@ public class findFragment extends Fragment {
                     return HandlePic.handlePic(findFragment.getActivity(), in, 0);
                 }
             }
-            FindActivityData data = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas.get(index).id);
-            findFragment.activityDatas.get(index).title = data.title;
-            findFragment.activityDatas.get(index).content = data.content;
-            findFragment.activityDatas.get(index).image = data.image;
-            InputStream in = new ByteArrayInputStream(findFragment.activityDatas.get(index).image);
+            FindActivityData data = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas.get(index).getId());
+            findFragment.activityDatas.get(index).setTitle(data.getTitle());
+            findFragment.activityDatas.get(index).setContent(data.getContent());
+            findFragment.activityDatas.get(index).setImage(data.getImage());
+            InputStream in = new ByteArrayInputStream(findFragment.activityDatas.get(index).getImage());
             Bitmap bitmap = HandlePic.handlePic(findFragment.getActivity(), in, 0);
             db = MySqliteHandler.INSTANCE.GetWritableDatabase();
             ContentValues contentValues = new ContentValues();
-            contentValues.put("id", data.id);
-            contentValues.put("title", data.title);
-            contentValues.put("image", data.image);
-            contentValues.put("content", data.content);
+            contentValues.put("id", data.getId());
+            contentValues.put("title", data.getTitle());
+            contentValues.put("image", data.getImage());
+            contentValues.put("content", data.getContent());
             db.insert(table, null, contentValues);
             return bitmap;
         }

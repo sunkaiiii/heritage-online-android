@@ -207,37 +207,34 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 /**
                  * 在获取图片或者拍照的时候，判断系统版本，如果是安卓6.0以上，要动态申请权限
                  */
-                choice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if(position==0)
-                        {
-                            ad.dismiss();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
-                                    startPermissionsActivity();
-                                } else {
-                                    openCamera();
-                                }
+                choice.setOnItemClickListener((parent, view, position, id) -> {
+                    if(position==0)
+                    {
+                        ad.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
                             } else {
                                 openCamera();
                             }
-                            isClickCamera = true;
+                        } else {
+                            openCamera();
                         }
-                        else if(position==1)
-                        {
-                            ad.dismiss();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
-                                    startPermissionsActivity();
-                                } else {
-                                    selectFromAlbum();
-                                }
+                        isClickCamera = true;
+                    }
+                    else if(position==1)
+                    {
+                        ad.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
                             } else {
                                 selectFromAlbum();
                             }
-                            isClickCamera = false;
+                        } else {
+                            selectFromAlbum();
                         }
+                        isClickCamera = false;
                     }
                 });
                 break;
@@ -442,34 +439,6 @@ public class personFragment extends Fragment implements View.OnClickListener{
         super.onDestroy();
         getActivity().unregisterReceiver(focusAndFansCountChange);
         getActivity().unregisterReceiver(refreshInfo);
-    }
-
-
-    //重写onCreateOptionsMenu方法，在顶部的bar中显示菜单
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.person_fragment_menu, menu);
-        setIconVisible(menu,true);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-    public void setIconVisible(Menu menu, boolean visable){
-        Field field;
-        try {
-            field = menu.getClass().getDeclaredField("mOptionalIconsVisible");
-
-            Log.d("TAG"," setIconVisible1() field="+field);
-            field.setAccessible(true);
-            field.set(menu, visable);
-        } catch (NoSuchFieldException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @Override

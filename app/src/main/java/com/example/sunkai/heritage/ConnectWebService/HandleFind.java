@@ -62,10 +62,10 @@ public class HandleFind extends BaseSetting {
             for (int i = 0; i < replys.length(); i++) {
                 commentReplyData data = new commentReplyData();
                 JSONObject oneReply = (JSONObject) replys.get(i);
-                data.replyId = (int) oneReply.get("reply_id");
-                data.replyTime = (String) oneReply.get("reply_time");
-                data.replyContent = (String) oneReply.get("reply_content");
-                data.userName = (String) oneReply.get("user_name");
+                data.setReplyId((int) oneReply.get("reply_id"));
+                data.setReplyTime((String) oneReply.get("reply_time"));
+                data.setReplyContent((String) oneReply.get("reply_content"));
+                data.setUserName((String) oneReply.get("user_name"));
                 datas.add(data);
             }
             return datas;
@@ -83,7 +83,7 @@ public class HandleFind extends BaseSetting {
             JSONArray replys = js.getJSONArray("id");
             for (int i = 0; i < replys.length(); i++) {
                 FindActivityData data = new FindActivityData();
-                data.id = (int) replys.get(i);
+                data.setId( (int) replys.get(i));
                 datas.add(data);
             }
             return datas;
@@ -96,12 +96,12 @@ public class HandleFind extends BaseSetting {
     private static FindActivityData Json_To_FindActivityInformation(int id, String json) {
         try {
             FindActivityData getdata = new FindActivityData();
-            getdata.id = id;
+            getdata.setId(id);
             JSONObject js = new JSONObject(json);
-            getdata.title = js.getString("title");
-            getdata.content = js.getString("content");
+            getdata.setTitle(js.getString("title"));
+            getdata.setContent(js.getString("content"));
             String imgCode = js.getString("image");
-            getdata.image = Base64.decode(imgCode);
+            getdata.setImage(Base64.decode(imgCode));
             return getdata;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -128,16 +128,16 @@ public class HandleFind extends BaseSetting {
         try{
             JSONObject js=new JSONObject(json);
             FindActivityAllData data=new FindActivityAllData();
-            data.id=js.getInt("id");
-            data.userID=js.getInt("userID");
-            data.comment_time=js.getString("comment_time");
-            data.comment_title=js.getString("comment_title");
-            data.comment_content=js.getString("comment_content");
-            data.imgCode=js.getString("imgCode");
-            data.replyCount=js.getString("replyCount");
-            data.isUserLike=success.equals(js.getString("isUserLike"));
-            data.likeNumber=js.getString("likeNumber");
-            data.isUserFllow=success.equals(js.getString("isUserFllow"));
+            data.setId(js.getInt("id"));
+            data.setUserID(js.getInt("userID"));
+            data.setComent_time(js.getString("comment_time"));
+            data.setComment_title(js.getString("comment_title"));
+            data.setComment_content(js.getString("comment_content"));
+            data.setImgCode(js.getString("imgCode"));
+            data.setReplyCount(js.getString("replyCount"));
+            data.setUserLike(success.equals(js.getString("isUserLike")));
+            data.setLikeNumber(js.getString("likeNumber"));
+            data.setUserFlow(success.equals(js.getString("isUserFllow")));
             return data;
         }catch (JSONException e){
             e.printStackTrace();

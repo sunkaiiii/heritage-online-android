@@ -199,19 +199,19 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
                      * 添加回复完成之后，在原来的回复页面新家一个LinearLayout
                      */
                     commentReplyData data=new commentReplyData();
-                    data.replyContent=content;
-                    data.userName=userName;
-                    data.replyTime=replyTime;
-                    data.replyId=msg.what;
+                    data.setReplyContent(content);
+                    data.setUserName(userName);
+                    data.setReplyTime(replyTime);
+                    data.setReplyId(msg.what);
                     LayoutInflater inflater=getLayoutInflater();
                     View view=inflater.inflate(R.layout.user_comment_reply_information,null);
                     Holder vh=new Holder();
                     vh.name=(TextView)view.findViewById(R.id.reply_name);
                     vh.time=(TextView)view.findViewById(R.id.reply_time);
                     vh.content=(TextView)view.findViewById(R.id.reply_content);
-                    vh.name.setText(data.userName);
-                    vh.time.setText(data.replyTime);
-                    vh.content.setText(data.replyContent);
+                    vh.name.setText(data.getUserName());
+                    vh.time.setText(data.getReplyTime());
+                    vh.content.setText(data.getReplyContent());
                     LinearLayout_reply.addView(view);
                     Toast.makeText(userCommentDetail.this,"回复成功",Toast.LENGTH_SHORT).show();
                     information_reply_num.setText(String.valueOf(Integer.parseInt(information_reply_num.getText().toString())+1));
@@ -242,9 +242,9 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
                     vh.time=(TextView)view.findViewById(R.id.reply_time);
                     vh.content=(TextView)view.findViewById(R.id.reply_content);
                     commentReplyData data=datas.get(i);
-                    vh.name.setText(data.userName);
-                    vh.time.setText(data.replyTime);
-                    vh.content.setText(data.replyContent);
+                    vh.name.setText(data.getUserName());
+                    vh.time.setText(data.getReplyTime());
+                    vh.content.setText(data.getReplyContent());
                     LinearLayout_reply.addView(view);
                 }
             }

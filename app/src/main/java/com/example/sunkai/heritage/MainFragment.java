@@ -117,8 +117,8 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         tableLayout.setTabTextColors(Color.GRAY,Color.WHITE);
         //使得3个页面不销毁，不调用destoryitem
         viewPager.setOffscreenPageLimit(2);
-        for(int i=0;i< ClassifyActivityDivide.divide.length;i++){
-            tableLayout.getTabAt(i).setText(ClassifyActivityDivide.divide[i]);
+        for(int i=0;i< ClassifyActivityDivide.getDivide().length;i++){
+            tableLayout.getTabAt(i).setText(ClassifyActivityDivide.getDivide()[i]);
         }
         tableLayout.getTabAt(0).select();
 
@@ -195,7 +195,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter=new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容
-        for(String channelName:ClassifyActivityDivide.divide){
+        for(String channelName:ClassifyActivityDivide.getDivide()){
             adapter.insertNewFragment(ActivityFragment.newInstance(channelName));
         }
         viewPager.setAdapter(adapter);

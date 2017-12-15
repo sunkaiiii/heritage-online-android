@@ -134,16 +134,16 @@ public class focusInformation extends AppCompatActivity implements View.OnClickL
                 for(int i=0;i<adpter.datas.size();i++){
                     String result;
                     if(adpter.what==1) {
-                        result = HandlePerson.Get_User_Image(adpter.datas.get(i).focusFansID);
+                        result = HandlePerson.Get_User_Image(adpter.datas.get(i).getFocusFansID());
                     }
                     else{
-                        result=HandlePerson.Get_User_Image(adpter.datas.get(i).focusUserid);
+                        result=HandlePerson.Get_User_Image(adpter.datas.get(i).getFocusUserid());
                     }
                     if("Error".equals(result)||null==result){
                         getUserImageHandler.sendEmptyMessage(0);
                     }
                     else {
-                        adpter.datas.get(i).userImage= Base64.decode(result);
+                        adpter.datas.get(i).setUserImage(Base64.decode(result));
                         getUserImageHandler.sendEmptyMessage(1);
                     }
                 }

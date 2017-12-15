@@ -75,7 +75,7 @@ public class ActivityFragment extends Fragment {
             Bitmap bitmap=imageView.getDrawingCache();
             ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
-            activitydata.activityImage=byteArrayOutputStream.toByteArray();
+            activitydata.setActivityImage(byteArrayOutputStream.toByteArray());
             Intent intent=new Intent(getActivity(),activityInformationActivity.class);
             Bundle bundle=new Bundle();
             bundle.putSerializable("activity",activitydata);

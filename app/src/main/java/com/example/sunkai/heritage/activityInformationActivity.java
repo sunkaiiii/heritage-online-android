@@ -36,12 +36,12 @@ public class activityInformationActivity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_join);
         initView();
         classifyActiviyData data=(classifyActiviyData) getIntent().getSerializableExtra("activity");
-        if(null!=data.activityImage) {
-            bitmap = BitmapFactory.decodeByteArray(data.activityImage, 0, data.activityImage.length);
+        if(null!=data.getActivityImage()) {
+            bitmap = BitmapFactory.decodeByteArray(data.getActivityImage(), 0, data.getActivityImage().length);
             join_activity_img.setImageBitmap(bitmap);
         }
-        join_activity_title.setText(data.activityTitle);
-        join_activity_content.setText(data.activitContent);
+        join_activity_title.setText(data.getActivityTitle());
+        join_activity_content.setText(data.getActivityContent());
         actionBack.setDisplayHomeAsUpEnabled(true);
     }
 

@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +21,6 @@ import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.classifyActiviyData;
-
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -50,7 +46,7 @@ public class activityListviewAdapter extends BaseAdapter {
      * @param activityDatas 由首页getCount出来加入了相应数量的空类的List
      * @param channel   传入的类别，viewpaer的位置不同此值不同，用于加载不同的分类内容
      */
-    public activityListviewAdapter(Context context,List<classifyActiviyData> activityDatas,String channel){
+    public activityListviewAdapter(Context context, List<classifyActiviyData> activityDatas, String channel){
         this.context=context;
         this.activityDatas=null;
         this.channel=channel;
@@ -91,16 +87,16 @@ public class activityListviewAdapter extends BaseAdapter {
             vh=(Holder)convertView.getTag();
         }
         classifyActiviyData data=activityDatas.get(position);
-        String text=data.activitContent;
+        String text=data.getActivityContent();
         vh.textView.setText(text);
-        vh.img.setTag(data.id);
+        vh.img.setTag(data.getId());
         vh.img.setImageResource(R.drawable.empty_background);
-        Bitmap bitmap=lruCache.get(data.id);
+        Bitmap bitmap=lruCache.get(data.getId());
         if(bitmap!=null){
             vh.img.setImageBitmap(bitmap);
         }
         else{
-            new getChannelImage(data.id).execute();
+            new getChannelImage(data.getId()).execute();
         }
         return convertView;
     }

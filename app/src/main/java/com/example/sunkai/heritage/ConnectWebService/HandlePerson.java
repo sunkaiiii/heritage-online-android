@@ -30,9 +30,9 @@ public class HandlePerson extends BaseSetting {
             for(int i=0;i<info.length();i++){
                 focusData data=new focusData();
                 JSONObject jsondata=(JSONObject)info.get(i);
-                data.focusUserid=Integer.parseInt(jsondata.getString("focus_focusID"));
-                data.focusFansID=Integer.parseInt(jsondata.getString("focus_fansID"));
-                data.name=jsondata.getString("USER_NAME");
+                data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_focusID")));
+                data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_fansID")));
+                data.setName(jsondata.getString("USER_NAME"));
                 datas.add(data);
             }
             return datas;
@@ -51,11 +51,11 @@ public class HandlePerson extends BaseSetting {
             for(int i=0;i<searInfo.length();i++){
                 JSONObject jsonData=(JSONObject)searInfo.get(i);
                 focusData data=new focusData();
-                data.followeachother=false;
-                data.isCheck=false;
-                data.name=jsonData.getString("user_name");
-                data.focusFansID=Integer.parseInt(jsonData.getString("id"));
-                data.focusUserid= LoginActivity.userID;
+                data.setFolloweachother(false);
+                data.setCheck(false);
+                data.setName(jsonData.getString("user_name"));
+                data.setFocusFansID(Integer.parseInt(jsonData.getString("id")));
+                data.setFocusUserid(LoginActivity.userID);
                 datas.add(data);
             }
             return datas;
