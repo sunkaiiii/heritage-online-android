@@ -60,7 +60,7 @@ public class personFragment extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private LinearLayout orderLinear,myOwnTiezi;
+    private LinearLayout orderLinear,myOwnTiezi,settingLayout;
     private TextView userName,follow,followNumber,fans,fansNumber;
     private RoundedImageView userImage;
 
@@ -121,8 +121,10 @@ public class personFragment extends Fragment implements View.OnClickListener{
         View view=inflater.inflate(R.layout.fragment_person, container, false);
         orderLinear=(LinearLayout)view.findViewById(R.id.fragment_person_oder_linner);
         myOwnTiezi=(LinearLayout)view.findViewById(R.id.fragment_person_my_tiezi);
+        settingLayout=(LinearLayout)view.findViewById(R.id.person_fragment_setting);
         orderLinear.setOnClickListener(this);
         myOwnTiezi.setOnClickListener(this);
+        settingLayout.setOnClickListener(this);
         userName=(TextView)view.findViewById(R.id.sign_name_textview);
         if(LoginActivity.userName==null){
             userName.setText("没有登录");
@@ -179,6 +181,16 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.fragment_person_my_tiezi:
                 intent=new Intent(getActivity(),UserOwnTiezi.class);
+                startActivity(intent);
+                break;
+            case R.id.person_fragment_setting:
+                if(LoginActivity.userID==0){
+                    toLogin();
+                    break;
+                }
+                intent=new Intent(getActivity(),SettingActivity.class);
+                userImage.setDrawingCacheEnabled(true);
+                intent.putExtra("userImage",userImage.getDrawingCache());
                 startActivity(intent);
                 break;
             case R.id.person_follow:
@@ -449,15 +461,6 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 intent=new Intent(getActivity(),SearchActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_setting:
-                if(LoginActivity.userID==0){
-                    toLogin();
-                    break;
-                }
-                intent=new Intent(getActivity(),SettingActivity.class);
-                userImage.setDrawingCacheEnabled(true);
-                intent.putExtra("userImage",userImage.getDrawingCache());
-                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
