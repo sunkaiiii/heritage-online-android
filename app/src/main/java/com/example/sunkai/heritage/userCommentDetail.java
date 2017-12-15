@@ -2,8 +2,6 @@ package com.example.sunkai.heritage;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,14 +69,14 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
 //                Bitmap bitmap = BitmapFactory.decodeByteArray(data.userCommentIamge, 0, data.userCommentIamge.length);
 //                information_img.setImageBitmap(bitmap);
 //            }
-            commentID=data.id;
-            inListPosition=data.inListPosition;
-            information_title.setText(data.commentTitle);
-            information_time.setText(data.commentTime);
-            information_content.setText(data.commentContent);
+            commentID=data.getId();
+            inListPosition=data.getInListPosition();
+            information_title.setText(data.getCommentTitle());
+            information_time.setText(data.getCommentTime());
+            information_content.setText(data.getCommentContent());
 //            information_username.setText(data.);
-            information_reply_num.setText(data.commentReplyNum);
-            setTitle(data.userName);
+            information_reply_num.setText(data.getCommentReplyNum());
+            setTitle(data.getUserName());
             new Thread(getReply).start();
         }
     }
@@ -162,7 +159,7 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
     Runnable getReply=new Runnable() {
         @Override
         public void run() {
-            List<commentReplyData> getdatas= HandleFind.Get_User_Comment_Reply(data.id);
+            List<commentReplyData> getdatas= HandleFind.Get_User_Comment_Reply(data.getId());
             if(null==getdatas){
                 getReplyHandler.sendEmptyMessage(0);
             }

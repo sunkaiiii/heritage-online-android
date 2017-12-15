@@ -30,6 +30,7 @@ import com.example.sunkai.heritage.Data.FindActivityData;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;

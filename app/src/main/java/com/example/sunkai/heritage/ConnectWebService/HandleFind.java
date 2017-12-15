@@ -34,16 +34,16 @@ public class HandleFind extends BaseSetting {
             for (int i = 0; i < activities.length(); i++) {
                 userCommentData data = new userCommentData();
                 JSONObject activity = (JSONObject) activities.get(i);
-                data.id = (int) activity.get("id");
-                data.user_id = (int) activity.get("user_id");
-                data.commentTime = (String) activity.get("comment_time");
-                data.commentTitle = (String) activity.get("comment_title");
-                data.commentContent = (String) activity.get("comment_content");
-                data.commentLikeNum = (String) activity.get("comment_num");
-                data.commentReplyNum = (String) activity.get("reply_num");
-                data.userName = (String) activity.get("user_name");
-                data.isUserFocusUser=success.equals((String)activity.get("isFollow"));
-                data.isUserLike=success.equals((String)activity.get("isLike"));
+                data.setId((int) activity.get("id"));
+                data.setUser_id((int) activity.get("user_id"));
+                data.setCommentTime((String) activity.get("comment_time"));
+                data.setCommentTitle((String) activity.get("comment_title"));
+                data.setCommentContent((String) activity.get("comment_content"));
+                data.setCommentLikeNum((String) activity.get("comment_num"));
+                data.setCommentReplyNum((String) activity.get("reply_num"));
+                data.setUserName((String) activity.get("user_name"));
+                data.setUserFocusUser(success.equals((String)activity.get("isFollow")));
+                data.setUserLike(success.equals((String)activity.get("isLike")));
                 folkInformations.add(data);
             }
             return folkInformations;

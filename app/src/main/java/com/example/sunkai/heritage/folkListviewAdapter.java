@@ -2,13 +2,10 @@ package com.example.sunkai.heritage;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,18 +79,18 @@ public class folkListviewAdapter extends BaseAdapter {
             vh=(Holder)convertView.getTag();
         }
         folkData data=datas.get(position);
-        String content=data.content;
-        String location=data.location;
-        String title=data.title;
-        String divide=data.divide;
+        String content=data.getContent();
+        String location=data.getLocation();
+        String title=data.getTitle();
+        String divide=data.getDivide();
         vh.v1.setText("        " + content);
         vh.v2.setText(location);
         vh.v3.setText(title);
         vh.v4.setImageResource(R.drawable.empty_background);
-        vh.v4.setTag(data.id);
-        Bitmap bitmap=lruCache.get(data.id);
+        vh.v4.setTag(data.getId());
+        Bitmap bitmap=lruCache.get(data.getId());
         if(bitmap==null){
-            new getFolkImage(data.id).execute();
+            new getFolkImage(data.getId()).execute();
         }else{
             vh.v4.setImageBitmap(bitmap);
         }

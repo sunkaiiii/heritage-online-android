@@ -1,18 +1,14 @@
 package com.example.sunkai.heritage;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -116,7 +112,7 @@ public class folkFragment extends Fragment implements View.OnClickListener {
                 Bitmap bitmap = bitmapDrawable.getBitmap();
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-                folkData.image = byteArrayOutputStream.toByteArray();
+                folkData.setImage(byteArrayOutputStream.toByteArray());
                 bundle.putSerializable("activity", folkData);
                 Intent intent = new Intent(getActivity(), JoinActivity.class);
                 intent.putExtras(bundle);
@@ -160,11 +156,11 @@ public class folkFragment extends Fragment implements View.OnClickListener {
 
     private List<folkData> filterLoacation(List<folkData> Datas,String locationString){
         if(Build.VERSION.SDK_INT>=24){
-            return Datas.stream().filter(eachData->eachData.location.equals(locationString)).collect(Collectors.toList());
+            return Datas.stream().filter(eachData->eachData.getLocation().equals(locationString)).collect(Collectors.toList());
         }
         List<folkData> selectDatas=new ArrayList<>();
         for (folkData folkData:Datas) {
-            if (folkData.location.equals(locationString)) {
+            if (folkData.getLocation().equals(locationString)) {
                 selectDatas.add(folkData);
             }
         }
@@ -173,10 +169,10 @@ public class folkFragment extends Fragment implements View.OnClickListener {
 
     private List<folkData> filterHeritage(List<folkData> Datas,String heritageString){
         if(Build.VERSION.SDK_INT>=24)
-            return Datas.stream().filter(eachData->eachData.divide.equals(heritageString)).collect(Collectors.toList());
+            return Datas.stream().filter(eachData->eachData.getDivide().equals(heritageString)).collect(Collectors.toList());
         List<folkData> selectDatas=new ArrayList<>();
         for (folkData folkData:Datas) {
-            if (folkData.divide.equals(heritageString)) {
+            if (folkData.getDivide().equals(heritageString)) {
                 selectDatas.add(folkData);
             }
         }

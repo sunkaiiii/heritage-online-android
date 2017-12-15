@@ -3,8 +3,6 @@ package com.example.sunkai.heritage;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,17 +72,17 @@ public class myOrderListViewAdapter extends BaseAdapter {
             vh=(Holder)convertView.getTag();
         }
         folkData data=datas.get(position);
-        String content=data.content;
-        String location=data.location;
-        String title=data.title;
+        String content=data.getContent();
+        String location=data.getLocation();
+        String title=data.getTitle();
         vh.v1.setText("        " + content);
         vh.v2.setText(location);
         vh.v3.setText(title);
 //        vh.v4.setImageBitmap(bitmap[position]);
-        Bitmap bitmap=lruCache.get(data.id);
-        vh.v4.setTag(data.id);
+        Bitmap bitmap=lruCache.get(data.getId());
+        vh.v4.setTag(data.getId());
         if(null==bitmap)
-            new LoadImageAsync(data.id,position).execute();
+            new LoadImageAsync(data.getId(),position).execute();
         else
             vh.v4.setImageBitmap(bitmap);
         return convertView;
@@ -108,7 +106,7 @@ public class myOrderListViewAdapter extends BaseAdapter {
             byte[] img=HandleFolk.GetFolkImage(id);
             if(null==img)
                 return null;
-            datas.get(position).image=img;
+            datas.get(position).setImage(img);
             InputStream in=new ByteArrayInputStream(img);
             Bitmap bitmap=HandlePic.handlePic(context,in,0);
             lruCache.put(id,bitmap);

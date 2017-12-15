@@ -34,12 +34,12 @@ public class HandleFolk extends BaseSetting {
             for (int i = 0; i < activities.length(); i++) {
                 folkData data = new folkData();
                 JSONObject activity = (JSONObject) activities.get(i);
-                data.id = Integer.valueOf((String) activity.get("id"));
-                data.title = (String) activity.get("title");
-                data.content = (String) activity.get("content");
-                data.location = (String) activity.get("location");
-                data.divide=(String)activity.get("divide");
-                data.teacher=(String)activity.get("teacher");
+                data.setId(Integer.valueOf((String) activity.get("id")));
+                data.setTitle((String) activity.get("title"));
+                data.setContent((String) activity.get("content"));
+                data.setLocation((String) activity.get("location"));
+                data.setDivide((String)activity.get("divide"));
+                data.setTeacher((String)activity.get("teacher"));
 //                data.techTime=(String)activity.get("tech-time");
                 folkInformations.add(data);
             }
@@ -59,9 +59,9 @@ public class HandleFolk extends BaseSetting {
             for (int i = 0; i < activities.length(); i++) {
                 orderData data = new orderData();
                 JSONObject activity = (JSONObject) activities.get(i);
-                data.id = ((int) activity.get("id"));
-                data.userID = (int) activity.get("userID");
-                data.orderID = (int) activity.get("orderID");
+                data.setId(((int) activity.get("id")));
+                data.setUserID((int) activity.get("userID"));
+                data.setOrderID((int) activity.get("orderID"));
                 folkInformations.add(data);
             }
             return folkInformations;
@@ -76,10 +76,10 @@ public class HandleFolk extends BaseSetting {
         try {
             JSONObject folkData = new JSONObject(json);
             folkData data=new folkData();
-            data.id = Integer.valueOf((String) folkData.get("id"));
-            data.title = (String) folkData.get("title");
-            data.content = (String) folkData.get("content");
-            data.location=(String)folkData.get("location");
+            data.setId(Integer.valueOf((String) folkData.get("id")));
+            data.setTitle((String) folkData.get("title"));
+            data.setContent((String) folkData.get("content"));
+            data.setLocation((String)folkData.get("location"));
             return data;
         }
         catch (JSONException e){
@@ -221,7 +221,7 @@ public class HandleFolk extends BaseSetting {
         }
         List<folkData> Orders=new ArrayList<>();
         for(int i=0;i<datas.size();i++){
-            Orders.add(Get_User_Order_Information(datas.get(i).orderID));
+            Orders.add(Get_User_Order_Information(datas.get(i).getOrderID()));
         }
         return Orders;
     }

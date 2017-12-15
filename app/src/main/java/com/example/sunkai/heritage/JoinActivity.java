@@ -40,12 +40,12 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_join);
         initView();
         folkActiviyData=(folkData) getIntent().getSerializableExtra("activity");
-        if(null!=folkActiviyData.image) {
-            bitmap = BitmapFactory.decodeByteArray(folkActiviyData.image, 0, folkActiviyData.image.length);
+        if(null!=folkActiviyData.getImage()) {
+            bitmap = BitmapFactory.decodeByteArray(folkActiviyData.getImage(), 0, folkActiviyData.getImage().length);
             join_activity_img.setImageBitmap(bitmap);
         }
-        join_activity_title.setText(folkActiviyData.title);
-        join_activity_content.setText(folkActiviyData.content);
+        join_activity_title.setText(folkActiviyData.getTitle());
+        join_activity_content.setText(folkActiviyData.getContent());
         /**
          * 在页面显示的时候判断此用户是否已经预约此活动
          */
@@ -106,7 +106,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
     Runnable CheckUserOrderThread=new Runnable() {
         @Override
         public void run() {
-            int result=HandleFolk.Check_User_Order(LoginActivity.userID,folkActiviyData.id);
+            int result=HandleFolk.Check_User_Order(LoginActivity.userID,folkActiviyData.getId());
             CheckUserOrderHandler.sendEmptyMessage(result);
         }
     };
@@ -115,7 +115,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             boolean isSuccess;
-            isSuccess=HandleFolk.Add_User_Order(LoginActivity.userID,folkActiviyData.id);
+            isSuccess=HandleFolk.Add_User_Order(LoginActivity.userID,folkActiviyData.getId());
             Message msg=new Message();
 //            System.out.println(isSuccess);
             if(isSuccess){
@@ -133,7 +133,7 @@ public class JoinActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             boolean isSuccess;
-            isSuccess=HandleFolk.Cancel_User_Order(LoginActivity.userID,folkActiviyData.id);
+            isSuccess=HandleFolk.Cancel_User_Order(LoginActivity.userID,folkActiviyData.getId());
             if(isSuccess){
                 CancelOrderHandler.sendEmptyMessage(1);
             }

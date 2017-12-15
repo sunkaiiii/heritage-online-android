@@ -299,7 +299,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         public void handleMessage(Message msg){
             if(msg.what==1){
                 for(int i=0;i<activityDatas.size();i++){
-                    Bitmap bitmap= BitmapFactory.decodeByteArray(activityDatas.get(i).activityImage,0,activityDatas.get(i).activityImage.length);
+                    Bitmap bitmap= BitmapFactory.decodeByteArray(activityDatas.get(i).getActivityImage(),0,activityDatas.get(i).getActivityImage().length);
                     bitmaps[i]=bitmap;
                 }
                 loadMyPage();

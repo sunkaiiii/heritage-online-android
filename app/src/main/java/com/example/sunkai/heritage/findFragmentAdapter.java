@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.LruCache;
@@ -38,7 +37,6 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.sunkai.heritage.LoginActivity.userID;
 
@@ -116,14 +114,14 @@ public class findFragmentAdapter extends BaseAdapter{
         userCommentData data=datas.get(position);
         GetCommentImage(data,vh.img);
         GetUserImage(data);
-        if(datas.get(position).isUserLike){
-           SetLike(vh.like,vh.likeImage,Integer.parseInt(data.commentLikeNum));
+        if(datas.get(position).getUserLike()){
+           SetLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
         }
         else{
-            CancelLike(vh.like,vh.likeImage,Integer.parseInt(data.commentLikeNum));
+            CancelLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
         }
-        vh.comment.setText(data.commentReplyNum);
-        vh.name_text.setText(data.userName);
+        vh.comment.setText(data.getCommentReplyNum());
+        vh.name_text.setText(data.getUserName());
         if(what==2){
             vh.addfocusImage.setVisibility(View.GONE);
             vh.addfocusText.setVisibility(View.GONE);
@@ -131,12 +129,12 @@ public class findFragmentAdapter extends BaseAdapter{
         if(what==3){
             hideSomeElement(vh,data);
         }
-        imageButtonclick likeClick=new imageButtonclick(data.id,position,vh.likeImage,vh.like);
+        imageButtonclick likeClick=new imageButtonclick(data.getId(),position,vh.likeImage,vh.like);
         vh.likeImage.setOnClickListener(likeClick);
         vh.like.setOnClickListener(likeClick);
         vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
-        vh.userImage.setTag(data.user_id+" "+data.id);
-        if(data.user_id== userID){
+        vh.userImage.setTag(data.getUser_id()+" "+data.getId());
+        if(data.getUser_id()== userID){
             vh.addfocusText.setVisibility(View.INVISIBLE);
             vh.addfocusImage.setVisibility(View.INVISIBLE);
         }
@@ -144,7 +142,7 @@ public class findFragmentAdapter extends BaseAdapter{
             addFocusButtonClick addFocusButtonClick=new addFocusButtonClick(position);
             vh.addfocusText.setOnClickListener(addFocusButtonClick);
             vh.addfocusImage.setOnClickListener(addFocusButtonClick);
-            if(data.isUserFocusUser){
+            if(data.getUserFocusUser()){
                 vh.addfocusText.setText("已关注");
                 vh.addfocusText.setTextColor(Color.rgb(184,184,184));
                 vh.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp);
@@ -160,9 +158,9 @@ public class findFragmentAdapter extends BaseAdapter{
 
     private boolean changeLikeImageState(boolean isLike,ImageView imageView,TextView textView,int position)
     {
-        int likeNumber=Integer.parseInt(datas.get(position).commentLikeNum);
+        int likeNumber=Integer.parseInt(datas.get(position).getCommentLikeNum());
         likeNumber=isLike?likeNumber+1:likeNumber-1;
-        datas.get(position).commentLikeNum=String.valueOf(likeNumber);
+        datas.get(position).setCommentLikeNum(String.valueOf(likeNumber));
         return isLike?SetLike(textView,imageView,likeNumber):CancelLike(textView,imageView,likeNumber);
     }
     private boolean SetLike(TextView textView,ImageView imageView,int count) {
@@ -178,17 +176,17 @@ public class findFragmentAdapter extends BaseAdapter{
         return true;
     }
     private void GetCommentImage(userCommentData data,ImageView imageView){
-        Bitmap bitmap=lruCache.get(data.id);
-        imageView.setTag(data.id);
+        Bitmap bitmap=lruCache.get(data.getId());
+        imageView.setTag(data.getId());
         if(null!=bitmap) {
             imageView.setImageBitmap(bitmap);
         }
         else{
-            new GetCommentImage(data.id,this).execute();
+            new GetCommentImage(data.getId(),this).execute();
         }
     }
     private void GetUserImage(userCommentData data){
-        new GetUserImage(data.user_id,this,data.id).execute();
+        new GetUserImage(data.getUser_id(),this,data.getId()).execute();
     }
     private void hideSomeElement(Holder vh,userCommentData data){
         vh.like.setVisibility(View.GONE);
@@ -196,7 +194,7 @@ public class findFragmentAdapter extends BaseAdapter{
         vh.commentImage.setVisibility(View.INVISIBLE);
         vh.likeImage.setVisibility(View.INVISIBLE);
         vh.likeImage.setVisibility(View.INVISIBLE);
-        vh.name_text.setText(data.commentTitle);
+        vh.name_text.setText(data.getCommentTitle());
     }
     private void login(){
         Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
@@ -243,7 +241,7 @@ public class findFragmentAdapter extends BaseAdapter{
                 login();
                 return;
             }
-            if(datas.get(position).isUserLike){
+            if(datas.get(position).getUserLike()){
                 new Thread(cancelLike).start();
             }
             else{
@@ -281,8 +279,8 @@ public class findFragmentAdapter extends BaseAdapter{
                 ImageView imageView=imageViewWeakReference.get();
                 TextView textView=textViewWeakReference.get();
                 if(msg.what!=ERROR&&imageView!=null&&textView!=null){
-                    datas.get(position).isUserLike=(LIKE==msg.what);
-                    if(!changeLikeImageState(datas.get(position).isUserLike,imageView,textView,position)){
+                    datas.get(position).setUserLike((LIKE==msg.what));
+                    if(!changeLikeImageState(datas.get(position).getUserLike(),imageView,textView,position)){
                         new GetInformation(findFragmentAdapter.this).execute();
                     }
                 }
@@ -311,19 +309,19 @@ public class findFragmentAdapter extends BaseAdapter{
         Runnable addOrCancelFocus=new Runnable(){
             @Override
             public void run() {
-                boolean result=data.isUserFocusUser?HandlePerson.Cancel_Focus(userID,data.user_id):HandlePerson.Add_Focus(userID,data.user_id);
+                boolean result=data.getUserFocusUser()?HandlePerson.Cancel_Focus(userID,data.getUser_id()):HandlePerson.Add_Focus(userID,data.getUser_id());
                 setDataState(result);
-                handler.sendEmptyMessage(data.isUserFocusUser?1:2);
+                handler.sendEmptyMessage(data.getUserFocusUser()?1:2);
             }
         };
         private void setDataState(boolean result){
             if(result){
-                datas.get(position).isUserFocusUser=!datas.get(position).isUserFocusUser;
-                data.isUserFocusUser=!data.isUserFocusUser;
+                datas.get(position).setUserFocusUser(!datas.get(position).getUserFocusUser());
+                data.setUserFocusUser(!data.getUserFocusUser());
             }
             for(int i=0;i<datas.size();i++){
-                if(datas.get(i).user_id==data.user_id){
-                    datas.get(i).isUserFocusUser=!datas.get(i).isUserFocusUser;
+                if(datas.get(i).getUser_id()==data.getUser_id()){
+                    datas.get(i).setUserFocusUser(!datas.get(i).getUserFocusUser());
                 }
             }
         }
@@ -367,7 +365,7 @@ public class findFragmentAdapter extends BaseAdapter{
             findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
             if(adapter==null)
                 return;
-            adapter.datas.get(position).commentReplyNum=String.valueOf(count);
+            adapter.datas.get(position).setCommentReplyNum(String.valueOf(count));
             adapter.notifyDataSetChanged();
         }
     }
