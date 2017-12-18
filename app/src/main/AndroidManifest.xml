@@ -61,13 +61,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
         <activity android:name=".PermissionsActivity" />
         <activity
             android:name=".UserOwnTiezi"
             android:label="我的帖子" />
         <activity android:name=".AboutUSActivity" />
-        <activity android:name=".ConnectUsActivity"></activity>
+        <activity android:name=".ConnectUsActivity"/>
     </application>
 
 </manifest>

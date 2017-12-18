@@ -1,10 +1,16 @@
 package com.example.sunkai.heritage;
 
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,8 +37,11 @@ import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +74,10 @@ public class findFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_find, container, false);
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction("android.intent.action.animationStop");
+        getActivity().registerReceiver(animationStopReceiver,intentFilter);
+
         selectSpiner = (Spinner) view.findViewById(R.id.find_select_spinner);
         setHasOptionsMenu(true);
         bitmaps = new Bitmap[4];
@@ -82,6 +95,15 @@ public class findFragment extends Fragment {
             Intent intent=new Intent(getActivity(),userCommentDetail.class);
             Bundle bundle=new Bundle();
             bundle.putSerializable("data",(userCommentData)listView.getAdapter().getItem(position));
+            bundle.putInt("position",position);
+            ImageView imageView=(ImageView)view.findViewById(R.id.fragment_find_litview_img) ;
+            imageView.setDrawingCacheEnabled(true);
+            Drawable drawable=imageView.getDrawable();
+            BitmapDrawable bitmapDrawable=(BitmapDrawable)drawable;
+            Bitmap bitmap=bitmapDrawable.getBitmap();
+            ByteArrayOutputStream out=new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
+            intent.putExtra("bitmap",out.toByteArray());
             intent.putExtras(bundle);
             startActivityForResult(intent,FROM_USER_COMMENT_DETAIL);
         });
@@ -347,5 +369,18 @@ public class findFragment extends Fragment {
                     adapter.getReplyCount(commentID,position);
                 }
         }
+    }
+    BroadcastReceiver animationStopReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            refreshBtn.clearAnimation();
+            refreshBtn.setEnabled(true);
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(animationStopReceiver);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +59,7 @@ public class findFragmentAdapter extends BaseAdapter{
      * @param context 传入的context
      * @param what what值不同代表着加载的页面不同，1为全部的帖子，2为已关注人的帖子，3为我的帖子
      */
-    public findFragmentAdapter(Context context,int what){
+    public findFragmentAdapter(Context context, int what){
         this.context=context;
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
         this.what=what;
@@ -354,7 +356,7 @@ public class findFragmentAdapter extends BaseAdapter{
         private GetReplyCount(int commentID,int position,findFragmentAdapter adapter){
             this.commentID=commentID;
             this.position=position;
-            findFragmentAdapterWeakReference=new WeakReference<findFragmentAdapter>(adapter);
+            findFragmentAdapterWeakReference=new WeakReference<>(adapter);
         }
         @Override
         protected Integer doInBackground(Void... voids) {
@@ -375,7 +377,7 @@ public class findFragmentAdapter extends BaseAdapter{
         WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
 
         private GetInformation(findFragmentAdapter adapter){
-            findFragmentAdapterWeakReference=new WeakReference<findFragmentAdapter>(adapter);
+            findFragmentAdapterWeakReference=new WeakReference<>(adapter);
         }
         @Override
         protected Void doInBackground(Void... voids) {
@@ -405,6 +407,8 @@ public class findFragmentAdapter extends BaseAdapter{
             if(null==adapter)
                 return;
             adapter.notifyDataSetChanged();
+            Intent intent=new Intent("android.intent.action.animationStop");
+            adapter.context.sendBroadcast(intent);
         }
     }
     static class GetCommentImage extends AsyncTask<Void,Void,Bitmap> {

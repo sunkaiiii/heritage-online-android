@@ -2,6 +2,7 @@ package com.example.sunkai.heritage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,9 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
+import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.commentReplyData;
 import com.example.sunkai.heritage.Data.userCommentData;
 
+import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -65,12 +68,11 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
         Bundle bundle = getIntent().getExtras();
         if (bundle.getSerializable("data") instanceof userCommentData) {
             data = (userCommentData) bundle.getSerializable("data");
-//            if(data.userCommentIamge!=null) {
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(data.userCommentIamge, 0, data.userCommentIamge.length);
-//                information_img.setImageBitmap(bitmap);
-//            }
+            byte[] imageByte=getIntent().getByteArrayExtra("bitmap");
+            Bitmap bitmap= HandlePic.handlePic(this,new ByteArrayInputStream(imageByte),0);
+            information_img.setImageBitmap(bitmap);
             commentID=data.getId();
-            inListPosition=data.getInListPosition();
+            inListPosition=bundle.getInt("position");
             information_title.setText(data.getCommentTitle());
             information_time.setText(data.getCommentTime());
             information_content.setText(data.getCommentContent());
@@ -249,13 +251,6 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
     };
     class Holder{
         TextView name,time,content;
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode){
-            case 1:
-
-        }
     }
 
     @Override
