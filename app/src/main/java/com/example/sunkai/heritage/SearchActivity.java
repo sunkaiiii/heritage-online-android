@@ -44,6 +44,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         search_activity_btn.setOnClickListener(this);
     }
 
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.search_activity_btn:
+                submit();
+                break;
+            default:
+                break;
+        }
+    }
+
     private void submit() {
         // validate
         String edit = search_activity_edit.getText().toString().trim();
@@ -57,18 +68,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         searchClass searchClass=new searchClass(edit);
         searchClass.getSearchInfo();
     }
-
-    @Override
-    public void onClick(View v){
-        switch (v.getId()){
-            case R.id.search_activity_btn:
-                submit();
-                break;
-            default:
-                break;
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

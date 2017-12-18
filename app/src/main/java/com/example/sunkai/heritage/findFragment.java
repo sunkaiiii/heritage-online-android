@@ -25,10 +25,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
@@ -50,10 +53,12 @@ import java.util.List;
  * 发现页面的类
  */
 
-public class findFragment extends Fragment {
+public class findFragment extends Fragment implements View.OnClickListener{
     private static final int FROM_USER_COMMENT_DETAIL=2;
     private ImageView[] tips;
     private ImageView[] mImageViews;
+    private ImageView findSearchBtn;
+    private TextView findEdit;
     private int[] imgIdArray;
     private View view;
     private findFragmentAdapter adapter;
@@ -62,6 +67,7 @@ public class findFragment extends Fragment {
     private Spinner selectSpiner;
     public Button addCommentBtn;
     public ViewPager viewPager;
+    private RelativeLayout searchRelative;
     List<FindActivityData> activityDatas;
     Animation btnAnimation;
     private Bitmap[] bitmaps; //装载首页轮转窗的Bitmap[]
@@ -74,10 +80,13 @@ public class findFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_find, container, false);
+        findEdit=(TextView)view.findViewById(R.id.find_text);
+        findSearchBtn=(ImageView)view.findViewById(R.id.find_searchbtn);
+        findEdit.setOnClickListener(this);
+        findSearchBtn.setOnClickListener(this);
         IntentFilter intentFilter=new IntentFilter();
         intentFilter.addAction("android.intent.action.animationStop");
         getActivity().registerReceiver(animationStopReceiver,intentFilter);
-
         selectSpiner = (Spinner) view.findViewById(R.id.find_select_spinner);
         setHasOptionsMenu(true);
         bitmaps = new Bitmap[4];
@@ -136,6 +145,7 @@ public class findFragment extends Fragment {
         adapter = new findFragmentAdapter(getActivity(), 1);
         listView.setAdapter(adapter);
         refreshBtn = (FloatingActionButton) view.findViewById(R.id.fragment_find_refreshbtn);
+        searchRelative=(RelativeLayout)view.findViewById(R.id.find_fragment_search_relative);
         refreshBtn.setOnClickListener(v -> {
             btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
             refreshBtn.startAnimation(btnAnimation);
@@ -232,6 +242,23 @@ public class findFragment extends Fragment {
             }
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setImageBitmap(bitmaps[i]);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.find_text:
+            case R.id.find_searchbtn:
+                if(LoginActivity.userID==0){
+                    Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(getActivity(),LoginActivity.class);
+                    intent.putExtra("isInto",1);
+                    startActivityForResult(intent,1);
+                }
+                Intent intent=new Intent(getActivity(),SearchActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 
