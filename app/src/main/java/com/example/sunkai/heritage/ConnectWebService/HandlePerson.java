@@ -85,6 +85,8 @@ public class HandlePerson extends BaseSetting {
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
+        if(error.equals(result))
+            return null;
         return result;
     }
     public static int Get_Follow_Number(int userID){

@@ -530,6 +530,8 @@ public class personFragment extends Fragment implements View.OnClickListener{
             if(msg.what==1){
                 Bundle data=msg.getData();
                 String imageCode=data.getString("image");
+                if(null==imageCode)
+                    return;
                 byte[] imageByte= Base64.decode(imageCode);
                 InputStream in=new ByteArrayInputStream(imageByte);
                 Bitmap bitmap= HandlePic.handlePic(getActivity(),in,0);

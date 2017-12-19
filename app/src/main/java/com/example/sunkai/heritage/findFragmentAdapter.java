@@ -497,6 +497,8 @@ public class findFragmentAdapter extends BaseAdapter{
             }
             byte[] image;
             result = HandlePerson.Get_User_Image(id);
+            if(result==null)
+                return null;
             image = Base64.decode(result);
             ContentValues contentValues = new ContentValues();
             contentValues.put("imageID", id);

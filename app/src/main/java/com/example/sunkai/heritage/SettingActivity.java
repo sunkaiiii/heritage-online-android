@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -186,6 +187,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent=new Intent("android.intent.action.focusAndFansCountChange");
                 intent.putExtra("message","sigh_out");
                 sendBroadcast(intent);
+                MiPushClient.unsetUserAccount(getApplicationContext(),LoginActivity.userName,null); //注销的时候退出当前账号
                 LoginActivity.userID=0;
                 LoginActivity.userName=null;
                 finish();
