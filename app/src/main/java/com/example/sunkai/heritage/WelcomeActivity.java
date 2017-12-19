@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.sunkai.heritage.Data.GlobalContext;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.mySqlLite;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 /**
  * 此页面是欢迎界面的类
@@ -68,6 +70,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         break;
                     default:
                         intent=new Intent(WelcomeActivity.this,MainActivity.class);
+                        MiPushClient.setUserAccount(GlobalContext.Companion.getInstance(),LoginActivity.userName,null);
                         startActivity(intent);
                         finish();
                         break;

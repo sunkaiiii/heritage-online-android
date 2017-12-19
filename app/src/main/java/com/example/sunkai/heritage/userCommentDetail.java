@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,6 +27,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFind;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.commentReplyData;
 import com.example.sunkai.heritage.Data.userCommentData;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;

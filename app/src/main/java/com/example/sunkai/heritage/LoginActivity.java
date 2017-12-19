@@ -33,7 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
+import com.example.sunkai.heritage.Data.GlobalContext;
 import com.example.sunkai.heritage.Data.MySqliteHandler;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -524,6 +526,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             if (success) {
                 userName = mEmail.toString();
+                MiPushClient.setUserAccount(GlobalContext.Companion.getInstance(),LoginActivity.userName,null);
                 new Thread(getUserID).start();
             } else {
                 showProgress(false);

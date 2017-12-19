@@ -74,7 +74,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:id="@+id/linearLayout5">
 
                         <ImageView
                             android:id="@+id/setting_sigh_out_img"

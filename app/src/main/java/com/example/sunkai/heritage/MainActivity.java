@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sunkai.heritage.Data.MySqliteHandler;
+
+import java.util.List;
 
 /**
  * 此类用于处理登陆
@@ -114,8 +118,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener{
         initViews();
         fragmentManager=getSupportFragmentManager();
         setTabSelection(0);
-//0        ActionBar actionBarr = getActionBar();
-//        actionBar.hide();
+
+
     }
 
     private void initViews() {

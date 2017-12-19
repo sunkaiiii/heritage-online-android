@@ -1,9 +1,15 @@
 package com.example.sunkai.heritage
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
+import com.example.sunkai.heritage.Data.GlobalContext
+import com.xiaomi.mipush.sdk.MiPushClient
 
 /**
  * Created by sunkai on 2017/12/15.
