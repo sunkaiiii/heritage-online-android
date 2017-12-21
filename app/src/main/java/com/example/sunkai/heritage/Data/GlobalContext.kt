@@ -67,6 +67,14 @@ class GlobalContext : Application() {
         }
     }
 
+    fun pauseMiPush(){
+        MiPushClient.pausePush(instance,null)
+    }
+
+    fun resumeMiPush(){
+        MiPushClient.resumePush(instance,null)
+    }
+
     private fun shouldInit(): Boolean {
         val am = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         val processInfos = am.runningAppProcesses

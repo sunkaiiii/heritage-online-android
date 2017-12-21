@@ -46,8 +46,12 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     private fun setPushStatus(isChecked: Boolean){
         if(isChecked) {
-            GlobalContext.instance?.registMipush()
-            GlobalContext.instance?.registUser()
+            GlobalContext.instance?.registMipush() //在这里延迟一些注册用户，同时注册用户会注册失败，需要重新启动程序才可以
+            Thread{
+                Thread.sleep(5000)
+                GlobalContext.instance?.registUser()
+            }.start()
+
             editor?.putBoolean("pushSwitch",true)
             editor?.apply()
         }
