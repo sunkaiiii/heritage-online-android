@@ -460,8 +460,12 @@ public class findFragmentAdapter extends BaseAdapter{
             if(findFragmentAdapter==null)
                 return;
             ImageView imageView=(ImageView)findFragmentAdapter.listView.findViewWithTag(id);
-            imageView.setImageBitmap(bitmap);
-            imageView.startAnimation(findFragmentAdapter.imageAnimation);
+            if(imageView!=null) {
+                imageView.setImageBitmap(bitmap);
+            }
+            if(findFragmentAdapter.what==3) {
+                imageView.startAnimation(findFragmentAdapter.imageAnimation);
+            }
         }
     }
 
@@ -514,7 +518,8 @@ public class findFragmentAdapter extends BaseAdapter{
             if(bitmap==null||adapter==null)
                 return;
             ImageView imageView=(ImageView)adapter.listView.findViewWithTag(id+" "+commandID);
-            imageView.setImageBitmap(bitmap);
+            if(imageView!=null)
+                imageView.setImageBitmap(bitmap);
         }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.sunkai.heritage;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,12 +133,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         submit = (Button) ad.findViewById(R.id.change_password_queding);
         cancel = (Button) ad.findViewById(R.id.change_password_cancel);
         userName.setText(LoginActivity.userName);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ad.dismiss();
-            }
-        });
+        cancel.setOnClickListener(v -> ad.dismiss());
 
         final Handler changePasswordHandler = new Handler() {
             @Override
@@ -187,16 +184,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent=new Intent("android.intent.action.focusAndFansCountChange");
                 intent.putExtra("message","sigh_out");
                 sendBroadcast(intent);
+                getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply();//清除自动登录的信息
                 MiPushClient.unsetUserAccount(getApplicationContext(),LoginActivity.userName,null); //注销的时候退出当前账号
                 LoginActivity.userID=0;
                 LoginActivity.userName=null;
                 finish();
             }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+        }).setNegativeButton("取消", (dialog, which) -> dialog.dismiss()).show();
     }
 }

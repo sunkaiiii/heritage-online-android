@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -42,24 +44,9 @@ public class WelcomeActivity extends AppCompatActivity {
             /**
              * 判断用户是否登陆过，如果登陆，则跳过登陆
              */
-            SQLiteDatabase db= MySqliteHandler.INSTANCE.GetReadableDatabase();
-            String table="user_login_info";
-            String[] columns=new String[]{"user_id","user_name","user_password"};
-            String selection="id=?";
-            String[] selectionArgs=new String[]{"1"};
-            Cursor cursor=db.query(table,columns,selection,selectionArgs,null,null,null);
-            int idIndex=cursor.getColumnIndex(columns[0]);
-            int nameIndex=cursor.getColumnIndex(columns[1]);
-            int passwordIndex=cursor.getColumnIndex(columns[2]);
-            cursor.moveToFirst();
-            if(!(cursor.isAfterLast())){
-                LoginActivity.userID=cursor.getInt(idIndex);
-                LoginActivity.userName=cursor.getString(nameIndex);
-            }
-            else{
-                LoginActivity.userID=0;
-            }
-            db.close();
+            final SharedPreferences sharedPreferences=getSharedPreferences("data", Context.MODE_PRIVATE);
+            LoginActivity.userID=sharedPreferences.getInt("user_id",0);
+            LoginActivity.userName=sharedPreferences.getString("user_name",null);
             if(msg.what==gotoLogin){
                 Intent intent;
                 switch (LoginActivity.userID){
@@ -75,7 +62,6 @@ public class WelcomeActivity extends AppCompatActivity {
                         finish();
                         break;
                 }
-
             }
         }
     };
