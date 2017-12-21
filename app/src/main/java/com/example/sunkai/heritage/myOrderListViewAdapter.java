@@ -113,6 +113,8 @@ public class myOrderListViewAdapter extends BaseAdapter {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             ImageView imageView=(ImageView) thisListView.findViewWithTag(id);
+            if(imageView==null)
+                return;
             imageView.setImageBitmap(bitmap);
         }
     }
