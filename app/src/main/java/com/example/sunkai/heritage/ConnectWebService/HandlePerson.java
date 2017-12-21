@@ -95,7 +95,7 @@ public class HandlePerson extends BaseSetting {
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
-        if(error.equals(result)){
+        if(error.equals(result)||result==null){
             return 0;
         }
         return Integer.parseInt(result);
@@ -106,7 +106,7 @@ public class HandlePerson extends BaseSetting {
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
-        if(error.equals(result)){
+        if(error.equals(result)||result==null){
             return 0;
         }
         return Integer.parseInt(result);

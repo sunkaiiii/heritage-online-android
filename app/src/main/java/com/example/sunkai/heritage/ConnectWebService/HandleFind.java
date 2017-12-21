@@ -78,6 +78,8 @@ public class HandleFind extends BaseSetting {
 
     @Nullable
     private static List<FindActivityData> Json_To_FindAcitivityID(List<FindActivityData> datas, String json) {
+        if(error.equals(json)||json==null)
+            return null;
         try {
             JSONObject js = new JSONObject(json);
             JSONArray replys = js.getJSONArray("id");

@@ -27,6 +27,8 @@ public class HandleFolk extends BaseSetting {
 
     @Nullable
     private static List<folkData> Json_To_FolkList(String json){
+        if(error.equals(json)||json==null)
+            return null;
         try {
             JSONObject MainActivity = new JSONObject(json);
             JSONArray activities = MainActivity.getJSONArray("folk_information");

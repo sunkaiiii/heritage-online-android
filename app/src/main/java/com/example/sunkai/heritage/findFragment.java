@@ -336,11 +336,13 @@ public class findFragment extends Fragment implements View.OnClickListener{
             findFragment findFragment=findFragmentWeakReference.get();
             if(findFragment==null)
                 return null;
-            if (findFragment.activityDatas.size() == 0)
+            if (findFragment.activityDatas==null||findFragment.activityDatas.size() == 0)
                 findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas);
             db = MySqliteHandler.INSTANCE.GetReadableDatabase();
             String table = "find_fragment_activity";
             String selection = "id=?";
+            if(findFragment.activityDatas==null||findFragment.activityDatas.size()==0)
+                return null;
             String[] selectionArgs = new String[]{String.valueOf(findFragment.activityDatas.get(index).getId())};
             Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
             cursor.moveToFirst();
