@@ -41,7 +41,8 @@
         <activity android:name=".MainActivity"
             android:theme="@style/AppThemeNoActionBar"/>
         <activity android:name=".folkInformation" />
-        <activity android:name=".RegistActivity" />
+        <activity android:name=".RegistActivity"
+            android:label="注册"/>
         <activity android:name=".JoinActivity" />
         <activity android:name=".DebugActivity" />
         <activity android:name=".activityInformationActivity" />

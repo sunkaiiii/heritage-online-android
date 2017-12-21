@@ -511,7 +511,7 @@ public class personFragment extends Fragment implements View.OnClickListener{
         @Override
         public void run() {
             String result=HandlePerson.Get_User_Image(LoginActivity.userID);
-            if("Error".equals(result)){
+            if(result==null){
                 getUserImageHandler.sendEmptyMessage(0);
             }
             else{
