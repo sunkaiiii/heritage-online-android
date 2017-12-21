@@ -4,10 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/heritage-online.iml" filepath="$PROJECT_DIR$/heritage-online.iml" />
-<<<<<<< HEAD
-      <module fileurl="file://D:\Document\AndroidStudioProjects\heritage-online\heritage-online-android.iml" filepath="D:\Document\AndroidStudioProjects\heritage-online\heritage-online-android.iml" />
-=======
->>>>>>> devolop
     </modules>
   </component>
 </project>

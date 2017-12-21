@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="__local_jars__:D.\Document\AndroidStudioProjects\heritage-online\app\libs\ksoap2-android-assembly-3.2.0-jar-with-dependencies.jar:unspecified@jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/ksoap2-android-assembly-3.2.0-jar-with-dependencies.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
