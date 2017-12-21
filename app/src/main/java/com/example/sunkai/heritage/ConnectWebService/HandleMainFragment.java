@@ -95,6 +95,8 @@ public class HandleMainFragment extends BaseSetting  {
         soapObject.addProperty("channel",channel);
         try{
             String result=Get_Post(soapObject);
+            if(result==null||error.equals(result))
+                return null;
             JSONObject MainActivity=new JSONObject(result);
             JSONArray activities=MainActivity.getJSONArray("classify_activity");
             List<classifyActiviyData> activityDatas=new ArrayList<>();

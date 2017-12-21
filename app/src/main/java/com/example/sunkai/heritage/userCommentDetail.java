@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,15 +27,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
+import com.example.sunkai.heritage.Data.FindActivityAllData;
+import com.example.sunkai.heritage.Data.GlobalContext;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.Data.commentReplyData;
 import com.example.sunkai.heritage.Data.userCommentData;
 import com.xiaomi.mipush.sdk.MiPushClient;
+import com.xiaomi.mipush.sdk.MiPushMessage;
+import com.xiaomi.mipush.sdk.PushMessageHelper;
 
 import java.io.ByteArrayInputStream;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.sunkai.heritage.LoginActivity.userID;
 
 /**
  * 此类用于处理用户发帖详细信息页面
@@ -56,6 +66,7 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
     List<commentReplyData> datas;
     private ActionBar actionBack;
 
+    private static final String TAG = "userCommentDetail";
 
     /**
      * 记录传入进来的帖子在原帖的位置和ID
@@ -78,10 +89,15 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
             information_title.setText(data.getCommentTitle());
             information_time.setText(data.getCommentTime());
             information_content.setText(data.getCommentContent());
-//            information_username.setText(data.);
             information_reply_num.setText(data.getCommentReplyNum());
             setTitle(data.getUserName());
             new Thread(getReply).start();
+        }else{
+            int id=getIntent().getIntExtra("id",0);
+            Log.d(TAG, "onCreate: getID:"+id);
+            if(id==0)
+                return;
+            new getCommentInfo(id,this).execute();
         }
     }
 
@@ -102,6 +118,8 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
         actionBack.setDisplayHomeAsUpEnabled(true);
 
     }
+
+
     //隐藏键盘
     private void hideKeyboard() {
         View view = getCurrentFocus();
@@ -134,7 +152,7 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
             Toast.makeText(userCommentDetail.this,"回复不能为空",Toast.LENGTH_SHORT).show();
             return;
         }
-        if(LoginActivity.userID==0){
+        if(userID==0){
             Toast.makeText(this,"没有登录",Toast.LENGTH_SHORT).show();
             Intent intent=new Intent(this,LoginActivity.class);
             intent.putExtra("isInto",1);
@@ -173,18 +191,66 @@ public class userCommentDetail extends AppCompatActivity implements View.OnClick
             }
         }
     };
+
+    static class getCommentInfo extends AsyncTask<Void,Void,FindActivityAllData>{
+        private int id;
+        private WeakReference<userCommentDetail> userCommentDetailWeakReference;
+        public getCommentInfo(int id,userCommentDetail userCommentDetail){
+            this.id=id;
+            userCommentDetailWeakReference=new WeakReference<>(userCommentDetail);
+        }
+        @Override
+        protected FindActivityAllData doInBackground(Void... voids) {
+            FindActivityAllData data=HandleFind.Get_All_User_Coment_Info_By_ID(LoginActivity.userID,id);
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(FindActivityAllData findActivityAllData) {
+            userCommentDetail userCommentDetail=userCommentDetailWeakReference.get();
+            if(userCommentDetail==null||findActivityAllData==null)
+                return;
+            userCommentDetail.allDataSetView(findActivityAllData);
+            new Thread(userCommentDetail.getReply).start();
+        }
+    }
+
+    private void allDataSetView(FindActivityAllData data){
+        byte[] imageByte= org.kobjects.base64.Base64.decode(data.getImgCode());
+        Bitmap bitmap= HandlePic.handlePic(this,new ByteArrayInputStream(imageByte),0);
+        information_img.setImageBitmap(bitmap);
+        commentID=data.getId();
+        information_title.setText(data.getComment_title());
+        information_time.setText(data.getComent_time());
+        information_content.setText(data.getComment_content());
+        information_reply_num.setText(data.getReplyCount());
+        setTitle(data.getUserName());
+        //和老版本做一下兼容，复用代码
+        this.data=new userCommentData();
+        this.data.setUserName(data.getUserName());
+        this.data.setCommentReplyNum(data.getReplyCount());
+        this.data.setId(data.getId());
+        this.data.setCommentContent(data.getComment_content());
+        this.data.setUser_id(data.getUserID());
+        this.data.setCommentTime(data.getComent_time());
+    }
+
     class HandleReply{
         int userID;
         String content,userName,replyTime;
         HandleReply(String content){
-            this.userID=LoginActivity.userID;
+            this.userID= LoginActivity.userID;
             this.content=content;
             this.userName=LoginActivity.userName;
         }
         Runnable addReply=new Runnable() {
             @Override
             public void run() {
-                int result=HandleFind.Add_User_Comment_Reply(userID,commentID,content);
+                Intent intent=new Intent(GlobalContext.Companion.getInstance(),userCommentDetail.class);
+                intent.putExtra("id",commentID);
+                String uriString=intent.toUri(Intent.URI_INTENT_SCHEME);
+                Log.d(TAG, "uriString: "+uriString);
+                int result=HandleFind.Add_User_Comment_Reply(userID,commentID,content,uriString);
                 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 replyTime=df.format(new Date());
                 addReplyHandler.sendEmptyMessage(result);

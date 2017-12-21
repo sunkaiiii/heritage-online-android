@@ -129,15 +129,16 @@ public class HandleFind extends BaseSetting {
             JSONObject js=new JSONObject(json);
             FindActivityAllData data=new FindActivityAllData();
             data.setId(js.getInt("id"));
+            data.setUserName(js.getString("userName"));
             data.setUserID(js.getInt("userID"));
             data.setComent_time(js.getString("comment_time"));
             data.setComment_title(js.getString("comment_title"));
             data.setComment_content(js.getString("comment_content"));
-            data.setImgCode(js.getString("imgCode"));
             data.setReplyCount(js.getString("replyCount"));
             data.setUserLike(success.equals(js.getString("isUserLike")));
             data.setLikeNumber(js.getString("likeNumber"));
             data.setUserFlow(success.equals(js.getString("isUserFllow")));
+            data.setImgCode(js.getString("image"));
             return data;
         }catch (JSONException e){
             e.printStackTrace();
@@ -302,7 +303,7 @@ public class HandleFind extends BaseSetting {
         return Json_To_UserCommentReplyData(result);
     }
 
-    public static int Add_User_Comment_Reply(int userID, int commentID, String replyContent) {
+    public static int Add_User_Comment_Reply(int userID, int commentID, String replyContent,String intentString) {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
@@ -314,6 +315,7 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("userID", userID);
         soapObject.addProperty("commentID", commentID);
         soapObject.addProperty("replyContent", replyContent);
+        soapObject.addProperty("intentString",intentString);
         String result = Get_Post(soapObject);
         if (error.equals(result)) {
             return 0;
