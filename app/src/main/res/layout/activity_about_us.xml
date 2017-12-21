@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Version 1.2"
+        android:text="Version 2.0"
         android:layout_below="@id/base_line"
         android:layout_centerInParent="true"
         android:id="@+id/base_version"
@@ -40,5 +40,13 @@
         android:layout_centerInParent="true"
         android:layout_below="@id/base_people"
         android:layout_marginTop="6dp"
-        android:text="联合出品"/>
+        android:text="联合出品"
+        android:id="@+id/base_out"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/base_out"
+        android:text="@string/program_git_url"
+        android:layout_marginTop="6dp"/>
 </RelativeLayout>

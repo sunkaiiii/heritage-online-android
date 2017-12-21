@@ -32,6 +32,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:layout_gravity="center"/>
+
         <AutoCompleteTextView
             android:id="@+id/email"
             android:layout_width="match_parent"
@@ -39,8 +40,7 @@
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:singleLine="true"
-            app:layout_constraintBottom_toTopOf="@+id/password"
-            />
+            app:layout_constraintBottom_toTopOf="@+id/password" />
 
     </LinearLayout>
     <LinearLayout
@@ -121,32 +121,31 @@
             android:layout_columnSpan="1"
             android:layout_gravity="center"/>
     </GridLayout>
+
     <TextView
         android:id="@+id/activity_login_jump_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="6dp"
         android:text="跳过登录"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="21dp"
-        android:layout_marginLeft="6dp"
-        app:layout_constraintLeft_toLeftOf="@+id/gridLayout"
-        android:layout_marginStart="6dp" />
+        app:layout_constraintLeft_toLeftOf="@+id/gridLayout" />
+
     <TextView
+        android:id="@+id/activity_login_find_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/activity_login_find_password"
         android:layout_margin="6dp"
-        android:text="忘记密码?"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="21dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="忘记密码?"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/activity_login_jump_login" />
+        app:layout_constraintLeft_toRightOf="@+id/activity_login_jump_login"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/activity_login_Debug"

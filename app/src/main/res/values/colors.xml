@@ -3,9 +3,12 @@
     <color name="colorPrimary">#ac462e</color>
     <color name="colorPrimaryDark">#6a2e05</color>
     <color name="colorAccent">#f96706</color>
-    <color name="midBrown">#6D4C41</color>
+    <color name="midBrown">#6d4c41</color>
     <color name="lightGrey">#e6e6e6</color>
     <color name="themeRed">#ac462e</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="deepGrey">#2f2f2f</color>
+    <color name="colorAccentToBtn">#88f96706</color>
+    <color name="colorPrimeryToBtn">#b46a2e05</color>
 </resources>

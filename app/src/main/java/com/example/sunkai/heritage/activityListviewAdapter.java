@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Message;
+import android.os.AsyncTask;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +14,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.classifyActiviyData;
 
 import java.io.ByteArrayInputStream;
@@ -34,8 +36,9 @@ public class activityListviewAdapter extends BaseAdapter {
     private List<classifyActiviyData> activityDatas;
     private String channel;
     Animation imageAnimation;//图片出现动画
-    Bitmap[] bitmap;
-    int[] apearCount;//图片出现次数计数器
+
+    ListView thisListView;
+    LruCache<Integer,Bitmap> lruCache;
 
     /**
      *
@@ -43,21 +46,19 @@ public class activityListviewAdapter extends BaseAdapter {
      * @param activityDatas 由首页getCount出来加入了相应数量的空类的List
      * @param channel   传入的类别，viewpaer的位置不同此值不同，用于加载不同的分类内容
      */
-    public activityListviewAdapter(Context context,List<classifyActiviyData> activityDatas,String channel){
+    public activityListviewAdapter(Context context, List<classifyActiviyData> activityDatas, String channel){
         this.context=context;
-        this.activityDatas=activityDatas;
+        this.activityDatas=null;
         this.channel=channel;
-        /**
-         * 加载图片动画，在图片第一次加载完成之后播放一次淡出的动画
-         * 初始化完成之后开启新线程获取活动信息
-         */
-        bitmap=new Bitmap[activityDatas.size()];
+        int maxMemory=(int)Runtime.getRuntime().maxMemory();
+        int avilableMemory=maxMemory/32;
+        lruCache=new LruCache<Integer,Bitmap>(avilableMemory){
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
-        apearCount=new int[activityDatas.size()];
-        for(int i=0;i<apearCount.length;i++){
-            apearCount[i]=0;
-        }
-        new Thread(getChannelInformation).start();
+        new getChannelInformation().execute();
     }
     public int getCount() {
         if(null!=activityDatas)
@@ -71,6 +72,8 @@ public class activityListviewAdapter extends BaseAdapter {
         return position;
     }
     public View getView(int position, View convertView, ViewGroup parent) {
+        if(thisListView==null)
+            thisListView=(ListView)parent;
         Holder vh;
         if(null==convertView){
             LayoutInflater inflater= LayoutInflater.from(context);
@@ -84,13 +87,16 @@ public class activityListviewAdapter extends BaseAdapter {
             vh=(Holder)convertView.getTag();
         }
         classifyActiviyData data=activityDatas.get(position);
-        String text=data.activitContent;
-//        int img=data.imgID;
+        String text=data.getActivityContent();
         vh.textView.setText(text);
-        vh.img.setImageBitmap(bitmap[position]);
-        if(apearCount[position]==1) {
-            vh.img.startAnimation(imageAnimation);
-            apearCount[position]++;
+        vh.img.setTag(data.getId());
+        vh.img.setImageResource(R.drawable.empty_background);
+        Bitmap bitmap=lruCache.get(data.getId());
+        if(bitmap!=null){
+            vh.img.setImageBitmap(bitmap);
+        }
+        else{
+            new getChannelImage(data.getId()).execute();
         }
         return convertView;
     }
@@ -99,108 +105,70 @@ public class activityListviewAdapter extends BaseAdapter {
         TextView textView;
     }
 
-//    @本地测试数据
-// Runnable handlePic=new Runnable() {
-//        @Override
-//        public void run() {
-//            for(int i=0;i<activityDatas.size();i++){
-//                bitmap[i]=HandlePic.handlePic(context,activityDatas.get(i).imgID,3);
-//                Message msg=new Message();
-//                msg.what=1;
-//                handler.sendMessage(msg);
-//            }
-//            Message msg=new Message();
-//            msg.what=1;
-//            handler.sendMessage(msg);
-//        }
-//    };
-//    Handler handler=new Handler(){
-//        @Override
-//        public void handleMessage(Message msg){
-//            if(msg.what==1){
-//                notifyDataSetChanged();
-//            }
-//        }
-//    };
-
-
-    Runnable getChannelInformation=new Runnable() {
+    class getChannelInformation extends AsyncTask<Void,Void,Void>{
         @Override
-        public void run() {
-            activityDatas= HandleMainFragment.GetChannelInformation(channel);
-            Message msg=new Message();
-            getChannelInformationHandler.sendMessage(msg);
+        protected Void doInBackground(Void... voids) {
+            activityDatas=HandleMainFragment.GetChannelInformation(channel);
+            return null;
         }
-    };
 
-    Handler getChannelInformationHandler=new Handler(){
         @Override
-        public void handleMessage(Message msg){
+        protected void onPostExecute(Void aVoid) {
             notifyDataSetChanged();
-            /**
-             * 在加载完文字信息之后再加载图片
-             */
-            new Thread(getChannelImage).start();
         }
-    };
+    }
 
-    Runnable getChannelImage=new Runnable() {
+
+    class getChannelImage extends AsyncTask<Void,Void,Bitmap>{
+        SQLiteDatabase db= MySqliteHandler.INSTANCE.GetReadableDatabase();
+        String table="channel_activity_image";
+        String selection="imageID=?";
+        int id;
+        public getChannelImage(int id){
+            this.id=id;
+        }
+
         @Override
-        public void run() {
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
-            for(int i=0;i<activityDatas.size();i++){
-                String table="channel_activity_image";
-                String selection="imageID=?";
-                String[] selectionArgs=new String[]{String.valueOf(activityDatas.get(i).id)};
-                Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
-                cursor.moveToFirst();
-                Message msg=new Message();
-                byte[] imgByte=null;
-                if(!cursor.isAfterLast()){
-                    int image=cursor.getColumnIndex("image");
-                    imgByte=cursor.getBlob(image);
-                    if(null==imgByte){
-                        getChannelImageHandler.sendEmptyMessage(0);
-                    }
-                    else{
-                        activityDatas.get(i).activityImage = imgByte;
-                        InputStream is = new ByteArrayInputStream(imgByte);
-                        bitmap[i] = HandlePic.handlePic(context, is, 0);
-                        apearCount[i]++;
-                        getChannelImageHandler.sendEmptyMessage(1);
-                    }
-                }
-                else{
-                    imgByte=HandleMainFragment.GetChannelImage(activityDatas.get(i).id);
-                    ContentValues contentValues=new ContentValues();
-                    contentValues.put("imageID",activityDatas.get(i).id);
-                    contentValues.put("image",imgByte);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
-                    db.insert("channel_activity_image",null,contentValues);
-                }
+        protected Bitmap doInBackground(Void... voids) {
+            Bitmap bitmap=null;
+            String[] selectionArgs=new String[]{String.valueOf(id)};
+            Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+            cursor.moveToFirst();
+            byte[] imgByte=null;
+            if(!cursor.isAfterLast()) {
+                int image = cursor.getColumnIndex("image");
+                imgByte = cursor.getBlob(image);
                 cursor.close();
-                if(null==imgByte){
-                    msg.what=0;
-                    getChannelImageHandler.handleMessage(msg);
-                }
-                else {
-                    activityDatas.get(i).activityImage = imgByte;
-                    InputStream is = new ByteArrayInputStream(imgByte);
-                    bitmap[i] = HandlePic.handlePic(context, is, 0);
-                    apearCount[i]++;
-                    msg.what = 1;
-                    getChannelImageHandler.sendMessage(msg);
+                if (imgByte != null) {
+                    InputStream in = new ByteArrayInputStream(imgByte);
+                    bitmap=HandlePic.handlePic(context, in, 0);
+                    lruCache.put(id,bitmap);
+                    return bitmap;
                 }
             }
-//            db.close();
+            imgByte=HandleMainFragment.GetChannelImage(id);
+            if(imgByte==null)
+                return null;
+            ContentValues contentValues=new ContentValues();
+            contentValues.put("imageID",id);
+            contentValues.put("image",imgByte);
+            db=MySqliteHandler.INSTANCE.GetWritableDatabase();
+            db.insert("channel_activity_image",null,contentValues);
+            InputStream in=new ByteArrayInputStream(imgByte);
+            bitmap=HandlePic.handlePic(context,in,0);
+            lruCache.put(id,bitmap);
+            return bitmap;
         }
-    };
-    Handler getChannelImageHandler=new Handler(){
+
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                notifyDataSetChanged();
+        protected void onPostExecute(Bitmap bitmap) {
+            if(bitmap!=null){
+                ImageView imageView=(ImageView)thisListView.findViewWithTag(id);
+                if(imageView!=null) {
+                    imageView.setImageBitmap(bitmap);
+                    imageView.startAnimation(imageAnimation);
+                }
             }
         }
-    };
+    }
 }

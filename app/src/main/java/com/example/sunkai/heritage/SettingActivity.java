@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,10 +17,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
+import com.example.sunkai.heritage.Data.GlobalContext;
+import com.xiaomi.mipush.sdk.MiPushClient;
 
 
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
@@ -35,8 +39,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private TextView setting_changepassword_text;
     private ImageView setting_about_us_img;
     private TextView setting_about_us_text;
-    private ImageView setting_connent_us_img;
-    private TextView setting_connect_us_text;
+    private ImageView setting_push_img;
+    private TextView setting_push_text;
     private ActionBar actionBack;
 
     @Override
@@ -56,16 +60,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setting_changepassword_text = (TextView) findViewById(R.id.setting_changepassword_text);
         setting_about_us_img = (ImageView) findViewById(R.id.setting_about_us_img);
         setting_about_us_text = (TextView) findViewById(R.id.setting_about_us_text);
-        setting_connent_us_img = (ImageView) findViewById(R.id.setting_connent_us_img);
-        setting_connect_us_text = (TextView) findViewById(R.id.setting_connect_us_text);
+        setting_push_img = (ImageView) findViewById(R.id.setting_push_switch_img);
+        setting_push_text = (TextView) findViewById(R.id.setting_push_switch_text);
         setting_sigh_out_text.setOnClickListener(this);
         setting_sigh_out_img.setOnClickListener(this);
         setting_changepassword_img.setOnClickListener(this);
         setting_changepassword_text.setOnClickListener(this);
         setting_about_us_img.setOnClickListener(this);
         setting_about_us_text.setOnClickListener(this);
-        setting_connect_us_text.setOnClickListener(this);
-        setting_connent_us_img.setOnClickListener(this);
+        setting_push_text.setOnClickListener(this);
+        setting_push_img.setOnClickListener(this);
         actionBack=getSupportActionBar();
         actionBack.setDisplayHomeAsUpEnabled(true);
         sign_name_textview.setText(LoginActivity.userName);
@@ -98,9 +102,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 intent=new Intent(this,AboutUSActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.setting_connect_us_text:
-            case R.id.setting_connent_us_img:
-                intent=new Intent(this,ConnectUsActivity.class);
+            case R.id.setting_push_switch_text:
+            case R.id.setting_push_switch_img:
+                intent=new Intent(this, SettingListActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -130,12 +134,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         submit = (Button) ad.findViewById(R.id.change_password_queding);
         cancel = (Button) ad.findViewById(R.id.change_password_cancel);
         userName.setText(LoginActivity.userName);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ad.dismiss();
-            }
-        });
+        cancel.setOnClickListener(v -> ad.dismiss());
 
         final Handler changePasswordHandler = new Handler() {
             @Override
@@ -186,15 +185,12 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent=new Intent("android.intent.action.focusAndFansCountChange");
                 intent.putExtra("message","sigh_out");
                 sendBroadcast(intent);
+                GlobalContext.Companion.getInstance().unregistUser(); //注销的时候退出当前账号
+                getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply();//清除自动登录的信息
                 LoginActivity.userID=0;
                 LoginActivity.userName=null;
                 finish();
             }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+        }).setNegativeButton("取消", (dialog, which) -> dialog.dismiss()).show();
     }
 }

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     private View view;
     List<MainActivityData> activityDatas;
     Bitmap[] bitmaps;
+    NestedScrollView nestedScrollView;
     int count=0;
     //public static MessageFragment messageFragment;
     public MainFragment() {
@@ -91,6 +93,8 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_main, container, false);
+        nestedScrollView=(NestedScrollView)view.findViewById(R.id.nest_scrollview);
+        nestedScrollView.setFillViewport(true);
         bitmaps=new Bitmap[4];
         //主页活动页面
         imgIdArray=new int[]{R.mipmap.img1,R.mipmap.img1,R.mipmap.img1,R.mipmap.img1};
@@ -110,13 +114,14 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         ViewPager viewPager=(ViewPager)view.findViewById(R.id.main_tab_content);
         setupViewPager(viewPager);
         tableLayout.setupWithViewPager(viewPager);
-        tableLayout.setTabTextColors(Color.GRAY,Color.RED);
-        //使得5个页面不销毁，不调用destoryitem
-        viewPager.setOffscreenPageLimit(4);
-        for(int i=0;i< ClassifyActivityDivide.divide.length;i++){
-            tableLayout.getTabAt(i).setText(ClassifyActivityDivide.divide[i]);
+        tableLayout.setTabTextColors(Color.GRAY,Color.WHITE);
+        //使得3个页面不销毁，不调用destoryitem
+        viewPager.setOffscreenPageLimit(2);
+        for(int i=0;i< ClassifyActivityDivide.getDivide().length;i++){
+            tableLayout.getTabAt(i).setText(ClassifyActivityDivide.getDivide()[i]);
         }
         tableLayout.getTabAt(0).select();
+
         return view;
     }
 
@@ -189,11 +194,10 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     }
     private void setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter=new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        adapter.insertNewFragment(new activity1Fragment());
-        adapter.insertNewFragment(new activity2Fragment());
-        adapter.insertNewFragment(new activity3Fragment());
-        adapter.insertNewFragment(new activity4Fragment());
-        adapter.insertNewFragment(new activity5Fragment());
+        //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容
+        for(String channelName:ClassifyActivityDivide.getDivide()){
+            adapter.insertNewFragment(ActivityFragment.newInstance(channelName));
+        }
         viewPager.setAdapter(adapter);
     }
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -253,16 +257,6 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         }
     }
 
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
 
     @Override
     public void onDetach() {
@@ -305,7 +299,7 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         public void handleMessage(Message msg){
             if(msg.what==1){
                 for(int i=0;i<activityDatas.size();i++){
-                    Bitmap bitmap= BitmapFactory.decodeByteArray(activityDatas.get(i).activityImage,0,activityDatas.get(i).activityImage.length);
+                    Bitmap bitmap= BitmapFactory.decodeByteArray(activityDatas.get(i).getActivityImage(),0,activityDatas.get(i).getActivityImage().length);
                     bitmaps[i]=bitmap;
                 }
                 loadMyPage();

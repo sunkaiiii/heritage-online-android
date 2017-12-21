@@ -60,7 +60,7 @@ public class personFragment extends Fragment implements View.OnClickListener{
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private LinearLayout orderLinear,myOwnTiezi;
+    private LinearLayout orderLinear,myOwnTiezi,settingLayout;
     private TextView userName,follow,followNumber,fans,fansNumber;
     private RoundedImageView userImage;
 
@@ -121,8 +121,10 @@ public class personFragment extends Fragment implements View.OnClickListener{
         View view=inflater.inflate(R.layout.fragment_person, container, false);
         orderLinear=(LinearLayout)view.findViewById(R.id.fragment_person_oder_linner);
         myOwnTiezi=(LinearLayout)view.findViewById(R.id.fragment_person_my_tiezi);
+        settingLayout=(LinearLayout)view.findViewById(R.id.person_fragment_setting);
         orderLinear.setOnClickListener(this);
         myOwnTiezi.setOnClickListener(this);
+        settingLayout.setOnClickListener(this);
         userName=(TextView)view.findViewById(R.id.sign_name_textview);
         if(LoginActivity.userName==null){
             userName.setText("没有登录");
@@ -181,6 +183,16 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 intent=new Intent(getActivity(),UserOwnTiezi.class);
                 startActivity(intent);
                 break;
+            case R.id.person_fragment_setting:
+                if(LoginActivity.userID==0){
+                    toLogin();
+                    break;
+                }
+                intent=new Intent(getActivity(),SettingActivity.class);
+                userImage.setDrawingCacheEnabled(true);
+                intent.putExtra("userImage",userImage.getDrawingCache());
+                startActivity(intent);
+                break;
             case R.id.person_follow:
             case R.id.person_follow_number:
                 intent=new Intent(getActivity(),focusInformation.class);
@@ -207,37 +219,34 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 /**
                  * 在获取图片或者拍照的时候，判断系统版本，如果是安卓6.0以上，要动态申请权限
                  */
-                choice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if(position==0)
-                        {
-                            ad.dismiss();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
-                                    startPermissionsActivity();
-                                } else {
-                                    openCamera();
-                                }
+                choice.setOnItemClickListener((parent, view, position, id) -> {
+                    if(position==0)
+                    {
+                        ad.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
                             } else {
                                 openCamera();
                             }
-                            isClickCamera = true;
+                        } else {
+                            openCamera();
                         }
-                        else if(position==1)
-                        {
-                            ad.dismiss();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
-                                    startPermissionsActivity();
-                                } else {
-                                    selectFromAlbum();
-                                }
+                        isClickCamera = true;
+                    }
+                    else if(position==1)
+                    {
+                        ad.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (mPermissionsChecker.lacksPermissions(PERMISSIONS)) {
+                                startPermissionsActivity();
                             } else {
                                 selectFromAlbum();
                             }
-                            isClickCamera = false;
+                        } else {
+                            selectFromAlbum();
                         }
+                        isClickCamera = false;
                     }
                 });
                 break;
@@ -444,34 +453,6 @@ public class personFragment extends Fragment implements View.OnClickListener{
         getActivity().unregisterReceiver(refreshInfo);
     }
 
-
-    //重写onCreateOptionsMenu方法，在顶部的bar中显示菜单
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.person_fragment_menu, menu);
-        setIconVisible(menu,true);
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-    public void setIconVisible(Menu menu, boolean visable){
-        Field field;
-        try {
-            field = menu.getClass().getDeclaredField("mOptionalIconsVisible");
-
-            Log.d("TAG"," setIconVisible1() field="+field);
-            field.setAccessible(true);
-            field.set(menu, visable);
-        } catch (NoSuchFieldException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -480,15 +461,6 @@ public class personFragment extends Fragment implements View.OnClickListener{
                 intent=new Intent(getActivity(),SearchActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_setting:
-                if(LoginActivity.userID==0){
-                    toLogin();
-                    break;
-                }
-                intent=new Intent(getActivity(),SettingActivity.class);
-                userImage.setDrawingCacheEnabled(true);
-                intent.putExtra("userImage",userImage.getDrawingCache());
-                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -539,7 +511,7 @@ public class personFragment extends Fragment implements View.OnClickListener{
         @Override
         public void run() {
             String result=HandlePerson.Get_User_Image(LoginActivity.userID);
-            if("Error".equals(result)){
+            if(result==null){
                 getUserImageHandler.sendEmptyMessage(0);
             }
             else{
@@ -558,6 +530,8 @@ public class personFragment extends Fragment implements View.OnClickListener{
             if(msg.what==1){
                 Bundle data=msg.getData();
                 String imageCode=data.getString("image");
+                if(null==imageCode)
+                    return;
                 byte[] imageByte= Base64.decode(imageCode);
                 InputStream in=new ByteArrayInputStream(imageByte);
                 Bitmap bitmap= HandlePic.handlePic(getActivity(),in,0);

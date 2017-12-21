@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
 
-public class RegistActivity extends AppCompatActivity implements View.OnClickListener {
+import java.util.HashMap;
+
+public class RegistActivity extends AppCompatActivity implements View.OnClickListener,View.OnFocusChangeListener {
 
     private TextView regist_actitivy_username_textView;
     private EditText regist_actitivy_username_editText;
@@ -32,6 +34,7 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
     private Button regist_activity_regist_button;
     private ProgressBar progressBar;
     private ActionBar actionBack;
+    private HashMap<EditText,TextView> editTextToTextViewHashMap;
 
     String userName, userPassword, findPasswordQuestion, findPasswordAnswer;
     private Button regist_activity_cancel_button;
@@ -44,16 +47,27 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initView() {
+        editTextToTextViewHashMap=new HashMap<>();
         regist_actitivy_username_textView = (TextView) findViewById(R.id.regist_actitivy_username_textView);
         regist_actitivy_username_editText = (EditText) findViewById(R.id.regist_actitivy_username_editText);
+        regist_actitivy_username_editText.setOnFocusChangeListener(this);
+        editTextToTextViewHashMap.put(regist_actitivy_username_editText,regist_actitivy_username_textView);
         regist_actitivy_password_textView = (TextView) findViewById(R.id.regist_actitivy_password_textView);
         regist_actitivy_password_editText = (EditText) findViewById(R.id.regist_actitivy_password_editText);
+        editTextToTextViewHashMap.put(regist_actitivy_password_editText,regist_actitivy_password_textView);
+        regist_actitivy_password_editText.setOnFocusChangeListener(this);
         regist_actitivy_insure_textView = (TextView) findViewById(R.id.regist_actitivy_insure_textView);
         regist_actitivy_insure_editText = (EditText) findViewById(R.id.regist_actitivy_insure_editText);
+        editTextToTextViewHashMap.put(regist_actitivy_insure_editText,regist_actitivy_insure_textView);
+        regist_actitivy_insure_editText.setOnFocusChangeListener(this);
         regist_actitivy_question_textView = (TextView) findViewById(R.id.regist_actitivy_question_textView);
         regist_actitivy_question_editText = (EditText) findViewById(R.id.regist_actitivy_question_editText);
+        editTextToTextViewHashMap.put(regist_actitivy_question_editText,regist_actitivy_question_textView);
+        regist_actitivy_question_editText.setOnFocusChangeListener(this);
         regist_actitivy_answer_textView = (TextView) findViewById(R.id.regist_actitivy_answer_textView);
         regist_actitivy_answer_editText = (EditText) findViewById(R.id.regist_actitivy_answer_editText);
+        editTextToTextViewHashMap.put(regist_actitivy_answer_editText,regist_actitivy_answer_textView);
+        regist_actitivy_answer_editText.setOnFocusChangeListener(this);
         regist_activity_regist_button = (Button) findViewById(R.id.activity_regist_regist_button);
         regist_activity_regist_button.setOnClickListener(this);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -79,6 +93,21 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        switch (v.getId()){
+            case R.id.regist_actitivy_username_editText:
+            case R.id.regist_actitivy_password_editText:
+            case R.id.regist_actitivy_insure_editText:
+            case R.id.regist_actitivy_question_editText:
+            case R.id.regist_actitivy_answer_editText:
+                changeTextviewStatus((EditText)v,hasFocus);
+                break;
+            default:
+                    break;
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -88,6 +117,15 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
+    private void changeTextviewStatus(EditText editText,Boolean hasFocus){
+        TextView textView=editTextToTextViewHashMap.get(editText);
+        if(textView==null)
+            return;
+        if(hasFocus)
+            textView.setTextColor(getResources().getColor(R.color.colorPrimary));
+        else
+            textView.setTextColor(getResources().getColor(R.color.deepGrey));
+    }
     private void submit() {
         // validate
         String editText = regist_actitivy_username_editText.getText().toString().trim();
@@ -148,6 +186,7 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
         new Thread(userRegist).start();
     }
 
+
     Runnable userRegist = new Runnable() {
         @Override
         public void run() {
@@ -160,37 +199,38 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
             int result= HandleUser.User_Regist(userName,userPassword,findPasswordQuestion,findPasswordAnswer);
             Message msg=new Message();
             msg.what=result;
+            final Handler userRegistHandler=new Handler(getMainLooper()){
+                @Override
+                public void handleMessage(Message msg){
+                    if(msg.what==1){
+                        progressBar.setVisibility(View.VISIBLE);
+                        regist_activity_cancel_button.setVisibility(View.VISIBLE);
+                        Intent intent=new Intent();
+                        intent.putExtra("userName",userName);
+                        intent.putExtra("passWord",userPassword);
+                        RegistActivity.this.setResult(1,intent);
+                        Toast.makeText(RegistActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                    else if(msg.what==0){
+                        Toast.makeText(RegistActivity.this,"已有该用户",Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(RegistActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    regist_actitivy_username_editText.setEnabled(true);
+                    regist_actitivy_password_editText.setEnabled(true);
+                    regist_actitivy_insure_editText.setEnabled(true);
+                    regist_actitivy_question_editText.setEnabled(true);
+                    regist_actitivy_answer_editText.setEnabled(true);
+                    regist_activity_cancel_button.setVisibility(View.VISIBLE);
+                    regist_activity_regist_button.setEnabled(true);
+                }
+            };
             userRegistHandler.sendMessage(msg);
         }
     };
 
-    Handler userRegistHandler=new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                progressBar.setVisibility(View.VISIBLE);
-                regist_activity_cancel_button.setVisibility(View.VISIBLE);
-                Intent intent=new Intent();
-                intent.putExtra("userName",userName);
-                intent.putExtra("passWord",userPassword);
-                RegistActivity.this.setResult(1,intent);
-                Toast.makeText(RegistActivity.this,"注册成功",Toast.LENGTH_SHORT).show();
-                finish();
-            }
-            else if(msg.what==0){
-                Toast.makeText(RegistActivity.this,"已有该用户",Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(RegistActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
-            }
-            progressBar.setVisibility(View.GONE);
-            regist_actitivy_username_editText.setEnabled(true);
-            regist_actitivy_password_editText.setEnabled(true);
-            regist_actitivy_insure_editText.setEnabled(true);
-            regist_actitivy_question_editText.setEnabled(true);
-            regist_actitivy_answer_editText.setEnabled(true);
-            regist_activity_cancel_button.setVisibility(View.VISIBLE);
-            regist_activity_regist_button.setEnabled(true);
-        }
-    };
+
 }

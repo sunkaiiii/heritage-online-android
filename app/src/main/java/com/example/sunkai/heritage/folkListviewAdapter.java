@@ -2,21 +2,22 @@ package com.example.sunkai.heritage;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.os.Message;
+import android.os.AsyncTask;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.folkData;
 
 import java.io.ByteArrayInputStream;
@@ -30,20 +31,27 @@ import java.util.List;
 public class folkListviewAdapter extends BaseAdapter {
     private Context context;
     private List<folkData> datas;
-    Bitmap[] bitmap;
     folkFragment folkFragment;
-    public folkListviewAdapter(Context context,List<folkData> datas,folkFragment folkFragment){
+    private ListView listView;
+    private LruCache<Integer,Bitmap> lruCache;
+    public folkListviewAdapter(Context context,folkFragment folkFragment){
         this.context=context;
-        this.datas=datas;
-        bitmap=new Bitmap[datas.size()];
+        int maxSize=(int)Runtime.getRuntime().maxMemory();
+        int avilibleMemory=maxSize/16;
+        lruCache=new LruCache<Integer,Bitmap>(avilibleMemory){
+            protected int sizeOf(Integer key, Bitmap bitmap) {
+                return bitmap.getByteCount();
+            }
+        };
         this.folkFragment=folkFragment;
         if(this.folkFragment!=null) {
             setProgress(true);
         }
-        new Thread(getFolkInformationThred).start();
+        //获取folk的文本信息
+        new getInformation().execute();
     }
     public int getCount(){
-        return datas.size();
+        return datas==null?0:datas.size();
     }
     public Object getItem(int position) {
         return datas.get(position);
@@ -52,6 +60,8 @@ public class folkListviewAdapter extends BaseAdapter {
         return position;
     }
     public View getView(int position, View convertView, ViewGroup parent){
+        if(listView==null)
+            listView=(ListView)parent;
         Holder vh;
         if(convertView==null) {
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -69,15 +79,20 @@ public class folkListviewAdapter extends BaseAdapter {
             vh=(Holder)convertView.getTag();
         }
         folkData data=datas.get(position);
-        String content=data.content;
-        String location=data.location;
-        String title=data.title;
-        String divide=data.divide;
+        String content=data.getContent();
+        String location=data.getLocation();
+        String title=data.getTitle();
+        String divide=data.getDivide();
         vh.v1.setText("        " + content);
         vh.v2.setText(location);
         vh.v3.setText(title);
-        if(bitmap.length>position) {
-            vh.v4.setImageBitmap(bitmap[position]);
+        vh.v4.setImageResource(R.drawable.empty_background);
+        vh.v4.setTag(data.getId());
+        Bitmap bitmap=lruCache.get(data.getId());
+        if(bitmap==null){
+            new getFolkImage(data.getId()).execute();
+        }else{
+            vh.v4.setImageBitmap(bitmap);
         }
         vh.v5.setText(divide);
         return convertView;
@@ -97,13 +112,6 @@ public class folkListviewAdapter extends BaseAdapter {
     }
     public void setNewDatas(List<folkData> datas){
         this.datas=datas;
-        bitmap=new Bitmap[datas.size()];
-        for(int i=0;i<datas.size();i++){
-            if(null!=datas.get(i).image) {
-                InputStream in = new ByteArrayInputStream(datas.get(i).image);
-                bitmap[i] = HandlePic.handlePic(context, in, 0);
-            }
-        }
         notifyDataSetChanged();
     }
     public List<folkData> getData(){
@@ -114,77 +122,72 @@ public class folkListviewAdapter extends BaseAdapter {
         ImageView v4;
     }
 
-    Runnable getFolkInformationThred=new Runnable() {
+    private class getInformation extends AsyncTask<Void,Void,Void>{
         @Override
-        public void run() {
-            datas= HandleFolk.GetFolkInforMation();
-            getFolkInformationHandler.sendEmptyMessage(1);
-        }
-    };
-
-    android.os.Handler getFolkInformationHandler=new android.os.Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            notifyDataSetChanged();
-            Intent intent=new Intent("android.intent.action.adpterGetDataBroadCast");
-            intent.putExtra("message","changed");
-            context.sendBroadcast(intent);
+        protected Void doInBackground(Void... voids) {
+            datas=HandleFolk.GetFolkInforMation();
             folkFragment.isLoadData=true;
-            new Thread(getFolkImage).start();
+            folkFragment.setData(true,datas);
+            return null;
         }
-    };
-    Runnable getFolkImage=new Runnable() {
+
         @Override
-        public void run() {
-            bitmap=new Bitmap[datas.size()];
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
-            for(int i=0;i<datas.size();i++){
-                String table="folk_image";
-                String selection="id=?";
-                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).id)};
-                Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
-                cursor.moveToFirst();
-                byte[] img=null;
-                if(!cursor.isAfterLast()){
-                    int imageIndex=cursor.getColumnIndex("image");
-                    img=cursor.getBlob(imageIndex);
-                }
-                else {
-                    img = HandleFolk.GetFolkImage(datas.get(i).id);
-                    ContentValues contentValues=new ContentValues();
-                    contentValues.put("id",datas.get(i).id);
-                    contentValues.put("image",img);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
-                    db.insert(table,null,contentValues);
-                }
+        protected void onPostExecute(Void aVoid) {
+            notifyDataSetChanged();
+            setProgress(false);
+        }
+    }
+
+    private class getFolkImage extends AsyncTask<Void,Void,Bitmap>{
+        int id;
+        SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
+        public getFolkImage(int id){this.id=id;}
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            Bitmap bitmap=null;
+            String table="folk_image";
+            String selection="id=?";
+            String[] selectionArgs=new String[]{String.valueOf(id)};
+            Cursor cursor=db.query(table,null,selection,selectionArgs,null,null,null);
+            cursor.moveToFirst();
+            byte[] img=null;
+            if(!cursor.isAfterLast()){
+                int imageIndex=cursor.getColumnIndex("image");
+                img=cursor.getBlob(imageIndex);
                 cursor.close();
-                if(null==img){
-                    getFolkImageHandler.sendEmptyMessage(0);
+                if(img!=null) {
+                    InputStream in=new ByteArrayInputStream(img);
+                    bitmap=HandlePic.handlePic(context,in,0);
+                    lruCache.put(id,bitmap);
+                    return bitmap;
                 }
-                datas.get(i).image=img;
-                InputStream in=new ByteArrayInputStream(img);
-                bitmap[i]= HandlePic.handlePic(context,in,0);
-                getFolkImageHandler.sendEmptyMessage(1);
             }
-//            db.close();
-            getFolkImageHandler.sendEmptyMessage(2);
-
+            img=HandleFolk.GetFolkImage(id);
+            if(img==null)
+                return null;
+            InputStream in=new ByteArrayInputStream(img);
+            ContentValues contentValues=new ContentValues();
+            contentValues.put("id",id);
+            contentValues.put("image",img);
+            db= MySqliteHandler.INSTANCE.GetWritableDatabase();
+            db.insert(table,null,contentValues);
+            bitmap=HandlePic.handlePic(context,in,0);
+            lruCache.put(id,bitmap);
+            return bitmap;
         }
-    };
 
-
-    Handler getFolkImageHandler=new Handler(){
         @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                notifyDataSetChanged();
-            }
-            if(msg.what==2){
-                if(folkFragment!=null) {
-                    setProgress(false);
+        protected void onPostExecute(Bitmap bitmap) {
+            if(bitmap!=null){
+                ImageView imageView=(ImageView)listView.findViewWithTag(id);
+                if(imageView!=null){
+                    imageView.setImageBitmap(bitmap);
                 }
             }
         }
-    };
+    }
+
+
+
 }
 

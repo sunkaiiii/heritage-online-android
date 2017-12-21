@@ -37,13 +37,13 @@ public class focusListviewAdpter extends BaseAdapter {
      * @param datas 关注、粉丝的数据
      * @param what  1为关注，2为粉丝3为查询页面
      */
-    focusListviewAdpter(Context context,List<focusData> datas,int what){
+    focusListviewAdpter(Context context, List<focusData> datas, int what){
         this.context=context;
         this.datas=datas;
         this.what=what;
         if(what==2){
             for(int i=0;i<datas.size();i++){
-                datas.get(i).isCheck=false;
+                datas.get(i).setCheck(false);
             }
         }
         new Thread(checkFolloweachOther).start();
@@ -74,21 +74,21 @@ public class focusListviewAdpter extends BaseAdapter {
             vh=(Holder) convertView.getTag();
         }
         final focusData data=datas.get(position);
-        String userName=data.name;
+        String userName=data.getName();
         vh.userName.setText(userName);
-        if(null==data.userImage){
+        if(null==data.getUserImage()){
             vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
         }
         else{
-            InputStream in=new ByteArrayInputStream(data.userImage);
+            InputStream in=new ByteArrayInputStream(data.getUserImage());
             Bitmap bitmap= HandlePic.handlePic(context,in,0);
             vh.userImage.setImageBitmap(bitmap);
         }
-        if(data.followeachother){
+        if(data.getFolloweachother()){
             vh.focusBtn.setText("互相关注");
         }
         else{
-            if(data.isCheck){
+            if(data.getCheck()){
                 vh.focusBtn.setText("已关注");
             }
             else{
@@ -105,7 +105,7 @@ public class focusListviewAdpter extends BaseAdapter {
                 handleFocus handleFocus=new handleFocus(data,position,btn);
                 btn.setText("操作中");
                 btn.setEnabled(false);
-                if(data.isCheck){
+                if(data.getCheck()){
                     handleFocus.CancelFollow();
                 }
                 else{
@@ -144,10 +144,10 @@ public class focusListviewAdpter extends BaseAdapter {
             public void run() {
                 boolean result=false;
                 if(what==1||what==3) {
-                    result = HandlePerson.Add_Focus(data.focusUserid, data.focusFansID);
+                    result = HandlePerson.Add_Focus(data.getFocusUserid(), data.getFocusFansID());
                 }
                 else if(what==2){
-                    result=HandlePerson.Add_Focus(data.focusFansID,data.focusUserid);
+                    result=HandlePerson.Add_Focus(data.getFocusFansID(),data.getFocusUserid());
                 }
                 if(result){
                     AddFollowHandler.sendEmptyMessage(1);
@@ -162,10 +162,10 @@ public class focusListviewAdpter extends BaseAdapter {
             public void run() {
                 boolean result=false;
                 if(what==1||what==3) {
-                    result = HandlePerson.Cancel_Focus(data.focusUserid, data.focusFansID);
+                    result = HandlePerson.Cancel_Focus(data.getFocusUserid(), data.getFocusFansID());
                 }
                 else if(what==2){
-                    result = HandlePerson.Cancel_Focus(data.focusFansID,data.focusUserid);
+                    result = HandlePerson.Cancel_Focus(data.getFocusFansID(),data.getFocusUserid());
                 }
                 if(result){
                     CancelFollowHandler.sendEmptyMessage(1);
@@ -180,13 +180,13 @@ public class focusListviewAdpter extends BaseAdapter {
             public void handleMessage(Message msg){
                 btn.setEnabled(true);
                 if(msg.what==1){
-                    datas.get(position).isCheck=false;
+                    datas.get(position).setCheck(false);
                     Toast.makeText(context,"取消关注成功",Toast.LENGTH_SHORT).show();
                     notifyDataSetChanged();
                     /**
                      * 用户取关成功，发送广播给personFragment，使其重新加载粉丝、关注数据
                      */
-                    datas.get(position).followeachother=false;
+                    datas.get(position).setFolloweachother(false);
                     Intent intent=new Intent("android.intent.action.focusAndFansCountChange");
                     intent.putExtra("message","change");
                     context.sendBroadcast(intent);
@@ -202,7 +202,7 @@ public class focusListviewAdpter extends BaseAdapter {
             public void handleMessage(Message msg){
                 btn.setEnabled(true);
                 if(msg.what==1){
-                    datas.get(position).isCheck=true;
+                    datas.get(position).setCheck(true);
                     Toast.makeText(context,"关注成功",Toast.LENGTH_SHORT).show();
                     new Thread(checkFolloweachOther).start();
                     /**
@@ -225,9 +225,9 @@ public class focusListviewAdpter extends BaseAdapter {
         public void run() {
             for(int i=0;i<datas.size();i++){
                 focusData data=datas.get(i);
-                datas.get(i).followeachother= HandlePerson.Check_Follow_Eachohter(data.focusUserid,data.focusFansID);
-                if(datas.get(i).followeachother&&(what==2||what==3)){
-                    datas.get(i).isCheck=true;
+                datas.get(i).setFolloweachother(HandlePerson.Check_Follow_Eachohter(data.getFocusUserid(),data.getFocusFansID()));
+                if(datas.get(i).getFolloweachother()&&(what==2||what==3)){
+                    datas.get(i).setCheck(true);
                 }
                 checkFolloweachotherHandler.sendEmptyMessage(1);
             }
@@ -248,7 +248,7 @@ public class focusListviewAdpter extends BaseAdapter {
         public void run() {
             for(int i=0;i<datas.size();i++){
                 focusData data=datas.get(i);
-                datas.get(i).isCheck=HandlePerson.is_User_Follow(data.focusUserid,data.focusFansID);
+                datas.get(i).setCheck(HandlePerson.is_User_Follow(data.getFocusUserid(),data.getFocusFansID()));
             }
             isUserFollowHandler.sendEmptyMessage(1);
         }

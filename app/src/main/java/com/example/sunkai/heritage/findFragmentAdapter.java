@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -7,21 +9,26 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
+import android.support.design.widget.FloatingActionButton;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson;
 import com.example.sunkai.heritage.Data.HandlePic;
+import com.example.sunkai.heritage.Data.MySqliteHandler;
 import com.example.sunkai.heritage.Data.userCommentData;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -29,35 +36,42 @@ import org.kobjects.base64.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.sunkai.heritage.LoginActivity.userID;
 
 /**
  * Created by 70472 on 2017/3/4.
  * 此类是find页面listview的adpter
  */
-
 public class findFragmentAdapter extends BaseAdapter{
     private Context context;
     private List<userCommentData> datas;
-    Bitmap[] bitmap;
-    Holder nowvh;
-    int i;
-    int[] apearCount;
-    int count=0;
-//    Animation imageAnimation;
+    private ListView listView=null;
+    Animation imageAnimation;
     int what;
+    LruCache<Integer,Bitmap> lruCache;
 
     /**
      *
-     * @param context
+     * @param context 传入的context
      * @param what what值不同代表着加载的页面不同，1为全部的帖子，2为已关注人的帖子，3为我的帖子
      */
-    public findFragmentAdapter(Context context,int what){
+    public findFragmentAdapter(Context context, int what){
         this.context=context;
-//        imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
+        imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
         this.what=what;
-        new Thread(getInformationThread).start();
+        int avilableMemory=(int)Runtime.getRuntime().maxMemory()/8;
+        int cacheSzie=avilableMemory/4;
+        lruCache=new LruCache<Integer,Bitmap>(cacheSzie){
+            @Override
+            protected int sizeOf(Integer key, Bitmap value) {
+                return value.getByteCount();
+            }
+        };
+        new GetInformation(this).execute();
     }
     public int getCount() {
         if(null!=datas)
@@ -73,72 +87,56 @@ public class findFragmentAdapter extends BaseAdapter{
     public List<userCommentData> getDatas(){
         return this.datas;
     }
-    public void resetApear(){
-        apearCount=new int[datas.size()];
-        for(int i=0;i<apearCount.length;i++){
-            apearCount[i]=0;
-        }
-    }
-    public void resetBitmap(){
-        bitmap=new Bitmap[datas.size()];
-    }
+    @SuppressLint("InflateParams")
     public View getView(int position, View convertView, ViewGroup parent) {
+        if(listView==null){
+            listView=(ListView)parent;
+        }
         Holder vh;
         LayoutInflater inflater= LayoutInflater.from(context);
-        convertView=inflater.inflate(R.layout.fragment_find_listview_layout,null);
-        vh=new Holder();
-        vh.img=(ImageView)convertView.findViewById(R.id.fragment_find_litview_img);
-        vh.comment=(TextView)convertView.findViewById(R.id.testview_comment);
-        vh.like=(TextView)convertView.findViewById(R.id.textview_like);
-        vh.likeImage=(ImageView)convertView.findViewById(R.id.imageView4);
-        vh.commentImage=(ImageView)convertView.findViewById(R.id.fragment_find_comment);
-        vh.addfocusImage=(ImageView)convertView.findViewById(R.id.add_focus_img);
-        vh.addfocusText=(TextView) convertView.findViewById(R.id.add_focus_text);
-        vh.name_text=(TextView)convertView.findViewById(R.id.name_text);
-        vh.userImage=(RoundedImageView)convertView.findViewById(R.id.user_list_image);
-        userCommentData data=datas.get(position);
-        if(null!=bitmap) {
-            vh.img.setImageBitmap(bitmap[position]);
-        }
-        if(null!=apearCount&&apearCount[position]==0) {
-//            vh.img.startAnimation(imageAnimation);
-            apearCount[position]++;
-        }
-        if(datas.get(position).isUserLike){
-            vh.like.setTextColor(Color.rgb(172,70,46));
-            vh.likeImage.setImageResource(R.drawable.like_islike);
+        View view;
+        if(convertView==null) {
+            view = inflater.inflate(R.layout.fragment_find_listview_layout, null);
+            vh=new Holder();
+            vh.img=(ImageView)view.findViewById(R.id.fragment_find_litview_img);
+            vh.comment=(TextView)view.findViewById(R.id.testview_comment);
+            vh.like=(TextView)view.findViewById(R.id.textview_like);
+            vh.likeImage=(ImageView)view.findViewById(R.id.imageView4);
+            vh.commentImage=(ImageView)view.findViewById(R.id.fragment_find_comment);
+            vh.addfocusImage=(ImageView)view.findViewById(R.id.add_focus_img);
+            vh.addfocusText=(TextView) view.findViewById(R.id.add_focus_text);
+            vh.name_text=(TextView)view.findViewById(R.id.name_text);
+            vh.userImage=(RoundedImageView)view.findViewById(R.id.user_list_image);
+            view.setTag(vh);
         }
         else{
-            vh.like.setTextColor(Color.DKGRAY);
-            vh.likeImage.setImageResource(R.drawable.good_unpress);
+            view=convertView;
+            vh=(Holder)view.getTag();
         }
-        vh.like.setText(data.commentLikeNum);
-        vh.comment.setText(data.commentReplyNum);
-        vh.name_text.setText(data.userName);
-        if(what==3){
-            vh.like.setVisibility(View.GONE);
-            vh.comment.setVisibility(View.INVISIBLE);
-            vh.commentImage.setVisibility(View.INVISIBLE);
-            vh.likeImage.setVisibility(View.INVISIBLE);
-            vh.likeImage.setVisibility(View.INVISIBLE);
-            vh.name_text.setText(data.commentTitle);
+        userCommentData data=datas.get(position);
+        GetCommentImage(data,vh.img);
+        GetUserImage(data);
+        if(datas.get(position).getUserLike()){
+           SetLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
         }
-        imageButtonclick likeClick=new imageButtonclick(data.isUserLike,data.id);
-        vh.likeImage.setOnClickListener(likeClick);
-        vh.like.setOnClickListener(likeClick);
+        else{
+            CancelLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
+        }
+        vh.comment.setText(data.getCommentReplyNum());
+        vh.name_text.setText(data.getUserName());
         if(what==2){
             vh.addfocusImage.setVisibility(View.GONE);
             vh.addfocusText.setVisibility(View.GONE);
         }
-        if(null==data.userImage){
-            vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
+        if(what==3){
+            hideSomeElement(vh,data);
         }
-        else{
-            InputStream in=new ByteArrayInputStream(data.userImage);
-            Bitmap bitmap=HandlePic.handlePic(context,in,0);
-            vh.userImage.setImageBitmap(bitmap);
-        }
-        if(data.user_id==LoginActivity.userID){
+        imageButtonclick likeClick=new imageButtonclick(data.getId(),position,vh.likeImage,vh.like);
+        vh.likeImage.setOnClickListener(likeClick);
+        vh.like.setOnClickListener(likeClick);
+        vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
+        vh.userImage.setTag(data.getUser_id()+" "+data.getId());
+        if(data.getUser_id()== userID){
             vh.addfocusText.setVisibility(View.INVISIBLE);
             vh.addfocusImage.setVisibility(View.INVISIBLE);
         }
@@ -146,7 +144,7 @@ public class findFragmentAdapter extends BaseAdapter{
             addFocusButtonClick addFocusButtonClick=new addFocusButtonClick(position);
             vh.addfocusText.setOnClickListener(addFocusButtonClick);
             vh.addfocusImage.setOnClickListener(addFocusButtonClick);
-            if(data.isUserFocusUser){
+            if(data.getUserFocusUser()){
                 vh.addfocusText.setText("已关注");
                 vh.addfocusText.setTextColor(Color.rgb(184,184,184));
                 vh.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp);
@@ -157,24 +155,78 @@ public class findFragmentAdapter extends BaseAdapter{
                 vh.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp);
             }
         }
-        showInfobuttonClick showInfoClick=new showInfobuttonClick(data,position);
-        vh.img.setOnClickListener(showInfoClick);
-        vh.comment.setOnClickListener(showInfoClick);
-        vh.commentImage.setOnClickListener(showInfoClick);
-        return convertView;
+        return view;
     }
-    class Holder{
+
+    private boolean changeLikeImageState(boolean isLike,ImageView imageView,TextView textView,int position)
+    {
+        int likeNumber=Integer.parseInt(datas.get(position).getCommentLikeNum());
+        likeNumber=isLike?likeNumber+1:likeNumber-1;
+        datas.get(position).setCommentLikeNum(String.valueOf(likeNumber));
+        return isLike?SetLike(textView,imageView,likeNumber):CancelLike(textView,imageView,likeNumber);
+    }
+    private boolean SetLike(TextView textView,ImageView imageView,int count) {
+        textView.setText(String.valueOf(count));
+        textView.setTextColor(Color.rgb(172,70,46));
+        imageView.setImageResource(R.drawable.like_islike);
+        return true;
+    }
+    private boolean CancelLike(TextView textView,ImageView imageView,int count){
+        textView.setText(String.valueOf(count));
+        textView.setTextColor(Color.DKGRAY);
+        imageView.setImageResource(R.drawable.good_unpress);
+        return true;
+    }
+    private void GetCommentImage(userCommentData data,ImageView imageView){
+        Bitmap bitmap=lruCache.get(data.getId());
+        imageView.setTag(data.getId());
+        if(null!=bitmap) {
+            imageView.setImageBitmap(bitmap);
+        }
+        else{
+            new GetCommentImage(data.getId(),this).execute();
+        }
+    }
+    private void GetUserImage(userCommentData data){
+        new GetUserImage(data.getUser_id(),this,data.getId()).execute();
+    }
+    private void hideSomeElement(Holder vh,userCommentData data){
+        vh.like.setVisibility(View.GONE);
+        vh.comment.setVisibility(View.INVISIBLE);
+        vh.commentImage.setVisibility(View.INVISIBLE);
+        vh.likeImage.setVisibility(View.INVISIBLE);
+        vh.likeImage.setVisibility(View.INVISIBLE);
+        vh.name_text.setText(data.getCommentTitle());
+    }
+    private void login(){
+        Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
+        Intent intent=new Intent(context,LoginActivity.class);
+        intent.putExtra("isInto",1);
+        context.startActivity(intent);
+    }
+
+
+    private class Holder{
         ImageView img;
         TextView like,comment,addfocusText,name_text;
         ImageView likeImage,commentImage,addfocusImage;
         RoundedImageView userImage;
     }
+
+
     class imageButtonclick implements View.OnClickListener{
-        boolean isUserLike=false;
-        int commentID=0;
-        public imageButtonclick(boolean isUserLike,int commentID){
-            this.isUserLike=isUserLike;
+        int commentID;
+        int position;
+        WeakReference<ImageView> imageViewWeakReference;
+        WeakReference<TextView> textViewWeakReference;
+        private final int LIKE=1;
+        private final int CANCEL=2;
+        private final int ERROR=0;
+        private imageButtonclick(int commentID,int position,ImageView imageView,TextView textView){
             this.commentID=commentID;
+            this.position=position;
+            imageViewWeakReference=new WeakReference<>(imageView);
+            textViewWeakReference=new WeakReference<>(textView);
         }
         public void onClick(View v){
             switch (v.getId()){
@@ -187,14 +239,11 @@ public class findFragmentAdapter extends BaseAdapter{
             }
         }
         private void SetOrCancelLike(){
-            if(LoginActivity.userID==0){
-                Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(context,LoginActivity.class);
-                intent.putExtra("isInto",1);
-                context.startActivity(intent);
+            if(userID==0){
+                login();
                 return;
             }
-            if(isUserLike){
+            if(datas.get(position).getUserLike()){
                 new Thread(cancelLike).start();
             }
             else{
@@ -204,82 +253,44 @@ public class findFragmentAdapter extends BaseAdapter{
         Runnable setLike=new Runnable() {
             @Override
             public void run() {
-                boolean result=HandleFind.Set_User_Like(LoginActivity.userID,commentID);
+                boolean result=HandleFind.Set_User_Like(userID,commentID);
                 if(result){
-                    SetOrCancelLikeHandler.sendEmptyMessage(1);
+                    SetOrCancelLikeHandler.sendEmptyMessage(LIKE);
                 }
                 else{
-                    SetOrCancelLikeHandler.sendEmptyMessage(0);
+                    SetOrCancelLikeHandler.sendEmptyMessage(ERROR);
                 }
             }
         };
         Runnable cancelLike=new Runnable() {
             @Override
             public void run() {
-                boolean result=HandleFind.Cancel_User_Like(LoginActivity.userID,commentID);
+                boolean result=HandleFind.Cancel_User_Like(userID,commentID);
                 if(result){
-                    SetOrCancelLikeHandler.sendEmptyMessage(1);
+                    SetOrCancelLikeHandler.sendEmptyMessage(CANCEL);
                 }
                 else{
-                    SetOrCancelLikeHandler.sendEmptyMessage(0);
-                }
-            }
-        };
-        Runnable getInformationwithNoImage=new Runnable() {
-            @Override
-            public void run() {
-                final List<userCommentData> getdatas= HandleFind.Get_User_Comment_Information();
-                if(null==getdatas){
-                    getInformationHanddler.sendEmptyMessage(0);
-                }
-                else{
-                    for(int i=0;i<datas.size();i++){
-                        getdatas.get(i).userCommentIamge=datas.get(i).userCommentIamge;
-                        getdatas.get(i).userImage=datas.get(i).userImage;
-                        getdatas.get(i).isUserFocusUser=datas.get(i).isUserFocusUser;
-                    }
-                    datas=getdatas;
-                    new Thread(getUserIsLikeThread).start();
-                    getInformationHanddler.sendEmptyMessage(2);
+                    SetOrCancelLikeHandler.sendEmptyMessage(ERROR);
                 }
             }
         };
 
-        Handler SetOrCancelLikeHandler=new Handler(){
+        Handler SetOrCancelLikeHandler=new Handler(context.getMainLooper()){
             @Override
             public void handleMessage(Message msg){
-                if(msg.what==1){
-                    new Thread(getInformationwithNoImage).start();
-                    notifyDataSetChanged();
+                ImageView imageView=imageViewWeakReference.get();
+                TextView textView=textViewWeakReference.get();
+                if(msg.what!=ERROR&&imageView!=null&&textView!=null){
+                    datas.get(position).setUserLike((LIKE==msg.what));
+                    if(!changeLikeImageState(datas.get(position).getUserLike(),imageView,textView,position)){
+                        new GetInformation(findFragmentAdapter.this).execute();
+                    }
                 }
                 else{
                     Toast.makeText(context,"出现错误，请稍后再试",Toast.LENGTH_SHORT).show();
                 }
             }
         };
-    }
-    class showInfobuttonClick implements View.OnClickListener{
-        userCommentData data;
-        showInfobuttonClick(userCommentData data,int position){
-            this.data=data;
-            data.inListPosition=position;
-        }
-        @Override
-        public void onClick(View v){
-            switch (v.getId()){
-                case R.id.testview_comment:
-                case R.id.fragment_find_litview_img:
-                case R.id.fragment_find_comment:
-                    Intent intent=new Intent(context,userCommentDetail.class);
-                    Bundle bundle=new Bundle();
-                    bundle.putSerializable("data",data);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                    break;
-                default:
-                    break;
-            }
-        }
     }
     class addFocusButtonClick implements View.OnClickListener{
         userCommentData data;
@@ -291,56 +302,33 @@ public class findFragmentAdapter extends BaseAdapter{
 
         @Override
         public void onClick(View v) {
-            if(LoginActivity.userID==0){
-                Toast.makeText(context,"没有登录",Toast.LENGTH_SHORT).show();
-                Intent intent=new Intent(context,LoginActivity.class);
-                intent.putExtra("isInto",1);
-                context.startActivity(intent);
+            if(userID==0){
+                login();
                 return;
             }
-            if(data.isUserFocusUser){
-                new Thread(cancelFocus).start();
+            new Thread(addOrCancelFocus).start();
+        }
+        Runnable addOrCancelFocus=new Runnable(){
+            @Override
+            public void run() {
+                boolean result=data.getUserFocusUser()?HandlePerson.Cancel_Focus(userID,data.getUser_id()):HandlePerson.Add_Focus(userID,data.getUser_id());
+                setDataState(result);
+                handler.sendEmptyMessage(data.getUserFocusUser()?1:2);
             }
-            else{
-                new Thread(addFocus).start();
+        };
+        private void setDataState(boolean result){
+            if(result){
+                datas.get(position).setUserFocusUser(!datas.get(position).getUserFocusUser());
+                data.setUserFocusUser(!data.getUserFocusUser());
+            }
+            for(int i=0;i<datas.size();i++){
+                if(datas.get(i).getUser_id()==data.getUser_id()){
+                    datas.get(i).setUserFocusUser(!datas.get(i).getUserFocusUser());
+                }
             }
         }
-        Runnable addFocus=new Runnable() {
-            @Override
-            public void run() {
-                boolean result= HandlePerson.Add_Focus(LoginActivity.userID,data.user_id);
-                if(result){
-                    datas.get(position).isUserFocusUser=true;
-                    data.isUserFocusUser=true;
-                }
-                for(int i=0;i<datas.size();i++){
-                    if(datas.get(i).user_id==data.user_id){
-                        datas.get(i).isUserFocusUser=true;
-                    }
-                }
-                handler.sendEmptyMessage(1);
-            }
-        };
 
-        Runnable cancelFocus=new Runnable() {
-            @Override
-            public void run() {
-                boolean result=HandlePerson.Cancel_Focus(LoginActivity.userID,data.user_id);
-                if(result){
-                    datas.get(position).isUserFocusUser=false;
-                    data.isUserFocusUser=false;
-                }
-                for(int i=0;i<datas.size();i++){
-                    if(datas.get(i).user_id==data.user_id){
-                        datas.get(i).isUserFocusUser=false;
-                    }
-                }
-
-                handler.sendEmptyMessage(2);
-            }
-        };
-
-        Handler handler=new Handler(){
+        Handler handler=new Handler(context.getMainLooper()){
             @Override
             public void handleMessage(Message msg) {
                 notifyDataSetChanged();
@@ -354,227 +342,184 @@ public class findFragmentAdapter extends BaseAdapter{
         };
     }
     public void getReplyCount(final int commentID,final int position){
-        final Handler getReplyHandler=new Handler(){
-            @Override
-            public void handleMessage(Message msg){
-                if(msg.what>0){
-                    datas.get(position).commentReplyNum=String.valueOf(msg.what);
-                    notifyDataSetChanged();
-                }
-            }
-        };
-        Runnable getReplyCount=new Runnable() {
-            @Override
-            public void run() {
-                int count=HandleFind.Get_User_Comment_Count(commentID);
-                getReplyHandler.sendEmptyMessage(count);
-            }
-        };
-        new Thread(getReplyCount).start();
+        new GetReplyCount(commentID,position,this).execute();
     }
 
     public void reFreshList(){
-        new Thread(getInformationThread).start();
+        new GetInformation(this).execute();
     }
 
-
-    Runnable getInformationThread=new Runnable() {
+    static class GetReplyCount extends AsyncTask<Void,Void,Integer>{
+        int commentID;
+        int position;
+        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+        private GetReplyCount(int commentID,int position,findFragmentAdapter adapter){
+            this.commentID=commentID;
+            this.position=position;
+            findFragmentAdapterWeakReference=new WeakReference<>(adapter);
+        }
         @Override
-        public void run() {
+        protected Integer doInBackground(Void... voids) {
+            return HandleFind.Get_User_Comment_Count(commentID);
+        }
+        @Override
+        protected void onPostExecute(Integer count) {
+            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            if(adapter==null)
+                return;
+            adapter.datas.get(position).setCommentReplyNum(String.valueOf(count));
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    static class GetInformation extends AsyncTask<Void,Void,Void>{
+
+        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+
+        private GetInformation(findFragmentAdapter adapter){
+            findFragmentAdapterWeakReference=new WeakReference<>(adapter);
+        }
+        @Override
+        protected Void doInBackground(Void... voids) {
+            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            if(null==adapter)
+                return null;
             final List<userCommentData> getdatas;
-            if(what==1){
-                getdatas= HandleFind.Get_User_Comment_Information();
+            if(adapter.what==1){
+                getdatas= HandleFind.Get_User_Comment_Information(userID);
             }
-            else if(what==2){
-                getdatas= HandleFind.Get_User_Comment_Information_By_User(LoginActivity.userID);
+            else if(adapter.what==2){
+                getdatas= HandleFind.Get_User_Comment_Information_By_User(userID);
             }
-            else if(what==3){
-                getdatas=HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.userID);
+            else if(adapter.what==3){
+                getdatas=HandleFind.Get_User_Comment_Information_By_Own(userID);
             }
             else{
                 getdatas=new ArrayList<>();
             }
-            if(null==getdatas){
-                getInformationHanddler.sendEmptyMessage(0);
-            }
-            else{
-                datas=getdatas;
-                new Thread(getUserIsLikeThread).start();
-                getInformationHanddler.sendEmptyMessage(1);
-                getUserIsFocusUser.run();
-            }
+            adapter.datas=getdatas;
+            return null;
         }
-    };
 
-    Runnable getIamge=new Runnable() {
         @Override
-        public void run() {
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
-            String table="find_comment_image";
-            String selection="imageID=?";
-            byte[] img;
+        protected void onPostExecute(Void aVoid) {
+            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            if(null==adapter)
+                return;
+            adapter.notifyDataSetChanged();
+            Intent intent=new Intent("android.intent.action.animationStop");
+            adapter.context.sendBroadcast(intent);
+        }
+    }
+    static class GetCommentImage extends AsyncTask<Void,Void,Bitmap> {
+        int id;
+        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+
+        private GetCommentImage(int id,findFragmentAdapter findFragmentAdapter) {
+            this.id = id;
+            findFragmentAdapterWeakReference=new WeakReference<>(findFragmentAdapter);
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            findFragmentAdapter findFragmentAdapter=findFragmentAdapterWeakReference.get();
+            if(findFragmentAdapter==null)
+                return null;
+            SQLiteDatabase db = MySqliteHandler.INSTANCE.GetReadableDatabase();
+            String table = "find_comment_image";
+            String selection = "imageID=?";
             Cursor cursor;
-            for(int i=0;i<datas.size();i++){
-                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).id)};
-                cursor=db.query(table,null,selection,selectionArgs,null,null,null);
-                cursor.moveToFirst();
-                if(!cursor.isAfterLast()){
-                    int imageIndex=cursor.getColumnIndex("image");
-                    img=cursor.getBlob(imageIndex);
-                }
-                else {
-                    img = HandleFind.Get_User_Comment_Image(datas.get(i).id);
-                    if(null==img){
-                        continue;
-                    }
-                    ContentValues contentValues=new ContentValues();
-                    contentValues.put("imageID",datas.get(i).id);
-                    contentValues.put("image",img);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
-                    db.insert(table,null,contentValues);
-                }
-                if(null==img){
-                    getImagehandler.sendEmptyMessage(0);
-                }
-                else{
-                    datas.get(i).userCommentIamge=img;
-                    InputStream in=new ByteArrayInputStream(img);
-                    bitmap[i]= HandlePic.handlePic(context,in,0);
-                    getImagehandler.sendEmptyMessage(1);
-                }
-            }
-        }
-    };
-    Runnable getUserIsLikeThread=new Runnable() {
-        @Override
-        public void run() {
-            for(int i=0;i<datas.size();i++){
-                datas.get(i).isUserLike=HandleFind.Get_User_Is_Like(LoginActivity.userID,datas.get(i).id);
-            }
-            getImagehandler.sendEmptyMessage(1);
-        }
-    };
-
-    Runnable getUserIsFocusUser=new Runnable() {
-        @Override
-        public void run() {
-            for(int i=0;i<datas.size();i++){
-                datas.get(i).isUserFocusUser=HandlePerson.is_User_Follow(LoginActivity.userID, datas.get(i).user_id);
-            }
-            getUserIsFocusUserHandler.sendEmptyMessage(1);
-        }
-    };
-
-    Runnable getUserImage=new Runnable() {
-        @Override
-        public void run() {
-            SQLiteDatabase db=WelcomeActivity.myHelper.getReadableDatabase();
-            Cursor cursor;
-            for(int i=0;i<datas.size();i++){
-                String table="person_image";
-                String selection="imageID=?";
-                String[] selectionArgs=new String[]{String.valueOf(datas.get(i).user_id)};
-                cursor=db.query(table,null,selection,selectionArgs,null,null,null);
-                String result=null;
-                String serverUpdateTime=HandlePerson.Get_User_Update_Time(datas.get(i).user_id);
-                int ok=-1;
-                cursor.moveToFirst();
-                if(!cursor.isAfterLast()){
-                    int updateTime=cursor.getColumnIndex("update_time");
-                    String localUpdateTime=cursor.getString(updateTime);
-                    if(localUpdateTime!=null&&localUpdateTime.equals(serverUpdateTime)){
-                        result="success";
-                        int imageIndex=cursor.getColumnIndex("image");
-                        byte[] image=cursor.getBlob(imageIndex);
-                        datas.get(i).userImage=image;
-                        ok=1;
-                    }
-                    else{
-                        ok=0;
-                    }
-                }
+            String[] selectionArgs = new String[]{String.valueOf(id)};
+            cursor = db.query(table, null, selection, selectionArgs, null, null, null);
+            cursor.moveToFirst();
+            if (!cursor.isAfterLast()) {
+                int imageIndex = cursor.getColumnIndex("image");
+                byte[] img = cursor.getBlob(imageIndex);
+                InputStream in = new ByteArrayInputStream(img);
+                Bitmap bitmap = HandlePic.handlePic(findFragmentAdapter.context, in, 0);
+                findFragmentAdapter.lruCache.put(id, bitmap);
                 cursor.close();
-                if(ok==-1){
-                    result = HandlePerson.Get_User_Image(datas.get(i).user_id);
-                    if(null==result||"Error".equals(result)){
-                       continue;
-                    }
-                    byte[] image=Base64.decode(result);
-                    datas.get(i).userImage= image;
-                    ContentValues contentValues=new ContentValues();
-                    contentValues.put("imageID",datas.get(i).user_id);
-                    contentValues.put("image",image);
-                    contentValues.put("update_time",serverUpdateTime);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
-                    db.insert(table,null,contentValues);
-                }
-                else if(ok==0){
-                    result = HandlePerson.Get_User_Image(datas.get(i).user_id);
-                    if(null==result||"Error".equals(result)){
-                        continue;
-                    }
-                    byte[] image=Base64.decode(result);
-                    datas.get(i).userImage= image;
-                    ContentValues contentValues=new ContentValues();
-                    contentValues.put("update_time",serverUpdateTime);
-                    contentValues.put("image",image);
-                    db=WelcomeActivity.myHelper.getWritableDatabase();
-                    String[] wheres={String.valueOf(datas.get(i).user_id)};
-                    db.update(table,contentValues,"imageID=?",wheres);
-                }
-                if(null==result||"Error".equals(result)){
-                    getUserImageHandler.sendEmptyMessage(0);
-                }
-                else{
-                    getUserImageHandler.sendEmptyMessage(1);
-                }
+                return bitmap;
             }
-//            db.close();
+            byte[] bytes = HandleFind.Get_User_Comment_Image(id);
+            if (bytes == null)
+                return null;
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("imageID", id);
+            contentValues.put("image", bytes);
+            db = MySqliteHandler.INSTANCE.GetWritableDatabase();
+            db.insert(table, null, contentValues);
+            Bitmap bitmap = HandlePic.handlePic(findFragmentAdapter.context, new ByteArrayInputStream(bytes), 0);
+            findFragmentAdapter.lruCache.put(id, bitmap);
+            return bitmap;
         }
-    };
-    Handler getUserImageHandler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.what==1){
-                notifyDataSetChanged();
-            }
-        }
-    };
-    Handler getUserIsFocusUserHandler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.what==1){
-                notifyDataSetChanged();
-            }
-        }
-    };
-    Handler getInformationHanddler=new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            if(msg.what==1){
-                notifyDataSetChanged();
-                resetApear();
-                resetBitmap();
-                if(msg.what==1&&count>0){
-                    Intent intent=new Intent("android.intent.action.animationStop");
-                    context.sendBroadcast(intent);
-                }
-                else{
-                    count++;
-                }
-                new Thread(getUserImage).start();
-                new Thread(getIamge).start();
-            }
-            if(msg.what==2){
-                notifyDataSetChanged();
-            }
-        }
-    };
 
-    Handler getImagehandler=new Handler(){
         @Override
-        public void handleMessage(Message msg){
-            notifyDataSetChanged();
+        protected void onPostExecute(Bitmap bitmap) {
+            findFragmentAdapter findFragmentAdapter=findFragmentAdapterWeakReference.get();
+            if(findFragmentAdapter==null)
+                return;
+            ImageView imageView=(ImageView)findFragmentAdapter.listView.findViewWithTag(id);
+            if(imageView!=null) {
+                imageView.setImageBitmap(bitmap);
+            }
+            if(findFragmentAdapter.what==3) {
+                imageView.startAnimation(findFragmentAdapter.imageAnimation);
+            }
         }
-    };
+    }
+
+    static class GetUserImage extends AsyncTask<Void,Void,Bitmap>{
+        int id;
+        int commandID;
+        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+        private GetUserImage(int id,findFragmentAdapter adapter,int commandID){
+            this.id=id;
+            findFragmentAdapterWeakReference=new WeakReference<>(adapter);
+            this.commandID=commandID;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... voids) {
+            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            if(adapter==null)
+                return null;
+            SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
+            Cursor cursor;
+            String table = "person_image";
+            String selection = "imageID=?";
+            String[] selectionArgs = new String[]{String.valueOf(id)};
+            cursor = db.query(table, null, selection, selectionArgs, null, null, null);
+            String result;
+            cursor.moveToFirst();
+            if (!cursor.isAfterLast()) {
+                int imageIndex = cursor.getColumnIndex("image");
+                byte[] image = cursor.getBlob(imageIndex);
+                cursor.close();
+                return HandlePic.handlePic(adapter.context, new ByteArrayInputStream(image), 0);
+
+            }
+            byte[] image;
+            result = HandlePerson.Get_User_Image(id);
+            if(result==null)
+                return null;
+            image = Base64.decode(result);
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("imageID", id);
+            contentValues.put("image", image);
+            db = MySqliteHandler.INSTANCE.GetWritableDatabase();
+            db.insert(table, null, contentValues);
+            return HandlePic.handlePic(adapter.context,new ByteArrayInputStream(image),0);
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            if(bitmap==null||adapter==null)
+                return;
+            ImageView imageView=(ImageView)adapter.listView.findViewWithTag(id+" "+commandID);
+            if(imageView!=null)
+                imageView.setImageBitmap(bitmap);
+        }
+    }
 }

@@ -10,6 +10,8 @@
     <string name="error_invalid_password">密码太短</string>
     <string name="error_incorrect_password">密码不正确</string>
     <string name="error_field_required">出现错误</string>
+    <string name="push_warning">是否开启消息推送？\n这可能会稍微增加程序的内存占用以及耗电。\n</string>
+    <string name="program_git_url">github.com/sunkaiiii/heritage-online-android</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>

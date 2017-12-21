@@ -46,11 +46,11 @@ public class HandleMainFragment extends BaseSetting  {
             for(int i=0;i<activities.length();i++){
                 MainActivityData data=new MainActivityData();
                 JSONObject activity=(JSONObject)activities.get(i);
-                data.id=Integer.valueOf((String)activity.get("id"));
-                data.activityTitle=(String)activity.get("activity_title");
-                data.activityContent=(String)activity.get("activity_content");
+                data.setId(Integer.valueOf((String)activity.get("id")));
+                data.setActivityTitle((String)activity.get("activity_title"));
+                data.setActivityContent((String)activity.get("activity_content"));
                 String imgCode=(String)activity.get("activity_image");
-                data.activityImage= Base64.decode(imgCode);
+                data.setActivityImage(Base64.decode(imgCode));
                 activityDatas.add(data);
             }
             return activityDatas;
@@ -95,16 +95,18 @@ public class HandleMainFragment extends BaseSetting  {
         soapObject.addProperty("channel",channel);
         try{
             String result=Get_Post(soapObject);
+            if(result==null||error.equals(result))
+                return null;
             JSONObject MainActivity=new JSONObject(result);
             JSONArray activities=MainActivity.getJSONArray("classify_activity");
             List<classifyActiviyData> activityDatas=new ArrayList<>();
             for(int i=0;i<activities.length();i++){
                 classifyActiviyData data=new classifyActiviyData();
                 JSONObject activity=(JSONObject)activities.get(i);
-                data.id=Integer.valueOf((String)activity.get("id"));
-                data.activityTitle=(String)activity.get("activity_title");
-                data.activitContent=(String)activity.get("activity_content");
-                data.activityChannel=(String)activity.get("activity_channel");
+                data.setId(Integer.valueOf((String)activity.get("id")));
+                data.setActivityTitle((String)activity.get("activity_title"));
+                data.setActivityContent((String)activity.get("activity_content"));
+                data.setActivityChannel((String)activity.get("activity_channel"));
                 activityDatas.add(data);
             }
             return activityDatas;
