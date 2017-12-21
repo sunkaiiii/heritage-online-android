@@ -40,7 +40,7 @@
     <favorites_list name="heritage-online" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -48,31 +48,15 @@
         <option value="Interface" />
         <option value="resourceFile" />
         <option value="layoutResourceFile_vertical" />
-        <option value="layoutResourceFile" />
-        <option value="Kotlin File" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>bitmap.com</find>
-      <find>bitmap.compre</find>
-      <find>bitmap.compres</find>
-      <find>bitmap.compress</find>
-      <find>clickli</find>
-      <find>inListPosition</find>
-      <find>MiPushClient.setUserAccount(getApplicationContext(),LoginActivity.userName,null);</find>
-      <find>llllll</find>
-      <find>O1h418gObQdfgKdCXiO99d8svjhJN7dra9gxJKRtogI=</find>
-      <find>M</find>
-      <find>Mi</find>
-      <find>Mipu</find>
-      <find>MipushCl</find>
-      <find>MipushClien</find>
-      <find>MipushClient</find>
-      <find>MipushClient.</find>
       <find>MipushClient.s</find>
       <find>MipushClient.se</find>
       <find>MipushClient.set</find>
@@ -87,12 +71,30 @@
       <find>Get_All_User_Coment_Info_By_ID</find>
       <find>getID</find>
       <find>intent.putextra</find>
+      <find>setting_connect_us_text</find>
+      <find>getPreferences</find>
+      <find>set</find>
+      <find>MiPushClient</find>
+      <find>Share</find>
+      <find>Mipush</find>
+      <find>editor</find>
+      <find>editor.</find>
+      <find>editor.a</find>
+      <find>editor.ap</find>
+      <find>editor.app</find>
+      <find>editor.appl</find>
+      <find>editor.apply</find>
+      <find>LoginActivity.userID</find>
+      <find>mipu</find>
+      <find>userName</find>
     </findStrings>
     <replaceStrings>
       <replace />
       <replace>MySqliteHandler.INSTANCE</replace>
       <replace>GetWritableDatabase</replace>
       <replace>GetReadableDatabase</replace>
+      <replace>setting_push_img</replace>
+      <replace>setting_push_text</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\Document\AndroidStudioProjects\heritage-online\app</dir>
@@ -1986,14 +1988,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ActivityFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activityInformationActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/ClassifyActivityDivide.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/classifyActiviyData.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/commentReplyData.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/commentReplyData.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/focusInformation.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/focusListviewAdpter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/focusData.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/FindActivityData.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/folkData.kt" />
@@ -2017,33 +2011,42 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_find.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SearchActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_setting.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/DemoMessageReceiver.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectUsActivity.kt" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/GlobalContext.kt" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandlePerson.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_regist.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/RegistActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/personFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/findFragmentAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleMainFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/FindActivityAllData.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleFind.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/userCommentDetail.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/push_warining_layout.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_setting.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/setting_list_activity.xml" />
+        <option value="$PROJECT_DIR$/app/libs/MiPush_SDK_Client_3_5_1.jar!/com/xiaomi/mipush/sdk/MiPushClient.class" />
+        <option value="$PROJECT_DIR$/app/libs/MiPush_SDK_Client_3_5_1.jar!/com/xiaomi/mipush/sdk/n.class" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/GlobalContext.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingListActivity.kt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="953" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -2084,6 +2087,9 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -2124,7 +2130,7 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
+              <option name="myItemId" value="layout" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.android.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -2176,15 +2182,12 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="ProjectPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
-    <property name="device.picker.selection" value="CB512EC2JF" />
+    <property name="device.picker.selection" value="myDevice_API_26" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/app/libs/MiPush_SDK_Client_3_5_1.jar" />
@@ -2294,7 +2297,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513839603680" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513850350689" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2342,7 +2345,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513839603680" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513850350689" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2374,6 +2377,27 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
       <method />
     </configuration>
     <configuration default="true" type="JarApplication" factoryName="JAR Application">
@@ -2504,7 +2528,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513839603681" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1513850350691" />
       </method>
     </configuration>
     <list size="1">
@@ -2555,19 +2579,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="953" y="0" width="974" height="1047" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34486607" sideWeight="0.56363636" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34486607" sideWeight="0.56363636" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1965812" sideWeight="0.50666666" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3236607" sideWeight="0.48720682" order="10" side_tool="true" content_ui="tabs" />
-      <window_info id="Logcat" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32919955" sideWeight="0.5294118" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32589287" sideWeight="0.5294118" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Device File Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32932693" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328125" sideWeight="0.5127932" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32807216" sideWeight="0.5127932" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2577,7 +2601,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328125" sideWeight="0.53218883" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24946351" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4617068" sideWeight="0.49333334" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22121535" sideWeight="0.49333334" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.328125" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -2650,21 +2674,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/View/NestedListView.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectUsActivity.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/ClassifyActivityDivide.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/MySqliteHandler.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/FileStorage.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/FileStorage.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/folkListviewAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="92" column="41" lean-forward="false" selection-start-line="92" selection-start-column="41" selection-end-line="92" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/View/MyNestedScrollView.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/userCommentData.kt" />
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/graphics/drawable/Drawable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-26588">
@@ -2735,36 +2744,11 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/value/HandlerValue.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectUsActivity.kt" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_connect_us.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="29" column="34" lean-forward="false" selection-start-line="29" selection-start-column="25" selection-end-line="29" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_setting.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" column="39" lean-forward="false" selection-start-line="6" selection-start-column="39" selection-end-line="6" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/DemoMessageReceiver.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/GlobalContext.kt" />
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/os/BaseBundle.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="192">
           <caret line="990" column="18" lean-forward="false" selection-start-line="990" selection-start-column="18" selection-end-line="990" selection-end-column="18" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2814,14 +2798,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="3" column="42" lean-forward="false" selection-start-line="3" selection-start-column="36" selection-end-line="3" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/RegistActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="663">
@@ -2838,37 +2814,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="367" column="31" lean-forward="false" selection-start-line="367" selection-start-column="31" selection-end-line="367" selection-end-column="31" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#14070#15255#0" expanded="true" />
-            <element signature="e#15254#15255#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="254">
-          <caret line="186" column="101" lean-forward="false" selection-start-line="186" selection-start-column="101" selection-end-line="186" selection-end-column="101" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
-      <provider selected="true" editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state relative-caret-position="-49">
-          <caret line="23" column="33" lean-forward="false" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activityInformationActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -2877,22 +2822,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="52" column="44" lean-forward="false" selection-start-line="52" selection-start-column="26" selection-end-line="52" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="android-manifest">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/os/AsyncTask.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-627">
           <caret line="332" column="0" lean-forward="false" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2914,32 +2847,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/FindActivityAllData.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="6" lean-forward="false" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="51" column="46" lean-forward="false" selection-start-line="51" selection-start-column="46" selection-end-line="51" selection-end-column="46" />
-          <folding>
-            <element signature="e#1348#2490#0" expanded="true" />
-            <element signature="e#2489#2490#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/FindActivityAllData.kt" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1224">
           <caret line="149" column="5" lean-forward="false" selection-start-line="149" selection-start-column="5" selection-end-line="149" selection-end-column="5" />
-          <folding>
-            <marker date="1513824055630" expanded="true" signature="7970:7983" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2955,9 +2868,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="131" column="20" lean-forward="false" selection-start-line="131" selection-start-column="20" selection-end-line="131" selection-end-column="20" />
-          <folding>
-            <marker date="1513838652993" expanded="true" signature="14651:14713" ph="{...}" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -2973,6 +2884,190 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="147">
           <caret line="49" column="13" lean-forward="false" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-481">
+          <caret line="21" column="3" lean-forward="true" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="36" column="19" lean-forward="false" selection-start-line="36" selection-start-column="19" selection-end-line="36" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-manifest">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/push_warining_layout.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="11" column="34" lean-forward="false" selection-start-line="11" selection-start-column="34" selection-end-line="11" selection-end-column="34" />
+          <folding>
+            <element signature="e#351#373#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="13" column="79" lean-forward="false" selection-start-line="13" selection-start-column="79" selection-end-line="13" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="37" lean-forward="false" selection-start-line="4" selection-start-column="31" selection-end-line="4" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/about_us.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="341">
+          <caret line="49" column="36" lean-forward="false" selection-start-line="49" selection-start-column="36" selection-end-line="49" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/widget/CompoundButton.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="141" column="26" lean-forward="false" selection-start-line="141" selection-start-column="16" selection-end-line="141" selection-end-column="26" />
+          <folding>
+            <element signature="e#4416#4417#0" expanded="false" />
+            <element signature="e#4447#4448#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/content/ContextWrapper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="166" column="0" lean-forward="false" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/setting_list_activity.xml">
+      <provider selected="true" editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="13" column="37" lean-forward="false" selection-start-line="13" selection-start-column="37" selection-end-line="13" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/app/libs/MiPush_SDK_Client_3_5_1.jar!/com/xiaomi/mipush/sdk/n.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="15" column="5" lean-forward="true" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/app/libs/MiPush_SDK_Client_3_5_1.jar!/com/xiaomi/mipush/sdk/MiPushClient.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/ConnectWebService/HandleUser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="339">
+          <caret line="82" column="48" lean-forward="false" selection-start-line="82" selection-start-column="48" selection-end-line="82" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingListActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="296">
+          <caret line="54" column="50" lean-forward="false" selection-start-line="54" selection-start-column="50" selection-end-line="54" selection-end-column="50" />
+          <folding>
+            <element signature="e#37#371#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Data/GlobalContext.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="62" column="8" lean-forward="false" selection-start-line="62" selection-start-column="8" selection-end-line="62" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/SettingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="187" column="62" lean-forward="false" selection-start-line="187" selection-start-column="62" selection-end-line="187" selection-end-column="62" />
+          <folding>
+            <marker date="1513850115149" expanded="false" signature="5680:5770" ph="handleMessage(msg) → {" />
+            <marker date="1513850115149" expanded="false" signature="6130:6145" ph="}" />
+            <marker date="1513850115149" expanded="false" signature="6194:6264" ph="() → {" />
+            <marker date="1513850115149" expanded="false" signature="6588:6603" ph="}" />
+            <marker date="1513850115149" expanded="false" signature="6640:6732" ph="(v) → {" />
+            <marker date="1513850115149" expanded="false" signature="7314:7329" ph="}" />
+            <marker date="1513850115149" expanded="false" signature="7464:7594" ph="(dialog, which) → {" />
+            <marker date="1513850115149" expanded="false" signature="8085:8100" ph="}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_setting.xml">
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="149" column="69" lean-forward="false" selection-start-line="149" selection-start-column="45" selection-end-line="149" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/LoginActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="368" column="47" lean-forward="false" selection-start-line="368" selection-start-column="47" selection-end-line="368" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#13958#15260#0" expanded="true" />
+            <element signature="e#15259#15260#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/WelcomeActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="84" column="46" lean-forward="false" selection-start-line="84" selection-start-column="46" selection-end-line="84" selection-end-column="46" />
           <folding />
         </state>
       </provider>

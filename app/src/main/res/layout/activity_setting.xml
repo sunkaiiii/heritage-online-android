@@ -140,19 +140,19 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/setting_about_us_img"
+                            android:id="@+id/setting_push_switch_img"
                             android:layout_width="48sp"
                             android:layout_height="48sp"
                             android:layout_gravity="center"
-                            android:src="@drawable/about_us" />
+                            android:src="@drawable/push_img" />
 
                         <TextView
-                            android:id="@+id/setting_about_us_text"
+                            android:id="@+id/setting_push_switch_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="6dp"
-                            android:text="关于我们"
+                            android:text="推送设置"
                             android:textColor="@color/colorAccent" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -170,19 +170,19 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:id="@+id/setting_connent_us_img"
+                            android:id="@+id/setting_about_us_img"
                             android:layout_width="48sp"
                             android:layout_height="48sp"
                             android:layout_gravity="center"
-                            android:src="@drawable/connet_us" />
+                            android:src="@drawable/about_us" />
 
                         <TextView
-                            android:id="@+id/setting_connect_us_text"
+                            android:id="@+id/setting_about_us_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="6dp"
-                            android:text="联系我们"
+                            android:text="关于我们"
                             android:textColor="@color/colorAccent" />
                     </LinearLayout>
                 </RelativeLayout>

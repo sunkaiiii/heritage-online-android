@@ -27,9 +27,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LoginActivity"
-            android:label="登录" />
-        <activity
             android:name=".WelcomeActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
@@ -38,6 +35,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:label="登录" />
         <activity android:name=".MainActivity"
             android:theme="@style/AppThemeNoActionBar"/>
         <activity android:name=".folkInformation" />
@@ -75,7 +75,7 @@
             android:name=".UserOwnTiezi"
             android:label="我的帖子" />
         <activity android:name=".AboutUSActivity" />
-        <activity android:name=".ConnectUsActivity"/>
+        <activity android:name=".SettingListActivity"/>
 
         <!--以下是接入mipush所需要的服务和receiver-->
         <service

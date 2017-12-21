@@ -3,7 +3,6 @@ package com.example.sunkai.heritage;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,10 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser;
+import com.example.sunkai.heritage.Data.GlobalContext;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 
@@ -38,8 +39,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private TextView setting_changepassword_text;
     private ImageView setting_about_us_img;
     private TextView setting_about_us_text;
-    private ImageView setting_connent_us_img;
-    private TextView setting_connect_us_text;
+    private ImageView setting_push_img;
+    private TextView setting_push_text;
     private ActionBar actionBack;
 
     @Override
@@ -59,16 +60,16 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         setting_changepassword_text = (TextView) findViewById(R.id.setting_changepassword_text);
         setting_about_us_img = (ImageView) findViewById(R.id.setting_about_us_img);
         setting_about_us_text = (TextView) findViewById(R.id.setting_about_us_text);
-        setting_connent_us_img = (ImageView) findViewById(R.id.setting_connent_us_img);
-        setting_connect_us_text = (TextView) findViewById(R.id.setting_connect_us_text);
+        setting_push_img = (ImageView) findViewById(R.id.setting_push_switch_img);
+        setting_push_text = (TextView) findViewById(R.id.setting_push_switch_text);
         setting_sigh_out_text.setOnClickListener(this);
         setting_sigh_out_img.setOnClickListener(this);
         setting_changepassword_img.setOnClickListener(this);
         setting_changepassword_text.setOnClickListener(this);
         setting_about_us_img.setOnClickListener(this);
         setting_about_us_text.setOnClickListener(this);
-        setting_connect_us_text.setOnClickListener(this);
-        setting_connent_us_img.setOnClickListener(this);
+        setting_push_text.setOnClickListener(this);
+        setting_push_img.setOnClickListener(this);
         actionBack=getSupportActionBar();
         actionBack.setDisplayHomeAsUpEnabled(true);
         sign_name_textview.setText(LoginActivity.userName);
@@ -101,9 +102,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 intent=new Intent(this,AboutUSActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.setting_connect_us_text:
-            case R.id.setting_connent_us_img:
-                intent=new Intent(this,ConnectUsActivity.class);
+            case R.id.setting_push_switch_text:
+            case R.id.setting_push_switch_img:
+                intent=new Intent(this, SettingListActivity.class);
                 startActivity(intent);
                 break;
             default:
@@ -184,8 +185,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent=new Intent("android.intent.action.focusAndFansCountChange");
                 intent.putExtra("message","sigh_out");
                 sendBroadcast(intent);
+                GlobalContext.Companion.getInstance().unregistUser(); //注销的时候退出当前账号
                 getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply();//清除自动登录的信息
-                MiPushClient.unsetUserAccount(getApplicationContext(),LoginActivity.userName,null); //注销的时候退出当前账号
                 LoginActivity.userID=0;
                 LoginActivity.userName=null;
                 finish();

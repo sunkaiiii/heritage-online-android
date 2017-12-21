@@ -23,10 +23,15 @@ class GlobalContext : Application() {
         super.onCreate()
         instance = this
 
-        registMipush() //注册mipush
+        val sharePrefrence=getSharedPreferences("setting",Context.MODE_PRIVATE);
+        if(sharePrefrence.getBoolean("pushSwitch",false)) {
+            registMipush() //注册mipush
+        }
     }
-
-    private fun registMipush() {
+    fun unregistMipush(){
+        MiPushClient.unregisterPush(instance);
+    }
+    fun registMipush() {
         if (shouldInit()) {
             MiPushClient.registerPush(instance, APP_ID, APP_KEY)
         }
@@ -46,6 +51,20 @@ class GlobalContext : Application() {
             }
         }
         Logger.setLogger(this, newLogger)
+    }
+
+    fun registUser(){
+        val userName:String?=getSharedPreferences("data",Context.MODE_PRIVATE).getString("user_name",null)
+        userName?.let {
+            MiPushClient.setUserAccount(instance,userName,null)
+        }
+    }
+
+    fun unregistUser(){
+        val userName:String?=getSharedPreferences("data",Context.MODE_PRIVATE).getString("user_name",null)
+        userName?.let {
+            MiPushClient.unsetUserAccount(instance,userName,null)
+        }
     }
 
     private fun shouldInit(): Boolean {

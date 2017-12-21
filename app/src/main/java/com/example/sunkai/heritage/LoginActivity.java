@@ -330,7 +330,6 @@ public class LoginActivity extends AppCompatActivity {
             mAuthTask = null;
             if (success) {
                 userName = mEmail.toString();
-                MiPushClient.setUserAccount(GlobalContext.Companion.getInstance(),LoginActivity.userName,null);
                 new Thread(getUserID).start();
             } else {
                 showProgress(false);
@@ -365,7 +364,9 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putInt("user_id",userID);
                 editor.putString("user_name",userName);
                 editor.putString("user_password",mPasswordView.getText().toString());
-                editor.apply();
+                editor.commit();
+                GlobalContext.Companion.getInstance().registUser();
+                //从Welcome页过来而并非从二级页面登录，则直接进入主页
                 if(isIntoMainpage==0) {
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
