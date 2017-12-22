@@ -100,19 +100,12 @@
                     android:textAlignment="center" />
             </RelativeLayout>
         </android.support.design.widget.AppBarLayout>
-        <com.example.sunkai.heritage.View.MyNestedScrollView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <com.example.sunkai.heritage.View.NestedListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/fragment_find_listview"
-                android:layout_margin="6sp"
-                />
-
-        </com.example.sunkai.heritage.View.MyNestedScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:id="@+id/fragment_find_recyclerView"
+            android:layout_margin="6dp"/>
 
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.FloatingActionButton

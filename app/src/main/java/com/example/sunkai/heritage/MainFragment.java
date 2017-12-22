@@ -54,22 +54,8 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
     private View view;
     List<MainActivityData> activityDatas;
     Bitmap[] bitmaps;
-    NestedScrollView nestedScrollView;
     int count=0;
-    //public static MessageFragment messageFragment;
-    public MainFragment() {
-        // Required empty public constructor
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MainFragment newInstance(String param1, String param2) {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
@@ -93,8 +79,6 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_main, container, false);
-        nestedScrollView=(NestedScrollView)view.findViewById(R.id.nest_scrollview);
-        nestedScrollView.setFillViewport(true);
         bitmaps=new Bitmap[4];
         //主页活动页面
         imgIdArray=new int[]{R.mipmap.img1,R.mipmap.img1,R.mipmap.img1,R.mipmap.img1};
@@ -115,8 +99,6 @@ public class MainFragment extends Fragment implements ViewPager.OnPageChangeList
         setupViewPager(viewPager);
         tableLayout.setupWithViewPager(viewPager);
         tableLayout.setTabTextColors(Color.GRAY,Color.WHITE);
-        //使得3个页面不销毁，不调用destoryitem
-        viewPager.setOffscreenPageLimit(2);
         for(int i=0;i< ClassifyActivityDivide.getDivide().length;i++){
             tableLayout.getTabAt(i).setText(ClassifyActivityDivide.getDivide()[i]);
         }
