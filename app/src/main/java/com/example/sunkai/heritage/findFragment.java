@@ -17,6 +17,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,8 +64,8 @@ public class findFragment extends Fragment implements View.OnClickListener{
     private TextView findEdit;
     private int[] imgIdArray;
     private View view;
-    private findFragmentAdapter adapter;
-    private ListView listView;
+    private FindFragmentRecyclerViewAdpter recyclerViewAdpter;
+    private RecyclerView recyclerView;
     private FloatingActionButton refreshBtn;
     private Spinner selectSpiner;
     public Button addCommentBtn;
@@ -99,23 +102,8 @@ public class findFragment extends Fragment implements View.OnClickListener{
         //设置监听，主要是设置点点的背景
         //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
         viewPager.setCurrentItem((mImageViews.length) * 100);
-        listView = (ListView) view.findViewById(R.id.fragment_find_listview);
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Intent intent=new Intent(getActivity(),userCommentDetail.class);
-            Bundle bundle=new Bundle();
-            bundle.putSerializable("data",(userCommentData)listView.getAdapter().getItem(position));
-            bundle.putInt("position",position);
-            ImageView imageView=(ImageView)view.findViewById(R.id.fragment_find_litview_img) ;
-            imageView.setDrawingCacheEnabled(true);
-            Drawable drawable=imageView.getDrawable();
-            BitmapDrawable bitmapDrawable=(BitmapDrawable)drawable;
-            Bitmap bitmap=bitmapDrawable.getBitmap();
-            ByteArrayOutputStream out=new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,out);
-            intent.putExtra("bitmap",out.toByteArray());
-            intent.putExtras(bundle);
-            startActivityForResult(intent,FROM_USER_COMMENT_DETAIL);
-        });
+//        listView = (ListView) view.findViewById(R.id.fragment_find_listview);
+        recyclerView=(RecyclerView)view.findViewById(R.id.fragment_find_recyclerView);
         activityDatas = new ArrayList<>();
         loadMyPage();
         viewPager.setAdapter(new MyAdapter());
@@ -142,15 +130,19 @@ public class findFragment extends Fragment implements View.OnClickListener{
         /*
          * 程序默认显示广场的全部帖子
          */
-        adapter = new findFragmentAdapter(getActivity(), 1);
-        listView.setAdapter(adapter);
+        recyclerViewAdpter=new FindFragmentRecyclerViewAdpter(getActivity(),1);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(recyclerViewAdpter);
         refreshBtn = (FloatingActionButton) view.findViewById(R.id.fragment_find_refreshbtn);
         searchRelative=(RelativeLayout)view.findViewById(R.id.find_fragment_search_relative);
         refreshBtn.setOnClickListener(v -> {
             btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
             refreshBtn.startAnimation(btnAnimation);
             refreshBtn.setEnabled(false);
-            adapter.reFreshList();
+            recyclerViewAdpter.reFreshList();
         });
 
         /*
@@ -161,8 +153,9 @@ public class findFragment extends Fragment implements View.OnClickListener{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        adapter = new findFragmentAdapter(getActivity(), 1);
-                        listView.setAdapter(adapter);
+                        recyclerViewAdpter = new FindFragmentRecyclerViewAdpter(getActivity(), 1);
+                        setAdpterClick(recyclerViewAdpter);
+                        recyclerView.setAdapter(recyclerViewAdpter);
                         break;
                     case 1:
                         if (LoginActivity.userID == 0) {
@@ -173,8 +166,9 @@ public class findFragment extends Fragment implements View.OnClickListener{
                             selectSpiner.setSelection(0);
                             return;
                         }
-                        adapter = new findFragmentAdapter(getActivity(), 2);
-                        listView.setAdapter(adapter);
+                        recyclerViewAdpter = new FindFragmentRecyclerViewAdpter(getActivity(), 2);
+                        setAdpterClick(recyclerViewAdpter);
+                        recyclerView.setAdapter(recyclerViewAdpter);
                         break;
                 }
             }
@@ -184,7 +178,6 @@ public class findFragment extends Fragment implements View.OnClickListener{
 
             }
         });
-
 
 
         /*
@@ -206,6 +199,25 @@ public class findFragment extends Fragment implements View.OnClickListener{
             startActivityForResult(intent, 1);
         });
         return view;
+    }
+
+    private void setAdpterClick(FindFragmentRecyclerViewAdpter adpter) {
+        adpter.setOnItemClickListen((view, position) -> {
+            Intent intent = new Intent(getActivity(), userCommentDetail.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("data",adpter.getItem(position));
+            bundle.putInt("position", position);
+            ImageView imageView = (ImageView) view.findViewById(R.id.fragment_find_litview_img);
+            imageView.setDrawingCacheEnabled(true);
+            Drawable drawable = imageView.getDrawable();
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            intent.putExtra("bitmap", out.toByteArray());
+            intent.putExtras(bundle);
+            startActivityForResult(intent, FROM_USER_COMMENT_DETAIL);
+        });
     }
 
     /**
@@ -388,14 +400,14 @@ public class findFragment extends Fragment implements View.OnClickListener{
                 btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
                 refreshBtn.startAnimation(btnAnimation);
                 refreshBtn.setEnabled(false);
-                adapter.reFreshList();
+                recyclerViewAdpter.reFreshList();
                 break;
             case FROM_USER_COMMENT_DETAIL:
                 if(resultCode==userCommentDetail.ADD_COMMENT) {
                     Bundle bundle = data.getExtras();
                     int commentID =bundle.getInt("commentID");
                     int position=bundle.getInt("position");
-                    adapter.getReplyCount(commentID,position);
+                    recyclerViewAdpter.getReplyCount(commentID,position);
                 }
         }
     }

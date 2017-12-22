@@ -1,7 +1,5 @@
 package com.example.sunkai.heritage;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -12,16 +10,14 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.RecyclerView;
 import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,23 +39,43 @@ import java.util.List;
 import static com.example.sunkai.heritage.LoginActivity.userID;
 
 /**
- * Created by 70472 on 2017/3/4.
- * 此类是find页面listview的adpter
+ * Created by sunkai on 2017/12/22.
  */
-public class findFragmentAdapter extends BaseAdapter{
+
+public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFragmentRecyclerViewAdpter.ViewHolder> implements View.OnClickListener{
     private Context context;
     private List<userCommentData> datas;
-    private ListView listView=null;
+    private RecyclerView recyclerView;
     Animation imageAnimation;
     int what;
     LruCache<Integer,Bitmap> lruCache;
+    private OnItemClickListener mOnItemClickListener=null;
 
-    /**
-     *
-     * @param context 传入的context
-     * @param what what值不同代表着加载的页面不同，1为全部的帖子，2为已关注人的帖子，3为我的帖子
-     */
-    public findFragmentAdapter(Context context, int what){
+    static class ViewHolder extends RecyclerView.ViewHolder{
+        ImageView img;
+        TextView like,comment,addfocusText,name_text;
+        ImageView likeImage,commentImage,addfocusImage;
+        RoundedImageView userImage;
+        View view;
+        private ViewHolder(View view){
+            super(view);
+            this.view=view;
+            initView();
+        }
+        private void initView(){
+            img=(ImageView)view.findViewById(R.id.fragment_find_litview_img);
+            comment=(TextView)view.findViewById(R.id.testview_comment);
+            like=(TextView)view.findViewById(R.id.textview_like);
+            likeImage=(ImageView)view.findViewById(R.id.imageView4);
+            commentImage=(ImageView)view.findViewById(R.id.fragment_find_comment);
+            addfocusImage=(ImageView)view.findViewById(R.id.add_focus_img);
+            addfocusText=(TextView) view.findViewById(R.id.add_focus_text);
+            name_text=(TextView)view.findViewById(R.id.name_text);
+            userImage=(RoundedImageView)view.findViewById(R.id.user_list_image);
+        }
+    }
+
+    public FindFragmentRecyclerViewAdpter(Context context,int what){
         this.context=context;
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
         this.what=what;
@@ -73,92 +89,90 @@ public class findFragmentAdapter extends BaseAdapter{
         };
         new GetInformation(this).execute();
     }
-    public int getCount() {
-        if(null!=datas)
-            return datas.size();
-        return 0;
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(recyclerView==null)
+            recyclerView=(RecyclerView)parent;
+        View view= LayoutInflater.from(context).inflate(R.layout.fragment_find_listview_layout,parent,false);
+        final ViewHolder holder=new ViewHolder(view);
+        view.setOnClickListener(this);
+        return holder;
     }
-    public Object getItem(int position) {
-        return datas.get(position);
-    }
-    public long getItemId(int position) {
-        return position;
-    }
-    public List<userCommentData> getDatas(){
-        return this.datas;
-    }
-    @SuppressLint("InflateParams")
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if(listView==null){
-            listView=(ListView)parent;
-        }
-        Holder vh;
-        LayoutInflater inflater= LayoutInflater.from(context);
-        View view;
-        if(convertView==null) {
-            view = inflater.inflate(R.layout.fragment_find_listview_layout, null);
-            vh=new Holder();
-            vh.img=(ImageView)view.findViewById(R.id.fragment_find_litview_img);
-            vh.comment=(TextView)view.findViewById(R.id.testview_comment);
-            vh.like=(TextView)view.findViewById(R.id.textview_like);
-            vh.likeImage=(ImageView)view.findViewById(R.id.imageView4);
-            vh.commentImage=(ImageView)view.findViewById(R.id.fragment_find_comment);
-            vh.addfocusImage=(ImageView)view.findViewById(R.id.add_focus_img);
-            vh.addfocusText=(TextView) view.findViewById(R.id.add_focus_text);
-            vh.name_text=(TextView)view.findViewById(R.id.name_text);
-            vh.userImage=(RoundedImageView)view.findViewById(R.id.user_list_image);
-            view.setTag(vh);
-        }
-        else{
-            view=convertView;
-            vh=(Holder)view.getTag();
-        }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.itemView.setTag(position);
         userCommentData data=datas.get(position);
-        GetCommentImage(data,vh.img);
-        GetUserImage(data);
-        if(datas.get(position).getUserLike()){
-           SetLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
+        holder.img.setImageResource(R.drawable.backgound_grey);
+        holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
+        GetCommentImage(data,holder.img);
+        GetUserImage(data,holder.userImage);
+        if(data.getUserLike()){
+            SetLike(holder.like,holder.likeImage,Integer.parseInt(data.getCommentLikeNum()));
         }
         else{
-            CancelLike(vh.like,vh.likeImage,Integer.parseInt(data.getCommentLikeNum()));
+            CancelLike(holder.like,holder.likeImage,Integer.parseInt(data.getCommentLikeNum()));
         }
-        vh.comment.setText(data.getCommentReplyNum());
-        vh.name_text.setText(data.getUserName());
+        holder.comment.setText(data.getCommentReplyNum());
+        holder.name_text.setText(data.getUserName());
         if(what==2){
-            vh.addfocusImage.setVisibility(View.GONE);
-            vh.addfocusText.setVisibility(View.GONE);
+            holder.addfocusImage.setVisibility(View.GONE);
+            holder.addfocusText.setVisibility(View.GONE);
         }
         if(what==3){
-            hideSomeElement(vh,data);
+            hideSomeElement(holder,data);
         }
-        imageButtonclick likeClick=new imageButtonclick(data.getId(),position,vh.likeImage,vh.like);
-        vh.likeImage.setOnClickListener(likeClick);
-        vh.like.setOnClickListener(likeClick);
-        vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp);
-        vh.userImage.setTag(data.getUser_id()+" "+data.getId());
+        imageButtonclick likeClick=new imageButtonclick(data.getId(),position,holder.likeImage,holder.like);
+        holder.likeImage.setOnClickListener(likeClick);
+        holder.like.setOnClickListener(likeClick);
         if(data.getUser_id()== userID){
-            vh.addfocusText.setVisibility(View.INVISIBLE);
-            vh.addfocusImage.setVisibility(View.INVISIBLE);
+            holder.addfocusText.setVisibility(View.INVISIBLE);
+            holder.addfocusImage.setVisibility(View.INVISIBLE);
         }
         else{
+            holder.addfocusText.setVisibility(View.VISIBLE);
+            holder.addfocusImage.setVisibility(View.VISIBLE);
             addFocusButtonClick addFocusButtonClick=new addFocusButtonClick(position);
-            vh.addfocusText.setOnClickListener(addFocusButtonClick);
-            vh.addfocusImage.setOnClickListener(addFocusButtonClick);
+            holder.addfocusText.setOnClickListener(addFocusButtonClick);
+            holder.addfocusImage.setOnClickListener(addFocusButtonClick);
             if(data.getUserFocusUser()){
-                vh.addfocusText.setText("已关注");
-                vh.addfocusText.setTextColor(Color.rgb(184,184,184));
-                vh.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp);
+                holder.addfocusText.setText("已关注");
+                holder.addfocusText.setTextColor(Color.rgb(184,184,184));
+                holder.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp);
             }
             else{
 
-                vh.addfocusText.setText("加关注");
-                vh.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp);
+                holder.addfocusText.setText("加关注");
+                holder.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp);
             }
         }
-        return view;
     }
 
-    private boolean changeLikeImageState(boolean isLike,ImageView imageView,TextView textView,int position)
+    @Override
+    public int getItemCount() {
+        if(datas!=null)
+            return datas.size();
+        return 0;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(mOnItemClickListener!=null){
+            mOnItemClickListener.onItemClick(v,(int)v.getTag());
+        }
+    }
+
+    public userCommentData getItem(int position){
+        return datas.get(position);
+    }
+
+    void setOnItemClickListen(OnItemClickListener listenr){
+        this.mOnItemClickListener=listenr;
+    }
+
+
+    private boolean changeLikeImageState(boolean isLike, ImageView imageView, TextView textView, int position)
     {
         int likeNumber=Integer.parseInt(datas.get(position).getCommentLikeNum());
         likeNumber=isLike?likeNumber+1:likeNumber-1;
@@ -179,18 +193,17 @@ public class findFragmentAdapter extends BaseAdapter{
     }
     private void GetCommentImage(userCommentData data,ImageView imageView){
         Bitmap bitmap=lruCache.get(data.getId());
-        imageView.setTag(data.getId());
         if(null!=bitmap) {
             imageView.setImageBitmap(bitmap);
         }
         else{
-            new GetCommentImage(data.getId(),this).execute();
+            new GetCommentImage(data.getId(),this,imageView).execute();
         }
     }
-    private void GetUserImage(userCommentData data){
-        new GetUserImage(data.getUser_id(),this,data.getId()).execute();
+    private void GetUserImage(userCommentData data,ImageView imageView){
+        new GetUserImage(data.getUser_id(),this,data.getId(),imageView).execute();
     }
-    private void hideSomeElement(Holder vh,userCommentData data){
+    private void hideSomeElement(ViewHolder vh, userCommentData data){
         vh.like.setVisibility(View.GONE);
         vh.comment.setVisibility(View.INVISIBLE);
         vh.commentImage.setVisibility(View.INVISIBLE);
@@ -204,16 +217,6 @@ public class findFragmentAdapter extends BaseAdapter{
         intent.putExtra("isInto",1);
         context.startActivity(intent);
     }
-
-
-    private class Holder{
-        ImageView img;
-        TextView like,comment,addfocusText,name_text;
-        ImageView likeImage,commentImage,addfocusImage;
-        RoundedImageView userImage;
-    }
-
-
     class imageButtonclick implements View.OnClickListener{
         int commentID;
         int position;
@@ -253,7 +256,7 @@ public class findFragmentAdapter extends BaseAdapter{
         Runnable setLike=new Runnable() {
             @Override
             public void run() {
-                boolean result=HandleFind.Set_User_Like(userID,commentID);
+                boolean result= HandleFind.Set_User_Like(userID,commentID);
                 if(result){
                     SetOrCancelLikeHandler.sendEmptyMessage(LIKE);
                 }
@@ -283,7 +286,7 @@ public class findFragmentAdapter extends BaseAdapter{
                 if(msg.what!=ERROR&&imageView!=null&&textView!=null){
                     datas.get(position).setUserLike((LIKE==msg.what));
                     if(!changeLikeImageState(datas.get(position).getUserLike(),imageView,textView,position)){
-                        new GetInformation(findFragmentAdapter.this).execute();
+                        new GetInformation(FindFragmentRecyclerViewAdpter.this).execute();
                     }
                 }
                 else{
@@ -311,7 +314,7 @@ public class findFragmentAdapter extends BaseAdapter{
         Runnable addOrCancelFocus=new Runnable(){
             @Override
             public void run() {
-                boolean result=data.getUserFocusUser()?HandlePerson.Cancel_Focus(userID,data.getUser_id()):HandlePerson.Add_Focus(userID,data.getUser_id());
+                boolean result=data.getUserFocusUser()? HandlePerson.Cancel_Focus(userID,data.getUser_id()):HandlePerson.Add_Focus(userID,data.getUser_id());
                 setDataState(result);
                 handler.sendEmptyMessage(data.getUserFocusUser()?1:2);
             }
@@ -348,12 +351,11 @@ public class findFragmentAdapter extends BaseAdapter{
     public void reFreshList(){
         new GetInformation(this).execute();
     }
-
-    static class GetReplyCount extends AsyncTask<Void,Void,Integer>{
+    static class GetReplyCount extends AsyncTask<Void,Void,Integer> {
         int commentID;
         int position;
-        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
-        private GetReplyCount(int commentID,int position,findFragmentAdapter adapter){
+        WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
+        private GetReplyCount(int commentID,int position,FindFragmentRecyclerViewAdpter adapter){
             this.commentID=commentID;
             this.position=position;
             findFragmentAdapterWeakReference=new WeakReference<>(adapter);
@@ -364,7 +366,7 @@ public class findFragmentAdapter extends BaseAdapter{
         }
         @Override
         protected void onPostExecute(Integer count) {
-            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(adapter==null)
                 return;
             adapter.datas.get(position).setCommentReplyNum(String.valueOf(count));
@@ -374,14 +376,14 @@ public class findFragmentAdapter extends BaseAdapter{
 
     static class GetInformation extends AsyncTask<Void,Void,Void>{
 
-        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+        WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
 
-        private GetInformation(findFragmentAdapter adapter){
+        private GetInformation(FindFragmentRecyclerViewAdpter adapter){
             findFragmentAdapterWeakReference=new WeakReference<>(adapter);
         }
         @Override
         protected Void doInBackground(Void... voids) {
-            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(null==adapter)
                 return null;
             final List<userCommentData> getdatas;
@@ -403,7 +405,7 @@ public class findFragmentAdapter extends BaseAdapter{
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(null==adapter)
                 return;
             adapter.notifyDataSetChanged();
@@ -413,16 +415,18 @@ public class findFragmentAdapter extends BaseAdapter{
     }
     static class GetCommentImage extends AsyncTask<Void,Void,Bitmap> {
         int id;
-        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
+        ImageView imageView;
+        WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
 
-        private GetCommentImage(int id,findFragmentAdapter findFragmentAdapter) {
+        private GetCommentImage(int id,FindFragmentRecyclerViewAdpter findFragmentAdapter,ImageView imageView) {
             this.id = id;
+            this.imageView=imageView;
             findFragmentAdapterWeakReference=new WeakReference<>(findFragmentAdapter);
         }
 
         @Override
         protected Bitmap doInBackground(Void... voids) {
-            findFragmentAdapter findFragmentAdapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter findFragmentAdapter=findFragmentAdapterWeakReference.get();
             if(findFragmentAdapter==null)
                 return null;
             SQLiteDatabase db = MySqliteHandler.INSTANCE.GetReadableDatabase();
@@ -456,32 +460,33 @@ public class findFragmentAdapter extends BaseAdapter{
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            findFragmentAdapter findFragmentAdapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter findFragmentAdapter=findFragmentAdapterWeakReference.get();
             if(findFragmentAdapter==null)
                 return;
-            ImageView imageView=(ImageView)findFragmentAdapter.listView.findViewWithTag(id);
+//            ImageView imageView=(ImageView)findFragmentAdapter.recyclerView.findViewWithTag(id);
             if(imageView!=null) {
                 imageView.setImageBitmap(bitmap);
-            }
-            if(findFragmentAdapter.what==3) {
                 imageView.startAnimation(findFragmentAdapter.imageAnimation);
             }
+
         }
     }
 
     static class GetUserImage extends AsyncTask<Void,Void,Bitmap>{
         int id;
         int commandID;
-        WeakReference<findFragmentAdapter> findFragmentAdapterWeakReference;
-        private GetUserImage(int id,findFragmentAdapter adapter,int commandID){
+        WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
+        ImageView imageView;
+        private GetUserImage(int id,FindFragmentRecyclerViewAdpter adapter,int commandID,ImageView imageView){
             this.id=id;
+            this.imageView=imageView;
             findFragmentAdapterWeakReference=new WeakReference<>(adapter);
             this.commandID=commandID;
         }
 
         @Override
         protected Bitmap doInBackground(Void... voids) {
-            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(adapter==null)
                 return null;
             SQLiteDatabase db=MySqliteHandler.INSTANCE.GetReadableDatabase();
@@ -514,12 +519,18 @@ public class findFragmentAdapter extends BaseAdapter{
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            findFragmentAdapter adapter=findFragmentAdapterWeakReference.get();
+            FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(bitmap==null||adapter==null)
                 return;
-            ImageView imageView=(ImageView)adapter.listView.findViewWithTag(id+" "+commandID);
-            if(imageView!=null)
+            if(imageView!=null) {
                 imageView.setImageBitmap(bitmap);
+                imageView.startAnimation(adapter.imageAnimation);
+            }
         }
     }
+
 }
+interface OnItemClickListener {
+    void onItemClick(View view,int position);
+}
+
