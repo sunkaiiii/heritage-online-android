@@ -75,7 +75,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         }
     }
 
-    public FindFragmentRecyclerViewAdpter(Context context,int what){
+    FindFragmentRecyclerViewAdpter(Context context, int what){
         this.context=context;
         imageAnimation= AnimationUtils.loadAnimation(context,R.anim.image_apear);
         this.what=what;
@@ -344,11 +344,11 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
             }
         };
     }
-    public void getReplyCount(final int commentID,final int position){
+    void getReplyCount(final int commentID, final int position){
         new GetReplyCount(commentID,position,this).execute();
     }
 
-    public void reFreshList(){
+    void reFreshList(){
         new GetInformation(this).execute();
     }
     static class GetReplyCount extends AsyncTask<Void,Void,Integer> {
@@ -415,13 +415,13 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
     }
     static class GetCommentImage extends AsyncTask<Void,Void,Bitmap> {
         int id;
-        ImageView imageView;
+        WeakReference<ImageView> imageViewWeakReference;
         WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
 
         private GetCommentImage(int id,FindFragmentRecyclerViewAdpter findFragmentAdapter,ImageView imageView) {
             this.id = id;
-            this.imageView=imageView;
             findFragmentAdapterWeakReference=new WeakReference<>(findFragmentAdapter);
+            imageViewWeakReference=new WeakReference<>(imageView);
         }
 
         @Override
@@ -463,7 +463,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
             FindFragmentRecyclerViewAdpter findFragmentAdapter=findFragmentAdapterWeakReference.get();
             if(findFragmentAdapter==null)
                 return;
-//            ImageView imageView=(ImageView)findFragmentAdapter.recyclerView.findViewWithTag(id);
+            ImageView imageView=imageViewWeakReference.get();
             if(imageView!=null) {
                 imageView.setImageBitmap(bitmap);
                 imageView.startAnimation(findFragmentAdapter.imageAnimation);
@@ -476,10 +476,10 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         int id;
         int commandID;
         WeakReference<FindFragmentRecyclerViewAdpter> findFragmentAdapterWeakReference;
-        ImageView imageView;
+        WeakReference<ImageView> imageViewWeakReference;
         private GetUserImage(int id,FindFragmentRecyclerViewAdpter adapter,int commandID,ImageView imageView){
             this.id=id;
-            this.imageView=imageView;
+            imageViewWeakReference=new WeakReference<>(imageView);
             findFragmentAdapterWeakReference=new WeakReference<>(adapter);
             this.commandID=commandID;
         }
@@ -522,6 +522,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
             FindFragmentRecyclerViewAdpter adapter=findFragmentAdapterWeakReference.get();
             if(bitmap==null||adapter==null)
                 return;
+            ImageView imageView=imageViewWeakReference.get();
             if(imageView!=null) {
                 imageView.setImageBitmap(bitmap);
                 imageView.startAnimation(adapter.imageAnimation);
@@ -530,7 +531,3 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
     }
 
 }
-interface OnItemClickListener {
-    void onItemClick(View view,int position);
-}
-

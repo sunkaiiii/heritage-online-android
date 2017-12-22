@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.example.sunkai.heritage.Data.classifyActiviyData;
 
@@ -28,8 +30,8 @@ public class ActivityFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String channel = "channel";
     List<classifyActiviyData> activityDatas;
-    activityListviewAdapter activityListviewAdapter;
-    ListView activityListview;
+    ActivityRecyclerViewAdpter activityListviewAdapter;
+    RecyclerView activityRecyclerView;
 
     // TODO: Rename and change types of parameters
     private String channelName;
@@ -65,12 +67,16 @@ public class ActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_activity1, container, false);
-        activityListview=(ListView)view.findViewById(R.id.activity_listview);
-        activityListviewAdapter=new activityListviewAdapter(getActivity(),activityDatas,channelName);
-        activityListview.setAdapter(activityListviewAdapter);
-        activityListview.setOnItemClickListener((parent,itemView,position,id)->{
-            classifyActiviyData activitydata=(classifyActiviyData)parent.getAdapter().getItem(position);
-            ImageView imageView=(ImageView)itemView.findViewById(R.id.activity_layout_img);
+        activityRecyclerView=(RecyclerView)view.findViewById(R.id.activity_listview);
+        activityListviewAdapter=new ActivityRecyclerViewAdpter(getActivity(),channelName);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
+        activityRecyclerView.setLayoutManager(layoutManager);
+        activityRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        activityRecyclerView.setHasFixedSize(true);
+        activityRecyclerView.setAdapter(activityListviewAdapter);
+        activityListviewAdapter.setOnItemClickListen((parent,position)->{
+            classifyActiviyData activitydata=activityListviewAdapter.getItem(position);
+            ImageView imageView=(ImageView)parent.findViewById(R.id.activity_layout_img);
             imageView.setDrawingCacheEnabled(true);
             Bitmap bitmap=imageView.getDrawingCache();
             ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
