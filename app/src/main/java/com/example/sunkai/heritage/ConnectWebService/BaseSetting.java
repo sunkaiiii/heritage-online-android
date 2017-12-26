@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -21,6 +22,7 @@ public class BaseSetting extends WebServiceSetting{
     static protected String soapAction;
     static protected String success="Success";
     static protected String error="Error";
+    private static final String TAG = "BaseSetting";
     static protected SoapSerializationEnvelope pre_processSoap(SoapObject soapObject)
     {
         SoapSerializationEnvelope envelope=new SoapSerializationEnvelope(SoapEnvelope.VER11);
