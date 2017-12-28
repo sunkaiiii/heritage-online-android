@@ -6,11 +6,11 @@ package com.example.sunkai.heritage.Data
  */
 
 
-class focusData(var focusUserid: Int = 0
-                ,var focusFansID: Int = 0
-                ,var name: String? = null
-                ,var followeachother:Boolean = false
-                ,var userImage: ByteArray? = null
-                ,var isCheck:Boolean = true){
+class FocusData(var focusUserid: Int = 0
+                , var focusFansID: Int = 0
+                , var name: String? = null
+                , var followeachother:Boolean = false
+                , var userImage: ByteArray? = null
+                , var isCheck:Boolean = true){
     fun getCheck():Boolean=isCheck //我也不知道为什么isCheck没有生成get函数
 }

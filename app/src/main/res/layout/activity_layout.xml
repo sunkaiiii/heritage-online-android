@@ -26,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/activity_layout_text"
                 android:text="查看详情 >"
-                android:id="@+id/activity_layout_joinin"
                 android:layout_marginRight="6sp"
                 android:layout_marginBottom="3sp"
                 android:layout_marginTop="3sp"

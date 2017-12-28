@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.sunkai.heritage.MainFragment">
+    tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -50,8 +50,7 @@
                     <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="150sp"
-                        android:layout_margin="15sp"
-                        android:id="@+id/main_fragment_Relative">
+                        android:layout_margin="15sp">
                         <android.support.v4.view.ViewPager
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"

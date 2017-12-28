@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@mipmap/login_background"
-    tools:context="com.example.sunkai.heritage.LoginActivity">
+    tools:context="com.example.sunkai.heritage.Activity.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
         <ImageView
-            android:id="@+id/imageView2"
             android:layout_width="32dp"
             android:layout_height="32dp"
             app:srcCompat="@drawable/login_email"
@@ -56,7 +55,6 @@
         android:id="@+id/linearLayout3">
 
         <ImageView
-            android:id="@+id/imageView3"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:srcCompat="@drawable/login_password"
@@ -157,7 +155,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
     <ProgressBar
-        android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

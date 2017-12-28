@@ -8,8 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by sunkai on 2017/5/31.
  */
 
-public class mySqlLite extends SQLiteOpenHelper{
-    public mySqlLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
+public class MySqlLite extends SQLiteOpenHelper{
+    public MySqlLite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
     {
         super(context,name,factory,version);
     }

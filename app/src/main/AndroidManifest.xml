@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".Activity.WelcomeActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,30 +36,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activity.LoginActivity"
             android:label="登录" />
-        <activity android:name=".MainActivity"
+        <activity android:name=".Activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"/>
-        <activity android:name=".folkInformation" />
-        <activity android:name=".RegistActivity"
+        <activity android:name=".Activity.FolkInformationActivity" />
+        <activity android:name=".Activity.RegistActivity"
             android:label="注册"/>
-        <activity android:name=".JoinActivity" />
-        <activity android:name=".DebugActivity" />
-        <activity android:name=".activityInformationActivity" />
+        <activity android:name=".Activity.JoinActivity" />
+        <activity android:name=".Activity.DebugActivity" />
+        <activity android:name=".Activity.ActivityInformationActivity" />
         <activity
-            android:name=".MyOrderActivity"
+            android:name=".Activity.MyOrderActivity"
             android:label="我的预约" />
         <activity
-            android:name=".userCommentDetail"
+            android:name=".Activity.UserCommentDetailActivity"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".focusInformation" />
+        <activity android:name=".Activity.FocusInformationActivity" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".Activity.SearchActivity"
             android:label="搜索" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".Activity.SettingActivity"
             android:label="设置" />
-        <activity android:name=".AddFindCommentActivity" />
+        <activity android:name=".Activity.AddFindCommentActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -70,12 +70,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <activity android:name=".PermissionsActivity" />
+        <activity android:name=".Activity.PermissionsActivity" />
         <activity
-            android:name=".UserOwnTiezi"
+            android:name=".Activity.UserOwnTiezi"
             android:label="我的帖子" />
-        <activity android:name=".AboutUSActivity" />
-        <activity android:name=".SettingListActivity"/>
+        <activity android:name=".Activity.AboutUSActivity" />
+        <activity android:name=".Activity.SettingListActivity"/>
 
         <!--以下是接入mipush所需要的服务和receiver-->
         <service
@@ -115,7 +115,7 @@
         <!--将自定义的Receiver注册到Manifest当中-->
         <receiver
             android:exported="true"
-            android:name="com.example.sunkai.heritage.DemoMessageReceiver">
+            android:name="com.example.sunkai.heritage.tools.DemoMessageReceiver">
             <!--这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名-->
             <intent-filter>
                 <action android:name="com.xiaomi.mipush.RECEIVE_MESSAGE" />

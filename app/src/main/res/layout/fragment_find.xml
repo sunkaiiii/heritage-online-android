@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.findFragment">
+    tools:context="com.example.sunkai.heritage.Fragment.FindFragment">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -27,9 +27,7 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="188dp"
-                    android:layout_margin="12dp"
-                    android:id="@+id/find_fragment_Relative"
-                    >
+                    android:layout_margin="12dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.ConnectWebService;
 import android.support.annotation.Nullable;
 
 import com.example.sunkai.heritage.Data.MainActivityData;
-import com.example.sunkai.heritage.Data.classifyActiviyData;
+import com.example.sunkai.heritage.Data.ClassifyActiviyData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,7 +86,7 @@ public class HandleMainFragment extends BaseSetting  {
         return 0;
     }
     @Nullable
-    public static List<classifyActiviyData> GetChannelInformation(String channel){
+    public static List<ClassifyActiviyData> GetChannelInformation(String channel){
         methodName="Get_Channel_Information";
         soapAction = namespace + "/"+methodName;
         HttpTransportSE transport=new HttpTransportSE(url);
@@ -99,9 +99,9 @@ public class HandleMainFragment extends BaseSetting  {
                 return null;
             JSONObject MainActivity=new JSONObject(result);
             JSONArray activities=MainActivity.getJSONArray("classify_activity");
-            List<classifyActiviyData> activityDatas=new ArrayList<>();
+            List<ClassifyActiviyData> activityDatas=new ArrayList<>();
             for(int i=0;i<activities.length();i++){
-                classifyActiviyData data=new classifyActiviyData();
+                ClassifyActiviyData data=new ClassifyActiviyData();
                 JSONObject activity=(JSONObject)activities.get(i);
                 data.setId(Integer.valueOf((String)activity.get("id")));
                 data.setActivityTitle((String)activity.get("activity_title"));

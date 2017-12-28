@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AboutUSActivity">
+    tools:context=".Activity.AboutUSActivity">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -16,8 +16,7 @@
         android:src="@mipmap/app_logo"
         android:layout_above="@id/base_line"
         android:layout_marginBottom="12sp"
-        android:layout_centerInParent="true"
-        android:id="@+id/base_logo"/>
+        android:layout_centerInParent="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -2,8 +2,8 @@ package com.example.sunkai.heritage.ConnectWebService;
 
 import android.support.annotation.Nullable;
 
-import com.example.sunkai.heritage.Data.focusData;
-import com.example.sunkai.heritage.LoginActivity;
+import com.example.sunkai.heritage.Data.FocusData;
+import com.example.sunkai.heritage.Activity.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,13 +22,13 @@ import java.util.List;
 public class HandlePerson extends BaseSetting {
 
     @Nullable
-    private static List<focusData> Json_To_focusData(String json){
+    private static List<FocusData> Json_To_focusData(String json){
         try{
             JSONObject jsonObject=new JSONObject(json);
             JSONArray info=(JSONArray)jsonObject.get("Follow_Information");
-            List<focusData> datas=new ArrayList<>();
+            List<FocusData> datas=new ArrayList<>();
             for(int i=0;i<info.length();i++){
-                focusData data=new focusData();
+                FocusData data=new FocusData();
                 JSONObject jsondata=(JSONObject)info.get(i);
                 data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_focusID")));
                 data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_fansID")));
@@ -43,14 +43,14 @@ public class HandlePerson extends BaseSetting {
         return null;
     }
     @Nullable
-    private static List<focusData> Json_To_SearchData(String json){
+    private static List<FocusData> Json_To_SearchData(String json){
         try{
             JSONObject jsonObject=new JSONObject(json);
             JSONArray searInfo=(JSONArray)jsonObject.get("searchInfo");
-            List<focusData> datas=new ArrayList<>();
+            List<FocusData> datas=new ArrayList<>();
             for(int i=0;i<searInfo.length();i++){
                 JSONObject jsonData=(JSONObject)searInfo.get(i);
-                focusData data=new focusData();
+                FocusData data=new FocusData();
                 data.setFolloweachother(false);
                 data.setCheck(false);
                 data.setName(jsonData.getString("user_name"));
@@ -72,12 +72,7 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         soapObject.addProperty("image",image);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
     public static String Get_User_Image(int userID){
         methodName="Get_User_Image";
@@ -111,7 +106,7 @@ public class HandlePerson extends BaseSetting {
         }
         return Integer.parseInt(result);
     }
-    public static List<focusData> Get_Follow_Information(int userID){
+    public static List<FocusData> Get_Follow_Information(int userID){
         methodName="Get_Follow_Information";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -119,7 +114,7 @@ public class HandlePerson extends BaseSetting {
         String result=Get_Post(soapObject);
         return Json_To_focusData(result);
     }
-    public static List<focusData> Get_Fans_Information(int userID){
+    public static List<FocusData> Get_Fans_Information(int userID){
         methodName="Get_Fans_Information";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -134,12 +129,7 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         soapObject.addProperty("focusID",focusID);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
     public static boolean Cancel_Focus(int userID,int focusID){
         methodName="Cancel_Focus";
@@ -148,12 +138,7 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         soapObject.addProperty("focusID",focusID);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
     public static boolean Check_Follow_Eachohter(int userID,int focusID){
         methodName="Check_Follow_Eachohter";
@@ -162,14 +147,9 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         soapObject.addProperty("focusID",focusID);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
-    public static List<focusData> Get_Search_UserInfo(String name){
+    public static List<FocusData> Get_Search_UserInfo(String name){
         methodName="Get_Search_UserInfo";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -184,12 +164,7 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userName",userID);
         soapObject.addProperty("fansName",fansID);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
     public static String Get_User_Update_Time(int userID){
         methodName="Get_User_Update_Time";

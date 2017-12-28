@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.JoinActivity">
+    tools:context="com.example.sunkai.heritage.Activity.JoinActivity">
 
     <ImageView
         android:id="@+id/join_activity_img"

@@ -23,13 +23,13 @@ class GlobalContext : Application() {
         super.onCreate()
         instance = this
 
-        val sharePrefrence=getSharedPreferences("setting",Context.MODE_PRIVATE);
+        val sharePrefrence=getSharedPreferences("setting",Context.MODE_PRIVATE)
         if(sharePrefrence.getBoolean("pushSwitch",false)) {
             registMipush() //注册mipush
         }
     }
     fun unregistMipush(){
-        MiPushClient.unregisterPush(instance);
+        MiPushClient.unregisterPush(instance)
     }
     fun registMipush() {
         if (shouldInit()) {

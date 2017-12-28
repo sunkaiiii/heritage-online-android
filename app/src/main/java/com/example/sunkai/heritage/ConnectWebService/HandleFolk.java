@@ -2,8 +2,8 @@ package com.example.sunkai.heritage.ConnectWebService;
 
 import android.support.annotation.Nullable;
 
-import com.example.sunkai.heritage.Data.folkData;
-import com.example.sunkai.heritage.Data.orderData;
+import com.example.sunkai.heritage.Data.FolkData;
+import com.example.sunkai.heritage.Data.OrderData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,15 +26,15 @@ import java.util.List;
 public class HandleFolk extends BaseSetting {
 
     @Nullable
-    private static List<folkData> Json_To_FolkList(String json){
+    private static List<FolkData> Json_To_FolkList(String json){
         if(error.equals(json)||json==null)
             return null;
         try {
             JSONObject MainActivity = new JSONObject(json);
             JSONArray activities = MainActivity.getJSONArray("folk_information");
-            List<folkData> folkInformations = new ArrayList<>();
+            List<FolkData> folkInformations = new ArrayList<>();
             for (int i = 0; i < activities.length(); i++) {
-                folkData data = new folkData();
+                FolkData data = new FolkData();
                 JSONObject activity = (JSONObject) activities.get(i);
                 data.setId(Integer.valueOf((String) activity.get("id")));
                 data.setTitle((String) activity.get("title"));
@@ -53,13 +53,13 @@ public class HandleFolk extends BaseSetting {
         return null;
     }
     @Nullable
-    private static List<orderData> Json_To_OrderList(String json){
+    private static List<OrderData> Json_To_OrderList(String json){
         try {
             JSONObject MainActivity = new JSONObject(json);
             JSONArray activities = MainActivity.getJSONArray("UserOrderInfo");
-            List<orderData> folkInformations = new ArrayList<>();
+            List<OrderData> folkInformations = new ArrayList<>();
             for (int i = 0; i < activities.length(); i++) {
-                orderData data = new orderData();
+                OrderData data = new OrderData();
                 JSONObject activity = (JSONObject) activities.get(i);
                 data.setId(((int) activity.get("id")));
                 data.setUserID((int) activity.get("userID"));
@@ -74,10 +74,10 @@ public class HandleFolk extends BaseSetting {
         return null;
     }
     @Nullable
-    private static folkData Json_To_SingleFolkData(String json){
+    private static FolkData Json_To_SingleFolkData(String json){
         try {
             JSONObject folkData = new JSONObject(json);
-            folkData data=new folkData();
+            FolkData data=new FolkData();
             data.setId(Integer.valueOf((String) folkData.get("id")));
             data.setTitle((String) folkData.get("title"));
             data.setContent((String) folkData.get("content"));
@@ -113,7 +113,7 @@ public class HandleFolk extends BaseSetting {
         }
         return 0;
     }
-    public static List<folkData> GetFolkInforMation(){
+    public static List<FolkData> GetFolkInforMation(){
         methodName="Get_Folk_Information";
         soapAction=namespace+"/"+methodName;
         HttpTransportSE transport=new HttpTransportSE(url);
@@ -144,7 +144,7 @@ public class HandleFolk extends BaseSetting {
         }
         return null;
     }
-    public static List<folkData> Search_Folk_Info(String searchInfo){
+    public static List<FolkData> Search_Folk_Info(String searchInfo){
         methodName="Search_Folk_Info";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -163,10 +163,7 @@ public class HandleFolk extends BaseSetting {
             return false;
         }
 //           System.out.println(result);
-        if(success.equals(result)){
-            return true;
-        }
-        return false;
+        return success.equals(result);
     }
     public static boolean Cancel_User_Order(int userID,int orderID){
         methodName="Cancel_User_Order";
@@ -178,10 +175,7 @@ public class HandleFolk extends BaseSetting {
         if(null==result){
             return false;
         }
-        if(success.equals(result)){
-            return true;
-        }
-        return false;
+        return success.equals(result);
     }
     public static int Check_User_Order(int userID,int orderID){
         methodName="Check_Is_Order";
@@ -196,7 +190,7 @@ public class HandleFolk extends BaseSetting {
         return Integer.parseInt(result);
     }
     @Nullable
-    private static List<orderData> Get_User_Orders_ID(int userID){
+    private static List<OrderData> Get_User_Orders_ID(int userID){
         methodName="Get_User_Order";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -207,7 +201,7 @@ public class HandleFolk extends BaseSetting {
         }
         return Json_To_OrderList(result);
     }
-    public static folkData Get_User_Order_Information(int id){
+    public static FolkData Get_User_Order_Information(int id){
         methodName="Get_Folk_Single_Information";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
@@ -216,12 +210,12 @@ public class HandleFolk extends BaseSetting {
         return Json_To_SingleFolkData(result);
     }
     @Nullable
-    public static List<folkData> Get_User_Orders(int userID){
-        List<orderData> datas=Get_User_Orders_ID(userID);
+    public static List<FolkData> Get_User_Orders(int userID){
+        List<OrderData> datas=Get_User_Orders_ID(userID);
         if(null==datas){
             return null;
         }
-        List<folkData> Orders=new ArrayList<>();
+        List<FolkData> Orders=new ArrayList<>();
         for(int i=0;i<datas.size();i++){
             Orders.add(Get_User_Order_Information(datas.get(i).getOrderID()));
         }

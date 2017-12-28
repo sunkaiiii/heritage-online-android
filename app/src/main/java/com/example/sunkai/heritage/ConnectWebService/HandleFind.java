@@ -4,8 +4,8 @@ import android.support.annotation.Nullable;
 
 import com.example.sunkai.heritage.Data.FindActivityAllData;
 import com.example.sunkai.heritage.Data.FindActivityData;
-import com.example.sunkai.heritage.Data.commentReplyData;
-import com.example.sunkai.heritage.Data.userCommentData;
+import com.example.sunkai.heritage.Data.CommentReplyData;
+import com.example.sunkai.heritage.Data.UserCommentData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,16 +23,16 @@ import java.util.List;
 
 public class HandleFind extends BaseSetting {
     @Nullable
-    private static List<userCommentData> Json_To_UserCommentData(String json) {
+    private static List<UserCommentData> Json_To_UserCommentData(String json) {
         try {
             if (null == json) {
                 return null;
             }
             JSONObject MainActivity = new JSONObject(json);
             JSONArray activities = MainActivity.getJSONArray("user_comment_information");
-            List<userCommentData> folkInformations = new ArrayList<>();
+            List<UserCommentData> folkInformations = new ArrayList<>();
             for (int i = 0; i < activities.length(); i++) {
-                userCommentData data = new userCommentData();
+                UserCommentData data = new UserCommentData();
                 JSONObject activity = (JSONObject) activities.get(i);
                 data.setId((int) activity.get("id"));
                 data.setUser_id((int) activity.get("user_id"));
@@ -42,8 +42,8 @@ public class HandleFind extends BaseSetting {
                 data.setCommentLikeNum((String) activity.get("comment_num"));
                 data.setCommentReplyNum((String) activity.get("reply_num"));
                 data.setUserName((String) activity.get("user_name"));
-                data.setUserFocusUser(success.equals((String)activity.get("isFollow")));
-                data.setUserLike(success.equals((String)activity.get("isLike")));
+                data.setUserFocusUser(success.equals(activity.get("isFollow")));
+                data.setUserLike(success.equals(activity.get("isLike")));
                 folkInformations.add(data);
             }
             return folkInformations;
@@ -54,13 +54,13 @@ public class HandleFind extends BaseSetting {
     }
 
     @Nullable
-    private static List<commentReplyData> Json_To_UserCommentReplyData(String json) {
+    private static List<CommentReplyData> Json_To_UserCommentReplyData(String json) {
         try {
             JSONObject reply = new JSONObject(json);
             JSONArray replys = reply.getJSONArray("reply_information");
-            List<commentReplyData> datas = new ArrayList<>();
+            List<CommentReplyData> datas = new ArrayList<>();
             for (int i = 0; i < replys.length(); i++) {
-                commentReplyData data = new commentReplyData();
+                CommentReplyData data = new CommentReplyData();
                 JSONObject oneReply = (JSONObject) replys.get(i);
                 data.setReplyId((int) oneReply.get("reply_id"));
                 data.setReplyTime((String) oneReply.get("reply_time"));
@@ -174,14 +174,10 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("comment_content", comment_content);
         soapObject.addProperty("comment_image", comment_image);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
-    public static List<userCommentData> Get_User_Comment_Information(int userID) {
+    public static List<UserCommentData> Get_User_Comment_Information(int userID) {
         methodName = "Get_User_Comment_Information";
         soapAction = namespace + "/" + methodName;
         SoapObject soapObject = new SoapObject(namespace, methodName);
@@ -190,7 +186,7 @@ public class HandleFind extends BaseSetting {
         return Json_To_UserCommentData(result);
     }
 
-    public static List<userCommentData> Get_User_Comment_Information_By_User(int userID) {
+    public static List<UserCommentData> Get_User_Comment_Information_By_User(int userID) {
         methodName = "Get_User_Comment_Information_By_User";
         soapAction = namespace + "/" + methodName;
         SoapObject soapObject = new SoapObject(namespace, methodName);
@@ -199,7 +195,7 @@ public class HandleFind extends BaseSetting {
         return Json_To_UserCommentData(result);
     }
 
-    public static List<userCommentData> Get_User_Comment_Information_By_Own(int userID) {
+    public static List<UserCommentData> Get_User_Comment_Information_By_Own(int userID) {
         methodName = "Get_User_Comment_Information_By_Own";
         soapAction = namespace + "/" + methodName;
         SoapObject soapObject = new SoapObject(namespace, methodName);
@@ -261,11 +257,7 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("userID", userID);
         soapObject.addProperty("commentID", commentID);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
     public static boolean Set_User_Like(int userID, int commentID) {
@@ -275,11 +267,7 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("userID", userID);
         soapObject.addProperty("commentID", commentID);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
     public static boolean Cancel_User_Like(int userID, int commentID) {
@@ -289,14 +277,10 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("userID", userID);
         soapObject.addProperty("commentID", commentID);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
-    public static List<commentReplyData> Get_User_Comment_Reply(int commentID) {
+    public static List<CommentReplyData> Get_User_Comment_Reply(int commentID) {
         methodName = "Get_User_Comment_Reply";
         soapAction = namespace + "/" + methodName;
         SoapObject soapObject = new SoapObject(namespace, methodName);
@@ -333,11 +317,7 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("replyID", replyID);
         soapObject.addProperty("replyContent", replyContent);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
     public static boolean Delete_User_Comment_Reply(int replyID) {
@@ -346,11 +326,7 @@ public class HandleFind extends BaseSetting {
         SoapObject soapObject = new SoapObject(namespace, methodName);
         soapObject.addProperty("replyID", replyID);
         String result = Get_Post(soapObject);
-        if (success.equals(result)) {
-            return true;
-        } else {
-            return false;
-        }
+        return success.equals(result);
     }
 
     public static int Get_User_Comment_Count(int commentID) {

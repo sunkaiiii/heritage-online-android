@@ -30,12 +30,7 @@ public class HandleUser  extends BaseSetting{
             SoapObject object=(SoapObject)envelope.bodyIn;
             System.out.println(object.toString());
             String result=object.getProperty(0).toString();
-            if(success.equals(result)){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return success.equals(result);
         }
         catch (IOException|XmlPullParserException e){
             e.printStackTrace();
@@ -126,12 +121,7 @@ public class HandleUser  extends BaseSetting{
         soapObject.addProperty("userName",userName);
         soapObject.addProperty("questionAnswer",questionAnswer);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
     public static boolean Change_Password(String userName,String Password){
         methodName="Change_Password";
@@ -140,11 +130,6 @@ public class HandleUser  extends BaseSetting{
         soapObject.addProperty("userName",userName);
         soapObject.addProperty("Password",Password);
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return success.equals(result);
     }
 }
