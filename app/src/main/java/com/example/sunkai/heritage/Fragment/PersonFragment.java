@@ -34,7 +34,6 @@ import com.example.sunkai.heritage.Activity.FocusInformationActivity;
 import com.example.sunkai.heritage.Activity.LoginActivity;
 import com.example.sunkai.heritage.Activity.MyOrderActivity;
 import com.example.sunkai.heritage.Activity.PermissionsActivity;
-import com.example.sunkai.heritage.Activity.SearchActivity;
 import com.example.sunkai.heritage.Activity.SettingActivity;
 import com.example.sunkai.heritage.Activity.UserOwnTiezi;
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson;
