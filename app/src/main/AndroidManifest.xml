@@ -73,7 +73,7 @@
         </provider>
         <activity android:name=".Activity.PermissionsActivity" />
         <activity
-            android:name=".Activity.UserOwnTiezi"
+            android:name=".Activity.UserOwnTieziActivity"
             android:label="我的帖子" />
         <activity android:name=".Activity.AboutUSActivity" />
         <activity android:name=".Activity.SettingListActivity"/>

@@ -316,13 +316,7 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            try {
-                // Simulate network access.
-                Thread.sleep(800);
-                return HandleUser.Sign_in(mEmail,mPassword);
-            } catch (InterruptedException e) {
-                return false;
-            }
+            return HandleUser.Sign_in(mEmail,mPassword);
         }
 
         @Override

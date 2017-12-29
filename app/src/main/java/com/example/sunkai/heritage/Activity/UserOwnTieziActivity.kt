@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import java.io.ByteArrayOutputStream
 
-class UserOwnTiezi : AppCompatActivity() {
+class UserOwnTieziActivity : AppCompatActivity() {
     private lateinit var myOwnList: RecyclerView
     private lateinit var adpter: FindFragmentRecyclerViewAdpter
     private var actionBack: ActionBar? = null

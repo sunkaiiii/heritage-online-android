@@ -21,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,7 +34,7 @@ import com.example.sunkai.heritage.Activity.LoginActivity;
 import com.example.sunkai.heritage.Activity.MyOrderActivity;
 import com.example.sunkai.heritage.Activity.PermissionsActivity;
 import com.example.sunkai.heritage.Activity.SettingActivity;
-import com.example.sunkai.heritage.Activity.UserOwnTiezi;
+import com.example.sunkai.heritage.Activity.UserOwnTieziActivity;
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson;
 import com.example.sunkai.heritage.Data.HandlePic;
 import com.example.sunkai.heritage.tools.FileStorage;
@@ -184,7 +183,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.fragment_person_my_tiezi:
-                intent=new Intent(getActivity(),UserOwnTiezi.class);
+                intent=new Intent(getActivity(), UserOwnTieziActivity.class);
                 startActivity(intent);
                 break;
             case R.id.person_fragment_setting:
