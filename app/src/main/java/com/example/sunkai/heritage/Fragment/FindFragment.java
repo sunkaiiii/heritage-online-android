@@ -379,9 +379,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case 1:
-                btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
-                refreshBtn.startAnimation(btnAnimation);
-                refreshBtn.setEnabled(false);
+                startRefreshButtonAnimation();
                 recyclerViewAdpter.reFreshList();
                 break;
             case FROM_USER_COMMENT_DETAIL:
@@ -390,9 +388,19 @@ public class FindFragment extends Fragment implements View.OnClickListener{
                     int commentID =bundle.getInt("commentID");
                     int position=bundle.getInt("position");
                     recyclerViewAdpter.getReplyCount(commentID,position);
+                }else if(resultCode==UserCommentDetailActivity.DELETE_COMMENT){
+                    startRefreshButtonAnimation();
+                    recyclerViewAdpter.reFreshList();
                 }
         }
     }
+
+    private void startRefreshButtonAnimation(){
+        btnAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.refresh_button_rotate);
+        refreshBtn.startAnimation(btnAnimation);
+        refreshBtn.setEnabled(false);
+    }
+
     BroadcastReceiver animationStopReceiver=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

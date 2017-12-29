@@ -7,6 +7,12 @@
     <string name="push_warning">是否开启消息推送？\n这可能会稍微增加程序的内存占用以及耗电。\n</string>
     <string name="program_git_url">github.com/sunkaiiii/heritage-online-android</string>
     <string name="setting">设置</string>
+    <string name="handing">处理中...</string>
+    <string name="delete_comment">删除帖子</string>
+    <string name="delete_success">删除成功</string>
+    <string name="has_problem">出现问题</string>
+    <string name="reverse_look">正在倒序查看</string>
+    <string name="non_reverse_look">正序查看</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

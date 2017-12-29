@@ -177,6 +177,15 @@ public class HandleFind extends BaseSetting {
         return success.equals(result);
     }
 
+    public static boolean Delete_User_Comment_By_ID(int commentID){
+        methodName="Delete_User_Comment_By_ID";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("commentID",commentID);
+        String result=Get_Post(soapObject);
+        return success.equals(result);
+    }
+
     public static List<UserCommentData> Get_User_Comment_Information(int userID) {
         methodName = "Get_User_Comment_Information";
         soapAction = namespace + "/" + methodName;
