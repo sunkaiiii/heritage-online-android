@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Version 2.1"
+        android:text="Version 2.3"
         android:layout_below="@id/base_line"
         android:layout_centerInParent="true"
         android:id="@+id/base_version"
