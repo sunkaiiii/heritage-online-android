@@ -122,24 +122,24 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
         View view=inflater.inflate(R.layout.fragment_person, container, false);
-        orderLinear=(LinearLayout)view.findViewById(R.id.fragment_person_oder_linner);
-        myOwnTiezi=(LinearLayout)view.findViewById(R.id.fragment_person_my_tiezi);
-        settingLayout=(LinearLayout)view.findViewById(R.id.person_fragment_setting);
+        orderLinear= view.findViewById(R.id.fragment_person_oder_linner);
+        myOwnTiezi= view.findViewById(R.id.fragment_person_my_tiezi);
+        settingLayout= view.findViewById(R.id.person_fragment_setting);
         orderLinear.setOnClickListener(this);
         myOwnTiezi.setOnClickListener(this);
         settingLayout.setOnClickListener(this);
-        userName=(TextView)view.findViewById(R.id.sign_name_textview);
-        if(LoginActivity.userName==null){
+        userName= view.findViewById(R.id.sign_name_textview);
+        if(LoginActivity.Companion.getUserName()==null){
             userName.setText("没有登录");
         }
         else{
-            userName.setText(LoginActivity.userName);
+            userName.setText(LoginActivity.Companion.getUserName());
         }
-        follow=(TextView)view.findViewById(R.id.person_follow);
-        followNumber=(TextView)view.findViewById(R.id.person_follow_number);
-        fans=(TextView)view.findViewById(R.id.person_fans);
-        fansNumber=(TextView)view.findViewById(R.id.person_fans_number);
-        userImage=(RoundedImageView)view.findViewById(R.id.sign_in_icon);
+        follow= view.findViewById(R.id.person_follow);
+        followNumber= view.findViewById(R.id.person_follow_number);
+        fans= view.findViewById(R.id.person_fans);
+        fansNumber= view.findViewById(R.id.person_fans_number);
+        userImage= view.findViewById(R.id.sign_in_icon);
         follow.setOnClickListener(this);
         followNumber.setOnClickListener(this);
         fans.setOnClickListener(this);
@@ -173,7 +173,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v){
         Intent intent;
-        if(LoginActivity.userID==0){
+        if(LoginActivity.Companion.getUserID()==0){
             toLogin();
             return;
         }
@@ -187,7 +187,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.person_fragment_setting:
-                if(LoginActivity.userID==0){
+                if(LoginActivity.Companion.getUserID()==0){
                     toLogin();
                     break;
                 }
@@ -309,7 +309,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
 //    }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(getActivity(), REQUEST_PERMISSION,
+        PermissionsActivity.Companion.startActivityForResult(getActivity(), REQUEST_PERMISSION,
                 PERMISSIONS);
     }
 
@@ -412,7 +412,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case IS_INTO_LOGIN:
-                userName.setText(LoginActivity.userName);
+                userName.setText(LoginActivity.Companion.getUserName());
                 GetUserInfo();
                 break;
             case REQUEST_PICK_IMAGE://从相册选择
@@ -432,7 +432,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
                 setImage();
                 break;
             case REQUEST_PERMISSION://权限请求
-                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                if (resultCode == PermissionsActivity.Companion.getPERMISSIONS_DENIED()) {
                     getActivity().finish();
                 } else {
                     if (isClickCamera) {
@@ -474,7 +474,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     Runnable getFollowCount=new Runnable() {
         @Override
         public void run() {
-            int count= HandlePerson.Get_Follow_Number(LoginActivity.userID);
+            int count= HandlePerson.Get_Follow_Number(LoginActivity.Companion.getUserID());
             getFollowCountHandler.sendEmptyMessage(count);
         }
     };
@@ -488,7 +488,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     Runnable getFansCount=new Runnable() {
         @Override
         public void run() {
-            int count=HandlePerson.Get_Fans_Number(LoginActivity.userID);
+            int count=HandlePerson.Get_Fans_Number(LoginActivity.Companion.getUserID());
             getFanseCountHandler.sendEmptyMessage(count);
         }
     };
@@ -502,7 +502,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     Runnable getUserImage=new Runnable() {
         @Override
         public void run() {
-            String result=HandlePerson.Get_User_Image(LoginActivity.userID);
+            String result=HandlePerson.Get_User_Image(LoginActivity.Companion.getUserID());
             if(result==null){
                 getUserImageHandler.sendEmptyMessage(0);
             }
@@ -542,7 +542,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
             bitmap.compress(Bitmap.CompressFormat.JPEG,40,baos);
             byte[] image=baos.toByteArray();
             String imageCode=Base64.encode(image);
-            boolean result=HandlePerson.Update_User_Image(LoginActivity.userID,imageCode);
+            boolean result=HandlePerson.Update_User_Image(LoginActivity.Companion.getUserID(),imageCode);
             if(result){
                 updateUserImageHandler.sendEmptyMessage(1);
             }
@@ -568,7 +568,7 @@ public class PersonFragment extends Fragment implements View.OnClickListener{
     BroadcastReceiver refreshInfo=new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            userName.setText(LoginActivity.userName);
+            userName.setText(LoginActivity.Companion.getUserName());
             GetUserInfo();
         }
     };

@@ -41,11 +41,9 @@
         <activity android:name=".Activity.MainActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"/>
-        <activity android:name=".Activity.FolkInformationActivity" />
         <activity android:name=".Activity.RegistActivity"
             android:label="注册"/>
         <activity android:name=".Activity.JoinActivity" />
-        <activity android:name=".Activity.DebugActivity" />
         <activity android:name=".Activity.ActivityInformationActivity" />
         <activity
             android:name=".Activity.MyOrderActivity"

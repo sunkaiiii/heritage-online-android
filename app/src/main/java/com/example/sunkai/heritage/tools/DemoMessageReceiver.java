@@ -12,6 +12,7 @@ import com.xiaomi.mipush.sdk.PushMessageReceiver;
 import java.util.List;
 
 /**
+ *
  * Created by sunkai on 2017/12/19.
  */
 

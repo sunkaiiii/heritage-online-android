@@ -40,7 +40,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.sunkai.heritage.Activity.LoginActivity.userID;
 
 /**
  * Created by sunkai on 2017/12/22.
@@ -132,7 +131,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         imageButtonclick likeClick=new imageButtonclick(data.getId(),position,holder.likeImage,holder.like);
         holder.likeImage.setOnClickListener(likeClick);
         holder.like.setOnClickListener(likeClick);
-        if(data.getUser_id()== userID){
+        if(data.getUser_id()== LoginActivity.Companion.getUserID()){
             holder.addfocusText.setVisibility(View.INVISIBLE);
             holder.addfocusImage.setVisibility(View.INVISIBLE);
         }
@@ -261,7 +260,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
             }
         }
         private void SetOrCancelLike(){
-            if(userID==0){
+            if(LoginActivity.Companion.getUserID()==0){
                 login();
                 return;
             }
@@ -275,7 +274,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         Runnable setLike=new Runnable() {
             @Override
             public void run() {
-                boolean result= HandleFind.Set_User_Like(userID,commentID);
+                boolean result= HandleFind.Set_User_Like(LoginActivity.Companion.getUserID(),commentID);
                 if(result){
                     SetOrCancelLikeHandler.sendEmptyMessage(LIKE);
                 }
@@ -287,7 +286,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         Runnable cancelLike=new Runnable() {
             @Override
             public void run() {
-                boolean result=HandleFind.Cancel_User_Like(userID,commentID);
+                boolean result=HandleFind.Cancel_User_Like(LoginActivity.Companion.getUserID(),commentID);
                 if(result){
                     SetOrCancelLikeHandler.sendEmptyMessage(CANCEL);
                 }
@@ -324,7 +323,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
 
         @Override
         public void onClick(View v) {
-            if(userID==0){
+            if(LoginActivity.Companion.getUserID()==0){
                 login();
                 return;
             }
@@ -333,7 +332,7 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
         Runnable addOrCancelFocus=new Runnable(){
             @Override
             public void run() {
-                boolean result=data.getUserFocusUser()? HandlePerson.Cancel_Focus(userID,data.getUser_id()):HandlePerson.Add_Focus(userID,data.getUser_id());
+                boolean result=data.getUserFocusUser()? HandlePerson.Cancel_Focus(LoginActivity.Companion.getUserID(),data.getUser_id()):HandlePerson.Add_Focus(LoginActivity.Companion.getUserID(),data.getUser_id());
                 setDataState(result);
                 handler.sendEmptyMessage(data.getUserFocusUser()?1:2);
             }
@@ -407,13 +406,13 @@ public class FindFragmentRecyclerViewAdpter extends RecyclerView.Adapter<FindFra
                 return null;
             final List<UserCommentData> getdatas;
             if(adapter.what==1){
-                getdatas= HandleFind.Get_User_Comment_Information(userID);
+                getdatas= HandleFind.Get_User_Comment_Information(LoginActivity.Companion.getUserID());
             }
             else if(adapter.what==2){
-                getdatas= HandleFind.Get_User_Comment_Information_By_User(userID);
+                getdatas= HandleFind.Get_User_Comment_Information_By_User(LoginActivity.Companion.getUserID());
             }
             else if(adapter.what==3){
-                getdatas=HandleFind.Get_User_Comment_Information_By_Own(userID);
+                getdatas=HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.Companion.getUserID());
             }
             else{
                 getdatas=new ArrayList<>();

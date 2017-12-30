@@ -89,7 +89,7 @@ class GlobalContext : Application() {
     }
 
     companion object {
-        var instance: GlobalContext? = null
+        lateinit var instance: GlobalContext
             private set
     }
 }

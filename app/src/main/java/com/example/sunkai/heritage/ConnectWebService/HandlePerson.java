@@ -55,7 +55,7 @@ public class HandlePerson extends BaseSetting {
                 data.setCheck(false);
                 data.setName(jsonData.getString("user_name"));
                 data.setFocusFansID(Integer.parseInt(jsonData.getString("id")));
-                data.setFocusUserid(LoginActivity.userID);
+                data.setFocusUserid(LoginActivity.Companion.getUserID());
                 datas.add(data);
             }
             return datas;

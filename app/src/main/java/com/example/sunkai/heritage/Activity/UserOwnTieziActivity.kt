@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -17,6 +16,8 @@ import android.view.View
 import android.widget.ImageView
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdpter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.Interface.OnItemClickListener
+import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import java.io.ByteArrayOutputStream
@@ -47,50 +48,55 @@ class UserOwnTieziActivity : AppCompatActivity() {
     }
 
     private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdpter) {
-        adpter.setOnItemClickListen { view, position ->
-            val intent = Intent(this, UserCommentDetailActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable("data", adpter.getItem(position))
-            bundle.putInt("position", position)
-            val imageView = view.findViewById<View>(R.id.fragment_find_litview_img) as ImageView
-            imageView.isDrawingCacheEnabled = true
-            val drawable = imageView.drawable
-            val bitmapDrawable = drawable as BitmapDrawable
-            val bitmap = bitmapDrawable.bitmap
-            val out = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            intent.putExtra("bitmap", out.toByteArray())
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
+
+        adpter.setOnItemClickListen(object :OnItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
+                val bundle = Bundle()
+                bundle.putSerializable("data", adpter.getItem(position))
+                bundle.putInt("position", position)
+                val imageView = view.findViewById<View>(R.id.fragment_find_litview_img) as ImageView
+                imageView.isDrawingCacheEnabled = true
+                val drawable = imageView.drawable
+                val bitmapDrawable = drawable as BitmapDrawable
+                val bitmap = bitmapDrawable.bitmap
+                val out = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                intent.putExtra("bitmap", out.toByteArray())
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        })
     }
 
     private fun setAdpterLongClick(adapter: FindFragmentRecyclerViewAdpter) {
-        adpter.setOnItemLongClickListener { view, position ->
-            AlertDialog.Builder(this).setTitle("是否删除帖子")
-                    .setPositiveButton("删除", { dialog, which ->
-                        val ad = AlertDialog.Builder(this)
-                                .setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null))
-                                .create();
-                        ad.show()
-                        Thread {
-                            val userCommentData = adapter.getItem(position)
-                            val result = HandleFind.Delete_User_Comment_By_ID(userCommentData.id)
-                            runOnUiThread {
-                                if (ad.isShowing) {
-                                    ad.dismiss()
-                                    if (result) {
-                                        MakeToast.MakeText("删除成功")
-                                    } else {
-                                        MakeToast.MakeText("出现问题，请稍后再试")
+        adpter.setOnItemLongClickListener(object :OnItemLongClickListener{
+            override fun onItemlongClick(view: View, position: Int) {
+                AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
+                        .setPositiveButton("删除", { dialog, which ->
+                            val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
+                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, null))
+                                    .create();
+                            ad.show()
+                            Thread {
+                                val userCommentData = adapter.getItem(position)
+                                val result = HandleFind.Delete_User_Comment_By_ID(userCommentData.id)
+                                runOnUiThread {
+                                    if (ad.isShowing) {
+                                        ad.dismiss()
+                                        if (result) {
+                                            MakeToast.MakeText("删除成功")
+                                        } else {
+                                            MakeToast.MakeText("出现问题，请稍后再试")
+                                        }
                                     }
+                                    adpter.reFreshList()
                                 }
-                                adpter.reFreshList()
-                            }
-                        }.start()
-                    }).setNegativeButton("取消", { dialog, which -> })
-                    .create().show()
-        }
+                            }.start()
+                        }).setNegativeButton("取消", { dialog, which -> })
+                        .create().show()
+            }
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

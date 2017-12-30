@@ -1,10 +1,10 @@
 package com.example.sunkai.heritage.ConnectWebService;
 
-import android.support.annotation.Nullable;
 
 import com.example.sunkai.heritage.Data.FolkData;
 import com.example.sunkai.heritage.Data.OrderData;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

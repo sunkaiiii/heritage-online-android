@@ -63,7 +63,6 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
     private Uri imageUri;//原图保存地址
     private boolean isClickCamera;
     private String imagePath;
-    private ActionBar actionBack;
 
     private boolean isSavePicture=false;//图片上传状态
 
@@ -80,11 +79,13 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
     }
 
     private void initView() {
-        add_comment_title = (EditText) findViewById(R.id.add_comment_title);
-        add_comment_content = (EditText) findViewById(R.id.add_comment_content);
-        add_comment_image = (ImageView) findViewById(R.id.add_comment_image);
-        actionBack=getSupportActionBar();
-        actionBack.setDisplayHomeAsUpEnabled(true);
+        add_comment_title = findViewById(R.id.add_comment_title);
+        add_comment_content = findViewById(R.id.add_comment_content);
+        add_comment_image = findViewById(R.id.add_comment_image);
+        ActionBar actionBack = getSupportActionBar();
+        if (actionBack != null) {
+            actionBack.setDisplayHomeAsUpEnabled(true);
+        }
         add_comment_image.setOnClickListener(this);
         mPermissionsChecker = new PermissionsChecker(this);
         /**
@@ -139,7 +140,7 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
             bitmap.compress(Bitmap.CompressFormat.JPEG, 60 ,baos);
             byte[] imgbyte=baos.toByteArray();
             String imageCode= Base64.encode(imgbyte);
-            boolean result=HandleFind.Add_User_Comment_Information(LoginActivity.userID,title,content,imageCode);
+            boolean result=HandleFind.Add_User_Comment_Information(LoginActivity.Companion.getUserID(),title,content,imageCode);
             if(result){
                 addCommentInformationHandler.sendEmptyMessage(1);
             }
@@ -260,30 +261,9 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
 
-//    /**
-//     * 裁剪
-//     */
-//    private void cropPhoto() {
-//        File file = new FileStorage().createCropFile();
-//        Uri outputUri = Uri.fromFile(file);//缩略图保存地址
-//        Intent intent = new Intent("com.android.camera.action.CROP");
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//        }
-//        intent.setDataAndType(imageUri, "image/*");
-//        intent.putExtra("crop", "true");
-//        intent.putExtra("aspectX", 1);
-//        intent.putExtra("aspectY", 1);
-//        intent.putExtra("scale", true);
-//        intent.putExtra("return-data", false);
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, outputUri);
-//        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-//        intent.putExtra("noFaceDetection", true);
-//        startActivityForResult(intent, REQUEST_PICTURE_CUT);
-//    }
 
     private void startPermissionsActivity() {
-        PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSION,
+        PermissionsActivity.Companion.startActivityForResult(this, REQUEST_PERMISSION,
                 PERMISSIONS);
     }
 
@@ -390,12 +370,13 @@ public class AddFindCommentActivity extends AppCompatActivity implements View.On
                 break;
             /**
              * 发帖页面暂时认为不需要剪裁图片
+             *
              */
             case REQUEST_PICTURE_CUT://裁剪完成
 
                 break;
             case REQUEST_PERMISSION://权限请求
-                if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+                if (resultCode == PermissionsActivity.Companion.getPERMISSIONS_DENIED()) {
                     finish();
                 } else {
                     if (isClickCamera) {

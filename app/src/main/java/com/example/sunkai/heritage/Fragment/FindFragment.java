@@ -158,7 +158,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
                         recyclerView.setAdapter(recyclerViewAdpter);
                         break;
                     case 1:
-                        if (LoginActivity.userID == 0) {
+                        if (LoginActivity.Companion.getUserID() == 0) {
                             Toast.makeText(getActivity(), "没有登录", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getActivity(), LoginActivity.class);
                             intent.putExtra("isInto", 1);
@@ -185,7 +185,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
          */
         addCommentBtn = (Button) view.findViewById(R.id.btn_add_comment);
         addCommentBtn.setOnClickListener(v -> {
-            if (LoginActivity.userID == 0) {
+            if (LoginActivity.Companion.getUserID() == 0) {
                 Toast.makeText(getActivity(), "没有登录", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 intent.putExtra("isInto", 1);
@@ -262,7 +262,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
         switch (v.getId()){
             case R.id.find_text:
             case R.id.find_searchbtn:
-                if(LoginActivity.userID==0){
+                if(LoginActivity.Companion.getUserID()==0){
                     Toast.makeText(getActivity(),"没有登录",Toast.LENGTH_SHORT).show();
                     Intent intent=new Intent(getActivity(),LoginActivity.class);
                     intent.putExtra("isInto",1);
@@ -383,12 +383,12 @@ public class FindFragment extends Fragment implements View.OnClickListener{
                 recyclerViewAdpter.reFreshList();
                 break;
             case FROM_USER_COMMENT_DETAIL:
-                if(resultCode== UserCommentDetailActivity.ADD_COMMENT) {
+                if(resultCode== UserCommentDetailActivity.Companion.getADD_COMMENT()) {
                     Bundle bundle = data.getExtras();
                     int commentID =bundle.getInt("commentID");
                     int position=bundle.getInt("position");
                     recyclerViewAdpter.getReplyCount(commentID,position);
-                }else if(resultCode==UserCommentDetailActivity.DELETE_COMMENT){
+                }else if(resultCode==UserCommentDetailActivity.Companion.getDELETE_COMMENT()){
                     startRefreshButtonAnimation();
                     recyclerViewAdpter.reFreshList();
                 }
