@@ -28,8 +28,10 @@ class MyOrderActivity : AppCompatActivity(), View.OnClickListener {
     internal var GetUserOrderByUserThread: Runnable = Runnable {
         datas = HandleFolk.Get_User_Orders(LoginActivity.userID)
         runOnUiThread {
-            adapter = MyOrderListViewAdapter(this@MyOrderActivity, datas)
-            activity_my_order_listview.adapter = adapter
+            datas?.let {
+                adapter = MyOrderListViewAdapter(this@MyOrderActivity, datas!!)
+                activity_my_order_listview.adapter = adapter
+            }
         }
     }
 
