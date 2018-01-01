@@ -323,12 +323,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             1 -> {
                 showProgress(true)
-                val loginName = data.getStringExtra("userName")
+                val loginName = data!!.getStringExtra("userName")
                 val loginPassword = data.getStringExtra("passWord")
                 mAuthTask = UserLoginTask(loginName, loginPassword)
                 mAuthTask?.execute(null as Void?)

@@ -134,7 +134,7 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
         override fun doInBackground(vararg voids: Void): Boolean {
             datas = HandleFolk.GetFolkInforMation()
             FolkFragment.isLoadData = true
-            folkFragment!!.setData(true, datas)
+            folkFragment?.setData(true, datas!!)
             return true
         }
 

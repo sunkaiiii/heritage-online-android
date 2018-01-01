@@ -34,7 +34,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
         adapter = FindFragmentRecyclerViewAdapter(this, 3)
         setAdpterClick(adapter)
         setAdpterLongClick(adapter)
-        val layoutManager = LinearLayoutManager(this);
+        val layoutManager = LinearLayoutManager(this)
         myOwnList.layoutManager = layoutManager
         myOwnList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         myOwnList.setHasFixedSize(true)
