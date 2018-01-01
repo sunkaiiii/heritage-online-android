@@ -201,16 +201,19 @@ class FindFragment : Fragment(), View.OnClickListener {
                 val bundle = Bundle()
                 bundle.putSerializable("data", adpter.getItem(position))
                 bundle.putInt("position", position)
-                val imageView = view.findViewById(R.id.fragment_find_litview_img) as ImageView
-                imageView.isDrawingCacheEnabled = true
-                val drawable = imageView.drawable
-                val bitmapDrawable = drawable as BitmapDrawable
-                val bitmap = bitmapDrawable.bitmap
-                val out = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                intent.putExtra("bitmap", out.toByteArray())
-                intent.putExtras(bundle)
-                startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
+                val getview:View? = view.findViewById(R.id.fragment_find_litview_img)
+                getview?.let {
+                    val imageView=getview as ImageView
+                    imageView.isDrawingCacheEnabled = true
+                    val drawable = imageView.drawable
+                    val bitmapDrawable = drawable as BitmapDrawable
+                    val bitmap = bitmapDrawable.bitmap
+                    val out = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                    intent.putExtra("bitmap", out.toByteArray())
+                    intent.putExtras(bundle)
+                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
+                }
             }
         })
     }
@@ -315,8 +318,12 @@ class FindFragment : Fragment(), View.OnClickListener {
 
         override fun doInBackground(vararg voids: Void): Bitmap? {
             val findFragment = findFragmentWeakReference.get() ?: return null
-            if (findFragment.activityDatas.isEmpty())
-                findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
+            if (findFragment.activityDatas.isEmpty()) {
+                val getDatas=HandleFind.Get_Find_Activity_ID(findFragment.activityDatas);
+                getDatas?.let {
+                    findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
+                }
+            }
             db = MySqliteHandler.GetReadableDatabase()
             val table = "find_fragment_activity"
             val selection = "id=?"
@@ -334,23 +341,26 @@ class FindFragment : Fragment(), View.OnClickListener {
                     return HandlePic.handlePic(findFragment.activity, `in`, 0)
                 }
             }
-            val data = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
-            findFragment.activityDatas[index].title = data.title
-            findFragment.activityDatas[index].content = data.content
-            findFragment.activityDatas[index].image = data.image
-            val `in` = ByteArrayInputStream(findFragment.activityDatas[index].image)
-            val bitmap = HandlePic.handlePic(findFragment.activity, `in`, 0)
-            db = MySqliteHandler.GetWritableDatabase()
-            val contentValues = ContentValues()
-            contentValues.put("id", data.id)
-            contentValues.put("title", data.title)
-            contentValues.put("image", data.image)
-            contentValues.put("content", data.content)
-            db.insert(table, null, contentValues)
-            return bitmap
+            val data:FindActivityData? = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
+            data?.let {
+                findFragment.activityDatas[index].title = data.title
+                findFragment.activityDatas[index].content = data.content
+                findFragment.activityDatas[index].image = data.image
+                val `in` = ByteArrayInputStream(findFragment.activityDatas[index].image)
+                val bitmap = HandlePic.handlePic(findFragment.activity, `in`, 0)
+                db = MySqliteHandler.GetWritableDatabase()
+                val contentValues = ContentValues()
+                contentValues.put("id", data.id)
+                contentValues.put("title", data.title)
+                contentValues.put("image", data.image)
+                contentValues.put("content", data.content)
+                db.insert(table, null, contentValues)
+                return bitmap
+            }
+            return null
         }
 
-        override fun onPostExecute(bitmap: Bitmap) {
+        override fun onPostExecute(bitmap: Bitmap?) {
             val findFragment = findFragmentWeakReference.get() ?: return
             findFragment.mImageViews[index]?.scaleType = ImageView.ScaleType.CENTER_CROP
             findFragment.mImageViews[index]?.setImageBitmap(bitmap)

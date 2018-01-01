@@ -56,6 +56,8 @@ public class HandleFind extends BaseSetting {
     @Nullable
     private static List<CommentReplyData> Json_To_UserCommentReplyData(String json) {
         try {
+            if(json==null)
+                return null;
             JSONObject reply = new JSONObject(json);
             JSONArray replys = reply.getJSONArray("reply_information");
             List<CommentReplyData> datas = new ArrayList<>();
@@ -99,6 +101,8 @@ public class HandleFind extends BaseSetting {
         try {
             FindActivityData getdata = new FindActivityData();
             getdata.setId(id);
+            if(json==null)
+                return null;
             JSONObject js = new JSONObject(json);
             getdata.setTitle(js.getString("title"));
             getdata.setContent(js.getString("content"));
