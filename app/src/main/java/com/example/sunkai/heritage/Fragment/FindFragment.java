@@ -20,7 +20,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -38,7 +37,7 @@ import com.example.sunkai.heritage.Activity.AddFindCommentActivity;
 import com.example.sunkai.heritage.Activity.LoginActivity;
 import com.example.sunkai.heritage.Activity.SearchActivity;
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity;
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdpter;
+import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter;
 import com.example.sunkai.heritage.ConnectWebService.HandleFind;
 import com.example.sunkai.heritage.Data.FindActivityData;
 import com.example.sunkai.heritage.Data.HandlePic;
@@ -64,7 +63,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
     private TextView findEdit;
     private int[] imgIdArray;
     private View view;
-    private FindFragmentRecyclerViewAdpter recyclerViewAdpter;
+    private FindFragmentRecyclerViewAdapter recyclerViewAdpter;
     private RecyclerView recyclerView;
     private FloatingActionButton refreshBtn;
     private Spinner selectSpiner;
@@ -130,7 +129,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
         /*
          * 程序默认显示广场的全部帖子
          */
-        recyclerViewAdpter=new FindFragmentRecyclerViewAdpter(getActivity(),1);
+        recyclerViewAdpter=new FindFragmentRecyclerViewAdapter(getActivity(),1);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
@@ -153,7 +152,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        recyclerViewAdpter = new FindFragmentRecyclerViewAdpter(getActivity(), 1);
+                        recyclerViewAdpter = new FindFragmentRecyclerViewAdapter(getActivity(), 1);
                         setAdpterClick(recyclerViewAdpter);
                         recyclerView.setAdapter(recyclerViewAdpter);
                         break;
@@ -166,7 +165,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
                             selectSpiner.setSelection(0);
                             return;
                         }
-                        recyclerViewAdpter = new FindFragmentRecyclerViewAdpter(getActivity(), 2);
+                        recyclerViewAdpter = new FindFragmentRecyclerViewAdapter(getActivity(), 2);
                         setAdpterClick(recyclerViewAdpter);
                         recyclerView.setAdapter(recyclerViewAdpter);
                         break;
@@ -201,7 +200,7 @@ public class FindFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    private void setAdpterClick(FindFragmentRecyclerViewAdpter adpter) {
+    private void setAdpterClick(FindFragmentRecyclerViewAdapter adpter) {
         adpter.setOnItemClickListen((view, position) -> {
             Intent intent = new Intent(getActivity(), UserCommentDetailActivity.class);
             Bundle bundle = new Bundle();

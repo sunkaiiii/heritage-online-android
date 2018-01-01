@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
@@ -14,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 import com.example.sunkai.heritage.Activity.ActivityInformationActivity
-import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdpter
+import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
@@ -29,13 +28,13 @@ import java.io.ByteArrayOutputStream
  * 除了第一个页面，其他四个全都继承与BaseFrament，并实现了Lazyload，使其在页面可见的时候才加载内容
  */
 class ActivityFragment : Fragment() {
-    internal lateinit var activityListviewAdapter: ActivityRecyclerViewAdpter
+    internal lateinit var activityListviewAdapter: ActivityRecyclerViewAdapter
     internal lateinit var activityRecyclerView: RecyclerView
-    private var channelName: String? = null
+    private lateinit var channelName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelName = arguments?.getString(channel)
+        channelName = arguments!!.getString(channel)
     }
 
 
@@ -44,7 +43,7 @@ class ActivityFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_activity1, container, false)
         activityRecyclerView = view.findViewById(R.id.activity_listview)
-        activityListviewAdapter = ActivityRecyclerViewAdpter(activity, channelName)
+        activityListviewAdapter = ActivityRecyclerViewAdapter(activity!!, channelName)
         val layoutManager = LinearLayoutManager(context)
         activityRecyclerView.layoutManager = layoutManager
         activityRecyclerView.addItemDecoration(DividerItemDecoration(GlobalContext.instance, DividerItemDecoration.VERTICAL))

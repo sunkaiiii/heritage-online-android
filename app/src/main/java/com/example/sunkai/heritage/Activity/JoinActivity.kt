@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -58,9 +59,9 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    internal var CheckUserOrderHandler: Handler = object : Handler() {
+    internal var CheckUserOrderHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
-            join_activity_btn!!.isEnabled = true
+            join_activity_btn.isEnabled = true
             if (msg.what == 1) {
                 isOrderd = false
                 changeButton()
@@ -71,7 +72,7 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    internal var AddUserOrderHandler: Handler = object : Handler() {
+    internal var AddUserOrderHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == 1) {
                 Toast.makeText(this@JoinActivity, "预约成功", Toast.LENGTH_SHORT).show()
@@ -83,7 +84,7 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    internal var CancelOrderHandler: Handler = object : Handler() {
+    internal var CancelOrderHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == 1) {
                 Toast.makeText(this@JoinActivity, "取消成功", Toast.LENGTH_SHORT).show()

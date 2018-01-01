@@ -4,11 +4,7 @@ import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -54,15 +50,15 @@ class LoginActivity : AppCompatActivity() {
             getUserIDHandler.sendEmptyMessage(0)
         }
     }
-    internal var getUserIDHandler: Handler = object : Handler() {
+    internal var getUserIDHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == 1) {
                 val editor = getSharedPreferences("data", Context.MODE_PRIVATE).edit()
                 editor.putInt("user_id", userID)
                 editor.putString("user_name", userName)
-                editor.putString("user_password", mPasswordView!!.text.toString())
-                editor.commit()
-                GlobalContext.instance!!.registUser()
+                editor.putString("user_password", mPasswordView.text.toString())
+                editor.apply()
+                GlobalContext.instance.registUser()
                 //从Welcome页过来而并非从二级页面登录，则直接进入主页
                 if (isIntoMainpage == 0) {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -100,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         mEmailSignInButton = findViewById(R.id.email_sign_in_button)
-        mEmailSignInButton.setOnClickListener { view -> attemptLogin() }
+        mEmailSignInButton.setOnClickListener { _ -> attemptLogin() }
         registButton = findViewById(R.id.activity_login_regist)
         registButton.setOnClickListener { _ ->
             val intent = Intent(this@LoginActivity, RegistActivity::class.java)
@@ -177,7 +173,7 @@ class LoginActivity : AppCompatActivity() {
                                 if (msg.what == 1) {
                                     //                                        Toast.makeText(LoginActivity.this,"成功",Toast.LENGTH_SHORT).show();
                                     changePasswordUsername = userName
-                                    ad!!.dismiss()
+                                    ad.dismiss()
                                     changePassword()
                                 } else {
                                     Toast.makeText(this@LoginActivity, "回答错误", Toast.LENGTH_SHORT).show()
@@ -226,7 +222,7 @@ class LoginActivity : AppCompatActivity() {
         val submit: Button? = ad.findViewById(R.id.change_password_queding)
         val cancel: Button? = ad.findViewById(R.id.change_password_cancel)
         userName?.setText(changePasswordUsername)
-        cancel?.setOnClickListener { v -> ad.dismiss() }
+        cancel?.setOnClickListener { _ -> ad.dismiss() }
 
         val changePasswordHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
@@ -256,7 +252,7 @@ class LoginActivity : AppCompatActivity() {
                 MakeToast.MakeText("密码不能为空")
                 return@setOnClickListener
             }
-            if (password.text.toString() != insure!!.text.toString()) {
+            if (password.text.toString() != insure.text.toString()) {
                 MakeToast.MakeText("密码输入不一致")
                 return@setOnClickListener
             }

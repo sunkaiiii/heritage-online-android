@@ -149,13 +149,13 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
     private inner class getFolkImage(internal var id: Int) : AsyncTask<Void, Void, Bitmap>() {
         internal var db = MySqliteHandler.GetReadableDatabase()
         override fun doInBackground(vararg voids: Void): Bitmap? {
-            var bitmap: Bitmap? = null
+            var bitmap: Bitmap?
             val table = "folk_image"
             val selection = "id=?"
             val selectionArgs = arrayOf(id.toString())
             val cursor = db.query(table, null, selection, selectionArgs, null, null, null)
             cursor.moveToFirst()
-            var img: ByteArray? = null
+            var img: ByteArray?
             if (!cursor.isAfterLast) {
                 val imageIndex = cursor.getColumnIndex("image")
                 img = cursor.getBlob(imageIndex)
@@ -183,7 +183,7 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
 
         override fun onPostExecute(bitmap: Bitmap?) {
             if (bitmap != null) {
-                var imageView = listView!!.findViewWithTag<View>(id)
+                var imageView = listView?.findViewWithTag<View>(id)
                 if(imageView!=null) {
                     imageView = imageView as ImageView
                     imageView.setImageBitmap(bitmap)

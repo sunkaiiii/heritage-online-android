@@ -14,7 +14,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdpter
+import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
@@ -24,21 +24,21 @@ import java.io.ByteArrayOutputStream
 
 class UserOwnTieziActivity : AppCompatActivity() {
     private lateinit var myOwnList: RecyclerView
-    private lateinit var adpter: FindFragmentRecyclerViewAdpter
+    private lateinit var adapter: FindFragmentRecyclerViewAdapter
     private var actionBack: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_own_tiezi)
         initView()
-        adpter = FindFragmentRecyclerViewAdpter(this, 3)
-        setAdpterClick(adpter)
-        setAdpterLongClick(adpter)
+        adapter = FindFragmentRecyclerViewAdapter(this, 3)
+        setAdpterClick(adapter)
+        setAdpterLongClick(adapter)
         val layoutManager = LinearLayoutManager(this);
         myOwnList.layoutManager = layoutManager
         myOwnList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         myOwnList.setHasFixedSize(true)
-        myOwnList.adapter = adpter
+        myOwnList.adapter = adapter
         actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
     }
@@ -47,13 +47,13 @@ class UserOwnTieziActivity : AppCompatActivity() {
         myOwnList = findViewById(R.id.user_own_list)
     }
 
-    private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdpter) {
+    private fun setAdpterClick(adapter: FindFragmentRecyclerViewAdapter) {
 
-        adpter.setOnItemClickListen(object :OnItemClickListener {
+        adapter.setOnItemClickListen(object :OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
                 val bundle = Bundle()
-                bundle.putSerializable("data", adpter.getItem(position))
+                bundle.putSerializable("data", adapter.getItem(position))
                 bundle.putInt("position", position)
                 val imageView = view.findViewById<View>(R.id.fragment_find_litview_img) as ImageView
                 imageView.isDrawingCacheEnabled = true
@@ -69,8 +69,8 @@ class UserOwnTieziActivity : AppCompatActivity() {
         })
     }
 
-    private fun setAdpterLongClick(adapter: FindFragmentRecyclerViewAdpter) {
-        adpter.setOnItemLongClickListener(object :OnItemLongClickListener{
+    private fun setAdpterLongClick(adapter: FindFragmentRecyclerViewAdapter) {
+        this.adapter.setOnItemLongClickListener(object :OnItemLongClickListener{
             override fun onItemlongClick(view: View, position: Int) {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
                         .setPositiveButton("删除", { dialog, which ->
@@ -90,7 +90,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                                             MakeToast.MakeText("出现问题，请稍后再试")
                                         }
                                     }
-                                    adpter.reFreshList()
+                                    this@UserOwnTieziActivity.adapter.reFreshList()
                                 }
                             }.start()
                         }).setNegativeButton("取消", { dialog, which -> })

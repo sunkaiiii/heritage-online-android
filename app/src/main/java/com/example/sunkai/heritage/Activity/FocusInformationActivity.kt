@@ -6,7 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ListView
 
-import com.example.sunkai.heritage.Adapter.FocusListviewAdpter
+import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FocusData
 import com.example.sunkai.heritage.R
@@ -64,7 +64,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
      */
     (var what: Int) {
         var datas: List<FocusData>? = null
-        private var adpter: FocusListviewAdpter? = null
+        private var adapter: FocusListviewAdapter? = null
         private val getFollowinformation = Runnable {
             datas = HandlePerson.Get_Follow_Information(LoginActivity.userID)
             datas?.let {
@@ -84,24 +84,26 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         private val getUsersImage = Runnable {
-            for (i in adpter!!.datas.indices) {
+            for (i in adapter!!.datas.indices) {
                 val result: String?
-                if (adpter?.what == 1) {
-                    result = HandlePerson.Get_User_Image(adpter!!.datas[i].focusFansID)
+                if (adapter?.what == 1) {
+                    result = HandlePerson.Get_User_Image(adapter!!.datas[i].focusFansID)
                 } else {
-                    result = HandlePerson.Get_User_Image(adpter!!.datas[i].focusUserid)
+                    result = HandlePerson.Get_User_Image(adapter!!.datas[i].focusUserid)
                 }
                 if (!("Error" == result || null == result)) {
-                    adpter!!.datas[i].userImage = Base64.decode(result)
-                    runOnUiThread { adpter!!.notifyDataSetChanged() }
+                    adapter!!.datas[i].userImage = Base64.decode(result)
+                    runOnUiThread { adapter!!.notifyDataSetChanged() }
                 }
             }
         }
 
 
         fun setAdpter() {
-            adpter = FocusListviewAdpter(this@FocusInformationActivity, datas, what)
-            focus_information_listview.adapter = adpter
+            datas?.let {
+                adapter = FocusListviewAdapter(this@FocusInformationActivity, datas!!, what)
+                focus_information_listview.adapter = adapter
+            }
         }
 
         /**

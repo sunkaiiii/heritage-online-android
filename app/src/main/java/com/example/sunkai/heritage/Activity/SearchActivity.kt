@@ -14,7 +14,7 @@ import android.widget.ListView
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FocusData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.Adapter.FocusListviewAdpter
+import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.tools.MakeToast
 
 /**
@@ -73,9 +73,9 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
         var datas: List<FocusData>?
         Thread{
             datas = HandlePerson.Get_Search_UserInfo(searchText)
-            if (datas != null) {
+            datas?.let {
                 runOnUiThread {
-                    val adapter = FocusListviewAdpter(this, datas, 3)
+                    val adapter = FocusListviewAdapter(this, datas!!, 3)
                     search_activity_list.adapter = adapter
                 }
             }
