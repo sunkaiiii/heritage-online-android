@@ -421,10 +421,10 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             return bitmap
         }
 
-        override fun onPostExecute(bitmap: Bitmap) {
+        override fun onPostExecute(bitmap: Bitmap?) {
             val findFragmentAdapter = findFragmentAdapterWeakReference.get() ?: return
             val imageView = imageViewWeakReference.get()
-            if (imageView != null) {
+            if (imageView != null&&bitmap!=null) {
                 imageView.setImageBitmap(bitmap)
                 imageView.startAnimation(findFragmentAdapter.imageAnimation)
             }
