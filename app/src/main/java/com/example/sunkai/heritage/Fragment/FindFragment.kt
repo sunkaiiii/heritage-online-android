@@ -129,8 +129,6 @@ class FindFragment : Fragment(), View.OnClickListener {
         recyclerViewAdpter = FindFragmentRecyclerViewAdapter(activity!!, 1)
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
-        recyclerView.addItemDecoration(DividerItemDecoration(activity!!, DividerItemDecoration.VERTICAL))
-        recyclerView.setHasFixedSize(true)
         recyclerView.adapter = recyclerViewAdpter
         refreshBtn = view.findViewById(R.id.fragment_find_refreshbtn)
         refreshBtn.setOnClickListener { _ ->

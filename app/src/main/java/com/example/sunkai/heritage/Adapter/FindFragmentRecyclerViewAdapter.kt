@@ -21,13 +21,12 @@ import android.widget.TextView
 import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.UserCommentData
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -42,13 +41,11 @@ import java.util.ArrayList
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : RecyclerView.Adapter<FindFragmentRecyclerViewAdapter.ViewHolder>(), View.OnClickListener, View.OnLongClickListener {
+class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : BaseRecyclerAdapter() {
     private var datas: List<UserCommentData>? = null
     private var recyclerView: RecyclerView? = null
     internal var imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
     internal var lruCache: LruCache<Int, Bitmap>
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
         lateinit var img: ImageView
@@ -99,47 +96,49 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         return holder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.tag = position
-        val data = datas!![position]
-        holder.img.setImageResource(R.drawable.backgound_grey)
-        holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        GetCommentImage(data, holder.img)
-        GetUserImage(data, holder.userImage)
-        if (data.getUserLike()) {
-            SetLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
-        } else {
-            CancelLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
-        }
-        holder.comment.text = data.commentReplyNum
-        holder.name_text.text = data.userName
-        if (what == 2) {
-            holder.addfocusImage.visibility = View.GONE
-            holder.addfocusText.visibility = View.GONE
-        }
-        if (what == 3) {
-            hideSomeElement(holder, data)
-        }
-        val likeClick = imageButtonclick(data.id, position, holder.likeImage, holder.like)
-        holder.likeImage.setOnClickListener(likeClick)
-        holder.like.setOnClickListener(likeClick)
-        if (data.user_id == LoginActivity.userID) {
-            holder.addfocusText.visibility = View.INVISIBLE
-            holder.addfocusImage.visibility = View.INVISIBLE
-        } else {
-            holder.addfocusText.visibility = View.VISIBLE
-            holder.addfocusImage.visibility = View.VISIBLE
-            val addFocusButtonClick = addFocusButtonClick(position)
-            holder.addfocusText.setOnClickListener(addFocusButtonClick)
-            holder.addfocusImage.setOnClickListener(addFocusButtonClick)
-            if (data.getUserFocusUser()) {
-                holder.addfocusText.text = "已关注"
-                holder.addfocusText.setTextColor(Color.rgb(184, 184, 184))
-                holder.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        super.onBindViewHolder(holder, position)
+        if(holder is ViewHolder){
+            val data = datas!![position]
+            holder.img.setImageResource(R.drawable.backgound_grey)
+            holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
+            GetCommentImage(data, holder.img)
+            GetUserImage(data, holder.userImage)
+            if (data.getUserLike()) {
+                SetLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
             } else {
+                CancelLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
+            }
+            holder.comment.text = data.commentReplyNum
+            holder.name_text.text = data.userName
+            if (what == 2) {
+                holder.addfocusImage.visibility = View.GONE
+                holder.addfocusText.visibility = View.GONE
+            }
+            if (what == 3) {
+                hideSomeElement(holder, data)
+            }
+            val likeClick = imageButtonclick(data.id, position, holder.likeImage, holder.like)
+            holder.likeImage.setOnClickListener(likeClick)
+            holder.like.setOnClickListener(likeClick)
+            if (data.user_id == LoginActivity.userID) {
+                holder.addfocusText.visibility = View.INVISIBLE
+                holder.addfocusImage.visibility = View.INVISIBLE
+            } else {
+                holder.addfocusText.visibility = View.VISIBLE
+                holder.addfocusImage.visibility = View.VISIBLE
+                val addFocusButtonClick = addFocusButtonClick(position)
+                holder.addfocusText.setOnClickListener(addFocusButtonClick)
+                holder.addfocusImage.setOnClickListener(addFocusButtonClick)
+                if (data.getUserFocusUser()) {
+                    holder.addfocusText.text = "已关注"
+                    holder.addfocusText.setTextColor(Color.rgb(184, 184, 184))
+                    holder.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp)
+                } else {
 
-                holder.addfocusText.text = "加关注"
-                holder.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                    holder.addfocusText.text = "加关注"
+                    holder.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                }
             }
         }
     }
@@ -148,31 +147,12 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         return if (datas != null) datas!!.size else 0
     }
 
-    override fun onClick(v: View) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener!!.onItemClick(v, v.tag as Int)
-        }
-    }
 
-    override fun onLongClick(v: View): Boolean {
-        if (mOnItemLongClickListener != null) {
-            mOnItemLongClickListener!!.onItemlongClick(v, v.tag as Int)
-            return true
-        }
-        return false
-    }
 
     fun getItem(position: Int): UserCommentData {
         return datas!![position]
     }
 
-    fun setOnItemClickListen(listenr: OnItemClickListener) {
-        this.mOnItemClickListener = listenr
-    }
-
-    fun setOnItemLongClickListener(listener: OnItemLongClickListener) {
-        this.mOnItemLongClickListener = listener
-    }
 
 
     private fun changeLikeImageState(isLike: Boolean, imageView: ImageView?, textView: TextView?, position: Int): Boolean {
@@ -206,7 +186,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     }
 
     private fun GetUserImage(data: UserCommentData, imageView: ImageView) {
-        GetUserImage(data.user_id, this, data.id, imageView).execute()
+        GetUserImage(data.user_id, this, imageView).execute()
     }
 
     private fun hideSomeElement(vh: ViewHolder, data: UserCommentData) {
@@ -250,9 +230,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         var SetOrCancelLikeHandler: Handler = object : Handler(context.mainLooper) {
             override fun handleMessage(msg: Message) {
-                val imageView = imageViewWeakReference.get()
-                val textView = textViewWeakReference.get()
-                if (msg.what != ERROR && imageView != null && textView != null) {
+                val getImageView = imageViewWeakReference.get()
+                val getTextView = textViewWeakReference.get()
+                if (msg.what != ERROR && getImageView != null && getTextView != null) {
                     datas!![position].isUserLike = LIKE == msg.what
                     if (!changeLikeImageState(datas!![position].getUserLike(), imageView, textView, position)) {
                         GetInformation(this@FindFragmentRecyclerViewAdapter).execute()
@@ -320,11 +300,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 datas!![position].isUserFocusUser = !datas!![position].getUserFocusUser()
                 data.isUserFocusUser = !data.getUserFocusUser()
             }
-            for (i in datas!!.indices) {
-                if (datas!![i].user_id == data.user_id) {
-                    datas!![i].isUserFocusUser = !datas!![i].getUserFocusUser()
-                }
-            }
+            datas!!.indices
+                    .filter { datas!![it].user_id == data.user_id }
+                    .forEach { datas!![it].isUserFocusUser = !datas!![it].getUserFocusUser() }
         }
     }
 
@@ -423,16 +401,18 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         override fun onPostExecute(bitmap: Bitmap?) {
             val findFragmentAdapter = findFragmentAdapterWeakReference.get() ?: return
-            val imageView = imageViewWeakReference.get()
-            if (imageView != null&&bitmap!=null) {
-                imageView.setImageBitmap(bitmap)
-                imageView.startAnimation(findFragmentAdapter.imageAnimation)
+            val getImageView = imageViewWeakReference.get()
+            if (getImageView != null&&bitmap!=null) {
+                getImageView.run {
+                    setImageBitmap(bitmap)
+                    startAnimation(findFragmentAdapter.imageAnimation)
+                }
             }
 
         }
     }
 
-    internal class GetUserImage internal constructor(var id: Int, adapter: FindFragmentRecyclerViewAdapter, var commandID: Int, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
+    internal class GetUserImage internal constructor(var id: Int, adapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
         var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
         var imageViewWeakReference: WeakReference<ImageView>
 

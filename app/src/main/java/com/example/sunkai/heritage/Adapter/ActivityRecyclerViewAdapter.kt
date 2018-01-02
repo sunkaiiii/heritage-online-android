@@ -14,12 +14,12 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 
 import java.io.ByteArrayInputStream
@@ -29,23 +29,17 @@ import java.lang.ref.WeakReference
  * Created by sunkai on 2017/12/22.
  */
 
-class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : RecyclerView.Adapter<ActivityRecyclerViewAdapter.ViewHolder>(), View.OnClickListener {
+class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter() {
     private var activityDatas: List<ClassifyActiviyData>? = null
     internal var imageAnimation: Animation//图片出现动画
 
     internal var thisRecyclerView: RecyclerView? = null
     internal var lruCache: LruCache<Int, Bitmap>
-    private var mOnItemClickListener: OnItemClickListener? = null
 
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
-        lateinit var img: ImageView
-        lateinit var textView: TextView
-
+        val img: ImageView
+        val textView: TextView
         init {
-            initView()
-        }
-
-        private fun initView() {
             img = view.findViewById<View>(R.id.activity_layout_img) as ImageView
             textView = view.findViewById<View>(R.id.activity_layout_text) as TextView
         }
@@ -73,36 +67,27 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.tag = position
-        val data = activityDatas!![position]
-        val text = data.activityContent
-        holder.textView.text = text
-        holder.img.setImageResource(R.drawable.empty_background)
-        val bitmap = lruCache.get(data.id)
-        if (bitmap != null) {
-            holder.img.setImageBitmap(bitmap)
-        } else {
-            getChannelImage(data.id, holder.img, this).execute()
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+        super.onBindViewHolder(holder, position)
+        if(holder is ViewHolder) {
+            val data = activityDatas!![position]
+            val text = data.activityContent
+            holder.textView.text = text
+            holder.img.setImageResource(R.drawable.empty_background)
+            val bitmap = lruCache.get(data.id)
+            if (bitmap != null) {
+                holder.img.setImageBitmap(bitmap)
+            } else {
+                getChannelImage(data.id, holder.img, this).execute()
+            }
         }
     }
-
     override fun getItemCount(): Int {
         return if (activityDatas == null) 0 else activityDatas!!.size
     }
 
     fun getItem(position: Int): ClassifyActiviyData {
         return activityDatas!![position]
-    }
-
-    override fun onClick(v: View) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener!!.onItemClick(v, v.tag as Int)
-        }
-    }
-
-    fun setOnItemClickListen(listenr: OnItemClickListener) {
-        this.mOnItemClickListener = listenr
     }
 
     internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : AsyncTask<Void, Void, Void>() {

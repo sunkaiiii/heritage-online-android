@@ -121,7 +121,7 @@ public class HandleFind extends BaseSetting {
             JSONArray jsonArray=js.getJSONArray("members");
             List<Integer> ids=new ArrayList<>();
             for(int i=0;i<jsonArray.length();i++){
-                ids.add((int)jsonArray.get(i));
+                ids.add(jsonArray.getInt(i));
             }
             return ids;
         }catch (JSONException e){
