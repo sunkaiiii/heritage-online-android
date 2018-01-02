@@ -41,7 +41,7 @@ public class BaseSetting extends WebServiceSetting{
             if(envelope.bodyIn instanceof SoapObject) {
                 SoapObject object = (SoapObject) envelope.bodyIn;
                 System.out.println(object.toString());
-                if (null==object||null==object.getProperty(0)||null == object.getProperty(0).toString()) {
+                if (null==object.getProperty(0)||null == object.getProperty(0).toString()) {
                     return null;
                 } else {
                     return object.getProperty(0).toString();
@@ -65,9 +65,5 @@ public class BaseSetting extends WebServiceSetting{
             e.printStackTrace();
         }
         return null;
-    }
-    static public void Change_IP(String ip){
-        url = "http://" +ip+
-                ":8088/services/Heritage?wsdl";
     }
 }

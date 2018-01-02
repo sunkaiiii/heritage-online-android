@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.example.sunkai.heritage.Data.FocusData;
 import com.example.sunkai.heritage.Activity.LoginActivity;
+import com.example.sunkai.heritage.Data.OtherPersonData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +31,7 @@ public class HandlePerson extends BaseSetting {
             for(int i=0;i<info.length();i++){
                 FocusData data=new FocusData();
                 JSONObject jsondata=(JSONObject)info.get(i);
-                data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_focusID")));
+                data.setFocusUserid(Integer.parseInt(jsondata.getString("focus_focusID")));
                 data.setFocusFansID(Integer.parseInt(jsondata.getString("focus_fansID")));
                 data.setName(jsondata.getString("USER_NAME"));
                 datas.add(data);
@@ -61,6 +62,21 @@ public class HandlePerson extends BaseSetting {
             return datas;
         }
         catch (JSONException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Nullable
+    private static OtherPersonData Json_To_OtherPersonData(int userID,String json){
+        if(json==null)
+            return null;
+        try{
+            JSONObject jsonObject=new JSONObject(json);
+            String userName=jsonObject.getString("userName");
+            int focusNumber=jsonObject.getInt("focusNumber");
+            int fansNumber=jsonObject.getInt("fansNumber");
+            return new OtherPersonData(userID,focusNumber,fansNumber,userName);
+        }catch (JSONException e){
             e.printStackTrace();
         }
         return null;
@@ -121,6 +137,14 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
         return Json_To_focusData(result);
+    }
+    public static OtherPersonData Get_User_All_Info(int userID){
+        methodName="Get_User_All_Info";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        String result=Get_Post(soapObject);
+        return Json_To_OtherPersonData(userID,result);
     }
     public static boolean Add_Focus(int userID,int focusID){
         methodName="Add_Focus";

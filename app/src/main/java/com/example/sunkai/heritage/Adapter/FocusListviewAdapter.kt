@@ -1,26 +1,31 @@
 package com.example.sunkai.heritage.Adapter
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.AsyncTask
 import android.os.Handler
+import android.os.Looper
 import android.os.Message
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import com.example.sunkai.heritage.Activity.OtherUsersActivity
 
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.FocusData
+import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.R
 import com.makeramen.roundedimageview.RoundedImageView
 
 import java.io.ByteArrayInputStream
+import java.lang.ref.WeakReference
+
 /*
  * Created by sunkai on 2017-5-2.
  */
@@ -96,6 +101,7 @@ class FocusListviewAdapter
             vh.userIntrodeuce = view.findViewById(R.id.user_introduce)
             vh.userImage = view.findViewById(R.id.user_head_image)
             vh.focusBtn = view.findViewById(R.id.focus_btn)
+            vh.rl_focus_listview_layout=view.findViewById(R.id.rl_focus_listview_layout)
             view.tag = vh
         } else {
             view=convertView
@@ -104,13 +110,7 @@ class FocusListviewAdapter
         val data = datas[position]
         val userName = data.name
         vh.userName.text = userName
-        if (null == data.userImage) {
-            vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        } else {
-            val `in` = ByteArrayInputStream(data.userImage)
-            val bitmap = HandlePic.handlePic(context, `in`, 0)
-            vh.userImage.setImageBitmap(bitmap)
-        }
+        vh.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         if (data.followeachother) {
             vh.focusBtn.text = "互相关注"
         } else {
@@ -124,7 +124,7 @@ class FocusListviewAdapter
         /*
          * 在点击关注、取关的时候，页面文字改变，提示用户正在响应，并禁止按钮点击以防止错误的发生
          */
-        vh.focusBtn.setOnClickListener { v ->
+        vh.focusBtn.setOnClickListener { _ ->
             val handleFocus = handleFocus(data, position, btn)
             btn.text = "操作中"
             btn.isEnabled = false
@@ -134,16 +134,73 @@ class FocusListviewAdapter
                 handleFocus.AddFollow()
             }
         }
+        if(what!=2)
+            getUserImage(data.focusFansID,vh.userImage).execute()
+        else
+            getUserImage(data.focusUserid,vh.userImage).execute()
+        vh.rl_focus_listview_layout.setOnClickListener({
+            val intent=Intent(context,OtherUsersActivity::class.java)
+            when(what){
+                1,3->intent.putExtra("userID",data.focusFansID)
+                2->intent.putExtra("userID",data.focusUserid)
+            }
+            context.startActivity(intent)
+        })
         return view
     }
 
     internal inner class Holder {
+        lateinit var rl_focus_listview_layout:RelativeLayout
         lateinit var userName: TextView
         lateinit var userIntrodeuce: TextView
         lateinit var userImage: RoundedImageView
         lateinit var focusBtn: Button
     }
 
+
+    internal class getUserImage(val userID:Int,val imageview:ImageView):AsyncTask<Void,Void, Bitmap?>(){
+        val imageviewWeakRefrence:WeakReference<ImageView>
+        init {
+            this.imageviewWeakRefrence= WeakReference(imageview)
+        }
+        override fun doInBackground(vararg params: Void?): Bitmap? {
+            val imageView=imageviewWeakRefrence.get()
+            imageView.let {
+                var db=MySqliteHandler.GetReadableDatabase()
+                val tableName="person_image"
+                val selection = "imageID=?"
+                val selectionArgs = arrayOf(userID.toString())
+                val cursor=db.query(tableName,null,selection,selectionArgs,null,null,null)
+                cursor.moveToFirst()
+                if(!cursor.isAfterLast){
+                    val imageIndex = cursor.getColumnIndex("image")
+                    val image = cursor.getBlob(imageIndex)
+                    cursor.close()
+                    return HandlePic.handlePic(GlobalContext.instance.applicationContext,ByteArrayInputStream(image),0)
+                }
+                val image=HandlePerson.Get_User_Image(userID)
+                image?.let {
+                    val imageByte=org.kobjects.base64.Base64.decode(image)
+                    val contentValues = ContentValues()
+                    contentValues.put("imageID", userID)
+                    contentValues.put("image", imageByte)
+                    db = MySqliteHandler.GetWritableDatabase()
+                    db.insert(tableName, null, contentValues)
+                    return HandlePic.handlePic(GlobalContext.instance.applicationContext,ByteArrayInputStream(imageByte),0)
+                }
+            }
+            return null
+        }
+
+        override fun onPostExecute(bitmap: Bitmap?) {
+            bitmap?.let {
+                val imageView=imageviewWeakRefrence.get();
+                imageView?.let {
+                    imageView.setImageBitmap(bitmap)
+                }
+            }
+        }
+    }
     internal inner class handleFocus(var data: FocusData, var position: Int, var btn: Button) {
         private val AddFollow = Runnable {
             var result = false
@@ -171,7 +228,7 @@ class FocusListviewAdapter
                 CancelFollowHandler.sendEmptyMessage(0)
             }
         }
-        private val CancelFollowHandler = object : Handler(GlobalContext.instance.mainLooper) {
+        private val CancelFollowHandler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
                 btn.isEnabled = true
                 if (msg.what == 1) {
@@ -191,7 +248,7 @@ class FocusListviewAdapter
                 }
             }
         }
-        private val AddFollowHandler = object : Handler(GlobalContext.instance.mainLooper) {
+        private val AddFollowHandler = object : Handler(Looper.getMainLooper()) {
             override fun handleMessage(msg: Message) {
                 btn.isEnabled = true
                 if (msg.what == 1) {

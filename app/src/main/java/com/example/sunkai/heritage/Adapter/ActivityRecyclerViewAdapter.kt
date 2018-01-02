@@ -127,10 +127,10 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
     internal class getChannelImage(var id: Int, imageView: ImageView, adapter: ActivityRecyclerViewAdapter) : AsyncTask<Void, Void, Bitmap>() {
         var db = MySqliteHandler.GetReadableDatabase()
-        var table = "channel_activity_image"
-        var selection = "imageID=?"
-        var weakReferenceImageView: WeakReference<ImageView>
-        var weakReference: WeakReference<ActivityRecyclerViewAdapter>
+        val table = "channel_activity_image"
+        val selection = "imageID=?"
+        val weakReferenceImageView: WeakReference<ImageView>
+        val weakReference: WeakReference<ActivityRecyclerViewAdapter>
 
         init {
             weakReferenceImageView = WeakReference(imageView)
