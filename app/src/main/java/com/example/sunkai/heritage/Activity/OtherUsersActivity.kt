@@ -4,11 +4,14 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ImageView
 import android.widget.TextView
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -16,6 +19,7 @@ import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.OtherPersonData
+import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
@@ -25,6 +29,7 @@ import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import org.kobjects.base64.Base64
 import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 
 class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var userNameTextView:TextView
@@ -121,6 +126,21 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         val layoutManager = GridLayoutManager(this,4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter=adapter
+
+        adapter.setOnItemClickListen(object:OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                val imageview:ImageView=view.findViewById(R.id.iv_other_person_view)
+                imageview.isDrawingCacheEnabled=true
+                val drawable = imageview.drawable
+                val bitmapDrawable = drawable as BitmapDrawable
+                val bitmap = bitmapDrawable.bitmap
+                val out = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+                val intent=Intent(this@OtherUsersActivity,ViewIamgeActivity::class.java)
+                intent.putExtra("image", out.toByteArray())
+                startActivity(intent)
+            }
+        })
     }
 
     internal fun initview(){

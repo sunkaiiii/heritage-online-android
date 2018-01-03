@@ -10,4 +10,5 @@
     <color name="white">#ffffff</color>
     <color name="deepGrey">#2f2f2f</color>
     <color name="colorPrimeryToBtn">#b46a2e05</color>
+    <color name="transparent">#50000000</color>
 </resources>

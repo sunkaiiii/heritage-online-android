@@ -42,6 +42,7 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(GlobalContext.instance).inflate(R.layout.other_person_view, parent, false)
+        view.setOnClickListener(this)
         return ViewHolder(view)
     }
 
