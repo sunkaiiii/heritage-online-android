@@ -10,6 +10,9 @@ import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FocusData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.FANS
+import com.example.sunkai.heritage.value.FOLLOW
+import com.example.sunkai.heritage.value.NO_USERID
 
 import org.kobjects.base64.Base64
 
@@ -35,13 +38,27 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
          * 判断是点击我的关注还是从我的粉丝进来的，从而执行不同的方法
          */
         when (intent.getStringExtra("information")) {
-            "focus" -> {
+            "focus"-> {
                 list = handleList(1)
                 list.getFollowInformaiton()
             }
-            "fans" -> {
+            "fans"-> {
                 list = handleList(2)
                 list.getFansInformation()
+            }
+            FOLLOW.toString()->{
+                val userID=intent.getIntExtra("userID", NO_USERID)
+                if(userID!= NO_USERID) {
+                    list = handleList(FOLLOW,userID)
+                    list.getFollowInformaiton()
+                }
+            }
+            FANS.toString()->{
+                val userID=intent.getIntExtra("userID", NO_USERID)
+                if(userID!= NO_USERID) {
+                    list = handleList(FANS,userID)
+                    list.getFansInformation()
+                }
             }
             else -> {
             }
@@ -57,16 +74,22 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    internal inner class handleList
+    internal inner class handleList(what: Int,userID:Int=LoginActivity.userID)
     /**
      *
      * @param what 为1的时候说明是关注界面，为2的时候为粉丝界面
      */
-    (var what: Int) {
+    {
+        val userID:Int
+        val what:Int
+        init{
+            this.userID=userID
+            this.what=what
+        }
         var datas: List<FocusData>? = null
         private var adapter: FocusListviewAdapter? = null
         private val getFollowinformation = Runnable {
-            datas = HandlePerson.Get_Follow_Information(LoginActivity.userID)
+            datas = HandlePerson.Get_Follow_Information(userID)
             datas?.let {
                 runOnUiThread {
                     setAdpter()
@@ -75,7 +98,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
         private val getFansinformation = Runnable {
-            datas = HandlePerson.Get_Fans_Information(LoginActivity.userID)
+            datas = HandlePerson.Get_Fans_Information(userID)
             datas?.let {
                 runOnUiThread {
                     setAdpter()

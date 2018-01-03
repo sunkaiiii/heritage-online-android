@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.ContentValues
+import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
@@ -16,7 +17,10 @@ import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.OtherPersonData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.FANS
+import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
+import com.example.sunkai.heritage.value.RESULT_NULL
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import org.kobjects.base64.Base64
@@ -30,14 +34,15 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var focusText:TextView
     internal lateinit var fansText:TextView
     internal lateinit var userinfosRecyclerView:RecyclerView
+    var userID:Int= NO_USERID
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
         initview()
-
-        val userID=intent.getIntExtra("userID",NO_USERID)
+        userID=intent.getIntExtra("userID",NO_USERID)
         if (userID!=NO_USERID){
             getUserAllInfo(userID)
             setAdapter(userID)
@@ -134,8 +139,18 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         fansText.setOnClickListener(this)
     }
 
+    internal fun startActivity(what:Int){
+        val intent=Intent(this,FocusInformationActivity::class.java)
+        intent.putExtra("information",what.toString())
+        intent.putExtra("userID",userID)
+        startActivity(intent)
+    }
+
 
     override fun onClick(v: View?) {
-
+        when(v?.id){
+            R.id.person_follow_number,R.id.person_follow->startActivity(FOLLOW)
+            R.id.person_fans_number,R.id.person_fans->startActivity(FANS)
+        }
     }
 }
