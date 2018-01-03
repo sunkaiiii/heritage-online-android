@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Activity.OtherUsersActivity"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <include layout="@layout/user_view"/>
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv_activity_other_users"/>
-</LinearLayout>
+        android:orientation="vertical"
+        tools:context="com.example.sunkai.heritage.Activity.OtherUsersActivity">
+
+        <include layout="@layout/user_view" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_activity_other_users"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:visibility="gone"
+        android:id="@+id/ll_activity_other_users_background"
+        android:orientation="vertical"/>
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/pv_activity_other_users_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:visibility="gone" />
+</FrameLayout>

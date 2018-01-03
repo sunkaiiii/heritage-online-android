@@ -4,5 +4,4 @@
     android:id="@+id/pv_activity_view_image"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scaleType="fitCenter"
-    android:background="@color/transparent"/>
+    android:scaleType="fitCenter"/>

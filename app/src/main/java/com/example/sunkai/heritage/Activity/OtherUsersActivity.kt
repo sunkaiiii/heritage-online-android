@@ -10,8 +10,9 @@ import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.AdapterView
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -24,12 +25,11 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
-import com.example.sunkai.heritage.value.RESULT_NULL
+import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import org.kobjects.base64.Base64
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 
 class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var userNameTextView:TextView
@@ -39,8 +39,12 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var focusText:TextView
     internal lateinit var fansText:TextView
     internal lateinit var userinfosRecyclerView:RecyclerView
+    internal lateinit var llBackground:LinearLayout
+    internal lateinit var pvImage:PhotoView
     var userID:Int= NO_USERID
 
+    internal val inAnimation=AlphaAnimation(0f,1f)
+    internal val outAnimation=AlphaAnimation(1f,0f)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,17 +134,21 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         adapter.setOnItemClickListen(object:OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
                 val imageview:ImageView=view.findViewById(R.id.iv_other_person_view)
-                imageview.isDrawingCacheEnabled=true
-                val drawable = imageview.drawable
-                val bitmapDrawable = drawable as BitmapDrawable
-                val bitmap = bitmapDrawable.bitmap
-                val out = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                val intent=Intent(this@OtherUsersActivity,ViewIamgeActivity::class.java)
-                intent.putExtra("image", out.toByteArray())
-                startActivity(intent)
+                val bitmap=getBitmap(imageview)
+                bitmap?.let{
+                    openImageView(bitmap)
+                }
             }
         })
+    }
+
+    internal fun getBitmap(imageView: ImageView):Bitmap?{
+        imageView.isDrawingCacheEnabled=true
+        val drawable = imageView.drawable
+        if(drawable is BitmapDrawable){
+            return drawable.bitmap
+        }
+        return null
     }
 
     internal fun initview(){
@@ -151,12 +159,19 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         focusText=findViewById(R.id.person_follow)
         fansText=findViewById(R.id.person_fans)
         userinfosRecyclerView=findViewById(R.id.rv_activity_other_users)
+        llBackground=findViewById(R.id.ll_activity_other_users_background)
+        pvImage=findViewById(R.id.pv_activity_other_users_image)
+
+        inAnimation.duration=300
+        outAnimation.duration=300
 
         userImageView.setOnClickListener(this)
         focusNumberTextView.setOnClickListener(this)
         fansNumberTextView.setOnClickListener(this)
         focusText.setOnClickListener(this)
         fansText.setOnClickListener(this)
+        llBackground.setOnClickListener(this)
+        pvImage.setOnClickListener(this)
     }
 
     internal fun startActivity(what:Int){
@@ -165,12 +180,43 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         intent.putExtra("userID",userID)
         startActivity(intent)
     }
+    internal fun openImageView(bitmap:Bitmap){
+        llBackground.startAnimation(inAnimation)
+        pvImage.startAnimation(inAnimation)
+        llBackground.visibility=View.VISIBLE
+        pvImage.visibility=View.VISIBLE
+        pvImage.setImageBitmap(bitmap)
+    }
+    internal fun closeImageView(){
+        llBackground.startAnimation(outAnimation)
+        pvImage.startAnimation(outAnimation)
+        llBackground.visibility=View.GONE
+        pvImage.visibility=View.GONE
+    }
 
 
     override fun onClick(v: View?) {
         when(v?.id){
             R.id.person_follow_number,R.id.person_follow->startActivity(FOLLOW)
             R.id.person_fans_number,R.id.person_fans->startActivity(FANS)
+            R.id.ll_activity_other_users_background->{
+                closeImageView()
+            }
+            R.id.pv_activity_other_users_image->{
+                if(pvImage.scale==1.0f){
+                    closeImageView()
+                }else{
+                    pvImage.setScale(1.0f,true)
+                }
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        if(llBackground.visibility==View.VISIBLE){
+            closeImageView()
+        }else {
+            super.onBackPressed()
         }
     }
 }
