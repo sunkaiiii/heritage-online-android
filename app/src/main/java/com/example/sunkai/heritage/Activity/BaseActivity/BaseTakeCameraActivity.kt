@@ -43,6 +43,7 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
     lateinit internal var imageUri:Uri
     lateinit protected var chooseAlertDialog:AlertDialog
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val choiceLitView = ListView(this)

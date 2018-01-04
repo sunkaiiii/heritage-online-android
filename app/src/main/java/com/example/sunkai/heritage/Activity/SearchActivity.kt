@@ -40,6 +40,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
         actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
         search_activity_btn.setOnClickListener(this)
+
     }
 
     override fun onClick(v: View) {
