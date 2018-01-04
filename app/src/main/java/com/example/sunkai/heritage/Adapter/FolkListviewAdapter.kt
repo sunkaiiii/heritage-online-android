@@ -164,7 +164,7 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
                 cursor.close()
                 if (img != null) {
                     val `in` = ByteArrayInputStream(img)
-                    bitmap = HandlePic.handlePic(context, `in`, 0)
+                    bitmap = HandlePic.handlePic(`in`, 0)
                     lruCache.put(id, bitmap)
                     return bitmap
                 }
@@ -178,7 +178,7 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
             contentValues.put("image", img)
             db = MySqliteHandler.GetWritableDatabase()
             db.insert(table, null, contentValues)
-            bitmap = HandlePic.handlePic(context, `in`, 0)
+            bitmap = HandlePic.handlePic(`in`, 0)
             lruCache.put(id, bitmap)
             return bitmap
         }

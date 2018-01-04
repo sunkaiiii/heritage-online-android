@@ -102,7 +102,7 @@ class MyOrderListViewAdapter(private val context: Context, private val datas: Li
             val img = HandleFolk.GetFolkImage(id) ?: return null
             adapter.datas[position].image = img
             val `in` = ByteArrayInputStream(img)
-            val bitmap = HandlePic.handlePic(adapter.context, `in`, 0)
+            val bitmap = HandlePic.handlePic(`in`, 0)
             adapter.lruCache.put(id, bitmap)
             return bitmap
         }

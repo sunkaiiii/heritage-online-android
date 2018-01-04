@@ -176,7 +176,7 @@ class FocusListviewAdapter
                     val imageIndex = cursor.getColumnIndex("image")
                     val image = cursor.getBlob(imageIndex)
                     cursor.close()
-                    return HandlePic.handlePic(GlobalContext.instance.applicationContext,ByteArrayInputStream(image),0)
+                    return HandlePic.handlePic(ByteArrayInputStream(image),0)
                 }
                 val image=HandlePerson.Get_User_Image(userID)
                 image?.let {
@@ -186,7 +186,7 @@ class FocusListviewAdapter
                     contentValues.put("image", imageByte)
                     db = MySqliteHandler.GetWritableDatabase()
                     db.insert(tableName, null, contentValues)
-                    return HandlePic.handlePic(GlobalContext.instance.applicationContext,ByteArrayInputStream(imageByte),0)
+                    return HandlePic.handlePic(ByteArrayInputStream(imageByte),0)
                 }
             }
             return null

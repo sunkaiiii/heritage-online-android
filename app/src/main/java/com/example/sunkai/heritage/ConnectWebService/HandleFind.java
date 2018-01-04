@@ -190,6 +190,21 @@ public class HandleFind extends BaseSetting {
         return success.equals(result);
     }
 
+    public static boolean Update_User_Comment_Informaiton(UserCommentData data){
+        methodName="Update_User_Comment_Informaiton";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("commentID",data.getId());
+        soapObject.addProperty("comment_title",data.getCommentTitle());
+        soapObject.addProperty("comment_content",data.getCommentContent());
+        soapObject.addProperty("comment_image",Base64.encode(data.getUserImage()));
+        String result=Get_Post(soapObject);
+        if(success.equals(result)){
+            return true;
+        }
+        return false;
+    }
+
     public static List<UserCommentData> Get_User_Comment_Information(int userID) {
         methodName = "Get_User_Comment_Information";
         soapAction = namespace + "/" + methodName;

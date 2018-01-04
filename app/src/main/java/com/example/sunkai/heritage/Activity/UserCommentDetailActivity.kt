@@ -3,9 +3,11 @@ package com.example.sunkai.heritage.Activity
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -34,6 +36,8 @@ import com.example.sunkai.heritage.Data.CommentReplyData
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.value.UPDATE_SUCCESS
+import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
 
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
@@ -84,15 +88,13 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
             data = bundle.getSerializable("data") as UserCommentData
             val imageByte = intent.getByteArrayExtra("bitmap")
-            val bitmap = HandlePic.handlePic(this, ByteArrayInputStream(imageByte), 0)
+            val bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
             information_img.setImageBitmap(bitmap)
             commentID = data?.id?:0
             inListPosition = bundle.getInt("position")
-            information_title.text = data?.commentTitle
-            information_time.text = data?.commentTime
-            information_content.text = data?.commentContent
-            information_reply_num.text = data?.commentReplyNum
-            title = data?.userName
+            data?.let{
+                setUserCommentView(data!!)
+            }
             Thread(getReply).start()
         } else {
             val id = intent.getIntExtra("id", 0)
@@ -129,11 +131,14 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         LinearLayout_reply = findViewById(R.id.LinearLayout_reply)
         replyEdit = findViewById(R.id.reply_edittext)
         replyBtn = findViewById(R.id.reply_button)
+        progressBar = findViewById(R.id.user_comment_detail_progressbar)
+
         replyBtn.setOnClickListener(this)
         reverse.setOnClickListener(this)
-        progressBar = findViewById(R.id.user_comment_detail_progressbar)
         actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
+
+        information_img.isDrawingCacheEnabled=true
 
     }
 
@@ -202,7 +207,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             reverse.setTextColor(getColor(R.color.colorPrimary))
         } else {
-            reverse.setTextColor(resources.getColor(R.color.colorPrimary))
+            reverse.setTextColor(ContextCompat.getColor(this,R.color.colorPrimary))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_upward_black_24dp), null)
@@ -216,7 +221,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             reverse.setTextColor(getColor(R.color.black))
         } else {
-            reverse.setTextColor(resources.getColor(R.color.black))
+            reverse.setTextColor(ContextCompat.getColor(this,R.color.black))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, getDrawable(R.drawable.ic_arrow_downward_black_24dp), null)
@@ -236,12 +241,18 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun backupReverse() {
-        LinearLayout_reply!!.removeAllViews()
+        LinearLayout_reply.removeAllViews()
         for (data in datas!!) {
             setView(data)
         }
     }
-
+    private fun setUserCommentView(data:UserCommentData){
+        information_title.text = data.commentTitle
+        information_time.text = data.commentTime
+        information_content.text = data.commentContent
+        information_reply_num.text = data.commentReplyNum
+        title = data.userName
+    }
     private fun setView(data: CommentReplyData) {
         val inflater = layoutInflater
         @SuppressLint("InflateParams") val view = inflater.inflate(R.layout.user_comment_reply_information, null)
@@ -256,7 +267,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun deleteComment() {
-        AlertDialog.Builder(this).setTitle("是否删除帖子?").setPositiveButton("删除") { dialog, which ->
+        AlertDialog.Builder(this).setTitle("是否删除帖子?").setPositiveButton("删除") { _, _ ->
             @SuppressLint("InflateParams")
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null)).create()
             ad.show()
@@ -282,6 +293,19 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         when (item.itemId) {
             android.R.id.home -> finish()
             R.id.user_comment_detail_item_delete -> deleteComment()
+            R.id.user_comment_detail_item_edit->{
+                data?.let {
+                    val intent = Intent(this@UserCommentDetailActivity, ModifyUsercommentActivity::class.java)
+                    val data: UserCommentData = data!!
+                    val drawable=information_img.drawable
+                    if(drawable is BitmapDrawable){
+                        val bitmap=drawable.bitmap
+                        data.userImage=HandlePic.bitmapToByteArray(bitmap)
+                        intent.putExtra("data",data)
+                        startActivityForResult(intent, UPDATE_USER_COMMENT);
+                    }
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -317,7 +341,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     private fun allDataSetView(data: FindActivityAllData) {
         if (data.imgCode != null) {
             val imageByte = org.kobjects.base64.Base64.decode(data.imgCode!!)
-            val bitmap = HandlePic.handlePic(this, ByteArrayInputStream(imageByte), 0)
+            val bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
             information_img.setImageBitmap(bitmap)
         }
         commentID = data.id
@@ -406,6 +430,20 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         return super.onKeyDown(keyCode, event)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode){
+            UPDATE_USER_COMMENT->{
+                if(resultCode== UPDATE_SUCCESS) {
+                    data?.let {
+                        if (data.getSerializableExtra("data") is UserCommentData) {
+                            val data = data.getSerializableExtra("data") as UserCommentData
+                            setUserCommentView(data)
+                        }
+                    }
+                }
+            }
+        }
+    }
     companion object {
         val ADD_COMMENT = 1
         val DELETE_COMMENT = 2

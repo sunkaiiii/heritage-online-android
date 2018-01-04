@@ -383,7 +383,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 val imageIndex = cursor.getColumnIndex("image")
                 val img = cursor.getBlob(imageIndex)
                 val `in` = ByteArrayInputStream(img)
-                val bitmap = HandlePic.handlePic(findFragmentAdapter.context, `in`, 0)
+                val bitmap = HandlePic.handlePic(`in`, 0)
                 findFragmentAdapter.lruCache.put(id, bitmap)
                 cursor.close()
                 return bitmap
@@ -394,7 +394,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             contentValues.put("image", bytes)
             db = MySqliteHandler.GetWritableDatabase()
             db.insert(table, null, contentValues)
-            val bitmap = HandlePic.handlePic(findFragmentAdapter.context, ByteArrayInputStream(bytes), 0)
+            val bitmap = HandlePic.handlePic(ByteArrayInputStream(bytes), 0)
             findFragmentAdapter.lruCache.put(id, bitmap)
             return bitmap
         }
@@ -435,7 +435,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 val imageIndex = cursor.getColumnIndex("image")
                 val image = cursor.getBlob(imageIndex)
                 cursor.close()
-                return HandlePic.handlePic(adapter.context, ByteArrayInputStream(image), 0)
+                return HandlePic.handlePic(ByteArrayInputStream(image), 0)
 
             }
             val image: ByteArray
@@ -448,7 +448,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             contentValues.put("image", image)
             db = MySqliteHandler.GetWritableDatabase()
             db.insert(table, null, contentValues)
-            return HandlePic.handlePic(adapter.context, ByteArrayInputStream(image), 0)
+            return HandlePic.handlePic(ByteArrayInputStream(image), 0)
         }
 
         override fun onPostExecute(bitmap: Bitmap?) {

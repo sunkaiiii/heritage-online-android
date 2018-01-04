@@ -94,7 +94,7 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
             val imageData = HandleFind.Get_User_Comment_Image(imageID)
             imageData?.let {
                 addImageToSql(imageData)
-                bitmap = HandlePic.handlePic(GlobalContext.instance, ByteArrayInputStream(imageData), 0)
+                bitmap = HandlePic.handlePic(ByteArrayInputStream(imageData), 0)
                 return bitmap
             }
             return null
@@ -121,7 +121,7 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
                 val imageIndex = cursor.getColumnIndex("image")
                 val img = cursor.getBlob(imageIndex)
                 cursor.close()
-                return HandlePic.handlePic(GlobalContext.instance, ByteArrayInputStream(img), 0)
+                return HandlePic.handlePic(ByteArrayInputStream(img), 0)
             }
             cursor.close()
             return null

@@ -128,7 +128,7 @@ class PersonFragment : Fragment(), View.OnClickListener {
                 val imageCode = data.getString("image") ?: return
                 val imageByte = Base64.decode(imageCode)
                 val `in` = ByteArrayInputStream(imageByte)
-                val bitmap = HandlePic.handlePic(activity, `in`, 0)
+                val bitmap = HandlePic.handlePic(`in`, 0)
                 userImage.setImageBitmap(bitmap)
             }
         }

@@ -135,7 +135,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
                 cursor.close()
                 if (imgByte != null) {
                     val `in` = ByteArrayInputStream(imgByte)
-                    bitmap = HandlePic.handlePic(adpter.context, `in`, 0)
+                    bitmap = HandlePic.handlePic(`in`, 0)
                     adpter.lruCache.put(id, bitmap)
                     return bitmap
                 }
@@ -149,7 +149,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
             db = MySqliteHandler.GetWritableDatabase()
             db.insert("channel_activity_image", null, contentValues)
             val `in` = ByteArrayInputStream(imgByte)
-            bitmap = HandlePic.handlePic(adpter.context, `in`, 0)
+            bitmap = HandlePic.handlePic( `in`, 0)
             adpter.lruCache.put(id, bitmap)
             return bitmap
         }

@@ -17,7 +17,7 @@ class ViewIamgeActivity : AppCompatActivity() {
         setContentView(R.layout.activity_view_iamge)
         initview()
         val imageByte = intent.getByteArrayExtra("image")
-        val bitmap = HandlePic.handlePic(this, ByteArrayInputStream(imageByte), 0)
+        val bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
         photoView.setImageBitmap(bitmap)
         photoView.setOnClickListener({
             if(photoView.scale==1.0f){

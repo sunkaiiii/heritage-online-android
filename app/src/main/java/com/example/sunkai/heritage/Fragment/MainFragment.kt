@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.ClassifyActivityDivide
+import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MainActivityData
 import com.example.sunkai.heritage.R
@@ -121,7 +122,7 @@ class MainFragment : Fragment(), ViewPager.OnPageChangeListener {
             val imageView = ImageView(activity)
             mImageViews[i] = imageView
             if (count < mImageViews.size) {
-                bitmaps[i] = HandlePic.handlePic(activity, imgIdArray[i], 0)
+                bitmaps[i] = HandlePic.handlePic(GlobalContext.instance, imgIdArray[i], 0)
                 count++
             }
             imageView.scaleType = ImageView.ScaleType.FIT_XY

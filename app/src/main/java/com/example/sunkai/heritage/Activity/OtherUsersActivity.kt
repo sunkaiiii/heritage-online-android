@@ -29,6 +29,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import org.kobjects.base64.Base64
+import top.zibin.luban.Luban
 import java.io.ByteArrayInputStream
 
 class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
@@ -94,7 +95,7 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
             val imageIndex = cursor.getColumnIndex("image")
             val image = cursor.getBlob(imageIndex)
             cursor.close()
-            return HandlePic.handlePic(GlobalContext.instance, ByteArrayInputStream(image), 0)
+            return HandlePic.handlePic(ByteArrayInputStream(image), 0)
         }
         return null
     }
@@ -110,7 +111,7 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         val userImage=HandlePerson.Get_User_Image(userID)
         userImage?.let {
             addImageToSql(userID,Base64.decode(userImage))
-            return HandlePic.handlePic(this,ByteArrayInputStream(Base64.decode(userImage)),0)
+            return HandlePic.handlePic(ByteArrayInputStream(Base64.decode(userImage)),0)
         }
         return null
     }
@@ -192,6 +193,7 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         pvImage.startAnimation(outAnimation)
         llBackground.visibility=View.GONE
         pvImage.visibility=View.GONE
+
     }
 
 

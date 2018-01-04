@@ -7,17 +7,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/reply_name"
         android:textColor="@color/black"
-        android:layout_marginLeft="18sp"
+        android:layout_marginStart="18sp"
         android:layout_marginTop="6sp"
         android:layout_marginBottom="6sp"
-        android:layout_marginRight="6sp"
+        android:layout_marginEnd="6sp"
         android:textSize="18sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/reply_time"
         android:textColor="@color/colorPrimary"
-        android:layout_marginLeft="18sp"
+        android:layout_marginStart="18sp"
         android:textSize="14sp"/>
     <TextView
         android:layout_width="wrap_content"

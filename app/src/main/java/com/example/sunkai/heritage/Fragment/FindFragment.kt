@@ -37,6 +37,7 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.FindActivityData
+import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Interface.OnItemClickListener
@@ -245,7 +246,7 @@ class FindFragment : Fragment(), View.OnClickListener {
             val imageView = ImageView(activity)
             mImageViews[i] = imageView
             if (count < mImageViews.size) {
-                bitmaps[i] = HandlePic.handlePic(activity, imgIdArray[i], 0)
+                bitmaps[i] = HandlePic.handlePic(GlobalContext.instance, imgIdArray[i], 0)
                 count++
             }
             imageView.scaleType = ImageView.ScaleType.FIT_XY
@@ -336,7 +337,7 @@ class FindFragment : Fragment(), View.OnClickListener {
                 cursor.close()
                 if (img != null) {
                     val `in` = ByteArrayInputStream(img)
-                    return HandlePic.handlePic(findFragment.activity, `in`, 0)
+                    return HandlePic.handlePic(`in`, 0)
                 }
             }
             val data:FindActivityData? = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
@@ -345,7 +346,7 @@ class FindFragment : Fragment(), View.OnClickListener {
                 findFragment.activityDatas[index].content = data.content
                 findFragment.activityDatas[index].image = data.image
                 val `in` = ByteArrayInputStream(findFragment.activityDatas[index].image)
-                val bitmap = HandlePic.handlePic(findFragment.activity, `in`, 0)
+                val bitmap = HandlePic.handlePic(`in`, 0)
                 db = MySqliteHandler.GetWritableDatabase()
                 val contentValues = ContentValues()
                 contentValues.put("id", data.id)
