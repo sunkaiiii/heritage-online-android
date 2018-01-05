@@ -21,6 +21,7 @@
     <string name="update_success">更新成功</string>
     <string name="update_fail">更新失败</string>
     <string name="please_wait">请稍等...</string>
+    <string name="verson_code">Version 2.5.1</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
