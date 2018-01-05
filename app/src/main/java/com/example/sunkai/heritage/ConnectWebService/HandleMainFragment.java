@@ -28,35 +28,27 @@ public class HandleMainFragment extends BaseSetting  {
     public static List<MainActivityData> ReadMainActivity(){
         methodName="Read_Main_Activity";
         soapAction = namespace + "/"+methodName;
-        HttpTransportSE transport=new HttpTransportSE(url);
-        transport.debug=true;
         SoapObject soapObject=new SoapObject(namespace,methodName);
-        SoapSerializationEnvelope envelope=pre_processSoap(soapObject);
-        try{
-            transport.call(null,envelope);
-            SoapObject object=(SoapObject)envelope.bodyIn;
-            System.out.println(object.toString());
-            if(null==object.getProperty(0).toString()){
-                return null;
+        String result=Get_Post(soapObject);
+        if(!error.equals(result)&&result!=null) {
+            try {
+                JSONObject MainActivity = new JSONObject(result);
+                JSONArray activities = MainActivity.getJSONArray("main_Activity");
+                List<MainActivityData> activityDatas = new ArrayList<>();
+                for (int i = 0; i < activities.length(); i++) {
+                    MainActivityData data = new MainActivityData();
+                    JSONObject activity = (JSONObject) activities.get(i);
+                    data.setId(Integer.valueOf((String) activity.get("id")));
+                    data.setActivityTitle((String) activity.get("activity_title"));
+                    data.setActivityContent((String) activity.get("activity_content"));
+                    String imgCode = (String) activity.get("activity_image");
+                    data.setActivityImage(Base64.decode(imgCode));
+                    activityDatas.add(data);
+                }
+                return activityDatas;
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            String result=object.getProperty(0).toString();
-            JSONObject MainActivity=new JSONObject(result);
-            JSONArray activities=MainActivity.getJSONArray("main_Activity");
-            List<MainActivityData> activityDatas=new ArrayList<>();
-            for(int i=0;i<activities.length();i++){
-                MainActivityData data=new MainActivityData();
-                JSONObject activity=(JSONObject)activities.get(i);
-                data.setId(Integer.valueOf((String)activity.get("id")));
-                data.setActivityTitle((String)activity.get("activity_title"));
-                data.setActivityContent((String)activity.get("activity_content"));
-                String imgCode=(String)activity.get("activity_image");
-                data.setActivityImage(Base64.decode(imgCode));
-                activityDatas.add(data);
-            }
-            return activityDatas;
-        }
-        catch (IOException |XmlPullParserException|JSONException e){
-            e.printStackTrace();
         }
         return null;
     }

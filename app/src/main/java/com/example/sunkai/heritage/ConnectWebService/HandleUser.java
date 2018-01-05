@@ -19,23 +19,11 @@ public class HandleUser  extends BaseSetting{
     public static Boolean Sign_in(String userName, String PassWord){
         methodName="Sign_In";
         soapAction = namespace + "/"+methodName;
-        HttpTransportSE transport=new HttpTransportSE(url);
-        transport.debug=true;
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userName",userName);
         soapObject.addProperty("PassWord",PassWord);
-        SoapSerializationEnvelope envelope=pre_processSoap(soapObject);
-        try{
-            transport.call(null,envelope);
-            SoapObject object=(SoapObject)envelope.bodyIn;
-            System.out.println(object.toString());
-            String result=object.getProperty(0).toString();
-            return success.equals(result);
-        }
-        catch (IOException|XmlPullParserException e){
-            e.printStackTrace();
-        }
-        return false;
+        String result=Get_Post(soapObject);
+        return success.equals(result);
     }
     public static int User_Regist(String userName,String passWord,String findPasswordQuestion,String findPassWordAnswer){
         methodName="User_Regist";

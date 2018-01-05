@@ -181,7 +181,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         if (null != bitmap) {
             imageView.setImageBitmap(bitmap)
         } else {
-            GetCommentImage(data.id, this, imageView).execute()
+            GetCommentImage(data.id, data.commentTime,this, imageView).execute()
         }
     }
 
@@ -342,7 +342,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         override fun doInBackground(vararg voids: Void): Void? {
             val adapter = findFragmentAdapterWeakReference.get() ?: return null
-            val getdatas: List<UserCommentData>
+            val getdatas: List<UserCommentData>?
             getdatas = when {
                 adapter.what == 1 -> HandleFind.Get_User_Comment_Information(LoginActivity.userID)
                 adapter.what == 2 -> HandleFind.Get_User_Comment_Information_By_User(LoginActivity.userID)
@@ -361,7 +361,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         }
     }
 
-    internal class GetCommentImage internal constructor(var id: Int, findFragmentAdapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
+    internal class GetCommentImage internal constructor(val id: Int,val commentTime:String, findFragmentAdapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
         var imageViewWeakReference: WeakReference<ImageView>
         var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
 
@@ -377,23 +377,36 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             val selection = "imageID=?"
             val cursor: Cursor
             val selectionArgs = arrayOf(id.toString())
+            var update=false
             cursor = db.query(table, null, selection, selectionArgs, null, null, null)
             cursor.moveToFirst()
             if (!cursor.isAfterLast) {
-                val imageIndex = cursor.getColumnIndex("image")
-                val img = cursor.getBlob(imageIndex)
-                val `in` = ByteArrayInputStream(img)
-                val bitmap = HandlePic.handlePic(`in`, 0)
-                findFragmentAdapter.lruCache.put(id, bitmap)
-                cursor.close()
-                return bitmap
+                val commentTimeIndex=cursor.getColumnIndex("comment_time")
+                if(commentTimeIndex>=0) {
+                    val sqlCommentTime = cursor.getString(commentTimeIndex)
+                    if (sqlCommentTime == commentTime) {
+                        val imageIndex = cursor.getColumnIndex("image")
+                        val img = cursor.getBlob(imageIndex)
+                        val `in` = ByteArrayInputStream(img)
+                        val bitmap = HandlePic.handlePic(`in`, 0)
+                        findFragmentAdapter.lruCache.put(id, bitmap)
+                        cursor.close()
+                        return bitmap
+                    }
+                    update = true
+                }
             }
             val bytes = HandleFind.Get_User_Comment_Image(id) ?: return null
             val contentValues = ContentValues()
             contentValues.put("imageID", id)
+            contentValues.put("comment_time",commentTime)
             contentValues.put("image", bytes)
             db = MySqliteHandler.GetWritableDatabase()
-            db.insert(table, null, contentValues)
+            if(update){
+                db.update(table,contentValues,"imageID=?", arrayOf(id.toString()))
+            }else {
+                db.insert(table, null, contentValues)
+            }
             val bitmap = HandlePic.handlePic(ByteArrayInputStream(bytes), 0)
             findFragmentAdapter.lruCache.put(id, bitmap)
             return bitmap

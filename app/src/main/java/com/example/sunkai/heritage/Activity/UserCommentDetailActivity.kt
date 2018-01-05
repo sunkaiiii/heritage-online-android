@@ -252,6 +252,9 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         information_content.text = data.commentContent
         information_reply_num.text = data.commentReplyNum
         title = data.userName
+        data.userImage?.let{
+            information_img.setImageBitmap(HandlePic.handlePic(ByteArrayInputStream(data.userImage),0))
+        }
     }
     private fun setView(data: CommentReplyData) {
         val inflater = layoutInflater
@@ -302,7 +305,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                         val bitmap=drawable.bitmap
                         data.userImage=HandlePic.bitmapToByteArray(bitmap)
                         intent.putExtra("data",data)
-                        startActivityForResult(intent, UPDATE_USER_COMMENT);
+                        startActivityForResult(intent, UPDATE_USER_COMMENT)
                     }
                 }
             }
@@ -436,8 +439,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 if(resultCode== UPDATE_SUCCESS) {
                     data?.let {
                         if (data.getSerializableExtra("data") is UserCommentData) {
-                            val data = data.getSerializableExtra("data") as UserCommentData
-                            setUserCommentView(data)
+                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData)
                         }
                     }
                 }

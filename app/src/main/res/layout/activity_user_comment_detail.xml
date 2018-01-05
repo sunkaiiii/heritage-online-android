@@ -71,7 +71,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/backgound_grey"
-                    android:scaleType="fitXY"/>
+                    android:scaleType="centerCrop"/>
 
                 <TextView
                     android:id="@+id/information_title"

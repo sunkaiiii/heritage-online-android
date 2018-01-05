@@ -12,7 +12,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="150sp"
                 android:id="@+id/activity_layout_img"
-                android:scaleType="fitXY"/>
+                android:scaleType="centerCrop"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

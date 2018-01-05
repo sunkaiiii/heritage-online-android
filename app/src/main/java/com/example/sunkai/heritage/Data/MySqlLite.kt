@@ -36,6 +36,7 @@ class MySqlLite(context: Context, name: String, factory: SQLiteDatabase.CursorFa
         db.execSQL("create table if not exists find_comment_image(" +
                 "id integer primary key," +
                 "imageID integer," +
+                "comment_time varchar,"+
                 "image mediumblob)")
         db.execSQL("create table if not exists person_image(" +
                 "id integer primary key," +
@@ -53,6 +54,7 @@ class MySqlLite(context: Context, name: String, factory: SQLiteDatabase.CursorFa
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE find_comment_image")
         db.execSQL("create table if not exists user_login_info("
                 + "id integer primary key,"
                 + "user_id integer,"
@@ -79,6 +81,7 @@ class MySqlLite(context: Context, name: String, factory: SQLiteDatabase.CursorFa
         db.execSQL("create table if not exists find_comment_image(" +
                 "id integer primary key," +
                 "imageID integer," +
+                "comment_time varchar,"+
                 "image mediumblob)")
         db.execSQL("create table if not exists person_image(" +
                 "id integer primary key," +

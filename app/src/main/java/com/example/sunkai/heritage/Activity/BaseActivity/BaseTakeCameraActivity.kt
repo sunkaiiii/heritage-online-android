@@ -19,11 +19,12 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
+import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.value.CHOOSE_PHOTO
 import com.example.sunkai.heritage.value.TAKE_PHOTO
+import top.zibin.luban.Luban
+import top.zibin.luban.OnCompressListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -42,6 +43,7 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
 
     lateinit internal var imageUri:Uri
     lateinit protected var chooseAlertDialog:AlertDialog
+    lateinit private var waitForCompressDialog:AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +65,13 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
                 }
             }
         }
+
         chooseAlertDialog=AlertDialog.Builder(this).setView(choiceLitView).create()
+
+        val waitLinearLayout=LinearLayout(this)
+        waitLinearLayout.orientation=LinearLayout.HORIZONTAL
+        waitLinearLayout.addView(ProgressBar(this))
+        waitForCompressDialog=AlertDialog.Builder(this).setView(waitLinearLayout).create()
     }
 
     protected fun takePhoto(){
@@ -115,7 +123,32 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
         }
     }
 
+    protected fun handleImage(file:String){
+        compressImage(file)
+    }
     abstract protected fun setImageToImageView(bitmap: Bitmap)
+    protected fun compressImage(file:String){
+        Luban.with(this)
+                .load(file)
+                .setCompressListener(object :OnCompressListener{
+                    override fun onStart() {
+                        if(!waitForCompressDialog.isShowing)
+                            waitForCompressDialog.show()
+                    }
+
+                    override fun onSuccess(file: File?) {
+                        if(waitForCompressDialog.isShowing){
+                            waitForCompressDialog.dismiss()
+                        }
+                        val bitmap = BitmapFactory.decodeFile(file?.path)
+                        setImageToImageView(bitmap)
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        MakeToast.MakeText("出现问题")
+                    }
+                }).launch()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -188,8 +221,7 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
 
     private fun displayImage(imagePath: String?) {
         if (imagePath != null) {
-            val bitmap = BitmapFactory.decodeFile(imagePath)
-            setImageToImageView(bitmap)
+            handleImage(imagePath)
         } else {
             Toast.makeText(this, "Failed to get image", Toast.LENGTH_SHORT).show()
         }

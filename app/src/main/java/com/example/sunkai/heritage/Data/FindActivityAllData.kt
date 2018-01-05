@@ -6,7 +6,7 @@ package com.example.sunkai.heritage.Data
 class FindActivityAllData(var id:Int=0
                           ,var userID:Int=0
                           ,var userName:String?=null
-                          ,var coment_time:String?=null
+                          ,var coment_time:String=""
                           ,var comment_title:String?=null
                           ,var comment_content:String?=null
                           ,var replyCount:String?=null

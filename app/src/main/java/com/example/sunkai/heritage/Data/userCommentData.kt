@@ -10,7 +10,7 @@ import java.io.Serializable
 class UserCommentData(var id: Int = 0
                       , var inListPosition: Int = 0
                       , var user_id: Int = 0
-                      , var commentTime: String? = null
+                      , var commentTime: String=""
                       , var commentTitle: String? = null
                       , var commentContent: String? = null
                       , var commentLikeNum: String? = null
