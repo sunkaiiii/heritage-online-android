@@ -75,8 +75,8 @@ class PersonFragment : Fragment(), View.OnClickListener {
 
 
     internal var focusAndFansCountChange: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            var intent = intent
+        override fun onReceive(context: Context, recieveIntent: Intent) {
+            var intent = recieveIntent
             if ("change" == intent.getStringExtra("message")) {
                 Thread(getFollowCount).start()
             }
@@ -308,10 +308,10 @@ class PersonFragment : Fragment(), View.OnClickListener {
      */
     private fun openCamera() {
         val file = FileStorage().createIconFile()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageUri = FileProvider.getUriForFile(activity!!, "com.example.sunkai.heritage.fileprovider", file!!)//通过FileProvider创建一个content类型的Uri
+        imageUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            FileProvider.getUriForFile(activity!!, "com.example.sunkai.heritage.fileprovider", file!!)//通过FileProvider创建一个content类型的Uri
         } else {
-            imageUri = Uri.fromFile(file)
+            Uri.fromFile(file)
         }
         val intent = Intent()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

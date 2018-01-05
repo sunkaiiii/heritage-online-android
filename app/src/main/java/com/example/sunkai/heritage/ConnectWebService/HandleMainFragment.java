@@ -52,58 +52,30 @@ public class HandleMainFragment extends BaseSetting  {
         }
         return null;
     }
-    public static int GetActivityCount(String channel){
-        methodName="Get_Activity_Count";
-        soapAction=namespace+"/"+methodName;
-        HttpTransportSE transport=new HttpTransportSE(url);
-        transport.debug=true;
-        SoapObject soapObject=new SoapObject(namespace,methodName);
-        soapObject.addProperty("channel",channel);
-        SoapSerializationEnvelope envelope=pre_processSoap(soapObject);
-        try{
-            transport.call(null,envelope);
-            SoapObject object=(SoapObject)envelope.bodyIn;
-            System.out.println(object.toString());
-            if(null==object.getProperty(0).toString()){
-                return 0;
-            }
-            String result=object.getProperty(0).toString();
-            System.out.println(Integer.parseInt(result));
-            int count=Integer.parseInt(result);
-            return count;
-        }
-        catch (IOException |XmlPullParserException|ClassCastException e){
-            e.printStackTrace();
-        }
-        return 0;
-    }
     @Nullable
     public static List<ClassifyActiviyData> GetChannelInformation(String channel){
         methodName="Get_Channel_Information";
         soapAction = namespace + "/"+methodName;
-        HttpTransportSE transport=new HttpTransportSE(url);
-        transport.debug=true;
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("channel",channel);
-        try{
-            String result=Get_Post(soapObject);
-            if(result==null||error.equals(result))
+        String result=Get_Post(soapObject);
+        try {
+            if (result == null || error.equals(result))
                 return null;
-            JSONObject MainActivity=new JSONObject(result);
-            JSONArray activities=MainActivity.getJSONArray("classify_activity");
-            List<ClassifyActiviyData> activityDatas=new ArrayList<>();
-            for(int i=0;i<activities.length();i++){
-                ClassifyActiviyData data=new ClassifyActiviyData();
-                JSONObject activity=(JSONObject)activities.get(i);
-                data.setId(Integer.valueOf((String)activity.get("id")));
-                data.setActivityTitle((String)activity.get("activity_title"));
-                data.setActivityContent((String)activity.get("activity_content"));
-                data.setActivityChannel((String)activity.get("activity_channel"));
+            JSONObject MainActivity = new JSONObject(result);
+            JSONArray activities = MainActivity.getJSONArray("classify_activity");
+            List<ClassifyActiviyData> activityDatas = new ArrayList<>();
+            for (int i = 0; i < activities.length(); i++) {
+                ClassifyActiviyData data = new ClassifyActiviyData();
+                JSONObject activity = (JSONObject) activities.get(i);
+                data.setId(Integer.valueOf((String) activity.get("id")));
+                data.setActivityTitle((String) activity.get("activity_title"));
+                data.setActivityContent((String) activity.get("activity_content"));
+                data.setActivityChannel((String) activity.get("activity_channel"));
                 activityDatas.add(data);
             }
             return activityDatas;
-        }
-        catch (JSONException e){
+        }catch (JSONException e){
             e.printStackTrace();
         }
         return null;
@@ -112,12 +84,10 @@ public class HandleMainFragment extends BaseSetting  {
     public static byte[] GetChannelImage(int id){
         methodName="Get_Channel_Image";
         soapAction=namespace+"/"+methodName;
-        HttpTransportSE transport=new HttpTransportSE(url);
-        transport.debug=true;
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("id",id);
         String imgCode = Get_Post(soapObject);
-        if(null==imgCode){
+        if(null==imgCode||error.equals(imgCode)){
             return null;
         }
         byte[] imgByte = Base64.decode(imgCode);
