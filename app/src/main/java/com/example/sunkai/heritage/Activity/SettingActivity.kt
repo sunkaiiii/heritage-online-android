@@ -154,15 +154,15 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun sign_out() {
-        AlertDialog.Builder(this).setTitle("是否注销?").setPositiveButton("确定") { dialog, which ->
+        AlertDialog.Builder(this).setTitle("是否注销?").setPositiveButton("确定") { _, _ ->
             val intent = Intent("android.intent.action.focusAndFansCountChange")
             intent.putExtra("message", "sigh_out")
             sendBroadcast(intent)
-            GlobalContext.instance?.unregistUser() //注销的时候退出当前账号
+            GlobalContext.instance.unregistUser() //注销的时候退出当前账号
             getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply()//清除自动登录的信息
             LoginActivity.userID = 0
             LoginActivity.userName = null
             finish()
-        }.setNegativeButton("取消") { dialog, which -> dialog.dismiss() }.show()
+        }.setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }.show()
     }
 }

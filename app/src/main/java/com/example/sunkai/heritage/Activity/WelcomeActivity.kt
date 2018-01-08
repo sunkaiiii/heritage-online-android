@@ -37,7 +37,7 @@ class WelcomeActivity : AppCompatActivity() {
                     .setPositiveButton("开启") { _, _ ->
                         editor.putBoolean("pushSwitch", true)
                         editor.apply()
-                        GlobalContext.instance?.registMipush()
+                        GlobalContext.instance.registMipush()
                     }
                     .setNegativeButton("关闭") { _, _ -> }
                     .create()
@@ -69,7 +69,7 @@ class WelcomeActivity : AppCompatActivity() {
                         }
                         else -> {
                             intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                            GlobalContext.instance?.registUser()
+                            GlobalContext.instance.registUser()
                             startActivity(intent)
                             finish()
                         }

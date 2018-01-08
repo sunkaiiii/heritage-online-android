@@ -65,7 +65,8 @@
         <activity
             android:name=".Activity.SettingActivity"
             android:label="设置" />
-        <activity android:name=".Activity.AddFindCommentActivity" />
+        <activity android:name=".Activity.AddFindCommentActivity"
+            android:label="发帖"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

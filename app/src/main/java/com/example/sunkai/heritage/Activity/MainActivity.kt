@@ -252,7 +252,7 @@ class MainActivity : AppCompatActivity(), OnClickListener {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-            val builder = AlertDialog.Builder(this@MainActivity).setTitle("退出?").setPositiveButton("退出") { dialog, which ->
+            val builder = AlertDialog.Builder(this@MainActivity).setTitle("退出?").setPositiveButton("退出") { _, _ ->
                 ad.dismiss()
                 finish()
             }.setNegativeButton("取消") { _, _ -> ad.dismiss() }

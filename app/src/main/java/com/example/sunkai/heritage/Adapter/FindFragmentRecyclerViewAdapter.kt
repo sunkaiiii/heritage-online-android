@@ -435,7 +435,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         }
 
         override fun doInBackground(vararg voids: Void): Bitmap? {
-            val adapter = findFragmentAdapterWeakReference.get() ?: return null
+            findFragmentAdapterWeakReference.get() ?: return null
             var db = MySqliteHandler.GetReadableDatabase()
             val cursor: Cursor
             val table = "person_image"

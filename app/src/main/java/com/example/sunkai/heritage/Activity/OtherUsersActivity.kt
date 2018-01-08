@@ -4,17 +4,21 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
@@ -22,6 +26,7 @@ import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.OtherPersonData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.FindInSql
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
@@ -29,8 +34,9 @@ import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import org.kobjects.base64.Base64
-import top.zibin.luban.Luban
 import java.io.ByteArrayInputStream
+import java.lang.ref.WeakReference
+import java.util.*
 
 class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var userNameTextView:TextView
@@ -41,7 +47,9 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
     internal lateinit var fansText:TextView
     internal lateinit var userinfosRecyclerView:RecyclerView
     internal lateinit var llBackground:LinearLayout
-    internal lateinit var pvImage:PhotoView
+    internal lateinit var vpViewPager:ViewPager
+    internal lateinit var viewPagerAdapter:ViewPagerAdapter
+
     var userID:Int= NO_USERID
 
     internal val inAnimation=AlphaAnimation(0f,1f)
@@ -134,23 +142,46 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
 
         adapter.setOnItemClickListen(object:OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
-                val imageview:ImageView=view.findViewById(R.id.iv_other_person_view)
-                val bitmap=getBitmap(imageview)
-                bitmap?.let{
-                    openImageView(bitmap)
-                }
+                openImageView(position,adapter)
             }
         })
     }
 
-    internal fun getBitmap(imageView: ImageView):Bitmap?{
-        imageView.isDrawingCacheEnabled=true
-        val drawable = imageView.drawable
-        if(drawable is BitmapDrawable){
-            return drawable.bitmap
+    internal class ViewPagerAdapter(val datas:List<Int>,activity:OtherUsersActivity):PagerAdapter(){
+        val weakRefrence=WeakReference(activity)
+        val photoViewMap:WeakHashMap<Int,PhotoView>
+        init {
+            photoViewMap= WeakHashMap()
         }
-        return null
+        override fun getCount(): Int {
+            return datas.size
+        }
+
+        override fun isViewFromObject(view: View, `object`: Any): Boolean {
+            return view==`object`
+        }
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val photoView=PhotoView(GlobalContext.instance)
+            photoView.scaleType=ImageView.ScaleType.FIT_CENTER
+            container.addView(photoView)
+            photoView.setImageDrawable(ContextCompat.getDrawable(GlobalContext.instance,R.drawable.backgound_grey))
+            photoView.setOnClickListener {
+                if(photoView.scale==1.0f){
+                    weakRefrence.get()?.closeImageView()
+                }else{
+                    photoView.setScale(1.0f,true)
+                }
+            }
+            photoViewMap.put(position,photoView)
+            return photoView
+        }
+
+        override fun destroyItem(container: ViewGroup, position: Int, view: Any) {
+            container.removeView(view as View)
+        }
     }
+
 
     internal fun initview(){
         userNameTextView=findViewById(R.id.sign_name_textview)
@@ -161,7 +192,7 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         fansText=findViewById(R.id.person_fans)
         userinfosRecyclerView=findViewById(R.id.rv_activity_other_users)
         llBackground=findViewById(R.id.ll_activity_other_users_background)
-        pvImage=findViewById(R.id.pv_activity_other_users_image)
+        vpViewPager=findViewById(R.id.vp_activity_other_users)
 
         inAnimation.duration=300
         outAnimation.duration=300
@@ -172,7 +203,8 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         focusText.setOnClickListener(this)
         fansText.setOnClickListener(this)
         llBackground.setOnClickListener(this)
-        pvImage.setOnClickListener(this)
+        vpViewPager.setOnClickListener(this)
+
     }
 
     internal fun startActivity(what:Int){
@@ -181,19 +213,58 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         intent.putExtra("userID",userID)
         startActivity(intent)
     }
-    internal fun openImageView(bitmap:Bitmap){
+    internal fun openImageView(position: Int,adapter: OtherPersonActivityRecyclerViewAdapter){
         llBackground.startAnimation(inAnimation)
-        pvImage.startAnimation(inAnimation)
+        vpViewPager.startAnimation(inAnimation)
         llBackground.visibility=View.VISIBLE
-        pvImage.visibility=View.VISIBLE
-        pvImage.setImageBitmap(bitmap)
+        vpViewPager.visibility=View.VISIBLE
+        viewPagerAdapter= ViewPagerAdapter(adapter.datas,this)
+        vpViewPager.adapter=viewPagerAdapter
+        vpViewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            override fun onPageSelected(position: Int) {
+                getImage(position,viewPagerAdapter)
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {            }
+
+            override fun onPageScrollStateChanged(state: Int) {           }
+
+        })
+        vpViewPager.currentItem=position
+        //如果点击的是第一个图片，则要指定载入图片，其他情况因为会触发OnPageChangeListener,则无需管理
+        if(position==0){
+            getImage(position,viewPagerAdapter)
+        }
     }
+
     internal fun closeImageView(){
         llBackground.startAnimation(outAnimation)
-        pvImage.startAnimation(outAnimation)
         llBackground.visibility=View.GONE
-        pvImage.visibility=View.GONE
+        vpViewPager.startAnimation(outAnimation)
+        vpViewPager.visibility=View.GONE
+    }
 
+    internal fun getImage(position: Int,adapter: ViewPagerAdapter){
+        Thread{
+            var bitmap=FindInSql.searchFindCommentImageFromSQL(adapter.datas[position])
+            if(bitmap==null){
+                val imageByte=HandleFind.Get_User_Comment_Image(adapter.datas[position])
+                imageByte?.let{
+                    FindInSql.addFindCommentImageToSQL(adapter.datas[position],imageByte)
+                    bitmap=HandlePic.handlePic(ByteArrayInputStream(imageByte),0)
+                }
+            }
+            bitmap?.let{
+                runOnUiThread({
+                    if(position==vpViewPager.currentItem){
+                        val photoview=viewPagerAdapter.photoViewMap[position]
+                        photoview?.let{
+                            photoview.setImageBitmap(bitmap)
+                        }
+                    }
+                })
+            }
+        }.start()
     }
 
 
@@ -201,15 +272,8 @@ class OtherUsersActivity : AppCompatActivity() ,View.OnClickListener{
         when(v?.id){
             R.id.person_follow_number,R.id.person_follow->startActivity(FOLLOW)
             R.id.person_fans_number,R.id.person_fans->startActivity(FANS)
-            R.id.ll_activity_other_users_background->{
+            R.id.ll_activity_other_users_background,R.id.vp_activity_other_users->{
                 closeImageView()
-            }
-            R.id.pv_activity_other_users_image->{
-                if(pvImage.scale==1.0f){
-                    closeImageView()
-                }else{
-                    pvImage.setScale(1.0f,true)
-                }
             }
         }
     }

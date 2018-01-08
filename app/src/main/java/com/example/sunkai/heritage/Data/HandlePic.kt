@@ -7,10 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import top.zibin.luban.Luban
-import top.zibin.luban.OnCompressListener
 import java.io.ByteArrayOutputStream
-import java.io.File
 
 import java.io.InputStream
 
@@ -46,8 +43,7 @@ object HandlePic {
 
     fun drawableToByteArray(drawable: Drawable):ByteArray?{
         if(drawable is BitmapDrawable) {
-            val bitmapDrawable = drawable as BitmapDrawable
-            return bitmapToByteArray(bitmapDrawable.bitmap)
+            return bitmapToByteArray(drawable.bitmap)
         }
         return null
     }

@@ -25,10 +25,9 @@
         android:visibility="gone"
         android:id="@+id/ll_activity_other_users_background"
         android:orientation="vertical"/>
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/pv_activity_other_users_image"
+    <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:visibility="gone" />
+        android:id="@+id/vp_activity_other_users"
+        android:visibility="gone"/>
 </FrameLayout>
