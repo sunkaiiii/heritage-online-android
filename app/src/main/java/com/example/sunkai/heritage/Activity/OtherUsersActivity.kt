@@ -75,6 +75,19 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                     getUserImage(userID)
                     when(data.permission){
                         DENIALD -> setErrorMessage()
+                        ONLYFOCUS->{
+                            Thread {
+                                val result=judgeFocus(userID, LoginActivity.userID)
+                                runOnUiThread {
+                                    if (result) {
+                                        setAdapter(userID)
+
+                                    } else {
+                                        setErrorMessage()
+                                    }
+                                }
+                            }.start()
+                        }
                         ALL -> {
                             setAdapter(userID)
                         }
@@ -142,6 +155,10 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }.start()
+    }
+
+    internal fun judgeFocus(otherUserID:Int,userID: Int):Boolean{
+        return HandlePerson.is_User_Follow(otherUserID,userID)
     }
 
     internal fun setViews(data: OtherPersonData) {
