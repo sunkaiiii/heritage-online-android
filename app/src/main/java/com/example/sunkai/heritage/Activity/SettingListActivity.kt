@@ -3,40 +3,60 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
 import android.widget.CompoundButton
+import android.widget.Spinner
 import android.widget.Switch
+import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.value.ALL
+import com.example.sunkai.heritage.value.DENIALD
+import com.example.sunkai.heritage.value.ONLYFOCUS
 
 /**
+ * 用户设置的activity
  * Created by sunkai on 2017/12/15.
  */
-class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
+class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener,AdapterView.OnItemSelectedListener {
 
-    private var actionBack: ActionBar? = null
     private var sharePreferences:SharedPreferences?=null
     private var editor:SharedPreferences.Editor?=null
-    private var pushSwitch:Switch?=null
+    private lateinit var pushSwitch:Switch
+    private lateinit var permissionSpinner:Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.setting_list_activity)
+        setContentView(R.layout.activity_setting_list)
         sharePreferences=getSharedPreferences("setting",Context.MODE_PRIVATE)
         editor=getSharedPreferences("setting",Context.MODE_PRIVATE).edit()
         initview()
-        actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        checkUserPermission()
     }
     private fun initview(){
-        pushSwitch=findViewById(R.id.push_swith) as Switch
-        pushSwitch?.isChecked = sharePreferences!!.getBoolean("pushSwitch",false)
+        pushSwitch=findViewById(R.id.push_swith)
+        permissionSpinner=findViewById(R.id.permission_spinner)
+        permissionSpinner.isEnabled=false
+        pushSwitch.isChecked = sharePreferences!!.getBoolean("pushSwitch",false)
 
-        pushSwitch?.setOnCheckedChangeListener(this)
+        pushSwitch.setOnCheckedChangeListener(this)
+        permissionSpinner.onItemSelectedListener = this
+    }
+
+    internal fun checkUserPermission(){
+        Thread{
+            val permission=HandlePerson.Get_User_Permission(LoginActivity.userID)
+            runOnUiThread {
+                permissionSpinner.setSelection(permission+1,true)
+                permissionSpinner.isEnabled=true
+            }
+        }.start()
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -69,4 +89,23 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        when(position-1){
+            DENIALD,ONLYFOCUS,ALL->{
+                permissionSpinner.isEnabled=false
+                Thread {
+                    val result=HandlePerson.Set_User_Permission(LoginActivity.userID, position - 1)
+                    runOnUiThread({
+                        permissionSpinner.isEnabled=true
+                        if(!result){
+                            MakeToast.MakeText(getString(R.string.had_error))
+                        }
+                    })
+
+                }.start()
+            }
+        }
+    }
+    override fun onNothingSelected(parent: AdapterView<*>?) {    }
 }

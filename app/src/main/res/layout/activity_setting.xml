@@ -150,7 +150,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_margin="6dp"
-                            android:text="推送设置"
+                            android:text="应用设置"
                             android:textColor="@color/colorAccent" />
                     </LinearLayout>
                 </RelativeLayout>

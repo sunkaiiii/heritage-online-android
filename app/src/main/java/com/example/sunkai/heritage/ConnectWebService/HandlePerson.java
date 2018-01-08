@@ -75,7 +75,8 @@ public class HandlePerson extends BaseSetting {
             String userName=jsonObject.getString("userName");
             int focusNumber=jsonObject.getInt("focusNumber");
             int fansNumber=jsonObject.getInt("fansNumber");
-            return new OtherPersonData(userID,focusNumber,fansNumber,userName);
+            int permisison=jsonObject.getInt("permission");
+            return new OtherPersonData(userID,focusNumber,fansNumber,userName,permisison);
         }catch (JSONException e){
             e.printStackTrace();
         }
@@ -197,5 +198,23 @@ public class HandlePerson extends BaseSetting {
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
         return result;
+    }
+    public static int Get_User_Permission(int userID){
+        methodName="Get_User_Permission";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        String result=Get_Post(soapObject);
+        return Integer.parseInt(result);
+    }
+
+    public static boolean Set_User_Permission(int userID,int permission){
+        methodName="Set_User_Permission";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        soapObject.addProperty("permission",permission);
+        String result=Get_Post(soapObject);
+        return success.equals(result);
     }
 }

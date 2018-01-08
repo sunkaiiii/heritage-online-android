@@ -14,7 +14,7 @@ public class WebServiceSetting {
     protected static String namespace = "http://Handle";
     protected static String url = "http://btbudinner.win" +
             ":8088/services/Heritage?wsdl";
-//    protected static String url = "http://10.66.2.232" +
+//    protected static String url = "http://10.66.1.217" +
 //        ":8088/services/Heritage?wsdl";
 //    protected static String url = "http://10.100.241.124" +
 //            ":8088/services/Heritage?wsdl";
