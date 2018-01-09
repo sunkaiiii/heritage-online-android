@@ -12,10 +12,10 @@ package com.example.sunkai.heritage.ConnectWebService;
 
 public class WebServiceSetting {
     protected static String namespace = "http://Handle";
-//    protected static String url = "http://btbudinner.win" +
-//            ":8088/services/Heritage?wsdl";
-    protected static String url = "http://10.20.254.95" +
-        ":8088/services/Heritage?wsdl";
+    protected static String url = "http://btbudinner.win" +
+            ":8088/services/Heritage?wsdl";
+//    protected static String url = "http://10.20.254.95" +
+//        ":8088/services/Heritage?wsdl";
 //    protected static String url = "http://10.100.241.124" +
 //            ":8088/services/Heritage?wsdl";
 //        protected static String url = "http://192.168.1.8" +
