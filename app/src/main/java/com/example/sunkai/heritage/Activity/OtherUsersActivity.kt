@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.Data.OtherPersonData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.FindInSql
+import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
@@ -73,31 +74,53 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                 runOnUiThread({
                     setViews(data)
                     getUserImage(userID)
-                    when(data.permission){
-                        DENIALD -> setErrorMessage()
-                        ONLYFOCUS->{
-                            Thread {
-                                val result=judgeFocus(userID, LoginActivity.userID)
-                                runOnUiThread {
-                                    if (result) {
-                                        setAdapter(userID)
-
-                                    } else {
-                                        setErrorMessage()
-                                    }
-                                }
-                            }.start()
-                        }
-                        ALL -> {
-                            setAdapter(userID)
-                        }
-                    }
+                    checkPermissions(data)
                 })
             }
 
         }.start()
     }
+    internal fun checkPermissions(data:OtherPersonData){
+        when(data.permission){
+            DENIALD -> setErrorMessage()
+            ONLYFOCUS->{
+                Thread {
+                    val result=judgeFocus(userID, LoginActivity.userID)
+                    runOnUiThread {
+                        if (result) {
+                            setAdapter(userID)
 
+                        } else {
+                            setErrorMessage()
+                        }
+                    }
+                }.start()
+            }
+            ALL -> {
+                setAdapter(userID)
+            }
+        }
+
+        when(data.userFollowAndFansViewPermission){
+            DENIALD -> setViewsOnFonsAndFocusPermissionDenailClick()
+            ONLYFOCUS->{
+                Thread {
+                    val result=judgeFocus(userID, LoginActivity.userID)
+                    runOnUiThread {
+                        if (result) {
+                            setViewsOnClick()
+
+                        } else {
+                            setViewsOnFonsAndFocusPermissionDenailClick()
+                        }
+                    }
+                }.start()
+            }
+            ALL -> {
+                setViewsOnClick()
+            }
+        }
+    }
     internal fun setErrorMessage() {
         tvPermission.visibility=View.VISIBLE
         rv_activity_other_users.visibility=View.GONE
@@ -233,7 +256,9 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         llBackground = findViewById(R.id.ll_activity_other_users_background)
         vpViewPager = findViewById(R.id.vp_activity_other_users)
         tvPermission=findViewById(R.id.tv_permission)
+    }
 
+    internal fun setViewsOnClick(){
         inAnimation.duration = 300
         outAnimation.duration = 300
 
@@ -244,7 +269,15 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         fansText.setOnClickListener(this)
         llBackground.setOnClickListener(this)
         vpViewPager.setOnClickListener(this)
+    }
 
+    internal fun setViewsOnFonsAndFocusPermissionDenailClick(){
+        userImageView.setOnClickListener(this)
+        val onPermissionDenailListner= View.OnClickListener { MakeToast.MakeText(getString(R.string.fans_and_view_permission_denail)) }
+        focusNumberTextView.setOnClickListener(onPermissionDenailListner)
+        fansNumberTextView.setOnClickListener(onPermissionDenailListner)
+        focusText.setOnClickListener(onPermissionDenailListner)
+        fansText.setOnClickListener(onPermissionDenailListner)
     }
 
     internal fun startActivity(what: Int) {

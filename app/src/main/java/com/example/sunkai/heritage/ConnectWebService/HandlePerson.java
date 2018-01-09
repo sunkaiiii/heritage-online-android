@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.example.sunkai.heritage.Data.FocusData;
 import com.example.sunkai.heritage.Activity.LoginActivity;
 import com.example.sunkai.heritage.Data.OtherPersonData;
+import com.example.sunkai.heritage.value.ValuesKt;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +77,8 @@ public class HandlePerson extends BaseSetting {
             int focusNumber=jsonObject.getInt("focusNumber");
             int fansNumber=jsonObject.getInt("fansNumber");
             int permisison=jsonObject.getInt("permission");
-            return new OtherPersonData(userID,focusNumber,fansNumber,userName,permisison);
+            int userFollowAndFansPermission=jsonObject.getInt("focusAndFansPermission");
+            return new OtherPersonData(userID,focusNumber,fansNumber,userName,permisison,userFollowAndFansPermission);
         }catch (JSONException e){
             e.printStackTrace();
         }
@@ -205,11 +207,34 @@ public class HandlePerson extends BaseSetting {
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userID",userID);
         String result=Get_Post(soapObject);
+        if(result==null)
+            return ValuesKt.getDENIALD();
+        return Integer.parseInt(result);
+    }
+
+    public static int Get_User_Focus_And_Fans_View_Permission(int userID){
+        methodName="Get_User_Focus_And_Fans_View_Permission";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        String result=Get_Post(soapObject);
+        if(result==null)
+            return ValuesKt.getDENIALD();
         return Integer.parseInt(result);
     }
 
     public static boolean Set_User_Permission(int userID,int permission){
         methodName="Set_User_Permission";
+        soapAction=namespace+"/"+methodName;
+        SoapObject soapObject=new SoapObject(namespace,methodName);
+        soapObject.addProperty("userID",userID);
+        soapObject.addProperty("permission",permission);
+        String result=Get_Post(soapObject);
+        return success.equals(result);
+    }
+
+    public static boolean Set_User_Focus_And_Fans_View_Permission(int userID,int permission){
+        methodName="Set_User_Focus_And_Fans_View_Permission";
         soapAction=namespace+"/"+methodName;
         SoapObject soapObject=new SoapObject(namespace,methodName);
         soapObject.addProperty("userID",userID);

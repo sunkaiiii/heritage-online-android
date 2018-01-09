@@ -31,5 +31,6 @@
         <item>开放</item>
     </string-array>
     <string name="had_error">出现问题，请稍后再试</string>
+    <string name="fans_and_view_permission_denail">由于对方的设置，您无法查看他的信息</string>
     <!-- TODO: Remove or change this placeholder text -->
 </resources>

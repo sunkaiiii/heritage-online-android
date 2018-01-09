@@ -199,10 +199,7 @@ public class HandleFind extends BaseSetting {
         soapObject.addProperty("comment_content",data.getCommentContent());
         soapObject.addProperty("comment_image",Base64.encode(data.getUserImage()));
         String result=Get_Post(soapObject);
-        if(success.equals(result)){
-            return true;
-        }
-        return false;
+        return success.equals(result);
     }
 
     public static List<UserCommentData> Get_User_Comment_Information(int userID) {

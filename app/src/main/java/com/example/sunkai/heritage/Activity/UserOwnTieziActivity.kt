@@ -76,7 +76,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                         .setPositiveButton("删除", { dialog, which ->
                             val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
                                     .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, null))
-                                    .create();
+                                    .create()
                             ad.show()
                             Thread {
                                 val userCommentData = adapter.getItem(position)

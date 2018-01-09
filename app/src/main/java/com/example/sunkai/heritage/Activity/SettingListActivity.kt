@@ -26,37 +26,46 @@ import com.example.sunkai.heritage.value.ONLYFOCUS
 class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener,AdapterView.OnItemSelectedListener {
 
     private var sharePreferences:SharedPreferences?=null
-    private var editor:SharedPreferences.Editor?=null
     private lateinit var pushSwitch:Switch
     private lateinit var permissionSpinner:Spinner
+    private lateinit var focusAndFansViewPermissionSpinner:Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_list)
         sharePreferences=getSharedPreferences("setting",Context.MODE_PRIVATE)
-        editor=getSharedPreferences("setting",Context.MODE_PRIVATE).edit()
         initview()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         checkUserPermission()
+
     }
     private fun initview(){
         pushSwitch=findViewById(R.id.push_swith)
         permissionSpinner=findViewById(R.id.permission_spinner)
+        focusAndFansViewPermissionSpinner=findViewById(R.id.permission_focus_fans_spinner)
         permissionSpinner.isEnabled=false
+        focusAndFansViewPermissionSpinner.isEnabled=false
         pushSwitch.isChecked = sharePreferences!!.getBoolean("pushSwitch",false)
 
         pushSwitch.setOnCheckedChangeListener(this)
-        permissionSpinner.onItemSelectedListener = this
     }
 
     internal fun checkUserPermission(){
         Thread{
             val permission=HandlePerson.Get_User_Permission(LoginActivity.userID)
+            val focusAndFansViewPermission=HandlePerson.Get_User_Focus_And_Fans_View_Permission(LoginActivity.userID)
             runOnUiThread {
                 permissionSpinner.setSelection(permission+1,true)
                 permissionSpinner.isEnabled=true
+                focusAndFansViewPermissionSpinner.setSelection(focusAndFansViewPermission+1,true)
+                focusAndFansViewPermissionSpinner.isEnabled=true
+
+                //防止在check之后切换spinner状态的时候重复设定权限
+                permissionSpinner.onItemSelectedListener = this
+                focusAndFansViewPermissionSpinner.onItemSelectedListener=this
             }
         }.start()
+
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -66,6 +75,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun setPushStatus(isChecked: Boolean){
+        val editor=getSharedPreferences("setting",Context.MODE_PRIVATE).edit()
         if(isChecked) {
             GlobalContext.instance.registMipush() //在这里延迟一些注册用户，同时注册用户会注册失败，需要重新启动程序才可以
             Thread{
@@ -83,6 +93,32 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
             editor?.apply()
         }
     }
+
+    internal fun setPermission(id:Int,position: Int){
+        val spinner=findViewById<Spinner>(id)
+        when (position - 1) {
+            DENIALD, ONLYFOCUS, ALL -> {
+                spinner.isEnabled = false
+                Thread {
+                    val result:Boolean
+                    result = when(id) {
+                        R.id.permission_spinner-> HandlePerson.Set_User_Permission(LoginActivity.userID, position - 1)
+                        R.id.permission_focus_fans_spinner-> HandlePerson.Set_User_Focus_And_Fans_View_Permission(LoginActivity.userID,position-1)
+                        else-> false
+                    }
+                    runOnUiThread {
+                        spinner.isEnabled = true
+                        if (!result) {
+                            MakeToast.MakeText(getString(R.string.had_error))
+                        }
+                    }
+
+                }.start()
+            }
+        }
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> finish()
@@ -91,20 +127,9 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        when(position-1){
-            DENIALD,ONLYFOCUS,ALL->{
-                permissionSpinner.isEnabled=false
-                Thread {
-                    val result=HandlePerson.Set_User_Permission(LoginActivity.userID, position - 1)
-                    runOnUiThread({
-                        permissionSpinner.isEnabled=true
-                        if(!result){
-                            MakeToast.MakeText(getString(R.string.had_error))
-                        }
-                    })
+        when(parent?.id) {
+            R.id.permission_spinner,R.id.permission_focus_fans_spinner->setPermission(parent.id,position)
 
-                }.start()
-            }
         }
     }
     override fun onNothingSelected(parent: AdapterView<*>?) {    }

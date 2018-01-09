@@ -194,7 +194,7 @@ class FocusListviewAdapter
 
         override fun onPostExecute(bitmap: Bitmap?) {
             bitmap?.let {
-                val imageView=imageviewWeakRefrence.get();
+                val imageView=imageviewWeakRefrence.get()
                 imageView?.let {
                     imageView.setImageBitmap(bitmap)
                 }

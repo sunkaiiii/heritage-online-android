@@ -318,7 +318,7 @@ class FindFragment : Fragment(), View.OnClickListener {
         override fun doInBackground(vararg voids: Void): Bitmap? {
             val findFragment = findFragmentWeakReference.get() ?: return null
             if (findFragment.activityDatas.isEmpty()) {
-                val getDatas=HandleFind.Get_Find_Activity_ID(findFragment.activityDatas);
+                val getDatas=HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
                 getDatas?.let {
                     findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
                 }
