@@ -86,20 +86,20 @@ object HandleFolk : BaseSetting() {
 
     fun GetFolkInforMation(): List<FolkData>? {
         BaseSetting.methodName = "Get_Folk_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val transport = HttpTransportSE(WebServiceSetting.url)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val transport = HttpTransportSE(BaseSetting.url)
         transport.debug = true
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_FolkList(result)
     }
 
     fun GetFolkImage(id: Int): ByteArray? {
         BaseSetting.methodName = "Get_Folk_Image"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val transport = HttpTransportSE(WebServiceSetting.url)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val transport = HttpTransportSE(BaseSetting.url)
         transport.debug = true
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val envelope = BaseSetting.pre_processSoap(soapObject)
         try {
@@ -119,8 +119,8 @@ object HandleFolk : BaseSetting() {
 
     fun Search_Folk_Info(searchInfo: String): List<FolkData>? {
         BaseSetting.methodName = "Search_Folk_Info"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("searhInfo", searchInfo)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_FolkList(result)
@@ -128,8 +128,8 @@ object HandleFolk : BaseSetting() {
 
     fun Add_User_Order(userID: Int, orderID: Int): Boolean {
         BaseSetting.methodName = "Add_User_Order"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("orderID", orderID)
         val result = BaseSetting.Get_Post(soapObject) ?: return false
@@ -139,8 +139,8 @@ object HandleFolk : BaseSetting() {
 
     fun Cancel_User_Order(userID: Int, orderID: Int): Boolean {
         BaseSetting.methodName = "Cancel_User_Order"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("orderID", orderID)
         val result = BaseSetting.Get_Post(soapObject) ?: return false
@@ -149,8 +149,8 @@ object HandleFolk : BaseSetting() {
 
     fun Check_User_Order(userID: Int, orderID: Int): Int {
         BaseSetting.methodName = "Check_Is_Order"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("orderID", orderID)
         val result = BaseSetting.Get_Post(soapObject) ?: return -1
@@ -159,8 +159,8 @@ object HandleFolk : BaseSetting() {
 
     private fun Get_User_Orders_ID(userID: Int): List<OrderData>? {
         BaseSetting.methodName = "Get_User_Order"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject) ?: return null
         return Json_To_OrderList(result)
@@ -168,8 +168,8 @@ object HandleFolk : BaseSetting() {
 
     fun Get_User_Order_Information(id: Int): FolkData? {
         BaseSetting.methodName = "Get_Folk_Single_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_SingleFolkData(result)

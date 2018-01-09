@@ -84,8 +84,8 @@ object HandlePerson : BaseSetting() {
 
     fun Update_User_Image(userID: Int, image: String): Boolean {
         BaseSetting.methodName = "Update_User_Image"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("image", image)
         val result = BaseSetting.Get_Post(soapObject)
@@ -94,8 +94,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_User_Image(userID: Int): String? {
         BaseSetting.methodName = "Get_User_Image"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result) null else result
@@ -103,8 +103,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_Follow_Number(userID: Int): Int {
         BaseSetting.methodName = "Get_Follow_Number"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result || result == null) {
@@ -114,8 +114,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_Fans_Number(userID: Int): Int {
         BaseSetting.methodName = "Get_Fans_Number"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result || result == null) {
@@ -125,8 +125,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_Follow_Information(userID: Int): List<FocusData>? {
         BaseSetting.methodName = "Get_Follow_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_focusData(result)
@@ -134,8 +134,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_Fans_Information(userID: Int): List<FocusData>? {
         BaseSetting.methodName = "Get_Fans_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_focusData(result)
@@ -143,8 +143,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_User_All_Info(userID: Int): OtherPersonData? {
         BaseSetting.methodName = "Get_User_All_Info"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_OtherPersonData(userID, result)
@@ -152,8 +152,8 @@ object HandlePerson : BaseSetting() {
 
     fun Add_Focus(userID: Int, focusID: Int): Boolean {
         BaseSetting.methodName = "Add_Focus"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("focusID", focusID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -162,8 +162,8 @@ object HandlePerson : BaseSetting() {
 
     fun Cancel_Focus(userID: Int, focusID: Int): Boolean {
         BaseSetting.methodName = "Cancel_Focus"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("focusID", focusID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -172,8 +172,8 @@ object HandlePerson : BaseSetting() {
 
     fun Check_Follow_Eachohter(userID: Int, focusID: Int): Boolean {
         BaseSetting.methodName = "Check_Follow_Eachohter"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("focusID", focusID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -182,8 +182,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_Search_UserInfo(name: String): List<FocusData>? {
         BaseSetting.methodName = "Get_Search_UserInfo"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("name", name)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_SearchData(result)
@@ -191,8 +191,8 @@ object HandlePerson : BaseSetting() {
 
     fun is_User_Follow(userID: Int, fansID: Int): Boolean {
         BaseSetting.methodName = "is_User_Follow"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userName", userID)
         soapObject.addProperty("fansName", fansID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -201,16 +201,16 @@ object HandlePerson : BaseSetting() {
 
     fun Get_User_Update_Time(userID: Int): String? {
         BaseSetting.methodName = "Get_User_Update_Time"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         return Get_Post(soapObject)
     }
 
     fun Get_User_Permission(userID: Int): Int {
         BaseSetting.methodName = "Get_User_Permission"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject) ?: return DENIALD
         return Integer.parseInt(result)
@@ -218,8 +218,8 @@ object HandlePerson : BaseSetting() {
 
     fun Get_User_Focus_And_Fans_View_Permission(userID: Int): Int {
         BaseSetting.methodName = "Get_User_Focus_And_Fans_View_Permission"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject) ?: return DENIALD
         return Integer.parseInt(result)
@@ -227,8 +227,8 @@ object HandlePerson : BaseSetting() {
 
     fun Set_User_Permission(userID: Int, permission: Int): Boolean {
         BaseSetting.methodName = "Set_User_Permission"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("permission", permission)
         val result = BaseSetting.Get_Post(soapObject)
@@ -237,8 +237,8 @@ object HandlePerson : BaseSetting() {
 
     fun Set_User_Focus_And_Fans_View_Permission(userID: Int, permission: Int): Boolean {
         BaseSetting.methodName = "Set_User_Focus_And_Fans_View_Permission"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("permission", permission)
         val result = BaseSetting.Get_Post(soapObject)

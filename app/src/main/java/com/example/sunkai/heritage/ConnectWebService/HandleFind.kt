@@ -153,16 +153,16 @@ object HandleFind : BaseSetting() {
 
     fun Get_Find_Activity_ID(datas: List<FindActivityData>): List<FindActivityData>? {
         BaseSetting.methodName = "Get_Find_Activity_ID"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_FindAcitivityID(datas.toMutableList(), result)
     }
 
     fun Get_Find_Activity_Information(id: Int): FindActivityData? {
         BaseSetting.methodName = "Get_Find_Activity_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_FindActivityInformation(id, result)
@@ -170,8 +170,8 @@ object HandleFind : BaseSetting() {
 
     fun Add_User_Comment_Information(user_id: Int, comment_title: String, comment_content: String, comment_image: String): Boolean {
         BaseSetting.methodName = "Add_User_Comment_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("user_id", user_id)
         soapObject.addProperty("comment_title", comment_title)
         soapObject.addProperty("comment_content", comment_content)
@@ -182,8 +182,8 @@ object HandleFind : BaseSetting() {
 
     fun Delete_User_Comment_By_ID(commentID: Int): Boolean {
         BaseSetting.methodName = "Delete_User_Comment_By_ID"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
         return BaseSetting.success == result
@@ -191,8 +191,8 @@ object HandleFind : BaseSetting() {
 
     fun Update_User_Comment_Informaiton(data: UserCommentData): Boolean {
         BaseSetting.methodName = "Update_User_Comment_Informaiton"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("commentID", data.id)
         soapObject.addProperty("comment_title", data.commentTitle)
         soapObject.addProperty("comment_content", data.commentContent)
@@ -203,8 +203,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Information(userID: Int): List<UserCommentData>? {
         BaseSetting.methodName = "Get_User_Comment_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_UserCommentData(result)
@@ -212,8 +212,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Information_By_User(userID: Int): List<UserCommentData>? {
         BaseSetting.methodName = "Get_User_Comment_Information_By_User"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_UserCommentData(result)
@@ -221,8 +221,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Information_By_Own(userID: Int): List<UserCommentData>? {
         BaseSetting.methodName = "Get_User_Comment_Information_By_Own"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_UserCommentData(result)
@@ -230,16 +230,16 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_ID(): List<Int>? {
         BaseSetting.methodName = "Get_User_Comment_ID"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result) null else Json_To_FindComment_ID(result)
     }
 
     fun Get_User_Comment_ID_By_User(userID: Int): List<Int>? {
         BaseSetting.methodName = "Get_User_Comment_ID_By_User"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result) null else Json_To_FindComment_ID(result)
@@ -247,8 +247,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_All_User_Coment_Info_By_ID(userID: Int, commentID: Int): FindActivityAllData? {
         BaseSetting.methodName = "Get_All_User_Coment_Info_By_ID"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("user", userID)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -257,8 +257,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Image(id: Int): ByteArray? {
         BaseSetting.methodName = "Get_User_Comment_Image"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val result = BaseSetting.Get_Post(soapObject)
         return if (null == result || BaseSetting.error == result) {
@@ -268,8 +268,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Is_Like(userID: Int, commentID: Int): Boolean {
         BaseSetting.methodName = "Get_User_Is_Like"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -278,8 +278,8 @@ object HandleFind : BaseSetting() {
 
     fun Set_User_Like(userID: Int, commentID: Int): Boolean {
         BaseSetting.methodName = "Set_User_Like"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -288,8 +288,8 @@ object HandleFind : BaseSetting() {
 
     fun Cancel_User_Like(userID: Int, commentID: Int): Boolean {
         BaseSetting.methodName = "Cancel_User_Like"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
@@ -298,8 +298,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Reply(commentID: Int): List<CommentReplyData>? {
         BaseSetting.methodName = "Get_User_Comment_Reply"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
         return Json_To_UserCommentReplyData(result)
@@ -313,8 +313,8 @@ object HandleFind : BaseSetting() {
         }
 
         BaseSetting.methodName = "Add_User_Comment_Reply"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("userID", userID)
         soapObject.addProperty("commentID", commentID)
         soapObject.addProperty("replyContent", replyContent)
@@ -329,8 +329,8 @@ object HandleFind : BaseSetting() {
 
     fun Update_User_Comment_Reply(replyID: Int, replyContent: String): Boolean {
         BaseSetting.methodName = "Update_User_Comment_Reply"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("replyID", replyID)
         soapObject.addProperty("replyContent", replyContent)
         val result = BaseSetting.Get_Post(soapObject)
@@ -339,8 +339,8 @@ object HandleFind : BaseSetting() {
 
     fun Delete_User_Comment_Reply(replyID: Int): Boolean {
         BaseSetting.methodName = "Update_User_Comment_Reply"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("replyID", replyID)
         val result = BaseSetting.Get_Post(soapObject)
         return BaseSetting.success == result
@@ -348,8 +348,8 @@ object HandleFind : BaseSetting() {
 
     fun Get_User_Comment_Count(commentID: Int): Int {
         BaseSetting.methodName = "Get_User_Comment_Count"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("commentID", commentID)
         val result = BaseSetting.Get_Post(soapObject)
         return if (BaseSetting.error == result) {

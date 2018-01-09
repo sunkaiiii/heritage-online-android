@@ -18,8 +18,8 @@ import java.util.ArrayList
 object HandleMainFragment : BaseSetting() {
     fun ReadMainActivity(): List<MainActivityData>? {
         BaseSetting.methodName = "Read_Main_Activity"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         val result = BaseSetting.Get_Post(soapObject)
         if (BaseSetting.error != result && result != null) {
             try {
@@ -47,8 +47,8 @@ object HandleMainFragment : BaseSetting() {
 
     fun GetChannelInformation(channel: String): List<ClassifyActiviyData>? {
         BaseSetting.methodName = "Get_Channel_Information"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("channel", channel)
         val result = BaseSetting.Get_Post(soapObject)
         try {
@@ -76,8 +76,8 @@ object HandleMainFragment : BaseSetting() {
 
     fun GetChannelImage(id: Int): ByteArray? {
         BaseSetting.methodName = "Get_Channel_Image"
-        BaseSetting.soapAction = WebServiceSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(WebServiceSetting.namespace, BaseSetting.methodName)
+        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val imgCode = BaseSetting.Get_Post(soapObject)
         return if (null == imgCode || BaseSetting.error == imgCode) {
