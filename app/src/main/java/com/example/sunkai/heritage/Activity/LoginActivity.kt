@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
 
     internal var isIntoMainpage = 0
     internal var getUserID: Runnable = Runnable {
-        userID = HandleUser.Get_User_ID(userName)
+        userID = HandleUser.Get_User_ID(userName!!)
         if (userID > 0) {
             getUserIDHandler.sendEmptyMessage(1)
         } else {
@@ -239,7 +239,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val changePasswordThread = Runnable{
-            val result = HandleUser.Change_Password(changePasswordUsername, password!!.text.toString())
+            val result = HandleUser.Change_Password(changePasswordUsername!!, password!!.text.toString())
             if (result) {
                 changePasswordHandler.sendEmptyMessage(1)
             } else {

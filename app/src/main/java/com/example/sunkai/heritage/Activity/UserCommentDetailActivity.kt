@@ -108,7 +108,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     internal var getReply: Runnable = Runnable {
         val getdatas = HandleFind.Get_User_Comment_Reply(data!!.id)
         if (getdatas != null) {
-            datas = getdatas
+            datas = getdatas.toMutableList()
             runOnUiThread {
                 hideKeyboard()
                 for (data in datas!!) {
@@ -116,7 +116,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
-    }
+}
 
 
     private fun initView() {

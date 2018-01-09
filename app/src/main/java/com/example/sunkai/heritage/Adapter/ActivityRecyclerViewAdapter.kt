@@ -99,7 +99,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
         override fun doInBackground(vararg voids: Void): Void? {
             val adpter = weakReference.get()
-            adpter?.activityDatas = HandleMainFragment.GetChannelInformation(adpter?.channel)
+            adpter?.activityDatas = HandleMainFragment.GetChannelInformation(adpter?.channel!!)
             return null
         }
 

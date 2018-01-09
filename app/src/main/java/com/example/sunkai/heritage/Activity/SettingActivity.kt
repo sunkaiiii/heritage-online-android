@@ -125,7 +125,7 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
 
         val changePasswordThread = Runnable {
-            val result = HandleUser.Change_Password(LoginActivity.userName, password.text.toString())
+            val result = HandleUser.Change_Password(LoginActivity.userName!!, password.text.toString())
             runOnUiThread({
                 if(result){
                     MakeToast.MakeText("修改成功")

@@ -73,7 +73,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
         this.adapter.setOnItemLongClickListener(object :OnItemLongClickListener{
             override fun onItemlongClick(view: View, position: Int) {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
-                        .setPositiveButton("删除", { dialog, which ->
+                        .setPositiveButton("删除", { _, _ ->
                             val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
                                     .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, null))
                                     .create()

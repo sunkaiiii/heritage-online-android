@@ -78,7 +78,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             setViewsUnable()
             Thread {
                 setDatas()
-                val result = HandleFind.Update_User_Comment_Informaiton(data)
+                val result = HandleFind.Update_User_Comment_Informaiton(data!!)
                 runOnUiThread {
                     if (result) {
                         MakeToast.MakeText(getString(R.string.update_success))

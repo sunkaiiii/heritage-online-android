@@ -320,7 +320,7 @@ class FindFragment : Fragment(), View.OnClickListener {
             if (findFragment.activityDatas.isEmpty()) {
                 val getDatas=HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
                 getDatas?.let {
-                    findFragment.activityDatas = HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
+                    findFragment.activityDatas = getDatas
                 }
             }
             db = MySqliteHandler.GetReadableDatabase()
