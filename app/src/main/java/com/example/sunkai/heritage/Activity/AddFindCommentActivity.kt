@@ -9,14 +9,13 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.activity_add_find_comment.*
 import org.kobjects.base64.Base64
 
 import java.io.ByteArrayOutputStream
@@ -27,9 +26,6 @@ import java.io.ByteArrayOutputStream
 
 class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
 
-    private lateinit var add_comment_title: EditText
-    private lateinit var add_comment_content: EditText
-    private lateinit var add_comment_image: ImageView
 
 
     private var isSavePicture = false//图片上传状态
@@ -83,9 +79,6 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        add_comment_title = findViewById(R.id.add_comment_title)
-        add_comment_content = findViewById(R.id.add_comment_content)
-        add_comment_image = findViewById(R.id.add_comment_image)
         val actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
         add_comment_image.setOnClickListener(this)

@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
@@ -18,7 +17,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -36,6 +34,7 @@ import com.example.sunkai.heritage.Data.CommentReplyData
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.SoftInputTools.hideKeyboard
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
 
@@ -110,7 +109,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (getdatas != null) {
             datas = getdatas.toMutableList()
             runOnUiThread {
-                hideKeyboard()
+                hideKeyboard(currentFocus)
                 for (data in datas!!) {
                     setView(data)
                 }
@@ -142,25 +141,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-
-    //隐藏键盘
-    private fun hideKeyboard() {
-        val view = currentFocus
-        view?.let {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-
-        }
-    }
-
-    //显示键盘
-    private fun showKeyboard() {
-        val view = currentFocus
-        view?.let {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.showSoftInput(view, 1)
-        }
-    }
 
     override fun onClick(v: View) {
         when (v.id) {
@@ -233,7 +213,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     private fun setReverse() {
         LinearLayout_reply.removeAllViews()
         val iterator = datas!!.listIterator(datas!!.size)
-        hideKeyboard()
+        hideKeyboard(currentFocus)
         while (iterator.hasPrevious()) {
             val data = iterator.previous()
             setView(data)
@@ -383,7 +363,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                     resetWidge()
                     isReply = true
                     MakeToast.MakeText("回复成功")
-                    hideKeyboard()
+                    hideKeyboard(currentFocus)
                 } else {
                     MakeToast.MakeText("发生错误，请稍后再试")
                 }

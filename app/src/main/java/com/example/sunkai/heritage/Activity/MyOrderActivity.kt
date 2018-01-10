@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.Adapter.MyOrderListViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.activity_my_order.*
 
 /**
  * 此类用于处理我的预约
@@ -21,7 +22,6 @@ import com.example.sunkai.heritage.R
 
 class MyOrderActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var activity_my_order_listview: ListView
     private var datas: List<FolkData>?=null
     private lateinit var adapter: MyOrderListViewAdapter
 
@@ -71,7 +71,6 @@ class MyOrderActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        activity_my_order_listview = findViewById(R.id.activity_my_order_listview)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

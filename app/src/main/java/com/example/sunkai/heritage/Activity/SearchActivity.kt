@@ -2,30 +2,23 @@ package com.example.sunkai.heritage.Activity
 
 
 import android.os.Bundle
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ListView
 
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FocusData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.tools.MakeToast
+import kotlinx.android.synthetic.main.activity_search.*
 
 /**
  * 此类用于处理用户搜索的页面
  */
 class SearchActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var search_activity_btn: ImageView
-    private lateinit var search_activity_edit: EditText
-    private lateinit var search_activity_list: ListView
-    private var actionBack: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,11 +27,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        search_activity_btn = findViewById(R.id.search_activity_btn)
-        search_activity_edit = findViewById(R.id.search_activity_edit)
-        search_activity_list = findViewById(R.id.search_activity_list)
-        actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         search_activity_btn.setOnClickListener(this)
 
     }

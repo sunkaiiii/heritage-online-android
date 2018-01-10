@@ -10,14 +10,13 @@ import android.os.Message
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.activity_join.*
 
 /**
  * 此类用来处理预约界面
@@ -25,10 +24,6 @@ import com.example.sunkai.heritage.R
 
 class JoinActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var join_activity_img: ImageView
-    private lateinit var join_activity_title: TextView
-    private lateinit var join_activity_content: TextView
-    private lateinit var join_activity_btn: Button
     private var folkActiviyData: FolkData? = null
     internal var accentColor: Int = 0
     internal var isOrderd: Boolean = false//判断是否已经预约了
@@ -118,10 +113,6 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        join_activity_img = findViewById(R.id.join_activity_img)
-        join_activity_title = findViewById(R.id.join_activity_title)
-        join_activity_content = findViewById(R.id.join_activity_content)
-        join_activity_btn = findViewById(R.id.join_activity_btn)
         accentColor = join_activity_btn.currentTextColor
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

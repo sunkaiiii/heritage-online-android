@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+
 
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.activity_join.*
 
 /**
  * Created by sunkai on 2017-4-22.
@@ -17,9 +16,6 @@ import com.example.sunkai.heritage.R
  */
 
 class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var join_activity_img: ImageView
-    private lateinit var join_activity_title: TextView
-    private lateinit var join_activity_content: TextView
 
 
     /**
@@ -36,14 +32,9 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         }
         join_activity_title.text = data.activityTitle
         join_activity_content.text = data.activityContent
-
     }
 
     private fun initView() {
-        join_activity_img = findViewById(R.id.join_activity_img)
-        join_activity_title = findViewById(R.id.join_activity_title)
-        join_activity_content = findViewById(R.id.join_activity_content)
-        val join_activity_btn = findViewById<Button>(R.id.join_activity_btn)
         join_activity_btn.visibility = View.GONE
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         join_activity_btn.setOnClickListener(this)

@@ -1,13 +1,9 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -15,33 +11,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import kotlinx.android.synthetic.main.activity_setting.*
 
 
 class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var builder: AlertDialog.Builder
     private lateinit var ad: AlertDialog
-    private lateinit var sign_in_icon: ImageView
-    private lateinit var sign_name_textview: TextView
-    private lateinit var linearLayout2: LinearLayout
-    private lateinit var setting_sigh_out_img: ImageView
-    private lateinit var setting_sigh_out_text: TextView
-    private lateinit var setting_changepassword_img: ImageView
-    private lateinit var setting_changepassword_text: TextView
-    private lateinit var setting_about_us_img: ImageView
-    private lateinit var setting_about_us_text: TextView
-    private lateinit var setting_push_img: ImageView
-    private lateinit var setting_push_text: TextView
-    private var actionBack: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,27 +31,15 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        sign_in_icon = findViewById(R.id.sign_in_icon)
-        sign_name_textview = findViewById(R.id.sign_name_textview)
-        linearLayout2 = findViewById(R.id.linearLayout2)
-        setting_sigh_out_img = findViewById(R.id.setting_sigh_out_img)
-        setting_sigh_out_text = findViewById(R.id.setting_sigh_out_text)
-        setting_changepassword_img = findViewById(R.id.setting_changepassword_img)
-        setting_changepassword_text = findViewById(R.id.setting_changepassword_text)
-        setting_about_us_img = findViewById(R.id.setting_about_us_img)
-        setting_about_us_text = findViewById(R.id.setting_about_us_text)
-        setting_push_img = findViewById(R.id.setting_push_switch_img)
-        setting_push_text = findViewById(R.id.setting_push_switch_text)
         setting_sigh_out_text.setOnClickListener(this)
         setting_sigh_out_img.setOnClickListener(this)
         setting_changepassword_img.setOnClickListener(this)
         setting_changepassword_text.setOnClickListener(this)
         setting_about_us_img.setOnClickListener(this)
         setting_about_us_text.setOnClickListener(this)
-        setting_push_text.setOnClickListener(this)
-        setting_push_img.setOnClickListener(this)
-        actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
+        setting_push_switch_text.setOnClickListener(this)
+        setting_push_switch_img.setOnClickListener(this)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         sign_name_textview.text = LoginActivity.userName
         val bitmap = intent.getParcelableExtra<Bitmap>("userImage")
         sign_in_icon.setImageBitmap(bitmap)

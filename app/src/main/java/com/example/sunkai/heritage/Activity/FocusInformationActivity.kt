@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
-import android.widget.ListView
 
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -13,12 +12,12 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
+import kotlinx.android.synthetic.main.activity_focus_information.*
 
 import org.kobjects.base64.Base64
 
 class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
 
-    private lateinit var focus_information_listview: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +27,6 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        focus_information_listview = findViewById<View>(R.id.focus_information_listview) as ListView
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -109,10 +107,10 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
         private val getUsersImage = Runnable {
             for (i in adapter!!.datas.indices) {
                 val result: String?
-                if (adapter?.what == 1) {
-                    result = HandlePerson.Get_User_Image(adapter!!.datas[i].focusFansID)
+                result = if (adapter?.what == 1) {
+                    HandlePerson.Get_User_Image(adapter!!.datas[i].focusFansID)
                 } else {
-                    result = HandlePerson.Get_User_Image(adapter!!.datas[i].focusUserid)
+                    HandlePerson.Get_User_Image(adapter!!.datas[i].focusUserid)
                 }
                 if (!("Error" == result || null == result)) {
                     adapter!!.datas[i].userImage = Base64.decode(result)

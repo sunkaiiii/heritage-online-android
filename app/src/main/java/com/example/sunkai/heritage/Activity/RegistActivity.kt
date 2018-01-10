@@ -13,19 +13,12 @@ import android.widget.*
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import kotlinx.android.synthetic.main.activity_regist.*
 import java.util.*
 
 class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusChangeListener {
 
-    private lateinit var regist_actitivy_username_editText: EditText
-    private lateinit var regist_actitivy_password_editText: EditText
-    private lateinit var regist_actitivy_insure_editText: EditText
-    private lateinit var regist_actitivy_question_editText: EditText
-    private lateinit var regist_actitivy_answer_editText: EditText
-    private lateinit var regist_activity_regist_button: Button
-    private lateinit var progressBar: ProgressBar
     private lateinit var editTextToTextViewHashMap: HashMap<EditText, TextView>
-    private lateinit var regist_activity_cancel_button: Button
 
     private lateinit var userName: String
     private lateinit var userPassword: String
@@ -60,7 +53,7 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
                 regist_actitivy_question_editText.isEnabled = true
                 regist_actitivy_answer_editText.isEnabled = true
                 regist_activity_cancel_button.visibility = View.VISIBLE
-                regist_activity_regist_button.isEnabled = true
+                activity_regist_regist_button.isEnabled = true
             }
         }
         userRegistHandler.sendMessage(msg)
@@ -74,26 +67,14 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
 
     private fun initView() {
         editTextToTextViewHashMap = HashMap()
-        val regist_actitivy_username_textView = findViewById<TextView>(R.id.regist_actitivy_username_textView)
-        val regist_actitivy_password_textView = findViewById<TextView>(R.id.regist_actitivy_password_textView)
-        val regist_actitivy_insure_textView = findViewById<TextView>(R.id.regist_actitivy_insure_textView)
-        val regist_actitivy_question_textView = findViewById<TextView>(R.id.regist_actitivy_question_textView)
-        val regist_actitivy_answer_textView = findViewById<TextView>(R.id.regist_actitivy_answer_textView)
-        regist_actitivy_username_editText = findViewById(R.id.regist_actitivy_username_editText)
-        regist_actitivy_password_editText = findViewById(R.id.regist_actitivy_password_editText)
-        regist_actitivy_insure_editText = findViewById(R.id.regist_actitivy_insure_editText)
-        regist_actitivy_question_editText = findViewById(R.id.regist_actitivy_question_editText)
-        regist_actitivy_answer_editText = findViewById(R.id.regist_actitivy_answer_editText)
-        regist_activity_regist_button = findViewById(R.id.activity_regist_regist_button)
-        progressBar = findViewById(R.id.progressBar)
-        regist_activity_cancel_button = findViewById(R.id.regist_activity_cancel_button)
+
         regist_activity_cancel_button.setOnClickListener(this)
         regist_actitivy_username_editText.onFocusChangeListener = this
         regist_actitivy_password_editText.onFocusChangeListener = this
         regist_actitivy_insure_editText.onFocusChangeListener = this
         regist_actitivy_question_editText.onFocusChangeListener = this
         regist_actitivy_answer_editText.onFocusChangeListener = this
-        regist_activity_regist_button.setOnClickListener(this)
+        activity_regist_regist_button.setOnClickListener(this)
         progressBar.setOnClickListener(this)
         editTextToTextViewHashMap.put(regist_actitivy_question_editText, regist_actitivy_question_textView)
         editTextToTextViewHashMap.put(regist_actitivy_username_editText, regist_actitivy_username_textView)
@@ -199,7 +180,7 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         regist_actitivy_question_editText.isEnabled = false
         regist_actitivy_answer_editText.isEnabled = false
         regist_activity_cancel_button.visibility = View.GONE
-        regist_activity_regist_button.isEnabled = false
+        activity_regist_regist_button.isEnabled = false
         Thread(userRegist).start()
     }
 

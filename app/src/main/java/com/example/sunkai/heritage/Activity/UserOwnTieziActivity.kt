@@ -25,7 +25,6 @@ import java.io.ByteArrayOutputStream
 class UserOwnTieziActivity : AppCompatActivity() {
     private lateinit var myOwnList: RecyclerView
     private lateinit var adapter: FindFragmentRecyclerViewAdapter
-    private var actionBack: ActionBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +38,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
         myOwnList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         myOwnList.setHasFixedSize(true)
         myOwnList.adapter = adapter
-        actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initView() {
