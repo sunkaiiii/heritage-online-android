@@ -21,7 +21,7 @@
     <string name="update_success">更新成功</string>
     <string name="update_fail">更新失败</string>
     <string name="please_wait">请稍等…</string>
-    <string name="verson_code">Version 2.5.1</string>
+    <string name="verson_code">Version 2.6.1</string>
     <string name="add_comment">发帖</string>
     <string name="permission_denaild_information">该用户隐藏了它的个人信息</string>
     <string name="push_message">消息推送</string>

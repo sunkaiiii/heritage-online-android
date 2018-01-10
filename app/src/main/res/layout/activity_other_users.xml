@@ -39,4 +39,10 @@
         android:layout_height="match_parent"
         android:id="@+id/vp_activity_other_users"
         android:visibility="gone"/>
+    <com.github.chrisbanes.photoview.PhotoView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:id="@+id/pv_activity_other_users"
+        android:visibility="gone"/>
 </FrameLayout>

@@ -28,6 +28,8 @@ import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.FindInSql
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.inAnimation
+import com.example.sunkai.heritage.tools.outAnimation
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
@@ -52,8 +54,6 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     var userID: Int = NO_USERID
 
-    internal val inAnimation = AlphaAnimation(0f, 1f)
-    internal val outAnimation = AlphaAnimation(1f, 0f)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +73,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
             data?.let {
                 runOnUiThread({
                     setViews(data)
-                    getUserImage(userID)
+                    getUserImage(userID,userImageView)
                     checkPermissions(data)
                 })
             }
@@ -162,19 +162,19 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         return null
     }
 
-    internal fun getUserImage(userID: Int){
+    internal fun getUserImage(userID: Int,photoView: ImageView){
         Thread {
             val bitmap = findImageInSql(userID)
             bitmap?.let {
                 runOnUiThread {
-                    setImageView(bitmap)
+                    setImageView(bitmap,photoView)
                 }
                 return@Thread
             }
             val image = getUserImageFromNet(userID)
             image?.let {
                 runOnUiThread {
-                    setImageView(image)
+                    setImageView(image,photoView)
                 }
             }
         }.start()
@@ -190,8 +190,9 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         fansNumberTextView.text = data.fansNumber.toString()
     }
 
-    internal fun setImageView(image: Bitmap) {
-        userImageView.setImageBitmap(image)
+    internal fun setImageView(image: Bitmap,photoView: ImageView) {
+        photoView.setImageBitmap(image)
+        photoView.setOnClickListener(this)
     }
 
     internal fun setAdapter(userID: Int) {
@@ -296,7 +297,6 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         vpViewPager.adapter = viewPagerAdapter
         vpViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
-
                 getImage(position, viewPagerAdapter)
             }
 
@@ -312,11 +312,26 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    internal fun showUserImage(){
+        getUserImage(userID,pv_activity_other_users)
+        llBackground.startAnimation(inAnimation)
+        pv_activity_other_users.startAnimation(inAnimation)
+        llBackground.visibility=View.VISIBLE
+        pv_activity_other_users.visibility=View.VISIBLE
+        pv_activity_other_users.setImageDrawable(userImageView.drawable)
+    }
+
     internal fun closeImageView() {
         llBackground.startAnimation(outAnimation)
         llBackground.visibility = View.GONE
-        vpViewPager.startAnimation(outAnimation)
-        vpViewPager.visibility = View.GONE
+        if(vpViewPager.visibility==View.VISIBLE) {
+            vpViewPager.startAnimation(outAnimation)
+            vpViewPager.visibility = View.GONE
+        }
+        if(pv_activity_other_users.visibility==View.VISIBLE) {
+            pv_activity_other_users.startAnimation(outAnimation)
+            pv_activity_other_users.visibility = View.GONE
+        }
     }
 
     internal fun getImage(position: Int, adapter: ViewPagerAdapter) {
@@ -347,8 +362,13 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         when (v?.id) {
             R.id.person_follow_number, R.id.person_follow -> startActivity(FOLLOW)
             R.id.person_fans_number, R.id.person_fans -> startActivity(FANS)
-            R.id.ll_activity_other_users_background, R.id.vp_activity_other_users -> {
-                closeImageView()
+            R.id.ll_activity_other_users_background, R.id.vp_activity_other_users -> closeImageView()
+            R.id.sign_in_icon-> showUserImage()
+            R.id.pv_activity_other_users->{
+                if(pv_activity_other_users.scale==1.0f)
+                    closeImageView()
+                else
+                    pv_activity_other_users.setScale(1.0f,true)
             }
         }
     }
