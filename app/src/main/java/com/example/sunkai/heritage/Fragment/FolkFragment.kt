@@ -6,28 +6,25 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.ProgressBar
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 
 import com.example.sunkai.heritage.Activity.JoinActivity
 import com.example.sunkai.heritage.Adapter.FolkListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.fragment_folk.*
 
 import java.io.ByteArrayOutputStream
 import java.lang.ref.WeakReference
@@ -45,9 +42,12 @@ class FolkFragment : Fragment(), View.OnClickListener {
     private lateinit var folk_location_spinner: Spinner
     private lateinit var folk_show_listview: ListView
     private lateinit var folk_search_btn: ImageView
+    private lateinit var ll_fragment_folk_top_options:LinearLayout
     lateinit var loadProgress: ProgressBar
     internal var getDatas: List<FolkData> = ArrayList()//用于处理搜索的List
     internal var changeData = false
+
+    var lastVisibleItem=0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +141,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
 
 
     private fun initView(view: View) {
+        ll_fragment_folk_top_options=view.findViewById(R.id.ll_fragment_folk_top_options)
         folk_edit = view.findViewById(R.id.folk_edit)
         folk_heritages_spinner = view.findViewById(R.id.folk_heritages_spinner)
         folk_location_spinner = view.findViewById(R.id.folk_location_spinner)
