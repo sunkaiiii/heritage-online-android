@@ -4,23 +4,29 @@ import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.*
+import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import at.markushi.ui.CircleButton
 
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import kotlinx.android.synthetic.main.activity_login.*
 
 /**
  * A login screen that offers login via email/password.
@@ -28,12 +34,17 @@ import com.example.sunkai.heritage.tools.MakeToast
 class LoginActivity : AppCompatActivity() {
     private var mAuthTask: UserLoginTask?=null
 
-    private lateinit var mEmailView: AutoCompleteTextView
+    private lateinit var mEmailView: EditText
     private lateinit var mPasswordView: EditText
     private lateinit var registButton: Button
-    private lateinit var mEmailSignInButton: Button
+    private lateinit var mEmailSignInButton: CircleButton
     private lateinit var jumpSignIn: TextView
     private lateinit var findPassword: TextView
+
+    internal lateinit var infromRight:Animation
+    internal lateinit var outToLeft:Animation
+    internal lateinit var infromLeft:Animation
+    internal lateinit var outToRight:Animation
     private val requestCode: Int = 0
 
     private var changePasswordUsername: String? = null
@@ -83,16 +94,38 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         resetLoginSql()
+        infromRight=AnimationUtils.loadAnimation(this,R.anim.in_from_right)
+        outToLeft=AnimationUtils.loadAnimation(this,R.anim.out_to_left)
+        infromLeft=AnimationUtils.loadAnimation(this,R.anim.in_from_left)
+        outToRight=AnimationUtils.loadAnimation(this,R.anim.out_to_right)
+
         isIntoMainpage = intent.getIntExtra("isInto", 0)
         // Set up the login form.
         mEmailView = findViewById(R.id.email)
         mPasswordView = findViewById(R.id.password)
-        mPasswordView.setOnEditorActionListener { _, id, _ ->
-            if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                attemptLogin()
-                return@setOnEditorActionListener true
-            }
-            false
+        if(Build.VERSION.SDK_INT>=21){
+            val decorView=window.decorView
+            val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+            window.navigationBarColor = Color.TRANSPARENT
+            decorView.systemUiVisibility=option
+        }
+//        mPasswordView.setOnEditorActionListener { _, id, _ ->
+//            if (id == R.id.login || id == EditorInfo.IME_NULL) {
+//                attemptLogin()
+//                return@setOnEditorActionListener true
+//            }
+//            false
+//        }
+
+        btn_activity_login_goto_login.setOnClickListener{
+            ll_activity_login_navagate.startAnimation(outToLeft)
+            include_login_view.startAnimation(infromRight)
+            ll_activity_login_navagate.visibility=View.INVISIBLE
+            include_login_view.visibility=View.VISIBLE
         }
 
         mEmailSignInButton = findViewById(R.id.email_sign_in_button)
@@ -283,21 +316,14 @@ class LoginActivity : AppCompatActivity() {
         if (cancel) {
             mEmailView.error = "用户名不能为空"
         } else {
-            showProgress(true)
+            pg_activity_login_progress.visibility=View.VISIBLE
+            mEmailSignInButton.isEnabled=false
+            mEmailSignInButton.visibility=View.INVISIBLE
             mAuthTask = UserLoginTask(email, password)
             mAuthTask!!.execute(null as Void?)
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private fun showProgress(show: Boolean) {
-        if (show) {
-            mEmailSignInButton.text = "登陆中..."
-        } else {
-            mEmailSignInButton.text = "登陆"
-        }
-        mEmailSignInButton.isEnabled = !show
-    }
 
     inner class UserLoginTask internal constructor(private val mEmail: String, private val mPassword: String) : AsyncTask<Void, Void, Boolean>() {
 
@@ -306,20 +332,24 @@ class LoginActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(success: Boolean?) {
+            mEmailSignInButton.isEnabled=true
+            mEmailSignInButton.visibility=View.VISIBLE
+            pg_activity_login_progress.visibility=View.GONE
             mAuthTask = null
             if (success!!) {
                 userName = mEmail
                 Thread(getUserID).start()
             } else {
-                showProgress(false)
                 mPasswordView.error = getString(R.string.error_incorrect_password)
                 mPasswordView.requestFocus()
             }
         }
 
         override fun onCancelled() {
+            mEmailSignInButton.isEnabled=true
+            mEmailSignInButton.visibility=View.VISIBLE
+            pg_activity_login_progress.visibility=View.GONE
             mAuthTask = null
-            showProgress(false)
         }
     }
 
@@ -327,7 +357,6 @@ class LoginActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             1 -> {
-                showProgress(true)
                 val loginName = data!!.getStringExtra("userName")
                 val loginPassword = data.getStringExtra("passWord")
                 mAuthTask = UserLoginTask(loginName, loginPassword)
@@ -335,6 +364,17 @@ class LoginActivity : AppCompatActivity() {
             }
             else -> {
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        if(include_login_view.visibility==View.VISIBLE){
+            include_login_view.startAnimation(outToRight)
+            ll_activity_login_navagate.startAnimation(infromLeft)
+            include_login_view.visibility=View.INVISIBLE
+            ll_activity_login_navagate.visibility=View.VISIBLE
+        }else{
+            super.onBackPressed()
         }
     }
 

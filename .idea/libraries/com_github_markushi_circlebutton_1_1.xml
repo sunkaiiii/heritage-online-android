@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="com.github.markushi:circlebutton-1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/circlebutton-1.1.aar/dcedffc3c071fae68141092edc19935e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/circlebutton-1.1.aar/dcedffc3c071fae68141092edc19935e/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.markushi/circlebutton/1.1/7b6c063310b73b71bdd8dc34b52f188cdf2b6aa/circlebutton-1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
