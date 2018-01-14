@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_layout"
+        android:icon="@drawable/ic_home_grey_500_24dp"
+        android:title="首页"/>
+    <item
+        android:id="@+id/folk_layout"
+        android:icon="@drawable/ic_people_grey_500_24dp"
+        android:title="民间"/>
+    <item
+        android:id="@+id/find_layout"
+        android:icon="@drawable/ic_search_grey_400_24dp"
+        android:title="发现"/>
+    <item
+        android:id="@+id/person_layout"
+        android:icon="@drawable/ic_assignment_ind_grey_500_24dp"
+        android:title="个人中心"/>
+</menu>
