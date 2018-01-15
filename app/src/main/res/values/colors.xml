@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#6a2e05</color>
     <color name="colorAccent">#f96706</color>
     <color name="midBrown">#6d4c41</color>
+    <color name="superLightGrey">#FAFAFA</color>
     <color name="lightGrey">#e6e6e6</color>
     <color name="lightGrey_transparent">#b0C0C0C0</color>
     <color name="themeRed">#ac462e</color>

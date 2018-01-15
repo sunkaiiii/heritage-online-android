@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.app.ActivityOptions
 import android.content.BroadcastReceiver
 import android.content.ContentValues
 import android.content.Context
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
@@ -211,7 +213,12 @@ class FindFragment : Fragment(), View.OnClickListener {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
                     intent.putExtra("bitmap", out.toByteArray())
                     intent.putExtras(bundle)
-                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
+
+                    //如果手机是Android 5.0以上的话，使用新的Activity切换动画
+                    if(Build.VERSION.SDK_INT>=21)
+                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL,ActivityOptions.makeSceneTransitionAnimation(activity,imageView,"shareView").toBundle())
+                    else
+                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
                 }
             }
         })

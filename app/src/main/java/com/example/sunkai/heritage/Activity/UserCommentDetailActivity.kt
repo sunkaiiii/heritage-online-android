@@ -119,7 +119,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun initView() {
-        information_img = findViewById(R.id.information_img)
+        information_img = findViewById(R.id.fragment_find_litview_img)
         information_title = findViewById(R.id.information_title)
         information_time = findViewById(R.id.information_time)
         information_content = findViewById(R.id.information_content)

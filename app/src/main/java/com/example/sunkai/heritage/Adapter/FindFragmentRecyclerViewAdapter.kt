@@ -44,7 +44,6 @@ import java.util.ArrayList
 class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : BaseRecyclerAdapter() {
     private var datas: List<UserCommentData>? = null
     private var recyclerView: RecyclerView? = null
-    internal var imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
     internal var lruCache: LruCache<Int, Bitmap>
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
@@ -165,14 +164,18 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     private fun SetLike(textView: TextView?, imageView: ImageView?, count: Int): Boolean {
         textView!!.text = count.toString()
         textView.setTextColor(Color.rgb(172, 70, 46))
+        val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
         imageView!!.setImageResource(R.drawable.like_islike)
+        imageView.startAnimation(imageAnimation)
         return true
     }
 
     private fun CancelLike(textView: TextView?, imageView: ImageView?, count: Int): Boolean {
         textView!!.text = count.toString()
         textView.setTextColor(Color.DKGRAY)
+        val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
         imageView!!.setImageResource(R.drawable.good_unpress)
+        imageView.startAnimation(imageAnimation)
         return true
     }
 
@@ -417,8 +420,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             val getImageView = imageViewWeakReference.get()
             if (getImageView != null&&bitmap!=null) {
                 getImageView.run {
+                    val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
                     setImageBitmap(bitmap)
-                    startAnimation(findFragmentAdapter.imageAnimation)
+                    startAnimation(imageAnimation)
                 }
             }
 
@@ -470,8 +474,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 return
             val imageView = imageViewWeakReference.get()
             if (imageView != null) {
+                val imageAnimation: Animation = AnimationUtils.loadAnimation(adapter.context, R.anim.image_apear)
                 imageView.setImageBitmap(bitmap)
-                imageView.startAnimation(adapter.imageAnimation)
+                imageView.startAnimation(imageAnimation)
             }
         }
     }

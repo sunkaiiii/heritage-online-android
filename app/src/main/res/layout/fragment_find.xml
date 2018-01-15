@@ -103,7 +103,7 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:id="@+id/fragment_find_recyclerView"
-            android:layout_margin="6dp"/>
+            android:background="@color/superLightGrey"/>
 
     </android.support.design.widget.CoordinatorLayout>
     <android.support.design.widget.FloatingActionButton

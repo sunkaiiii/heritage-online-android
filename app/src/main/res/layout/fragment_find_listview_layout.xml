@@ -1,142 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6sp">
+    android:layout_margin="6dp"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp"
+    android:background="?attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/fragment_find_litview_img"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="165dp"
-        android:scaleType="centerCrop"
-        tools:layout_editor_absoluteX="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/user_list_image" />
-
-    <ImageView
-        android:id="@+id/fragment_find_comment"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/comment_press_and_unpress"
-        app:layout_constraintRight_toLeftOf="@+id/testview_comment"
-        android:layout_marginRight="12dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0 "
-        app:layout_constraintRight_toLeftOf="@+id/imageView5"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        android:id="@+id/testview_comment"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp" />
-
-    <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/share_press_and_unpress"
-        app:layout_constraintRight_toLeftOf="@+id/textView4"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        android:id="@+id/imageView5"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="分享 "
-        app:layout_constraintRight_toLeftOf="@+id/imageView4"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"/>
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/good_press_and_unpress"
-        app:layout_constraintRight_toLeftOf="@+id/textview_like"
-        android:layout_marginRight="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/textview_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0 "
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-        />
-
-    <RelativeLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp">
+        android:padding="6dp"
+        >
 
         <ImageView
-            android:layout_width="24sp"
-            android:layout_height="24sp"
-            android:src="@drawable/find_add_focus"
-            android:id="@+id/add_focus_img"/>
+            android:id="@+id/fragment_find_litview_img"
+            android:layout_width="match_parent"
+            android:layout_height="165dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/user_list_image" />
+
+        <ImageView
+            android:id="@+id/fragment_find_comment"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/comment_unpress"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintRight_toLeftOf="@+id/testview_comment"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
         <TextView
+            android:id="@+id/testview_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="加关注"
-            android:textColor="@color/themeRed"
-            android:layout_marginLeft="3sp"
-            android:layout_toRightOf="@id/add_focus_img"
-            android:layout_centerVertical="true"
-            android:id="@+id/add_focus_text"/>
-    </RelativeLayout>
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="0 "
+            app:layout_constraintRight_toLeftOf="@+id/imageView5"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
-    <TextView
-        android:id="@+id/name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:layout_marginLeft="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/linearLayout"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout"
-        android:layout_marginTop="2dp"
-        app:layout_constraintHorizontal_bias="0.039"
-        app:layout_constraintVertical_bias="0.0"
-        android:textColor="@color/black"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintLeft_toRightOf="@+id/user_list_image" />
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:id="@+id/user_list_image"
-        tools:layout_editor_absoluteY="0dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:riv_oval="true"
-        android:layout_marginStart="8dp" />
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/share_press_and_unpress"
+            android:visibility="gone"
+            app:layout_constraintRight_toLeftOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="分享 "
+            android:visibility="gone"
+            app:layout_constraintRight_toLeftOf="@+id/imageView4"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/good_unpress"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintRight_toLeftOf="@+id/textview_like"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
+        <TextView
+            android:id="@+id/textview_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="0 "
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
+        <RelativeLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/add_focus_img"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:src="@drawable/find_add_focus" />
+
+            <TextView
+                android:id="@+id/add_focus_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3sp"
+                android:layout_toRightOf="@id/add_focus_img"
+                android:text="加关注"
+                android:textColor="@color/themeRed" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text=""
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/user_list_image"
+            app:layout_constraintHorizontal_bias="0.039"
+            app:layout_constraintLeft_toRightOf="@+id/user_list_image"
+            app:layout_constraintRight_toLeftOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="@+id/user_list_image"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/user_list_image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_oval="true" />
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>
