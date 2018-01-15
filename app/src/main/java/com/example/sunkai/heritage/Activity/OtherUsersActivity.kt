@@ -336,11 +336,11 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     internal fun getImage(position: Int, adapter: ViewPagerAdapter) {
         Thread {
-            var bitmap = FindInSql.searchFindCommentImageFromSQL(adapter.datas[position])
+            var bitmap = FindInSql.searchFindCOmmentImageFromSQLWithoutTimeCheck(adapter.datas[position])
             if (bitmap == null) {
                 val imageByte = HandleFind.Get_User_Comment_Image(adapter.datas[position])
                 imageByte?.let {
-                    FindInSql.addFindCommentImageToSQL(adapter.datas[position], imageByte)
+                    FindInSql.AddFindCommentImageToSQLWithoutTime(adapter.datas[position], imageByte)
                     bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
                 }
             }

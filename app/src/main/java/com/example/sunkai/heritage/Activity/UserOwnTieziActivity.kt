@@ -1,59 +1,57 @@
 package com.example.sunkai.heritage.Activity
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.ActionBar
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
 import java.io.ByteArrayOutputStream
 
 class UserOwnTieziActivity : AppCompatActivity() {
     private lateinit var myOwnList: RecyclerView
-    private lateinit var adapter: FindFragmentRecyclerViewAdapter
+    private lateinit var adapter: MyOwnCommentRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_own_tiezi)
         initView()
-        adapter = FindFragmentRecyclerViewAdapter(this, 3)
-        setAdpterClick(adapter)
-        setAdpterLongClick(adapter)
-        val layoutManager = LinearLayoutManager(this)
-        myOwnList.layoutManager = layoutManager
-        myOwnList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        myOwnList.setHasFixedSize(true)
-        myOwnList.adapter = adapter
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        GetInformationAsyncTask(this).execute()
     }
 
     private fun initView() {
         myOwnList = findViewById(R.id.user_own_list)
     }
 
-    private fun setAdpterClick(adapter: FindFragmentRecyclerViewAdapter) {
+    private fun setAdpterClick(adapter: BaseRecyclerAdapter) {
 
         adapter.setOnItemClickListen(object :OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
                 val bundle = Bundle()
-                bundle.putSerializable("data", adapter.getItem(position))
+                bundle.putSerializable("data", adapter.getItem(position) as UserCommentData)
                 bundle.putInt("position", position)
-                val imageView = view.findViewById<View>(R.id.fragment_find_litview_img) as ImageView
+                val imageView = view.findViewById<View>(R.id.mycomment_item_image) as ImageView
                 imageView.isDrawingCacheEnabled = true
                 val drawable = imageView.drawable
                 val bitmapDrawable = drawable as BitmapDrawable
@@ -62,12 +60,16 @@ class UserOwnTieziActivity : AppCompatActivity() {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
                 intent.putExtra("bitmap", out.toByteArray())
                 intent.putExtras(bundle)
-                startActivity(intent)
+                if(Build.VERSION.SDK_INT>=21) {
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@UserOwnTieziActivity, imageView, "shareView").toBundle())
+                }else{
+                    startActivity(intent)
+                }
             }
         })
     }
 
-    private fun setAdpterLongClick(adapter: FindFragmentRecyclerViewAdapter) {
+    private fun setAdpterLongClick(adapter: MyOwnCommentRecyclerViewAdapter) {
         this.adapter.setOnItemLongClickListener(object :OnItemLongClickListener{
             override fun onItemlongClick(view: View, position: Int) {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
@@ -77,7 +79,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                                     .create()
                             ad.show()
                             Thread {
-                                val userCommentData = adapter.getItem(position)
+                                val userCommentData = adapter.getItem(position) as UserCommentData
                                 val result = HandleFind.Delete_User_Comment_By_ID(userCommentData.id)
                                 runOnUiThread {
                                     if (ad.isShowing) {
@@ -88,10 +90,10 @@ class UserOwnTieziActivity : AppCompatActivity() {
                                             MakeToast.MakeText("出现问题，请稍后再试")
                                         }
                                     }
-                                    this@UserOwnTieziActivity.adapter.reFreshList()
+                                    refreshList()
                                 }
                             }.start()
-                        }).setNegativeButton("取消", { dialog, which -> })
+                        }).setNegativeButton("取消", { _, _ -> })
                         .create().show()
             }
         })
@@ -102,5 +104,33 @@ class UserOwnTieziActivity : AppCompatActivity() {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private class GetInformationAsyncTask(activity:UserOwnTieziActivity):BaseAsyncTask<Void,Void,List<UserCommentData>,UserOwnTieziActivity>(activity){
+        override fun doInBackground(vararg params: Void?): List<UserCommentData>? {
+            val getDatas=HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.userID)
+            getDatas?.let{
+                return getDatas
+            }
+            return null
+        }
+
+        override fun onPostExecute(datas: List<UserCommentData>?) {
+            datas?.let{
+                val activity=weakRefrece.get()
+                activity?.let{
+                    activity.adapter = MyOwnCommentRecyclerViewAdapter(activity,datas)
+                    activity.setAdpterClick(activity.adapter)
+                    activity.setAdpterLongClick(activity.adapter)
+                    val layoutManager = GridLayoutManager(activity,2)
+                    activity.myOwnList.layoutManager = layoutManager
+                    activity.myOwnList.adapter = activity.adapter
+                }
+            }
+        }
+    }
+
+    fun refreshList(){
+        GetInformationAsyncTask(this).execute()
     }
 }

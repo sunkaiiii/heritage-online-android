@@ -86,7 +86,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         return if (activityDatas == null) 0 else activityDatas!!.size
     }
 
-    fun getItem(position: Int): ClassifyActiviyData {
+    override fun getItem(position: Int): ClassifyActiviyData {
         return activityDatas!![position]
     }
 

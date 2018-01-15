@@ -148,7 +148,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
 
 
-    fun getItem(position: Int): UserCommentData {
+    override fun getItem(position: Int): UserCommentData {
         return datas!![position]
     }
 

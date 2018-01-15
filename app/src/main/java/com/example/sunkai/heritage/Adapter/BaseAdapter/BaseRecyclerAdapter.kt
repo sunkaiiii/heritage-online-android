@@ -36,4 +36,6 @@ abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
         holder?.itemView?.tag = position
     }
+
+    abstract fun getItem(position: Int):Any
 }

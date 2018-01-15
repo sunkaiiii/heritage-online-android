@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference
  * Created by sunkai on 2018/1/2.
  */
 class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdapter() {
+
     var datas: List<Int>
 
     init {
@@ -85,7 +86,7 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
         }
     }
 
-    internal class GetUserImageTask(val imageID: Int, imageview: ImageView) : BaseAsyncTask<Void, Void, Bitmap?>(imageview) {
+    internal class GetUserImageTask(val imageID: Int, imageview: ImageView) : BaseAsyncTask<Void, Void, Bitmap,ImageView>(imageview) {
         override fun doInBackground(vararg params: Void?): Bitmap? {
             var bitmap = findImageInSql()
             bitmap?.let {
@@ -143,5 +144,8 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
 
     override fun getItemCount(): Int {
         return datas.size
+    }
+    override fun getItem(position: Int): Any {
+        return datas[position]
     }
 }
