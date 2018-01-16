@@ -96,7 +96,7 @@ class FindFragment : Fragment(), View.OnClickListener {
         setHasOptionsMenu(true)
         bitmaps = arrayOfNulls(4)
         //主页活动页面
-        imgIdArray = intArrayOf(R.mipmap.img1, R.mipmap.img1, R.mipmap.img1, R.mipmap.img1)
+        imgIdArray = intArrayOf(R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey)
         viewPager = view.findViewById(R.id.find_fragment_viewPager)
         loadMyPage()
         //设置Adapter

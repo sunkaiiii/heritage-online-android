@@ -45,7 +45,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.12"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="22dp"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/mycomment_item_content"
@@ -61,7 +63,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.06"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline2" />
+                app:layout_constraintTop_toTopOf="@+id/guideline2"
+                android:layout_marginRight="14dp"
+                android:layout_marginLeft="8dp" />
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline2"

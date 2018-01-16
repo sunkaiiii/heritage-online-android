@@ -16,61 +16,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:elevation="4dp">
             <android.support.design.widget.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-                <LinearLayout
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:id="@+id/fragment_main_collapsing_toolbar_layout">
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <LinearLayout
+                    android:layout_height="200dp"
+                    android:id="@+id/iv_fragment_main_scroll_change_image"
+                    android:scaleType="centerCrop"
+                    android:background="@color/lightGrey"/>
+                <android.support.v7.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/tb_fragment_main"
+                    app:layout_collapseMode="pin"
+                    android:layout_gravity="bottom"
+                    >
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_margin="6sp">
-                        <ImageView
-                            android:layout_width="24sp"
-                            android:layout_height="24sp"
-                            android:src="@drawable/activity"
-                            />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="精彩活动"
-                            android:textSize="18sp"
-                            android:textColor="@color/colorAccent"
-                            android:layout_marginLeft="6sp"
-                            android:layout_gravity="bottom"
-                            />
-                    </LinearLayout>
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="150sp"
-                        android:layout_margin="15sp">
-                        <android.support.v4.view.ViewPager
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/main_fragment_viewPager"></android.support.v4.view.ViewPager>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/main_fragment_imageView"
-                            android:orientation="horizontal"
-                            android:layout_margin="10sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_alignBottom="@id/main_fragment_viewPager"></LinearLayout>
-                    </RelativeLayout>
-                </LinearLayout>
+                        android:layout_marginEnd="12dp"
+                        android:layout_marginRight="12dp"
+                        app:cardElevation="4dp">
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tab_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                         />
+                    </android.support.v7.widget.CardView>
+                </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
         </android.support.design.widget.AppBarLayout>
         <android.support.v4.view.ViewPager
             android:id="@+id/main_tab_content"

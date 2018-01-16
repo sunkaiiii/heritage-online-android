@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R

@@ -21,6 +21,7 @@ open class BaseSetting {
         val success = "Success"
         val error = "Error"
         val url = "http://btbudinner.win" + ":8088/services/Heritage?wsdl"
+        val host="http://btbudinner.win:8088"
         val namespace="http://Handle"
         fun pre_processSoap(soapObject: SoapObject): SoapSerializationEnvelope {
             val envelope = SoapSerializationEnvelope(SoapEnvelope.VER11)
