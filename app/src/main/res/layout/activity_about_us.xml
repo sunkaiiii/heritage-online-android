@@ -13,7 +13,7 @@
     <ImageView
         android:layout_width="48sp"
         android:layout_height="48sp"
-        android:src="@mipmap/app_logo"
+        android:src="@mipmap/app_logo_image"
         android:layout_above="@id/base_line"
         android:layout_marginBottom="12sp"
         android:layout_centerInParent="true" />
