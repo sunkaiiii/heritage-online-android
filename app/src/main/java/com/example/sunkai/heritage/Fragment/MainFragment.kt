@@ -136,7 +136,6 @@ class MainFragment : Fragment() {
                     override fun onAnimationEnd(animation: Animation?) {
                         iv_fragment_main_scroll_change_image.startAnimation(secondInAnimation)
                         iv_fragment_main_scroll_change_image.setImageDrawable(resource)
-                        tableLayout.setBackgroundColor(color)
                     }
 
                     override fun onAnimationStart(animation: Animation?) {}
@@ -146,6 +145,7 @@ class MainFragment : Fragment() {
                 fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
                 fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
                 iv_fragment_main_scroll_change_image.setBackgroundColor(color)
+                tableLayout.setBackgroundColor(color)
             }
         }
 
