@@ -5,5 +5,5 @@ package com.example.sunkai.heritage.Data
  * 首页非遗分类的文本
  */
 object ClassifyActivityDivide {
-    @JvmStatic val divide = arrayOf("口头传统表现形式", "表演艺术", "传统手工艺", "传统民俗", "传统体育和技艺")
+    @JvmStatic val divide = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
 }

@@ -1,12 +1,14 @@
 package com.example.sunkai.heritage.Activity
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
-
-
+import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.host
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
+import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_join.*
 
@@ -25,16 +27,17 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
         initView()
-        val data = intent.getSerializableExtra("activity") as ClassifyActiviyData
-        if (null != data.activityImage) {
-            val bitmap = BitmapFactory.decodeByteArray(data.activityImage, 0, data.activityImage!!.size)
-            join_activity_img.setImageBitmap(bitmap)
-        }
-        join_activity_title.text = data.activityTitle
-        join_activity_content.text = data.activityContent
+        val data = intent.getSerializableExtra("activity") as ClassifyDivideData
+        activity_join_collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarTextSize)
+        activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
+        activity_join_collapsing_toolbar.title = data.category
+        join_activity_content.text = data.content
+        Glide.with(this).load(host+data.img).into(join_activity_img)
+
     }
 
     private fun initView() {
+        setSupportActionBar(activity_join_toolbar)
         join_activity_btn.visibility = View.GONE
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         join_activity_btn.setOnClickListener(this)

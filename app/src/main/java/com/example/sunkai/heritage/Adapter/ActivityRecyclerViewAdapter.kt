@@ -14,12 +14,15 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.host
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
+import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.R
 
 import java.io.ByteArrayInputStream
@@ -30,7 +33,7 @@ import java.lang.ref.WeakReference
  */
 
 class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter() {
-    private var activityDatas: List<ClassifyActiviyData>? = null
+    private var activityDatas: List<ClassifyDivideData>? = null
     internal var imageAnimation: Animation//图片出现动画
 
     internal var thisRecyclerView: RecyclerView? = null
@@ -71,22 +74,23 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         super.onBindViewHolder(holder, position)
         if(holder is ViewHolder) {
             val data = activityDatas!![position]
-            val text = data.activityContent
+            val text = data.content
             holder.textView.text = text
             holder.img.setImageResource(R.drawable.empty_background)
-            val bitmap = lruCache.get(data.id)
-            if (bitmap != null) {
-                holder.img.setImageBitmap(bitmap)
-            } else {
-                getChannelImage(data.id, holder.img, this).execute()
-            }
+            Glide.with(context).load(host+data.img).into(holder.img)
+//            val bitmap = lruCache.get(data.id)
+//            if (bitmap != null) {
+//                holder.img.setImageBitmap(bitmap)
+//            } else {
+//                getChannelImage(data.id, holder.img, this).execute()
+//            }
         }
     }
     override fun getItemCount(): Int {
         return if (activityDatas == null) 0 else activityDatas!!.size
     }
 
-    override fun getItem(position: Int): ClassifyActiviyData {
+    override fun getItem(position: Int): ClassifyDivideData {
         return activityDatas!![position]
     }
 

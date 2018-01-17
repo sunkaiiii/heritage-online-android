@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.ConnectWebService
 import com.example.sunkai.heritage.Data.ActivityData
 import com.example.sunkai.heritage.Data.MainActivityData
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
+import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -11,8 +12,11 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.kobjects.base64.Base64
 import org.ksoap2.serialization.SoapObject
+import java.util.*
 
-import java.util.ArrayList
+import java.util.Arrays.asList
+
+
 
 /**
  * Created by sunkai on 2017/1/9.
@@ -21,12 +25,14 @@ import java.util.ArrayList
 
 object HandleMainFragment : BaseSetting() {
 
+
     //定义扩展方法，简单化Gson的使用
-    inline fun <reified T:Any> Gson.fromJson(json:String):T{
-        return Gson().fromJson(json,T::class.java)
+    inline fun <reified T:Any> Gson.fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
+        val arr = Gson().fromJson(s, clazz)
+        return arr.toList()
     }
 
-    fun Get_Main_Divide_Activity_Image_Url():ArrayList<ActivityData>?{
+    fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{
         methodName="Get_Main_Divide_Activity_Image_Url"
         soapAction= namespace+"/"+ methodName
         val soapObject=SoapObject(namespace, methodName)
@@ -36,11 +42,7 @@ object HandleMainFragment : BaseSetting() {
                 null
             else{
                 val gson=GsonBuilder().create()
-                val jsonArray=JSONArray(result)
-                val list= (0 until jsonArray.length())
-                        .map { jsonArray[it].toString() }
-                        .mapTo(ArrayList<ActivityData>()) { gson.fromJson(it) }
-                list
+                gson.fromJsonToList(result,Array<ActivityData>::class.java)
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -48,28 +50,17 @@ object HandleMainFragment : BaseSetting() {
         return null
     }
 
-    fun GetChannelInformation(channel: String): List<ClassifyActiviyData>? {
-        methodName = "Get_Channel_Information"
+    fun GetChannelInformation(channel: String): List<ClassifyDivideData>? {
+        methodName = "Get_Channel_Information_New"
         soapAction = namespace + "/" + methodName
         val soapObject = SoapObject(namespace, methodName)
         soapObject.addProperty("channel", channel)
         val result = BaseSetting.Get_Post(soapObject)
         try {
-            if (result == null || BaseSetting.error == result)
+            if (result == null || error == result)
                 return null
-            val MainActivity = JSONObject(result)
-            val activities = MainActivity.getJSONArray("classify_activity")
-            val activityDatas = ArrayList<ClassifyActiviyData>()
-            for (i in 0 until activities.length()) {
-                val data = ClassifyActiviyData()
-                val activity = activities.get(i) as JSONObject
-                data.id = Integer.valueOf(activity.get("id") as String)
-                data.activityTitle = activity.get("activity_title") as String
-                data.activityContent = activity.get("activity_content") as String
-                data.activityChannel = activity.get("activity_channel") as String
-                activityDatas.add(data)
-            }
-            return activityDatas
+            val gson=Gson()
+            return gson.fromJsonToList(result, Array<ClassifyDivideData>::class.java)
         } catch (e: JSONException) {
             e.printStackTrace()
         }

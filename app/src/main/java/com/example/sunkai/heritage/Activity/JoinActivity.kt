@@ -103,7 +103,9 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
             val bitmap = BitmapFactory.decodeByteArray(folkActiviyData!!.image, 0, folkActiviyData!!.image!!.size)
             join_activity_img.setImageBitmap(bitmap)
         }
-        join_activity_title.text = folkActiviyData!!.title
+        activity_join_collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarTextSize)
+        activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
+        activity_join_collapsing_toolbar.title = folkActiviyData!!.title
         join_activity_content.text = folkActiviyData!!.content
         /**
          * 在页面显示的时候判断此用户是否已经预约此活动
@@ -113,6 +115,7 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
+        setSupportActionBar(activity_join_toolbar)
         accentColor = join_activity_btn.currentTextColor
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

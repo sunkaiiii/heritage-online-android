@@ -47,7 +47,6 @@ class FolkFragment : Fragment(), View.OnClickListener {
     internal var getDatas: List<FolkData> = ArrayList()//用于处理搜索的List
     internal var changeData = false
 
-    var lastVisibleItem=0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

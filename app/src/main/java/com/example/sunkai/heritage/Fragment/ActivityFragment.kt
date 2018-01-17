@@ -22,9 +22,7 @@ import java.io.ByteArrayOutputStream
 
 
 /**
- * 首页viewpager五个页面的第一个页面
- * 理论上五个页面其实可以公用一个Fragment类，通过传递的参数不同执行不同的方法即可
- * 但是因为时间紧张，故用了5个Fragment类
+ * 首页viewpager五个页面的fragment
  * 除了第一个页面，其他四个全都继承与BaseFrament，并实现了Lazyload，使其在页面可见的时候才加载内容
  */
 class ActivityFragment : Fragment() {
@@ -46,21 +44,14 @@ class ActivityFragment : Fragment() {
         activityListviewAdapter = ActivityRecyclerViewAdapter(activity!!, channelName)
         val layoutManager = LinearLayoutManager(context)
         activityRecyclerView.layoutManager = layoutManager
-        activityRecyclerView.addItemDecoration(DividerItemDecoration(GlobalContext.instance, DividerItemDecoration.VERTICAL))
-        activityRecyclerView.setHasFixedSize(true)
         activityRecyclerView.adapter = activityListviewAdapter
         activityListviewAdapter.setOnItemClickListen(object:OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
                 val activitydata = activityListviewAdapter.getItem(position)
-                val imageView = view.findViewById<ImageView>(R.id.activity_layout_img)
-                imageView.isDrawingCacheEnabled = true
-                val bitmap = imageView.drawingCache
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-                activitydata.activityImage = byteArrayOutputStream.toByteArray()
                 val intent = Intent(activity, ActivityInformationActivity::class.java)
                 val bundle = Bundle()
                 bundle.putSerializable("activity", activitydata)
+                intent.putExtra("image",activitydata.img)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }

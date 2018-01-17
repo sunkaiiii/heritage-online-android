@@ -1,35 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="6dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
+        >
+
         <RelativeLayout
-            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="6sp">
+            android:orientation="vertical">
+
             <ImageView
+                android:id="@+id/activity_layout_img"
                 android:layout_width="match_parent"
                 android:layout_height="150sp"
-                android:id="@+id/activity_layout_img"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
+
             <TextView
+                android:id="@+id/activity_layout_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/activity_layout_text"
-                android:textSize="12sp"
-                android:text="test"
                 android:layout_below="@id/activity_layout_img"
-                android:textColor="@color/midBrown" />
+                android:text="test"
+                android:textColor="@color/midBrown"
+                android:textSize="12sp"
+                android:layout_margin="6dp"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
                 android:layout_below="@id/activity_layout_text"
-                android:text="查看详情 >"
-                android:layout_marginRight="6sp"
                 android:layout_marginBottom="3sp"
+                android:layout_marginRight="6sp"
                 android:layout_marginTop="3sp"
-                android:textSize="16sp"
-                android:layout_alignParentRight="true"/>
+                android:text="查看详情 >"
+                android:textSize="16sp" />
         </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

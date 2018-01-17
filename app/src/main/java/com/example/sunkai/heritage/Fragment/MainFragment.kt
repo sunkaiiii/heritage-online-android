@@ -23,6 +23,8 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.R.id.fragment_main_collapsing_toolbar_layout
+import com.example.sunkai.heritage.R.id.iv_fragment_main_scroll_change_image
 import kotlinx.android.synthetic.main.fragment_main.*
 
 import java.util.ArrayList
@@ -34,7 +36,7 @@ class MainFragment : Fragment() {
     internal lateinit var tableLayout:TabLayout
     internal lateinit var viewPager:ViewPager
 
-    var urls:ArrayList<ActivityData>?=null
+    var urls:List<ActivityData>?=null
 
     var index=0
 
