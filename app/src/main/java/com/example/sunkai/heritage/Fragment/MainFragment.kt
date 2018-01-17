@@ -25,6 +25,7 @@ import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.R.id.fragment_main_collapsing_toolbar_layout
 import com.example.sunkai.heritage.R.id.iv_fragment_main_scroll_change_image
+import kotlinx.android.synthetic.main.activity_join.*
 import kotlinx.android.synthetic.main.fragment_main.*
 
 import java.util.ArrayList
@@ -124,7 +125,7 @@ class MainFragment : Fragment() {
     var simpleTarget: SimpleTarget<Drawable> = object : SimpleTarget<Drawable>() {
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
             if(index==tableLayout.selectedTabPosition) {
-                val outAnimation=AnimationUtils.loadAnimation(activity,R.anim.fade_out_quick)
+                val outAnimation=AnimationUtils.loadAnimation(activity!!,R.anim.fade_out_quick)
                 val secondInAnimation=AnimationUtils.loadAnimation(activity,R.anim.fade_in_quick)
                 val bitmap = (resource as BitmapDrawable).bitmap
                 val color = Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
@@ -148,6 +149,9 @@ class MainFragment : Fragment() {
                 fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
                 iv_fragment_main_scroll_change_image.setBackgroundColor(color)
                 tableLayout.setBackgroundColor(color)
+                if(Build.VERSION.SDK_INT>=21){
+                    activity?.window?.statusBarColor=color
+                }
             }
         }
 

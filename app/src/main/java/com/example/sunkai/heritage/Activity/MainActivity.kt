@@ -1,8 +1,10 @@
 package com.example.sunkai.heritage.Activity
 
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
@@ -124,6 +126,9 @@ class MainActivity : AppCompatActivity(), OnClickListener {
         hideFragments(transaction)
 
         bottomNavigation.selectedItemId=clickID //底部按钮状态切换
+        if(index>0&&Build.VERSION.SDK_INT>=21){
+            window.statusBarColor=ContextCompat.getColor(this,R.color.colorPrimaryDark)
+        }
 
         when (index) {
             0 -> {

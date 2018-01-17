@@ -32,6 +32,10 @@
         <item name="android:textSize">22sp</item>
     </style>
 
+    <style name="MainFragmentTabLayoutSize" parent="@android:style/TextAppearance">
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="JoinActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>

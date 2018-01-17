@@ -23,7 +23,9 @@ import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.ClassifyActiviyData
 import com.example.sunkai.heritage.Data.ClassifyDivideData
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaseAsyncTask
 
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
@@ -38,6 +40,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
     internal var thisRecyclerView: RecyclerView? = null
     internal var lruCache: LruCache<Int, Bitmap>
+
 
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
         val img: ImageView
@@ -58,7 +61,6 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
             }
         }
         imageAnimation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
-        getChannelInformation(this).execute()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -94,21 +96,29 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         return activityDatas!![position]
     }
 
-    internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : AsyncTask<Void, Void, Void>() {
-        val weakReference: WeakReference<ActivityRecyclerViewAdapter>
+    fun setOnPageLoadListner(onPageLoaded: OnPageLoaded){
+        mOnPagedListener=onPageLoaded
+    }
 
-        init {
-            this.weakReference = WeakReference(adapter)
-        }
+    fun startGetInformation(){
+        mOnPagedListener?.onPreLoad()
+        activityDatas=null
+        getChannelInformation(this).execute()
+    }
+
+
+
+    internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : BaseAsyncTask<Void, Void, Void,ActivityRecyclerViewAdapter>(adapter) {
 
         override fun doInBackground(vararg voids: Void): Void? {
-            val adpter = weakReference.get()
+            val adpter = weakRefrece.get()
             adpter?.activityDatas = HandleMainFragment.GetChannelInformation(adpter?.channel!!)
             return null
         }
 
         override fun onPostExecute(aVoid: Void?) {
-            val adpter = weakReference.get()
+            val adpter = weakRefrece.get()
+            adpter?.mOnPagedListener?.onPostLoad()
             adpter?.notifyDataSetChanged()
         }
     }
