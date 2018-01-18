@@ -1,15 +1,12 @@
 package com.example.sunkai.heritage.Activity
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import com.bumptech.glide.Glide
-import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.host
-import com.example.sunkai.heritage.Data.ClassifyActiviyData
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.activity_join.*
 
 /**
@@ -32,8 +29,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
         activity_join_collapsing_toolbar.title = data.title
         join_activity_content.text = data.content
-        Glide.with(this).load(host+data.img).into(join_activity_img)
-
+        Glide.with(this).load(HOST+data.img).into(join_activity_img)
     }
 
     private fun initView() {

@@ -99,15 +99,10 @@ class MyOrderListViewAdapter(private val context: Context, private val datas: Li
         val myOrderListViewAdapterWeakReference: WeakReference<MyOrderListViewAdapter> = WeakReference(adapter)
         override fun doInBackground(vararg voids: Void): Bitmap? {
             val adapter = myOrderListViewAdapterWeakReference.get() ?: return null
-            val img = HandleFolk.GetFolkImage(id) ?: return null
-            adapter.datas[position].image = img
-            val `in` = ByteArrayInputStream(img)
-            val bitmap = HandlePic.handlePic(`in`, 0)
-            adapter.lruCache.put(id, bitmap)
-            return bitmap
+            return null
         }
 
-        override fun onPostExecute(bitmap: Bitmap) {
+        override fun onPostExecute(bitmap: Bitmap?) {
             val adapter = myOrderListViewAdapterWeakReference.get() ?: return
             val imageView = adapter.thisListView?.findViewWithTag<ImageView>(id) ?: return
             imageView.setImageBitmap(bitmap)

@@ -1,51 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="6dp"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="2dp"
         android:background="?attr/selectableItemBackground"
         android:foreground="?attr/selectableItemBackground"
-        >
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/activity_layout_img"
                 android:layout_width="match_parent"
-                android:layout_height="150sp"
-                android:scaleType="centerCrop" />
+                android:layout_height="260dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
-            <TextView
-                android:id="@+id/activity_layout_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/activity_layout_img"
-                android:text="test"
-                android:textColor="@color/midBrown"
-                android:textSize="12sp"
-                android:layout_margin="6dp"/>
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_layout_img"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/activity_layout_img"
+                app:layout_constraintVertical_bias="1.0"
+                android:background="@color/transparent">
+
+                <TextView
+                    android:id="@+id/activity_layout_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
+
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/activity_layout_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/activity_layout_text"
-                android:layout_marginBottom="3sp"
-                android:layout_marginRight="6sp"
-                android:layout_marginTop="3sp"
-                android:text="查看详情 >"
-                android:textSize="16sp" />
-        </RelativeLayout>
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="时间:"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_layout_img"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/activity_layout_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:drawableLeft="@drawable/ic_location_on_grey_900_24dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="地区:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_layout_time" />
+
+            <TextView
+                android:id="@+id/activity_layout_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:drawableLeft="@drawable/ic_format_list_numbered_grey_900_24dp"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="编号:"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_layout_location" />
+
+            <TextView
+                android:id="@+id/activity_layout_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="12dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:lines="3"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.08"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_layout_number"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

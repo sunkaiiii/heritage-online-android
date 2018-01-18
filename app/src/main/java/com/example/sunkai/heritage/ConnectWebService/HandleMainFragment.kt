@@ -26,12 +26,6 @@ import java.util.Arrays.asList
 object HandleMainFragment : BaseSetting() {
 
 
-    //定义扩展方法，简单化Gson的使用
-    inline fun <reified T:Any> Gson.fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
-        val arr = Gson().fromJson(s, clazz)
-        return arr.toList()
-    }
-
     fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{
         methodName="Get_Main_Divide_Activity_Image_Url"
         soapAction= namespace+"/"+ methodName

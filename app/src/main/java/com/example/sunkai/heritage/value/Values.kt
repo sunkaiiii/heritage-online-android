@@ -25,3 +25,5 @@ val REQUEST_PICTURE_CUT = 13
 val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
 val ERROR="ERROR"
+
+val HOST="http://btbudinner.win:8088"

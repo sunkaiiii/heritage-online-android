@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import com.google.gson.Gson
 import org.ksoap2.SoapEnvelope
 import org.ksoap2.serialization.SoapObject
 import org.ksoap2.serialization.SoapSerializationEnvelope
@@ -21,8 +22,13 @@ open class BaseSetting {
         val success = "Success"
         val error = "Error"
         val url = "http://btbudinner.win" + ":8088/services/Heritage?wsdl"
-        val host="http://btbudinner.win:8088"
         val namespace="http://Handle"
+
+        //定义扩展方法，简单化Gson的使用
+        inline fun <reified T:Any> Gson.fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
+            val arr = Gson().fromJson(s, clazz)
+            return arr.toList()
+        }
         fun pre_processSoap(soapObject: SoapObject): SoapSerializationEnvelope {
             val envelope = SoapSerializationEnvelope(SoapEnvelope.VER11)
             envelope.dotNet = false

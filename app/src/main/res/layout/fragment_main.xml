@@ -1,5 +1,6 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/layout_line"
@@ -39,7 +40,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
-                    app:cardElevation="2dp">
+                    android:translationZ="4dp"
+                    app:cardElevation="4dp"
+                    tools:targetApi="lollipop">
 
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tab_layout"

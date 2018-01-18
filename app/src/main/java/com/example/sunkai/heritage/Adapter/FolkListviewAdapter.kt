@@ -13,13 +13,16 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.FolkData
+import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Fragment.FolkFragment
+import com.example.sunkai.heritage.value.HOST
 
 import java.io.ByteArrayInputStream
 
@@ -29,7 +32,7 @@ import java.io.ByteArrayInputStream
  */
 
 class FolkListviewAdapter(private val context: Context, internal var folkFragment: FolkFragment?) : BaseAdapter() {
-    var datas: List<FolkData>?=null
+    var datas: List<FolkDataLite>?=null
     private var listView: ListView? = null
     private val lruCache: LruCache<Int, Bitmap>
 
@@ -84,21 +87,11 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
             vh = convertView.tag as Holder
         }
         val data = datas!![position]
-        val content = data.content
-        val location = data.location
         val title = data.title
         val divide = data.divide
-        vh.v1.text = "        " + content!!
-        vh.v2.text = location
         vh.v3.text = title
         vh.v4.setImageResource(R.drawable.empty_background)
-        vh.v4.tag = data.id
-        val bitmap = lruCache.get(data.id)
-        if (bitmap == null) {
-            getFolkImage(data.id!!).execute()
-        } else {
-            vh.v4.setImageBitmap(bitmap)
-        }
+        Glide.with(context).load(HOST+data.img).into(vh.v4)
         vh.v5.text = divide
         return view
     }
@@ -113,12 +106,12 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
         }
     }
 
-    fun setNewDatas(datas: List<FolkData>) {
+    fun setNewDatas(datas: List<FolkDataLite>) {
         this.datas = datas
         notifyDataSetChanged()
     }
 
-    fun getData(): List<FolkData>? {
+    fun getData(): List<FolkDataLite>? {
         return datas
     }
 
@@ -147,53 +140,5 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
             setProgress(false)
         }
     }
-
-    private inner class getFolkImage(internal var id: Int) : AsyncTask<Void, Void, Bitmap>() {
-        internal var db = MySqliteHandler.GetReadableDatabase()
-        override fun doInBackground(vararg voids: Void): Bitmap? {
-            var bitmap: Bitmap?
-            val table = "folk_image"
-            val selection = "id=?"
-            val selectionArgs = arrayOf(id.toString())
-            val cursor = db.query(table, null, selection, selectionArgs, null, null, null)
-            cursor.moveToFirst()
-            var img: ByteArray?
-            if (!cursor.isAfterLast) {
-                val imageIndex = cursor.getColumnIndex("image")
-                img = cursor.getBlob(imageIndex)
-                cursor.close()
-                if (img != null) {
-                    val `in` = ByteArrayInputStream(img)
-                    bitmap = HandlePic.handlePic(`in`, 0)
-                    lruCache.put(id, bitmap)
-                    return bitmap
-                }
-            }
-            img = HandleFolk.GetFolkImage(id)
-            if (img == null)
-                return null
-            val `in` = ByteArrayInputStream(img)
-            val contentValues = ContentValues()
-            contentValues.put("id", id)
-            contentValues.put("image", img)
-            db = MySqliteHandler.GetWritableDatabase()
-            db.insert(table, null, contentValues)
-            bitmap = HandlePic.handlePic(`in`, 0)
-            lruCache.put(id, bitmap)
-            return bitmap
-        }
-
-        override fun onPostExecute(bitmap: Bitmap?) {
-            if (bitmap != null) {
-                var imageView = listView?.findViewWithTag<View>(id)
-                if(imageView!=null) {
-                    imageView = imageView as ImageView
-                    imageView.setImageBitmap(bitmap)
-                }
-            }
-        }
-    }
-
-
 }
 

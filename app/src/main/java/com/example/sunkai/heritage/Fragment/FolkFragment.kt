@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.Activity.JoinActivity
 import com.example.sunkai.heritage.Adapter.FolkListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkData
+import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.fragment_folk.*
 
@@ -35,8 +36,8 @@ import java.util.ArrayList
  * 民间页的类
  */
 class FolkFragment : Fragment(), View.OnClickListener {
-    internal lateinit var datas: List<FolkData>
-    internal lateinit var folkListviewAdapter: FolkListviewAdapter
+    internal lateinit var datas: List<FolkDataLite>
+    private lateinit var folkListviewAdapter: FolkListviewAdapter
     private lateinit var folk_edit: EditText
     private lateinit var folk_heritages_spinner: Spinner
     private lateinit var folk_location_spinner: Spinner
@@ -44,8 +45,8 @@ class FolkFragment : Fragment(), View.OnClickListener {
     private lateinit var folk_search_btn: ImageView
     private lateinit var ll_fragment_folk_top_options:LinearLayout
     lateinit var loadProgress: ProgressBar
-    internal var getDatas: List<FolkData> = ArrayList()//用于处理搜索的List
-    internal var changeData = false
+    internal var getDatas: List<FolkDataLite> = ArrayList()//用于处理搜索的List
+    private var changeData = false
 
 
 
@@ -86,7 +87,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
         folk_show_listview.adapter = folkListviewAdapter
         folk_show_listview.setOnItemClickListener { _, view1, position, _ ->
             val bundle = Bundle()
-            val folkData = folkListviewAdapter.getItem(position) as FolkData
+            val folkData = folkListviewAdapter.getItem(position) as FolkDataLite
             val imageView = view1.findViewById<ImageView>(R.id.list_img)
             imageView.isDrawingCacheEnabled = true
             val drawable = imageView.drawable
@@ -94,7 +95,6 @@ class FolkFragment : Fragment(), View.OnClickListener {
             val bitmap = bitmapDrawable.bitmap
             val byteArrayOutputStream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-            folkData.image = byteArrayOutputStream.toByteArray()
             bundle.putSerializable("activity", folkData)
             val intent = Intent(activity, JoinActivity::class.java)
             intent.putExtras(bundle)
@@ -113,7 +113,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
          * 将finalData传递个adpter
          */
 
-        var selectDatas: List<FolkData>
+        var selectDatas: List<FolkDataLite>
         selectDatas = if (folk_location_spinner.selectedItemPosition == 0) {
             getDatas
         } else {
@@ -130,11 +130,11 @@ class FolkFragment : Fragment(), View.OnClickListener {
     }
 
 
-    private fun filterLoacation(Datas: List<FolkData>, locationString: String): List<FolkData> {
-        return Datas.filter { it.location == locationString }
+    private fun filterLoacation(Datas: List<FolkDataLite>, locationString: String): List<FolkDataLite> {
+        return Datas.filter { it.divide == locationString }
     }
 
-    private fun filterHeritage(Datas: List<FolkData>, heritageString: String): List<FolkData> {
+    private fun filterHeritage(Datas: List<FolkDataLite>, heritageString: String): List<FolkDataLite> {
         return Datas.filter { it.divide == heritageString }
     }
 
@@ -188,7 +188,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
         HandleSearch(edit, this).execute()
     }
 
-    fun setData(changeData: Boolean, datas: List<FolkData>) {
+    fun setData(changeData: Boolean, datas: List<FolkDataLite>) {
         this.changeData = changeData
         this.datas = datas
         getDatas = datas
@@ -201,7 +201,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
      * @param searInfo 搜索框的文本
      */
     (var searInfo: String, folkFragment: FolkFragment) : AsyncTask<Void, Void, Int>() {
-        var searchData: List<FolkData>? = null
+        var searchData: List<FolkDataLite>? = null
         var folkFragmentWeakReference: WeakReference<FolkFragment>
 
         init {

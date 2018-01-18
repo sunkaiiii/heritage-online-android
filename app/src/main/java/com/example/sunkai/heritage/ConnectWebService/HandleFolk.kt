@@ -2,7 +2,9 @@ package com.example.sunkai.heritage.ConnectWebService
 
 
 import com.example.sunkai.heritage.Data.FolkData
+import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.Data.OrderData
+import com.google.gson.GsonBuilder
 import org.json.JSONException
 import org.json.JSONObject
 import org.kobjects.base64.Base64
@@ -19,32 +21,6 @@ import java.util.ArrayList
  */
 
 object HandleFolk : BaseSetting() {
-    private fun Json_To_FolkList(json: String?): List<FolkData>? {
-        if (BaseSetting.error == json || json == null)
-            return null
-        try {
-            val MainActivity = JSONObject(json)
-            val activities = MainActivity.getJSONArray("folk_information")
-            val folkInformations = ArrayList<FolkData>()
-            for (i in 0 until activities.length()) {
-                val data = FolkData()
-                val activity = activities.get(i) as JSONObject
-                data.id = Integer.valueOf(activity.get("id") as String)
-                data.title = activity.get("title") as String
-                data.content = activity.get("content") as String
-                data.location = activity.get("location") as String
-                data.divide = activity.get("divide") as String
-                data.teacher = activity.get("teacher") as String
-                //                data.techTime=(String)activity.get("tech-time");
-                folkInformations.add(data)
-            }
-            return folkInformations
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
 
     private fun Json_To_OrderList(json: String): List<OrderData>? {
         try {
@@ -67,63 +43,39 @@ object HandleFolk : BaseSetting() {
         return null
     }
 
-    private fun Json_To_SingleFolkData(json: String?): FolkData? {
-        try {
-            val folkData = JSONObject(json)
-            val data = FolkData()
-            data.id = Integer.valueOf(folkData.get("id") as String)
-            data.title = folkData.get("title") as String
-            data.content = folkData.get("content") as String
-            data.location = folkData.get("location") as String
-            return data
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
 
 
-    fun GetFolkInforMation(): List<FolkData>? {
-        BaseSetting.methodName = "Get_Folk_Information"
+    fun GetFolkInforMation(): List<FolkDataLite>? {
+        BaseSetting.methodName = "Get_Folk_Information_New"
         BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
         val transport = HttpTransportSE(BaseSetting.url)
         transport.debug = true
         val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_FolkList(result)
-    }
-
-    fun GetFolkImage(id: Int): ByteArray? {
-        BaseSetting.methodName = "Get_Folk_Image"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val transport = HttpTransportSE(BaseSetting.url)
-        transport.debug = true
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("id", id)
-        val envelope = BaseSetting.pre_processSoap(soapObject)
+        if(error == result||result==null)
+            return null
         try {
-            transport.call(null, envelope)
-            val `object` = envelope.bodyIn as SoapObject
-            val imgCode = `object`.getProperty(0).toString()
-//            System.out.println(imgCode);
-            return Base64.decode(imgCode)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: XmlPullParserException) {
+            return GsonBuilder().create().fromJsonToList(result, Array<FolkDataLite>::class.java)
+        }catch (e:Exception){
             e.printStackTrace()
         }
-
         return null
     }
 
-    fun Search_Folk_Info(searchInfo: String): List<FolkData>? {
-        BaseSetting.methodName = "Search_Folk_Info"
+    fun Search_Folk_Info(searchInfo: String): List<FolkDataLite>? {
+        BaseSetting.methodName = "Search_Folk_Info_New"
         BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
         val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("searhInfo", searchInfo)
         val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_FolkList(result)
+        if(error == result||result==null)
+            return null
+        try {
+            return GsonBuilder().create().fromJsonToList(result,Array<FolkDataLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return null
     }
 
     fun Add_User_Order(userID: Int, orderID: Int): Boolean {
@@ -167,12 +119,19 @@ object HandleFolk : BaseSetting() {
     }
 
     fun Get_User_Order_Information(id: Int): FolkData? {
-        BaseSetting.methodName = "Get_Folk_Single_Information"
+        BaseSetting.methodName = "Get_Folk_Single_Information_New"
         BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
         val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
         soapObject.addProperty("id", id)
         val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_SingleFolkData(result)
+        if(error==result||result==null)
+            return null
+        try{
+            return GsonBuilder().create().fromJson(result,FolkData::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return null
     }
 
     fun Get_User_Orders(userID: Int): List<FolkData>? {

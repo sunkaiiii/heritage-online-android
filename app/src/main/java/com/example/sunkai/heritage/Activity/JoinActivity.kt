@@ -15,6 +15,7 @@ import android.widget.Toast
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkData
+import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_join.*
 
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_join.*
 
 class JoinActivity : AppCompatActivity(), View.OnClickListener {
 
-    private var folkActiviyData: FolkData? = null
+    private var folkActiviyData: FolkDataLite? = null
     internal var accentColor: Int = 0
     internal var isOrderd: Boolean = false//判断是否已经预约了
 
@@ -98,15 +99,11 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join)
         initView()
-        folkActiviyData = intent.getSerializableExtra("activity") as FolkData
-        folkActiviyData?.image?.let {
-            val bitmap = BitmapFactory.decodeByteArray(folkActiviyData!!.image, 0, folkActiviyData!!.image!!.size)
-            join_activity_img.setImageBitmap(bitmap)
-        }
+        folkActiviyData = intent.getSerializableExtra("activity") as FolkDataLite
         activity_join_collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarTextSize)
         activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
         activity_join_collapsing_toolbar.title = folkActiviyData!!.title
-        join_activity_content.text = folkActiviyData!!.content
+        join_activity_content.text = folkActiviyData!!.title
         /**
          * 在页面显示的时候判断此用户是否已经预约此活动
          */

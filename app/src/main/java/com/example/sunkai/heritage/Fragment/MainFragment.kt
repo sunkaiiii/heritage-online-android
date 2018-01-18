@@ -1,16 +1,12 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.*
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.graphics.Palette
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,9 +20,9 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.R.id.fragment_main_collapsing_toolbar_layout
-import com.example.sunkai.heritage.R.id.iv_fragment_main_scroll_change_image
-import kotlinx.android.synthetic.main.activity_join.*
+import com.example.sunkai.heritage.tools.generateColor
+import com.example.sunkai.heritage.tools.generateTextColor
+import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.fragment_main.*
 
 import java.util.ArrayList
@@ -105,7 +101,7 @@ class MainFragment : Fragment() {
     private fun getDivideImage(index: Int) {
         urls?.let {
             val url = urls!![index].url
-            Glide.with(context!!).load(BaseSetting.host + url).into(simpleTarget)
+            Glide.with(context!!).load(HOST + url).into(simpleTarget)
         }
     }
 
@@ -121,57 +117,40 @@ class MainFragment : Fragment() {
 
     }
 
-    fun generateColor(drawable: Drawable):Int{
-        if(drawable is BitmapDrawable){
-            val bitmap=drawable.bitmap
-            return generateColor(bitmap)
+    private fun setColors(color:Int,resource:Drawable){
+        val outAnimation = AnimationUtils.loadAnimation(activity!!, R.anim.fade_out_quick)
+        val secondInAnimation = AnimationUtils.loadAnimation(activity, R.anim.fade_in_quick)
+        outAnimation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationRepeat(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                iv_fragment_main_scroll_change_image.startAnimation(secondInAnimation)
+                iv_fragment_main_scroll_change_image.setImageDrawable(resource)
+            }
+
+            override fun onAnimationStart(animation: Animation?) {}
+
+        })
+        iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
+        fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
+        fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
+        iv_fragment_main_scroll_change_image.setBackgroundColor(color)
+        tableLayout.setBackgroundColor(color)
+        if (Build.VERSION.SDK_INT >= 21) {
+            activity?.window?.statusBarColor = color
         }
-        return ContextCompat.getColor(context!!,R.color.colorPrimaryDark)
-    }
-
-    fun generateColor(bitmap: Bitmap):Int{
-        return Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
-    }
-
-    fun generateTextColor(drawable: Drawable):Int?{
-
-        return if(drawable is BitmapDrawable) generateTextColor(drawable.bitmap) else null
-    }
-
-    fun generateTextColor(bitmap: Bitmap):Int?{
-        return Palette.from(bitmap).generate().darkMutedSwatch?.titleTextColor
     }
 
     val simpleTarget: SimpleTarget<Drawable> by lazy {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (index == tableLayout.selectedTabPosition) {
-                    val outAnimation = AnimationUtils.loadAnimation(activity!!, R.anim.fade_out_quick)
-                    val secondInAnimation = AnimationUtils.loadAnimation(activity, R.anim.fade_in_quick)
                     val color = generateColor(resource)
                     val textColor = generateTextColor(resource)
                     textColor?.let {
                         tableLayout.setTabTextColors(textColor, Color.WHITE)
                     }
-                    outAnimation.setAnimationListener(object : Animation.AnimationListener {
-                        override fun onAnimationRepeat(animation: Animation?) {}
-
-                        override fun onAnimationEnd(animation: Animation?) {
-                            iv_fragment_main_scroll_change_image.startAnimation(secondInAnimation)
-                            iv_fragment_main_scroll_change_image.setImageDrawable(resource)
-                        }
-
-                        override fun onAnimationStart(animation: Animation?) {}
-
-                    })
-                    iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
-                    fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
-                    fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
-                    iv_fragment_main_scroll_change_image.setBackgroundColor(color)
-                    tableLayout.setBackgroundColor(color)
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        activity?.window?.statusBarColor = color
-                    }
+                    setColors(color,resource)
                 }
             }
         }
