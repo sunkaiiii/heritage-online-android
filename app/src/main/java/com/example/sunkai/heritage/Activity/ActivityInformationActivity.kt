@@ -30,7 +30,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         val data = intent.getSerializableExtra("activity") as ClassifyDivideData
         activity_join_collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarTextSize)
         activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
-        activity_join_collapsing_toolbar.title = data.category
+        activity_join_collapsing_toolbar.title = data.title
         join_activity_content.text = data.content
         Glide.with(this).load(host+data.img).into(join_activity_img)
 

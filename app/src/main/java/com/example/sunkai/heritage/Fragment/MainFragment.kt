@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -34,13 +35,12 @@ import java.util.ArrayList
 class MainFragment : Fragment() {
 
     internal lateinit var view: View
-    internal lateinit var tableLayout:TabLayout
-    internal lateinit var viewPager:ViewPager
+    internal lateinit var tableLayout: TabLayout
+    internal lateinit var viewPager: ViewPager
 
-    var urls:List<ActivityData>?=null
+    var urls: List<ActivityData>? = null
 
-    var index=0
-
+    var index = 0
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +49,6 @@ class MainFragment : Fragment() {
         view = inflater.inflate(R.layout.fragment_main, container, false)
         //活动主页分类图片数据
         getMainFragmentDivideImageUrl()
-
         //此处是活动分类
         tableLayout = view.findViewById(R.id.tab_layout)
         viewPager = view.findViewById(R.id.main_tab_content)
@@ -67,16 +66,16 @@ class MainFragment : Fragment() {
         viewPager.adapter = adapter
     }
 
-    private fun getMainFragmentDivideImageUrl(){
-        Thread{
-            urls=HandleMainFragment.Get_Main_Divide_Activity_Image_Url()
-            activity?.runOnUiThread{
+    private fun getMainFragmentDivideImageUrl() {
+        Thread {
+            urls = HandleMainFragment.Get_Main_Divide_Activity_Image_Url()
+            activity?.runOnUiThread {
                 getDivideImage(tableLayout.selectedTabPosition)
             }
         }.start()
     }
 
-    private fun initViews(){
+    private fun initViews() {
         setupViewPager(viewPager)
         tableLayout.setupWithViewPager(viewPager)
         tableLayout.setTabTextColors(Color.GRAY, Color.WHITE)
@@ -103,58 +102,79 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun getDivideImage(index:Int){
-        urls?.let{
-            val url= urls!![index].url
-            Glide.with(context!!).load(BaseSetting.host+url).into(simpleTarget)
+    private fun getDivideImage(index: Int) {
+        urls?.let {
+            val url = urls!![index].url
+            Glide.with(context!!).load(BaseSetting.host + url).into(simpleTarget)
         }
     }
 
-    val tabLayoutListener=object :TabLayout.OnTabSelectedListener{
+    val tabLayoutListener = object : TabLayout.OnTabSelectedListener {
         override fun onTabReselected(tab: TabLayout.Tab?) {}
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
         override fun onTabSelected(tab: TabLayout.Tab?) {
-            index=tab?.position!!
+            index = tab?.position!!
             getDivideImage(tab.position)
         }
 
     }
 
-    var simpleTarget: SimpleTarget<Drawable> = object : SimpleTarget<Drawable>() {
-        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            if(index==tableLayout.selectedTabPosition) {
-                val outAnimation=AnimationUtils.loadAnimation(activity!!,R.anim.fade_out_quick)
-                val secondInAnimation=AnimationUtils.loadAnimation(activity,R.anim.fade_in_quick)
-                val bitmap = (resource as BitmapDrawable).bitmap
-                val color = Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
-                val textColor=Palette.from(bitmap).generate().dominantSwatch?.titleTextColor
-                textColor?.let{
-                    tableLayout.setTabTextColors(textColor, Color.WHITE)
-                }
-                outAnimation.setAnimationListener(object :Animation.AnimationListener{
-                    override fun onAnimationRepeat(animation: Animation?) {}
+    fun generateColor(drawable: Drawable):Int{
+        if(drawable is BitmapDrawable){
+            val bitmap=drawable.bitmap
+            return generateColor(bitmap)
+        }
+        return ContextCompat.getColor(context!!,R.color.colorPrimaryDark)
+    }
 
-                    override fun onAnimationEnd(animation: Animation?) {
-                        iv_fragment_main_scroll_change_image.startAnimation(secondInAnimation)
-                        iv_fragment_main_scroll_change_image.setImageDrawable(resource)
+    fun generateColor(bitmap: Bitmap):Int{
+        return Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
+    }
+
+    fun generateTextColor(drawable: Drawable):Int?{
+
+        return if(drawable is BitmapDrawable) generateTextColor(drawable.bitmap) else null
+    }
+
+    fun generateTextColor(bitmap: Bitmap):Int?{
+        return Palette.from(bitmap).generate().darkMutedSwatch?.titleTextColor
+    }
+
+    val simpleTarget: SimpleTarget<Drawable> by lazy {
+        object : SimpleTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                if (index == tableLayout.selectedTabPosition) {
+                    val outAnimation = AnimationUtils.loadAnimation(activity!!, R.anim.fade_out_quick)
+                    val secondInAnimation = AnimationUtils.loadAnimation(activity, R.anim.fade_in_quick)
+                    val color = generateColor(resource)
+                    val textColor = generateTextColor(resource)
+                    textColor?.let {
+                        tableLayout.setTabTextColors(textColor, Color.WHITE)
                     }
+                    outAnimation.setAnimationListener(object : Animation.AnimationListener {
+                        override fun onAnimationRepeat(animation: Animation?) {}
 
-                    override fun onAnimationStart(animation: Animation?) {}
+                        override fun onAnimationEnd(animation: Animation?) {
+                            iv_fragment_main_scroll_change_image.startAnimation(secondInAnimation)
+                            iv_fragment_main_scroll_change_image.setImageDrawable(resource)
+                        }
 
-                })
-                iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
-                fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
-                fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
-                iv_fragment_main_scroll_change_image.setBackgroundColor(color)
-                tableLayout.setBackgroundColor(color)
-                if(Build.VERSION.SDK_INT>=21){
-                    activity?.window?.statusBarColor=color
+                        override fun onAnimationStart(animation: Animation?) {}
+
+                    })
+                    iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
+                    fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
+                    fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
+                    iv_fragment_main_scroll_change_image.setBackgroundColor(color)
+                    tableLayout.setBackgroundColor(color)
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        activity?.window?.statusBarColor = color
+                    }
                 }
             }
         }
-
     }
 
 

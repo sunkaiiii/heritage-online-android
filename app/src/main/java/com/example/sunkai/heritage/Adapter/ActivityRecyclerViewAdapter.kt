@@ -76,8 +76,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         super.onBindViewHolder(holder, position)
         if(holder is ViewHolder) {
             val data = activityDatas!![position]
-            val text = data.content
-            holder.textView.text = text
+            holder.textView.text = data.title
             holder.img.setImageResource(R.drawable.empty_background)
             Glide.with(context).load(host+data.img).into(holder.img)
 //            val bitmap = lruCache.get(data.id)

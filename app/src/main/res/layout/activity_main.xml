@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true">
 
    <android.support.design.widget.BottomNavigationView
        android:id="@+id/below_button"
@@ -12,10 +13,10 @@
        app:menu="@menu/bottom_navigation_menu"
        />
 
-    <FrameLayout
-        android:id="@+id/content"
+    <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/below_button"/>
+        android:layout_above="@id/below_button"
+        android:id="@+id/activity_main_viewpager"/>
 
 </RelativeLayout>
