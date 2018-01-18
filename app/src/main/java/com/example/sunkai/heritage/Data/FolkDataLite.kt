@@ -9,4 +9,5 @@ class FolkDataLite(val id:Int,
                    val divide:String,
                    val title:String,
                    val img:String,
-                   val apply_location:String):Serializable
+                   val apply_location:String,
+                   val category:String):Serializable

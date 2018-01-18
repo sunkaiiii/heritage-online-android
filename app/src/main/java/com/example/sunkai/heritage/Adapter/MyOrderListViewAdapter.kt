@@ -63,7 +63,6 @@ class MyOrderListViewAdapter(private val context: Context, private val datas: Li
             val inflater = LayoutInflater.from(context)
             view = inflater.inflate(R.layout.folk_listview_layout, null)
             vh = Holder()
-            vh.v1 = view.findViewById(R.id.list_text)
             vh.v2 = view.findViewById(R.id.list_location)
             vh.v3 = view.findViewById(R.id.list_title)
             vh.v4 = view.findViewById(R.id.list_img)

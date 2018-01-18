@@ -76,7 +76,6 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
             val inflater = LayoutInflater.from(context)
             view = inflater.inflate(R.layout.folk_listview_layout, null)
             vh = Holder()
-            vh.v1 = view.findViewById<View>(R.id.list_text) as TextView
             vh.v2 = view.findViewById<View>(R.id.list_location) as TextView
             vh.v3 = view.findViewById<View>(R.id.list_title) as TextView
             vh.v4 = view.findViewById<View>(R.id.list_img) as ImageView
@@ -87,12 +86,11 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
             vh = convertView.tag as Holder
         }
         val data = datas!![position]
-        val title = data.title
-        val divide = data.divide
-        vh.v3.text = title
+        vh.v2.text=data.divide
+        vh.v3.text = data.title
         vh.v4.setImageResource(R.drawable.empty_background)
         Glide.with(context).load(HOST+data.img).into(vh.v4)
-        vh.v5.text = divide
+        vh.v5.text = data.category
         return view
     }
 
@@ -116,7 +114,6 @@ class FolkListviewAdapter(private val context: Context, internal var folkFragmen
     }
 
     inner class Holder {
-        internal lateinit var v1: TextView
         internal lateinit var v2: TextView
         internal lateinit var v3: TextView
         internal lateinit var v5: TextView
