@@ -141,6 +141,11 @@ class MainFragment : Fragment() {
         }
     }
 
+    fun getStatusBarShouldChangeColor():Int{
+        val drawable=iv_fragment_main_scroll_change_image.drawable
+        return generateColor(drawable)
+    }
+
     val simpleTarget: SimpleTarget<Drawable> by lazy {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {

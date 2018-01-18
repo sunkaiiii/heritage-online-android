@@ -1,9 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -98,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val onPageChangeListener=object :ViewPager.OnPageChangeListener{
+    private val onPageChangeListener=object :ViewPager.OnPageChangeListener{
         override fun onPageScrollStateChanged(state: Int) {
         }
 
@@ -106,6 +108,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onPageSelected(position: Int) {
+            if(Build.VERSION.SDK_INT>=21){
+                window.statusBarColor=when(position){
+                    0->(viewList[position] as MainFragment).getStatusBarShouldChangeColor()
+                    else->ContextCompat.getColor(applicationContext,R.color.colorPrimaryDark)
+                }
+            }
             bottomNavigation.selectedItemId=when(position){
                 0->R.id.main_layout
                 1->R.id.folk_layout
