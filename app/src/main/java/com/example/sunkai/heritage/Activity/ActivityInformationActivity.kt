@@ -49,7 +49,6 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         textBackGround = findViewById(R.id.activity_informaiton_text_background)
         setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        textBackGround.alpha = 0.85f
     }
 
     override fun onClick(v: View) {
@@ -65,7 +64,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
     private val target = object : SimpleTarget<Drawable>() {
         override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
             val color = generateDarkColor(drawable)
-            activity_join_collapsing_toolbar.setContentScrimColor(color)
+            collapsingToolbarLayout.setContentScrimColor(color)
             textBackGround.setBackgroundColor(color)
             if (Build.VERSION.SDK_INT >= 21) {
                 window.statusBarColor = color

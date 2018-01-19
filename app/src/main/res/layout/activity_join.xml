@@ -23,7 +23,9 @@
             app:collapsedTitleGravity="start"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="start|bottom"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/ExpandedAppBarSize"
+            app:expandedTitleMarginBottom="24dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -39,7 +41,7 @@
                      />
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="110dp"
+                    android:layout_height="90dp"
                     android:layout_alignParentBottom="true"
                     android:background="@color/transparent"
                     android:id="@+id/activity_informaiton_text_background"/>
