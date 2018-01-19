@@ -33,10 +33,8 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        setSupportActionBar(activity_join_toolbar)
+//        setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        join_activity_btn.setOnClickListener(this)
 
         join_activity_img.scaleType = ImageView.ScaleType.FIT_XY
 

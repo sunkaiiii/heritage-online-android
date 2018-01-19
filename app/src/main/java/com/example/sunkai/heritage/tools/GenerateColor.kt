@@ -25,6 +25,19 @@ fun generateColor(bitmap: Bitmap):Int{
     return Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
 }
 
+fun generateDarkColor(drawable: Drawable):Int{
+    return if(drawable is BitmapDrawable){
+        generateDarkColor(drawable.bitmap)
+    }else{
+        ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark)
+    }
+
+}
+
+fun generateDarkColor(bitmap: Bitmap):Int{
+    return Palette.from(bitmap).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
+}
+
 fun generateTextColor(drawable: Drawable):Int?{
 
     return if(drawable is BitmapDrawable) generateTextColor(drawable.bitmap) else null

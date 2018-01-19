@@ -40,12 +40,6 @@ class ActivityFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_activity1, container, false)
         activityRecyclerView = view.findViewById(R.id.activity_listview)
         swipeRefresh = view.findViewById(R.id.fragment_activity_swipe_refresh)
-        val color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity?.window?.statusBarColor
-        } else {
-            null
-        }
-        color?.let { swipeRefresh.setColorSchemeColors(color) }
         if (activityListviewAdapter == null) {
             activityListviewAdapter = ActivityRecyclerViewAdapter(activity!!, channelName)
         }
@@ -77,18 +71,30 @@ class ActivityFragment : Fragment() {
         if (!isLoadedData) {
             if (activityListviewAdapter == null&&activity!=null)
                 activityListviewAdapter = ActivityRecyclerViewAdapter(activity!!, channelName)
+            refreshRefreshViewColor()
             activityListviewAdapter?.startGetInformation()
         }
+    }
+
+    private fun refreshRefreshViewColor(){
+        val color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity?.window?.statusBarColor
+        } else {
+            null
+        }
+        color?.let { swipeRefresh.setColorSchemeColors(color) }
     }
 
 
     private val onPageLoadListner = object : OnPageLoaded {
         override fun onPreLoad() {
+
         }
 
         override fun onPostLoad() {
             swipeRefresh.isRefreshing = false
             isLoadedData = true
+            refreshRefreshViewColor()
         }
 
     }
