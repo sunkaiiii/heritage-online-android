@@ -1,11 +1,18 @@
 package com.example.sunkai.heritage.Activity
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.generateColor
+import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.activity_join.*
 
@@ -25,11 +32,9 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_join)
         initView()
         val data = intent.getSerializableExtra("activity") as ClassifyDivideData
-        activity_join_collapsing_toolbar.setCollapsedTitleTextAppearance(R.style.CollapsedAppBarTextSize)
-        activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
         activity_join_collapsing_toolbar.title = data.title
         join_activity_content.text = data.content
-        Glide.with(this).load(HOST+data.img).into(join_activity_img)
+        Glide.with(this).load(HOST+data.img).into(target)
     }
 
     private fun initView() {
@@ -51,5 +56,18 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private val target=object :SimpleTarget<Drawable>(){
+        override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
+            val color= generateColor(drawable)
+            activity_join_collapsing_toolbar.setContentScrimColor(color)
+            if(Build.VERSION.SDK_INT>=21){
+                window.statusBarColor=color
+            }
+            join_activity_img.setImageDrawable(drawable)
+            activity_join_collapsing_toolbar.collapsedTitleGravity=Gravity.START or Gravity.CENTER
+        }
+
     }
 }

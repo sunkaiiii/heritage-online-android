@@ -15,7 +15,6 @@ import android.view.animation.AnimationUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.*
@@ -49,26 +48,9 @@ class MainFragment : Fragment() {
         tableLayout = view.findViewById(R.id.tab_layout)
         viewPager = view.findViewById(R.id.main_tab_content)
         initViews()
+
+
         return view
-    }
-
-
-    private fun setupViewPager(viewPager: ViewPager) {
-        val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
-        //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容
-        for (channelName in ClassifyActivityDivide.divide) {
-            adapter.insertNewFragment(ActivityFragment.newInstance(channelName))
-        }
-        viewPager.adapter = adapter
-    }
-
-    private fun getMainFragmentDivideImageUrl() {
-        Thread {
-            urls = HandleMainFragment.Get_Main_Divide_Activity_Image_Url()
-            activity?.runOnUiThread {
-                getDivideImage(tableLayout.selectedTabPosition)
-            }
-        }.start()
     }
 
     private fun initViews() {
@@ -82,6 +64,40 @@ class MainFragment : Fragment() {
         tableLayout.getTabAt(0)!!.select()
     }
 
+
+    private fun setupViewPager(viewPager: ViewPager) {
+        val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
+        //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容,并传入对应的viewpager当中的index
+        for ((count, channelName) in ClassifyActivityDivide.divide.withIndex()) {
+            adapter.insertNewFragment(ActivityFragment.newInstance(channelName, count))
+        }
+
+        //懒加载处理，将网络请求延迟到滚动到对应位置的时候再加载
+        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                val frament=adapter.getItem(position)
+                if(frament is ActivityFragment){
+                    frament.getInformation()
+                }
+            }
+
+        })
+        viewPager.adapter = adapter
+    }
+
+    private fun getMainFragmentDivideImageUrl() {
+        Thread {
+            urls = HandleMainFragment.Get_Main_Divide_Activity_Image_Url()
+            activity?.runOnUiThread {
+                getDivideImage(tableLayout.selectedTabPosition)
+            }
+        }.start()
+    }
+
     internal inner class ViewPagerAdapter(manager: android.support.v4.app.FragmentManager) : FragmentPagerAdapter(manager) {
         private val mFragmentList = ArrayList<android.support.v4.app.Fragment>()
 
@@ -93,9 +109,13 @@ class MainFragment : Fragment() {
             return mFragmentList.size
         }
 
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        }
+
         fun insertNewFragment(fragment: android.support.v4.app.Fragment) {
             mFragmentList.add(fragment)
         }
+
     }
 
     private fun getDivideImage(index: Int) {

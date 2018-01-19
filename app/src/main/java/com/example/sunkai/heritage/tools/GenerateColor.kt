@@ -31,5 +31,5 @@ fun generateTextColor(drawable: Drawable):Int?{
 }
 
 fun generateTextColor(bitmap: Bitmap):Int?{
-    return Palette.from(bitmap).generate().darkMutedSwatch?.titleTextColor
+    return Palette.from(bitmap).generate().dominantSwatch?.titleTextColor
 }

@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         fragmentManager = supportFragmentManager
         initViews()
-//        setTabSelection(0,R.id.main_layout)
     }
 
     private fun initViews() {
@@ -124,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val onNavigationItemSelectedListener= BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val onNavigationItemSelectedListener= BottomNavigationView.OnNavigationItemSelectedListener { item ->
         viewPager.currentItem=when(item.itemId){
             R.id.main_layout->0
             R.id.folk_layout->1

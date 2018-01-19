@@ -23,7 +23,10 @@
             app:collapsedTitleGravity="start"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="start|bottom"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/ExpandedAppBarSizeHuge"
+            app:collapsedTitleTextAppearance="@style/CollapsedAppBarTextSize"
+            >
 
             <ImageView
                 android:id="@+id/join_activity_img"
