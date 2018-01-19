@@ -47,21 +47,17 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     internal var lruCache: LruCache<Int, Bitmap>
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
-        lateinit var img: ImageView
-        lateinit var like: TextView
-        lateinit var comment: TextView
-        lateinit var addfocusText: TextView
-        lateinit var name_text: TextView
-        lateinit var likeImage: ImageView
-        lateinit var commentImage: ImageView
-        lateinit var addfocusImage: ImageView
-        lateinit var userImage: RoundedImageView
+        val img: ImageView
+        val like: TextView
+        val comment: TextView
+        val addfocusText: TextView
+        val name_text: TextView
+        val likeImage: ImageView
+        val commentImage: ImageView
+        val addfocusImage: ImageView
+        val userImage: RoundedImageView
 
         init {
-            initView()
-        }
-
-        private fun initView() {
             img = view.findViewById(R.id.fragment_find_litview_img)
             comment = view.findViewById(R.id.testview_comment)
             like = view.findViewById(R.id.textview_like)

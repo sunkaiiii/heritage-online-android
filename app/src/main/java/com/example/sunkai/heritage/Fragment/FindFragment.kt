@@ -30,6 +30,7 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity
@@ -53,7 +54,8 @@ import java.util.ArrayList
  * 发现页面的类
  */
 
-class FindFragment : Fragment(), View.OnClickListener {
+class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
+
     private lateinit var tips: Array<ImageView?>
     private lateinit var mImageViews: Array<ImageView?>
     private lateinit var findSearchBtn: ImageView
@@ -66,7 +68,7 @@ class FindFragment : Fragment(), View.OnClickListener {
     private lateinit var selectSpiner: Spinner
     private lateinit var addCommentBtn: Button
     private lateinit var viewPager: ViewPager
-    lateinit internal var activityDatas: List<FindActivityData>
+    internal lateinit var activityDatas: List<FindActivityData>
     internal lateinit var btnAnimation: Animation
     private lateinit var bitmaps: Array<Bitmap?>
     internal var count = 0
@@ -84,19 +86,28 @@ class FindFragment : Fragment(), View.OnClickListener {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_find, container, false)
+        initview(view)
+        return view
+    }
+
+    private fun initview(view:View){
         findEdit = view.findViewById(R.id.find_text)
         findSearchBtn = view.findViewById(R.id.find_searchbtn)
+        selectSpiner = view.findViewById(R.id.find_select_spinner)
+        recyclerView = view.findViewById(R.id.fragment_find_recyclerView)
+        viewPager = view.findViewById(R.id.find_fragment_viewPager)
         findEdit.setOnClickListener(this)
         findSearchBtn.setOnClickListener(this)
+    }
+
+    private fun loadInfor(){
         val intentFilter = IntentFilter()
         intentFilter.addAction("android.intent.action.animationStop")
         activity!!.registerReceiver(animationStopReceiver, intentFilter)
-        selectSpiner = view.findViewById(R.id.find_select_spinner)
         setHasOptionsMenu(true)
         bitmaps = arrayOfNulls(4)
         //主页活动页面
         imgIdArray = intArrayOf(R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey)
-        viewPager = view.findViewById(R.id.find_fragment_viewPager)
         loadMyPage()
         //设置Adapter
         viewPager.adapter = MyAdapter()
@@ -104,7 +115,6 @@ class FindFragment : Fragment(), View.OnClickListener {
         //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
         viewPager.currentItem = mImageViews.size * 100
         //        listView = (ListView) view.findViewById(R.id.fragment_find_listview);
-        recyclerView = view.findViewById(R.id.fragment_find_recyclerView)
         activityDatas = ArrayList()
         loadMyPage()
         viewPager.adapter = MyAdapter()
@@ -171,8 +181,6 @@ class FindFragment : Fragment(), View.OnClickListener {
 
             }
         }
-
-
         /*
          * 发帖
          */
@@ -187,11 +195,14 @@ class FindFragment : Fragment(), View.OnClickListener {
             }
             val intent = Intent(activity, AddFindCommentActivity::class.java)
             /*
-     * 当成功添加帖子的时候，页面刷新
-     */
+             * 当成功添加帖子的时候，页面刷新
+             */
             startActivityForResult(intent, 1)
         }
-        return view
+    }
+
+    override fun startLoadInformation() {
+        loadInfor()
     }
 
     private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter?) {
@@ -226,7 +237,7 @@ class FindFragment : Fragment(), View.OnClickListener {
     /**
      * 加载首页轮转窗
      */
-    fun loadMyPage() {
+    private fun loadMyPage() {
         val group = view.findViewById<ViewGroup>(R.id.find_fragment_imageView)
         tips = arrayOfNulls(imgIdArray.size)
         for (i in tips.indices) {
@@ -404,8 +415,8 @@ class FindFragment : Fragment(), View.OnClickListener {
     }
 
     companion object {
-        private val FROM_USER_COMMENT_DETAIL = 2
+        private const val FROM_USER_COMMENT_DETAIL = 2
 
-        private val BUNDLE_ERROR = -4
+        private const val BUNDLE_ERROR = -4
     }
 }

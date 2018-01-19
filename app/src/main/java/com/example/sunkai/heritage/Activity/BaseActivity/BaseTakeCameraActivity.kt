@@ -41,9 +41,9 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
         startActivityForResult(intent, CHOOSE_PHOTO)
     }
 
-    lateinit internal var imageUri:Uri
-    lateinit protected var chooseAlertDialog:AlertDialog
-    lateinit private var waitForCompressDialog:AlertDialog
+    internal lateinit var imageUri:Uri
+    protected lateinit var chooseAlertDialog:AlertDialog
+    private lateinit var waitForCompressDialog:AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +126,7 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
     protected fun handleImage(file:String){
         compressImage(file)
     }
-    abstract protected fun setImageToImageView(bitmap: Bitmap)
+    protected abstract fun setImageToImageView(bitmap: Bitmap)
     protected fun compressImage(file:String){
         Luban.with(this)
                 .load(file)

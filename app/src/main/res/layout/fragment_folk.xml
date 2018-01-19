@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Fragment.FolkFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.example.sunkai.heritage.Fragment.FolkFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -19,13 +19,6 @@
             android:layout_marginLeft="24sp"
             android:layout_marginRight="24sp">
 
-            <ProgressBar
-                android:id="@+id/folk_load_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerInParent="true" />
-
             <EditText
                 android:id="@+id/folk_edit"
                 android:layout_width="match_parent"
@@ -39,16 +32,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_search_grey_400_24dp"
-                android:layout_alignParentRight="true" />
+                android:src="@drawable/ic_search_grey_400_24dp" />
         </RelativeLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="20sp"
-            android:layout_margin="12sp"
-            android:background="@color/midBrown" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,9 +68,15 @@
         </LinearLayout>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/folk_show_listview"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="6sp" />
+        android:id="@+id/fragment_folk_swipe_refresh">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/folk_show_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="6sp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

@@ -1,50 +1,43 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-
-import com.example.sunkai.heritage.Activity.JoinActivity
-import com.example.sunkai.heritage.Adapter.FolkListviewAdapter
+import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.Data.FolkDataLite
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import kotlinx.android.synthetic.main.fragment_folk.*
-
-import java.io.ByteArrayOutputStream
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import java.lang.ref.WeakReference
-import java.util.ArrayList
+import java.util.*
 
 
 /**
  * 民间页的类
  */
-class FolkFragment : Fragment(), View.OnClickListener {
+class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
     internal lateinit var datas: List<FolkDataLite>
-    private lateinit var folkListviewAdapter: FolkListviewAdapter
+    private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter
     private lateinit var folk_edit: EditText
     private lateinit var folk_heritages_spinner: Spinner
     private lateinit var folk_location_spinner: Spinner
-    private lateinit var folk_show_listview: ListView
+    private lateinit var folk_show_recyclerview: RecyclerView
     private lateinit var folk_search_btn: ImageView
     private lateinit var ll_fragment_folk_top_options:LinearLayout
-    lateinit var loadProgress: ProgressBar
+    private lateinit var refreshLayout: SwipeRefreshLayout
     internal var getDatas: List<FolkDataLite> = ArrayList()//用于处理搜索的List
     private var changeData = false
 
@@ -63,8 +56,6 @@ class FolkFragment : Fragment(), View.OnClickListener {
         /**
          * 当预约发生改变的时候，通知个人中心我的预约重新加载我的预约
          */
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("android.intent.action.adpterGetDataBroadCast")
         folk_location_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 SelectAdpterInformation()
@@ -83,25 +74,18 @@ class FolkFragment : Fragment(), View.OnClickListener {
 
             }
         }
-        folkListviewAdapter = FolkListviewAdapter(activity!!, this@FolkFragment)
-        folk_show_listview.adapter = folkListviewAdapter
-        folk_show_listview.setOnItemClickListener { _, view1, position, _ ->
-            val bundle = Bundle()
-            val folkData = folkListviewAdapter.getItem(position) as FolkDataLite
-            val imageView = view1.findViewById<ImageView>(R.id.list_img)
-            imageView.isDrawingCacheEnabled = true
-            val drawable = imageView.drawable
-            val bitmapDrawable = drawable as BitmapDrawable
-            val bitmap = bitmapDrawable.bitmap
-            val byteArrayOutputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
-            bundle.putSerializable("activity", folkData)
-            val intent = Intent(activity, JoinActivity::class.java)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
+        folkListviewAdapter = FolkRecyclerViewAdapter(activity!!)
+        folk_show_recyclerview.layoutManager=GridLayoutManager(activity!!,2)
+        folk_show_recyclerview.setHasFixedSize(true)
+        folk_show_recyclerview.adapter = folkListviewAdapter
         return view
     }
+
+    override fun startLoadInformation() {
+        folkListviewAdapter.setOnPageLoadListener(onPageLoadListner)
+        folkListviewAdapter.startGetInformation()
+    }
+
 
 
     private fun SelectAdpterInformation() {
@@ -124,9 +108,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
             val selectHeritage = folk_heritages_spinner.selectedItem as String
             selectDatas = filterHeritage(selectDatas, selectHeritage)
         }
-        if (isLoadData) {
-            folkListviewAdapter.setNewDatas(selectDatas)
-        }
+        folkListviewAdapter.setNewDatas(selectDatas)
     }
 
 
@@ -144,9 +126,10 @@ class FolkFragment : Fragment(), View.OnClickListener {
         folk_edit = view.findViewById(R.id.folk_edit)
         folk_heritages_spinner = view.findViewById(R.id.folk_heritages_spinner)
         folk_location_spinner = view.findViewById(R.id.folk_location_spinner)
-        folk_show_listview = view.findViewById(R.id.folk_show_listview)
+        folk_show_recyclerview = view.findViewById(R.id.folk_show_recyclerview)
+        refreshLayout=view.findViewById(R.id.fragment_folk_swipe_refresh)
+        refreshLayout.setOnRefreshListener { startLoadInformation() }
         folk_search_btn = view.findViewById(R.id.folk_searchbtn)
-        loadProgress = view.findViewById(R.id.folk_load_progress)
         folk_search_btn.setOnClickListener(this)
         folk_edit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -168,6 +151,21 @@ class FolkFragment : Fragment(), View.OnClickListener {
                 }
             }
         })
+
+    }
+
+    private val onPageLoadListner:OnPageLoaded by lazy {
+        object :OnPageLoaded{
+            override fun onPreLoad() {
+                refreshLayout.isRefreshing=true
+            }
+
+            override fun onPostLoad() {
+                datas=folkListviewAdapter.getListDatas()
+                refreshLayout.isRefreshing=false
+            }
+
+        }
     }
 
     override fun onClick(v: View) {
@@ -180,7 +178,7 @@ class FolkFragment : Fragment(), View.OnClickListener {
         // validate
         val edit = folk_edit.text.toString().trim { it <= ' ' }
         if (TextUtils.isEmpty(edit)) {
-            Toast.makeText(context, "输入的内容不能为空", Toast.LENGTH_SHORT).show()
+            toast("输入的内容不能为空")
             return
         }
         hideKeyboard()
@@ -239,9 +237,5 @@ class FolkFragment : Fragment(), View.OnClickListener {
         if (view != null) {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         }
-    }
-
-    companion object {
-        var isLoadData = false
     }
 }

@@ -11,11 +11,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import com.example.sunkai.heritage.Data.MySqliteHandler
-import com.example.sunkai.heritage.Fragment.MainFragment
-import com.example.sunkai.heritage.Fragment.PersonFragment
+import com.example.sunkai.heritage.Fragment.*
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.Fragment.FindFragment
-import com.example.sunkai.heritage.Fragment.FolkFragment
 import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 
 /**
@@ -111,6 +108,13 @@ class MainActivity : AppCompatActivity() {
                 window.statusBarColor=when(position){
                     0->(viewList[position] as MainFragment).getStatusBarShouldChangeColor()
                     else->ContextCompat.getColor(applicationContext,R.color.colorPrimaryDark)
+                }
+            }
+            val adapter=viewPager.adapter
+            if(adapter is adapter){
+                val fragment=adapter.getItem(position)
+                if(fragment is BaseLazyLoadFragment){
+                    fragment.lazyLoad()
                 }
             }
             bottomNavigation.selectedItemId=when(position){

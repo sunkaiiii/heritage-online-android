@@ -18,7 +18,6 @@ import android.os.Looper
 import android.os.Message
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -32,7 +31,6 @@ import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.FocusInformationActivity
 import com.example.sunkai.heritage.Activity.LoginActivity
-import com.example.sunkai.heritage.Activity.MyOrderActivity
 import com.example.sunkai.heritage.Activity.PermissionsActivity
 import com.example.sunkai.heritage.Activity.SettingActivity
 import com.example.sunkai.heritage.Activity.UserOwnTieziActivity
@@ -53,8 +51,7 @@ import java.io.ByteArrayOutputStream
  */
 
 
-class PersonFragment : Fragment(), View.OnClickListener {
-    private lateinit var orderLinear: LinearLayout
+class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
     private lateinit var myOwnTiezi: LinearLayout
     private lateinit var settingLayout: LinearLayout
     private lateinit var userName: TextView
@@ -174,18 +171,26 @@ class PersonFragment : Fragment(), View.OnClickListener {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_person, container, false)
-        orderLinear = view.findViewById(R.id.fragment_person_oder_linner)
-        myOwnTiezi = view.findViewById(R.id.fragment_person_my_tiezi)
-        settingLayout = view.findViewById(R.id.person_fragment_setting)
-        orderLinear.setOnClickListener(this)
-        myOwnTiezi.setOnClickListener(this)
-        settingLayout.setOnClickListener(this)
-        userName = view.findViewById(R.id.sign_name_textview)
+        initview(view)
         if (LoginActivity.userName == null) {
             userName.text = "没有登录"
         } else {
             userName.text = LoginActivity.userName
         }
+        mPermissionsChecker = PermissionsChecker(activity!!)
+        var intentFilter = IntentFilter()
+        intentFilter.addAction("android.intent.action.focusAndFansCountChange")
+        activity!!.registerReceiver(focusAndFansCountChange, intentFilter)
+        intentFilter = IntentFilter()
+        intentFilter.addAction("android.intent.action.refreInfomation")
+        activity?.registerReceiver(refreshInfo, intentFilter)
+        return view
+    }
+
+    private fun initview(view: View){
+        myOwnTiezi = view.findViewById(R.id.fragment_person_my_tiezi)
+        settingLayout = view.findViewById(R.id.person_fragment_setting)
+        userName = view.findViewById(R.id.sign_name_textview)
         follow = view.findViewById(R.id.person_follow)
         followNumber = view.findViewById(R.id.person_follow_number)
         fans = view.findViewById(R.id.person_fans)
@@ -196,15 +201,12 @@ class PersonFragment : Fragment(), View.OnClickListener {
         fans.setOnClickListener(this)
         fansNumber.setOnClickListener(this)
         userImage.setOnClickListener(this)
-        mPermissionsChecker = PermissionsChecker(activity!!)
+        myOwnTiezi.setOnClickListener(this)
+        settingLayout.setOnClickListener(this)
+    }
+
+    override fun startLoadInformation() {
         GetUserInfo()
-        var intentFilter = IntentFilter()
-        intentFilter.addAction("android.intent.action.focusAndFansCountChange")
-        activity!!.registerReceiver(focusAndFansCountChange, intentFilter)
-        intentFilter = IntentFilter()
-        intentFilter.addAction("android.intent.action.refreInfomation")
-        activity?.registerReceiver(refreshInfo, intentFilter)
-        return view
     }
 
     /**
@@ -229,10 +231,6 @@ class PersonFragment : Fragment(), View.OnClickListener {
             return
         }
         when (v.id) {
-            R.id.fragment_person_oder_linner -> {
-                intent = Intent(activity, MyOrderActivity::class.java)
-                startActivity(intent)
-            }
             R.id.fragment_person_my_tiezi -> {
                 intent = Intent(activity, UserOwnTieziActivity::class.java)
                 startActivity(intent)

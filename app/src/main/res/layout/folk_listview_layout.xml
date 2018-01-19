@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_margin="4dp"
     tools:context=".Activity.MainActivity">
 
     <ImageView
         android:id="@+id/list_img"
         android:layout_width="match_parent"
-        android:layout_height="165dp" />
+        android:layout_height="165dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +33,7 @@
             android:singleLine="true"
             android:text="title"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_marginLeft="24dp" />
 
         <LinearLayout
@@ -45,6 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="textview"
+                android:textSize="14sp"
                 android:textColor="@color/lightGrey"
                 android:layout_marginLeft="24dp"/>
 
@@ -54,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12sp"
                 android:text="textview"
+                android:textSize="14sp"
                 android:textColor="@color/lightGrey" />
         </LinearLayout>
     </LinearLayout>
