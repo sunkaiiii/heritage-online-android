@@ -32,5 +32,8 @@
     </string-array>
     <string name="had_error">出现问题，请稍后再试</string>
     <string name="fans_and_view_permission_denail">由于对方的设置，您无法查看他的信息</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="apply_time">申报时间:</string>
+    <string name="category">类别:</string>
+    <string name="number">编号:</string>
+    <string name="location">地区:</string>
 </resources>

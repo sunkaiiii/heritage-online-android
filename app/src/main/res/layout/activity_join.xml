@@ -11,7 +11,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/activit_join_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="350dp"
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -23,9 +23,9 @@
             app:collapsedTitleGravity="start"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="start|bottom"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleMarginBottom="24dp"
             app:expandedTitleTextAppearance="@style/ExpandedAppBarSize"
-            app:expandedTitleMarginBottom="24dp">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -37,14 +37,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
-                     />
+                    android:scaleType="centerCrop" />
+
                 <View
+                    android:id="@+id/activity_informaiton_text_background"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_alignParentBottom="true"
-                    android:background="@color/transparent"
-                    android:id="@+id/activity_informaiton_text_background"/>
+                    android:background="@color/transparent" />
 
             </RelativeLayout>
 
@@ -65,28 +65,101 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
 
-            <android.support.v7.widget.CardView
+            <TextView
+                android:id="@+id/join_activity_time"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="35dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp">
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:textSize="16sp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp"
+                android:text="TextView" />
 
-                <TextView
-                    android:id="@+id/join_activity_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:lineSpacingExtra="3dp"
-                    android:lineSpacingMultiplier="1.3"
-                    android:text="TextView" />
-            </android.support.v7.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGrey" />
+
+            <TextView
+                android:id="@+id/join_activity_locaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:textSize="16sp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_location_on_grey_900_24dp"
+                android:text="TextView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGrey" />
+
+            <TextView
+                android:id="@+id/join_activity_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:textSize="16sp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_format_list_numbered_grey_900_24dp"
+                android:text="TextView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGrey" />
+
+            <TextView
+                android:id="@+id/join_activity_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:textSize="16sp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_dashboard_grey_900_24dp"
+                android:text="TextView" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/lightGrey" />
+
+            <TextView
+                android:id="@+id/join_activity_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.3"
+                android:textSize="16sp"
+                android:text="TextView" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
