@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
@@ -14,11 +13,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import kotlinx.android.synthetic.main.activity_regist.*
-import java.util.*
-
 class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusChangeListener {
-
-    private lateinit var editTextToTextViewHashMap: HashMap<EditText, TextView>
 
     private lateinit var userName: String
     private lateinit var userPassword: String
@@ -33,7 +28,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         val userRegistHandler = object : Handler(mainLooper) {
             override fun handleMessage(msg: Message) {
                 if (msg.what == 1) {
-                    progressBar.visibility = View.VISIBLE
                     regist_activity_cancel_button.visibility = View.VISIBLE
                     val intent = Intent()
                     intent.putExtra("userName", userName)
@@ -46,7 +40,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
                 } else {
                     MakeToast.MakeText("注册失败")
                 }
-                progressBar.visibility = View.GONE
                 regist_actitivy_username_editText.isEnabled = true
                 regist_actitivy_password_editText.isEnabled = true
                 regist_actitivy_insure_editText.isEnabled = true
@@ -66,7 +59,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
     }
 
     private fun initView() {
-        editTextToTextViewHashMap = HashMap()
 
         regist_activity_cancel_button.setOnClickListener(this)
         regist_actitivy_username_editText.onFocusChangeListener = this
@@ -75,12 +67,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         regist_actitivy_question_editText.onFocusChangeListener = this
         regist_actitivy_answer_editText.onFocusChangeListener = this
         activity_regist_regist_button.setOnClickListener(this)
-        progressBar.setOnClickListener(this)
-        editTextToTextViewHashMap.put(regist_actitivy_question_editText, regist_actitivy_question_textView)
-        editTextToTextViewHashMap.put(regist_actitivy_username_editText, regist_actitivy_username_textView)
-        editTextToTextViewHashMap.put(regist_actitivy_password_editText, regist_actitivy_password_textView)
-        editTextToTextViewHashMap.put(regist_actitivy_insure_editText, regist_actitivy_insure_textView)
-        editTextToTextViewHashMap.put(regist_actitivy_answer_editText, regist_actitivy_answer_textView)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -103,7 +89,7 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
                 , R.id.regist_actitivy_insure_editText
                 , R.id.regist_actitivy_question_editText
                 , R.id.regist_actitivy_answer_editText
-            -> changeTextviewStatus(v as EditText, hasFocus)
+            -> {}
             else -> {
             }
         }
@@ -116,13 +102,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         return super.onOptionsItemSelected(item)
     }
 
-    private fun changeTextviewStatus(editText: EditText, hasFocus: Boolean) {
-        val textView = editTextToTextViewHashMap[editText] ?: return
-        if (hasFocus)
-            textView.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
-        else
-            textView.setTextColor(ContextCompat.getColor(this, R.color.deepGrey))
-    }
 
     private fun submit() {
         // validate
@@ -173,7 +152,6 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         userPassword = regist_actitivy_password_editText.text.toString().trim()
         findPasswordQuestion = regist_actitivy_question_editText.text.toString().trim()
         findPasswordAnswer = regist_actitivy_answer_editText.text.toString().trim()
-        progressBar.visibility = View.VISIBLE
         regist_actitivy_username_editText.isEnabled = false
         regist_actitivy_password_editText.isEnabled = false
         regist_actitivy_insure_editText.isEnabled = false

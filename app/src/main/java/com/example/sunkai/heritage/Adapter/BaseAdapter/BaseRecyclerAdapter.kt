@@ -11,8 +11,8 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
  * 给RecyclerAdapter封装了一些点击的操作
  */
 abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
-    protected var mOnItemClickListener: OnItemClickListener? = null
-    protected var mOnItemLongClickListener: OnItemLongClickListener? = null
+    private var mOnItemClickListener: OnItemClickListener? = null
+    private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener:OnPageLoaded?=null
 
     override fun onClick(v: View) {

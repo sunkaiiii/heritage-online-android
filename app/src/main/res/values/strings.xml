@@ -36,4 +36,11 @@
     <string name="category">类别:</string>
     <string name="number">编号:</string>
     <string name="location">地区:</string>
+    <string name="user_name">用户名</string>
+    <string name="password">密码</string>
+    <string name="insure_password">请确认密码</string>
+    <string name="find_password_question">找回密码问题</string>
+    <string name="find_password_answer">找回密码答案</string>
+    <string name="regist">注册</string>
+    <string name="cancel">取消</string>
 </resources>
