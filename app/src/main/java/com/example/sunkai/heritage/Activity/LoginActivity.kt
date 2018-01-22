@@ -113,14 +113,6 @@ class LoginActivity : AppCompatActivity() {
             window.navigationBarColor = Color.TRANSPARENT
             decorView.systemUiVisibility=option
         }
-//        mPasswordView.setOnEditorActionListener { _, id, _ ->
-//            if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//                attemptLogin()
-//                return@setOnEditorActionListener true
-//            }
-//            false
-//        }
-
         btn_activity_login_goto_login.setOnClickListener{
             ll_activity_login_navagate.startAnimation(outToLeft)
             include_login_view.startAnimation(infromRight)

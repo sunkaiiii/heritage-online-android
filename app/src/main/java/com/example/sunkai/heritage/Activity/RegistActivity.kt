@@ -1,6 +1,9 @@
 package com.example.sunkai.heritage.Activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -13,6 +16,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import kotlinx.android.synthetic.main.activity_regist.*
+
 class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusChangeListener {
 
     private lateinit var userName: String
@@ -58,6 +62,7 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         initView()
     }
 
+    @SuppressLint("InlinedApi")
     private fun initView() {
 
         regist_activity_cancel_button.setOnClickListener(this)
@@ -68,6 +73,13 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
         regist_actitivy_answer_editText.onFocusChangeListener = this
         activity_regist_regist_button.setOnClickListener(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if (Build.VERSION.SDK_INT >=16) {
+            val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            window.decorView.systemUiVisibility = option
+        }
     }
 
     override fun onClick(v: View) {
@@ -89,7 +101,8 @@ class RegistActivity : AppCompatActivity(), View.OnClickListener, View.OnFocusCh
                 , R.id.regist_actitivy_insure_editText
                 , R.id.regist_actitivy_question_editText
                 , R.id.regist_actitivy_answer_editText
-            -> {}
+            -> {
+            }
             else -> {
             }
         }
