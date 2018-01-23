@@ -266,7 +266,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                         MakeToast.MakeText(resources.getString(R.string.has_problem))
                     }
                     setResult(DELETE_COMMENT, intent)
-                    finish()
+                    onBackPressed()
                 }
             }.start()
         }.setNegativeButton("取消") { _, _ -> }.create().show()
@@ -274,7 +274,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> finish()
+            android.R.id.home -> onBackPressed()
             R.id.user_comment_detail_item_delete -> deleteComment()
             R.id.user_comment_detail_item_edit->{
                 data?.let {
@@ -427,8 +427,8 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
     companion object {
-        val ADD_COMMENT = 1
-        val DELETE_COMMENT = 2
+        const val ADD_COMMENT = 1
+        const val DELETE_COMMENT = 2
 
         private val TAG = "UserCommentDetail"
     }

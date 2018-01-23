@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.*
 import android.support.design.widget.TextInputEditText
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -123,9 +125,14 @@ class LoginActivity : AppCompatActivity() {
         mEmailSignInButton = findViewById(R.id.email_sign_in_button)
         mEmailSignInButton.setOnClickListener { _ -> attemptLogin() }
         registButton = findViewById(R.id.activity_login_regist)
-        registButton.setOnClickListener { _ ->
+        registButton.setOnClickListener {
+            val option=ActivityOptionsCompat.makeSceneTransitionAnimation(this)
             val intent = Intent(this@LoginActivity, RegistActivity::class.java)
-            startActivityForResult(intent, requestCode)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                ActivityCompat.startActivityForResult(this,intent, requestCode,option.toBundle())
+            }else{
+                startActivityForResult(intent,requestCode)
+            }
         }
 
         jumpSignIn = findViewById(R.id.activity_login_jump_login)

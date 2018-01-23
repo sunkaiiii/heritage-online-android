@@ -43,4 +43,5 @@
     <string name="find_password_answer">找回密码答案</string>
     <string name="regist">注册</string>
     <string name="cancel">取消</string>
+    <string name="please_choice">请选择</string>
 </resources>

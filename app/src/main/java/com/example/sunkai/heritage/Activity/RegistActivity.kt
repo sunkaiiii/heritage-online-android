@@ -11,8 +11,10 @@ import android.os.Message
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.transition.TransitionInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.Window
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
@@ -46,9 +48,19 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                 "密码输入不一致")
     }
 
+    private fun startAnimation(){
+        if(Build.VERSION.SDK_INT>=21) {
+            window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+            val slideRight =TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
+            window.enterTransition = slideRight
+        }else {
+            return
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startAnimation()
         setContentView(R.layout.activity_regist)
         initView()
     }
@@ -62,6 +74,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         views.add(regist_actitivy_answer_editText)
         views.add(registUserImage)
         views.add(activity_regist_regist_button)
+        views.add(registCancel)
 
         setAllViewsOnclick()
         regist_actitivy_password_editText.addTextChangedListener(this)
@@ -90,9 +103,9 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     override fun onClick(v: View) {
         when (v.id) {
             R.id.activity_regist_regist_button -> submit()
-            R.id.regist_activity_cancel_button -> {
+            R.id.registCancel -> {
                 this.setResult(0)
-                finish()
+                onBackPressed()
             }
             R.id.registUserImage -> {
                 chooseAlertDialog.show()
@@ -103,12 +116,6 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     private fun setViewsEnable(isEnable: Boolean) {
         for (view in views) {
@@ -182,7 +189,6 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
             override fun handleMessage(msg: Message) {
                 when {
                     msg.what == 1 -> {
-                        regist_activity_cancel_button.visibility = View.VISIBLE
                         val intent = Intent()
                         intent.putExtra("userName", userName)
                         intent.putExtra("passWord", userPassword)

@@ -1,12 +1,9 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.content.Context
-import android.content.IntentFilter
-import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -20,27 +17,24 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import java.lang.ref.WeakReference
+import kotlinx.android.synthetic.main.fragment_folk.*
 import java.util.*
 
 
 /**
  * 民间页的类
  */
-class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
-    internal lateinit var datas: List<FolkDataLite>
-    private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter
-    private lateinit var folk_edit: EditText
-    private lateinit var folk_heritages_spinner: Spinner
-    private lateinit var folk_location_spinner: Spinner
-    private lateinit var folk_show_recyclerview: RecyclerView
-    private lateinit var folk_search_btn: ImageView
-    private lateinit var ll_fragment_folk_top_options:LinearLayout
-    private lateinit var refreshLayout: SwipeRefreshLayout
-    internal var getDatas: List<FolkDataLite> = ArrayList()//用于处理搜索的List
-    private var changeData = false
+class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.OnItemSelectedListener {
 
+
+    internal lateinit var datas: List<FolkDataLite> //首次加载获取的初始数据，用于各种搜索条件归位的时候，数据的归位
+
+    private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter
+    private lateinit var folk_search_btn: ImageView
+    private lateinit var refreshLayout: SwipeRefreshLayout
+    internal var getDatas: MutableList<FolkDataLite> = ArrayList()//用于处理搜索的List，各种搜索的结果都会操作这个list
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,34 +45,17 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_folk, container, false)
+        return inflater.inflate(R.layout.fragment_folk, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initView(view)
-        /**
-         * 当预约发生改变的时候，通知个人中心我的预约重新加载我的预约
-         */
-        folk_location_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                SelectAdpterInformation()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
-        folk_heritages_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                SelectAdpterInformation()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
+        folk_location_spinner.onItemSelectedListener = this
+        folk_heritages_spinner.onItemSelectedListener = this
         folkListviewAdapter = FolkRecyclerViewAdapter(activity!!)
         folk_show_recyclerview.layoutManager=GridLayoutManager(activity!!,2)
         folk_show_recyclerview.setHasFixedSize(true)
         folk_show_recyclerview.adapter = folkListviewAdapter
-        return view
     }
 
     override fun startLoadInformation() {
@@ -96,7 +73,6 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
          * finalData对第二个spinner的内容与selectData中的内容进行比对，筛选出结果
          * 将finalData传递个adpter
          */
-
         var selectDatas: List<FolkDataLite>
         selectDatas = if (folk_location_spinner.selectedItemPosition == 0) {
             getDatas
@@ -113,7 +89,7 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
 
     private fun filterLoacation(Datas: List<FolkDataLite>, locationString: String): List<FolkDataLite> {
-        return Datas.filter { it.divide == locationString }
+        return Datas.filter { it.category == locationString }
     }
 
     private fun filterHeritage(Datas: List<FolkDataLite>, heritageString: String): List<FolkDataLite> {
@@ -122,11 +98,6 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
 
     private fun initView(view: View) {
-        ll_fragment_folk_top_options=view.findViewById(R.id.ll_fragment_folk_top_options)
-        folk_edit = view.findViewById(R.id.folk_edit)
-        folk_heritages_spinner = view.findViewById(R.id.folk_heritages_spinner)
-        folk_location_spinner = view.findViewById(R.id.folk_location_spinner)
-        folk_show_recyclerview = view.findViewById(R.id.folk_show_recyclerview)
         refreshLayout=view.findViewById(R.id.fragment_folk_swipe_refresh)
         refreshLayout.setOnRefreshListener { startLoadInformation() }
         folk_search_btn = view.findViewById(R.id.folk_searchbtn)
@@ -146,7 +117,7 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
                  * 刷新list使得list继续显示全部的内容
                  */
                 if (TextUtils.isEmpty(folk_edit.text)) {
-                    getDatas = datas
+                    getDatas = datas.toMutableList()
                     SelectAdpterInformation()
                 }
             }
@@ -154,15 +125,35 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
     }
 
+    private fun setSpinner(){
+        val locationTreeSet=TreeSet<String>()
+        val heritageDivideTreeSet=TreeSet<String>()
+        for (data in datas){
+            locationTreeSet.add(data.category)
+            heritageDivideTreeSet.add(data.divide)
+        }
+        //在整个adapter的第一个插入"请选择"，第0位是重置所有筛选的item
+        val locationList=locationTreeSet.toMutableList()
+        locationList.add(0,getString(R.string.please_choice))
+        val heritageList=heritageDivideTreeSet.toMutableList()
+        heritageList.add(0,getString(R.string.please_choice))
+        folk_location_spinner.adapter=ArrayAdapter<String>(activity,android.R.layout.simple_spinner_dropdown_item,locationList)
+        folk_heritages_spinner.adapter=ArrayAdapter<String>(activity,android.R.layout.simple_spinner_dropdown_item,heritageList)
+    }
+
     private val onPageLoadListner:OnPageLoaded by lazy {
         object :OnPageLoaded{
             override fun onPreLoad() {
                 refreshLayout.isRefreshing=true
+                setWidgetEnable(false)
             }
 
             override fun onPostLoad() {
                 datas=folkListviewAdapter.getListDatas()
+                getDatas=datas.toMutableList()
                 refreshLayout.isRefreshing=false
+                setSpinner()
+                setWidgetEnable(true)
             }
 
         }
@@ -186,11 +177,13 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
         HandleSearch(edit, this).execute()
     }
 
-    fun setData(changeData: Boolean, datas: List<FolkDataLite>) {
-        this.changeData = changeData
-        this.datas = datas
-        getDatas = datas
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        SelectAdpterInformation()
     }
+
 
     internal class HandleSearch
     /**
@@ -198,24 +191,19 @@ class FolkFragment : BaseLazyLoadFragment(), View.OnClickListener {
      *
      * @param searInfo 搜索框的文本
      */
-    (var searInfo: String, folkFragment: FolkFragment) : AsyncTask<Void, Void, Int>() {
-        var searchData: List<FolkDataLite>? = null
-        var folkFragmentWeakReference: WeakReference<FolkFragment>
+    (private var searInfo: String, folkFragment: FolkFragment) : BaseAsyncTask<Void, Void, Int,FolkFragment>(folkFragment) {
+        private var searchData: List<FolkDataLite>? = null
 
-        init {
-            folkFragmentWeakReference = WeakReference(folkFragment)
-        }
-
-        override fun doInBackground(vararg voids: Void): Int? {
+        override fun doInBackground(vararg voids: Void): Int {
             searchData = HandleFolk.Search_Folk_Info(searInfo)
             return if (searchData == null) 0 else 1
         }
 
-        override fun onPostExecute(integer: Int?) {
-            val folkFragment = folkFragmentWeakReference.get()
-            if (folkFragment != null) {
+        override fun onPostExecute(integer: Int) {
+            val folkFragment = weakRefrece.get()
+            folkFragment?.let{
                 if (integer == 1) {
-                    folkFragment.getDatas = searchData!!
+                    folkFragment.getDatas = searchData!!.toMutableList()
                     folkFragment.SelectAdpterInformation()
                 }
                 folkFragment.setWidgetEnable(true)
