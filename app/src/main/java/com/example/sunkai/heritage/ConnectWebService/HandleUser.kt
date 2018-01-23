@@ -5,6 +5,7 @@ package com.example.sunkai.heritage.ConnectWebService
  * 此类封装了关于登录页有关的服务器请求的方法
  */
 
+import org.kobjects.base64.Base64
 import org.ksoap2.serialization.SoapObject
 
 object HandleUser : BaseSetting() {
@@ -18,7 +19,7 @@ object HandleUser : BaseSetting() {
         return BaseSetting.success == result
     }
 
-    fun User_Regist(userName: String, passWord: String, findPasswordQuestion: String, findPassWordAnswer: String): Int {
+    fun User_Regist(userName: String, passWord: String, findPasswordQuestion: String, findPassWordAnswer: String,userImage:ByteArray?=null): Int {
         BaseSetting.methodName = "User_Regist"
         BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
         val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
@@ -26,15 +27,18 @@ object HandleUser : BaseSetting() {
         soapObject.addProperty("passWord", passWord)
         soapObject.addProperty("findPasswordQuestion", findPasswordQuestion)
         soapObject.addProperty("findPassWordAnswer", findPassWordAnswer)
+        userImage?.let{
+            soapObject.addProperty("userImage", Base64.encode(userImage))
+        }
         val result = BaseSetting.Get_Post(soapObject)
-        return if (BaseSetting.success == result) {
-            1
-        } else if ("hadUser" == result) {
-            0
-        } else {
-            -1
+        return when (result) {
+            BaseSetting.success -> 1
+            "hadUser" -> 0
+            else -> -1
         }
     }
+
+
 
     fun Get_User_ID(userName: String): Int {
         BaseSetting.methodName = "Get_User_ID"

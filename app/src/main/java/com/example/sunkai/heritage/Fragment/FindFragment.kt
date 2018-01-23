@@ -1,11 +1,8 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.app.ActivityOptions
-import android.content.BroadcastReceiver
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -13,7 +10,6 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
@@ -130,6 +126,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
          * 程序默认显示广场的全部帖子
          */
         recyclerViewAdpter = FindFragmentRecyclerViewAdapter(activity!!, 1)
+        setAdpterClick(recyclerViewAdpter)
         val layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = recyclerViewAdpter

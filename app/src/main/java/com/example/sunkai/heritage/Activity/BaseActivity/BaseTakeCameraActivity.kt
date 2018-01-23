@@ -41,7 +41,7 @@ abstract class BaseTakeCameraActivity :AppCompatActivity(){
         startActivityForResult(intent, CHOOSE_PHOTO)
     }
 
-    internal lateinit var imageUri:Uri
+    private lateinit var imageUri:Uri
     protected lateinit var chooseAlertDialog:AlertDialog
     private lateinit var waitForCompressDialog:AlertDialog
 

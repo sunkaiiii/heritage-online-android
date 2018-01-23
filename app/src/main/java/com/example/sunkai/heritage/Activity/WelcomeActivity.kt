@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
+import kotlinx.android.synthetic.main.activity_other_users.*
 
 /**
  * 此页面是欢迎界面的类
