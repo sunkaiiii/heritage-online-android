@@ -74,12 +74,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     internal var count = 0
     internal var count2 = 0
 
-    internal var animationStopReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            refreshBtn.clearAnimation()
-            refreshBtn.isEnabled = true
-        }
-    }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -101,9 +95,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     }
 
     private fun loadInfor(){
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("android.intent.action.animationStop")
-        activity!!.registerReceiver(animationStopReceiver, intentFilter)
         setHasOptionsMenu(true)
         bitmaps = arrayOfNulls(4)
         //主页活动页面
@@ -409,10 +400,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         refreshBtn.isEnabled = false
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        activity!!.unregisterReceiver(animationStopReceiver)
-    }
 
     companion object {
         private const val FROM_USER_COMMENT_DETAIL = 2

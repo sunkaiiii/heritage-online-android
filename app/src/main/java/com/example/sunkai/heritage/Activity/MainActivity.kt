@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewPager:ViewPager
 
-    internal lateinit var ad: AlertDialog
+    private lateinit var ad: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
