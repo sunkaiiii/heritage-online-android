@@ -25,6 +25,8 @@ ___
 8、APP前期由Java编写，在Build 2.0版本开始，陆续转用Kotlin实现新的功能，并在近期完成了全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
 
 
+#### 小米商店下载体验地址：http://app.xiaomi.com/detail/549196
+
 ___
 使用到的第三方库
 
