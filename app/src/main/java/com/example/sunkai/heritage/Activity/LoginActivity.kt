@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
@@ -28,6 +29,7 @@ import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.infoToRSA
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -92,6 +94,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -213,7 +216,8 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                         val checkUserAnswer = Runnable{
-                            val result = HandleUser.Check_Question_Answer(userName, find_password_answer!!.text.toString())
+                            val encrtAnswer= infoToRSA(find_password_answer!!.text.toString())?:return@Runnable
+                            val result = HandleUser.Check_Question_Answer(userName, encrtAnswer)
                             if (result) {
                                 checkUserAnswerHandler.sendEmptyMessage(1)
                             } else {
@@ -271,7 +275,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         val changePasswordThread = Runnable{
-            val result = HandleUser.Change_Password(changePasswordUsername!!, password!!.text.toString())
+            val encryPassword= infoToRSA(password!!.text.toString())?:return@Runnable
+            val result = HandleUser.Change_Password(changePasswordUsername!!, encryPassword)
             if (result) {
                 changePasswordHandler.sendEmptyMessage(1)
             } else {
@@ -324,9 +329,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-    inner class UserLoginTask internal constructor(private val mEmail: String, private val mPassword: String) : AsyncTask<Void, Void, Boolean>() {
+
+    inner class UserLoginTask internal constructor(private val mEmail: String, private var mPassword: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
+            mPassword= infoToRSA(mPassword)?:return false
             return HandleUser.Sign_in(mEmail, mPassword)
         }
 

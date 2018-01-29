@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -12,7 +11,6 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.transition.TransitionInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.*
@@ -22,9 +20,10 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.encryptionPassWord
+import com.example.sunkai.heritage.value.ERROR
 import kotlinx.android.synthetic.main.activity_regist.*
-import java.io.ByteArrayOutputStream
-import java.io.OutputStream
+
 
 class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatcher {
 
@@ -34,7 +33,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     private lateinit var findPasswordAnswer: String
     private lateinit var imageByte: ByteArray
 
-    var isUploadImage = false
+    private var isUploadImage = false
 
     private val views: ArrayList<View>by lazy {
         ArrayList<View>()
@@ -48,12 +47,12 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                 "密码输入不一致")
     }
 
-    private fun startAnimation(){
-        if(Build.VERSION.SDK_INT>=21) {
+    private fun startAnimation() {
+        if (Build.VERSION.SDK_INT >= 21) {
             window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            val slideRight =TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
+            val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
             window.enterTransition = slideRight
-        }else {
+        } else {
             return
         }
     }
@@ -114,7 +113,6 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
             }
         }
     }
-
 
 
     private fun setViewsEnable(isEnable: Boolean) {
@@ -178,6 +176,8 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     private var userRegist: Runnable = Runnable {
+        userPassword = (infoToRSA(userPassword) ?: return@Runnable)
+        findPasswordAnswer=(infoToRSA(findPasswordAnswer)?:return@Runnable)
         val result = if (isUploadImage) {
             HandleUser.User_Regist(userName, userPassword, findPasswordQuestion, findPasswordAnswer, imageByte)
         } else {
@@ -203,6 +203,13 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
             }
         }
         userRegistHandler.sendMessage(msg)
+    }
+
+    private fun infoToRSA(infos: String): String? {
+        val encrtData= encryptionPassWord(infos)
+        return if(ERROR==encrtData) {
+            null
+        } else encrtData
     }
 
     override fun afterTextChanged(s: Editable?) {

@@ -16,6 +16,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.infoToRSA
 import kotlinx.android.synthetic.main.activity_setting.*
 
 
@@ -94,7 +95,8 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
 
         val changePasswordThread = Runnable {
-            val result = HandleUser.Change_Password(LoginActivity.userName!!, password.text.toString())
+            val encryPassword= infoToRSA(password.text.toString())?:return@Runnable
+            val result = HandleUser.Change_Password(LoginActivity.userName!!, encryPassword)
             runOnUiThread({
                 if(result){
                     MakeToast.MakeText("修改成功")
