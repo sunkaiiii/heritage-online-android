@@ -1,84 +1,67 @@
 package com.example.sunkai.heritage.ConnectWebService
 
-/**
- * Created by sunkai on 2018/1/9.
- * 此类封装了关于登录页有关的服务器请求的方法
- */
 
+import android.util.Log
+import com.example.sunkai.heritage.Activity.LoginActivity
+import okhttp3.FormBody
 import org.kobjects.base64.Base64
 import org.ksoap2.serialization.SoapObject
+import kotlin.math.log
 
-object HandleUser : BaseSetting() {
-    fun Sign_in(userName: String, PassWord: String): Boolean {
-        BaseSetting.methodName = "Sign_In"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        soapObject.addProperty("PassWord", PassWord)
-        val result = BaseSetting.Get_Post(soapObject)
-        return BaseSetting.success == result
+
+/*
+ * Created by sunkai on 2018/1/30.
+ */
+
+object HandleUser : BaseSettingNew() {
+    fun Sign_In(userName: String, userPassword: String): Boolean {
+        val builder = FormBody.Builder()
+        builder.add("username", userName)
+        builder.add("password", userPassword.replace("\n", ""))
+        val result = PutPost(URL + "/Sign_In", builder.build())
+        return if (result.toInt() > 0) {
+            LoginActivity.userID = result.toInt()
+            true
+        } else {
+            false
+        }
     }
 
-    fun User_Regist(userName: String, passWord: String, findPasswordQuestion: String, findPassWordAnswer: String,userImage:ByteArray?=null): Int {
-        BaseSetting.methodName = "User_Regist"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        soapObject.addProperty("passWord", passWord)
-        soapObject.addProperty("findPasswordQuestion", findPasswordQuestion)
-        soapObject.addProperty("findPassWordAnswer", findPassWordAnswer)
-        userImage?.let{
-            soapObject.addProperty("userImage", Base64.encode(userImage))
+    fun User_Regist(userName: String, passWord: String, findPasswordQuestion: String, findPassWordAnswer: String, userImage: ByteArray? = null): Int {
+        val userImageString=if(userImage==null){
+            ""
+        }else{
+            Base64.encode(userImage)
         }
-        val result = BaseSetting.Get_Post(soapObject)
+        println(userImageString)
+        val form = FormBody.Builder()
+                .add("username", userName)
+                .add("password", passWord)
+                .add("findPasswordQuestion", findPasswordQuestion)
+                .add("findPasswordAnswer", findPassWordAnswer)
+                .add("userImage",userImageString).build()
+        val result = PutPost(URL+"/UserRegist",form)
         return when (result) {
-            BaseSetting.success -> 1
-            "hadUser" -> 0
+            "1" -> 1
+            "0" -> 0
             else -> -1
         }
     }
-
-
-
-    fun Get_User_ID(userName: String): Int {
-        BaseSetting.methodName = "Get_User_ID"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        val result = BaseSetting.Get_Post(soapObject)
-        return if (result != null && BaseSetting.error != result && Integer.parseInt(result) > 0) {
-            Integer.parseInt(result)
-        } else {
-            -1
-        }
-    }
-
     fun Find_Password_Question(userName: String): String? {
-        BaseSetting.methodName = "Find_Password_Question"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        val result = BaseSetting.Get_Post(soapObject)
-        return if (result != null && BaseSetting.error != result) result else null
+        val result=PutGet(URL+"/FindPassWordQuestion"+"?username="+userName)
+        return if (ERROR != result) result else null
     }
 
     fun Check_Question_Answer(userName: String, questionAnswer: String): Boolean {
-        BaseSetting.methodName = "Check_Question_Answer"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        soapObject.addProperty("questionAnswer", questionAnswer)
-        val result = BaseSetting.Get_Post(soapObject)
-        return BaseSetting.success == result
+        val form=FormBody.Builder().add("username",userName).add("answer",questionAnswer).build()
+        val result = PutPost(URL+"/CheckQuestionAnswer",form)
+        Log.d("Check_Question_Answer",result)
+        return SUCCESS == result
     }
 
     fun Change_Password(userName: String, Password: String): Boolean {
-        BaseSetting.methodName = "Change_Password"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userName", userName)
-        soapObject.addProperty("Password", Password)
-        val result = BaseSetting.Get_Post(soapObject)
-        return BaseSetting.success == result
+        val form=FormBody.Builder().add("username",userName).add("password",Password).build()
+        val result = PutPost(URL+"/ChangePassword",form)
+        return SUCCESS == result
     }
 }

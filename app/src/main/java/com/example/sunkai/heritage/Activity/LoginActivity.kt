@@ -1,13 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.*
-import android.support.design.widget.TextInputEditText
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AlertDialog
@@ -16,8 +14,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.EditorInfo
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -57,15 +53,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var ad: AlertDialog
 
     internal var isIntoMainpage = 0
-    internal var getUserID: Runnable = Runnable {
-        userID = HandleUser.Get_User_ID(userName!!)
-        if (userID > 0) {
-            getUserIDHandler.sendEmptyMessage(1)
-        } else {
-            getUserIDHandler.sendEmptyMessage(0)
-        }
-    }
-    internal var getUserIDHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    internal var OnSuccessLoginHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == 1) {
                 val editor = getSharedPreferences("data", Context.MODE_PRIVATE).edit()
@@ -334,17 +322,17 @@ class LoginActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
             mPassword= infoToRSA(mPassword)?:return false
-            return HandleUser.Sign_in(mEmail, mPassword)
+            return HandleUser.Sign_In(mEmail, mPassword)
         }
 
-        override fun onPostExecute(success: Boolean?) {
+        override fun onPostExecute(success: Boolean) {
             mEmailSignInButton.isEnabled=true
             mEmailSignInButton.visibility=View.VISIBLE
             pg_activity_login_progress.visibility=View.GONE
             mAuthTask = null
-            if (success!!) {
+            if (success) {
                 userName = mEmail
-                Thread(getUserID).start()
+                OnSuccessLoginHandler.sendEmptyMessage(1)
             } else {
                 mPasswordView.error = getString(R.string.error_incorrect_password)
                 mPasswordView.requestFocus()

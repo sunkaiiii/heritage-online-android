@@ -39,6 +39,7 @@ dependencies {
 //    network
     implementation files('libs/ksoap2-android-assembly-3.2.0-jar-with-dependencies.jar')
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.github.bumptech.glide:glide:4.5.0'
     kapt 'com.github.bumptech.glide:compiler:4.5.0'
 

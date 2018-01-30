@@ -91,11 +91,9 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
 
     override fun setImageToImageView(bitmap: Bitmap) {
         Glide.with(this).load(bitmap).into(registUserImage)
-        val byte = HandlePic.drawableToByteArray(registUserImage.drawable)
-        byte?.let {
-            imageByte = byte
-            isUploadImage = true
-        }
+        val byte = HandlePic.bitmapToByteArray(bitmap)
+        imageByte = byte
+        isUploadImage = true
 
     }
 
@@ -176,12 +174,12 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     private var userRegist: Runnable = Runnable {
-        userPassword = (infoToRSA(userPassword) ?: return@Runnable)
-        findPasswordAnswer=(infoToRSA(findPasswordAnswer)?:return@Runnable)
+        val userPasswordDecript = (infoToRSA(userPassword) ?: return@Runnable)
+        findPasswordAnswer = (infoToRSA(findPasswordAnswer) ?: return@Runnable)
         val result = if (isUploadImage) {
-            HandleUser.User_Regist(userName, userPassword, findPasswordQuestion, findPasswordAnswer, imageByte)
+            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswer, imageByte)
         } else {
-            HandleUser.User_Regist(userName, userPassword, findPasswordQuestion, findPasswordAnswer, null)
+            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswer, null)
         }
         val msg = Message()
         msg.what = result
@@ -206,8 +204,8 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     private fun infoToRSA(infos: String): String? {
-        val encrtData= encryptionPassWord(infos)
-        return if(ERROR==encrtData) {
+        val encrtData = encryptionPassWord(infos)
+        return if (ERROR == encrtData) {
             null
         } else encrtData
     }
