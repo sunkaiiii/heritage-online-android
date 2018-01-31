@@ -23,53 +23,36 @@ import java.util.Arrays.asList
  * 此类封装了有关首页相关的各类服务器请求的方法
  */
 
-object HandleMainFragment : BaseSetting() {
+object HandleMainFragment : BaseSettingNew() {
 
 
     fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{
-        methodName="Get_Main_Divide_Activity_Image_Url"
-        soapAction= namespace+"/"+ methodName
-        val soapObject=SoapObject(namespace, methodName)
-        val result= Get_Post(soapObject)
-        try{
-            return if(error == result||null==result)
-                null
-            else{
-                val gson=GsonBuilder().create()
-                gson.fromJsonToList(result,Array<ActivityData>::class.java)
+        val methodName=URL+"/GetMainDivideActivityImageUrl"
+        val result=PutGet(methodName)
+        if(ERROR==result){
+            return null
+        }else{
+            try{
+                return Gson().fromJsonToList(result,Array<ActivityData>::class.java)
+            }catch (e:Exception){
+                e.printStackTrace()
             }
-        }catch (e:Exception){
-            e.printStackTrace()
         }
         return null
     }
 
     fun GetChannelInformation(channel: String): List<ClassifyDivideData>? {
-        methodName = "Get_Channel_Information_New"
-        soapAction = namespace + "/" + methodName
-        val soapObject = SoapObject(namespace, methodName)
-        soapObject.addProperty("channel", channel)
-        val result = BaseSetting.Get_Post(soapObject)
-        try {
-            if (result == null || error == result)
-                return null
-            val gson=Gson()
-            return gson.fromJsonToList(result, Array<ClassifyDivideData>::class.java)
-        } catch (e: JSONException) {
-            e.printStackTrace()
+        val methodName=URL+"/GetChannelInformation?divide="+channel
+        val result=PutGet(methodName)
+        if(ERROR==result){
+            return null
+        }else{
+            try{
+                return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
-
         return null
-    }
-
-    fun GetChannelImage(id: Int): ByteArray? {
-        BaseSetting.methodName = "Get_Channel_Image"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("id", id)
-        val imgCode = BaseSetting.Get_Post(soapObject)
-        return if (null == imgCode || BaseSetting.error == imgCode) {
-            null
-        } else Base64.decode(imgCode)
     }
 }
