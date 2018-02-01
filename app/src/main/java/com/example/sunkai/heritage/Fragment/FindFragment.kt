@@ -26,7 +26,6 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity
@@ -34,6 +33,7 @@ import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.FindActivityData
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
@@ -323,7 +323,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         override fun doInBackground(vararg voids: Void): Bitmap? {
             val findFragment = findFragmentWeakReference.get() ?: return null
             if (findFragment.activityDatas.isEmpty()) {
-                val getDatas=HandleFind.Get_Find_Activity_ID(findFragment.activityDatas)
+                val getDatas= HandleFindNew.Get_Find_Activity_ID()
                 getDatas?.let {
                     findFragment.activityDatas = getDatas
                 }
@@ -345,7 +345,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                     return HandlePic.handlePic(`in`, 0)
                 }
             }
-            val data:FindActivityData? = HandleFind.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
+            val data:FindActivityData? = HandleFindNew.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
             data?.let {
                 findFragment.activityDatas[index].title = data.title
                 findFragment.activityDatas[index].content = data.content

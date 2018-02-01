@@ -14,6 +14,7 @@ import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
 import org.kobjects.base64.Base64
@@ -48,7 +49,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 60, baos)
         val imgbyte = baos.toByteArray()
         val imageCode = Base64.encode(imgbyte)
-        val result = HandleFind.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
+        val result = HandleFindNew.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
         if (result) {
             addCommentInformationHandler.sendEmptyMessage(1)
         } else {
