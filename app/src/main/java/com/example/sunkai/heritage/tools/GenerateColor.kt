@@ -13,7 +13,7 @@ import com.example.sunkai.heritage.R
  * Created by sunkai on 2018/1/18.
  */
 
-fun generateColor(drawable: Drawable):Int{
+fun generateColor(drawable: Drawable?):Int{
     if(drawable is BitmapDrawable){
         val bitmap=drawable.bitmap
         return generateColor(bitmap)

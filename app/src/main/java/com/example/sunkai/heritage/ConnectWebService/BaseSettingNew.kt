@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 
 /*
  * Created by sunkai on 2018/1/30.
@@ -25,14 +26,24 @@ abstract class BaseSettingNew {
     fun PutGet(url:String):String{
         val request=Request.Builder().url(url).build()
         val client=OkHttpClient()
-        val response=client.newCall(request).execute()
-        return response.body()?.string() ?: ERROR
+        try {
+            val response = client.newCall(request).execute()
+            return response.body()?.string() ?: ERROR
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+        return ERROR
     }
 
     fun PutPost(url:String,form:FormBody):String{
         val request=Request.Builder().url(url).post(form).build()
         val client=OkHttpClient()
-        val response=client.newCall(request).execute()
-        return response?.body()?.string()?: ERROR
+        try {
+            val response = client.newCall(request).execute()
+            return response?.body()?.string() ?: ERROR
+        }catch (e:IOException){
+            e.printStackTrace()
+        }
+        return ERROR
     }
 }
