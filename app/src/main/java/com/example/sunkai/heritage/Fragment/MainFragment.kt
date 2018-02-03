@@ -31,9 +31,9 @@ class MainFragment : Fragment() {
 
     internal lateinit var view: View
     internal lateinit var tableLayout: TabLayout
-    internal lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager
 
-    var urls: List<ActivityData>? = null
+    private var urls: List<ActivityData>? = null
 
     var index = 0
 
@@ -125,7 +125,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    val tabLayoutListener = object : TabLayout.OnTabSelectedListener {
+    private val tabLayoutListener = object : TabLayout.OnTabSelectedListener {
         override fun onTabReselected(tab: TabLayout.Tab?) {}
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -166,7 +166,7 @@ class MainFragment : Fragment() {
         return generateColor(drawable)
     }
 
-    val simpleTarget: SimpleTarget<Drawable> by lazy {
+    private val simpleTarget: SimpleTarget<Drawable> by lazy {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (index == tableLayout.selectedTabPosition) {

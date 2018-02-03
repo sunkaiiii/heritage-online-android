@@ -24,6 +24,7 @@
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.datong.heritage_online.permission.MIPUSH_RECEIVE" />
+
     <application
         android:name=".Data.GlobalContext"
         android:icon="@mipmap/ic_launcher"
@@ -43,7 +44,7 @@
         <activity
             android:name=".Activity.LoginActivity"
             android:label="登录"
-            android:theme="@style/LoginActivityTheme"/>
+            android:theme="@style/LoginActivityTheme" />
         <activity
             android:name=".Activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
@@ -51,11 +52,13 @@
         <activity
             android:name=".Activity.RegistActivity"
             android:label="注册"
-            android:theme="@style/LoginActivityTheme"/>
-        <activity android:name=".Activity.JoinActivity"
-            android:theme="@style/JoinActivityTheme"/>
-        <activity android:name=".Activity.ActivityInformationActivity"
-            android:theme="@style/JoinActivityTheme"/>
+            android:theme="@style/LoginActivityTheme" />
+        <activity
+            android:name=".Activity.JoinActivity"
+            android:theme="@style/JoinActivityTheme" />
+        <activity
+            android:name=".Activity.ActivityInformationActivity"
+            android:theme="@style/JoinActivityTheme" />
         <activity
             android:name=".Activity.UserCommentDetailActivity"
             android:windowSoftInputMode="stateHidden" />
@@ -66,8 +69,9 @@
         <activity
             android:name=".Activity.SettingActivity"
             android:label="设置" />
-        <activity android:name=".Activity.AddFindCommentActivity"
-            android:label="发帖"/>
+        <activity
+            android:name=".Activity.AddFindCommentActivity"
+            android:label="发帖" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -147,17 +151,21 @@
             android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".Activity.ViewIamgeActivity"
-            android:theme="@style/translucent"/>
-        <activity android:name=".Activity.ModifyUsercommentActivity"/>
+            android:theme="@style/translucent" />
+        <activity android:name=".Activity.ModifyUsercommentActivity" />
+
         <provider
-            android:authorities="com.example.sunkai.heritage.fileprovider"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.sunkai.heritage.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <activity android:name=".Activity.AllFolkInfoActivity"
+            android:theme="@style/AppThemeNoActionBar"></activity>
     </application>
 
 </manifest>

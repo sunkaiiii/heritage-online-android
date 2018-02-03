@@ -22,12 +22,18 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-            <ImageView
-                android:id="@+id/iv_fragment_main_scroll_change_image"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/lightGrey"
-                android:scaleType="centerCrop" />
+                android:layout_height="200dp">
+
+                <ImageView
+                    android:id="@+id/iv_fragment_main_scroll_change_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/lightGrey"
+                    android:scaleType="centerCrop" />
+
+            </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/tb_fragment_main"
