@@ -1,12 +1,61 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Fragment.FolkFragment">
-    <TextView
-        android:layout_width="wrap_content"
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/colorPrimary"
+        app:title="民间"
+        app:titleTextColor="@color/white" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试"
-        android:id="@+id/testView_test"/>
+        android:layout_margin="8dp"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="3dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/fragment_folk_see_all">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="4dp"
+                    android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:drawableLeft="@drawable/ic_local_offer_black_24dp"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/ic_local_offer_black_24dp"
+                    android:gravity="center"
+                    android:text="@string/folk_heritage"
+                    android:textColor="@color/colorPrimary" />
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/fragment_folk_allinfo_viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/fragment_folk_see_all"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

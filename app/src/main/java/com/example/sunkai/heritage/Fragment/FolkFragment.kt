@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
+import com.example.sunkai.heritage.Adapter.FolkFragmentAllInfoAdapter
 import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkDataLite
@@ -29,10 +30,7 @@ import java.util.*
  * 民间页的类
  */
 class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
-
-
-
-
+    private var folkAllInfors:List<FolkDataLite>?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,20 +42,27 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        testView_test.setOnClickListener(this)
+        fragment_folk_see_all.setOnClickListener(this)
     }
 
     override fun startLoadInformation() {
-
+        getFolkChanelInformation.start()
     }
 
-
-
-
+    private val getFolkChanelInformation= Thread {
+        folkAllInfors=HandleFolk.GetFolkInforMation()
+        activity?.runOnUiThread {
+            val datas=folkAllInfors
+            datas?.let {
+                val adpater = FolkFragmentAllInfoAdapter(datas,activity!!)
+                fragment_folk_allinfo_viewpager.adapter=adpater
+            }
+        }
+    }
 
     override fun onClick(v: View) {
         when(v.id){
-            R.id.testView_test->startActivity(Intent(activity,AllFolkInfoActivity::class.java))
+            R.id.fragment_folk_see_all->startActivity(Intent(activity,AllFolkInfoActivity::class.java))
         }
     }
 
