@@ -26,6 +26,8 @@ ___
 
 
 #### 小米商店下载体验地址：http://app.xiaomi.com/detail/549196
+#### Google Play 下载体验地址: https://play.google.com/store/apps/details?id=com.datong.heritage_online
+
 
 ___
 使用到的第三方库
