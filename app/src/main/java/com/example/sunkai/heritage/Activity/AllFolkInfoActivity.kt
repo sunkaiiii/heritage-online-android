@@ -45,12 +45,12 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
         folkListviewAdapter = FolkRecyclerViewAdapter(this)
         folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
-        folk_show_recyclerview.adapter = folkListviewAdapter
 
         startLoadInformation()
     }
 
     private fun startLoadInformation() {
+        folk_show_recyclerview.adapter=null
         folkListviewAdapter.setOnPageLoadListener(onPageLoadListner)
         folkListviewAdapter.startGetInformation()
     }
@@ -143,6 +143,7 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
             refreshLayout.isRefreshing = false
             setSpinner()
             setWidgetEnable(true)
+            folk_show_recyclerview.adapter=folkListviewAdapter
         }
 
     }

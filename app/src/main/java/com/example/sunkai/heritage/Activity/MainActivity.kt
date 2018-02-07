@@ -20,6 +20,14 @@ import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
  */
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        lateinit var activity:MainActivity
+        fun GetViewpagerSelectPosition():Int{
+            return activity.bottomNavigation.selectedItemId
+        }
+    }
+
     private val viewList:ArrayList<Fragment>
     init {
         viewList=ArrayList()
@@ -60,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         val adapter=adapter(viewList,fragmentManager!!)
         viewPager.adapter=adapter
         viewPager.addOnPageChangeListener(onPageChangeListener)
+
+        activity=this
     }
 
     //重写onKeyDown方法，监听返回键
@@ -106,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         override fun onPageSelected(position: Int) {
             if(Build.VERSION.SDK_INT>=21){
                 window.statusBarColor=when(position){
-                    0->(viewList[position] as MainFragment).getStatusBarShouldChangeColor()
+                    1->(viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
                     else->ContextCompat.getColor(applicationContext,R.color.colorPrimaryDark)
                 }
             }
