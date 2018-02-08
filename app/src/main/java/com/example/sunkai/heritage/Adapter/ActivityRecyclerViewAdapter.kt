@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.ClassifyDivideData
@@ -100,7 +101,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
         override fun doInBackground(vararg voids: Void): Void? {
             val adpter = weakRefrece.get()
-            adpter?.activityDatas = HandleMainFragment.GetChannelInformation(adpter?.channel!!)
+            adpter?.activityDatas = HandleFolk.GetChannelInformation(adpter?.channel!!)
             return null
         }
 

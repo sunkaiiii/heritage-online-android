@@ -27,3 +27,6 @@ const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49P
 const val ERROR="ERROR"
 
 const val HOST="http://btbudinner.win:8088"
+
+
+val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")

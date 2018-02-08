@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.*
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
@@ -18,19 +17,20 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.Activity.MainActivity
+import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.fragment_folk.*
+import java.lang.ref.WeakReference
 
 import java.util.ArrayList
 
 
-class FolkFragment : Fragment() {
+class FolkFragment : BaseLazyLoadFragment() {
 
     internal lateinit var tableLayout: TabLayout
     private lateinit var viewPager: ViewPager
@@ -38,21 +38,18 @@ class FolkFragment : Fragment() {
     private var urls: List<ActivityData>? = null
 
     var index = 0
+    lateinit var view:WeakReference<View>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_folk, container, false)
-        //活动主页分类图片数据
-        getMainFragmentDivideImageUrl()
-        //此处是活动分类
-        return view
+        return inflater.inflate(R.layout.fragment_folk, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initViews(view)
+        this.view= WeakReference(view)
     }
+
     private fun initViews(view: View) {
         tableLayout = view.findViewById(R.id.tab_layout)
         viewPager = view.findViewById(R.id.main_tab_content)
@@ -65,12 +62,20 @@ class FolkFragment : Fragment() {
         }
         tableLayout.addOnTabSelectedListener(tabLayoutListener)
         tableLayout.getTabAt(0)!!.select()
-        iv_fragment_main_scroll_change_image.setOnClickListener{
-            val intent=Intent(activity,AllFolkInfoActivity::class.java)
+        iv_fragment_main_scroll_change_image.setOnClickListener {
+            val intent = Intent(activity, AllFolkInfoActivity::class.java)
             startActivity(intent)
         }
     }
 
+    override fun startLoadInformation() {
+        //活动主页分类图片数据
+        getMainFragmentDivideImageUrl()
+        val view=view.get()
+        view?.let {
+            initViews(view)
+        }
+    }
 
     private fun setupViewPager(viewPager: ViewPager) {
         val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
@@ -80,14 +85,14 @@ class FolkFragment : Fragment() {
         }
 
         //懒加载处理，将网络请求延迟到滚动到对应位置的时候再加载
-        viewPager.addOnPageChangeListener(object :ViewPager.OnPageChangeListener{
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                val frament=adapter.getItem(position)
-                if(frament is ActivityFragment){
+                val frament = adapter.getItem(position)
+                if (frament is ActivityFragment) {
                     frament.getInformation()
                 }
             }
@@ -98,7 +103,7 @@ class FolkFragment : Fragment() {
 
     private fun getMainFragmentDivideImageUrl() {
         Thread {
-            urls = HandleMainFragment.Get_Main_Divide_Activity_Image_Url()
+            urls = HandleFolk.Get_Main_Divide_Activity_Image_Url()
             activity?.runOnUiThread {
                 getDivideImage(tableLayout.selectedTabPosition)
             }
@@ -144,7 +149,7 @@ class FolkFragment : Fragment() {
 
     }
 
-    private fun setColors(color:Int,resource:Drawable){
+    private fun setColors(color: Int, resource: Drawable) {
         val outAnimation = AnimationUtils.loadAnimation(activity!!, R.anim.fade_out_quick)
         val secondInAnimation = AnimationUtils.loadAnimation(activity, R.anim.fade_in_quick)
         outAnimation.setAnimationListener(object : Animation.AnimationListener {
@@ -164,14 +169,14 @@ class FolkFragment : Fragment() {
         iv_fragment_main_scroll_change_image.setBackgroundColor(color)
         tableLayout.setBackgroundColor(color)
         if (Build.VERSION.SDK_INT >= 21) {
-            if(MainActivity.GetViewpagerSelectPosition()==R.id.folk_layout) {
+            if (MainActivity.GetViewpagerSelectPosition() == R.id.folk_layout) {
                 activity?.window?.statusBarColor = color
             }
         }
     }
 
-    fun getStatusBarShouldChangeColor():Int{
-        val drawable=iv_fragment_main_scroll_change_image.drawable
+    fun getStatusBarShouldChangeColor(): Int {
+        val drawable = iv_fragment_main_scroll_change_image.drawable
         return generateColor(drawable)
     }
 
@@ -184,7 +189,7 @@ class FolkFragment : Fragment() {
                     textColor?.let {
                         tableLayout.setTabTextColors(textColor, Color.WHITE)
                     }
-                    setColors(color,resource)
+                    setColors(color, resource)
                 }
             }
         }

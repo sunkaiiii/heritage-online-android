@@ -1,9 +1,8 @@
 package com.example.sunkai.heritage.ConnectWebService
 
-import com.example.sunkai.heritage.Data.ActivityData
-import com.example.sunkai.heritage.Data.MainActivityData
-import com.example.sunkai.heritage.Data.ClassifyActiviyData
-import com.example.sunkai.heritage.Data.ClassifyDivideData
+import android.util.Log
+import com.example.sunkai.heritage.Data.*
+import com.example.sunkai.heritage.value.CATEGORIES
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
@@ -15,7 +14,7 @@ import org.ksoap2.serialization.SoapObject
 import java.util.*
 
 import java.util.Arrays.asList
-
+import kotlin.collections.ArrayList
 
 
 /**
@@ -25,34 +24,26 @@ import java.util.Arrays.asList
 
 object HandleMainFragment : BaseSettingNew() {
 
-
-    fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{
-        val methodName=URL+"/GetMainDivideActivityImageUrl"
-        val result=PutGet(methodName)
-        if(ERROR==result){
-            return null
-        }else{
-            try{
-                return Gson().fromJsonToList(result,Array<ActivityData>::class.java)
-            }catch (e:Exception){
-                e.printStackTrace()
-            }
+    fun ReadMainNews():List<List<FolkNewsLite>>{
+        val resultList=ArrayList<List<FolkNewsLite>>()
+        CATEGORIES.forEach {
+            resultList.add(GetFolkNewsList(it))
         }
-        return null
+        return resultList
     }
 
-    fun GetChannelInformation(channel: String): List<ClassifyDivideData>? {
-        val methodName=URL+"/GetChannelInformation?divide="+channel
-        val result=PutGet(methodName)
+    fun GetFolkNewsList(category:String,start:Int=0,end:Int=5):List<FolkNewsLite>{
+        val url= "$URL/GetFolkNewsList?divide=$category&start=$start&end=$end"
+        val result=PutGet(url)
+        Log.d("GetFolkNewsList",result)
         if(ERROR==result){
-            return null
-        }else{
-            try{
-                return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
-            }catch (e:Exception){
-                e.printStackTrace()
-            }
+            return arrayListOf()
         }
-        return null
+        try{
+            return Gson().fromJsonToList(result,Array<FolkNewsLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
     }
 }
