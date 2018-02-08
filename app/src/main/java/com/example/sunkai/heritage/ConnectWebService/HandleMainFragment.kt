@@ -32,7 +32,7 @@ object HandleMainFragment : BaseSettingNew() {
         return resultList
     }
 
-    fun GetFolkNewsList(category:String,start:Int=0,end:Int=5):List<FolkNewsLite>{
+    fun GetFolkNewsList(category:String,start:Int=0,end:Int=3):List<FolkNewsLite>{
         val url= "$URL/GetFolkNewsList?divide=$category&start=$start&end=$end"
         val result=PutGet(url)
         Log.d("GetFolkNewsList",result)

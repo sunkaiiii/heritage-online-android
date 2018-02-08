@@ -164,8 +164,11 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".Activity.AllFolkInfoActivity"
-            android:theme="@style/AppThemeNoActionBar"></activity>
+        <activity
+            android:name=".Activity.AllFolkInfoActivity"
+            android:theme="@style/AppThemeNoActionBar" />
+        <activity android:name=".Activity.SeeMoreNewsActivity" />
+        <activity android:name=".Activity.NewsDetailActivity"></activity>
     </application>
 
 </manifest>

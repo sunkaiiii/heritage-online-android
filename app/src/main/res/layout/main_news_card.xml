@@ -40,6 +40,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/main_news_image" />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/main_news_other_news">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/more"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:drawableEnd="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:textColor="@color/colorPrimary"
+                android:drawableRight="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:id="@+id/see_more"/>
+        </RelativeLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
