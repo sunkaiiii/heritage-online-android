@@ -23,7 +23,7 @@
             app:titleTextColor="@color/white"/>
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="470dp"
+        android:layout_height="430dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingEnd="@dimen/card_padding"
