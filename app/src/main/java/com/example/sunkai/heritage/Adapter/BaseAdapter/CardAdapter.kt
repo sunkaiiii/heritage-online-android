@@ -8,7 +8,7 @@ import android.support.v7.widget.CardView
  */
 abstract class CardAdapter:PagerAdapter() {
     companion object {
-        const val MAX_ELEVATION_FACTOR:Int=8
+        const val MAX_ELEVATION_FACTOR:Int=3
     }
     abstract fun getBaseElevation():Float
     abstract fun getCardViewAt(position:Int):CardView
