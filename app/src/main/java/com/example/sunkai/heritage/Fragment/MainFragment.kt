@@ -1,16 +1,20 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseCardPagerAdapter
 import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ShadowTransformer
+import com.example.sunkai.heritage.tools.generateColor
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -48,6 +52,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
                     fragmentMainViewpager.adapter=adapter
                     val transformer=ShadowTransformer(fragmentMainViewpager,adapter)
                     fragmentMainViewpager.setPageTransformer(false,transformer)
+                    onPostLoad()
                 }
             }
         }.start()
@@ -59,6 +64,15 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
 
     override fun onPostLoad() {
 //        swipeRefresh.isRefreshing=false
+        val context=activity
+        context?.let {
+            val drawable = ContextCompat.getDrawable(context,R.mipmap.main_page_background)
+//            val color= generateColor(drawable)
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                context.window.statusBarColor=color
+//            }
+            Glide.with(context).load(drawable).into(mainPageTopImage)
+        }
     }
 
 
