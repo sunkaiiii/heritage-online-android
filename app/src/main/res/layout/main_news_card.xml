@@ -7,43 +7,35 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp">
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:id="@+id/main_news_image"
-            android:scaleType="centerCrop"/>
-
-        <LinearLayout
-            android:id="@+id/main_page_image_background"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/main_news_image">
-
-            <TextView
-                android:id="@+id/main_page_image_first_news_text"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:gravity="center"
-                android:text="@string/news_title" />
-        </LinearLayout>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/main_news_other_news"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_news_image" />
+            android:orientation="vertical" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/colorPrimary">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/main_news_card_category"
+                    android:layout_marginStart="18dp"
+                    android:textSize="24sp"
+                    android:textColor="@color/white"
+                    android:text="@string/category"
+                    android:gravity="center|start"
+                    android:layout_marginLeft="18dp" />
+            </LinearLayout>
+        </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/main_news_other_news">
+            android:layout_height="wrap_content">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,5 +50,5 @@
                 android:layout_alignParentRight="true"
                 android:id="@+id/see_more"/>
         </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

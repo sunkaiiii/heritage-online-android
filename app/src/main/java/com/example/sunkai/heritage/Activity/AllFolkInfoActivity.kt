@@ -42,7 +42,7 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
         initView()
         folk_location_spinner.onItemSelectedListener = this
         folk_heritages_spinner.onItemSelectedListener = this
-        folkListviewAdapter = FolkRecyclerViewAdapter(this)
+        folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf())
         folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
 

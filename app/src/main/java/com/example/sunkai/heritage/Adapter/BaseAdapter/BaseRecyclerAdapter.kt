@@ -10,7 +10,7 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
+abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<W>) :RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener:OnPageLoaded?=null
@@ -27,6 +27,10 @@ abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder
         return false
     }
 
+    override fun getItemCount(): Int {
+        return datas.size
+    }
+
 
     fun setOnItemClickListen(listenr: OnItemClickListener) {
         this.mOnItemClickListener = listenr
@@ -35,7 +39,7 @@ abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder
         this.mOnItemLongClickListener = listener
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: T?, position: Int) {
         holder?.itemView?.tag = position
     }
 
@@ -47,5 +51,7 @@ abstract class BaseRecyclerAdapter :RecyclerView.Adapter<RecyclerView.ViewHolder
         mOnPagedListener?.onPostLoad()
     }
 
-    abstract fun getItem(position: Int):Any
+    fun getItem(position: Int):W{
+        return datas[position]
+    }
 }

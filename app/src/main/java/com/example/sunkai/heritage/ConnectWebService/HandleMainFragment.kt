@@ -46,4 +46,19 @@ object HandleMainFragment : BaseSettingNew() {
         }
         return arrayListOf()
     }
+
+    fun GetFolkNewsInformation(id:Int):List<NewsDetail>{
+        val url="$URL/GetFolkNewsInformation?id=$id"
+        val result=PutGet(url)
+        Log.d("GetFolkNewsInformation",result)
+        if(ERROR==result){
+            return arrayListOf()
+        }
+        try{
+            return Gson().fromJsonToList(result,Array<NewsDetail>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }

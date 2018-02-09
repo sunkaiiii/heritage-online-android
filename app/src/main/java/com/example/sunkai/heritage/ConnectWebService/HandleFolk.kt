@@ -52,11 +52,11 @@ object HandleFolk : BaseSettingNew() {
         return null
     }
 
-    fun GetChannelInformation(channel: String): List<ClassifyDivideData>? {
+    fun GetChannelInformation(channel: String): List<ClassifyDivideData> {
         val methodName=URL+"/GetChannelInformation?divide="+channel
         val result= HandleMainFragment.PutGet(methodName)
         if(ERROR==result){
-            return null
+            return arrayListOf()
         }else{
             try{
                 return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
@@ -64,6 +64,6 @@ object HandleFolk : BaseSettingNew() {
                 e.printStackTrace()
             }
         }
-        return null
+        return arrayListOf()
     }
 }

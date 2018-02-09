@@ -24,10 +24,9 @@ import java.io.ByteArrayInputStream
  * 我的帖子的recyclerView的adapter
  * Created by sunkai on 2018/1/15.
  */
-class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>) : BaseRecyclerAdapter() {
+class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder,UserCommentData>(datas) {
 
     private val lruCache: LruCache<Int, Bitmap>
-    private var datas: List<UserCommentData>
     private var recyclerView: RecyclerView? = null
     private val context: Context
 
@@ -43,12 +42,13 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         }
     }
 
-    private class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mycomment_item_image: ImageView
         val mycomment_item_title: TextView
         val mycomment_item_content: TextView
-        val view:View=view
+        val view:View
         init {
+            this.view=view
             mycomment_item_image = view.findViewById(R.id.mycomment_item_image)
             mycomment_item_title = view.findViewById(R.id.mycomment_item_title)
             mycomment_item_content = view.findViewById(R.id.mycomment_item_content)
@@ -56,15 +56,8 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         }
     }
 
-    override fun getItemCount(): Int {
-        return datas.size
-    }
 
-    override fun getItem(position: Int): Any {
-        return datas[position]
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         if (recyclerView == null)
             recyclerView = parent as RecyclerView
         val view = LayoutInflater.from(context).inflate(R.layout.mycomment_layout_item, parent, false)
@@ -75,9 +68,9 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         return holder
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         super.onBindViewHolder(holder, position)
-        if (holder is ViewHolder) {
+        holder?.let {
             GetCommentImage(holder, datas[position])
         }
     }

@@ -24,16 +24,14 @@ import java.lang.ref.WeakReference
 /*
  * Created by sunkai on 2018/1/2.
  */
-class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdapter() {
+class OtherPersonActivityRecyclerViewAdapter(val userID: Int,datas:List<Int>) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder,Int>(datas) {
 
-    var datas: List<Int>
 
     init {
-        datas = IntArray(0).toList()
         getUserIdInfo(userID)
     }
 
-    internal class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView
 
         init {
@@ -41,17 +39,18 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(GlobalContext.instance).inflate(R.layout.other_person_view, parent, false)
         view.setOnClickListener(this)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         super.onBindViewHolder(holder, position)
-        if (holder is ViewHolder) {
+        holder?.let {
             getImage(datas[position], holder.imageView)
         }
+
     }
 
 
@@ -142,10 +141,4 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int) : BaseRecyclerAdap
         GetUserImageTask(imageID, imageview).execute()
     }
 
-    override fun getItemCount(): Int {
-        return datas.size
-    }
-    override fun getItem(position: Int): Any {
-        return datas[position]
-    }
 }

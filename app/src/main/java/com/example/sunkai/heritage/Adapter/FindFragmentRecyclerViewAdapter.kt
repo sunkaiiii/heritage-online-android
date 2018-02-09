@@ -41,8 +41,7 @@ import java.util.ArrayList
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : BaseRecyclerAdapter() {
-    private var datas: List<UserCommentData>? = null
+class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder,UserCommentData>(arrayListOf()) {
     private var recyclerView: RecyclerView? = null
     internal var lruCache: LruCache<Int, Bitmap>
 
@@ -91,9 +90,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         return holder
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         super.onBindViewHolder(holder, position)
-        if(holder is ViewHolder){
+        holder?.let{
             val data = datas!![position]
             holder.img.setImageResource(R.drawable.backgound_grey)
             holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
@@ -137,18 +136,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             }
         }
     }
-
-    override fun getItemCount(): Int {
-        return if (datas != null) datas!!.size else 0
-    }
-
-
-
-    override fun getItem(position: Int): UserCommentData {
-        return datas!![position]
-    }
-
-
 
     private fun changeLikeImageState(isLike: Boolean, imageView: ImageView?, textView: TextView?, position: Int): Boolean {
         var likeNumber = Integer.parseInt(datas!![position].commentLikeNum)
@@ -348,7 +335,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 adapter.what == 3 -> HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.userID)
                 else -> ArrayList()
             }
-            adapter.datas = getdatas
+            getdatas?.let {
+                adapter.datas = getdatas
+            }
             return null
         }
 

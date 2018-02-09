@@ -20,14 +20,10 @@ import com.example.sunkai.heritage.value.HOST
  * 民间页recyclerview的adapter
  * Created by sunkai on 2018/1/19.
  */
-class FolkRecyclerViewAdapter(val context:Context):BaseRecyclerAdapter() {
+class FolkRecyclerViewAdapter(val context:Context,datas:List<FolkDataLite>):BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder,FolkDataLite>(datas) {
 
-    var datas:List<FolkDataLite>
-    init {
-        datas=ArrayList()
-    }
 
-    private class Holder(view: View):RecyclerView.ViewHolder(view){
+    class Holder(view: View):RecyclerView.ViewHolder(view){
         val listImage:ImageView
         val listTitle:TextView
         val listLocation:TextView
@@ -40,14 +36,11 @@ class FolkRecyclerViewAdapter(val context:Context):BaseRecyclerAdapter() {
         }
     }
 
-    override fun getItem(position: Int): FolkDataLite {
-        return datas[position]
-    }
     override fun getItemCount(): Int {
         return datas.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
         val view=LayoutInflater.from(context).inflate(R.layout.folk_listview_layout,parent,false)
         val holder=Holder(view)
         view.setOnClickListener(this)
@@ -55,10 +48,10 @@ class FolkRecyclerViewAdapter(val context:Context):BaseRecyclerAdapter() {
         return holder
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: Holder?, position: Int) {
         super.onBindViewHolder(holder, position)
         val data=datas[position]
-        if(holder is Holder) {
+        holder?.let{
             setDataToView(data, holder)
         }
     }

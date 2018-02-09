@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
@@ -27,8 +26,8 @@ import com.example.sunkai.heritage.value.HOST
  * Created by sunkai on 2017/12/22.
  */
 
-class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter() {
-    private var activityDatas: List<ClassifyDivideData>? = null
+class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder,ClassifyDivideData>(arrayListOf()) {
+
     private var imageAnimation: Animation//图片出现动画
 
     private var thisRecyclerView: RecyclerView? = null
@@ -52,7 +51,6 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
     }
 
     init {
-        this.activityDatas = null
         imageAnimation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
     }
 
@@ -66,10 +64,10 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         super.onBindViewHolder(holder, position)
-        if(holder is ViewHolder) {
-            val data = activityDatas!![position]
+        holder?.let {
+            val data = datas[position]
             holder.title.text = data.title
             holder.location.text="地区:"+data.location
             holder.time.text="时间:"+data.time
@@ -79,13 +77,6 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
             Glide.with(context).load(HOST+data.img).into(holder.img)
         }
     }
-    override fun getItemCount(): Int {
-        return if (activityDatas == null) 0 else activityDatas!!.size
-    }
-
-    override fun getItem(position: Int): ClassifyDivideData {
-        return activityDatas!![position]
-    }
 
     fun setOnPageLoadListner(onPageLoaded: OnPageLoaded){
         mOnPagedListener=onPageLoaded
@@ -93,7 +84,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
     fun startGetInformation(){
         mOnPagedListener?.onPreLoad()
-        activityDatas=null
+        datas= arrayListOf()
         getChannelInformation(this).execute()
     }
 
@@ -101,7 +92,7 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
 
         override fun doInBackground(vararg voids: Void): Void? {
             val adpter = weakRefrece.get()
-            adpter?.activityDatas = HandleFolk.GetChannelInformation(adpter?.channel!!)
+            adpter?.datas = HandleFolk.GetChannelInformation(adpter?.channel!!)
             return null
         }
 

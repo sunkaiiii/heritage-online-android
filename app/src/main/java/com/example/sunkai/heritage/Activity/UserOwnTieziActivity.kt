@@ -43,7 +43,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
         myOwnList = findViewById(R.id.user_own_list)
     }
 
-    private fun setAdpterClick(adapter: BaseRecyclerAdapter) {
+    private fun setAdpterClick(adapter: MyOwnCommentRecyclerViewAdapter) {
 
         adapter.setOnItemClickListen(object :OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {

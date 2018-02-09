@@ -196,7 +196,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     internal fun setAdapter(userID: Int) {
-        val adapter = OtherPersonActivityRecyclerViewAdapter(userID)
+        val adapter = OtherPersonActivityRecyclerViewAdapter(userID, arrayListOf())
         val layoutManager = GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
