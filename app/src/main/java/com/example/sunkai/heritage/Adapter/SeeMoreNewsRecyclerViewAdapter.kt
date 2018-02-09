@@ -48,6 +48,8 @@ class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite
     private fun setDatas(holder:ViewHolder,position: Int){
         val data=datas[position]
         holder.textview.text=data.title
+        //防止复用的时候不显示图片的问题
+        holder.imageview.visibility=View.VISIBLE
         if(TextUtils.isEmpty(data.img)){
             holder.imageview.visibility=View.GONE
         }else {
@@ -63,8 +65,14 @@ class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite
         override fun onLoadFailed(errorDrawable: Drawable?) {
             imageView.visibility=View.GONE
         }
+    }
 
-
+    fun addNewData(datas:List<FolkNewsLite>){
+        val mutableDatas=this.datas.toMutableList()
+        if(mutableDatas.addAll(datas)){
+            this.datas=mutableDatas.toList()
+            notifyDataSetChanged()
+        }
     }
 
 
