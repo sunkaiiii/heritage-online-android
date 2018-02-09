@@ -5,22 +5,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
-
-    <android.support.v7.widget.Toolbar
+    
+    <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/colorPrimary"
-        app:title="首页"
-        app:titleTextColor="@color/white" />
+        android:layout_height="470dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingEnd="@dimen/card_padding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
+        android:paddingStart="@dimen/card_padding"
+        android:id="@+id/fragmentMainViewpager"
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/swipeRefresh">
+        />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/mainFramgentNewsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

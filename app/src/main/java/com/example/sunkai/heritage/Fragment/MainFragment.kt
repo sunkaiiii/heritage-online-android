@@ -1,21 +1,16 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.sunkai.heritage.Activity.NewsDetailActivity
-import com.example.sunkai.heritage.Adapter.MainNewsAdapter
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseCardPagerAdapter
+import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
-import com.example.sunkai.heritage.Data.FolkNewsLite
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ShadowTransformer
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -35,10 +30,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
     }
 
     private fun initview(){
-        swipeRefresh.setOnRefreshListener {
-            mainFramgentNewsRecyclerView.adapter=null
-            loadSomeMainNews()
-        }
+        fragmentMainViewpager.offscreenPageLimit=1
     }
 
     private fun loadSomeMainNews(){
@@ -47,22 +39,26 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
             val news=HandleMainFragment.ReadMainNews()
             val activity=activity
             activity?.let{
+                val views=ArrayList<CardView>()
+                for(i in news){
+                    views.add(CardView(activity))
+                }
                 activity.runOnUiThread{
-                    val adapter=MainNewsAdapter(activity,news)
-                    mainFramgentNewsRecyclerView.layoutManager=LinearLayoutManager(activity)
-                    mainFramgentNewsRecyclerView.adapter=adapter
-                    onPostLoad()
+                    val adapter=MainPageCardViewPagerAdapter(views,news)
+                    fragmentMainViewpager.adapter=adapter
+                    val transformer=ShadowTransformer(fragmentMainViewpager,adapter)
+                    fragmentMainViewpager.setPageTransformer(false,transformer)
                 }
             }
         }.start()
     }
 
     override fun onPreLoad() {
-        swipeRefresh.isRefreshing=true
+//        swipeRefresh.isRefreshing=true
     }
 
     override fun onPostLoad() {
-        swipeRefresh.isRefreshing=false
+//        swipeRefresh.isRefreshing=false
     }
 
 
@@ -70,7 +66,5 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
         when(v.id){
         }
     }
-
-
 
 }
