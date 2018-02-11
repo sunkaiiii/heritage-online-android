@@ -54,7 +54,7 @@ class OtherPersonActivityRecyclerViewAdapter(val userID: Int,datas:List<Int>) : 
     }
 
 
-    internal fun getUserIdInfo(userID: Int) {
+    private fun getUserIdInfo(userID: Int) {
         GetUserInfoTask(userID, this).execute()
     }
 

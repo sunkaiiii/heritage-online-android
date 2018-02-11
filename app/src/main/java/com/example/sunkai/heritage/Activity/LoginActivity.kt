@@ -24,6 +24,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.infoToRSA
 import kotlinx.android.synthetic.main.activity_login.*
@@ -292,11 +293,9 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        // Reset errors.
         mEmailView.error = null
         mPasswordView.error = null
 
-        // Store values at the time of the login attempt.
         val email = mEmailView.text.toString()
         val password = mPasswordView.text.toString()
 
@@ -311,14 +310,14 @@ class LoginActivity : AppCompatActivity() {
             pg_activity_login_progress.visibility=View.VISIBLE
             mEmailSignInButton.isEnabled=false
             mEmailSignInButton.visibility=View.INVISIBLE
-            mAuthTask = UserLoginTask(email, password)
+            mAuthTask = UserLoginTask(email, password,this)
             mAuthTask!!.execute(null as Void?)
         }
     }
 
 
 
-    inner class UserLoginTask internal constructor(private val mEmail: String, private var mPassword: String) : AsyncTask<Void, Void, Boolean>() {
+    internal class UserLoginTask internal constructor(private val mEmail: String, private var mPassword: String,loginActivity: LoginActivity) : BaseAsyncTask<Void, Void, Boolean,LoginActivity>(loginActivity) {
 
         override fun doInBackground(vararg params: Void): Boolean? {
             mPassword= infoToRSA(mPassword)?:return false
@@ -326,24 +325,30 @@ class LoginActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(success: Boolean) {
-            mEmailSignInButton.isEnabled=true
-            mEmailSignInButton.visibility=View.VISIBLE
-            pg_activity_login_progress.visibility=View.GONE
-            mAuthTask = null
-            if (success) {
-                userName = mEmail
-                OnSuccessLoginHandler.sendEmptyMessage(1)
-            } else {
-                mPasswordView.error = getString(R.string.error_incorrect_password)
-                mPasswordView.requestFocus()
+            val activity=getEntity()
+            activity?.let {
+                activity.mEmailSignInButton.isEnabled = true
+                activity.mEmailSignInButton.visibility = View.VISIBLE
+                activity.pg_activity_login_progress.visibility = View.GONE
+                activity.mAuthTask = null
+                if (success) {
+                    userName = mEmail
+                    activity.OnSuccessLoginHandler.sendEmptyMessage(1)
+                } else {
+                    activity.mPasswordView.error = activity.getString(R.string.error_incorrect_password)
+                    activity.mPasswordView.requestFocus()
+                }
             }
         }
 
         override fun onCancelled() {
-            mEmailSignInButton.isEnabled=true
-            mEmailSignInButton.visibility=View.VISIBLE
-            pg_activity_login_progress.visibility=View.GONE
-            mAuthTask = null
+            val activity=getEntity()
+            activity?.let {
+                activity.mEmailSignInButton.isEnabled = true
+                activity.mEmailSignInButton.visibility = View.VISIBLE
+                activity.pg_activity_login_progress.visibility = View.GONE
+                activity.mAuthTask = null
+            }
         }
     }
 
@@ -353,7 +358,7 @@ class LoginActivity : AppCompatActivity() {
             1 -> {
                 val loginName = data!!.getStringExtra("userName")
                 val loginPassword = data.getStringExtra("passWord")
-                mAuthTask = UserLoginTask(loginName, loginPassword)
+                mAuthTask = UserLoginTask(loginName, loginPassword,this)
                 mAuthTask?.execute(null as Void?)
             }
             else -> {

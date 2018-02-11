@@ -18,6 +18,7 @@ import android.os.Looper
 import android.os.Message
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import android.support.annotation.RequiresApi
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -39,6 +40,7 @@ import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.tools.FileStorage
 import com.example.sunkai.heritage.tools.PermissionsChecker
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.makeramen.roundedimageview.RoundedImageView
 
 import org.kobjects.base64.Base64
@@ -64,14 +66,14 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
     internal lateinit var builder: AlertDialog.Builder
     internal lateinit var ad: AlertDialog
 
-    internal lateinit var outputUri: Uri//剪裁后的图片的uri
+    private lateinit var outputUri: Uri//剪裁后的图片的uri
     private var mPermissionsChecker: PermissionsChecker? = null // 权限检测器
     private var imageUri: Uri? = null//原图保存地址
     private var isClickCamera: Boolean = false
     private var imagePath: String? = null
 
 
-    internal var focusAndFansCountChange: BroadcastReceiver = object : BroadcastReceiver() {
+    private var focusAndFansCountChange: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, recieveIntent: Intent) {
             var intent = recieveIntent
             if ("change" == intent.getStringExtra("message")) {
@@ -89,7 +91,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
         val count = HandlePerson.Get_Follow_Number(LoginActivity.userID)
         getFollowCountHandler.sendEmptyMessage(count)
     }
-    internal var getFollowCountHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    private var getFollowCountHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             followNumber.text = msg.what.toString()
             Thread(getFansCount).start()
@@ -99,7 +101,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
         val count = HandlePerson.Get_Fans_Number(LoginActivity.userID)
         getFanseCountHandler.sendEmptyMessage(count)
     }
-    internal var getFanseCountHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    private var getFanseCountHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             fansNumber.text = msg.what.toString()
             Thread(getUserImage).start()
@@ -118,7 +120,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
             getUserImageHandler.sendMessage(msg)
         }
     }
-    internal var getUserImageHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    private var getUserImageHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == 1) {
                 val data = msg.data
@@ -132,7 +134,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
     }
 
 
-    internal var updateUserImage: Runnable = Runnable {
+    private var updateUserImage: Runnable = Runnable {
         userImage.isDrawingCacheEnabled = true
         val bitmap = userImage.drawingCache
         val baos = ByteArrayOutputStream()
@@ -147,7 +149,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
         }
     }
 
-    internal var updateUserImageHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    private var updateUserImageHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             ad.dismiss()
             if (msg.what == 1) {
@@ -158,7 +160,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
             }
         }
     }
-    internal var refreshInfo: BroadcastReceiver = object : BroadcastReceiver() {
+    private var refreshInfo: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             userName.text = LoginActivity.userName
             GetUserInfo()
@@ -218,7 +220,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
     }
 
     private fun toLogin() {
-        Toast.makeText(activity, "没有登录", Toast.LENGTH_SHORT).show()
+        toast( "没有登录")
         val intent = Intent(activity, LoginActivity::class.java)
         intent.putExtra("isInto", 1)
         startActivityForResult(intent, 1)
@@ -397,7 +399,6 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
             System.gc()
             bitmap = HandlePic.compressBitmapToFile(bitmap, 192, 192)
             userImage.setImageBitmap(bitmap)
-            //            System.out.println("孙楷最帅"+bitmap.getWidth()+","+bitmap.getHeight());
             builder = AlertDialog.Builder(activity!!).setTitle("上传中").setView(R.layout.update_image_builder)
             ad = builder.create()
             ad.show()
@@ -452,7 +453,7 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
             -> setImage()
             REQUEST_PERMISSION//权限请求
             -> if (resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-                activity!!.finish()
+                activity?.finish()
             } else {
                 if (isClickCamera) {
                     openCamera()
@@ -472,11 +473,12 @@ class PersonFragment : BaseLazyLoadFragment(), View.OnClickListener {
     companion object {
 
 
-        private val IS_INTO_LOGIN = 1
-        private val REQUEST_PICK_IMAGE = 11 //相册选取
-        private val REQUEST_CAPTURE = 12  //拍照
-        private val REQUEST_PICTURE_CUT = 13  //剪裁图片
-        private val REQUEST_PERMISSION = 14  //权限请求
+        private const val IS_INTO_LOGIN = 1
+        private const val REQUEST_PICK_IMAGE = 11 //相册选取
+        private const val REQUEST_CAPTURE = 12  //拍照
+        private const val REQUEST_PICTURE_CUT = 13  //剪裁图片
+        private const val REQUEST_PERMISSION = 14  //权限请求
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
         internal val PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
     }
-}// Required empty public constructor
+}

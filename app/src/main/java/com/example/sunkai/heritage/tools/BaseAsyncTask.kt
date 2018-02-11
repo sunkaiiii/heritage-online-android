@@ -12,4 +12,7 @@ abstract class BaseAsyncTask<T, U, V,W>(obj: W) : AsyncTask<T, U, V>() {
     init {
         weakRefrece = WeakReference(obj)
     }
+    protected fun getEntity():W?{
+        return weakRefrece.get()
+    }
 }

@@ -183,24 +183,21 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         }
         val msg = Message()
         msg.what = result
-        val userRegistHandler = object : Handler(mainLooper) {
-            override fun handleMessage(msg: Message) {
-                when {
-                    msg.what == 1 -> {
-                        val intent = Intent()
-                        intent.putExtra("userName", userName)
-                        intent.putExtra("passWord", userPassword)
-                        setResult(1, intent)
-                        MakeToast.MakeText("注册成功")
-                        finish()
-                    }
-                    msg.what == 0 -> MakeToast.MakeText("已有该用户")
-                    else -> MakeToast.MakeText("注册失败")
+        runOnUiThread {
+            when {
+                msg.what == 1 -> {
+                    val intent = Intent()
+                    intent.putExtra("userName", userName)
+                    intent.putExtra("passWord", userPassword)
+                    setResult(1, intent)
+                    MakeToast.MakeText("注册成功")
+                    finish()
                 }
-                setViewsIsEnable()
+                msg.what == 0 -> MakeToast.MakeText("已有该用户")
+                else -> MakeToast.MakeText("注册失败")
             }
+            setViewsIsEnable()
         }
-        userRegistHandler.sendMessage(msg)
     }
 
     private fun infoToRSA(infos: String): String? {

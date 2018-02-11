@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
 import com.github.chrisbanes.photoview.PhotoView

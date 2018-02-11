@@ -50,7 +50,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         pushSwitch.setOnCheckedChangeListener(this)
     }
 
-    internal fun checkUserPermission(){
+    private fun checkUserPermission(){
         Thread{
             val permission=HandlePerson.Get_User_Permission(LoginActivity.userID)
             val focusAndFansViewPermission=HandlePerson.Get_User_Focus_And_Fans_View_Permission(LoginActivity.userID)
@@ -94,7 +94,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         }
     }
 
-    internal fun setPermission(id:Int,position: Int){
+    private fun setPermission(id:Int,position: Int){
         val spinner=findViewById<Spinner>(id)
         when (position - 1) {
             DENIALD, ONLYFOCUS, ALL -> {

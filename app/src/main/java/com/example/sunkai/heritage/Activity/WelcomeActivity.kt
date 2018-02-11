@@ -81,6 +81,6 @@ class WelcomeActivity : AppCompatActivity() {
         }.start()
     }
     companion object {
-        private val gotoLogin = 0
+        private const val gotoLogin = 0
     }
 }

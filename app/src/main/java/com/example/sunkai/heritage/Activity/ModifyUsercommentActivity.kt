@@ -19,9 +19,9 @@ import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import java.io.ByteArrayInputStream
 
 class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
-    internal lateinit var edit_comment_title: EditText
-    internal lateinit var edit_comment_content: EditText
-    internal lateinit var edit_comment_image: ImageView
+    private lateinit var edit_comment_title: EditText
+    private lateinit var edit_comment_content: EditText
+    private lateinit var edit_comment_image: ImageView
 
     var data: UserCommentData? = null
 
@@ -47,21 +47,21 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         edit_comment_image.isDrawingCacheEnabled = true
     }
 
-    internal fun setViewsIsEnable(isEnable: Boolean) {
+    private fun setViewsIsEnable(isEnable: Boolean) {
         edit_comment_title.isEnabled = isEnable
         edit_comment_content.isEnabled = isEnable
         edit_comment_image.isEnabled = isEnable
     }
 
-    internal fun setViewsUnable() {
+    private fun setViewsUnable() {
         setViewsIsEnable(false)
     }
 
-    internal fun setViewsEnable() {
+    private fun setViewsEnable() {
         setViewsIsEnable(true)
     }
 
-    internal fun setDatas() {
+    private fun setDatas() {
         data?.let {
             data!!.commentTitle = edit_comment_title.text.toString()
             data!!.commentContent = edit_comment_content.text.toString()
@@ -73,7 +73,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         }
     }
 
-    internal fun updateUserCommentData(item: MenuItem) {
+    private fun updateUserCommentData(item: MenuItem) {
         data?.let {
             setViewsUnable()
             Thread {
