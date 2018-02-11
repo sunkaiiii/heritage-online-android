@@ -10,6 +10,7 @@ import java.io.Serializable
 class FolkData(val id:Int,
                val time:String,
                val divide:String,
+               val category:String,
                val location:String,
                val apply_location:String,
                val title:String,

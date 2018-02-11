@@ -26,7 +26,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/user_comment_detail_progressbar"
                 android:layout_marginStart="20dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:layout_marginLeft="20dp" />
         </FrameLayout>
         <EditText
             android:layout_width="match_parent"

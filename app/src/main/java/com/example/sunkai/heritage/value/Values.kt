@@ -28,5 +28,8 @@ const val ERROR="ERROR"
 
 const val HOST="http://btbudinner.win:8088"
 
+const val ALL_FOLK_INFO_ACTIVITY="AllFolkInfoActivity"
+const val ACTIVITY_FRAGMENT="ActivityFragment"
+
 
 val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")

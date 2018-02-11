@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
@@ -16,10 +17,12 @@ import android.widget.ImageView
 import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkDataLite
+import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
 import kotlinx.android.synthetic.main.activity_all_folk_info.*
 import java.util.ArrayList
 import java.util.TreeSet
@@ -144,6 +147,16 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
             setSpinner()
             setWidgetEnable(true)
             folk_show_recyclerview.adapter=folkListviewAdapter
+            folkListviewAdapter.setOnItemClickListen(object :OnItemClickListener{
+                override fun onItemClick(view: View, position: Int) {
+                    val data=folkListviewAdapter.getItem(position)
+                    val intent= Intent(this@AllFolkInfoActivity,ActivityInformationActivity::class.java)
+                    intent.putExtra("data",data)
+                    intent.putExtra("from", ALL_FOLK_INFO_ACTIVITY)
+                    startActivity(intent)
+                }
+
+            })
         }
 
     }

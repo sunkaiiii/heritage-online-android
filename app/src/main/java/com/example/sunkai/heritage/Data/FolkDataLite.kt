@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Data
 
 import java.io.Serializable
+import kotlin.jvm.internal.Intrinsics
 
 /**
  * Created by sunkai on 2018/1/18.

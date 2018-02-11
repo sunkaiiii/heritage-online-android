@@ -4,6 +4,7 @@ package com.example.sunkai.heritage.ConnectWebService
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment.fromJsonToList
 import com.example.sunkai.heritage.Data.ActivityData
 import com.example.sunkai.heritage.Data.ClassifyDivideData
+import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.Data.FolkDataLite
 import com.google.gson.Gson
 
@@ -35,6 +36,15 @@ object HandleFolk : BaseSettingNew() {
             Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
         }
 
+    }
+
+    fun Get_Channel_Folk_Single_Information(id:Int):FolkData?{
+        val getUrl="$URL/GetChannelFolkSingleInformation?id=$id"
+        val result=PutGet(getUrl)
+        if(result!= ERROR){
+            return Gson().fromJson(result,FolkData::class.java)
+        }
+        return null
     }
 
     fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{

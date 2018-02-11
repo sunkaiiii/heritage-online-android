@@ -14,4 +14,29 @@ class ClassifyDivideData(var id: Int,
                          var title:String,
                          var content: String,
                          var number: String,
-                         var img: String):Serializable
+                         var img: String):Serializable{
+    constructor(folkDataLite: FolkDataLite) : this(
+            folkDataLite.id,
+            "",
+            folkDataLite.category,
+            "",
+            folkDataLite.divide,
+            folkDataLite.apply_location,
+            folkDataLite.title,
+            "",
+            "",
+            folkDataLite.img
+    )
+    constructor(folkData: FolkData):this(
+            folkData.id,
+            folkData.time,
+            folkData.category,
+            folkData.location,
+            folkData.divide,
+            folkData.apply_location,
+            folkData.title,
+            folkData.content,
+            folkData.number,
+            folkData.img
+    )
+}

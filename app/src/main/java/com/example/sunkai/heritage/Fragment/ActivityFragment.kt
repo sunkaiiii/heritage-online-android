@@ -1,21 +1,28 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 
 import com.example.sunkai.heritage.Activity.ActivityInformationActivity
 import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 
 /**
  * 首页viewpager五个页面的fragment
@@ -56,8 +63,13 @@ class ActivityFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putSerializable("activity", activitydata)
                 intent.putExtra("image", activitydata.img)
+                intent.putExtra("from", ACTIVITY_FRAGMENT)
                 intent.putExtras(bundle)
-                startActivity(intent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+                }else{
+                    startActivity(intent)
+                }
             }
         })
 
