@@ -4,16 +4,6 @@ import android.util.Log
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import org.json.JSONArray
-
-import org.json.JSONException
-import org.json.JSONObject
-import org.kobjects.base64.Base64
-import org.ksoap2.serialization.SoapObject
-import java.util.*
-
-import java.util.Arrays.asList
 import kotlin.collections.ArrayList
 
 
@@ -56,6 +46,21 @@ object HandleMainFragment : BaseSettingNew() {
         }
         try{
             return Gson().fromJsonToList(result,Array<NewsDetail>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
+
+    fun GetBottomNewsLiteInformation(start: Int=0,end: Int=20):List<BottomFolkNewsLite>{
+        val url="$URL/GetBottomNewsLiteInformation?start=$start&end=$end"
+        val result=PutGet(url)
+        Log.d("GetBottomNewsLiteInfo",result)
+        if(ERROR==result){
+            return arrayListOf()
+        }
+        try{
+            return Gson().fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseCardPagerAdapter
+import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
@@ -37,7 +38,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
         fragmentMainViewpager.offscreenPageLimit=1
     }
 
-    private fun loadSomeMainNews(){
+    private fun loadSomeMainNews(refreshBottom:Boolean=true){
         onPreLoad()
         Thread{
             val news=HandleMainFragment.ReadMainNews()
@@ -53,7 +54,24 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
                     val transformer=ShadowTransformer(fragmentMainViewpager,adapter)
                     fragmentMainViewpager.setPageTransformer(false,transformer)
                     onPostLoad()
+                    if(refreshBottom){
+                        loadBottomNews()
+                    }
                 }
+            }
+        }.start()
+    }
+
+    private fun loadBottomNews(){
+        Thread{
+            val datas=HandleMainFragment.GetBottomNewsLiteInformation()
+            val activity=activity
+            activity?.let{
+                activity.runOnUiThread {
+                    val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas)
+                    fragmentMainRecyclerview.adapter=adapter
+                }
+
             }
         }.start()
     }
@@ -67,10 +85,6 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
         val context=activity
         context?.let {
             val drawable = ContextCompat.getDrawable(context,R.mipmap.main_page_background)
-//            val color= generateColor(drawable)
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                context.window.statusBarColor=color
-//            }
             Glide.with(context).load(drawable).into(mainPageTopImage)
         }
     }

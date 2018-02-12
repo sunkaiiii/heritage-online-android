@@ -1,36 +1,60 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        android:scaleType="centerCrop"
-        android:id="@+id/mainPageTopImage"/>
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/fragmentMainAppbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <android.support.v7.widget.Toolbar
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/white">
+
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:title="首页"
-            app:titleTextColor="@color/white"/>
-    <android.support.v4.view.ViewPager
+            android:layout_height="match_parent"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/mainPageTopImage"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorPrimary"
+                    app:title="首页"
+                    app:titleTextColor="@color/white" />
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/fragmentMainViewpager"
+                    android:layout_width="match_parent"
+                    android:layout_height="430dp"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:paddingEnd="@dimen/card_padding"
+                    android:paddingLeft="@dimen/card_padding"
+                    android:paddingRight="@dimen/card_padding"
+                    android:paddingStart="@dimen/card_padding" />
+            </LinearLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="430dp"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingEnd="@dimen/card_padding"
-        android:paddingLeft="@dimen/card_padding"
-        android:paddingRight="@dimen/card_padding"
-        android:paddingStart="@dimen/card_padding"
-        android:id="@+id/fragmentMainViewpager"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/fragmentMainRecyclerview"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         />
-    </LinearLayout>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
