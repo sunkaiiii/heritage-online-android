@@ -5,8 +5,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.bottom_folk_news_layout.view.*
@@ -20,10 +23,12 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFo
         val title:TextView
         val time:TextView
         val briefly:TextView
+        val image:ImageView
         init {
             title=view.findViewById(R.id.bottom_view_title)
             time=view.findViewById(R.id.bottom_view_time)
             briefly=view.findViewById(R.id.bottom_view_briefly)
+            image=view.findViewById(R.id.bottom_view_image)
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
@@ -43,5 +48,12 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFo
         holder.title.text=data.title
         holder.time.text=data.time
         holder.briefly.text=data.briefly
+        //TODO 数据库图片url不对，待修复
+        if(data.img.isEmpty()){
+            holder.image.visibility=View.GONE
+        }else {
+            holder.image.visibility=View.VISIBLE
+            Glide.with(context).load(BaseSettingNew.URL + "/img" + data.img).into(holder.image)
+        }
     }
 }
