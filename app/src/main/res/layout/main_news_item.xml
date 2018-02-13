@@ -27,9 +27,8 @@
             android:textColor="@color/black"
             android:textSize="15sp" />
     </LinearLayout>
-
-    <ImageView
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/backgound_grey" />
+        android:background="@color/lightGrey"/>
 </LinearLayout>

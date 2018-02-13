@@ -251,7 +251,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
             val imageView = ImageView(activity)
             mImageViews[i] = imageView
             if (count < mImageViews.size) {
-                bitmaps[i] = HandlePic.handlePic(GlobalContext.instance, imgIdArray[i], 0)
+                bitmaps[i] = HandlePic.handlePic(GlobalContext.instance, imgIdArray[i], 1)
                 count++
             }
             imageView.scaleType = ImageView.ScaleType.FIT_XY

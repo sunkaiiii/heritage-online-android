@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/seeMoreNewsRecyclerView"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="@string/linearLayoutManager"
             android:layout_margin="8dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

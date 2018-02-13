@@ -49,4 +49,5 @@
     <string name="news_title">新闻标题</string>
     <string name="more">更多</string>
     <string name="focus_heritage">聚焦非遗</string>
+    <string name="linearLayoutManager">android.support.v7.widget.LinearLayoutManager</string>
 </resources>

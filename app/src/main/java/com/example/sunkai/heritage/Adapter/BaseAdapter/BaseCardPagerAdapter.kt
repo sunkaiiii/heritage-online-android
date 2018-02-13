@@ -38,7 +38,7 @@ abstract class BaseCardPagerAdapter(private val views:MutableList<CardView>):Car
         }
         cardView.maxCardElevation=baseElevation*MAX_ELEVATION_FACTOR
         views[position] = cardView
-        setDataInView(view,position,container.context)
+        setDataInView(view, position, container.context)
         return view
     }
 

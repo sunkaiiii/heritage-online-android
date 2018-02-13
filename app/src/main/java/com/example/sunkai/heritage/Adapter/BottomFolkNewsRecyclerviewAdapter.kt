@@ -14,9 +14,9 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.bottom_folk_news_layout.view.*
 
 /**
+ * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
 class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFolkNewsLite>):BaseRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder,BottomFolkNewsLite>(datas){
@@ -27,9 +27,9 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFo
         val briefly:TextView
         val image:ImageView
         val bottomLinear:LinearLayout
-        val bottomImage1:ImageView
-        val bottomImage2:ImageView
-        val bottomImage3:ImageView
+        private val bottomImage1:ImageView
+        private val bottomImage2:ImageView
+        private val bottomImage3:ImageView
         val imageViews:Array<ImageView>
         init {
             title=view.findViewById(R.id.bottom_view_title)
@@ -45,6 +45,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFo
     }
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
         val view=LayoutInflater.from(context).inflate(R.layout.bottom_folk_news_layout,parent,false)
+        view.setOnClickListener(this)
         return Holder(view)
     }
 
@@ -62,6 +63,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context,datas:List<BottomFo
         holder.briefly.text=data.briefly
         try {
             val imgArray = Gson().fromJson(data.img, Array<String>::class.java)
+            //判断有几张图片，根据图片的数目不同item展示不同的样式
             when {
                 imgArray.isEmpty() -> {
                     holder.image.visibility = View.GONE

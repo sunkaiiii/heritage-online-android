@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -11,10 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.Activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseCardPagerAdapter
 import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
+import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ShadowTransformer
@@ -72,12 +75,28 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
             activity?.let{
                 activity.runOnUiThread {
                     val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas)
+                    setAdapterClick(adapter)
                     fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter=adapter
                 }
 
             }
         }.start()
+    }
+
+    private fun setAdapterClick(adapter: BottomFolkNewsRecyclerviewAdapter) {
+        adapter.setOnItemClickListen(object :OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                val activity=activity
+                activity?.let{
+                    val data=adapter.getItem(position)
+                    val intent= Intent(activity,BottomNewsDetailActivity::class.java)
+                    intent.putExtra("data",data)
+                    startActivity(intent)
+                }
+            }
+
+        })
     }
 
     override fun onPreLoad() {
