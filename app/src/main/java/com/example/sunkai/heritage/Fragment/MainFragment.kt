@@ -4,6 +4,9 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +72,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
             activity?.let{
                 activity.runOnUiThread {
                     val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas)
+                    fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter=adapter
                 }
 
