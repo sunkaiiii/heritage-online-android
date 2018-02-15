@@ -20,15 +20,15 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
             // shrink main card
             val currentCard = mAdapter.getCardViewAt(mViewPager.currentItem)
             if (currentCard != null) {
-                currentCard!!.animate().scaleY(1f)
-                currentCard!!.animate().scaleX(1f)
+                currentCard.animate().scaleY(1f)
+                currentCard.animate().scaleX(1f)
             }
         } else if (!mScalingEnabled && enable) {
             // grow main card
             val currentCard = mAdapter.getCardViewAt(mViewPager.currentItem)
             if (currentCard != null) {
-                currentCard!!.animate().scaleY(1.1f)
-                currentCard!!.animate().scaleX(1.1f)
+                currentCard.animate().scaleY(1.1f)
+                currentCard.animate().scaleX(1.1f)
             }
         }
 
@@ -59,7 +59,7 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
         }
 
         // Avoid crash on overscroll
-        if (nextPosition > mAdapter.getCount() - 1 || realCurrentPosition > mAdapter.getCount() - 1) {
+        if (nextPosition > mAdapter.count - 1 || realCurrentPosition > mAdapter.count - 1) {
             return
         }
 
@@ -69,11 +69,11 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
         // and the views weren't created yet
         if (currentCard != null) {
             if (mScalingEnabled) {
-                currentCard!!.setScaleX((1 + 0.1 * (1 - realOffset)).toFloat())
-                currentCard!!.setScaleY((1 + 0.1 * (1 - realOffset)).toFloat())
+                currentCard.scaleX = (1 + 0.1 * (1 - realOffset)).toFloat()
+                currentCard.scaleY = (1 + 0.1 * (1 - realOffset)).toFloat()
             }
-            currentCard!!.setCardElevation(baseElevation + (baseElevation
-                    * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (1 - realOffset)))
+            currentCard.cardElevation = baseElevation + (baseElevation
+                    * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (1 - realOffset))
         }
 
         val nextCard = mAdapter.getCardViewAt(nextPosition)
@@ -82,11 +82,11 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
         // was already destroyed or a fragment might not have been created yet
         if (nextCard != null) {
             if (mScalingEnabled) {
-                nextCard!!.setScaleX((1 + 0.1 * realOffset).toFloat())
-                nextCard!!.setScaleY((1 + 0.1 * realOffset).toFloat())
+                nextCard.scaleX = (1 + 0.1 * realOffset).toFloat()
+                nextCard.scaleY = (1 + 0.1 * realOffset).toFloat()
             }
-            nextCard!!.setCardElevation(baseElevation + (baseElevation
-                    * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * realOffset))
+            nextCard.cardElevation = baseElevation + (baseElevation
+                    * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * realOffset)
         }
 
         mLastOffset = positionOffset

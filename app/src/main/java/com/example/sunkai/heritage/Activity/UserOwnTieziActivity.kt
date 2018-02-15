@@ -49,7 +49,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
                 val bundle = Bundle()
-                bundle.putSerializable("data", adapter.getItem(position) as UserCommentData)
+                bundle.putSerializable("data", adapter.getItem(position))
                 bundle.putInt("position", position)
                 val imageView = view.findViewById<View>(R.id.mycomment_item_image) as ImageView
                 imageView.isDrawingCacheEnabled = true
@@ -79,7 +79,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                                     .create()
                             ad.show()
                             Thread {
-                                val userCommentData = adapter.getItem(position) as UserCommentData
+                                val userCommentData = adapter.getItem(position)
                                 val result = HandleFind.Delete_User_Comment_By_ID(userCommentData.id)
                                 runOnUiThread {
                                     if (ad.isShowing) {

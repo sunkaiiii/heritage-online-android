@@ -12,7 +12,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.R
  * 点击更多之后，展示全部内容的adapter
  * Created by sunkai on 2018/2/9.
  */
-class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite>):BaseRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder,FolkNewsLite>(datas) {
+class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite>):BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder,FolkNewsLite>(datas) {
 
     class ViewHolder(view:View):RecyclerView.ViewHolder(view){
         val textview:TextView
@@ -66,14 +66,12 @@ class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite
             imageView.visibility=View.GONE
         }
     }
-
-    fun addNewData(datas:List<FolkNewsLite>){
+    override fun addNewData(datas: List<FolkNewsLite>) {
         val mutableDatas=this.datas.toMutableList()
         if(mutableDatas.addAll(datas)){
-            this.datas=mutableDatas.toList()
+            this.datas=mutableDatas
             notifyDataSetChanged()
         }
     }
-
 
 }

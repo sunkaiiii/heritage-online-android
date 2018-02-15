@@ -22,6 +22,9 @@ const val ONLYFOCUS=0
 const val ALL=1
 const val REQUEST_PICTURE_CUT = 13
 
+const val TYPE_TEXT="text"
+const val TYPE_IMAGE="img"
+
 const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
 const val ERROR="ERROR"

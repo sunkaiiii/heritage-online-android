@@ -66,4 +66,28 @@ object HandleMainFragment : BaseSettingNew() {
         }
         return arrayListOf()
     }
+
+    fun GetBottomNewsInformationByID(id:Int):BottomFolkNews?{
+        val url="$URL/GetBottomNewsInformationByID?id=$id"
+        val result=PutGet(url)
+        Log.d("GetBottomNewsInfoByID",result)
+        if(ERROR==result){
+            return null
+        }
+        try{
+            return Gson().fromJson(result,BottomFolkNews::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun GetBottomNewsDetailInfo(content:String):List<BottomNewsDetail>{
+        try{
+            return Gson().fromJsonToList(content,Array<BottomNewsDetail>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }

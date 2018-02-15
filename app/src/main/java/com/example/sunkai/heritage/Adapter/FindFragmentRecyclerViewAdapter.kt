@@ -93,7 +93,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         super.onBindViewHolder(holder, position)
         holder?.let{
-            val data = datas!![position]
+            val data = datas[position]
             holder.img.setImageResource(R.drawable.backgound_grey)
             holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
             GetCommentImage(data, holder.img)
@@ -138,9 +138,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     }
 
     private fun changeLikeImageState(isLike: Boolean, imageView: ImageView?, textView: TextView?, position: Int): Boolean {
-        var likeNumber = Integer.parseInt(datas!![position].commentLikeNum)
+        var likeNumber = Integer.parseInt(datas[position].commentLikeNum)
         likeNumber = if (isLike) likeNumber + 1 else likeNumber - 1
-        datas!![position].commentLikeNum = likeNumber.toString()
+        datas[position].commentLikeNum = likeNumber.toString()
         return if (isLike) SetLike(textView, imageView, likeNumber) else CancelLike(textView, imageView, likeNumber)
     }
 
@@ -219,8 +219,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 val getImageView = imageViewWeakReference.get()
                 val getTextView = textViewWeakReference.get()
                 if (msg.what != ERROR && getImageView != null && getTextView != null) {
-                    datas!![position].isUserLike = LIKE == msg.what
-                    if (!changeLikeImageState(datas!![position].getUserLike(), imageView, textView, position)) {
+                    datas[position].isUserLike = LIKE == msg.what
+                    if (!changeLikeImageState(datas[position].getUserLike(), imageView, textView, position)) {
                         GetInformation(this@FindFragmentRecyclerViewAdapter).execute()
                     }
                 } else {
@@ -242,7 +242,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 login()
                 return
             }
-            if (datas!![position].getUserLike()) {
+            if (datas[position].getUserLike()) {
                 Thread(cancelLike).start()
             } else {
                 Thread(setLike).start()
@@ -251,7 +251,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     }
 
     internal inner class addFocusButtonClick(var position: Int) : View.OnClickListener {
-        var data: UserCommentData= datas!![position]
+        var data: UserCommentData= datas[position]
         var addOrCancelFocus: Runnable = Runnable {
             val result = if (data.getUserFocusUser()) HandlePerson.Cancel_Focus(LoginActivity.userID, data.user_id) else HandlePerson.Add_Focus(LoginActivity.userID, data.user_id)
             setDataState(result)
@@ -270,7 +270,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         }
 
         init {
-            this.data = datas!![position]
+            this.data = datas[position]
         }
 
         override fun onClick(v: View) {
@@ -283,12 +283,12 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         private fun setDataState(result: Boolean) {
             if (result) {
-                datas!![position].isUserFocusUser = !datas!![position].getUserFocusUser()
+                datas[position].isUserFocusUser = !datas[position].getUserFocusUser()
                 data.isUserFocusUser = !data.getUserFocusUser()
             }
-            datas!!.indices
-                    .filter { datas!![it].user_id == data.user_id }
-                    .forEach { datas!![it].isUserFocusUser = !datas!![it].getUserFocusUser() }
+            datas.indices
+                    .filter { datas[it].user_id == data.user_id }
+                    .forEach { datas[it].isUserFocusUser = !datas[it].getUserFocusUser() }
         }
     }
 
@@ -313,7 +313,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         override fun onPostExecute(count: Int?) {
             val adapter = findFragmentAdapterWeakReference.get() ?: return
-            adapter.datas!![position].commentReplyNum = count.toString()
+            adapter.datas[position].commentReplyNum = count.toString()
             adapter.notifyDataSetChanged()
         }
     }
