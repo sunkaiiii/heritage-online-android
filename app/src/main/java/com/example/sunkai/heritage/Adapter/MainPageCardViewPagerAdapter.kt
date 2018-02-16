@@ -65,7 +65,6 @@ class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<Li
     private class secondlyView(view: View) {
         val image: ImageView
         val title: TextView
-
         init {
             image = view.findViewById(R.id.news_item_image)
             title = view.findViewById(R.id.news_item_title)

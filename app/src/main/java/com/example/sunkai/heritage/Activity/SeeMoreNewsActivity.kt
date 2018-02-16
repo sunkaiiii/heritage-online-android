@@ -52,7 +52,7 @@ class SeeMoreNewsActivity : AppCompatActivity(),OnPageLoaded {
             override fun onItemClick(view: View, position: Int) {
                 val data=adapter.getItem(position)
                 val intent=Intent(this@SeeMoreNewsActivity,NewsDetailActivity::class.java)
-                intent.putExtra("id",data.id)
+                intent.putExtra("data",data)
                 startActivity(intent)
             }
         })

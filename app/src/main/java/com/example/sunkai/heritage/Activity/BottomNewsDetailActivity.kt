@@ -21,7 +21,8 @@ class BottomNewsDetailActivity : AppCompatActivity() {
     }
 
     private fun setDataToView(data:BottomFolkNewsLite){
-
+        bottomNewsDetailTitle.text=data.title
+        bottomNewsDetailTime.text=data.time
     }
 
     private fun GetNewsDetail(id:Int){

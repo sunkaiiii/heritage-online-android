@@ -17,7 +17,6 @@
             android:layout_height="86dp"
             android:layout_margin="8dp"
             android:scaleType="centerCrop" />
-
         <TextView
             android:id="@+id/news_item_title"
             android:layout_width="match_parent"

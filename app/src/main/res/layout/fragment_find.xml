@@ -1,124 +1,133 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.sunkai.heritage.Fragment.FindFragment">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <android.support.design.widget.AppBarLayout
+        <!-- TODO: Update blank fragment layout -->
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay">
-            <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_height="match_parent">
+
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="188dp"
-                    android:layout_margin="12dp">
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="12sp"
-                        android:layout_marginRight="12sp"
-                        android:id="@+id/find_fragment_search_relative"
-                        >
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="搜索"
-                            android:id="@+id/find_text"
-                            android:layout_marginLeft="4dp"/>
+                android:theme="@style/AppTheme.AppBarOverlay">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_search_grey_400_24dp"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true"
-                            android:id="@+id/find_searchbtn"
-                            android:layout_alignParentRight="true" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/lightGrey"
-                            android:layout_below="@id/find_text"
-                            android:layout_marginTop="6dp"/>
-                    </RelativeLayout>
-                        <android.support.v4.view.ViewPager
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/find_fragment_viewPager"
-                            android:layout_below="@id/find_fragment_search_relative"
-                            android:layout_marginTop="10dp"/>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/find_fragment_imageView"
-                            android:orientation="horizontal"
-                            android:layout_margin="10sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_alignRight="@id/find_fragment_viewPager"
-                            android:layout_alignBottom="@id/find_fragment_viewPager"/>
-                    </RelativeLayout>
-            </android.support.design.widget.CollapsingToolbarLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="12dp"
-                android:background="@color/colorPrimeryToBtn">
-
-                <Button
-                    android:id="@+id/btn_add_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@color/colorPrimeryToBtn"
-                    android:text="发帖" />
-
-                <Spinner
-                    android:id="@+id/find_select_spinner"
+                <android.support.design.widget.CollapsingToolbarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_toLeftOf="@id/btn_add_comment"
-                    android:entries="@array/find_select"
-                    android:textAlignment="center" />
-            </RelativeLayout>
-        </android.support.design.widget.AppBarLayout>
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/fragment_find_recyclerView"
-            android:background="@color/superLightGrey"/>
+                    android:fitsSystemWindows="true"
+                    app:contentScrim="?attr/colorPrimary"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    </android.support.design.widget.CoordinatorLayout>
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="36sp"
-        android:layout_height="36sp"
-        android:layout_marginRight="48sp"
-        android:layout_marginBottom="36sp"
-        app:srcCompat="@drawable/ic_refresh_white_36dp"
-        app:backgroundTint="@color/colorAccent"
-        android:id="@+id/fragment_find_refreshbtn"
-        app:fabSize="mini"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="188dp"
+                        android:layout_margin="12dp">
+
+                        <RelativeLayout
+                            android:id="@+id/find_fragment_search_relative"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="12sp"
+                            android:layout_marginRight="12sp">
+
+                            <TextView
+                                android:id="@+id/find_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4dp"
+                                android:hint="搜索" />
+
+                            <ImageView
+                                android:id="@+id/find_searchbtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:src="@drawable/ic_search_grey_400_24dp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_below="@id/find_text"
+                                android:layout_marginTop="6dp"
+                                android:background="@color/lightGrey" />
+                        </RelativeLayout>
+
+                        <android.support.v4.view.ViewPager
+                            android:id="@+id/find_fragment_viewPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_below="@id/find_fragment_search_relative"
+                            android:layout_marginTop="10dp" />
+
+                        <LinearLayout
+                            android:id="@+id/find_fragment_imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/find_fragment_viewPager"
+                            android:layout_alignRight="@id/find_fragment_viewPager"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10sp"
+                            android:orientation="horizontal" />
+                    </RelativeLayout>
+                </android.support.design.widget.CollapsingToolbarLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:background="@color/colorPrimeryToBtn"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_add_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@color/colorPrimeryToBtn"
+                        android:text="发帖" />
+
+                    <Spinner
+                        android:id="@+id/find_select_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_toLeftOf="@id/btn_add_comment"
+                        android:entries="@array/find_select"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_find_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/superLightGrey"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </android.support.design.widget.CoordinatorLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fragment_find_refreshbtn"
+            android:layout_width="36sp"
+            android:layout_height="36sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="36sp"
+            android:layout_marginRight="48sp"
+            app:backgroundTint="@color/colorAccent"
+            app:fabSize="mini"
+            app:srcCompat="@drawable/ic_refresh_white_36dp" />
     </RelativeLayout>
 
 </FrameLayout>

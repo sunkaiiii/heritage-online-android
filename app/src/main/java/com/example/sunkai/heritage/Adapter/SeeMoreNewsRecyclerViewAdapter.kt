@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
@@ -24,16 +25,18 @@ import com.example.sunkai.heritage.R
 class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite>):BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder,FolkNewsLite>(datas) {
 
     class ViewHolder(view:View):RecyclerView.ViewHolder(view){
-        val textview:TextView
+        val title:TextView
+        val time:TextView
         val imageview:ImageView
         init {
-            textview=view.findViewById(R.id.news_item_title)
-            imageview=view.findViewById(R.id.news_item_image)
+            title=view.findViewById(R.id.see_more_news_item_title)
+            time=view.findViewById(R.id.see_more_news_item_time)
+            imageview=view.findViewById(R.id.see_more_news_item_image)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        val view=LayoutInflater.from(context).inflate(R.layout.main_news_item,parent,false)
+        val view=LayoutInflater.from(context).inflate(R.layout.see_more_news_item,parent,false)
         view.setOnClickListener(this)
         return ViewHolder(view)
     }
@@ -45,25 +48,28 @@ class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite
         }
     }
 
-    private fun setDatas(holder:ViewHolder,position: Int){
+    @SuppressLint("SetTextI18n")
+    private fun setDatas(holder:ViewHolder, position: Int){
         val data=datas[position]
-        holder.textview.text=data.title
+        holder.title.text=data.title
+        holder.time.text=data.time
         //防止复用的时候不显示图片的问题
         holder.imageview.visibility=View.VISIBLE
+        holder.imageview.setImageDrawable(null)
         if(TextUtils.isEmpty(data.img)){
             holder.imageview.visibility=View.GONE
         }else {
-            Glide.with(context).load(BaseSettingNew.URL + data.img).into(SimpleTaget(holder.imageview))
+            Glide.with(context).load(BaseSettingNew.URL + data.img).into(SimpleTaget(holder))
         }
     }
 
-    private class SimpleTaget(val imageView: ImageView):SimpleTarget<Drawable>(){
+    private class SimpleTaget(val holder: ViewHolder):SimpleTarget<Drawable>(){
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            imageView.setImageDrawable(resource)
+            holder.imageview.setImageDrawable(resource)
         }
 
         override fun onLoadFailed(errorDrawable: Drawable?) {
-            imageView.visibility=View.GONE
+            holder.imageview.visibility=View.GONE
         }
     }
     override fun addNewData(datas: List<FolkNewsLite>) {

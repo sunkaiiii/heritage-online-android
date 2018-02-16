@@ -1,15 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Activity.BottomNewsDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/transparent_full"
+        android:id="@+id/bottom_news_detail_appbar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/bottomNewsDetailTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/bottomNewsDetailTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/bottomNewsDetailRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/bottomNewsDetailRecyclerview"
-        app:layoutManager="@string/linearLayoutManager"/>
+        app:layoutManager="@string/linearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

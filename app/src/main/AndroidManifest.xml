@@ -169,7 +169,7 @@
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".Activity.SeeMoreNewsActivity" />
         <activity android:name=".Activity.NewsDetailActivity" />
-        <activity android:name=".Activity.BottomNewsDetailActivity"></activity>
+        <activity android:name=".Activity.BottomNewsDetailActivity"/>
     </application>
 
 </manifest>
