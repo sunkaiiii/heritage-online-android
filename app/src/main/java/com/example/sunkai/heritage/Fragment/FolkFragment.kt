@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.HOST
@@ -87,11 +88,7 @@ class FolkFragment : BaseLazyLoadFragment() {
         }
 
         //懒加载处理，将网络请求延迟到滚动到对应位置的时候再加载
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
+        viewPager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 val frament = adapter.getItem(position)
                 if (frament is ActivityFragment) {

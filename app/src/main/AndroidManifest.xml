@@ -167,7 +167,8 @@
         <activity
             android:name=".Activity.AllFolkInfoActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".Activity.SeeMoreNewsActivity" />
+        <activity android:name=".Activity.SeeMoreNewsActivity"
+            android:theme="@style/AppThemeNoActionBar"/>
         <activity android:name=".Activity.NewsDetailActivity" />
         <activity android:name=".Activity.BottomNewsDetailActivity"/>
     </application>

@@ -1,94 +1,85 @@
 package com.example.sunkai.heritage.Activity
 
-import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.view.View
-import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.Adapter.SeeMoreNewsViewpagerAdapter
+import com.example.sunkai.heritage.Fragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.Fragment.SeeMoreNewsFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.OnSrollHelper
+import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.value.CATEGORIES
+import com.example.sunkai.heritage.value.CATEGORY
 import kotlinx.android.synthetic.main.activity_see_more_news.*
 
-class SeeMoreNewsActivity : AppCompatActivity(),OnPageLoaded {
+class SeeMoreNewsActivity : AppCompatActivity() {
 
-    var category:String?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_see_more_news)
-        val category=intent.getStringExtra("category")
+        initView()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val category=intent.getStringExtra(CATEGORY)
         if(!TextUtils.isEmpty(category)) {
-            initView(category)
-            getMoreNews(category)
-            this.category=category
-        }
-    }
-    private fun initView(category: String){
-        seeMoreNewsRefresh.setOnRefreshListener {
-            getMoreNews(category)
+            setPositionToSelectCategory(category)
+        }else{
+            setPositionToSelectCategory(CATEGORIES[0])
         }
     }
 
-    private fun getMoreNews(category:String){
-        onPreLoad()
-        Thread{
-            val datas=HandleMainFragment.GetFolkNewsList(category,0,20)
-            runOnUiThread {
-                val adapter=SeeMoreNewsRecyclerViewAdapter(this,datas)
-                seeMoreNewsRecyclerView.adapter=adapter
-                onPostLoad()
-                setRecyclerClick(adapter)
-                setRecyclerScrollListener()
-            }
-        }.start()
+    private fun initView(){
+        val adapter=SeeMoreNewsViewpagerAdapter(supportFragmentManager)
+        initViewPager(adapter)
+        initTabLayout()
     }
 
-    private fun setRecyclerClick(adapter: SeeMoreNewsRecyclerViewAdapter){
-        adapter.setOnItemClickListen(object :OnItemClickListener{
-            override fun onItemClick(view: View, position: Int) {
-                val data=adapter.getItem(position)
-                val intent=Intent(this@SeeMoreNewsActivity,NewsDetailActivity::class.java)
-                intent.putExtra("data",data)
-                startActivity(intent)
+    private fun initTabLayout(){
+        seeMoreNewsTablayout.setupWithViewPager(seeMoreNewsViewpager)
+        seeMoreNewsTablayout.tabMode=TabLayout.MODE_SCROLLABLE
+    }
+
+    private fun initViewPager(adapter: SeeMoreNewsViewpagerAdapter){
+        for(category in CATEGORIES){
+            adapter.insertNewFragment(SeeMoreNewsFragment.newInstances(category))
+        }
+        seeMoreNewsViewpager.addOnPageChangeListener(object:BaseOnPageChangeListener(){
+            override fun onPageSelected(position: Int) {
+                val fragment=adapter.getItem(position)
+                if(fragment is BaseLazyLoadFragment){
+                    fragment.lazyLoad()
+                }
             }
         })
+        seeMoreNewsViewpager.offscreenPageLimit= CATEGORIES.size
+        seeMoreNewsViewpager.adapter=adapter
     }
 
-    private fun setRecyclerScrollListener(){
-        seeMoreNewsRecyclerView.addOnScrollListener(onScroll)
-    }
+    private fun setPositionToSelectCategory(category:String){
+        for((i,findCategory) in CATEGORIES.withIndex()){
+            if(category==findCategory){
+                val adapter=seeMoreNewsViewpager.adapter
+                if(adapter is SeeMoreNewsViewpagerAdapter) {
+                    val fragment=adapter.getItem(i)
+                    if(fragment is BaseLazyLoadFragment) {
+                        Thread{
+                            //在第一次加载的时候，因为viewpager的fragment还没有create，所以无法取得args
+                            //于是在第一次启动的时候延迟一段时间再lazyload
+                            //目前的方式还不够优雅
+                            Thread.sleep(200)
+                            runOnUiThread {
+                                seeMoreNewsViewpager.currentItem = i
+                                fragment.lazyLoad()
+                            }
+                        }.start()
 
-    override fun onPreLoad() {
-        seeMoreNewsRefresh.isRefreshing=true
-        seeMoreNewsRecyclerView.adapter=null
-    }
-
-    override fun onPostLoad() {
-        seeMoreNewsRefresh.isRefreshing=false
-    }
-
-    //滑动到接近底部的时候，自动加载更多的数据
-    private val onScroll=object:OnSrollHelper(){
-        override fun loadMoreData(recyclerView: RecyclerView) {
-            val adapter=recyclerView.adapter
-            if( adapter is SeeMoreNewsRecyclerViewAdapter){
-                Thread{
-                    setPageOnLoad()
-                    val category=category
-                    category?.let{
-                        val datas=HandleMainFragment.GetFolkNewsList(category,adapter.itemCount,adapter.itemCount+20)
-                        runOnUiThread {
-                            adapter.addNewData(datas)
-                            setPageLoaded()
-                        }
                     }
-                }.start()
+                }
+            break
             }
         }
-
     }
 }

@@ -24,6 +24,7 @@ const val REQUEST_PICTURE_CUT = 13
 
 const val TYPE_TEXT="text"
 const val TYPE_IMAGE="img"
+const val CATEGORY="category"
 
 const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
