@@ -90,4 +90,28 @@ object HandleMainFragment : BaseSettingNew() {
         }
         return arrayListOf()
     }
+
+    //会返回null,针对空值和非空值做不同的反应
+    fun GetMainPageSlideNewsInfo():List<MainPageSlideNews>?{
+        val url="$URL/GetMainPageSlideNewsInformation"
+        val result=PutGet(url)
+        if(result== ERROR){
+            return null
+        }
+        try{
+            return Gson().fromJsonToList(result,Array<MainPageSlideNews>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun GetMainPageSlideDetailInfo(content:String):List<NewsDetail>{
+        try{
+            return Gson().fromJsonToList(content,Array<NewsDetail>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }
