@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +21,8 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.value.ALL_COMMENT
+import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import kotlinx.android.synthetic.main.fragment_find.*
 import java.io.ByteArrayOutputStream
 
@@ -59,18 +60,18 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     private fun loadInformation(){
 
         //程序默认显示广场的全部帖子
-        loadUserCommentData(1)
+        loadUserCommentData(ALL_COMMENT)
 
         //Spinear切换，重新加载adpater的数据
         selectSpiner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when (position) {
                     0 -> {
-                        loadUserCommentData(1)
+                        loadUserCommentData(ALL_COMMENT)
                     }
                     1 -> {
                         checkUserIsLogin()
-                        loadUserCommentData(2)
+                        loadUserCommentData(MY_FOCUS_COMMENT)
                     }
                 }
             }
@@ -112,12 +113,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         activiy?.let{
             Thread{
                 val datas=when(what){
-                    1->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
-                    2->HandleFindNew.GetUserCommentInformationByUser(LoginActivity.userID)
+                    ALL_COMMENT->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
+                    MY_FOCUS_COMMENT->HandleFindNew.GetUserCommentInformationByUser(LoginActivity.userID)
                     else->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
-                }
-                for(data in datas){
-                    Log.d("findData",data.toString())
                 }
                 activiy.runOnUiThread {
                     val adapter=FindFragmentRecyclerViewAdapter(activiy,datas,what)
@@ -146,7 +144,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
                     intent.putExtra("bitmap", out.toByteArray())
                     intent.putExtras(bundle)
-
                     //如果手机是Android 5.0以上的话，使用新的Activity切换动画
                     if(Build.VERSION.SDK_INT>=21)
                         startActivityForResult(intent, FROM_USER_COMMENT_DETAIL,ActivityOptions.makeSceneTransitionAnimation(activity,imageView,"shareView").toBundle())

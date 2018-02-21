@@ -16,54 +16,6 @@ import kotlin.math.log
  * Created by sunkai on 2018/2/1.
  */
 object HandleFindNew:BaseSettingNew() {
-    private fun Json_To_FindAcitivityID(json: String?): List<FindActivityData>? {
-        try {
-            val datas=ArrayList<FindActivityData>()
-            val replys = JSONArray(json)
-            for (i in 0 until replys.length()) {
-                val data = FindActivityData()
-                data.id = replys.get(i) as Int
-                datas.add(data)
-            }
-            return datas
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-        return null
-    }
-    private fun Json_To_FindActivityInformation(id: Int, json: String): FindActivityData? {
-        try {
-            val getdata = FindActivityData()
-            getdata.id = id
-            val js = JSONObject(json)
-            getdata.title = js.getString("title")
-            getdata.content = js.getString("content")
-            val imgCode = js.getString("image")
-            getdata.image = Base64.decode(imgCode)
-            return getdata
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
-    fun Get_Find_Activity_ID():List<FindActivityData>?{
-        val getUrl= URL+"/GetFindActivityID"
-        val result=PutGet(getUrl)
-        if(ERROR!=result){
-            return Json_To_FindAcitivityID(result)
-        }
-        return null
-    }
-
-    fun Get_Find_Activity_Information(id:Int):FindActivityData?{
-        val getUrl= URL+"/GetFindActivityInformation?id="+id.toString()
-        val result=PutGet(getUrl)
-        if(ERROR!=result){
-            return Json_To_FindActivityInformation(id,result)
-        }
-        return null
-    }
 
     fun Add_User_Comment_Information(user_id: Int, comment_title: String, comment_content: String, comment_image: String): Boolean {
         val postUrl=URL+"/AddUserCommentInformation"
@@ -77,8 +29,8 @@ object HandleFindNew:BaseSettingNew() {
         return SUCCESS==result
     }
 
-    fun GetUserCommentInformation(userID: Int):List<UserCommentData>{
-        val getUrl="$URL/GetUserCommentInformation?userID=$userID"
+    fun GetUserCommentInformation(userID: Int,start:Int=0):List<UserCommentData>{
+        val getUrl="$URL/GetUserCommentInformation?userID=$userID&start=$start"
         val result=PutGet(getUrl)
         Log.d("GetUserCommentInfo",result)
         return if(result== ERROR){
@@ -90,6 +42,48 @@ object HandleFindNew:BaseSettingNew() {
                 e.printStackTrace()
                 arrayListOf<UserCommentData>()
             }
+        }
+    }
+
+    fun GetUserCommentInformationByUser(userID: Int,start: Int=0):List<UserCommentData>{
+        val getUrl="$URL/GetUserCommentInformationByUser?userID=$userID&start=$start"
+        val result=PutGet(getUrl)
+        Log.d("GetUserCommentInfoByUsr",result)
+        return if(result== ERROR){
+            arrayListOf()
+        }else{
+            try{
+                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+            }catch (e:Exception){
+                e.printStackTrace()
+                arrayListOf<UserCommentData>()
+            }
+        }
+    }
+
+    fun GetUserCommentInformaitonByOwn(userID:Int,start: Int=0):List<UserCommentData>{
+        val getUrl="$URL/GetUserCommentInformaitonByOwn?userID=$userID&start=$start"
+        val result=PutGet(getUrl)
+        return if(result== ERROR){
+            arrayListOf()
+        }else{
+            try{
+                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+            }catch (e:Exception){
+                e.printStackTrace()
+                arrayListOf<UserCommentData>()
+            }
+
+        }
+    }
+
+    fun GetUserCommentIdByUser(userID: Int):IntArray{
+        val getUrl="$URL/GetUserCommentIdByUser?userID=$userID"
+        val result=PutGet(getUrl)
+        return if(ERROR==result){
+            IntArray(0)
+        }else{
+            Gson().fromJson(result,IntArray::class.java)
         }
     }
 
@@ -118,46 +112,6 @@ object HandleFindNew:BaseSettingNew() {
         return result== SUCCESS
     }
 
-    fun GetUserCommentIdByUser(userID: Int):IntArray{
-        val getUrl="$URL/GetUserCommentIdByUser?userID=$userID"
-        val result=PutGet(getUrl)
-        return if(ERROR==result){
-            IntArray(0)
-        }else{
-            Gson().fromJson(result,IntArray::class.java)
-        }
-    }
-
-    fun GetUserCommentInformationByUser(userID: Int):List<UserCommentData>{
-        val getUrl="$URL/GetUserCommentInformationByUser?userID=$userID"
-        val result=PutGet(getUrl)
-        return if(result== ERROR){
-            arrayListOf()
-        }else{
-            try{
-                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
-            }catch (e:Exception){
-                e.printStackTrace()
-                arrayListOf<UserCommentData>()
-            }
-        }
-    }
-
-    fun GetUserCommentInformaitonByOwn(userID:Int):List<UserCommentData>{
-        val getUrl="$URL/GetUserCommentInformaitonByOwn?userID=$userID"
-        val result=PutGet(getUrl)
-        return if(result== ERROR){
-            arrayListOf()
-        }else{
-            try{
-                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
-            }catch (e:Exception){
-                e.printStackTrace()
-                arrayListOf<UserCommentData>()
-            }
-
-        }
-    }
 
     fun GetUserCommentImage(commentID: Int):ByteArray?{
         val getUrl="$URL/GetUserCommentImage?id=$commentID"

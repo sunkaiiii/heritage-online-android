@@ -25,17 +25,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_list_image" />
 
-        <ImageView
-            android:id="@+id/fragment_find_comment"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/comment_unpress"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintRight_toLeftOf="@+id/testview_comment"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
         <TextView
             android:id="@+id/testview_comment"
@@ -44,7 +33,11 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
+            android:drawableLeft="@drawable/ic_message_grey_700_24dp"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_message_grey_700_24dp"
             android:text="0 "
+            app:layout_constraintEnd_toStartOf="@+id/fragment_find_like_frame"
             app:layout_constraintRight_toLeftOf="@+id/imageView5"
             app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
@@ -57,44 +50,35 @@
             android:layout_marginTop="8dp"
             android:src="@drawable/share_press_and_unpress"
             android:visibility="gone"
-            app:layout_constraintRight_toLeftOf="@+id/textView4"
             app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
-        <TextView
-            android:id="@+id/textView4"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            android:text="分享 "
-            android:visibility="gone"
-            app:layout_constraintRight_toLeftOf="@+id/imageView4"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/good_unpress"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:layout_constraintRight_toLeftOf="@+id/textview_like"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
-
+            android:id="@+id/fragment_find_like_frame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img">
         <TextView
             android:id="@+id/textview_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
             android:text="0 "
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
-
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_favorite_border_grey_700_24dp"
+            android:drawableLeft="@drawable/ic_favorite_border_grey_700_24dp" />
+        <TextView
+            android:id="@+id/textview_dislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 "
+            android:textColor="@color/colorPrimary"
+            android:drawablePadding="4dp"
+            android:drawableStart="@drawable/ic_favorite_orange_a700_24dp"
+            android:drawableLeft="@drawable/ic_favorite_orange_a700_24dp" />
+        </FrameLayout>
         <RelativeLayout
             android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
