@@ -37,6 +37,7 @@ import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.SoftInputTools.hideKeyboard
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
+import org.kobjects.base64.Base64
 
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
@@ -230,11 +231,8 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         information_title.text = data.commentTitle
         information_time.text = data.commentTime
         information_content.text = data.commentContent
-        information_reply_num.text = data.commentReplyNum
+        information_reply_num.text = data.replyNum.toString()
         title = data.userName
-        data.userImage?.let{
-            information_img.setImageBitmap(HandlePic.handlePic(ByteArrayInputStream(data.userImage),0))
-        }
     }
     private fun setView(data: CommentReplyData) {
         val inflater = layoutInflater
@@ -283,7 +281,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                     val drawable=information_img.drawable
                     if(drawable is BitmapDrawable){
                         val bitmap=drawable.bitmap
-                        data.userImage=HandlePic.bitmapToByteArray(bitmap)
+                        data.image=Base64.encode(HandlePic.bitmapToByteArray(bitmap))
                         intent.putExtra("data",data)
                         startActivityForResult(intent, UPDATE_USER_COMMENT)
                     }
@@ -294,7 +292,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (data != null && data!!.user_id == userID) {
+        if (data != null && data!!.userID == userID) {
             menuInflater.inflate(R.menu.user_comment_detail_menu, menu)
         }
         return true
@@ -333,14 +331,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         information_content.text = data.comment_content
         information_reply_num.text = data.replyCount
         title = data.userName
-        //和老版本做一下兼容，复用代码
-        this.data = UserCommentData()
-        this.data!!.userName = data.userName
-        this.data!!.commentReplyNum = data.replyCount
-        this.data!!.id = data.id
-        this.data!!.commentContent = data.comment_content
-        this.data!!.user_id = data.userID
-        this.data!!.commentTime = data.coment_time
     }
 
     internal inner class HandleReply(var content: String) {

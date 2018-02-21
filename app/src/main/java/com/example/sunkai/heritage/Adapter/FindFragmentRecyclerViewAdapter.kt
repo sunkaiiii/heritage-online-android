@@ -22,6 +22,9 @@ import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ERROR
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.HandlePic
@@ -34,14 +37,13 @@ import org.kobjects.base64.Base64
 
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 
 /*
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(private val context: Context, internal var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder,UserCommentData>(arrayListOf()) {
+class FindFragmentRecyclerViewAdapter(private val context: Context, datas:List<UserCommentData>, private var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
     private var recyclerView: RecyclerView? = null
     internal var lruCache: LruCache<Int, Bitmap>
 
@@ -50,10 +52,10 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         val like: TextView
         val comment: TextView
         val addfocusText: TextView
+        val cancelFocusText:TextView
         val name_text: TextView
         val likeImage: ImageView
         val commentImage: ImageView
-        val addfocusImage: ImageView
         val userImage: RoundedImageView
 
         init {
@@ -62,10 +64,10 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             like = view.findViewById(R.id.textview_like)
             likeImage = view.findViewById(R.id.imageView4)
             commentImage = view.findViewById(R.id.fragment_find_comment)
-            addfocusImage = view.findViewById(R.id.add_focus_img)
             addfocusText = view.findViewById(R.id.add_focus_text)
             name_text = view.findViewById(R.id.name_text)
             userImage = view.findViewById(R.id.user_list_image)
+            cancelFocusText=view.findViewById(R.id.cancel_focus_text)
         }
     }
 
@@ -77,7 +79,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 return value.byteCount
             }
         }
-        GetInformation(this).execute()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -98,16 +99,15 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
             GetCommentImage(data, holder.img)
             GetUserImage(data, holder.userImage)
-            if (data.getUserLike()) {
-                SetLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
+            if (data.isLike()) {
+                SetLike(holder.like, holder.likeImage, data.likeNum)
             } else {
-                CancelLike(holder.like, holder.likeImage, Integer.parseInt(data.commentLikeNum))
+                CancelLike(holder.like, holder.likeImage, data.likeNum)
             }
-            holder.comment.text = data.commentReplyNum
+            holder.comment.text = data.replyNum.toString()
             holder.name_text.text = data.userName
             if (what == 2) {
-                holder.addfocusImage.visibility = View.GONE
-                holder.addfocusText.visibility = View.GONE
+                holder.addfocusText.visibility=View.GONE
             }
             if (what == 3) {
                 hideSomeElement(holder, data)
@@ -115,32 +115,26 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             val likeClick = imageButtonclick(data.id, position, holder.likeImage, holder.like)
             holder.likeImage.setOnClickListener(likeClick)
             holder.like.setOnClickListener(likeClick)
-            if (data.user_id == LoginActivity.userID) {
-                holder.addfocusText.visibility = View.INVISIBLE
-                holder.addfocusImage.visibility = View.INVISIBLE
+            if (data.userID == LoginActivity.userID) {
+                holder.addfocusText.visibility=View.GONE
             } else {
-                holder.addfocusText.visibility = View.VISIBLE
-                holder.addfocusImage.visibility = View.VISIBLE
-                val addFocusButtonClick = addFocusButtonClick(position)
-                holder.addfocusText.setOnClickListener(addFocusButtonClick)
-                holder.addfocusImage.setOnClickListener(addFocusButtonClick)
-                if (data.getUserFocusUser()) {
-                    holder.addfocusText.text = "已关注"
-                    holder.addfocusText.setTextColor(Color.rgb(184, 184, 184))
-                    holder.addfocusImage.setImageResource(R.drawable.ic_remove_circle_grey_400_24dp)
+//                holder.addfocusText.setOnClickListener(addFocusButtonClick)
+//                holder.addfocusImage.setOnClickListener(addFocusButtonClick)
+                if (data.isFollow()) {
+                    holder.cancelFocusText.visibility=View.VISIBLE
+                    holder.addfocusText.visibility=View.GONE
                 } else {
-
-                    holder.addfocusText.text = "加关注"
-                    holder.addfocusImage.setImageResource(R.drawable.ic_add_circle_black_24dp)
+                    holder.cancelFocusText.visibility=View.GONE
+                    holder.addfocusText.visibility=View.VISIBLE
                 }
             }
         }
     }
 
     private fun changeLikeImageState(isLike: Boolean, imageView: ImageView?, textView: TextView?, position: Int): Boolean {
-        var likeNumber = Integer.parseInt(datas[position].commentLikeNum)
+        var likeNumber = datas[position].likeNum
         likeNumber = if (isLike) likeNumber + 1 else likeNumber - 1
-        datas[position].commentLikeNum = likeNumber.toString()
+        datas[position].likeNum = likeNumber
         return if (isLike) SetLike(textView, imageView, likeNumber) else CancelLike(textView, imageView, likeNumber)
     }
 
@@ -172,7 +166,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     }
 
     private fun GetUserImage(data: UserCommentData, imageView: ImageView) {
-        GetUserImage(data.user_id, this, imageView).execute()
+        GetUserImage(data.userID, this, imageView).execute()
     }
 
     private fun hideSomeElement(vh: ViewHolder, data: UserCommentData) {
@@ -214,14 +208,14 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             }
         }
 
-        var SetOrCancelLikeHandler: Handler = object : Handler(context.mainLooper) {
+        private var SetOrCancelLikeHandler: Handler = object : Handler(context.mainLooper) {
             override fun handleMessage(msg: Message) {
                 val getImageView = imageViewWeakReference.get()
                 val getTextView = textViewWeakReference.get()
                 if (msg.what != ERROR && getImageView != null && getTextView != null) {
-                    datas[position].isUserLike = LIKE == msg.what
-                    if (!changeLikeImageState(datas[position].getUserLike(), imageView, textView, position)) {
-                        GetInformation(this@FindFragmentRecyclerViewAdapter).execute()
+                    datas[position].isLike = if(LIKE == msg.what)SUCCESS else BaseSettingNew.ERROR
+                    if (!changeLikeImageState(datas[position].isLike(), imageView, textView, position)) {
+//                        GetInformation(this@FindFragmentRecyclerViewAdapter).execute()
                     }
                 } else {
                     Toast.makeText(context, "出现错误，请稍后再试", Toast.LENGTH_SHORT).show()
@@ -242,7 +236,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
                 login()
                 return
             }
-            if (datas[position].getUserLike()) {
+            if (datas[position].isLike()) {
                 Thread(cancelLike).start()
             } else {
                 Thread(setLike).start()
@@ -253,9 +247,9 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
     internal inner class addFocusButtonClick(var position: Int) : View.OnClickListener {
         var data: UserCommentData= datas[position]
         var addOrCancelFocus: Runnable = Runnable {
-            val result = if (data.getUserFocusUser()) HandlePerson.Cancel_Focus(LoginActivity.userID, data.user_id) else HandlePerson.Add_Focus(LoginActivity.userID, data.user_id)
+            val result = if (data.isFollow()) HandlePerson.Cancel_Focus(LoginActivity.userID, data.userID) else HandlePerson.Add_Focus(LoginActivity.userID, data.userID)
             setDataState(result)
-            handler.sendEmptyMessage(if (data.getUserFocusUser()) 1 else 2)
+            handler.sendEmptyMessage(if (data.isFollow()) 1 else 2)
         }
 
         var handler: Handler = object : Handler(context.mainLooper) {
@@ -283,12 +277,12 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
 
         private fun setDataState(result: Boolean) {
             if (result) {
-                datas[position].isUserFocusUser = !datas[position].getUserFocusUser()
-                data.isUserFocusUser = !data.getUserFocusUser()
+                datas[position].isFollow = if(datas[position].isFollow()) ERROR else SUCCESS
+                data.isFollow = if(data.isFollow()) ERROR else SUCCESS
             }
             datas.indices
-                    .filter { datas[it].user_id == data.user_id }
-                    .forEach { datas[it].isUserFocusUser = !datas[it].getUserFocusUser() }
+                    .filter { datas[it].userID == data.userID }
+                    .forEach { datas[it].isFollow = if(datas[it].isFollow()) ERROR else SUCCESS }
         }
     }
 
@@ -296,9 +290,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         GetReplyCount(commentID, position, this).execute()
     }
 
-    fun reFreshList() {
-        GetInformation(this).execute()
-    }
 
     internal class GetReplyCount internal constructor(var commentID: Int, var position: Int, adapter: FindFragmentRecyclerViewAdapter) : AsyncTask<Void, Void, Int>() {
         var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
@@ -307,49 +298,18 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
             findFragmentAdapterWeakReference = WeakReference(adapter)
         }
 
-        override fun doInBackground(vararg voids: Void): Int? {
+        override fun doInBackground(vararg voids: Void): Int {
             return HandleFind.Get_User_Comment_Count(commentID)
         }
 
-        override fun onPostExecute(count: Int?) {
+        override fun onPostExecute(count: Int) {
             val adapter = findFragmentAdapterWeakReference.get() ?: return
-            adapter.datas[position].commentReplyNum = count.toString()
+            adapter.datas[position].replyNum = count
             adapter.notifyDataSetChanged()
         }
     }
 
-    internal class GetInformation internal constructor(adapter: FindFragmentRecyclerViewAdapter) : AsyncTask<Void, Void, Void>() {
-
-        var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
-
-        init {
-            findFragmentAdapterWeakReference = WeakReference(adapter)
-        }
-
-        override fun doInBackground(vararg voids: Void): Void? {
-            val adapter = findFragmentAdapterWeakReference.get() ?: return null
-            val getdatas: List<UserCommentData>?
-            getdatas = when {
-                adapter.what == 1 -> HandleFind.Get_User_Comment_Information(LoginActivity.userID)
-                adapter.what == 2 -> HandleFind.Get_User_Comment_Information_By_User(LoginActivity.userID)
-                adapter.what == 3 -> HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.userID)
-                else -> ArrayList()
-            }
-            getdatas?.let {
-                adapter.datas = getdatas
-            }
-            return null
-        }
-
-        override fun onPostExecute(aVoid: Void?) {
-            val adapter = findFragmentAdapterWeakReference.get() ?: return
-            adapter.notifyDataSetChanged()
-            val intent = Intent("android.intent.action.animationStop")
-            adapter.context.sendBroadcast(intent)
-        }
-    }
-
-    internal class GetCommentImage internal constructor(val id: Int,val commentTime:String, findFragmentAdapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
+    private class GetCommentImage internal constructor(val id: Int,val commentTime:String, findFragmentAdapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
         var imageViewWeakReference: WeakReference<ImageView>
         var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
 
@@ -401,7 +361,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Context, internal var
         }
 
         override fun onPostExecute(bitmap: Bitmap?) {
-            val findFragmentAdapter = findFragmentAdapterWeakReference.get() ?: return
             val getImageView = imageViewWeakReference.get()
             if (getImageView != null&&bitmap!=null) {
                 getImageView.run {

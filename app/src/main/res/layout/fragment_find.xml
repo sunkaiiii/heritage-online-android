@@ -29,7 +29,7 @@
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="188dp"
+                        android:layout_height="32dp"
                         android:layout_margin="12dp">
 
                         <RelativeLayout
@@ -43,8 +43,9 @@
                                 android:id="@+id/find_text"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dp"
-                                android:hint="搜索" />
+                                android:layout_marginStart="4dp"
+                                android:hint="@string/search"
+                                android:layout_marginLeft="4dp" />
 
                             <ImageView
                                 android:id="@+id/find_searchbtn"
@@ -63,49 +64,21 @@
                                 android:background="@color/lightGrey" />
                         </RelativeLayout>
 
-                        <android.support.v4.view.ViewPager
-                            android:id="@+id/find_fragment_viewPager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_below="@id/find_fragment_search_relative"
-                            android:layout_marginTop="10dp" />
-
-                        <LinearLayout
-                            android:id="@+id/find_fragment_imageView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/find_fragment_viewPager"
-                            android:layout_alignRight="@id/find_fragment_viewPager"
-                            android:layout_centerHorizontal="true"
-                            android:layout_margin="10sp"
-                            android:orientation="horizontal" />
                     </RelativeLayout>
                 </android.support.design.widget.CollapsingToolbarLayout>
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_margin="12dp"
-                    android:background="@color/colorPrimeryToBtn"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/btn_add_comment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:background="@color/colorPrimeryToBtn"
-                        android:text="发帖" />
-
-                    <Spinner
-                        android:id="@+id/find_select_spinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_toLeftOf="@id/btn_add_comment"
-                        android:entries="@array/find_select"
-                        android:textAlignment="center" />
-                </RelativeLayout>
+                    android:background="@color/colorPrimeryToBtn">
+                <Spinner
+                    android:id="@+id/find_select_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:entries="@array/find_select"
+                    android:textAlignment="center"/>
+                </LinearLayout>
             </android.support.design.widget.AppBarLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -113,21 +86,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/superLightGrey"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layoutManager="@string/linearLayoutManager"/>
 
         </android.support.design.widget.CoordinatorLayout>
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fragment_find_refreshbtn"
+            android:id="@+id/fragmentFindAddCommentBtn"
             android:layout_width="36sp"
             android:layout_height="36sp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginBottom="36sp"
-            android:layout_marginRight="48sp"
-            app:backgroundTint="@color/colorAccent"
+            android:layout_marginEnd="48sp"
             app:fabSize="mini"
-            app:srcCompat="@drawable/ic_refresh_white_36dp" />
+            app:srcCompat="@drawable/ic_add_white_24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="48sp" />
     </RelativeLayout>
 
 </FrameLayout>

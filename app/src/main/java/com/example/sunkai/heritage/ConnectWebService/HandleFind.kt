@@ -1,16 +1,13 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import com.example.sunkai.heritage.Data.CommentReplyData
 import com.example.sunkai.heritage.Data.FindActivityAllData
 import com.example.sunkai.heritage.Data.FindActivityData
-import com.example.sunkai.heritage.Data.CommentReplyData
-import com.example.sunkai.heritage.Data.UserCommentData
-
 import org.json.JSONException
 import org.json.JSONObject
 import org.kobjects.base64.Base64
 import org.ksoap2.serialization.SoapObject
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by sunkai on 2018-1-9.
@@ -18,37 +15,6 @@ import java.util.ArrayList
  */
 
 object HandleFind : BaseSetting() {
-    private fun Json_To_UserCommentData(json: String?): List<UserCommentData>? {
-        try {
-            if (null == json) {
-                return null
-            }
-            val MainActivity = JSONObject(json)
-            val activities = MainActivity.getJSONArray("user_comment_information")
-            val folkInformations = ArrayList<UserCommentData>()
-            for (i in 0 until activities.length()) {
-                val data = UserCommentData()
-                val activity = activities.get(i) as JSONObject
-                data.id = activity.get("id") as Int
-                data.user_id = activity.get("user_id") as Int
-                data.commentTime = activity.get("comment_time") as String
-                data.commentTitle = activity.get("comment_title") as String
-                data.commentContent = activity.get("comment_content") as String
-                data.commentLikeNum = activity.get("comment_num") as String
-                data.commentReplyNum = activity.get("reply_num") as String
-                data.userName = activity.get("user_name") as String
-                data.isUserFocusUser = BaseSetting.success == activity.get("isFollow")
-                data.isUserLike = BaseSetting.success == activity.get("isLike")
-                folkInformations.add(data)
-            }
-            return folkInformations
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
-
     private fun Json_To_UserCommentReplyData(json: String?): List<CommentReplyData>? {
         try {
             if (json == null)
@@ -189,52 +155,27 @@ object HandleFind : BaseSetting() {
         return BaseSetting.success == result
     }
 
-    fun Update_User_Comment_Informaiton(data: UserCommentData): Boolean {
-        BaseSetting.methodName = "Update_User_Comment_Informaiton"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("commentID", data.id)
-        soapObject.addProperty("comment_title", data.commentTitle)
-        soapObject.addProperty("comment_content", data.commentContent)
-        soapObject.addProperty("comment_image", Base64.encode(data.userImage!!))
-        val result = BaseSetting.Get_Post(soapObject)
-        return BaseSetting.success == result
-    }
-
-    fun Get_User_Comment_Information(userID: Int): List<UserCommentData>? {
-        BaseSetting.methodName = "Get_User_Comment_Information"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userID", userID)
-        val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_UserCommentData(result)
-    }
-
-    fun Get_User_Comment_Information_By_User(userID: Int): List<UserCommentData>? {
-        BaseSetting.methodName = "Get_User_Comment_Information_By_User"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userID", userID)
-        val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_UserCommentData(result)
-    }
-
-    fun Get_User_Comment_Information_By_Own(userID: Int): List<UserCommentData>? {
-        BaseSetting.methodName = "Get_User_Comment_Information_By_Own"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        soapObject.addProperty("userID", userID)
-        val result = BaseSetting.Get_Post(soapObject)
-        return Json_To_UserCommentData(result)
-    }
-
-    fun Get_User_Comment_ID(): List<Int>? {
-        BaseSetting.methodName = "Get_User_Comment_ID"
-        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
-        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
-        val result = BaseSetting.Get_Post(soapObject)
-        return if (BaseSetting.error == result) null else Json_To_FindComment_ID(result)
-    }
+//    fun Update_User_Comment_Informaiton(data: UserCommentData): Boolean {
+//        BaseSetting.methodName = "Update_User_Comment_Informaiton"
+//        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+//        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
+//        soapObject.addProperty("commentID", data.id)
+//        soapObject.addProperty("comment_title", data.commentTitle)
+//        soapObject.addProperty("comment_content", data.commentContent)
+//        soapObject.addProperty("comment_image", Base64.encode(data.userImage!!))
+//        val result = BaseSetting.Get_Post(soapObject)
+//        return BaseSetting.success == result
+//    }
+//
+//
+//    fun Get_User_Comment_Information_By_Own(userID: Int): List<UserCommentData>? {
+//        BaseSetting.methodName = "Get_User_Comment_Information_By_Own"
+//        BaseSetting.soapAction = BaseSetting.namespace + "/" + BaseSetting.methodName
+//        val soapObject = SoapObject(BaseSetting.namespace, BaseSetting.methodName)
+//        soapObject.addProperty("userID", userID)
+//        val result = BaseSetting.Get_Post(soapObject)
+//        return Json_To_UserCommentData(result)
+//    }
 
     fun Get_User_Comment_ID_By_User(userID: Int): List<Int>? {
         BaseSetting.methodName = "Get_User_Comment_ID_By_User"

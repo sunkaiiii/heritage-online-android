@@ -3,11 +3,9 @@ package com.example.sunkai.heritage.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -16,9 +14,9 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
@@ -108,15 +106,10 @@ class UserOwnTieziActivity : AppCompatActivity() {
 
     private class GetInformationAsyncTask(activity:UserOwnTieziActivity):BaseAsyncTask<Void,Void,List<UserCommentData>,UserOwnTieziActivity>(activity){
         override fun doInBackground(vararg params: Void?): List<UserCommentData>? {
-            val getDatas=HandleFind.Get_User_Comment_Information_By_Own(LoginActivity.userID)
-            getDatas?.let{
-                return getDatas
-            }
-            return null
+            return HandleFindNew.GetUserCommentInformaitonByOwn(LoginActivity.userID)
         }
 
-        override fun onPostExecute(datas: List<UserCommentData>?) {
-            datas?.let{
+        override fun onPostExecute(datas: List<UserCommentData>) {
                 val activity=weakRefrece.get()
                 activity?.let{
                     activity.adapter = MyOwnCommentRecyclerViewAdapter(activity,datas)
@@ -126,7 +119,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                     activity.myOwnList.layoutManager = layoutManager
                     activity.myOwnList.adapter = activity.adapter
                 }
-            }
+
         }
     }
 

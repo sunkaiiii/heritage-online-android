@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
@@ -107,21 +106,33 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/add_focus_img"
-                android:layout_width="24sp"
-                android:layout_height="24sp"
-                android:src="@drawable/find_add_focus" />
-
             <TextView
                 android:id="@+id/add_focus_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="3dp"
                 android:layout_marginLeft="3sp"
-                android:layout_toRightOf="@id/add_focus_img"
-                android:text="加关注"
-                android:textColor="@color/themeRed" />
+                android:text="@string/add_focus"
+                android:textColor="@color/themeRed"
+                android:gravity="center"
+                android:drawableStart="@drawable/ic_add_black_24dp"
+                android:drawableLeft="@drawable/ic_add_black_24dp"
+                android:visibility="visible"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cancel_focus_text"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:text="@string/already_focus"
+                android:textColor="@color/deepGrey"
+                android:gravity="center"
+                android:drawableStart="@drawable/ic_remove_circle_grey_400_24dp"
+                android:drawableLeft="@drawable/ic_remove_circle_grey_400_24dp"
+                android:visibility="gone"
+                android:drawablePadding="3dp"/>
         </RelativeLayout>
 
         <TextView

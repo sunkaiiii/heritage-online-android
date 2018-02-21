@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
@@ -33,7 +33,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             data = intent?.getSerializableExtra("data") as UserCommentData
             edit_comment_title.setText(data!!.commentTitle)
             edit_comment_content.setText(data!!.commentContent)
-            edit_comment_image.setImageBitmap(HandlePic.handlePic(ByteArrayInputStream(data!!.userImage), 0))
+            edit_comment_image.setImageBitmap(HandlePic.handlePic(ByteArrayInputStream(org.kobjects.base64.Base64.decode(data!!.image)), 0))
         }
     }
 
@@ -68,17 +68,18 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             val drawable = edit_comment_image.drawable
             val bytes = HandlePic.drawableToByteArray(drawable)
             bytes?.let {
-                data!!.userImage = bytes
+                data!!.image = org.kobjects.base64.Base64.encode(bytes)
             }
         }
     }
 
     private fun updateUserCommentData(item: MenuItem) {
+        val data=data
         data?.let {
             setViewsUnable()
             Thread {
                 setDatas()
-                val result = HandleFind.Update_User_Comment_Informaiton(data!!)
+                val result = HandleFindNew.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,data.image)
                 runOnUiThread {
                     if (result) {
                         MakeToast.MakeText(getString(R.string.update_success))

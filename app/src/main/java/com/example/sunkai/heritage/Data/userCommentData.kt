@@ -1,24 +1,27 @@
 package com.example.sunkai.heritage.Data
 
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
 import java.io.Serializable
 
 /**
- * Created by sunkai on 2017/12/15.
- * 此类用于存储用户他发帖的信息
- * 实现了Serializable可以传入至bundle中
+ * Created by sunkai on 2018/2/21.
  */
-class UserCommentData(var id: Int = 0
-                      , var inListPosition: Int = 0
-                      , var user_id: Int = 0
-                      , var commentTime: String=""
-                      , var commentTitle: String? = null
-                      , var commentContent: String? = null
-                      , var commentLikeNum: String? = null
-                      , var commentReplyNum: String? = null
-                      , var userName: String? = null
-                      , var userImage: ByteArray? = null
-                      , var isUserLike:Boolean = false
-                      , var isUserFocusUser:Boolean = false) : Serializable{
-    fun getUserLike():Boolean=isUserLike
-    fun getUserFocusUser():Boolean=isUserFocusUser
+class UserCommentData(val id:Int,
+                      val commentTime:String,
+                      val userName:String,
+                      var commentTitle:String,
+                      var commentContent:String,
+                      val userID:Int,
+                      var isLike:String,
+                      var isFollow:String,
+                      var likeNum:Int,
+                      var replyNum:Int,
+                      var image:String):Serializable{
+    fun isLike():Boolean{
+        return SUCCESS==isLike
+    }
+
+    fun isFollow():Boolean{
+        return SUCCESS==isFollow
+    }
 }

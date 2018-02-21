@@ -1,14 +1,16 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import android.util.Log
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.FindActivityData
-import com.example.sunkai.heritage.Data.UserCommentDataNew
+import com.example.sunkai.heritage.Data.UserCommentData
 import com.google.gson.Gson
 import okhttp3.FormBody
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.kobjects.base64.Base64
+import kotlin.math.log
 
 /*
  * Created by sunkai on 2018/2/1.
@@ -75,18 +77,19 @@ object HandleFindNew:BaseSettingNew() {
         return SUCCESS==result
     }
 
-    fun GetUserCommentInformation(userID: Int):List<UserCommentDataNew>{
+    fun GetUserCommentInformation(userID: Int):List<UserCommentData>{
         val getUrl="$URL/GetUserCommentInformation?userID=$userID"
         val result=PutGet(getUrl)
+        Log.d("GetUserCommentInfo",result)
         return if(result== ERROR){
             arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentDataNew>::class.java)
+                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
+                arrayListOf<UserCommentData>()
             }
-            arrayListOf()
         }
     }
 
@@ -104,13 +107,12 @@ object HandleFindNew:BaseSettingNew() {
         return result== SUCCESS
     }
 
-    fun UpdateUserCommentInformaiton(id:Int,title:String,content:String,image: ByteArray):Boolean{
-        val imageString=Base64.encode(image)
+    fun UpdateUserCommentInformaiton(id:Int,title:String,content:String,image: String):Boolean{
         val formBody=FormBody.Builder()
                 .add("id",id.toString())
                 .add("title",title)
                 .add("content",content)
-                .add("image",imageString).build()
+                .add("image",image).build()
         val postUrl="$URL/UpdateUserCommentInformaiton"
         val result=PutPost(postUrl,formBody)
         return result== SUCCESS
@@ -126,33 +128,34 @@ object HandleFindNew:BaseSettingNew() {
         }
     }
 
-    fun GetUserCommentInformationByUser(userID: Int):List<UserCommentDataNew>{
+    fun GetUserCommentInformationByUser(userID: Int):List<UserCommentData>{
         val getUrl="$URL/GetUserCommentInformationByUser?userID=$userID"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentDataNew>::class.java)
+                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
+                arrayListOf<UserCommentData>()
             }
-            arrayListOf()
         }
     }
 
-    fun GetUserCommentInformaitonByOwn(userID:Int):List<UserCommentDataNew>{
+    fun GetUserCommentInformaitonByOwn(userID:Int):List<UserCommentData>{
         val getUrl="$URL/GetUserCommentInformaitonByOwn?userID=$userID"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentDataNew>::class.java)
+                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
+                arrayListOf<UserCommentData>()
             }
-            arrayListOf()
+
         }
     }
 
@@ -166,18 +169,18 @@ object HandleFindNew:BaseSettingNew() {
         }
     }
 
-    fun GetAllUserCommentInfoByID(userID: Int):UserCommentDataNew?{
+    fun GetAllUserCommentInfoByID(userID: Int): UserCommentData?{
         val getUrl="$URL/GetAllUserCommentInfoByID?user=$userID"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             null
         }else {
             try {
-                Gson().fromJson(result, UserCommentDataNew::class.java)
+                Gson().fromJson(result, UserCommentData::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()
+                null
             }
-            null
         }
     }
 
@@ -211,8 +214,9 @@ object HandleFindNew:BaseSettingNew() {
                 Gson().fromJsonToList(result,Array<CommentReplyInformation>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
+                arrayListOf<CommentReplyInformation>()
             }
-            arrayListOf()
+
         }
     }
 

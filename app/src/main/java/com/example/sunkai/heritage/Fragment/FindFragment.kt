@@ -1,50 +1,29 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.app.ActivityOptions
-import android.content.ContentValues
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.AdapterView
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
-
+import android.widget.*
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
-import com.example.sunkai.heritage.Data.FindActivityData
-import com.example.sunkai.heritage.Data.GlobalContext
-import com.example.sunkai.heritage.Data.HandlePic
-import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-
-import java.io.ByteArrayInputStream
+import com.example.sunkai.heritage.tools.MakeToast.toast
+import kotlinx.android.synthetic.main.fragment_find.*
 import java.io.ByteArrayOutputStream
-import java.lang.ref.WeakReference
-import java.util.ArrayList
 
 /**
  * 发现页面的类
@@ -52,29 +31,17 @@ import java.util.ArrayList
 
 class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
-    private lateinit var tips: Array<ImageView?>
-    private lateinit var mImageViews: Array<ImageView?>
     private lateinit var findSearchBtn: ImageView
     private lateinit var findEdit: TextView
-    private lateinit var imgIdArray: IntArray
     internal lateinit var view: View
     private lateinit var recyclerViewAdpter: FindFragmentRecyclerViewAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var refreshBtn: FloatingActionButton
     private lateinit var selectSpiner: Spinner
-    private lateinit var addCommentBtn: Button
-    private lateinit var viewPager: ViewPager
-    internal lateinit var activityDatas: List<FindActivityData>
-    internal lateinit var btnAnimation: Animation
-    private lateinit var bitmaps: Array<Bitmap?>
-    internal var count = 0
-    internal var count2 = 0
 
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_find, container, false)
         initview(view)
         return view
@@ -85,82 +52,25 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         findSearchBtn = view.findViewById(R.id.find_searchbtn)
         selectSpiner = view.findViewById(R.id.find_select_spinner)
         recyclerView = view.findViewById(R.id.fragment_find_recyclerView)
-        viewPager = view.findViewById(R.id.find_fragment_viewPager)
         findEdit.setOnClickListener(this)
         findSearchBtn.setOnClickListener(this)
     }
 
-    private fun loadInfor(){
-        setHasOptionsMenu(true)
-        bitmaps = arrayOfNulls(4)
-        //主页活动页面
-        imgIdArray = intArrayOf(R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey, R.drawable.backgound_grey)
-        loadMyPage()
-        //设置Adapter
-        viewPager.adapter = MyAdapter()
-        //设置监听，主要是设置点点的背景
-        //设置ViewPager的默认项, 设置为长度的100倍，这样子开始就能往左滑动
-        viewPager.currentItem = mImageViews.size * 100
-        //        listView = (ListView) view.findViewById(R.id.fragment_find_listview);
-        activityDatas = ArrayList()
-        loadMyPage()
-        viewPager.adapter = MyAdapter()
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+    private fun loadInformation(){
 
-            }
+        //程序默认显示广场的全部帖子
+        loadUserCommentData(1)
 
-            override fun onPageSelected(position: Int) {
-                getActivityID(position % 4, this@FindFragment).execute()
-                setImageBackground(position % mImageViews.size)
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-
-            }
-        })
-        //加载轮播页第一张图片
-        getActivityID(0, this).execute()
-
-        /*
-         * 程序默认显示广场的全部帖子
-         */
-        recyclerViewAdpter = FindFragmentRecyclerViewAdapter(activity!!, 1)
-        setAdpterClick(recyclerViewAdpter)
-        val layoutManager = LinearLayoutManager(activity)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = recyclerViewAdpter
-        refreshBtn = view.findViewById(R.id.fragment_find_refreshbtn)
-        refreshBtn.setOnClickListener { _ ->
-            btnAnimation = AnimationUtils.loadAnimation(context, R.anim.refresh_button_rotate)
-            refreshBtn.startAnimation(btnAnimation)
-            refreshBtn.isEnabled = false
-            recyclerViewAdpter.reFreshList()
-        }
-
-        /*
-            * Spinear切换，重新加载adpater的数据
-            */
+        //Spinear切换，重新加载adpater的数据
         selectSpiner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when (position) {
                     0 -> {
-                        recyclerViewAdpter = FindFragmentRecyclerViewAdapter(activity!!, 1)
-                        setAdpterClick(recyclerViewAdpter)
-                        recyclerView.adapter = recyclerViewAdpter
+                        loadUserCommentData(1)
                     }
                     1 -> {
-                        if (LoginActivity.userID == 0) {
-                            Toast.makeText(activity, "没有登录", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(activity, LoginActivity::class.java)
-                            intent.putExtra("isInto", 1)
-                            startActivityForResult(intent, 1)
-                            selectSpiner.setSelection(0)
-                            return
-                        }
-                        recyclerViewAdpter = FindFragmentRecyclerViewAdapter(activity!!, 2)
-                        setAdpterClick(recyclerViewAdpter)
-                        recyclerView.adapter = recyclerViewAdpter
+                        checkUserIsLogin()
+                        loadUserCommentData(2)
                     }
                 }
             }
@@ -169,28 +79,53 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
             }
         }
-        /*
-         * 发帖
-         */
-        addCommentBtn = view.findViewById(R.id.btn_add_comment)
-        addCommentBtn.setOnClickListener { _ ->
+        //发帖
+        fragmentFindAddCommentBtn.setOnClickListener {
             if (LoginActivity.userID == 0) {
                 Toast.makeText(activity, "没有登录", Toast.LENGTH_SHORT).show()
                 val intent = Intent(activity, LoginActivity::class.java)
                 intent.putExtra("isInto", 1)
                 startActivityForResult(intent, 1)
-                return@setOnClickListener
+            }else {
+                val intent = Intent(activity, AddFindCommentActivity::class.java)
+                startActivityForResult(intent, 1)
             }
-            val intent = Intent(activity, AddFindCommentActivity::class.java)
-            /*
-             * 当成功添加帖子的时候，页面刷新
-             */
+        }
+    }
+    override fun startLoadInformation() {
+        loadInformation()
+    }
+
+    private fun checkUserIsLogin(){
+        if (LoginActivity.userID == 0) {
+            toast("没有登录")
+            val intent = Intent(activity, LoginActivity::class.java)
+            intent.putExtra("isInto", 1)
             startActivityForResult(intent, 1)
+            selectSpiner.setSelection(0)
+            return
         }
     }
 
-    override fun startLoadInformation() {
-        loadInfor()
+    private fun loadUserCommentData(what:Int){
+        val activiy=activity
+        activiy?.let{
+            Thread{
+                val datas=when(what){
+                    1->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
+                    2->HandleFindNew.GetUserCommentInformationByUser(LoginActivity.userID)
+                    else->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
+                }
+                for(data in datas){
+                    Log.d("findData",data.toString())
+                }
+                activiy.runOnUiThread {
+                    val adapter=FindFragmentRecyclerViewAdapter(activiy,datas,what)
+                    setAdpterClick(adapter)
+                    recyclerView.adapter=adapter
+                }
+            }.start()
+        }
     }
 
     private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter?) {
@@ -222,43 +157,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         })
     }
 
-    /**
-     * 加载首页轮转窗
-     */
-    private fun loadMyPage() {
-        val group = view.findViewById<ViewGroup>(R.id.find_fragment_imageView)
-        tips = arrayOfNulls(imgIdArray.size)
-        for (i in tips.indices) {
-            val imageView = ImageView(activity)
-            imageView.layoutParams = ViewGroup.LayoutParams(10, 10)
-            tips[i] = imageView
-            if (i == 0) {
-                tips[i]?.setBackgroundResource(R.drawable.page_indicator_focused)
-            } else {
-                tips[i]?.setBackgroundResource(R.drawable.page_indicator_unfocused)
-            }
-            val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT))
-            layoutParams.leftMargin = 5
-            layoutParams.rightMargin = 5
-            if (count >= tips.size) {
-                group.addView(imageView, layoutParams)
-                count2++
-            }
-        }
-        mImageViews = arrayOfNulls(imgIdArray.size)
-        for (i in mImageViews.indices) {
-            val imageView = ImageView(activity)
-            mImageViews[i] = imageView
-            if (count < mImageViews.size) {
-                bitmaps[i] = HandlePic.handlePic(GlobalContext.instance, imgIdArray[i], 1)
-                count++
-            }
-            imageView.scaleType = ImageView.ScaleType.FIT_XY
-            imageView.setImageBitmap(bitmaps[i])
-        }
-    }
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.find_text, R.id.find_searchbtn -> {
@@ -274,108 +172,10 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         }
     }
 
-    inner class MyAdapter : PagerAdapter() {
-
-        override fun getCount(): Int {
-            return Integer.MAX_VALUE
-        }
-
-        override fun isViewFromObject(arg0: View, arg1: Any): Boolean {
-            return arg0 === arg1
-        }
-
-        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-            container.removeView(mImageViews[position % mImageViews.size])
-        }
-
-        /*
-         * 载入图片进去，用当前的position 除以 图片数组长度取余数是关键
-         */
-        override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            container.addView(mImageViews[position % mImageViews.size], 0)
-            return mImageViews[position % mImageViews.size] as ImageView
-        }
-
-    }
-
-    private fun setImageBackground(selectItems: Int) {
-        for (i in tips.indices) {
-            if (i == selectItems) {
-                tips[i]?.setBackgroundResource(R.drawable.page_indicator_focused)
-            } else {
-                tips[i]?.setBackgroundResource(R.drawable.page_indicator_unfocused)
-            }
-        }
-    }
-
-
-    /**
-     * 按照图片的id获取首页浮窗信息
-     */
-    internal class getActivityID internal constructor(var index: Int, findFragment: FindFragment) : AsyncTask<Void, Void, Bitmap>() {
-        lateinit var db: SQLiteDatabase
-        var findFragmentWeakReference: WeakReference<FindFragment>
-
-        init {
-            findFragmentWeakReference = WeakReference(findFragment)
-        }
-
-        override fun doInBackground(vararg voids: Void): Bitmap? {
-            val findFragment = findFragmentWeakReference.get() ?: return null
-            if (findFragment.activityDatas.isEmpty()) {
-                val getDatas= HandleFindNew.Get_Find_Activity_ID()
-                getDatas?.let {
-                    findFragment.activityDatas = getDatas
-                }
-            }
-            db = MySqliteHandler.GetReadableDatabase()
-            val table = "find_fragment_activity"
-            val selection = "id=?"
-            if (findFragment.activityDatas.isEmpty())
-                return null
-            val selectionArgs = arrayOf(findFragment.activityDatas[index].id.toString())
-            val cursor = db.query(table, null, selection, selectionArgs, null, null, null)
-            cursor.moveToFirst()
-            if (!cursor.isAfterLast) {
-                val imageIndex = cursor.getColumnIndex("image")
-                val img = cursor.getBlob(imageIndex)
-                cursor.close()
-                if (img != null) {
-                    val `in` = ByteArrayInputStream(img)
-                    return HandlePic.handlePic(`in`, 0)
-                }
-            }
-            val data:FindActivityData? = HandleFindNew.Get_Find_Activity_Information(findFragment.activityDatas[index].id)
-            data?.let {
-                findFragment.activityDatas[index].title = data.title
-                findFragment.activityDatas[index].content = data.content
-                findFragment.activityDatas[index].image = data.image
-                val `in` = ByteArrayInputStream(findFragment.activityDatas[index].image)
-                val bitmap = HandlePic.handlePic(`in`, 0)
-                db = MySqliteHandler.GetWritableDatabase()
-                val contentValues = ContentValues()
-                contentValues.put("id", data.id)
-                contentValues.put("title", data.title)
-                contentValues.put("image", data.image)
-                contentValues.put("content", data.content)
-                db.insert(table, null, contentValues)
-                return bitmap
-            }
-            return null
-        }
-
-        override fun onPostExecute(bitmap: Bitmap?) {
-            val findFragment = findFragmentWeakReference.get() ?: return
-            findFragment.mImageViews[index]?.scaleType = ImageView.ScaleType.CENTER_CROP
-            findFragment.mImageViews[index]?.setImageBitmap(bitmap)
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             1 -> {
-                startRefreshButtonAnimation()
-                recyclerViewAdpter.reFreshList()
+//                recyclerViewAdpter.reFreshList()
             }
             FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT) {
                 val bundle = data!!.extras
@@ -385,18 +185,10 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                     recyclerViewAdpter.getReplyCount(commentID, position)
                 }
             } else if (resultCode == UserCommentDetailActivity.DELETE_COMMENT) {
-                startRefreshButtonAnimation()
-                recyclerViewAdpter.reFreshList()
+//                recyclerViewAdpter.reFreshList()
             }
         }
     }
-
-    private fun startRefreshButtonAnimation() {
-        btnAnimation = AnimationUtils.loadAnimation(context, R.anim.refresh_button_rotate)
-        refreshBtn.startAnimation(btnAnimation)
-        refreshBtn.isEnabled = false
-    }
-
 
     companion object {
         private const val FROM_USER_COMMENT_DETAIL = 2
