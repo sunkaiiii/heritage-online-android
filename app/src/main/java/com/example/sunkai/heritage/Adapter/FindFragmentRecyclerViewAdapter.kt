@@ -1,16 +1,14 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
-import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.os.AsyncTask
 import android.support.v7.widget.RecyclerView
-import android.util.LruCache
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -21,19 +19,17 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.*
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ERROR
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
-import com.example.sunkai.heritage.Data.HandlePic
-import com.example.sunkai.heritage.Data.MySqliteHandler
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.HandleUserNew
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.RectangleImageView
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import com.makeramen.roundedimageview.RoundedImageView
-import org.kobjects.base64.Base64
-import java.io.ByteArrayInputStream
-import java.lang.ref.WeakReference
 
 
 /**
@@ -42,11 +38,10 @@ import java.lang.ref.WeakReference
  */
 
 class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
-    private var recyclerView: RecyclerView? = null
-    private var lruCache: LruCache<Int, Bitmap>
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
-        val img: ImageView
+        //仿照Instagram的正方形照片，我也不知道这样好不好
+        val img: RectangleImageView
         val like: TextView
         val dislike: TextView
         val comment: TextView
@@ -67,19 +62,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         }
     }
 
-    init {
-        val avilableMemory = Runtime.getRuntime().maxMemory().toInt() / 8
-        val cacheSzie = avilableMemory / 4
-        lruCache = object : LruCache<Int, Bitmap>(cacheSzie) {
-            override fun sizeOf(key: Int?, value: Bitmap): Int {
-                return value.byteCount
-            }
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (recyclerView == null)
-            recyclerView = parent as RecyclerView
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_find_listview_layout, parent, false)
         val holder = ViewHolder(view)
         view.setOnClickListener(this)
@@ -250,6 +233,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     }
 
     private fun GetCommentImage(holder: ViewHolder,data: UserCommentData){
+//        setImageViewSize(holder.img)
         val requestOption=RequestOptions().placeholder(R.drawable.backgound_grey).error(R.drawable.backgound_grey)
         Glide.with(context).load(BaseSettingNew.URL+data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
@@ -263,7 +247,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             }
         }.start()
     }
-
 
     private fun hideSomeElement(vh: ViewHolder, data: UserCommentData) {
         vh.like.visibility = View.GONE

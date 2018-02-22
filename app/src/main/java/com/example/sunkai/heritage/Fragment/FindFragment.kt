@@ -2,12 +2,9 @@ package com.example.sunkai.heritage.Fragment
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +13,7 @@ import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
+import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.DELETE_COMMENT
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.HandlePic
@@ -25,7 +23,6 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.ALL_COMMENT
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import kotlinx.android.synthetic.main.fragment_find.*
-import java.io.ByteArrayOutputStream
 
 /**
  * 发现页面的类
@@ -36,7 +33,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     private lateinit var findSearchBtn: ImageView
     private lateinit var findEdit: TextView
     internal lateinit var view: View
-    private lateinit var recyclerViewAdpter: FindFragmentRecyclerViewAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var selectSpiner: Spinner
 
@@ -158,8 +154,8 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                 if (LoginActivity.userID == 0) {
                     Toast.makeText(activity, "没有登录", Toast.LENGTH_SHORT).show()
                     val intent = Intent(activity, LoginActivity::class.java)
-                    intent.putExtra("isInto", 1)
-                    startActivityForResult(intent, 1)
+                    intent.putExtra("isInto", LOGIN)
+                    startActivityForResult(intent, LOGIN)
                 }
                 val intent = Intent(activity, SearchActivity::class.java)
                 startActivity(intent)
@@ -169,25 +165,15 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            1 -> {
-//                recyclerViewAdpter.reFreshList()
+            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT){
+                loadUserCommentData(find_select_spinner.selectedItemPosition)
             }
-            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT) {
-                val bundle = data!!.extras
-                val commentID = bundle?.getInt("commentID") ?: BUNDLE_ERROR
-                val position = bundle?.getInt("position") ?: BUNDLE_ERROR
-                if (commentID != BUNDLE_ERROR && position != BUNDLE_ERROR) {
-//                    recyclerViewAdpter.getReplyCount(commentID, position)
-                }
-            } else if (resultCode == UserCommentDetailActivity.DELETE_COMMENT) {
-//                recyclerViewAdpter.reFreshList()
-            }
+            LOGIN, DELETE_COMMENT -> loadUserCommentData(find_select_spinner.selectedItemPosition)
         }
     }
 
     companion object {
-        private const val FROM_USER_COMMENT_DETAIL = 2
-
-        private const val BUNDLE_ERROR = -4
+        private const  val LOGIN=1
+        private const val FROM_USER_COMMENT_DETAIL = 0
     }
 }

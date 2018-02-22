@@ -15,10 +15,10 @@
         android:padding="6dp"
         >
 
-        <ImageView
+        <com.example.sunkai.heritage.tools.RectangleImageView
             android:id="@+id/fragment_find_litview_img"
             android:layout_width="match_parent"
-            android:layout_height="165dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"

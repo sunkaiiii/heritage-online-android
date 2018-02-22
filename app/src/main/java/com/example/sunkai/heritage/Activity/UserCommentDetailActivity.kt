@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -12,40 +11,22 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
-
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
-import com.example.sunkai.heritage.Data.FindActivityAllData
-import com.example.sunkai.heritage.Data.GlobalContext
-import com.example.sunkai.heritage.Data.HandlePic
-import com.example.sunkai.heritage.Data.CommentReplyData
-import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.SoftInputTools.hideKeyboard
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
-import org.kobjects.base64.Base64
-
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
-
 import java.util.*
 
 /**
