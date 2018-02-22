@@ -16,14 +16,14 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.ConnectWebService.*
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ERROR
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.ConnectWebService.HandleUserNew
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -36,13 +36,14 @@ import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
 
 
-/*
+/**
+ * 发现页第一屏recyclerView的adapter
  * Created by sunkai on 2017/12/22.
  */
 
 class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
     private var recyclerView: RecyclerView? = null
-    internal var lruCache: LruCache<Int, Bitmap>
+    private var lruCache: LruCache<Int, Bitmap>
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
         val img: ImageView
@@ -91,8 +92,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         holder?.let {
             val data = datas[position]
             setHolderData(holder, data)
-            GetCommentImage(data, holder.img)
-            GetUserImage(data, holder.userImage)
+            GetCommentImage(holder,data)
+            GetUserImage(holder,data)
             setHolderLikeState(holder, data)
             setLikeClick(holder, data, position)
             setHolderFocusState(holder, data)
@@ -101,7 +102,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     }
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
-        holder.img.setImageResource(R.drawable.backgound_grey)
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         holder.comment.text = data.replyNum.toString()
         holder.name_text.text = data.userName
@@ -249,18 +249,21 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         return true
     }
 
-    private fun GetCommentImage(data: UserCommentData, imageView: ImageView) {
-        val bitmap = lruCache.get(data.id)
-        if (null != bitmap) {
-            imageView.setImageBitmap(bitmap)
-        } else {
-            GetCommentImage(data.id, data.commentTime, this, imageView).execute()
-        }
+    private fun GetCommentImage(holder: ViewHolder,data: UserCommentData){
+        val requestOption=RequestOptions().placeholder(R.drawable.backgound_grey).error(R.drawable.backgound_grey)
+        Glide.with(context).load(BaseSettingNew.URL+data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
 
-    private fun GetUserImage(data: UserCommentData, imageView: ImageView) {
-        GetUserImage(data.userID, this, imageView).execute()
+    private fun GetUserImage(holder: ViewHolder,data: UserCommentData){
+        val requestOptions=RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
+        Thread{
+            val userImageURL=HandleUserNew.GetUserImageURL(data.userID)
+            context.runOnUiThread {
+                Glide.with(context).load(userImageURL).apply(requestOptions).into(holder.userImage)
+            }
+        }.start()
     }
+
 
     private fun hideSomeElement(vh: ViewHolder, data: UserCommentData) {
         vh.like.visibility = View.GONE
@@ -277,146 +280,6 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             return false
         }
         return true
-    }
-
-
-    fun getReplyCount(commentID: Int, position: Int) {
-        GetReplyCount(commentID, position, this).execute()
-    }
-
-
-    internal class GetReplyCount internal constructor(private val commentID: Int, var position: Int, adapter: FindFragmentRecyclerViewAdapter) : AsyncTask<Void, Void, Int>() {
-        private val findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
-
-        init {
-            findFragmentAdapterWeakReference = WeakReference(adapter)
-        }
-
-        override fun doInBackground(vararg voids: Void): Int {
-            return HandleFind.Get_User_Comment_Count(commentID)
-        }
-
-        override fun onPostExecute(count: Int) {
-            val adapter = findFragmentAdapterWeakReference.get() ?: return
-            adapter.datas[position].replyNum = count
-            adapter.notifyDataSetChanged()
-        }
-    }
-
-    private class GetCommentImage internal constructor(val id: Int, val commentTime: String, findFragmentAdapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
-        var imageViewWeakReference: WeakReference<ImageView>
-        var findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
-
-        init {
-            findFragmentAdapterWeakReference = WeakReference(findFragmentAdapter)
-            imageViewWeakReference = WeakReference(imageView)
-        }
-
-        override fun doInBackground(vararg voids: Void): Bitmap? {
-            val findFragmentAdapter = findFragmentAdapterWeakReference.get() ?: return null
-            var db = MySqliteHandler.GetReadableDatabase()
-            val table = "find_comment_image"
-            val selection = "imageID=?"
-            val cursor: Cursor
-            val selectionArgs = arrayOf(id.toString())
-            var update = false
-            cursor = db.query(table, null, selection, selectionArgs, null, null, null)
-            cursor.moveToFirst()
-            if (!cursor.isAfterLast) {
-                val commentTimeIndex = cursor.getColumnIndex("comment_time")
-                if (commentTimeIndex >= 0) {
-                    val sqlCommentTime = cursor.getString(commentTimeIndex)
-                    if (sqlCommentTime == commentTime) {
-                        val imageIndex = cursor.getColumnIndex("image")
-                        val img = cursor.getBlob(imageIndex)
-                        val `in` = ByteArrayInputStream(img)
-                        val bitmap = HandlePic.handlePic(`in`, 0)
-                        findFragmentAdapter.lruCache.put(id, bitmap)
-                        cursor.close()
-                        return bitmap
-                    }
-                    update = true
-                }
-            }
-            val bytes = HandleFind.Get_User_Comment_Image(id) ?: return null
-            val contentValues = ContentValues()
-            contentValues.put("imageID", id)
-            contentValues.put("comment_time", commentTime)
-            contentValues.put("image", bytes)
-            db = MySqliteHandler.GetWritableDatabase()
-            if (update) {
-                db.update(table, contentValues, "imageID=?", arrayOf(id.toString()))
-            } else {
-                db.insert(table, null, contentValues)
-            }
-            val bitmap = HandlePic.handlePic(ByteArrayInputStream(bytes), 0)
-            findFragmentAdapter.lruCache.put(id, bitmap)
-            return bitmap
-        }
-
-        override fun onPostExecute(bitmap: Bitmap?) {
-            val getImageView = imageViewWeakReference.get()
-            if (getImageView != null && bitmap != null) {
-                getImageView.run {
-                    val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
-                    setImageBitmap(bitmap)
-                    startAnimation(imageAnimation)
-                }
-            }
-
-        }
-    }
-
-    internal class GetUserImage internal constructor(var id: Int, adapter: FindFragmentRecyclerViewAdapter, imageView: ImageView) : AsyncTask<Void, Void, Bitmap>() {
-        private val findFragmentAdapterWeakReference: WeakReference<FindFragmentRecyclerViewAdapter>
-        private val imageViewWeakReference: WeakReference<ImageView>
-
-        init {
-            imageViewWeakReference = WeakReference(imageView)
-            findFragmentAdapterWeakReference = WeakReference(adapter)
-        }
-
-        override fun doInBackground(vararg voids: Void): Bitmap? {
-            findFragmentAdapterWeakReference.get() ?: return null
-            var db = MySqliteHandler.GetReadableDatabase()
-            val cursor: Cursor
-            val table = "person_image"
-            val selection = "imageID=?"
-            val selectionArgs = arrayOf(id.toString())
-            cursor = db.query(table, null, selection, selectionArgs, null, null, null)
-            val result: String?
-            cursor.moveToFirst()
-            if (!cursor.isAfterLast) {
-                val imageIndex = cursor.getColumnIndex("image")
-                val image = cursor.getBlob(imageIndex)
-                cursor.close()
-                return HandlePic.handlePic(ByteArrayInputStream(image), 0)
-
-            }
-            val image: ByteArray
-            result = HandlePerson.Get_User_Image(id)
-            if (result == null)
-                return null
-            image = Base64.decode(result)
-            val contentValues = ContentValues()
-            contentValues.put("imageID", id)
-            contentValues.put("image", image)
-            db = MySqliteHandler.GetWritableDatabase()
-            db.insert(table, null, contentValues)
-            return HandlePic.handlePic(ByteArrayInputStream(image), 0)
-        }
-
-        override fun onPostExecute(bitmap: Bitmap?) {
-            val adapter = findFragmentAdapterWeakReference.get()
-            if (bitmap == null || adapter == null)
-                return
-            val imageView = imageViewWeakReference.get()
-            if (imageView != null) {
-                val imageAnimation: Animation = AnimationUtils.loadAnimation(adapter.context, R.anim.image_apear)
-                imageView.setImageBitmap(bitmap)
-                imageView.startAnimation(imageAnimation)
-            }
-        }
     }
 
     companion object {

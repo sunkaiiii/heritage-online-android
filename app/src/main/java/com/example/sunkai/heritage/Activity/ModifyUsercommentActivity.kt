@@ -9,14 +9,17 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
-import java.io.ByteArrayInputStream
+import org.kobjects.base64.Base64
 
 class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     private lateinit var edit_comment_title: EditText
@@ -33,7 +36,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             data = intent?.getSerializableExtra("data") as UserCommentData
             edit_comment_title.setText(data!!.commentTitle)
             edit_comment_content.setText(data!!.commentContent)
-            edit_comment_image.setImageBitmap(HandlePic.handlePic(ByteArrayInputStream(org.kobjects.base64.Base64.decode(data!!.image)), 0))
+            Glide.with(this).load(BaseSettingNew.URL+data!!.imageUrl).into(edit_comment_image)
         }
     }
 
@@ -65,12 +68,11 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         data?.let {
             data!!.commentTitle = edit_comment_title.text.toString()
             data!!.commentContent = edit_comment_content.text.toString()
-            val drawable = edit_comment_image.drawable
-            val bytes = HandlePic.drawableToByteArray(drawable)
-            bytes?.let {
-                data!!.image = org.kobjects.base64.Base64.encode(bytes)
-            }
         }
+    }
+    private fun getBytes():ByteArray?{
+        val drawable = edit_comment_image.drawable
+        return HandlePic.drawableToByteArray(drawable)
     }
 
     private fun updateUserCommentData(item: MenuItem) {
@@ -79,12 +81,15 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             setViewsUnable()
             Thread {
                 setDatas()
-                val result = HandleFindNew.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,data.image)
+                val bytes= getBytes() ?: return@Thread
+                val result = HandleFindNew.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,Base64.encode(bytes))
                 runOnUiThread {
-                    if (result) {
+                    if (result!= ERROR) {
                         MakeToast.MakeText(getString(R.string.update_success))
+                        data.imageUrl=result
                         val intent = Intent()
                         intent.putExtra("data", data)
+                        intent.putExtra("image",bytes)
                         setResult(UPDATE_SUCCESS, intent)
                         finish()
                     } else {

@@ -122,13 +122,14 @@ object HandleUserNew : BaseSettingNew() {
         return arrayListOf()
     }
 
-    fun GetUserImage(userID: Int):ByteArray?{
+    fun GetUserImageURL(userID: Int):String?{
         val getUrl="$URL/GetUserImage?userID=$userID"
         val result=PutGet(getUrl)
-        if(result== ERROR) {
-            return null
+        return if(result== ERROR){
+            null
+        }else{
+            URL+result
         }
-        return Base64.decode(result)
     }
 
     fun UpdateUserImage(userID: Int,imageByteArray: ByteArray):Boolean{

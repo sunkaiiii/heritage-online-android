@@ -16,7 +16,8 @@
         android:src="@mipmap/app_logo_image"
         android:layout_above="@id/base_line"
         android:layout_marginBottom="12sp"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:id="@+id/imageView" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,4 +49,5 @@
         android:layout_below="@id/base_out"
         android:text="@string/program_git_url"
         android:layout_marginTop="6dp"/>
+
 </RelativeLayout>

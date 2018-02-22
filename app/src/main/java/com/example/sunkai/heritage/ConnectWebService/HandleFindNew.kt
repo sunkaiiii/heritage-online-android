@@ -2,15 +2,10 @@ package com.example.sunkai.heritage.ConnectWebService
 
 import android.util.Log
 import com.example.sunkai.heritage.Data.CommentReplyInformation
-import com.example.sunkai.heritage.Data.FindActivityData
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.google.gson.Gson
 import okhttp3.FormBody
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import org.kobjects.base64.Base64
-import kotlin.math.log
 
 /*
  * Created by sunkai on 2018/2/1.
@@ -101,15 +96,14 @@ object HandleFindNew:BaseSettingNew() {
         return result== SUCCESS
     }
 
-    fun UpdateUserCommentInformaiton(id:Int,title:String,content:String,image: String):Boolean{
+    fun UpdateUserCommentInformaiton(id:Int,title:String,content:String,image: String):String{
         val formBody=FormBody.Builder()
                 .add("id",id.toString())
                 .add("title",title)
                 .add("content",content)
                 .add("image",image).build()
         val postUrl="$URL/UpdateUserCommentInformaiton"
-        val result=PutPost(postUrl,formBody)
-        return result== SUCCESS
+        return PutPost(postUrl,formBody)
     }
 
 

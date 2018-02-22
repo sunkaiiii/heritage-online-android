@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 
 import java.io.InputStream
@@ -28,11 +29,16 @@ object HandlePic {
         return BitmapFactory.decodeStream(`is`, null, options)
     }
 
-    fun handlePic(`is`: InputStream, size: Int): Bitmap {
+    fun handlePic(`is`: InputStream, size: Int=0): Bitmap {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = false
         options.inSampleSize = size
         return BitmapFactory.decodeStream(`is`, null, options)
+    }
+
+    fun handlePic(imgByte: ByteArray):Bitmap{
+        val inputStrem=ByteArrayInputStream(imgByte)
+        return handlePic(inputStrem)
     }
 
     fun bitmapToByteArray(bitmap: Bitmap):ByteArray{

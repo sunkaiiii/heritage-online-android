@@ -18,6 +18,7 @@ import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -138,11 +139,8 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                     val imageView=getview as ImageView
                     imageView.isDrawingCacheEnabled = true
                     val drawable = imageView.drawable
-                    val bitmapDrawable = drawable as BitmapDrawable
-                    val bitmap = bitmapDrawable.bitmap
-                    val out = ByteArrayOutputStream()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                    intent.putExtra("bitmap", out.toByteArray())
+                    val imageByte=HandlePic.drawableToByteArray(drawable)
+                    intent.putExtra("bitmap", imageByte)
                     intent.putExtras(bundle)
                     //如果手机是Android 5.0以上的话，使用新的Activity切换动画
                     if(Build.VERSION.SDK_INT>=21)
@@ -179,7 +177,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                 val commentID = bundle?.getInt("commentID") ?: BUNDLE_ERROR
                 val position = bundle?.getInt("position") ?: BUNDLE_ERROR
                 if (commentID != BUNDLE_ERROR && position != BUNDLE_ERROR) {
-                    recyclerViewAdpter.getReplyCount(commentID, position)
+//                    recyclerViewAdpter.getReplyCount(commentID, position)
                 }
             } else if (resultCode == UserCommentDetailActivity.DELETE_COMMENT) {
 //                recyclerViewAdpter.reFreshList()

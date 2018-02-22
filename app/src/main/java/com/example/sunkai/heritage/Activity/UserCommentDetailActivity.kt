@@ -24,9 +24,12 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
+import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.FindActivityAllData
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
@@ -88,12 +91,10 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
             data = bundle.getSerializable("data") as UserCommentData
             val imageByte = intent.getByteArrayExtra("bitmap")
-            val bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
-            information_img.setImageBitmap(bitmap)
             commentID = data?.id?:0
             inListPosition = bundle.getInt("position")
             data?.let{
-                setUserCommentView(data!!)
+                setUserCommentView(data!!,imageByte)
             }
             Thread(getReply).start()
         } else {
@@ -227,12 +228,17 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             setView(data)
         }
     }
-    private fun setUserCommentView(data:UserCommentData){
+    private fun setUserCommentView(data:UserCommentData,image:ByteArray?){
         information_title.text = data.commentTitle
         information_time.text = data.commentTime
         information_content.text = data.commentContent
         information_reply_num.text = data.replyNum.toString()
         title = data.userName
+        if(image!=null) {
+            information_img.setImageBitmap(HandlePic.handlePic(image))
+        }else{
+            Glide.with(this).load(BaseSettingNew.URL+data.imageUrl).into(information_img)
+        }
     }
     private fun setView(data: CommentReplyData) {
         val inflater = layoutInflater
@@ -253,7 +259,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null)).create()
             ad.show()
             Thread {
-                val result = HandleFind.Delete_User_Comment_By_ID(data!!.id)
+                val result = HandleFindNew.DeleteUserCommentByID(data!!.id)
                 runOnUiThread {
                     if (ad.isShowing) {
                         ad.dismiss()
@@ -278,13 +284,8 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 data?.let {
                     val intent = Intent(this@UserCommentDetailActivity, ModifyUsercommentActivity::class.java)
                     val data: UserCommentData = data!!
-                    val drawable=information_img.drawable
-                    if(drawable is BitmapDrawable){
-                        val bitmap=drawable.bitmap
-                        data.image=Base64.encode(HandlePic.bitmapToByteArray(bitmap))
-                        intent.putExtra("data",data)
-                        startActivityForResult(intent, UPDATE_USER_COMMENT)
-                    }
+                    intent.putExtra("data",data)
+                    startActivityForResult(intent, UPDATE_USER_COMMENT)
                 }
             }
         }
@@ -409,7 +410,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 if(resultCode== UPDATE_SUCCESS) {
                     data?.let {
                         if (data.getSerializableExtra("data") is UserCommentData) {
-                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData)
+                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData,data.getByteArrayExtra("image"))
                         }
                     }
                 }
@@ -420,6 +421,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         const val ADD_COMMENT = 1
         const val DELETE_COMMENT = 2
 
-        private val TAG = "UserCommentDetail"
+        private const val TAG = "UserCommentDetail"
     }
 }
