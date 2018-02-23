@@ -1,14 +1,12 @@
 package com.example.sunkai.heritage.Adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.support.v7.widget.RecyclerView
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
@@ -27,7 +25,6 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUserNew
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.RectangleImageView
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -41,24 +38,26 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
-        val img: RectangleImageView
-        val like: TextView
-        val dislike: TextView
-        val comment: TextView
+        val img: ImageView
+        val like: ImageView
+        val dislike: ImageView
+        val comment: ImageView
         val addfocusText: TextView
         val cancelFocusText: TextView
         val name_text: TextView
         val userImage: RoundedImageView
+        val likeCount:TextView
 
         init {
             img = view.findViewById(R.id.fragment_find_litview_img)
-            comment = view.findViewById(R.id.testview_comment)
-            like = view.findViewById(R.id.textview_like)
-            dislike = view.findViewById(R.id.textview_dislike)
+            comment = view.findViewById(R.id.imageview_comment)
+            like = view.findViewById(R.id.imageView_like)
+            dislike = view.findViewById(R.id.imageView_dislike)
             addfocusText = view.findViewById(R.id.add_focus_text)
             name_text = view.findViewById(R.id.name_text)
             userImage = view.findViewById(R.id.user_list_image)
             cancelFocusText = view.findViewById(R.id.cancel_focus_text)
+            likeCount=view.findViewById(R.id.user_comment_like_number_textview)
         }
     }
 
@@ -86,15 +85,14 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        holder.comment.text = data.replyNum.toString()
         holder.name_text.text = data.userName
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {
         if (data.isLike()) {
-            SetLike(holder.like, holder.dislike, data.likeNum)
+            SetLike(holder, data.likeNum)
         } else {
-            CancelLike(holder.like, holder.dislike, data.likeNum)
+            CancelLike(holder, data.likeNum)
         }
     }
 
@@ -147,11 +145,11 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                     changeLikeDataState(isLike, position)
                     when (divide) {
                         LIKE -> {
-                            SetLike(holder.like, holder.dislike, data.likeNum)
+                            SetLike(holder, data.likeNum)
                             holder.dislike.isEnabled = true
                         }
                         DISLIKE -> {
-                            CancelLike(holder.like, holder.dislike, data.likeNum)
+                            CancelLike(holder, data.likeNum)
                             holder.like.isEnabled = true
                         }
                     }
@@ -214,27 +212,28 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         datas.filter { it.userID == userID }.forEach { it.isFollow = isFollow }
     }
 
-    private fun SetLike(like: TextView, dislike: TextView, count: Int): Boolean {
-        dislike.text = count.toString()
+    @SuppressLint("SetTextI18n")
+    private fun SetLike(holder: ViewHolder, count: Int): Boolean {
+        holder.likeCount.text = "$count 次赞"
         val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
-        dislike.visibility = View.VISIBLE
-        like.visibility = View.GONE
-        dislike.startAnimation(imageAnimation)
+        holder.dislike.visibility = View.VISIBLE
+        holder.like.visibility = View.GONE
+        holder.dislike.startAnimation(imageAnimation)
         return true
     }
 
-    private fun CancelLike(like: TextView, dislike: TextView, count: Int): Boolean {
-        like.text = count.toString()
+    @SuppressLint("SetTextI18n")
+    private fun CancelLike(holder: ViewHolder, count: Int): Boolean {
+        holder.likeCount.text = "$count 次赞"
         val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
-        like.visibility = View.VISIBLE
-        dislike.visibility = View.GONE
-        like.startAnimation(imageAnimation)
+        holder.like.visibility = View.VISIBLE
+        holder.dislike.visibility = View.GONE
+        holder.like.startAnimation(imageAnimation)
         return true
     }
 
     private fun GetCommentImage(holder: ViewHolder,data: UserCommentData){
-//        setImageViewSize(holder.img)
-        val requestOption=RequestOptions().placeholder(R.drawable.backgound_grey).error(R.drawable.backgound_grey)
+        val requestOption=RequestOptions().placeholder(R.color.lightGrey).error(R.color.lightGrey)
         Glide.with(context).load(BaseSettingNew.URL+data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
 

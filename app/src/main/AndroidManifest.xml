@@ -61,7 +61,8 @@
             android:theme="@style/JoinActivityTheme" />
         <activity
             android:name=".Activity.UserCommentDetailActivity"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppThemeNoActionBar"/>
         <activity android:name=".Activity.FocusInformationActivity" />
         <activity
             android:name=".Activity.SearchActivity"

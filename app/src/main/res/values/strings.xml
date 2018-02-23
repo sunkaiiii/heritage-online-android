@@ -53,4 +53,7 @@
     <string name="add_focus">加关注</string>
     <string name="already_focus">已关注</string>
     <string name="search">搜索</string>
+    <string name="set_like">点赞</string>
+    <string name="add_comment_reply">回帖</string>
+    <string name="cancel_like">取消点赞</string>
 </resources>

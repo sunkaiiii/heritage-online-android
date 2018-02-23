@@ -15,6 +15,7 @@ class RectangleImageView:ImageView{
     constructor(context: Context,attrs:AttributeSet,defStyle:Int):super(context,attrs,defStyle)
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width=MeasureSpec.getSize(widthMeasureSpec)
-        setMeasuredDimension(width, width)
+        val height=(width*0.7).toInt()
+        setMeasuredDimension(width, height)
     }
 }

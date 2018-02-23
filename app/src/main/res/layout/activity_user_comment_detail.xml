@@ -1,80 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <RelativeLayout
+    android:layout_height="match_parent"
+    tools:context="com.example.sunkai.heritage.Activity.UserCommentDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="48sp"
-        android:id="@+id/user_comment_detail_relative"
-        android:layout_alignParentBottom="true">
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/user_comment_frame"
-            android:layout_alignParentRight="true">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/reply_button"
-                android:layout_alignParentRight="true"
-                android:text="发送"/>
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/user_comment_detail_progressbar"
-                android:layout_marginStart="20dp"
-                android:visibility="gone"
-                android:layout_marginLeft="20dp" />
-        </FrameLayout>
-        <EditText
+        android:layout_height="wrap_content"
+        android:background="@color/transparent_full"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="6sp"
-            android:id="@+id/reply_edittext"
-            android:layout_toLeftOf="@id/user_comment_frame"/>
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-    </RelativeLayout>
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.example.sunkai.heritage.Activity.UserCommentDetailActivity"
-        android:layout_above="@id/user_comment_detail_relative">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
-
-            <android.support.constraint.ConstraintLayout
+            <com.example.sunkai.heritage.tools.RectangleImageView
+                android:id="@+id/fragment_find_litview_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:transitionName="shareView"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintLeft_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:targetApi="lollipop" />
 
-                <ImageView
-                    android:id="@+id/fragment_find_litview_img"
-                    android:layout_width="0dp"
-                    android:layout_height="170dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:transitionName="shareView"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/backgound_grey"
-                    tools:targetApi="lollipop" />
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="pin"
+                android:layout_gravity="bottom">
 
                 <TextView
                     android:id="@+id/information_title"
@@ -121,8 +80,6 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintLeft_toRightOf="@+id/information_time"
                     app:layout_constraintTop_toBottomOf="@+id/information_title" />
-
-
                 <LinearLayout
                     android:id="@+id/linearLayout4"
                     android:layout_width="match_parent"
@@ -150,31 +107,37 @@
                         android:alpha="0.6"
                         android:text="0"
                         android:textSize="20sp" />
+
                     <TextView
+                        android:id="@+id/user_comment_detail_reverse"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/non_reverse_look"
-                        android:id="@+id/user_comment_detail_reverse"
+                        android:layout_marginEnd="8dp"
                         android:drawableEnd="@drawable/ic_arrow_downward_black_24dp"
                         android:gravity="center_vertical|end"
-                        android:textAlignment="textEnd"
-                        android:layout_marginEnd="8dp"/>
-
+                        android:text="@string/non_reverse_look"
+                        android:textAlignment="textEnd" />
                 </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-                <LinearLayout
-                    android:id="@+id/LinearLayout_reply"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-                    android:layout_marginLeft="8dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginStart="8dp"/>
+    </android.support.design.widget.AppBarLayout>
 
-            </android.support.constraint.ConstraintLayout>
-        </ScrollView>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </android.support.constraint.ConstraintLayout>
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/LinearLayout_reply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -43,9 +43,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var information_reply_num: TextView
     private lateinit var linearLayout4: LinearLayout
     private lateinit var LinearLayout_reply: LinearLayout
-    private lateinit var replyEdit: EditText
-    private lateinit var replyBtn: Button
-    private lateinit var progressBar: ProgressBar
     internal var data: UserCommentData? = null
     internal var datas: MutableList<CommentReplyData>? = null
     private var actionBack: ActionBar? = null
@@ -56,7 +53,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
      * 记录传入进来的帖子在原帖的位置和ID
      */
     private var commentID: Int = 0
-    private var inListPosition: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +69,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             data = bundle.getSerializable("data") as UserCommentData
             val imageByte = intent.getByteArrayExtra("bitmap")
             commentID = data?.id?:0
-            inListPosition = bundle.getInt("position")
             data?.let{
                 setUserCommentView(data!!,imageByte)
             }
@@ -92,13 +87,13 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (getdatas != null) {
             datas = getdatas.toMutableList()
             runOnUiThread {
-                hideKeyboard(currentFocus)
+//                hideKeyboard(currentFocus)
                 for (data in datas!!) {
                     setView(data)
                 }
             }
         }
-}
+    }
 
 
     private fun initView() {
@@ -111,48 +106,39 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         reverse = findViewById(R.id.user_comment_detail_reverse)
         linearLayout4 = findViewById(R.id.linearLayout4)
         LinearLayout_reply = findViewById(R.id.LinearLayout_reply)
-        replyEdit = findViewById(R.id.reply_edittext)
-        replyBtn = findViewById(R.id.reply_button)
-        progressBar = findViewById(R.id.user_comment_detail_progressbar)
-
-        replyBtn.setOnClickListener(this)
         reverse.setOnClickListener(this)
-        actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
-
-        information_img.isDrawingCacheEnabled=true
 
     }
 
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.reply_button -> submit()
+//            R.id.reply_button -> submit()
             R.id.user_comment_detail_reverse -> changeList()
         }
     }
 
-    private fun submit() {
-        if (TextUtils.isEmpty(replyEdit.text.toString().trim { it <= ' ' })) {
-            Toast.makeText(this@UserCommentDetailActivity, "回复不能为空", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (userID == 0) {
-            Toast.makeText(this, "没有登录", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("isInto", 1)
-            startActivityForResult(intent, 1)
-            return
-        }
-        val content = replyEdit.text.toString()
-        replyBtn.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
-        /*
-         * 将回复的内容传给恢复类
-         */
-        val handleReply = HandleReply(content)
-        Thread(handleReply.addReply).start()
-    }
+//    private fun submit() {
+//        if (TextUtils.isEmpty(replyEdit.text.toString().trim { it <= ' ' })) {
+//            Toast.makeText(this@UserCommentDetailActivity, "回复不能为空", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+//        if (userID == 0) {
+//            Toast.makeText(this, "没有登录", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(this, LoginActivity::class.java)
+//            intent.putExtra("isInto", 1)
+//            startActivityForResult(intent, 1)
+//            return
+//        }
+//        val content = replyEdit.text.toString()
+//        replyBtn.visibility = View.GONE
+//        progressBar.visibility = View.VISIBLE
+//        /*
+//         * 将回复的内容传给恢复类
+//         */
+//        val handleReply = HandleReply(content)
+//        Thread(handleReply.addReply).start()
+//    }
 
     private fun changeList() {
         if (isReverse) {
@@ -332,7 +318,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 if (result > 0) {
                     val data = addDataToList(result)
                     setView(data)
-                    resetWidge()
+//                    resetWidge()
                     isReply = true
                     MakeToast.MakeText("回复成功")
                     hideKeyboard(currentFocus)
@@ -357,12 +343,12 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             return data
         }
 
-        private fun resetWidge() {
-            progressBar.visibility = View.GONE
-            replyBtn.visibility = View.VISIBLE
-            information_reply_num.text = (Integer.parseInt(information_reply_num.text.toString()) + 1).toString()
-            replyEdit.setText("")
-        }
+//        private fun resetWidge() {
+//            progressBar.visibility = View.GONE
+//            replyBtn.visibility = View.VISIBLE
+//            information_reply_num.text = (Integer.parseInt(information_reply_num.text.toString()) + 1).toString()
+//            replyEdit.setText("")
+//        }
     }
 
     internal inner class Holder {
@@ -374,8 +360,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && isReply) {
             val bundle = Bundle()
-            bundle.putInt("commentID", commentID)
-            bundle.putInt("position", inListPosition)
             val backIntent = Intent()
             backIntent.putExtras(bundle)
             setResult(ADD_COMMENT, backIntent)
