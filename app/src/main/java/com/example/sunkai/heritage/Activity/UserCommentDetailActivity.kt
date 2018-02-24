@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseBottomDialog
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
@@ -51,7 +52,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         setContentView(R.layout.activity_user_comment_detail)
         initView()
         getData()
-        if(commentID!=0) {
+        if (commentID != 0) {
             getReplysInfo(commentID)
         }
     }
@@ -61,9 +62,9 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
             data = bundle.getSerializable("data") as UserCommentData
             val imageByte = intent.getByteArrayExtra("bitmap")
-            commentID = data?.id?:0
-            data?.let{
-                setUserCommentView(data!!,imageByte)
+            commentID = data?.id ?: 0
+            data?.let {
+                setUserCommentView(data!!, imageByte)
             }
         } else {
             val id = intent.getIntExtra("id", 0)
@@ -81,18 +82,12 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         information_reply_num = findViewById(R.id.information_reply_num)
         reverse = findViewById(R.id.user_comment_detail_reverse)
         linearLayout4 = findViewById(R.id.linearLayout4)
+        userCommentAddReplyBtn.setOnClickListener(this)
         reverse.setOnClickListener(this)
         setSupportActionBar(userCommentDetailToolbar)
-        val actionBar=supportActionBar
+        val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-    }
-
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.user_comment_detail_reverse -> changeList()
-        }
     }
 
     private fun changeList() {
@@ -107,34 +102,35 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun setTextViewReverse() {
         reverse.setText(R.string.reverse_look)
-        reverse.setTextColor(ContextCompat.getColor(this,R.color.colorPrimary))
-        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this,R.drawable.ic_arrow_upward_black_24dp), null)
+        reverse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_upward_black_24dp), null)
     }
 
     private fun setTextViewBackup() {
         reverse.setText(R.string.non_reverse_look)
-        reverse.setTextColor(ContextCompat.getColor(this,R.color.black))
-        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this,R.drawable.ic_arrow_downward_black_24dp), null)
+        reverse.setTextColor(ContextCompat.getColor(this, R.color.black))
+        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_downward_black_24dp), null)
     }
 
-    private fun reverseData(){
-        val adapter=userCommentReplyRecyclerView.adapter
-        if(adapter is UserCommentReplyRecyclerAdapter){
+    private fun reverseData() {
+        val adapter = userCommentReplyRecyclerView.adapter
+        if (adapter is UserCommentReplyRecyclerAdapter) {
             adapter.reverseData()
         }
     }
-    private fun setUserCommentView(data:UserCommentData,image:ByteArray?){
+
+    private fun setUserCommentView(data: UserCommentData, image: ByteArray?) {
         information_title.text = data.commentTitle
         information_content.text = data.commentContent
         information_reply_num.text = data.replyNum.toString()
         title = data.userName
-        if(image!=null) {
+        if (image != null) {
             information_img.setImageBitmap(HandlePic.handlePic(image))
-        }else{
-            Glide.with(this).load(BaseSettingNew.URL+data.imageUrl).into(information_img)
+        } else {
+            Glide.with(this).load(BaseSettingNew.URL + data.imageUrl).into(information_img)
         }
-        usercommentInformationLinear.visibility=View.VISIBLE
-        val animation=AnimationUtils.loadAnimation(this,R.anim.fade_in_quick)
+        usercommentInformationLinear.visibility = View.VISIBLE
+        val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
         usercommentInformationLinear.startAnimation(animation)
     }
 
@@ -165,11 +161,11 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.user_comment_detail_item_delete -> deleteComment()
-            R.id.user_comment_detail_item_edit->{
+            R.id.user_comment_detail_item_edit -> {
                 data?.let {
                     val intent = Intent(this@UserCommentDetailActivity, ModifyUsercommentActivity::class.java)
                     val data: UserCommentData = data!!
-                    intent.putExtra("data",data)
+                    intent.putExtra("data", data)
                     startActivityForResult(intent, UPDATE_USER_COMMENT)
                 }
             }
@@ -184,12 +180,12 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    private fun getReplysInfo(commentID:Int){
-        Thread{
-            val datas=HandleFindNew.GetUserCommentReply(commentID)
+    private fun getReplysInfo(commentID: Int) {
+        Thread {
+            val datas = HandleFindNew.GetUserCommentReply(commentID)
             runOnUiThread {
-                val adapter=UserCommentReplyRecyclerAdapter(this,datas)
-                userCommentReplyRecyclerView.adapter=adapter
+                val adapter = UserCommentReplyRecyclerAdapter(this, datas)
+                userCommentReplyRecyclerView.adapter = adapter
             }
         }.start()
     }
@@ -206,19 +202,32 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         return super.onKeyDown(keyCode, event)
     }
 
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.user_comment_detail_reverse -> changeList()
+            R.id.userCommentAddReplyBtn -> {
+                val dialog= BaseBottomDialog(this)
+                dialog.setContentView(R.layout.add_usercomment_reply_dialog)
+                dialog.show()
+
+            }
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode){
-            UPDATE_USER_COMMENT->{
-                if(resultCode== UPDATE_SUCCESS) {
+        when (requestCode) {
+            UPDATE_USER_COMMENT -> {
+                if (resultCode == UPDATE_SUCCESS) {
                     data?.let {
                         if (data.getSerializableExtra("data") is UserCommentData) {
-                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData,data.getByteArrayExtra("image"))
+                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData, data.getByteArrayExtra("image"))
                         }
                     }
                 }
             }
         }
     }
+
     companion object {
         const val ADD_COMMENT = 1
         const val DELETE_COMMENT = 2
