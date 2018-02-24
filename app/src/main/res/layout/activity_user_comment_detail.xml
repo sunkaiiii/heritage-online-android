@@ -7,6 +7,7 @@
     tools:context="com.example.sunkai.heritage.Activity.UserCommentDetailActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/userCommentReplyAppbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent_full"
@@ -16,128 +17,139 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|snap">
 
-            <com.example.sunkai.heritage.tools.RectangleImageView
-                android:id="@+id/fragment_find_litview_img"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:transitionName="shareView"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:targetApi="lollipop" />
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_collapseMode="pin"
-                android:layout_gravity="bottom">
-
-                <TextView
-                    android:id="@+id/information_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="26dp"
-                    android:layout_marginStart="26dp"
-                    android:layout_marginTop="11dp"
-                    android:text="TextView"
-                    android:textColor="@color/black"
-                    android:textSize="24sp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
-
-                <TextView
-                    android:id="@+id/information_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:text="TextView"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/information_title" />
-
-                <TextView
-                    android:id="@+id/information_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
-                    android:text="TextView"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/information_time" />
-
-                <TextView
-                    android:id="@+id/information_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintLeft_toRightOf="@+id/information_time"
-                    app:layout_constraintTop_toBottomOf="@+id/information_title" />
-                <LinearLayout
-                    android:id="@+id/linearLayout4"
+                <com.example.sunkai.heritage.tools.RectangleImageView
+                    android:id="@+id/fragment_find_litview_img"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:background="@color/lightGrey"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/information_content"
-                    tools:layout_editor_absoluteX="8dp">
+                    android:scaleType="centerCrop"
+                    android:transitionName="shareView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:targetApi="lollipop" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/colorPrimary"
+                    android:orientation="vertical"
+                    android:id="@+id/usercommentInformationLinear"
+                    android:visibility="gone">
 
                     <TextView
+                        android:id="@+id/information_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="12sp"
-                        android:alpha="0.6"
-                        android:text="评论"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
                     <TextView
-                        android:id="@+id/information_reply_num"
+                        android:id="@+id/information_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6sp"
-                        android:alpha="0.6"
-                        android:text="0"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/user_comment_detail_reverse"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="8dp"
-                        android:drawableEnd="@drawable/ic_arrow_downward_black_24dp"
-                        android:gravity="center_vertical|end"
-                        android:text="@string/non_reverse_look"
-                        android:textAlignment="textEnd" />
+                        android:layout_marginLeft="18dp"
+                        android:layout_marginStart="18dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/information_time" />
                 </LinearLayout>
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/userCommentDetailToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:elevation="12dp"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                tools:targetApi="lollipop">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="@color/lightGrey"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        tools:targetApi="lollipop">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12sp"
+            android:layout_marginStart="12sp"
+            android:alpha="0.6"
+            android:gravity="center"
+            android:text="@string/comment"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/information_reply_num"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="6sp"
+            android:layout_marginStart="6sp"
+            android:alpha="0.6"
+            android:gravity="center"
+            android:text="@string/zero"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/user_comment_detail_reverse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:drawableEnd="@drawable/ic_arrow_downward_black_24dp"
+            android:drawableRight="@drawable/ic_arrow_downward_black_24dp"
+            android:gravity="center_vertical|end"
+            android:text="@string/non_reverse_look"
+            android:textAlignment="textEnd" />
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/userCommentReplyRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_margin="8dp"
+        app:layoutManager="@string/linearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-        <LinearLayout
-            android:id="@+id/LinearLayout_reply"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
-    </android.support.v4.widget.NestedScrollView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/userCommentAddReplyBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:elevation="8dp"
+        android:src="@drawable/ic_message_white_24dp"
+        app:fabSize="mini"
+        app:layout_anchor="@id/userCommentReplyAppbar"
+        app:layout_anchorGravity="right|bottom"
+        tools:targetApi="lollipop" />
 
 </android.support.design.widget.CoordinatorLayout>

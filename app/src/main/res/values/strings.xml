@@ -56,4 +56,6 @@
     <string name="set_like">点赞</string>
     <string name="add_comment_reply">回帖</string>
     <string name="cancel_like">取消点赞</string>
+    <string name="comment">评论</string>
+    <string name="zero">0</string>
 </resources>
