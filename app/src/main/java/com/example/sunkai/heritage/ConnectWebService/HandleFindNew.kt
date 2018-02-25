@@ -178,14 +178,15 @@ object HandleFindNew:BaseSettingNew() {
         return PutGet(getUrl)== SUCCESS
     }
 
-    fun AddUserCommentReply(userID: Int,commentID: Int,reply:String):Boolean{
+    fun AddUserCommentReply(userID: Int,commentID: Int,reply:String,intentString:String):String{
         val postUrl="$URL/AddUserCommentReply"
         val formBody=FormBody.Builder()
                 .add("userID",userID.toString())
                 .add("commentID",commentID.toString())
                 .add("reply",reply)
+                .add("intentString",intentString)
                 .build()
-        return PutPost(postUrl,formBody)== SUCCESS
+        return PutPost(postUrl,formBody)
     }
 
     fun UpdateUserCommentReply(replyID:Int,reply:String):Boolean{

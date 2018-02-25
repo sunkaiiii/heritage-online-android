@@ -50,4 +50,11 @@ class UserCommentReplyRecyclerAdapter(val context: Context,datas:List<CommentRep
         Collections.reverse(datas)
         notifyDataSetChanged()
     }
+
+    fun addData(data: CommentReplyInformation){
+        val mutabledata=datas.toMutableList()
+        mutabledata.add(data)
+        this.datas=mutabledata
+        notifyDataSetChanged()
+    }
 }

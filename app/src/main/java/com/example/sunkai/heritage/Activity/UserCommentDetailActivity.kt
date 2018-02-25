@@ -14,12 +14,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseBottomDialog
+import com.example.sunkai.heritage.Adapter.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
@@ -42,7 +44,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     private var isReverse = false
 
     /**
-     * 记录传入进来的帖子在原帖的位置和ID
+     * 记录帖子的ID
      */
     private var commentID: Int = 0
 
@@ -198,19 +200,28 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             setResult(ADD_COMMENT, backIntent)
             finish()
         }
-
         return super.onKeyDown(keyCode, event)
+    }
+
+    private fun generateDialog(commentID:Int):AddUserCommentBottomDialog{
+        val dialog=AddUserCommentBottomDialog(this,commentID)
+        dialog.setOnAddUserReplyListener(object :AddUserReplyDialog{
+            override fun onAddUserReplySuccess(data: CommentReplyInformation) {
+                val adapter=userCommentReplyRecyclerView.adapter
+                if(adapter is UserCommentReplyRecyclerAdapter){
+                    adapter.addData(data)
+                    userCommentReplyRecyclerView.smoothScrollToPosition(adapter.itemCount)
+                    information_reply_num.text=(information_reply_num.text.toString().toInt()+1).toString()
+                }
+            }
+        })
+        return dialog
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.user_comment_detail_reverse -> changeList()
-            R.id.userCommentAddReplyBtn -> {
-                val dialog= BaseBottomDialog(this)
-                dialog.setContentView(R.layout.add_usercomment_reply_dialog)
-                dialog.show()
-
-            }
+            R.id.userCommentAddReplyBtn -> generateDialog(commentID).show()
         }
     }
 
