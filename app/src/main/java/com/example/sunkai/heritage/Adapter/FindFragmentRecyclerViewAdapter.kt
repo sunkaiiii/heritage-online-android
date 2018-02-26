@@ -3,15 +3,14 @@ package com.example.sunkai.heritage.Adapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
@@ -22,7 +21,9 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ER
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.ConnectWebService.HandleUserNew
+import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
@@ -36,7 +37,7 @@ import com.makeramen.roundedimageview.RoundedImageView
 
 class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
 
-    class ViewHolder internal constructor(var view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
         val img: ImageView
         val like: ImageView
@@ -46,7 +47,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val cancelFocusText: TextView
         val name_text: TextView
         val userImage: RoundedImageView
-        val likeCount:TextView
+        val likeCount: TextView
+        val miniReplys: LinearLayout
 
         init {
             img = view.findViewById(R.id.fragment_find_litview_img)
@@ -57,7 +59,20 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             name_text = view.findViewById(R.id.name_text)
             userImage = view.findViewById(R.id.user_list_image)
             cancelFocusText = view.findViewById(R.id.cancel_focus_text)
-            likeCount=view.findViewById(R.id.user_comment_like_number_textview)
+            likeCount = view.findViewById(R.id.user_comment_like_number_textview)
+            miniReplys = view.findViewById(R.id.user_comment_mini_replys)
+        }
+    }
+
+    class MiniReplyHolder(view: View) {
+        val userName: TextView
+        val replyContent: TextView
+        val splitLine: View
+
+        init {
+            userName = view.findViewById(R.id.reply_name)
+            replyContent = view.findViewById(R.id.reply_content)
+            splitLine = view.findViewById(R.id.user_comment_reply_split_line)
         }
     }
 
@@ -74,12 +89,14 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         holder?.let {
             val data = datas[position]
             setHolderData(holder, data)
-            GetCommentImage(holder,data)
-            GetUserImage(holder,data)
+            GetCommentImage(holder, data)
+            GetUserImage(holder, data)
             setHolderLikeState(holder, data)
             setLikeClick(holder, data, position)
+            setAddReplyClick(holder, data)
             setHolderFocusState(holder, data)
             setFocusClick(holder, data)
+            showMiniReply(holder, data)
         }
     }
 
@@ -127,6 +144,26 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             if (checkUserLogin()) {
                 handleLikeClick(holder, DISLIKE, data, position)
             }
+        }
+    }
+
+    private fun setAddReplyClick(holder: ViewHolder, data: UserCommentData) {
+        holder.comment.setOnClickListener {
+            val dialog = AddUserCommentBottomDialog(context, data.id)
+            //设置当回复成功的时候，刷新显示的回复内容
+            dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
+                override fun onAddUserReplySuccess(data: CommentReplyInformation) {
+                    if (holder.miniReplys.childCount > 2) {
+                        holder.miniReplys.removeViewAt(0)
+                    }
+                    val view = LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information, holder.miniReplys, false)
+                    val miniReplyHolder = MiniReplyHolder(view)
+                    setDataInMiniReply(miniReplyHolder, data)
+                    holder.miniReplys.addView(view)
+                }
+
+            })
+            dialog.show()
         }
     }
 
@@ -232,19 +269,51 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         return true
     }
 
-    private fun GetCommentImage(holder: ViewHolder,data: UserCommentData){
-        val requestOption=RequestOptions().placeholder(R.color.lightGrey).error(R.color.lightGrey)
-        Glide.with(context).load(BaseSettingNew.URL+data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
+    private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
+        val requestOption = RequestOptions().placeholder(R.color.lightGrey).error(R.color.lightGrey)
+        Glide.with(context).load(BaseSettingNew.URL + data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
 
-    private fun GetUserImage(holder: ViewHolder,data: UserCommentData){
-        val requestOptions=RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        Thread{
-            val userImageURL=HandleUserNew.GetUserImageURL(data.userID)
+    private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
+        val requestOptions = RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
+        Thread {
+            val userImageURL = HandleUserNew.GetUserImageURL(data.userID)
             context.runOnUiThread {
                 Glide.with(context).load(userImageURL).apply(requestOptions).into(holder.userImage)
             }
         }.start()
+    }
+
+    private fun showMiniReply(holder: ViewHolder, data: UserCommentData) {
+        holder.miniReplys.removeAllViews()
+        for (reply in data.miniReplys) {
+            //因为返回的有可能是个内容为空的类，过滤掉空数据使其不显示
+            if (!reply.userName.isEmpty()) {
+                val view = LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information, holder.miniReplys, false)
+                val miniReplyHolder = MiniReplyHolder(view)
+                setDataInMiniReply(miniReplyHolder, reply)
+                holder.miniReplys.addView(view)
+            }
+        }
+    }
+
+    private fun setDataInMiniReply(miniReplyHolder: MiniReplyHolder, reply: CommentReplyInformation) {
+        //因为复用的是详情页的回帖item，需要对间距进行调整
+        //日后会考虑新加一个item
+        miniReplyHolder.userName.text = reply.userName
+        //字体加粗
+        miniReplyHolder.userName.paint.isFakeBoldText = true
+        //调整间距
+        val namelayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        namelayoutParams.setMargins(0, 0, 0, 0)
+        miniReplyHolder.userName.layoutParams = namelayoutParams
+        val contentlayoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        contentlayoutParams.setMargins(12, 0, 0, 0)
+        miniReplyHolder.replyContent.layoutParams = contentlayoutParams
+        miniReplyHolder.replyContent.text = reply.replyContent
+        miniReplyHolder.replyContent.maxLines = 1
+        miniReplyHolder.replyContent.setTextColor(Color.BLACK)
+        miniReplyHolder.splitLine.visibility = View.GONE
     }
 
     private fun hideSomeElement(vh: ViewHolder, data: UserCommentData) {

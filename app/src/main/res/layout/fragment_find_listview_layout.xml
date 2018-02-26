@@ -5,152 +5,179 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="2dp"
     android:background="?attr/selectableItemBackground"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="2dp"
+    app:cardElevation="2dp">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.example.sunkai.heritage.tools.RectangleImageView
-            android:id="@+id/fragment_find_litview_img"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:background="@color/transparent_light"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/user_comment_title_background"/>
-
-
-        <ImageView
-            android:id="@+id/imageview_comment"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_message_grey_700_24dp"
-            android:contentDescription="@string/add_comment_reply"
-            app:layout_constraintStart_toEndOf="@+id/fragment_find_like_frame"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-            android:layout_marginLeft="16dp" />
+            android:layout_height="match_parent">
 
+            <com.example.sunkai.heritage.tools.RectangleImageView
+                android:id="@+id/fragment_find_litview_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <FrameLayout
-            android:id="@+id/fragment_find_like_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img"
-            android:layout_marginLeft="16dp">
+            <View
+                android:id="@+id/user_comment_title_background"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@color/transparent_light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
             <ImageView
-                android:id="@+id/imageView_dislike"
+                android:id="@+id/imageview_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/set_like"
-                android:src="@drawable/ic_favorite_orange_a700_24dp" />
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/add_comment_reply"
+                android:background="?attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/ic_message_grey_700_24dp"
+                app:layout_constraintStart_toEndOf="@+id/fragment_find_like_frame"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
 
-            <ImageView
-                android:id="@+id/imageView_like"
+
+            <FrameLayout
+                android:id="@+id/fragment_find_like_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/cancel_like"
-                android:src="@drawable/ic_favorite_border_grey_700_24dp" />
-        </FrameLayout>
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img">
 
-        <RelativeLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/user_list_image"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_margin="8dp"
-                app:riv_oval="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true" />
-            <TextView
-                android:id="@+id/name_text"
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/imageView_dislike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/set_like"
+                    android:src="@drawable/ic_favorite_orange_a700_24dp" />
+
+                <ImageView
+                    android:id="@+id/imageView_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/cancel_like"
+                    android:src="@drawable/ic_favorite_border_grey_700_24dp" />
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_centerVertical="true"
-                android:text=""
-                android:textColor="@color/black"
-                android:layout_toEndOf="@id/user_list_image"
-                android:layout_toRightOf="@id/user_list_image" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent">
 
-            <TextView
-                android:id="@+id/add_focus_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3sp"
-                android:layout_marginStart="3dp"
-                android:drawableLeft="@drawable/ic_add_black_24dp"
-                android:drawableStart="@drawable/ic_add_black_24dp"
-                android:gravity="center"
-                android:text="@string/add_focus"
-                android:textColor="@color/themeRed"
-                android:visibility="visible"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/user_list_image"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_margin="8dp"
+                    app:riv_oval="true" />
 
-            <TextView
-                android:id="@+id/cancel_focus_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:layout_marginStart="3dp"
-                android:drawableLeft="@drawable/ic_remove_circle_grey_400_24dp"
-                android:drawablePadding="3dp"
-                android:drawableStart="@drawable/ic_remove_circle_grey_400_24dp"
-                android:gravity="center"
-                android:text="@string/already_focus"
-                android:textColor="@color/deepGrey"
-                android:visibility="gone"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toEndOf="@id/user_list_image"
+                    android:layout_toRightOf="@id/user_list_image"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/add_focus_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3sp"
+                    android:layout_marginStart="3dp"
+                    android:drawableLeft="@drawable/ic_add_black_24dp"
+                    android:drawableStart="@drawable/ic_add_black_24dp"
+                    android:gravity="center"
+                    android:text="@string/add_focus"
+                    android:textColor="@color/themeRed"
+                    android:visibility="visible"
+                    s:ignore="RelativeOverlap" />
+
+                <TextView
+                    android:id="@+id/cancel_focus_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginStart="3dp"
+                    android:drawableLeft="@drawable/ic_remove_circle_grey_400_24dp"
+                    android:drawablePadding="3dp"
+                    android:drawableStart="@drawable/ic_remove_circle_grey_400_24dp"
+                    android:gravity="center"
+                    android:text="@string/already_focus"
+                    android:textColor="@color/deepGrey"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
 
 
-        <TextView
-            android:id="@+id/user_comment_like_number_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
+            android:layout_marginLeft="19dp"
             android:layout_marginStart="19dp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_find_like_frame"
-            android:layout_marginLeft="19dp" />
-    </android.support.constraint.ConstraintLayout>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/user_comment_like_number_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/user_comment_see_all_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/see_more_reply"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/user_comment_mini_replys"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

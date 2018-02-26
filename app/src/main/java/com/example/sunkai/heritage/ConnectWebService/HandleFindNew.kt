@@ -3,6 +3,8 @@ package com.example.sunkai.heritage.ConnectWebService
 import android.util.Log
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.value.COMMENT_REPLY
+import com.example.sunkai.heritage.value.MINI_REPLY
 import com.google.gson.Gson
 import okhttp3.FormBody
 import org.kobjects.base64.Base64
@@ -28,16 +30,20 @@ object HandleFindNew:BaseSettingNew() {
         val getUrl="$URL/GetUserCommentInformation?userID=$userID&start=$start"
         val result=PutGet(getUrl)
         Log.d("GetUserCommentInfo",result)
-        return if(result== ERROR){
-            arrayListOf()
+        if(result== ERROR){
+            return arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                val datas=Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                for(data in datas){
+                    data.miniReplys= GetUserCommentReply(data.id, MINI_REPLY)
+                }
+                return datas
             }catch (e:Exception){
                 e.printStackTrace()
-                arrayListOf<UserCommentData>()
             }
         }
+        return arrayListOf()
     }
 
     fun GetUserCommentInformationByUser(userID: Int,start: Int=0):List<UserCommentData>{
@@ -142,8 +148,8 @@ object HandleFindNew:BaseSettingNew() {
         }
     }
 
-    fun GetUserCommentCount(commentID: Int):String{
-        val getUrl="$URL/GetUserCommentCount?commentID=$commentID"
+    fun GetUserCommentCount(commentID: Int,miniReply: Int= COMMENT_REPLY):String{
+        val getUrl="$URL/GetUserCommentCount?commentID=$commentID&miniReply=$miniReply"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             "0"
@@ -152,8 +158,8 @@ object HandleFindNew:BaseSettingNew() {
         }
     }
 
-    fun GetUserCommentReply(commentID: Int):List<CommentReplyInformation>{
-        val getUrl="$URL/GetUserCommentReply?commentID=$commentID"
+    fun GetUserCommentReply(commentID: Int,miniReply:Int= COMMENT_REPLY):List<CommentReplyInformation>{
+        val getUrl="$URL/GetUserCommentReply?commentID=$commentID&miniReply=$miniReply"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             arrayListOf()

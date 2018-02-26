@@ -23,6 +23,8 @@ const val ALL=1
 const val REQUEST_PICTURE_CUT = 13
 const val ALL_COMMENT=0
 const val MY_FOCUS_COMMENT=1
+const val MINI_REPLY=-1
+const val COMMENT_REPLY=0
 
 const val TYPE_TEXT="text"
 const val TYPE_IMAGE="img"

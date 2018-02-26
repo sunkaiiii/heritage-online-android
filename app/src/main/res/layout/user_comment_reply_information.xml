@@ -27,12 +27,14 @@
             android:layout_marginEnd="18dp"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="18dp" />
+            android:layout_marginRight="18dp"
+            android:ellipsize="end"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="4dp"
-        android:background="@color/lightGrey" />
+        android:background="@color/lightGrey"
+        android:id="@+id/user_comment_reply_split_line"/>
 </LinearLayout>

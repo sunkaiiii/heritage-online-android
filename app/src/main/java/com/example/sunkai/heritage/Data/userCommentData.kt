@@ -16,7 +16,8 @@ class UserCommentData(val id:Int,
                       var isFollow:String,
                       var likeNum:Int,
                       var replyNum:Int,
-                      var imageUrl:String):Serializable{
+                      var miniReplys:List<CommentReplyInformation>,
+                      var imageUrl:String):Serializable {
     fun isLike():Boolean{
         return SUCCESS==isLike
     }

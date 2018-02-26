@@ -58,4 +58,5 @@
     <string name="cancel_like">取消点赞</string>
     <string name="comment">评论</string>
     <string name="zero">0</string>
+    <string name="see_more_reply">查看更多评论</string>
 </resources>
