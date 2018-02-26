@@ -25,7 +25,7 @@ const val ALL_COMMENT=0
 const val MY_FOCUS_COMMENT=1
 const val MINI_REPLY=-1
 const val COMMENT_REPLY=0
-
+const val SIGN_OUT=11
 const val TYPE_TEXT="text"
 const val TYPE_IMAGE="img"
 const val CATEGORY="category"
@@ -38,6 +38,7 @@ const val HOST="http://btbudinner.win:8088"
 
 const val ALL_FOLK_INFO_ACTIVITY="AllFolkInfoActivity"
 const val ACTIVITY_FRAGMENT="ActivityFragment"
+const val SETTING_ACTIVITY=100
 
 
 val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")

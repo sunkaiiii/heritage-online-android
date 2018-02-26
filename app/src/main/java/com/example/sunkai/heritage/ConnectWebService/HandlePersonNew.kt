@@ -10,7 +10,7 @@ import org.kobjects.base64.Base64
 /**个人中心相关的类
  * Created by sunkai on 2018/2/22.
  */
-object HandleUserNew : BaseSettingNew() {
+object HandlePersonNew : BaseSettingNew() {
     fun GetFollowNumber(userID: Int): Int {
         val getUrl = "$URL/GetFollowNumber?userID=$userID"
         val result = PutGet(getUrl)

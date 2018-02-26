@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -11,12 +10,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.infoToRSA
+import com.example.sunkai.heritage.value.SIGN_OUT
 import kotlinx.android.synthetic.main.activity_setting.*
 
 
@@ -42,10 +42,11 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
         setting_push_switch_img.setOnClickListener(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         sign_name_textview.text = LoginActivity.userName
-        val bitmap = intent.getParcelableExtra<Bitmap>("userImage")
-        sign_in_icon.setImageBitmap(bitmap)
+        val imageUrl = intent.getStringExtra("userImage")
+        if(imageUrl!=null) {
+            Glide.with(this).load(imageUrl).into(sign_in_icon)
+        }
     }
-
 
     override fun onClick(v: View) {
         val intent: Intent
@@ -126,9 +127,7 @@ class SettingActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun sign_out() {
         AlertDialog.Builder(this).setTitle("是否注销?").setPositiveButton("确定") { _, _ ->
-            val intent = Intent("android.intent.action.focusAndFansCountChange")
-            intent.putExtra("message", "sigh_out")
-            sendBroadcast(intent)
+            setResult(SIGN_OUT)
             GlobalContext.instance.unregistUser() //注销的时候退出当前账号
             getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply()//清除自动登录的信息
             LoginActivity.userID = 0

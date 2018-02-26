@@ -50,16 +50,20 @@ object HandleFindNew:BaseSettingNew() {
         val getUrl="$URL/GetUserCommentInformationByUser?userID=$userID&start=$start"
         val result=PutGet(getUrl)
         Log.d("GetUserCommentInfoByUsr",result)
-        return if(result== ERROR){
-            arrayListOf()
+        if(result== ERROR){
+            return arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                val datas= Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                for(data in datas){
+                    data.miniReplys= GetUserCommentReply(data.id, MINI_REPLY)
+                }
+                return datas
             }catch (e:Exception){
                 e.printStackTrace()
-                arrayListOf<UserCommentData>()
             }
         }
+        return arrayListOf()
     }
 
     fun GetUserCommentInformaitonByOwn(userID:Int,start: Int=0):List<UserCommentData>{

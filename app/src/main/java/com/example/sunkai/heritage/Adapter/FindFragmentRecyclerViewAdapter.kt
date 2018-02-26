@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ERROR
 import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
 import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
-import com.example.sunkai.heritage.ConnectWebService.HandleUserNew
+import com.example.sunkai.heritage.ConnectWebService.HandlePersonNew
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
@@ -216,8 +216,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         Thread {
             val isFocus = divide == ADD_FOCUS
             val success = when (divide) {
-                ADD_FOCUS -> HandleUserNew.AddFocus(LoginActivity.userID, data.userID)
-                CANCEL_FOCUS -> HandleUserNew.CancelFocus(LoginActivity.userID, data.userID)
+                ADD_FOCUS -> HandlePersonNew.AddFocus(LoginActivity.userID, data.userID)
+                CANCEL_FOCUS -> HandlePersonNew.CancelFocus(LoginActivity.userID, data.userID)
                 else -> false
             }
             context.runOnUiThread {
@@ -277,7 +277,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
         val requestOptions = RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         Thread {
-            val userImageURL = HandleUserNew.GetUserImageURL(data.userID)
+            val userImageURL = HandlePersonNew.GetUserImageURL(data.userID)
             context.runOnUiThread {
                 Glide.with(context).load(userImageURL).apply(requestOptions).into(holder.userImage)
             }
