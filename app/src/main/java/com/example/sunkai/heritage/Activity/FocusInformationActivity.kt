@@ -120,7 +120,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
         }
 
 
-        fun setAdpter() {
+        private fun setAdpter() {
             datas?.let {
                 adapter = FocusListviewAdapter(this@FocusInformationActivity, datas!!, what)
                 focus_information_listview.adapter = adapter

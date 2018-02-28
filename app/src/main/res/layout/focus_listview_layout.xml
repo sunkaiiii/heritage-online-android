@@ -18,9 +18,9 @@
         android:layout_height="wrap_content"
         android:text="已关注"
         android:id="@+id/focus_btn"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="6sp"
-        android:layout_alignBottom="@id/user_head_image"/>
+        android:layout_margin="6sp"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48sp"

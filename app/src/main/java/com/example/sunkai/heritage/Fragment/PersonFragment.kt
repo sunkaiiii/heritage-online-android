@@ -90,7 +90,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             activity?.runOnUiThread {
                 userName.text = userInfo.userName
                 fansNumber.text = userInfo.fansNumber.toString()
-                followNumber.text = userInfo.fansNumber.toString()
+                followNumber.text = userInfo.focusNumber.toString()
                 if (userImageUrl != null) {
                     this.userImageUrl = userImageUrl
                     Glide.with(this).load(userImageUrl).into(userImage)
@@ -117,39 +117,35 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
 
     override fun onClick(v: View) {
-        val intent: Intent
-        if (LoginActivity.userID == 0) {
-            toLogin()
-            return
-        }
-        when (v.id) {
-            R.id.fragment_person_my_tiezi -> {
-                intent = Intent(activity, UserOwnTieziActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.person_fragment_setting -> {
-                if (LoginActivity.userID == 0) {
-                    toLogin()
-                    return
+        if(checkLogin()) {
+            val intent: Intent
+            when (v.id) {
+                R.id.fragment_person_my_tiezi -> {
+                    intent = Intent(activity, UserOwnTieziActivity::class.java)
+                    startActivity(intent)
                 }
-                intent = Intent(activity, SettingActivity::class.java)
-                if (userImageUrl != null) {
-                    intent.putExtra("userImage", userImageUrl)
+                R.id.person_fragment_setting -> {
+                    if(checkLogin()) {
+                        intent = Intent(activity, SettingActivity::class.java)
+                        if (userImageUrl != null) {
+                            intent.putExtra("userImage", userImageUrl)
+                        }
+                        startActivityForResult(intent, SETTING_ACTIVITY)
+                    }
                 }
-                startActivityForResult(intent, SETTING_ACTIVITY)
-            }
-            R.id.person_follow, R.id.person_follow_number -> {
-                intent = Intent(activity, FocusInformationActivity::class.java)
-                intent.putExtra("information", "focus")
-                startActivity(intent)
-            }
-            R.id.person_fans, R.id.person_fans_number -> {
-                intent = Intent(activity, FocusInformationActivity::class.java)
-                intent.putExtra("information", "fans")
-                startActivity(intent)
-            }
-            R.id.sign_in_icon -> {
-                chooseAlertDialog.show()
+                R.id.person_follow, R.id.person_follow_number -> {
+                    intent = Intent(activity, FocusInformationActivity::class.java)
+                    intent.putExtra("information", "focus")
+                    startActivity(intent)
+                }
+                R.id.person_fans, R.id.person_fans_number -> {
+                    intent = Intent(activity, FocusInformationActivity::class.java)
+                    intent.putExtra("information", "fans")
+                    startActivity(intent)
+                }
+                R.id.sign_in_icon -> {
+                    chooseAlertDialog.show()
+                }
             }
         }
     }
@@ -174,16 +170,20 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             }
             SETTING_ACTIVITY -> {
                 if (resultCode == SIGN_OUT) {
-                    toLogin()
+                    checkLogin()
                 }
             }
         }
     }
-    private fun toLogin() {
-        toast("没有登录")
-        val intent = Intent(activity, LoginActivity::class.java)
-        intent.putExtra("isInto", 1)
-        startActivityForResult(intent, 1)
+    private fun checkLogin():Boolean {
+        if(LoginActivity.userID==0) {
+            toast("没有登录")
+            val intent = Intent(activity, LoginActivity::class.java)
+            intent.putExtra("isInto", 1)
+            startActivityForResult(intent, 1)
+            return false
+        }
+        return true
     }
 
     companion object {
