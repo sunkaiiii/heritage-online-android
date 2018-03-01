@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import android.util.Log
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Data.UserInfo
@@ -50,6 +51,7 @@ object HandlePersonNew : BaseSettingNew() {
     fun GetUserAllInfo(userID: Int): UserInfo? {
         val getUrl = "$URL/GetUserAllInfo?userID=$userID"
         val result = PutGet(getUrl)
+        Log.d("GetUserAllInfo",result)
         if (result == ERROR) {
             return null
         }
@@ -65,6 +67,7 @@ object HandlePersonNew : BaseSettingNew() {
     fun GetFollowInformation(userID: Int): List<FollowInformation> {
         val getUrl = "$URL/GetFollowInformation?userID=$userID"
         val result = PutGet(getUrl)
+        Log.d("getFollowInfo",result)
         if (result == ERROR) {
             return arrayListOf()
         }
@@ -79,6 +82,7 @@ object HandlePersonNew : BaseSettingNew() {
     fun GetFansInformation(userID: Int):List<FollowInformation>{
         val getUrl="$URL/GetFansInformation?userID=$userID"
         val result = PutGet(getUrl)
+        Log.d("getFansInfo",result)
         if (result == ERROR) {
             return arrayListOf()
         }
@@ -125,7 +129,7 @@ object HandlePersonNew : BaseSettingNew() {
     fun GetUserImageURL(userID: Int):String?{
         val getUrl="$URL/GetUserImage?userID=$userID"
         val result=PutGet(getUrl)
-        return if(result== ERROR){
+        return if(result== ERROR||result.isEmpty()){
             null
         }else{
             URL+result

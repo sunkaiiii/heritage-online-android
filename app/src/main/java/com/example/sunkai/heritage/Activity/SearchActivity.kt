@@ -6,11 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
-
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.FocusData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.tools.MakeToast
 import kotlinx.android.synthetic.main.activity_search.*
 
@@ -49,7 +45,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
         /**
          * 将搜索的文本传入搜索类，并搜索内容
          */
-        searchClass(edit)
+//        searchClass(edit)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -59,16 +55,16 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun searchClass(searchText:String) {
-        var datas: List<FocusData>?
-        Thread{
-            datas = HandlePerson.Get_Search_UserInfo(searchText)
-            datas?.let {
-                runOnUiThread {
-                    val adapter = FocusListviewAdapter(this, datas!!, 3)
-                    search_activity_list.adapter = adapter
-                }
-            }
-        }.start()
-    }
+//    private fun searchClass(searchText:String) {
+//        var datas: List<FocusData>?
+//        Thread{
+//            datas = HandlePerson.Get_Search_UserInfo(searchText)
+//            datas?.let {
+//                runOnUiThread {
+//                    val adapter = FocusListviewAdapter(this, datas!!, 3)
+//                    search_activity_list.adapter = adapter
+//                }
+//            }
+//        }.start()
+//    }
 }

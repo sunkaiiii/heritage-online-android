@@ -4,30 +4,31 @@ import android.content.ContentValues
 import android.content.Intent
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
+import com.example.sunkai.heritage.ConnectWebService.HandlePersonNew
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
-import com.example.sunkai.heritage.Data.OtherPersonData
+import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.FindInSql
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.inAnimation
 import com.example.sunkai.heritage.tools.outAnimation
 import com.example.sunkai.heritage.value.*
@@ -52,7 +53,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     internal lateinit var viewPagerAdapter: ViewPagerAdapter
     internal lateinit var tvPermission:TextView
 
-    var userID: Int = NO_USERID
+    private var userID: Int = NO_USERID
 
 
 
@@ -69,7 +70,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     internal fun getUserAllInfo(userID: Int) {
         Thread {
-            val data = HandlePerson.Get_User_All_Info(userID)
+            val data = HandlePersonNew.GetUserAllInfo(userID)
             data?.let {
                 runOnUiThread({
                     setViews(data)
@@ -80,7 +81,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
         }.start()
     }
-    internal fun checkPermissions(data:OtherPersonData){
+    internal fun checkPermissions(data:UserInfo){
         when(data.permission){
             DENIALD -> setErrorMessage()
             ONLYFOCUS->{
@@ -101,7 +102,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
-        when(data.userFollowAndFansViewPermission){
+        when(data.focusAndFansPermission){
             DENIALD -> setViewsOnFonsAndFocusPermissionDenailClick()
             ONLYFOCUS->{
                 Thread {
@@ -184,9 +185,9 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         return HandlePerson.is_User_Follow(otherUserID,userID)
     }
 
-    internal fun setViews(data: OtherPersonData) {
+    internal fun setViews(data: UserInfo) {
         userNameTextView.text = data.userName
-        focusNumberTextView.text = data.followNum.toString()
+        focusNumberTextView.text = data.focusNumber.toString()
         fansNumberTextView.text = data.fansNumber.toString()
     }
 
