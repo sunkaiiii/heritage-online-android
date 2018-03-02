@@ -52,8 +52,8 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     private fun checkUserPermission(){
         Thread{
-            val permission=HandlePerson.Get_User_Permission(LoginActivity.userID)
-            val focusAndFansViewPermission=HandlePerson.Get_User_Focus_And_Fans_View_Permission(LoginActivity.userID)
+            val permission= HandlePerson.GetUserPermission(LoginActivity.userID)
+            val focusAndFansViewPermission= HandlePerson.GetUserFocusAndFansViewPermission(LoginActivity.userID)
             runOnUiThread {
                 permissionSpinner.setSelection(permission+1,true)
                 permissionSpinner.isEnabled=true
@@ -102,8 +102,8 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
                 Thread {
                     val result:Boolean
                     result = when(id) {
-                        R.id.permission_spinner-> HandlePerson.Set_User_Permission(LoginActivity.userID, position - 1)
-                        R.id.permission_focus_fans_spinner-> HandlePerson.Set_User_Focus_And_Fans_View_Permission(LoginActivity.userID,position-1)
+                        R.id.permission_spinner-> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
+                        R.id.permission_focus_fans_spinner-> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID,position-1)
                         else-> false
                     }
                     runOnUiThread {

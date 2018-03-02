@@ -19,9 +19,7 @@
     <string name="save">保存</string>
     <string name="update_success">更新成功</string>
     <string name="update_fail">更新失败</string>
-    <string name="please_wait">请稍等…</string>
     <string name="verson_code">Version 3.0 beta</string>
-    <string name="add_comment">发帖</string>
     <string name="permission_denaild_information">该用户隐藏了它的个人信息</string>
     <string name="push_message">消息推送</string>
     <string-array name="permissions">
@@ -43,8 +41,6 @@
     <string name="regist">注册</string>
     <string name="cancel">取消</string>
     <string name="please_choice">请选择</string>
-    <string name="see_all">查看全部</string>
-    <string name="folk_heritage">民间非遗</string>
     <string name="news_title">新闻标题</string>
     <string name="more">更多</string>
     <string name="focus_heritage">聚焦非遗</string>
@@ -58,7 +54,12 @@
     <string name="comment">评论</string>
     <string name="zero">0</string>
     <string name="see_more_reply">查看更多评论</string>
-    <string name="person_center">个人中心</string>
     <string name="focus">关注</string>
     <string name="fans">粉丝</string>
+    <string name="my_collection">我的收藏</string>
+    <string name="my_message">我的消息</string>
+    <string name="my_comment">我的帖子</string>
+    <string name="logout">注销登录</string>
+    <string name="change_password">修改密码</string>
+    <string name="submit">确定</string>
 </resources>

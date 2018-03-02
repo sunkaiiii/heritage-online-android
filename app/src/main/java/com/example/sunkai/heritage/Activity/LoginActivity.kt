@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.infoToRSA
+import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -64,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                 editor.apply()
                 GlobalContext.instance.registUser()
                 //从Welcome页过来而并非从二级页面登录，则直接进入主页
-                if (isIntoMainpage == 0) {
+                if (isIntoMainpage == 0||isIntoMainpage== LOG_OUT) {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()

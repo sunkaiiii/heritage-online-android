@@ -16,10 +16,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.ConnectWebService.HandlePersonNew
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.MySqliteHandler
@@ -28,14 +28,12 @@ import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.FindInSql
 import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.inAnimation
 import com.example.sunkai.heritage.tools.outAnimation
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
-import org.kobjects.base64.Base64
 import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
 import java.util.*
@@ -70,7 +68,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     internal fun getUserAllInfo(userID: Int) {
         Thread {
-            val data = HandlePersonNew.GetUserAllInfo(userID)
+            val data = HandlePerson.GetUserAllInfo(userID)
             data?.let {
                 runOnUiThread({
                     setViews(data)
@@ -154,35 +152,20 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         db.insert(table, null, contentValues)
     }
 
-    internal fun getUserImageFromNet(userID: Int): Bitmap? {
-        val userImage = HandlePerson.Get_User_Image(userID)
-        userImage?.let {
-            addImageToSql(userID, Base64.decode(userImage))
-            return HandlePic.handlePic(ByteArrayInputStream(Base64.decode(userImage)), 0)
-        }
-        return null
-    }
 
     internal fun getUserImage(userID: Int,photoView: ImageView){
         Thread {
-            val bitmap = findImageInSql(userID)
-            bitmap?.let {
+            val url=HandlePerson.GetUserImageURL(userID)
+            url?.let{
                 runOnUiThread {
-                    setImageView(bitmap,photoView)
-                }
-                return@Thread
-            }
-            val image = getUserImageFromNet(userID)
-            image?.let {
-                runOnUiThread {
-                    setImageView(image,photoView)
+                    Glide.with(this).load(url).into(photoView)
                 }
             }
         }.start()
     }
 
     internal fun judgeFocus(otherUserID:Int,userID: Int):Boolean{
-        return HandlePerson.is_User_Follow(otherUserID,userID)
+        return HandlePerson.IsUserFollow(otherUserID,userID)
     }
 
     internal fun setViews(data: UserInfo) {
@@ -314,7 +297,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     internal fun showUserImage(){
-        getUserImage(userID,pv_activity_other_users)
+//        getUserImage(userID,pv_activity_other_users)
         llBackground.startAnimation(inAnimation)
         pv_activity_other_users.startAnimation(inAnimation)
         llBackground.visibility=View.VISIBLE

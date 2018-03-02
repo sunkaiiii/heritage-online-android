@@ -5,12 +5,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePersonNew
+import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
+import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
+import com.example.sunkai.heritage.value.STATE_CHANGE
 import kotlinx.android.synthetic.main.activity_focus_information.*
 
 class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
@@ -75,16 +77,15 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
             this.what = what
         }
 
-        private var adapter: FocusListviewAdapter? = null
         private val getFollowinformation = Runnable {
-            val datas = HandlePersonNew.GetFollowInformation(userID)
+            val datas = HandlePerson.GetFollowInformation(userID)
             runOnUiThread {
                 setAdpter(datas)
             }
 
         }
         private val getFansinformation = Runnable {
-            val datas = HandlePersonNew.GetFansInformation(userID)
+            val datas = HandlePerson.GetFansInformation(userID)
             runOnUiThread {
                 setAdpter(datas)
             }
@@ -93,7 +94,13 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
 
 
         private fun setAdpter(datas: List<FollowInformation>) {
-            adapter = FocusListviewAdapter(this@FocusInformationActivity, what, datas)
+            val adapter = FocusListviewAdapter(this@FocusInformationActivity, what, datas)
+            adapter.setOnFocusChangeListener(object :OnFocusChangeListener{
+                override fun onFocusChange() {
+                    setResult(STATE_CHANGE)
+                }
+
+            })
             focus_information_recyclerview.adapter = adapter
         }
 

@@ -29,6 +29,8 @@ const val SIGN_OUT=11
 const val TYPE_TEXT="text"
 const val TYPE_IMAGE="img"
 const val CATEGORY="category"
+const val STATE_CHANGE=1
+const val LOG_OUT=2
 
 const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 

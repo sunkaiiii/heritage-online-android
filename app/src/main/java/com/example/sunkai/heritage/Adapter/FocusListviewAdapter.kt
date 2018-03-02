@@ -13,7 +13,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.OtherUsersActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePersonNew
+import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
@@ -84,7 +84,7 @@ class FocusListviewAdapter
         Thread {
             val id = data.focusFansID
             if (id != NO_USERID) {
-                val url = HandlePersonNew.GetUserImageURL(id)
+                val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
                     context.runOnUiThread {
                         Glide.with(context).load(url).into(holder.userImage)
@@ -117,9 +117,9 @@ class FocusListviewAdapter
     internal inner class handleFocus(private var data: FollowInformation, private var position: Int, private var btn: Button) {
         fun AddFollow() {
             Thread {
-                val result = HandlePersonNew.AddFocus(data.focusFocusID, data.focusFansID)
+                val result = HandlePerson.AddFocus(data.focusFocusID, data.focusFansID)
                 //因为是关注用户，重新运行查看互关进程，判断是否为互相关注
-                val followEachOther = HandlePersonNew.CheckFollowEachother(data.focusFocusID, data.focusFansID)
+                val followEachOther = HandlePerson.CheckFollowEachother(data.focusFocusID, data.focusFansID)
                 context.runOnUiThread {
                     if (result) {
                         //关注完成则执行回调，使其重新加载粉丝、关注数据
@@ -133,19 +133,21 @@ class FocusListviewAdapter
         }
 
         fun CancelFollow() {
-            val result = HandlePersonNew.CancelFocus(data.focusFocusID, data.focusFansID)
-            context.runOnUiThread {
-                if (result) {
-                    setItemState(position, btn, false, false)
-                } else {
-                    toast("操作失败，请稍后再试")
+            Thread {
+                val result = HandlePerson.CancelFocus(data.focusFocusID, data.focusFansID)
+                context.runOnUiThread {
+                    if (result) {
+                        setItemState(position, btn, false, false)
+                    } else {
+                        toast("操作失败，请稍后再试")
+                    }
                 }
-            }
+            }.start()
         }
 
         private fun setItemState(position: Int, button: Button, check: Boolean, followEachOther: Boolean) {
             onFocuschangeListener?.onFocusChange()
-            button.isEnabled = check
+            button.isEnabled = true
             button.text = if (check) {
                 if (followEachOther) "互相关注" else "已关注"
             } else "未关注"
