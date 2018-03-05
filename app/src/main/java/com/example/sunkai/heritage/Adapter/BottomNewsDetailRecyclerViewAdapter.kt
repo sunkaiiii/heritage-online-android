@@ -2,16 +2,14 @@ package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.BottomNewsDetail
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.TYPE_TEXT
@@ -55,7 +53,7 @@ class BottomNewsDetailRecyclerViewAdapter(val context:Context,datas:List<BottomN
         }else{
             holder.textView.visibility=View.GONE
             holder.imageView.visibility=View.VISIBLE
-            Glide.with(context).load(BaseSettingNew.URL+data.info).into(holder.imageView)
+            Glide.with(context).load(BaseSetting.URL+data.info).into(holder.imageView)
         }
     }
 

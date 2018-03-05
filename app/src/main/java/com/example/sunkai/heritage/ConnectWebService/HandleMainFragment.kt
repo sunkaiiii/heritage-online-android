@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
  * 此类封装了有关首页相关的各类服务器请求的方法
  */
 
-object HandleMainFragment : BaseSettingNew() {
+object HandleMainFragment : BaseSetting() {
 
     fun ReadMainNews():List<List<FolkNewsLite>>{
         val resultList=ArrayList<List<FolkNewsLite>>()

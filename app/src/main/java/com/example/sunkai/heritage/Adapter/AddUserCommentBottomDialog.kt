@@ -11,7 +11,7 @@ import at.markushi.ui.CircleButton
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseBottomDialog
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
@@ -67,7 +67,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
         val replyContent=holder.replyContent.text.toString()
         val uriString=generateInentString()
         Thread{
-            val result=HandleFindNew.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,uriString)
+            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,uriString)
             context.runOnUiThread {
                 if(result!= ERROR){
                     val replyID=result.toInt()

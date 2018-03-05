@@ -15,7 +15,7 @@ import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.DELETE_COMMENT
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
@@ -110,9 +110,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
         activiy?.let{
             Thread{
                 val datas=when(what){
-                    ALL_COMMENT->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
-                    MY_FOCUS_COMMENT->HandleFindNew.GetUserCommentInformationByUser(LoginActivity.userID)
-                    else->HandleFindNew.GetUserCommentInformation(LoginActivity.userID)
+                    ALL_COMMENT->HandleFind.GetUserCommentInformation(LoginActivity.userID)
+                    MY_FOCUS_COMMENT->HandleFind.GetUserCommentInformationByUser(LoginActivity.userID)
+                    else->HandleFind.GetUserCommentInformation(LoginActivity.userID)
                 }
                 activiy.runOnUiThread {
                     val adapter=FindFragmentRecyclerViewAdapter(activiy,datas,what)

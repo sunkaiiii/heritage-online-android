@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.NewsDetail
 import com.example.sunkai.heritage.R
 
@@ -43,7 +43,7 @@ class NewsDetailRecyclerAdapter(val context: Context,val datas:List<NewsDetail>)
             }else{
                 holder.textview.visibility=View.GONE
                 holder.imageView.visibility=View.VISIBLE
-                Glide.with(context).load(BaseSettingNew.URL+data.info).into(holder.imageView)
+                Glide.with(context).load(BaseSetting.URL+data.info).into(holder.imageView)
             }
         }
     }

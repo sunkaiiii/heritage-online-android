@@ -11,8 +11,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
@@ -36,7 +36,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             data = intent?.getSerializableExtra("data") as UserCommentData
             edit_comment_title.setText(data!!.commentTitle)
             edit_comment_content.setText(data!!.commentContent)
-            Glide.with(this).load(BaseSettingNew.URL+data!!.imageUrl).into(edit_comment_image)
+            Glide.with(this).load(BaseSetting.URL+data!!.imageUrl).into(edit_comment_image)
         }
     }
 
@@ -82,7 +82,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             Thread {
                 setDatas()
                 val bytes= getBytes() ?: return@Thread
-                val result = HandleFindNew.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,Base64.encode(bytes))
+                val result = HandleFind.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,Base64.encode(bytes))
                 runOnUiThread {
                     if (result!= ERROR) {
                         MakeToast.MakeText(getString(R.string.update_success))

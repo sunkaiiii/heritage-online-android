@@ -5,15 +5,13 @@ import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity
 import okhttp3.FormBody
 import org.kobjects.base64.Base64
-import org.ksoap2.serialization.SoapObject
-import kotlin.math.log
 
 
 /*
  * Created by sunkai on 2018/1/30.
  */
 
-object HandleUser : BaseSettingNew() {
+object HandleUser : BaseSetting() {
     fun Sign_In(userName: String, userPassword: String): Boolean {
         val builder = FormBody.Builder()
         builder.add("username", userName)

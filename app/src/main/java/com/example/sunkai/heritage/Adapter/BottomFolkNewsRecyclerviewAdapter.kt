@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
 import com.google.gson.Gson
@@ -74,7 +74,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
                 }
                 imgArray.size < 3 -> {
                     holder.image.visibility = View.VISIBLE
-                    Glide.with(context).load(BaseSettingNew.URL + imgArray[0]).into(holder.image)
+                    Glide.with(context).load(BaseSetting.URL + imgArray[0]).into(holder.image)
                     holder.bottomLinear.visibility = View.GONE
                     holder.briefly.visibility = View.GONE
                 }
@@ -83,7 +83,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
                     holder.bottomLinear.visibility = View.VISIBLE
                     holder.briefly.visibility = View.VISIBLE
                     for ((position, imageview) in holder.imageViews.withIndex()) {
-                        Glide.with(context).load(BaseSettingNew.URL + imgArray[position]).into(imageview)
+                        Glide.with(context).load(BaseSetting.URL + imgArray[position]).into(imageview)
                     }
                 }
             }

@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.Data
 
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.SUCCESS
 import java.io.Serializable
 
 /**

@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment.fromJsonToList
 import com.example.sunkai.heritage.Data.ActivityData
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.Data.FolkData
@@ -14,7 +13,7 @@ import com.google.gson.Gson
  * 此类封装了有关民间页相关的功能的服务器请求的方法
  */
 
-object HandleFolk : BaseSettingNew() {
+object HandleFolk : BaseSetting() {
 
 
     fun GetFolkInforMation(): List<FolkDataLite>? {

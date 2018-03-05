@@ -16,8 +16,8 @@ import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.Adapter.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -129,7 +129,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         if (image != null) {
             information_img.setImageBitmap(HandlePic.handlePic(image))
         } else {
-            Glide.with(this).load(BaseSettingNew.URL + data.imageUrl).into(information_img)
+            Glide.with(this).load(BaseSetting.URL + data.imageUrl).into(information_img)
         }
         usercommentInformationLinear.visibility = View.VISIBLE
         val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
@@ -142,7 +142,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null)).create()
             ad.show()
             Thread {
-                val result = HandleFindNew.DeleteUserCommentByID(data!!.id)
+                val result = HandleFind.DeleteUserCommentByID(data!!.id)
                 runOnUiThread {
                     if (ad.isShowing) {
                         ad.dismiss()
@@ -184,7 +184,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun getReplysInfo(commentID: Int) {
         Thread {
-            val datas = HandleFindNew.GetUserCommentReply(commentID)
+            val datas = HandleFind.GetUserCommentReply(commentID)
             runOnUiThread {
                 val adapter = UserCommentReplyRecyclerAdapter(this, datas)
                 userCommentReplyRecyclerView.adapter = adapter

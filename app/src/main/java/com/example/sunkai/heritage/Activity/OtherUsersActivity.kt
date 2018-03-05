@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -26,7 +27,6 @@ import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.FindInSql
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.inAnimation
 import com.example.sunkai.heritage.tools.outAnimation
@@ -180,7 +180,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     internal fun setAdapter(userID: Int) {
-        val adapter = OtherPersonActivityRecyclerViewAdapter(userID, arrayListOf())
+        val adapter = OtherPersonActivityRecyclerViewAdapter(this,userID, arrayListOf())
         val layoutManager = GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
@@ -320,23 +320,13 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     internal fun getImage(position: Int, adapter: ViewPagerAdapter) {
         Thread {
-            var bitmap = FindInSql.searchFindCOmmentImageFromSQLWithoutTimeCheck(adapter.datas[position])
-            if (bitmap == null) {
-                val imageByte = HandleFind.Get_User_Comment_Image(adapter.datas[position])
-                imageByte?.let {
-                    FindInSql.AddFindCommentImageToSQLWithoutTime(adapter.datas[position], imageByte)
-                    bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
+            val id=adapter.datas[position]
+            val url=HandleFind.GetUserCommentImageUrl(id)
+            if(!TextUtils.isEmpty(url)&&url!= ERROR){
+                runOnUiThread {
+                    val photoView=viewPagerAdapter.photoViewMap[position]?:return@runOnUiThread
+                    Glide.with(this).load(url).into(photoView)
                 }
-            }
-            bitmap?.let {
-                runOnUiThread({
-                    if (position == vpViewPager.currentItem) {
-                        val photoview = viewPagerAdapter.photoViewMap[position]
-                        photoview?.let {
-                            photoview.setImageBitmap(bitmap)
-                        }
-                    }
-                })
             }
         }.start()
     }

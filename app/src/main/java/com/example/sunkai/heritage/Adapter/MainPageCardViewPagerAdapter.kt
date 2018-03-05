@@ -16,7 +16,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Activity.SeeMoreNewsActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseCardPagerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.CATEGORIES
@@ -57,7 +57,7 @@ class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<Li
         if (TextUtils.isEmpty(item.img)) {
             itemHolder.image.visibility = View.GONE
         } else {
-            Glide.with(context).load(BaseSettingNew.URL + item.img).into(simpleTarget(itemHolder))
+            Glide.with(context).load(BaseSetting.URL + item.img).into(simpleTarget(itemHolder))
         }
         linearLayout.addView(itemView)
     }

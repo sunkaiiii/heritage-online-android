@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.MainPageSlideNews
 import com.example.sunkai.heritage.R
 
@@ -37,7 +37,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         val title=view.findViewById<TextView>(R.id.main_page_slide_title)
         val data=datas[position%datas.size]
         title.text=data.content
-        Glide.with(context).load(BaseSettingNew.URL+data.img).into(image)
+        Glide.with(context).load(BaseSetting.URL+data.img).into(image)
         container.addView(view)
         view.setOnClickListener({
             val intent=setViewClick(data)

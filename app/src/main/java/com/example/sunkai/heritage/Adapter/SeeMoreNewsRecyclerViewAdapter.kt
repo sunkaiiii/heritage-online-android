@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
 
@@ -59,7 +59,7 @@ class SeeMoreNewsRecyclerViewAdapter(val context:Context,datas:List<FolkNewsLite
         if(TextUtils.isEmpty(data.img)){
             holder.imageview.visibility=View.GONE
         }else {
-            Glide.with(context).load(BaseSettingNew.URL + data.img).into(SimpleTaget(holder))
+            Glide.with(context).load(BaseSetting.URL + data.img).into(SimpleTaget(holder))
         }
     }
 

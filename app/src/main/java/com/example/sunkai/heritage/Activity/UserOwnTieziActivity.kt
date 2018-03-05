@@ -16,7 +16,6 @@ import android.view.View
 import android.widget.ImageView
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
@@ -78,7 +77,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                             ad.show()
                             Thread {
                                 val userCommentData = adapter.getItem(position)
-                                val result = HandleFind.Delete_User_Comment_By_ID(userCommentData.id)
+                                val result = HandleFind.DeleteUserCommentByID(userCommentData.id)
                                 runOnUiThread {
                                     if (ad.isShowing) {
                                         ad.dismiss()
@@ -106,7 +105,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
 
     private class GetInformationAsyncTask(activity:UserOwnTieziActivity):BaseAsyncTask<Void,Void,List<UserCommentData>,UserOwnTieziActivity>(activity){
         override fun doInBackground(vararg params: Void?): List<UserCommentData>? {
-            return HandleFindNew.GetUserCommentInformaitonByOwn(LoginActivity.userID)
+            return HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
         }
 
         override fun onPostExecute(datas: List<UserCommentData>) {

@@ -16,10 +16,10 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.ERROR
-import com.example.sunkai.heritage.ConnectWebService.BaseSettingNew.Companion.SUCCESS
-import com.example.sunkai.heritage.ConnectWebService.HandleFindNew
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.ERROR
+import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.SUCCESS
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -173,8 +173,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val isLike = divide == LIKE
         Thread {
             val success = when (divide) {
-                LIKE -> HandleFindNew.SetUserLike(LoginActivity.userID, data.id)
-                DISLIKE -> HandleFindNew.SetUserLike(LoginActivity.userID, data.id)
+                LIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
+                DISLIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
                 else -> false
             }
             context.runOnUiThread {
@@ -271,7 +271,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
         val requestOption = RequestOptions().placeholder(R.color.lightGrey).error(R.color.lightGrey)
-        Glide.with(context).load(BaseSettingNew.URL + data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
+        Glide.with(context).load(BaseSetting.URL + data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
 
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
