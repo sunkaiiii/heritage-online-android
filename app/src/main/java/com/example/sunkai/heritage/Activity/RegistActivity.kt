@@ -20,6 +20,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.encryptionPassWord
 import com.example.sunkai.heritage.value.ERROR
 import kotlinx.android.synthetic.main.activity_regist.*
@@ -170,7 +171,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         findPasswordQuestion = regist_actitivy_question_editText.text.toString().trim()
         findPasswordAnswer = regist_actitivy_answer_editText.text.toString().trim()
         setViewsIsDisable()
-        Thread(userRegist).start()
+        ThreadPool.execute(userRegist)
     }
 
     private var userRegist: Runnable = Runnable {

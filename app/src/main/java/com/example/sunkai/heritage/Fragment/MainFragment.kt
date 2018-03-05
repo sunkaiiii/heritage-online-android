@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
@@ -19,13 +20,14 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.ShadowTransformer
+import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
 /**
  * 首页
  */
-class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPageLoaded {
+class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,7 +46,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
 
     private fun loadSomeMainNews(refreshBottom:Boolean=true){
         onPreLoad()
-        Thread{
+        ThreadPool.execute{
             val news=HandleMainFragment.ReadMainNews()
             val activity=activity
             activity?.let{
@@ -65,11 +67,11 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
                     }
                 }
             }
-        }.start()
+        }
     }
 
     private fun loadBottomNews(){
-        Thread{
+        ThreadPool.execute{
             val datas=HandleMainFragment.GetBottomNewsLiteInformation()
             val activity=activity
             activity?.let{
@@ -81,7 +83,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
                 }
 
             }
-        }.start()
+        }
     }
 
     private fun setAdapterClick(adapter: BottomFolkNewsRecyclerviewAdapter) {
@@ -121,7 +123,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
 
     private val onScroller=object:OnSrollHelper(){
         override fun loadMoreData(recyclerView: RecyclerView) {
-            Thread{
+            ThreadPool.execute{
                 val activity=activity
                 activity?.let {
                     val adapter = recyclerView.adapter
@@ -134,7 +136,7 @@ class MainFragment : android.support.v4.app.Fragment(),View.OnClickListener,OnPa
                     }
                 }
 
-            }.start()
+            }
         }
 
     }

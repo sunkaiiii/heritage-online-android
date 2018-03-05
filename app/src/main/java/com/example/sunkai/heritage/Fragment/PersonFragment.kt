@@ -11,10 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.sunkai.heritage.Activity.FocusInformationActivity
-import com.example.sunkai.heritage.Activity.LoginActivity
-import com.example.sunkai.heritage.Activity.SettingActivity
-import com.example.sunkai.heritage.Activity.UserOwnTieziActivity
+import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
@@ -50,8 +47,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     private var userImageUrl: String? = null
 
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_person, container, false)
@@ -80,11 +75,11 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         userImage.setOnClickListener(this)
         myOwnTiezi.setOnClickListener(this)
         settingLayout.setOnClickListener(this)
-        val toolbar =view.findViewById<android.support.v7.widget.Toolbar>(R.id.fragment_person_toolbar)
-        val activity=activity
-        activity?.let{
-            if(activity is AppCompatActivity){
-                toolbar.title=""
+        val toolbar = view.findViewById<android.support.v7.widget.Toolbar>(R.id.fragment_person_toolbar)
+        val activity = activity
+        activity?.let {
+            if (activity is AppCompatActivity) {
+                toolbar.title = ""
                 activity.setSupportActionBar(toolbar)
                 setHasOptionsMenu(true)
             }
@@ -131,7 +126,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
 
     override fun onClick(v: View) {
-        if(checkLogin()) {
+        if (checkLogin()) {
             val intent: Intent
             when (v.id) {
                 R.id.fragment_person_my_tiezi -> {
@@ -139,12 +134,9 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                     startActivity(intent)
                 }
                 R.id.person_fragment_setting -> {
-                    if(checkLogin()) {
-                        intent = Intent(activity, SettingActivity::class.java)
-                        if (userImageUrl != null) {
-                            intent.putExtra("userImage", userImageUrl)
-                        }
-                        startActivityForResult(intent, SETTING_ACTIVITY)
+                    if (checkLogin()) {
+                        intent = Intent(activity, SettingListActivity::class.java)
+                        startActivity(intent)
                     }
                 }
                 R.id.person_follow, R.id.person_follow_number -> {
@@ -159,6 +151,10 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                 }
                 R.id.sign_in_icon -> {
                     chooseAlertDialog.show()
+                }
+                R.id.fragment_person_about_us -> {
+                    intent = Intent(activity, AboutUSActivity::class.java)
+                    startActivity(intent)
                 }
             }
         }
@@ -180,9 +176,13 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
-            R.id.log_out->{sign_out()}
-            R.id.change_password->{changePassword()}
+        when (item?.itemId) {
+            R.id.log_out -> {
+                sign_out()
+            }
+            R.id.change_password -> {
+                changePassword()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -200,8 +200,8 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                     activity?.finish()
                 }
             }
-            FROM_FOCUS_AND_FANS_INFORMATION->{
-                if(resultCode==STATE_CHANGE){
+            FROM_FOCUS_AND_FANS_INFORMATION -> {
+                if (resultCode == STATE_CHANGE) {
                     GetUserInfo()
                 }
             }
@@ -209,7 +209,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     }
 
     private fun sign_out() {
-        val activity=activity
+        val activity = activity
         activity?.let {
             AlertDialog.Builder(activity).setTitle("是否注销?").setPositiveButton("确定") { _, _ ->
                 GlobalContext.instance.unregistUser() //注销的时候退出当前账号
@@ -221,17 +221,19 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             }.setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }.show()
         }
     }
-    private fun changePassword(){
-        if(checkLogin()){
-            val activity=activity
+
+    private fun changePassword() {
+        if (checkLogin()) {
+            val activity = activity
             activity?.let {
                 val dialog = ChangePasswordDialog(activity)
                 dialog.show()
             }
         }
     }
-    private fun checkLogin():Boolean {
-        if(LoginActivity.userID==0) {
+
+    private fun checkLogin(): Boolean {
+        if (LoginActivity.userID == 0) {
             toast("没有登录")
             val intent = Intent(activity, LoginActivity::class.java)
             intent.putExtra("isInto", LOG_OUT)
@@ -244,6 +246,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     companion object {
         private const val IS_INTO_LOGIN = 1
-        private const val FROM_FOCUS_AND_FANS_INFORMATION=2
+        private const val FROM_FOCUS_AND_FANS_INFORMATION = 2
     }
 }

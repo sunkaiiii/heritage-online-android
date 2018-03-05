@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ERROR
 
 /**
@@ -66,7 +67,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
     private fun addReply(holder: Holder){
         val replyContent=holder.replyContent.text.toString()
         val uriString=generateInentString()
-        Thread{
+        ThreadPool.execute{
             val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,uriString)
             context.runOnUiThread {
                 if(result!= ERROR){
@@ -81,7 +82,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
                 }
                 setViewState(holder,true)
             }
-        }.start()
+        }
     }
 
     override fun onAddUserReplySuccess(data: CommentReplyInformation) {

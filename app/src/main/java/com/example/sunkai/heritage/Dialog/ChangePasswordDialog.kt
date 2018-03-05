@@ -11,6 +11,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
 
 /**
@@ -59,9 +60,9 @@ class ChangePasswordDialog(val context: Activity) {
     }
 
     private fun changePassword(holder: Holder){
-        Thread {
-            val encryPassword = infoToRSA(holder.password?.text.toString()) ?: return@Thread
-            val name = LoginActivity.userName ?: return@Thread
+        ThreadPool.execute {
+            val encryPassword = infoToRSA(holder.password?.text.toString()) ?: return@execute
+            val name = LoginActivity.userName ?: return@execute
             val result = HandleUser.Change_Password(name, encryPassword)
             context.runOnUiThread({
                 if (result) {
@@ -74,6 +75,6 @@ class ChangePasswordDialog(val context: Activity) {
                     }
                 }
             })
-        }.start()
+        }
     }
 }

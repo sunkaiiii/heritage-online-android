@@ -18,6 +18,7 @@ import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.NO_USERID
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -81,7 +82,7 @@ class FocusListviewAdapter
     }
 
     private fun getUserImage(holder: Holder, data: FollowInformation) {
-        Thread {
+        ThreadPool.execute {
             val id = data.focusFansID
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
@@ -91,7 +92,7 @@ class FocusListviewAdapter
                     }
                 }
             }
-        }.start()
+        }
     }
 
     private fun setClick(holder: Holder, position: Int, data: FollowInformation) {
@@ -116,7 +117,7 @@ class FocusListviewAdapter
 
     internal inner class handleFocus(private var data: FollowInformation, private var position: Int, private var btn: Button) {
         fun AddFollow() {
-            Thread {
+            ThreadPool.execute {
                 val result = HandlePerson.AddFocus(data.focusFocusID, data.focusFansID)
                 //因为是关注用户，重新运行查看互关进程，判断是否为互相关注
                 val followEachOther = HandlePerson.CheckFollowEachother(data.focusFocusID, data.focusFansID)
@@ -129,11 +130,11 @@ class FocusListviewAdapter
                     }
 
                 }
-            }.start()
+            }
         }
 
         fun CancelFollow() {
-            Thread {
+            ThreadPool.execute {
                 val result = HandlePerson.CancelFocus(data.focusFocusID, data.focusFansID)
                 context.runOnUiThread {
                     if (result) {
@@ -142,7 +143,7 @@ class FocusListviewAdapter
                         toast("操作失败，请稍后再试")
                     }
                 }
-            }.start()
+            }
         }
 
         private fun setItemState(position: Int, button: Button, check: Boolean, followEachOther: Boolean) {

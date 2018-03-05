@@ -26,6 +26,7 @@ import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
 import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
@@ -190,13 +191,12 @@ class LoginActivity : AppCompatActivity() {
                 if (find_password_question != null) {
                     if (find_password_question.visibility == View.GONE) {
                         queding.isEnabled = false
-                        Thread(findPasswordQuestion).start()
+                        ThreadPool.execute(findPasswordQuestion)
                     } else {
                         val checkUserAnswerHandler = object : Handler(mainLooper) {
                             override fun handleMessage(msg: Message) {
                                 queding.isEnabled = true
                                 if (msg.what == 1) {
-                                    //                                        Toast.makeText(LoginActivity.this,"成功",Toast.LENGTH_SHORT).show();
                                     changePasswordUsername = userName
                                     ad.dismiss()
                                     changePassword()
@@ -219,7 +219,7 @@ class LoginActivity : AppCompatActivity() {
                                 Toast.makeText(this@LoginActivity, "答案不能为空", Toast.LENGTH_SHORT).show()
                             } else {
                                 queding.isEnabled = false
-                                Thread(checkUserAnswer).start()
+                                ThreadPool.execute(checkUserAnswer)
                             }
                         }
                     }
@@ -284,7 +284,7 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
             submit.isEnabled = false
-            Thread(changePasswordThread).start()
+            ThreadPool.execute(changePasswordThread)
         }
     }
 

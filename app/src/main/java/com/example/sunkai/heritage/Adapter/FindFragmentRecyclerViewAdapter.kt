@@ -26,6 +26,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -171,7 +172,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         holder.like.isEnabled = false
         holder.dislike.isEnabled = false
         val isLike = divide == LIKE
-        Thread {
+        ThreadPool.execute {
             val success = when (divide) {
                 LIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
                 DISLIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
@@ -194,7 +195,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                     toast("出现错误")
                 }
             }
-        }.start()
+        }
     }
 
     private fun setFocusClick(holder: ViewHolder, data: UserCommentData) {
@@ -213,7 +214,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     private fun handleFocus(holder: ViewHolder, data: UserCommentData, divide: Int) {
         holder.addfocusText.isEnabled = false
         holder.cancelFocusText.isEnabled = false
-        Thread {
+        ThreadPool.execute {
             val isFocus = divide == ADD_FOCUS
             val success = when (divide) {
                 ADD_FOCUS -> HandlePerson.AddFocus(LoginActivity.userID, data.userID)
@@ -234,7 +235,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                     toast("出现错误")
                 }
             }
-        }.start()
+        }
     }
 
 
@@ -276,12 +277,12 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
         val requestOptions = RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        Thread {
+        ThreadPool.execute {
             val userImageURL = HandlePerson.GetUserImageURL(data.userID)
             context.runOnUiThread {
                 Glide.with(context).load(userImageURL).apply(requestOptions).into(holder.userImage)
             }
-        }.start()
+        }
     }
 
     private fun showMiniReply(holder: ViewHolder, data: UserCommentData) {

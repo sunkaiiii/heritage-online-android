@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.activity_other_users.*
 
 /**
@@ -51,7 +52,7 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun goToLogin(what: Int) {
-        Thread {
+        ThreadPool.execute {
             try {
                 Thread.sleep(1000)
             } catch (e: InterruptedException) {
@@ -78,7 +79,7 @@ class WelcomeActivity : AppCompatActivity() {
                     }
                 }
             }
-        }.start()
+        }
     }
     companion object {
         private const val gotoLogin = 0

@@ -24,6 +24,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
@@ -141,7 +142,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             @SuppressLint("InflateParams")
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null)).create()
             ad.show()
-            Thread {
+            ThreadPool.execute {
                 val result = HandleFind.DeleteUserCommentByID(data!!.id)
                 runOnUiThread {
                     if (ad.isShowing) {
@@ -155,7 +156,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                     setResult(DELETE_COMMENT, intent)
                     onBackPressed()
                 }
-            }.start()
+            }
         }.setNegativeButton("取消") { _, _ -> }.create().show()
     }
 
@@ -183,13 +184,13 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getReplysInfo(commentID: Int) {
-        Thread {
+        ThreadPool.execute {
             val datas = HandleFind.GetUserCommentReply(commentID)
             runOnUiThread {
                 val adapter = UserCommentReplyRecyclerAdapter(this, datas)
                 userCommentReplyRecyclerView.adapter = adapter
             }
-        }.start()
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -203,15 +204,15 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun generateDialog(commentID:Int):AddUserCommentBottomDialog{
-        val dialog=AddUserCommentBottomDialog(this,commentID)
-        dialog.setOnAddUserReplyListener(object :AddUserReplyDialog{
+    private fun generateDialog(commentID: Int): AddUserCommentBottomDialog {
+        val dialog = AddUserCommentBottomDialog(this, commentID)
+        dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
             override fun onAddUserReplySuccess(data: CommentReplyInformation) {
-                val adapter=userCommentReplyRecyclerView.adapter
-                if(adapter is UserCommentReplyRecyclerAdapter){
+                val adapter = userCommentReplyRecyclerView.adapter
+                if (adapter is UserCommentReplyRecyclerAdapter) {
                     adapter.addData(data)
                     userCommentReplyRecyclerView.smoothScrollToPosition(adapter.itemCount)
-                    information_reply_num.text=(information_reply_num.text.toString().toInt()+1).toString()
+                    information_reply_num.text = (information_reply_num.text.toString().toInt() + 1).toString()
                 }
             }
         })
@@ -245,75 +246,4 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
 
         private const val TAG = "UserCommentDetail"
     }
-
-    //    internal inner class HandleReply(var content: String) {
-//        var userID: Int = 0
-//        var userName: String=""
-//        var replyTime: String=""
-//
-//        var addReply: Runnable = Runnable {
-//            val intent = Intent(GlobalContext.instance, UserCommentDetailActivity::class.java)
-//            intent.putExtra("id", commentID)
-//            val uriString = intent.toUri(Intent.URI_INTENT_SCHEME)
-//            Log.d(TAG, "uriString: " + uriString)
-//            val result = HandleFind.Add_User_Comment_Reply(userID, commentID, content, uriString)
-//            val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
-//            replyTime = df.format(Date())
-//            runOnUiThread {
-//                if (result > 0) {
-//                    val data = addDataToList(result)
-//                    setView(data)
-////                    resetWidge()
-//                    isReply = true
-//                    MakeToast.MakeText("回复成功")
-//                    hideKeyboard(currentFocus)
-//                } else {
-//                    MakeToast.MakeText("发生错误，请稍后再试")
-//                }
-//            }
-//        }
-//
-//        init {
-//            this.userID = LoginActivity.userID
-//            this.userName = LoginActivity.userName.orEmpty()
-//        }
-//
-//        private fun addDataToList(result: Int): CommentReplyData {
-//            val data = CommentReplyData()
-//            data.replyContent = content
-//            data.userName = userName
-//            data.replyTime = replyTime
-//            data.replyId = result
-//            datas?.add(data)
-//            return data
-//        }
-
-//        private fun resetWidge() {
-//            progressBar.visibility = View.GONE
-//            replyBtn.visibility = View.VISIBLE
-//            information_reply_num.text = (Integer.parseInt(information_reply_num.text.toString()) + 1).toString()
-//            replyEdit.setText("")
-//        }
-//    }
-    //    private fun submit() {
-//        if (TextUtils.isEmpty(replyEdit.text.toString().trim { it <= ' ' })) {
-//            Toast.makeText(this@UserCommentDetailActivity, "回复不能为空", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-//        if (userID == 0) {
-//            Toast.makeText(this, "没有登录", Toast.LENGTH_SHORT).show()
-//            val intent = Intent(this, LoginActivity::class.java)
-//            intent.putExtra("isInto", 1)
-//            startActivityForResult(intent, 1)
-//            return
-//        }
-//        val content = replyEdit.text.toString()
-//        replyBtn.visibility = View.GONE
-//        progressBar.visibility = View.VISIBLE
-//        /*
-//         * 将回复的内容传给恢复类
-//         */
-//        val handleReply = HandleReply(content)
-//        Thread(handleReply.addReply).start()
-//    }
 }

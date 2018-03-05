@@ -27,9 +27,6 @@ class JoinActivity : AppCompatActivity(), View.OnClickListener {
         activity_join_collapsing_toolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBarSize)
         activity_join_collapsing_toolbar.title = folkActiviyData!!.title
         join_activity_content.text = folkActiviyData!!.title
-        /**
-         * 在页面显示的时候判断此用户是否已经预约此活动
-         */
     }
 
     private fun initView() {

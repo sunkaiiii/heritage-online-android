@@ -6,6 +6,7 @@ import com.example.sunkai.heritage.Adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
 class BottomNewsDetailActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class BottomNewsDetailActivity : AppCompatActivity() {
     }
 
     private fun GetNewsDetail(id:Int){
-        Thread{
+        ThreadPool.execute{
             val data=HandleMainFragment.GetBottomNewsInformationByID(id)
             data?.let{
                 val contentInfos=HandleMainFragment.GetBottomNewsDetailInfo(data.content)
@@ -35,6 +36,6 @@ class BottomNewsDetailActivity : AppCompatActivity() {
                     bottomNewsDetailRecyclerview.adapter=adapter
                 }
             }
-        }.start()
+        }
     }
 }

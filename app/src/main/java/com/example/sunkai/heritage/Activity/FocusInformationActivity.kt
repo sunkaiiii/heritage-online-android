@@ -9,6 +9,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.FANS
 import com.example.sunkai.heritage.value.FOLLOW
 import com.example.sunkai.heritage.value.NO_USERID
@@ -108,11 +109,11 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
          * 根据what的不同，执行不同的方法
          */
         fun getFollowInformaiton() {
-            Thread(getFollowinformation).start()
+            ThreadPool.execute(getFollowinformation)
         }
 
         fun getFansInformation() {
-            Thread(getFansinformation).start()
+            ThreadPool.execute(getFansinformation)
         }
     }
 

@@ -8,6 +8,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Data.MainPageSlideNews
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.RESULT_NULL
 import kotlinx.android.synthetic.main.activity_news_detail.*
 
@@ -38,22 +39,22 @@ class NewsDetailActivity : AppCompatActivity() {
     }
 
     private fun getNewsDetail(id:Int){
-        Thread{
+        ThreadPool.execute{
             val datas=HandleMainFragment.GetFolkNewsInformation(id)
             runOnUiThread {
                 val adapter=NewsDetailRecyclerAdapter(this,datas)
                 newsDetailRecyclerView.adapter=adapter
             }
-        }.start()
+        }
     }
 
     private fun generateDetail(detail:String){
-        Thread{
+        ThreadPool.execute{
             val data=HandleMainFragment.GetMainPageSlideDetailInfo(detail)
             runOnUiThread {
                 val adapter=NewsDetailRecyclerAdapter(this,data)
                 newsDetailRecyclerView.adapter=adapter
             }
-        }.start()
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.example.sunkai.heritage.Fragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.SeeMoreNewsFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.CATEGORY
 import kotlinx.android.synthetic.main.activity_see_more_news.*
@@ -38,14 +39,14 @@ class SeeMoreNewsActivity : AppCompatActivity() {
     }
 
     private fun initMainPageSlide(){
-        Thread{
+        ThreadPool.execute{
             val datas=HandleMainFragment.GetMainPageSlideNewsInfo()
             if(datas!=null){
                 runOnUiThread {
                     setMainPageSlideAdapter(datas)
                 }
             }
-        }.start()
+        }
     }
 
     private fun initTabLayout(){
@@ -84,7 +85,7 @@ class SeeMoreNewsActivity : AppCompatActivity() {
                 if(adapter is SeeMoreNewsViewpagerAdapter) {
                     val fragment=adapter.getItem(i)
                     if(fragment is BaseLazyLoadFragment) {
-                        Thread{
+                        ThreadPool.execute{
                             //在第一次加载的时候，因为viewpager的fragment还没有create，所以无法取得args
                             //于是在第一次启动的时候延迟一段时间再lazyload
                             //目前的方式还不够优雅
@@ -93,7 +94,7 @@ class SeeMoreNewsActivity : AppCompatActivity() {
                                 seeMoreNewsViewpager.currentItem = i
                                 fragment.lazyLoad()
                             }
-                        }.start()
+                        }
 
                     }
                 }

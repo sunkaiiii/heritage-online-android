@@ -13,6 +13,7 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.RESULT_NULL
 import com.example.sunkai.heritage.value.RESULT_OK
@@ -81,15 +82,15 @@ class OtherPersonActivityRecyclerViewAdapter(val activity:Activity,val userID: I
     }
 
 
-    internal fun getImage(imageID: Int, imageview: ImageView) {
-        Thread{
+    private fun getImage(imageID: Int, imageview: ImageView) {
+        ThreadPool.execute{
             val url=HandleFind.GetUserCommentImageUrl(imageID)
             if(!TextUtils.isEmpty(url)&&url!= ERROR){
                 activity.runOnUiThread {
                     Glide.with(activity).load(url).into(imageview)
                 }
             }
-        }.start()
+        }
     }
 
 }

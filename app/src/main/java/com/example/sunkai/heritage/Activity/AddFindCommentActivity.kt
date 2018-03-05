@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
 import org.kobjects.base64.Base64
 
@@ -35,7 +36,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
 
     private var item:MenuItem?=null
 
-    internal var addCommentInformation: Runnable = Runnable {
+    private var addCommentInformation: Runnable = Runnable {
         val title = add_comment_title.text.toString().trim()
         val content = add_comment_content.text.toString().trim()
         /*
@@ -56,7 +57,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         }
     }
 
-    internal var addCommentInformationHandler: Handler = object : Handler(Looper.getMainLooper()) {
+    private var addCommentInformationHandler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             item?.actionView=null
             if (msg.what == 1) {
@@ -117,7 +118,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         isSavePicture = true
         item?.actionView = ProgressBar(this)
         item?.isEnabled=false
-        Thread(addCommentInformation).start()
+        ThreadPool.execute(addCommentInformation)
 
     }
 

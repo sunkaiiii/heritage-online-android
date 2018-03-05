@@ -1,14 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.CoordinatorLayout
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -20,9 +17,8 @@ import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.generateColor
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.generateDarkColor
-import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
 import com.example.sunkai.heritage.value.HOST
@@ -96,7 +92,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getFolkData(id:Int){
-        Thread{
+        ThreadPool.execute {
             val folkData=HandleFolk.Get_Channel_Folk_Single_Information(id)
             if(folkData!=null){
                 val data=ClassifyDivideData(folkData)
@@ -108,7 +104,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
                     setErrorInfo()
                 }
             }
-        }.start()
+        }
     }
 
     override fun onClick(v: View) {

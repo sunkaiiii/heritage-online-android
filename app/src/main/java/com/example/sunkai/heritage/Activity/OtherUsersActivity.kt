@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
-import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
@@ -22,34 +19,32 @@ import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapte
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
-import com.example.sunkai.heritage.Data.HandlePic
-import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.inAnimation
 import com.example.sunkai.heritage.tools.outAnimation
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
-import java.io.ByteArrayInputStream
 import java.lang.ref.WeakReference
 import java.util.*
 
 class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
-    internal lateinit var userNameTextView: TextView
-    internal lateinit var userImageView: RoundedImageView
-    internal lateinit var focusNumberTextView: TextView
-    internal lateinit var fansNumberTextView: TextView
-    internal lateinit var focusText: TextView
-    internal lateinit var fansText: TextView
-    internal lateinit var userinfosRecyclerView: RecyclerView
-    internal lateinit var llBackground: LinearLayout
-    internal lateinit var vpViewPager: ViewPager
-    internal lateinit var viewPagerAdapter: ViewPagerAdapter
-    internal lateinit var tvPermission:TextView
+    private lateinit var userNameTextView: TextView
+    private lateinit var userImageView: RoundedImageView
+    private lateinit var focusNumberTextView: TextView
+    private lateinit var fansNumberTextView: TextView
+    private lateinit var focusText: TextView
+    private lateinit var fansText: TextView
+    private lateinit var userinfosRecyclerView: RecyclerView
+    private lateinit var llBackground: LinearLayout
+    private lateinit var vpViewPager: ViewPager
+    private lateinit var viewPagerAdapter: ViewPagerAdapter
+    private lateinit var tvPermission:TextView
 
     private var userID: Int = NO_USERID
 
@@ -66,8 +61,8 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    internal fun getUserAllInfo(userID: Int) {
-        Thread {
+    private fun getUserAllInfo(userID: Int) {
+        ThreadPool.execute {
             val data = HandlePerson.GetUserAllInfo(userID)
             data?.let {
                 runOnUiThread({
@@ -77,13 +72,13 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                 })
             }
 
-        }.start()
+        }
     }
-    internal fun checkPermissions(data:UserInfo){
+    private fun checkPermissions(data:UserInfo){
         when(data.permission){
             DENIALD -> setErrorMessage()
             ONLYFOCUS->{
-                Thread {
+                ThreadPool.execute {
                     val result=judgeFocus(userID, LoginActivity.userID)
                     runOnUiThread {
                         if (result) {
@@ -93,7 +88,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                             setErrorMessage()
                         }
                     }
-                }.start()
+                }
             }
             ALL -> {
                 setAdapter(userID)
@@ -103,7 +98,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         when(data.focusAndFansPermission){
             DENIALD -> setViewsOnFonsAndFocusPermissionDenailClick()
             ONLYFOCUS->{
-                Thread {
+                ThreadPool.execute {
                     val result=judgeFocus(userID, LoginActivity.userID)
                     runOnUiThread {
                         if (result) {
@@ -113,73 +108,43 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                             setViewsOnFonsAndFocusPermissionDenailClick()
                         }
                     }
-                }.start()
+                }
             }
             ALL -> {
                 setViewsOnClick()
             }
         }
     }
-    internal fun setErrorMessage() {
+    private fun setErrorMessage() {
         tvPermission.visibility=View.VISIBLE
         rv_activity_other_users.visibility=View.GONE
         tvPermission.text = getString(R.string.permission_denaild_information)
     }
 
-    internal fun findImageInSql(userID: Int): Bitmap? {
-        val db = MySqliteHandler.GetReadableDatabase()
-        val cursor: Cursor
-        val table = "person_image"
-        val selection = "imageID=?"
-        val selectionArgs = arrayOf(userID.toString())
-        cursor = db.query(table, null, selection, selectionArgs, null, null, null)
-        cursor.moveToFirst()
-        if (!cursor.isAfterLast) {
-            val imageIndex = cursor.getColumnIndex("image")
-            val image = cursor.getBlob(imageIndex)
-            cursor.close()
-            return HandlePic.handlePic(ByteArrayInputStream(image), 0)
-        }
-        return null
-    }
 
-    internal fun addImageToSql(userID: Int, userImage: ByteArray) {
-        val contentValues = ContentValues()
-        contentValues.put("imageID", userID)
-        contentValues.put("image", userImage)
-        val db = MySqliteHandler.GetWritableDatabase()
-        val table = "person_image"
-        db.insert(table, null, contentValues)
-    }
-
-
-    internal fun getUserImage(userID: Int,photoView: ImageView){
-        Thread {
+    private fun getUserImage(userID: Int, photoView: ImageView){
+        ThreadPool.execute {
             val url=HandlePerson.GetUserImageURL(userID)
             url?.let{
                 runOnUiThread {
                     Glide.with(this).load(url).into(photoView)
                 }
             }
-        }.start()
+        }
     }
 
-    internal fun judgeFocus(otherUserID:Int,userID: Int):Boolean{
+    private fun judgeFocus(otherUserID:Int, userID: Int):Boolean{
         return HandlePerson.IsUserFollow(otherUserID,userID)
     }
 
-    internal fun setViews(data: UserInfo) {
+    private fun setViews(data: UserInfo) {
         userNameTextView.text = data.userName
         focusNumberTextView.text = data.focusNumber.toString()
         fansNumberTextView.text = data.fansNumber.toString()
     }
 
-    internal fun setImageView(image: Bitmap,photoView: ImageView) {
-        photoView.setImageBitmap(image)
-        photoView.setOnClickListener(this)
-    }
 
-    internal fun setAdapter(userID: Int) {
+    private fun setAdapter(userID: Int) {
         val adapter = OtherPersonActivityRecyclerViewAdapter(this,userID, arrayListOf())
         val layoutManager = GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
@@ -297,7 +262,6 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     internal fun showUserImage(){
-//        getUserImage(userID,pv_activity_other_users)
         llBackground.startAnimation(inAnimation)
         pv_activity_other_users.startAnimation(inAnimation)
         llBackground.visibility=View.VISIBLE
@@ -319,7 +283,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     internal fun getImage(position: Int, adapter: ViewPagerAdapter) {
-        Thread {
+        ThreadPool.execute {
             val id=adapter.datas[position]
             val url=HandleFind.GetUserCommentImageUrl(id)
             if(!TextUtils.isEmpty(url)&&url!= ERROR){
@@ -328,7 +292,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                     Glide.with(this).load(url).into(photoView)
                 }
             }
-        }.start()
+        }
     }
 
 

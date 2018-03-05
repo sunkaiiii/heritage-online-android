@@ -15,6 +15,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ALL
 import com.example.sunkai.heritage.value.DENIALD
 import com.example.sunkai.heritage.value.ONLYFOCUS
@@ -51,7 +52,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun checkUserPermission(){
-        Thread{
+        ThreadPool.execute{
             val permission= HandlePerson.GetUserPermission(LoginActivity.userID)
             val focusAndFansViewPermission= HandlePerson.GetUserFocusAndFansViewPermission(LoginActivity.userID)
             runOnUiThread {
@@ -64,7 +65,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
                 permissionSpinner.onItemSelectedListener = this
                 focusAndFansViewPermissionSpinner.onItemSelectedListener=this
             }
-        }.start()
+        }
 
     }
 
@@ -78,10 +79,10 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         val editor=getSharedPreferences("setting",Context.MODE_PRIVATE).edit()
         if(isChecked) {
             GlobalContext.instance.registMipush() //在这里延迟一些注册用户，同时注册用户会注册失败，需要重新启动程序才可以
-            Thread{
+            ThreadPool.execute{
                 Thread.sleep(5000)
                 GlobalContext.instance.registUser()
-            }.start()
+            }
 
             editor?.putBoolean("pushSwitch",true)
             editor?.apply()
@@ -99,7 +100,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         when (position - 1) {
             DENIALD, ONLYFOCUS, ALL -> {
                 spinner.isEnabled = false
-                Thread {
+                ThreadPool.execute {
                     val result:Boolean
                     result = when(id) {
                         R.id.permission_spinner-> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
@@ -113,7 +114,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
                         }
                     }
 
-                }.start()
+                }
             }
         }
     }

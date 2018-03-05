@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import org.kobjects.base64.Base64
@@ -40,7 +41,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         }
     }
 
-    internal fun initview() {
+    private fun initview() {
         edit_comment_title = findViewById(R.id.add_comment_title)
         edit_comment_content = findViewById(R.id.add_comment_content)
         edit_comment_image = findViewById(R.id.add_comment_image)
@@ -79,9 +80,9 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         val data=data
         data?.let {
             setViewsUnable()
-            Thread {
+            ThreadPool.execute {
                 setDatas()
-                val bytes= getBytes() ?: return@Thread
+                val bytes= getBytes() ?: return@execute
                 val result = HandleFind.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,Base64.encode(bytes))
                 runOnUiThread {
                     if (result!= ERROR) {
@@ -100,7 +101,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
                     }
                 }
 
-            }.start()
+            }
         }
     }
 
