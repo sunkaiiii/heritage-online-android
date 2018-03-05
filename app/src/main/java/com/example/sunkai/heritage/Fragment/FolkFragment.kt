@@ -1,13 +1,13 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.*
+import android.os.Build
+import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
@@ -20,8 +20,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-
-import com.example.sunkai.heritage.Data.*
+import com.example.sunkai.heritage.Data.ActivityData
+import com.example.sunkai.heritage.Data.ClassifyActivityDivide
+import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.generateColor
@@ -29,8 +30,7 @@ import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.fragment_folk.*
 import java.lang.ref.WeakReference
-
-import java.util.ArrayList
+import java.util.*
 
 
 class FolkFragment : BaseLazyLoadFragment() {
@@ -175,19 +175,16 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     fun getStatusBarShouldChangeColor(): Int {
-        val drawable = iv_fragment_main_scroll_change_image.drawable
-        return generateColor(drawable)
+        return iv_fragment_main_scroll_change_image.drawable?.generateColor() ?: ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
     }
 
     private val simpleTarget: SimpleTarget<Drawable> by lazy {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (index == tableLayout.selectedTabPosition) {
-                    val color = generateColor(resource)
-                    val textColor = generateTextColor(resource)
-                    textColor?.let {
-                        tableLayout.setTabTextColors(textColor, Color.WHITE)
-                    }
+                    val color = resource.generateColor()
+                    val textColor = resource.generateTextColor()
+                    tableLayout.setTabTextColors(textColor, Color.WHITE)
                     setColors(color, resource)
                 }
             }

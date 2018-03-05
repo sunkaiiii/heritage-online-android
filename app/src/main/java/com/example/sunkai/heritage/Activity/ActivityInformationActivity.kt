@@ -119,7 +119,7 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
 
     private val target = object : SimpleTarget<Drawable>() {
         override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
-            val color = generateDarkColor(drawable)
+            val color = drawable.generateDarkColor()
             collapsingToolbarLayout.setContentScrimColor(color)
             textBackGround.setBackgroundColor(color)
             if (Build.VERSION.SDK_INT >= 21) {

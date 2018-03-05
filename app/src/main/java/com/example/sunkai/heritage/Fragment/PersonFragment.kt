@@ -231,8 +231,8 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         if (checkLogin()) {
             val activity = activity
             activity?.let {
-                val dialog = ChangePasswordDialog(activity)
-                dialog.show()
+                val dialog = ChangePasswordDialog()
+                dialog.show(fragmentManager,"修改密码")
             }
         }
     }

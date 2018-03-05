@@ -1,10 +1,10 @@
 package com.example.sunkai.heritage.tools
 
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.Palette
+import androidx.graphics.drawable.toBitmap
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 
@@ -13,36 +13,29 @@ import com.example.sunkai.heritage.R
  * Created by sunkai on 2018/1/18.
  */
 
-fun generateColor(drawable: Drawable?):Int{
-    if(drawable is BitmapDrawable){
-        val bitmap=drawable.bitmap
-        return generateColor(bitmap)
-    }
-    return ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark)
+fun Drawable.generateColor():Int{
+    val bitmap=this.toBitmap()
+    return bitmap.generateColor()
 }
 
-fun generateColor(bitmap: Bitmap):Int{
-    return Palette.from(bitmap).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
+fun Drawable.generateDarkColor():Int{
+    val bitmap=this.toBitmap()
+    return bitmap.generateDarkColor()
 }
 
-fun generateDarkColor(drawable: Drawable):Int{
-    return if(drawable is BitmapDrawable){
-        generateDarkColor(drawable.bitmap)
-    }else{
-        ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark)
-    }
-
+fun Bitmap.generateColor():Int{
+    return Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
 }
 
-fun generateDarkColor(bitmap: Bitmap):Int{
-    return Palette.from(bitmap).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
+fun Bitmap.generateDarkColor():Int{
+    return Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
 }
 
-fun generateTextColor(drawable: Drawable):Int?{
-
-    return if(drawable is BitmapDrawable) generateTextColor(drawable.bitmap) else null
+fun Drawable.generateTextColor():Int{
+    val bitmap=this.toBitmap()
+    return bitmap.generateTextColor()
 }
 
-fun generateTextColor(bitmap: Bitmap):Int?{
-    return Palette.from(bitmap).generate().dominantSwatch?.titleTextColor
+fun Bitmap.generateTextColor():Int{
+    return Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
 }

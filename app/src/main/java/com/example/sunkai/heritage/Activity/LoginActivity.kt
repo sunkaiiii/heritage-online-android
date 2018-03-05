@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.os.*
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
@@ -19,14 +18,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import at.markushi.ui.CircleButton
-
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.MySqliteHandler
+import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
-import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
 import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
@@ -44,16 +41,12 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var jumpSignIn: TextView
     private lateinit var findPassword: TextView
 
-    internal lateinit var infromRight:Animation
-    internal lateinit var outToLeft:Animation
-    internal lateinit var infromLeft:Animation
-    internal lateinit var outToRight:Animation
+    private lateinit var infromRight:Animation
+    private lateinit var outToLeft:Animation
+    private lateinit var infromLeft:Animation
+    private lateinit var outToRight:Animation
     private val requestCode: Int = 0
 
-    private var changePasswordUsername: String? = null
-
-    private lateinit var builder: AlertDialog.Builder
-    private lateinit var ad: AlertDialog
 
     internal var isIntoMainpage = 0
     internal var OnSuccessLoginHandler: Handler = object : Handler(Looper.getMainLooper()) {
@@ -142,89 +135,8 @@ class LoginActivity : AppCompatActivity() {
         }
         findPassword = findViewById(R.id.activity_login_find_password)
         findPassword.setOnClickListener { _ ->
-            builder = AlertDialog.Builder(this@LoginActivity).setTitle("忘记密码").setView(R.layout.find_password)
-            ad = builder.create()
-            ad.show()
-            val find_password_user = ad.findViewById<EditText>(R.id.find_password_username)
-            val find_password_question = ad.findViewById<EditText>(R.id.find_password_question)
-            val find_password_answer = ad.findViewById<EditText>(R.id.find_password_answer)
-            val queding = ad.findViewById<Button>(R.id.find_password_queding)
-            val cancel = ad.findViewById<Button>(R.id.find_password_cancel)
-            cancel?.setOnClickListener { _ -> ad.dismiss() }
-            queding?.setOnClickListener { _ ->
-                if (TextUtils.isEmpty(find_password_user!!.text)) {
-                    MakeToast.MakeText("用户名不能为空")
-                    return@setOnClickListener
-                }
-                val userName = find_password_user.text.toString()
-                val findPasswordHandler = object : Handler(mainLooper) {
-                    override fun handleMessage(msg: Message) {
-                        queding.isEnabled = true
-                        when {
-                            msg.what == -1 -> Toast.makeText(this@LoginActivity, "发生错误", Toast.LENGTH_SHORT).show()
-                            msg.what == 0 -> Toast.makeText(this@LoginActivity, "没有该用户", Toast.LENGTH_SHORT).show()
-                            else -> {
-                                find_password_question?.visibility=View.VISIBLE
-                                find_password_answer?.visibility = View.VISIBLE
-                                val result = msg.data.getString("userName")
-                                find_password_question?.setText(result)
-                                find_password_user.isEnabled = false
-                            }
-                        }
-                    }
-                }
-                val findPasswordQuestion = Runnable{
-                    val result: String? = HandleUser.Find_Password_Question(userName)
-                    when (result) {
-                        null -> findPasswordHandler.sendEmptyMessage(-1)
-                        "noUser" -> findPasswordHandler.sendEmptyMessage(0)
-                        else -> {
-                            val msg = Message()
-                            val bundle = Bundle()
-                            msg.what = 1
-                            bundle.putString("userName", result)
-                            msg.data = bundle
-                            findPasswordHandler.sendMessage(msg)
-                        }
-                    }
-                }
-                if (find_password_question != null) {
-                    if (find_password_question.visibility == View.GONE) {
-                        queding.isEnabled = false
-                        ThreadPool.execute(findPasswordQuestion)
-                    } else {
-                        val checkUserAnswerHandler = object : Handler(mainLooper) {
-                            override fun handleMessage(msg: Message) {
-                                queding.isEnabled = true
-                                if (msg.what == 1) {
-                                    changePasswordUsername = userName
-                                    ad.dismiss()
-                                    changePassword()
-                                } else {
-                                    Toast.makeText(this@LoginActivity, "回答错误", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                        val checkUserAnswer = Runnable{
-                            val encrtAnswer= infoToRSA(find_password_answer!!.text.toString())?:return@Runnable
-                            val result = HandleUser.Check_Question_Answer(userName, encrtAnswer)
-                            if (result) {
-                                checkUserAnswerHandler.sendEmptyMessage(1)
-                            } else {
-                                checkUserAnswerHandler.sendEmptyMessage(0)
-                            }
-                        }
-                        if (find_password_answer != null) {
-                            if (TextUtils.isEmpty(find_password_answer.text)) {
-                                Toast.makeText(this@LoginActivity, "答案不能为空", Toast.LENGTH_SHORT).show()
-                            } else {
-                                queding.isEnabled = false
-                                ThreadPool.execute(checkUserAnswer)
-                            }
-                        }
-                    }
-                }
-            }
+            val dialog=FindPasswordDialog()
+            dialog.show(supportFragmentManager,"找回密码问题")
         }
     }
 
@@ -236,56 +148,6 @@ class LoginActivity : AppCompatActivity() {
         values.put("user_password", "0")
         val whereString = arrayOf("1")
         db.update("user_login_info", values, "id=?", whereString)
-    }
-
-    private fun changePassword() {
-        builder = AlertDialog.Builder(this@LoginActivity).setTitle("修改密码").setView(R.layout.change_password)
-        ad = builder.create()
-        ad.show()
-        val userName: EditText? = ad.findViewById(R.id.change_password_name)
-        val password: EditText? = ad.findViewById(R.id.change_password_password)
-        val insure: EditText? = ad.findViewById(R.id.change_password_insure)
-        val submit: Button? = ad.findViewById(R.id.change_password_queding)
-        val cancel: Button? = ad.findViewById(R.id.change_password_cancel)
-        userName?.setText(changePasswordUsername)
-        cancel?.setOnClickListener { _ -> ad.dismiss() }
-
-        val changePasswordHandler = object : Handler(mainLooper) {
-            override fun handleMessage(msg: Message) {
-                if (msg.what == 1) {
-                    MakeToast.MakeText("修改成功")
-                    ad.dismiss()
-                } else {
-                    MakeToast.MakeText("修改失败，请稍后再试")
-                    if (submit != null) {
-                        submit.isEnabled = true
-                    }
-                }
-            }
-        }
-
-        val changePasswordThread = Runnable{
-            val encryPassword= infoToRSA(password!!.text.toString())?:return@Runnable
-            val result = HandleUser.Change_Password(changePasswordUsername!!, encryPassword)
-            if (result) {
-                changePasswordHandler.sendEmptyMessage(1)
-            } else {
-                changePasswordHandler.sendEmptyMessage(0)
-            }
-        }
-
-        submit?.setOnClickListener { _ ->
-            if (TextUtils.isEmpty(password!!.text) || TextUtils.isEmpty(insure!!.text)) {
-                MakeToast.MakeText("密码不能为空")
-                return@setOnClickListener
-            }
-            if (password.text.toString() != insure.text.toString()) {
-                MakeToast.MakeText("密码输入不一致")
-                return@setOnClickListener
-            }
-            submit.isEnabled = false
-            ThreadPool.execute(changePasswordThread)
-        }
     }
 
 

@@ -8,6 +8,7 @@ const val GET_INFO_DONE = 1
 const val SET_CANCEL_LIKE_DONE = 2
 const val FOCUS_USER_DONE = 3
 const val UN_FOCUS_USER_DONE = 4
+const val NO_USER="noUser"
 const val NO_USERID=-1
 const val RESULT_OK=800
 const val RESULT_NULL=-1
