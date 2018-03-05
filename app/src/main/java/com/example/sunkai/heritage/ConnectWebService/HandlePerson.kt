@@ -94,6 +94,25 @@ object HandlePerson : BaseSetting() {
         return arrayListOf()
     }
 
+    //这两个方法目前服务端还没有对应的方法，预计会在未来解决
+    fun GetOtherFollowInformation(userID: Int,otherUserID:Int):List<FollowInformation>{
+        val datas= GetFollowInformation(otherUserID)
+        datas.map {
+            //要把对应的id改为登陆用户的id
+            it.focusFocusID=userID
+            it.checked= IsUserFollow(userID,it.focusFansID) }
+        return datas
+    }
+
+    fun GetOtherFansInformation(userID: Int,otherUserID: Int):List<FollowInformation>{
+        val datas= GetFansInformation(otherUserID)
+        datas.forEach {
+            //要把对应的id改为登陆用户的id
+            it.focusFocusID=userID
+            it.checked= IsUserFollow(userID,it.focusFansID) }
+        return datas
+    }
+
     fun AddFocus(userID: Int,focusID:Int):Boolean{
         val getUrl="$URL/AddFocus?userID=$userID&focusID=$focusID"
         val result=PutGet(getUrl)

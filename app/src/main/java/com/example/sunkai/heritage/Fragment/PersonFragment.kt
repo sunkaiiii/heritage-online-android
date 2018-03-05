@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.value.SETTING_ACTIVITY
 import com.example.sunkai.heritage.value.SIGN_OUT
 import com.example.sunkai.heritage.value.STATE_CHANGE
 import com.makeramen.roundedimageview.RoundedImageView
+import kotlinx.android.synthetic.main.fragment_person.*
 
 /**
  * 此类是用于处理个人中心页面
@@ -49,14 +50,17 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_person, container, false)
+        return inflater.inflate(R.layout.fragment_person, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initview(view)
         if (LoginActivity.userName == null) {
             userName.text = "没有登录"
         } else {
             userName.text = LoginActivity.userName
         }
-        return view
     }
 
     private fun initview(view: View) {
@@ -75,6 +79,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         userImage.setOnClickListener(this)
         myOwnTiezi.setOnClickListener(this)
         settingLayout.setOnClickListener(this)
+        fragment_person_about_us.setOnClickListener(this)
         val toolbar = view.findViewById<android.support.v7.widget.Toolbar>(R.id.fragment_person_toolbar)
         val activity = activity
         activity?.let {

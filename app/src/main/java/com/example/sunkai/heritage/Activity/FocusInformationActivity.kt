@@ -9,11 +9,9 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.value.FANS
-import com.example.sunkai.heritage.value.FOLLOW
-import com.example.sunkai.heritage.value.NO_USERID
-import com.example.sunkai.heritage.value.STATE_CHANGE
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_focus_information.*
 
 class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
@@ -37,24 +35,24 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
          */
         when (intent.getStringExtra("information")) {
             "focus" -> {
-                list = handleList(FOLLOW)
+                list = handleList(FOLLOW, FROM_PERSON)
                 list.getFollowInformaiton()
             }
             "fans" -> {
-                list = handleList(FANS)
+                list = handleList(FANS, FROM_PERSON)
                 list.getFansInformation()
             }
-            FOLLOW.toString() -> {
+            OTHER_FOLLOW.toString() -> {
                 val userID = intent.getIntExtra("userID", NO_USERID)
                 if (userID != NO_USERID) {
-                    list = handleList(FOLLOW, userID)
+                    list = handleList(FOLLOW, FROM_OTHER_PERSON, userID)
                     list.getFollowInformaiton()
                 }
             }
-            FANS.toString() -> {
+            OTHER_FANS.toString() -> {
                 val userID = intent.getIntExtra("userID", NO_USERID)
                 if (userID != NO_USERID) {
-                    list = handleList(FANS, userID)
+                    list = handleList(FANS, FROM_OTHER_PERSON, userID)
                     list.getFansInformation()
                 }
             }
@@ -64,7 +62,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    internal inner class handleList(what: Int, userID: Int = LoginActivity.userID)
+    internal inner class handleList(what: Int, from: Int, userID: Int = LoginActivity.userID)
     /**
      *
      * @param what 为1的时候说明是关注界面，为2的时候为粉丝界面
@@ -79,14 +77,22 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         private val getFollowinformation = Runnable {
-            val datas = HandlePerson.GetFollowInformation(userID)
+            val datas=if(from== FROM_PERSON) {
+                HandlePerson.GetFollowInformation(userID)
+            }else{
+                HandlePerson.GetOtherFollowInformation(LoginActivity.userID,userID)
+            }
             runOnUiThread {
                 setAdpter(datas)
             }
 
         }
         private val getFansinformation = Runnable {
-            val datas = HandlePerson.GetFansInformation(userID)
+            val datas = if(from== FROM_PERSON){
+                HandlePerson.GetFansInformation(userID)
+            }else{
+                HandlePerson.GetOtherFansInformation(LoginActivity.userID,userID)
+            }
             runOnUiThread {
                 setAdpter(datas)
             }
@@ -96,7 +102,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
 
         private fun setAdpter(datas: List<FollowInformation>) {
             val adapter = FocusListviewAdapter(this@FocusInformationActivity, what, datas)
-            adapter.setOnFocusChangeListener(object :OnFocusChangeListener{
+            adapter.setOnFocusChangeListener(object : OnFocusChangeListener {
                 override fun onFocusChange() {
                     setResult(STATE_CHANGE)
                 }
@@ -123,5 +129,10 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
             android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        const val FROM_PERSON = 1
+        const val FROM_OTHER_PERSON = 2
     }
 }

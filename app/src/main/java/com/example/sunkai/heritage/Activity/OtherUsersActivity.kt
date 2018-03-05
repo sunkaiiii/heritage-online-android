@@ -298,8 +298,8 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.person_follow_number, R.id.person_follow -> startActivity(FOLLOW)
-            R.id.person_fans_number, R.id.person_fans -> startActivity(FANS)
+            R.id.person_follow_number, R.id.person_follow -> startActivity(OTHER_FOLLOW)
+            R.id.person_fans_number, R.id.person_fans -> startActivity(OTHER_FANS)
             R.id.ll_activity_other_users_background, R.id.vp_activity_other_users -> closeImageView()
             R.id.sign_in_icon-> showUserImage()
             R.id.pv_activity_other_users->{
