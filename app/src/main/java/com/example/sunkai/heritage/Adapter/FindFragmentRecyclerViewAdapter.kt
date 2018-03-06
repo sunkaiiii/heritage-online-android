@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast

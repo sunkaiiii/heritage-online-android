@@ -11,4 +11,8 @@
         android:icon="@drawable/ic_save_black_24dp"
         android:title="@string/logout"
         app:showAsAction="never|withText"/>
+    <item android:id="@+id/search_user"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="ifRoom"/>
 </menu>

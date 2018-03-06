@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -23,6 +25,7 @@ import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.inAnimation
 import com.example.sunkai.heritage.tools.outAnimation
@@ -48,6 +51,8 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     private var userID: Int = NO_USERID
 
+    private var data:UserInfo?=null
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,11 +66,25 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    internal fun initview() {
+        userNameTextView = findViewById(R.id.sign_name_textview)
+        userImageView = findViewById(R.id.sign_in_icon)
+        focusNumberTextView = findViewById(R.id.person_follow_number)
+        fansNumberTextView = findViewById(R.id.person_fans_number)
+        focusText = findViewById(R.id.person_follow)
+        fansText = findViewById(R.id.person_fans)
+        userinfosRecyclerView = findViewById(R.id.rv_activity_other_users)
+        llBackground = findViewById(R.id.ll_activity_other_users_background)
+        vpViewPager = findViewById(R.id.vp_activity_other_users)
+        tvPermission=findViewById(R.id.tv_permission)
+    }
+
     private fun getUserAllInfo(userID: Int) {
         ThreadPool.execute {
             val data = HandlePerson.GetUserAllInfo(userID)
             data?.let {
                 runOnUiThread({
+                    this.data=data
                     setViews(data)
                     getUserImage(userID,userImageView)
                     checkPermissions(data)
@@ -141,6 +160,16 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         userNameTextView.text = data.userName
         focusNumberTextView.text = data.focusNumber.toString()
         fansNumberTextView.text = data.fansNumber.toString()
+        setFloatBtnState(data)
+        addFocsFloatBtn.setOnClickListener(this)
+    }
+
+    private fun setFloatBtnState(data: UserInfo){
+        addFocsFloatBtn.setImageResource(if(data.checked) R.drawable.ic_remove_white_24dp else R.drawable.ic_add_white_24dp)
+        //设置按下时候的颜色
+        addFocsFloatBtn.rippleColor=ContextCompat.getColor(this,if(data.checked)R.color.colorAccent else R.color.lightGrey)
+        //给FloatActionButton着色
+        ViewCompat.setBackgroundTintList(addFocsFloatBtn,ContextCompat.getColorStateList(this,if(data.checked)R.color.midGrey else R.color.colorAccent))
     }
 
 
@@ -155,6 +184,58 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                 openImageView(position, adapter)
             }
         })
+    }
+
+    private fun handleFloatBtn(){
+        addFocsFloatBtn.isEnabled=false
+        val data=this.data
+        playFloatBtnAnimation()
+        data?.let{
+            ThreadPool.execute {
+                val result=if(data.checked) HandlePerson.CancelFocus(LoginActivity.userID,data.id) else HandlePerson.AddFocus(LoginActivity.userID,data.id)
+                runOnUiThread {
+                    addFocsFloatBtn.isEnabled=true
+                    if(result){
+                        data.checked=!data.checked
+                        this.data=data
+                        setFloatBtnState(data)
+                        toast((if(data.checked)"关注" else "取消关注")+"成功")
+                    }else{
+                        toast("出现问题")
+                    }
+                }
+            }
+
+        }
+    }
+
+    private  fun playFloatBtnAnimation(){
+        val animation=AnimationUtils.loadAnimation(this,R.anim.float_btn_translate)
+        addFocsFloatBtn.startAnimation(animation)
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.person_follow_number, R.id.person_follow -> startActivity(OTHER_FOLLOW)
+            R.id.person_fans_number, R.id.person_fans -> startActivity(OTHER_FANS)
+            R.id.ll_activity_other_users_background, R.id.vp_activity_other_users -> closeImageView()
+            R.id.sign_in_icon-> showUserImage()
+            R.id.pv_activity_other_users->{
+                if(pv_activity_other_users.scale==1.0f)
+                    closeImageView()
+                else
+                    pv_activity_other_users.setScale(1.0f,true)
+            }
+            R.id.addFocsFloatBtn->{handleFloatBtn()}
+        }
+    }
+
+    override fun onBackPressed() {
+        if (llBackground.visibility == View.VISIBLE) {
+            closeImageView()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     internal class ViewPagerAdapter(val datas: List<Int>, activity: OtherUsersActivity) : PagerAdapter() {
@@ -195,18 +276,6 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    internal fun initview() {
-        userNameTextView = findViewById(R.id.sign_name_textview)
-        userImageView = findViewById(R.id.sign_in_icon)
-        focusNumberTextView = findViewById(R.id.person_follow_number)
-        fansNumberTextView = findViewById(R.id.person_fans_number)
-        focusText = findViewById(R.id.person_follow)
-        fansText = findViewById(R.id.person_fans)
-        userinfosRecyclerView = findViewById(R.id.rv_activity_other_users)
-        llBackground = findViewById(R.id.ll_activity_other_users_background)
-        vpViewPager = findViewById(R.id.vp_activity_other_users)
-        tvPermission=findViewById(R.id.tv_permission)
-    }
 
     internal fun setViewsOnClick(){
         inAnimation.duration = 300
@@ -296,26 +365,5 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.person_follow_number, R.id.person_follow -> startActivity(OTHER_FOLLOW)
-            R.id.person_fans_number, R.id.person_fans -> startActivity(OTHER_FANS)
-            R.id.ll_activity_other_users_background, R.id.vp_activity_other_users -> closeImageView()
-            R.id.sign_in_icon-> showUserImage()
-            R.id.pv_activity_other_users->{
-                if(pv_activity_other_users.scale==1.0f)
-                    closeImageView()
-                else
-                    pv_activity_other_users.setScale(1.0f,true)
-            }
-        }
-    }
 
-    override fun onBackPressed() {
-        if (llBackground.visibility == View.VISIBLE) {
-            closeImageView()
-        } else {
-            super.onBackPressed()
-        }
-    }
 }

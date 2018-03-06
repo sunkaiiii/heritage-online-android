@@ -25,47 +25,8 @@
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
                     app:contentScrim="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:layout_margin="12dp">
-
-                        <RelativeLayout
-                            android:id="@+id/find_fragment_search_relative"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="12sp"
-                            android:layout_marginRight="12sp">
-
-                            <TextView
-                                android:id="@+id/find_text"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:hint="@string/search"
-                                android:layout_marginLeft="4dp" />
-
-                            <ImageView
-                                android:id="@+id/find_searchbtn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:layout_centerVertical="true"
-                                android:src="@drawable/ic_search_grey_400_24dp" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_below="@id/find_text"
-                                android:layout_marginTop="6dp"
-                                android:background="@color/lightGrey" />
-                        </RelativeLayout>
-
-                    </RelativeLayout>
-                </android.support.design.widget.CollapsingToolbarLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

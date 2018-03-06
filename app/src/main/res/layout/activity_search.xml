@@ -30,10 +30,10 @@
             android:maxLines="1"/>
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/search_activity_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/searchActivityList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="12dp"
-        android:orientation="vertical"></ListView>
+        app:layoutManager="@string/linearLayoutManager"/>
 </LinearLayout>

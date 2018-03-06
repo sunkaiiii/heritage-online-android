@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Adapter
+package com.example.sunkai.heritage.Dialog
 
 import android.app.Activity
 import android.content.Intent
@@ -10,7 +10,7 @@ import android.widget.Toast
 import at.markushi.ui.CircleButton
 import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseBottomDialog
+import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.GlobalContext
@@ -41,7 +41,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
     private fun initViews(){
         val view=view
         if(view!=null){
-            val holder=Holder(view)
+            val holder= Holder(view)
             holder.btnSend.setOnClickListener{
                 if(checkUserLogin() and checkTextIsLegal(holder)) {
                     setViewState(holder,false)
@@ -51,7 +51,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
         }
     }
 
-    private fun setViewState(holder: Holder,state:Boolean){
+    private fun setViewState(holder: Holder, state:Boolean){
         holder.btnSend.isEnabled=state
         holder.replyContent.isEnabled=state
     }

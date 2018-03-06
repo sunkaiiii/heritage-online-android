@@ -92,6 +92,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     }
 
     override fun startLoadInformation() {
+        checkLogin()
         GetUserInfo()
     }
 
@@ -188,6 +189,9 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             R.id.change_password -> {
                 changePassword()
             }
+            R.id.search_user->{
+                searchUser()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -205,7 +209,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                     activity?.finish()
                 }
             }
-            FROM_FOCUS_AND_FANS_INFORMATION -> {
+            FROM_FOCUS_AND_FANS_INFORMATION,FROM_SEARCH_ACTIVITY -> {
                 if (resultCode == STATE_CHANGE) {
                     GetUserInfo()
                 }
@@ -237,6 +241,11 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         }
     }
 
+    private fun searchUser(){
+        val intent=Intent(activity,SearchActivity::class.java)
+        startActivityForResult(intent, FROM_SEARCH_ACTIVITY)
+    }
+
     private fun checkLogin(): Boolean {
         if (LoginActivity.userID == 0) {
             toast("没有登录")
@@ -252,5 +261,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     companion object {
         private const val IS_INTO_LOGIN = 1
         private const val FROM_FOCUS_AND_FANS_INFORMATION = 2
+        private const val FROM_SEARCH_ACTIVITY=3
     }
 }

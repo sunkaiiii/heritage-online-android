@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Adapter.BaseAdapter
+package com.example.sunkai.heritage.Dialog.Base
 
 import android.content.Context
 import android.os.Bundle

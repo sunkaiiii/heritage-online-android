@@ -8,4 +8,5 @@ class UserInfo(val id:Int,
                val focusNumber:Int,
                val fansNumber:Int,
                val permission:Int,
-               val focusAndFansPermission:Int)
+               val focusAndFansPermission:Int,
+               var checked:Boolean)

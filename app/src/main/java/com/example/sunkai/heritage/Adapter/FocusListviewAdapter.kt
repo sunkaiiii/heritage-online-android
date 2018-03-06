@@ -154,7 +154,7 @@ class FocusListviewAdapter
             } else "未关注"
             datas[position].checked = check
             datas[position].followEachother = followEachOther
-            val text = if (check) "专注成功" else "取消关注成功"
+            val text = if (check) "关注成功" else "取消关注成功"
             toast(text)
         }
     }

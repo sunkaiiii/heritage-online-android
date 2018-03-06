@@ -16,9 +16,9 @@ import com.xiaomi.mipush.sdk.PushMessageReceiver
 
 class DemoMessageReceiver : PushMessageReceiver() {
     private var mRegId: String? = null
-    private val mResultCode: Long = -1
-    private val mReason: String? = null
-    private val mCommand: String? = null
+//    private val mResultCode: Long = -1
+//    private val mReason: String? = null
+//    private val mCommand: String? = null
     private var mMessage: String? = null
     private var mTopic: String? = null
     private var mAlias: String? = null
@@ -95,7 +95,7 @@ class DemoMessageReceiver : PushMessageReceiver() {
         val command = message!!.command
         val arguments = message.commandArguments
         val cmdArg1 = if (arguments != null && arguments.size > 0) arguments[0] else null
-        val cmdArg2 = if (arguments != null && arguments.size > 1) arguments[1] else null
+//        val cmdArg2 = if (arguments != null && arguments.size > 1) arguments[1] else null
         if (MiPushClient.COMMAND_REGISTER == command) {
             if (message.resultCode == ErrorCode.SUCCESS.toLong()) {
                 mRegId = cmdArg1

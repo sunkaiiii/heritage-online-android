@@ -5,6 +5,7 @@ import android.view.View
 import com.example.sunkai.heritage.Adapter.BaseAdapter.CardAdapter
 
 /**
+ * card轮换时候的控制阴影的类
  * Created by sunkai on 2018/2/9.
  */
 class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter: CardAdapter) : ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
@@ -19,17 +20,13 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
         if (mScalingEnabled && !enable) {
             // shrink main card
             val currentCard = mAdapter.getCardViewAt(mViewPager.currentItem)
-            if (currentCard != null) {
-                currentCard.animate().scaleY(1f)
-                currentCard.animate().scaleX(1f)
-            }
+            currentCard.animate().scaleY(1f)
+            currentCard.animate().scaleX(1f)
         } else if (!mScalingEnabled && enable) {
             // grow main card
             val currentCard = mAdapter.getCardViewAt(mViewPager.currentItem)
-            if (currentCard != null) {
-                currentCard.animate().scaleY(1.1f)
-                currentCard.animate().scaleX(1.1f)
-            }
+            currentCard.animate().scaleY(1.1f)
+            currentCard.animate().scaleX(1.1f)
         }
 
         mScalingEnabled = enable
@@ -67,11 +64,9 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
 
         // This might be null if a fragment is being used
         // and the views weren't created yet
-        if (currentCard != null) {
-            if (mScalingEnabled) {
-                currentCard.scaleX = (1 + 0.1 * (1 - realOffset)).toFloat()
-                currentCard.scaleY = (1 + 0.1 * (1 - realOffset)).toFloat()
-            }
+        if (mScalingEnabled) {
+            currentCard.scaleX = (1 + 0.1 * (1 - realOffset)).toFloat()
+            currentCard.scaleY = (1 + 0.1 * (1 - realOffset)).toFloat()
             currentCard.cardElevation = baseElevation + (baseElevation
                     * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * (1 - realOffset))
         }
@@ -80,11 +75,9 @@ class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter:
 
         // We might be scrolling fast enough so that the next (or previous) card
         // was already destroyed or a fragment might not have been created yet
-        if (nextCard != null) {
-            if (mScalingEnabled) {
-                nextCard.scaleX = (1 + 0.1 * realOffset).toFloat()
-                nextCard.scaleY = (1 + 0.1 * realOffset).toFloat()
-            }
+        if (mScalingEnabled) {
+            nextCard.scaleX = (1 + 0.1 * realOffset).toFloat()
+            nextCard.scaleY = (1 + 0.1 * realOffset).toFloat()
             nextCard.cardElevation = baseElevation + (baseElevation
                     * (CardAdapter.MAX_ELEVATION_FACTOR - 1) * realOffset)
         }

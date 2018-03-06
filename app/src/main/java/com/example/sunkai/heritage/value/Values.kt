@@ -34,6 +34,8 @@ const val TYPE_IMAGE="img"
 const val CATEGORY="category"
 const val STATE_CHANGE=1
 const val LOG_OUT=2
+const val IS_FOCUS="已关注"
+const val UNFOCUS="未关注"
 
 const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 

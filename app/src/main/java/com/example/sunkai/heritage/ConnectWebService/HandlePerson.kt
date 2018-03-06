@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 import android.util.Log
+import com.example.sunkai.heritage.Activity.LoginActivity
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Data.UserInfo
@@ -48,7 +49,7 @@ object HandlePerson : BaseSetting() {
         return SUCCESS == result
     }
 
-    fun GetUserAllInfo(userID: Int): UserInfo? {
+    fun GetUserAllInfo(userID: Int,thisUserID:Int=LoginActivity.userID): UserInfo? {
         val getUrl = "$URL/GetUserAllInfo?userID=$userID"
         val result = PutGet(getUrl)
         Log.d("GetUserAllInfo",result)
@@ -56,7 +57,13 @@ object HandlePerson : BaseSetting() {
             return null
         }
         try {
-            return Gson().fromJson(result, UserInfo::class.java)
+            val data= Gson().fromJson(result, UserInfo::class.java)
+            if(data.id==thisUserID){
+                data.checked=false
+            }else{
+                data.checked= IsUserFollow(thisUserID,userID)
+            }
+            return data
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -136,14 +143,17 @@ object HandlePerson : BaseSetting() {
         return SUCCESS==result
     }
 
-    fun GetSearchUserInfo(searchName:String):List<SearchUserInfo>{
+    fun GetSearchUserInfo(searchName:String,id:Int):List<SearchUserInfo>{
         val getUrl="$URL/GetSearchUserInfo?searchName=$searchName"
         val result=PutGet(getUrl)
+        Log.d("GetSearchUserInfo",result)
         if(result== ERROR){
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<SearchUserInfo>::class.java)
+            val searchInfo= Gson().fromJsonToList(result,Array<SearchUserInfo>::class.java)
+            searchInfo.forEach { it.checked= IsUserFollow(id,it.id) }
+            return searchInfo
         }catch (e:Exception){
             e.printStackTrace()
         }
