@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityRegistBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/day_background"
@@ -31,11 +32,12 @@
                 android:background="@color/colorPrimary">
 
                 <ImageView
+                    android:id="@+id/registCancel"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_margin="16dp"
                     android:src="@drawable/ic_arrow_back_white_24dp"
-                    android:id="@+id/registCancel"/>
+                    android:contentDescription="@string/cancel_regist" />
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/registUserImage"
@@ -59,7 +61,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_account_circle_brown_50_24dp" />
+                    android:src="@drawable/ic_account_circle_brown_50_24dp"
+                    android:contentDescription="@string/user_name" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_username_editText"
@@ -71,7 +74,9 @@
                     android:layout_marginStart="8dp"
                     android:ems="10"
                     android:hint="@string/user_name"
-                    android:inputType="textPersonName" />
+                    android:inputType="textEmailAddress"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/regist_actitivy_password_editText" />
             </LinearLayout>
 
             <LinearLayout
@@ -85,7 +90,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_lock_open_brown_50_24dp" />
+                    android:src="@drawable/ic_lock_open_brown_50_24dp"
+                    android:contentDescription="@string/password" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_password_editText"
@@ -98,7 +104,10 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/regist_actitivy_insure_editText" />
             </LinearLayout>
 
             <LinearLayout
@@ -112,7 +121,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock_outline_brown_50_24dp" />
+                    android:src="@drawable/ic_lock_outline_brown_50_24dp"
+                    android:contentDescription="@string/insure_password" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_insure_editText"
@@ -125,68 +135,71 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/insure_password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/regist_actitivy_question_editText" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_help_outline_brown_50_24dp"
+                    android:contentDescription="@string/find_password_question" />
+
+                <EditText
+                    android:id="@+id/regist_actitivy_question_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:ems="10"
+                    android:hint="@string/find_password_question"
+                    android:inputType="textPersonName"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/regist_actitivy_answer_editText" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_question_answer_brown_50_24dp"
+                    android:contentDescription="@string/find_password_answer" />
+
+                <EditText
+                    android:id="@+id/regist_actitivy_answer_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_help_outline_brown_50_24dp" />
-
-                    <EditText
-                        android:id="@+id/regist_actitivy_question_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:ems="10"
-                        android:hint="@string/find_password_question"
-                        android:inputType="textPersonName" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_question_answer_brown_50_24dp" />
-
-                    <EditText
-                        android:id="@+id/regist_actitivy_answer_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:ems="10"
-                        android:hint="@string/find_password_answer"
-                        android:inputType="textPersonName" />
-                </LinearLayout>
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:ems="10"
+                    android:hint="@string/find_password_answer"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPersonName"
+                    android:nextFocusDown="@id/activity_regist_regist_button"/>
             </LinearLayout>
 
             <RelativeLayout

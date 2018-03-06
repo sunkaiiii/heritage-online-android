@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.Message
 import android.text.Editable
 import android.text.TextUtils
@@ -13,7 +12,7 @@ import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.View
 import android.view.Window
-import android.widget.*
+import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
@@ -24,6 +23,7 @@ import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.encryptionPassWord
 import com.example.sunkai.heritage.value.ERROR
 import kotlinx.android.synthetic.main.activity_regist.*
+import java.util.*
 
 
 class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatcher {
@@ -76,6 +76,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         views.add(activity_regist_regist_button)
         views.add(registCancel)
 
+        setBackGround()
         setAllViewsOnclick()
         regist_actitivy_password_editText.addTextChangedListener(this)
         regist_actitivy_insure_editText.addTextChangedListener(this)
@@ -87,6 +88,16 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                     or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
             window.decorView.systemUiVisibility = option
+        }
+    }
+
+    private fun setBackGround(){
+        val calendar=Calendar.getInstance()
+        val hour=calendar.get(Calendar.HOUR_OF_DAY)
+        if(hour>=18 || hour<=9){
+            activityRegistBackground.setBackgroundResource(R.mipmap.at_night_background)
+        }else{
+            activityRegistBackground.setBackgroundResource(R.mipmap.day_background)
         }
     }
 
