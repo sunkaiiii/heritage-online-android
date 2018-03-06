@@ -50,7 +50,8 @@ class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<Li
         val itemHolder = secondlyView(itemView)
         itemView.setOnClickListener {
             val intent = Intent(context, NewsDetailActivity::class.java)
-            intent.putExtra("id", item.id)
+            intent.putExtra("data",item)
+            intent.putExtra("category",item.category)
             context.startActivity(intent)
         }
         itemHolder.title.text = item.title

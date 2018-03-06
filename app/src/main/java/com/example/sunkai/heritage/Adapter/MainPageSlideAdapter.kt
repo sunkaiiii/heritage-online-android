@@ -48,6 +48,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
 
     private fun setViewClick(data:MainPageSlideNews):Intent{
         val intent= Intent(context,NewsDetailActivity::class.java)
+        intent.putExtra("category","要闻")
         intent.putExtra("data",data)
         return intent
     }

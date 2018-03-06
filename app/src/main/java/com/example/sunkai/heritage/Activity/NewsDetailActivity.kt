@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.Activity
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import com.example.sunkai.heritage.Adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.FolkNewsLite
@@ -17,6 +18,9 @@ class NewsDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
+        val title=intent.getStringExtra("category")
+        supportActionBar?.title=title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if(intent.getSerializableExtra("data") is FolkNewsLite){
             val data=intent.getSerializableExtra("data") as FolkNewsLite
             getNewsDetail(data.id)
@@ -56,5 +60,16 @@ class NewsDetailActivity : AppCompatActivity() {
                 newsDetailRecyclerView.adapter=adapter
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+                return true
+            }
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

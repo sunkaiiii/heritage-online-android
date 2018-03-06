@@ -76,6 +76,7 @@ class SeeMoreNewsFragment:BaseLazyLoadFragment(),OnPageLoaded {
             override fun onItemClick(view: View, position: Int) {
                 val data=adapter.getItem(position)
                 val intent= Intent(activity, NewsDetailActivity::class.java)
+                intent.putExtra("category",data.category)
                 intent.putExtra("data",data)
                 startActivity(intent)
             }

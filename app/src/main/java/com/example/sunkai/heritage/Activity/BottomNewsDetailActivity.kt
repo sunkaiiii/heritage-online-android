@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import com.example.sunkai.heritage.Adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
@@ -14,6 +15,9 @@ class BottomNewsDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_news_detail)
+        val title=intent.getStringExtra("title")
+        supportActionBar?.title=title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if(intent.getSerializableExtra("data") is BottomFolkNewsLite) {
             val data = intent.getSerializableExtra("data") as BottomFolkNewsLite
             setDataToView(data)
@@ -37,5 +41,15 @@ class BottomNewsDetailActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            android.R.id.home->{
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

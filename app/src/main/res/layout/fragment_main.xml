@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
+    tools:context="com.example.sunkai.heritage.Fragment.MainFragment"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/fragmentMainAppbarLayout"
@@ -19,7 +20,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
 
                 <ImageView
                     android:id="@+id/mainPageTopImage"
@@ -47,33 +49,31 @@
                         android:paddingLeft="@dimen/card_padding"
                         android:paddingRight="@dimen/card_padding"
                         android:paddingStart="@dimen/card_padding" />
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp" />
                 </LinearLayout>
             </RelativeLayout>
 
-            <android.support.v7.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="bottom"
-                android:background="@color/lightGrey_transparent"
-                app:layout_collapseMode="pin"
-                android:elevation="12dp"
-                tools:targetApi="lollipop">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:drawableLeft="@drawable/ic_center_focus_strong_black_24dp"
-                        android:drawablePadding="8dp"
-                        android:drawableStart="@drawable/ic_center_focus_strong_black_24dp"
-                        android:gravity="center"
-                        android:text="@string/focus_heritage"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14sp" />
-            </android.support.v7.widget.Toolbar>
-
         </android.support.design.widget.CollapsingToolbarLayout>
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            android:elevation="6dp"
+            tools:targetApi="lollipop"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="@mipmap/focus_background"
+            android:id="@+id/mainFragmentToolbar">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_center_focus_strong_black_24dp"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_center_focus_strong_black_24dp"
+                android:gravity="center"
+                android:text="@string/focus_heritage"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </android.support.v7.widget.Toolbar>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView

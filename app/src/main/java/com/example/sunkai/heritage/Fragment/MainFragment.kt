@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
@@ -94,6 +95,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
                     val data=adapter.getItem(position)
                     val intent= Intent(activity,BottomNewsDetailActivity::class.java)
                     intent.putExtra("data",data)
+                    intent.putExtra("title",getString(R.string.focus_heritage))
                     startActivity(intent)
                 }
             }
