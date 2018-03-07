@@ -6,13 +6,14 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.transition.Slide
+import android.support.transition.TransitionManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -40,10 +41,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var jumpSignIn: TextView
     private lateinit var findPassword: TextView
 
-    private lateinit var infromRight: Animation
-    private lateinit var outToLeft: Animation
-    private lateinit var infromLeft: Animation
-    private lateinit var outToRight: Animation
     private val requestCode: Int = 0
 
 
@@ -52,18 +49,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        initWidgeAndAnimation()
+        initview()
         isIntoMainpage = intent.getIntExtra("isInto", 0)
         jumpSignIn.visibility = if (isIntoMainpage == 0) View.VISIBLE else View.GONE
     }
 
 
     @SuppressLint("InlinedApi")
-    private fun initWidgeAndAnimation() {
-        infromRight = AnimationUtils.loadAnimation(this, R.anim.in_from_right)
-        outToLeft = AnimationUtils.loadAnimation(this, R.anim.out_to_left)
-        infromLeft = AnimationUtils.loadAnimation(this, R.anim.in_from_left)
-        outToRight = AnimationUtils.loadAnimation(this, R.anim.out_to_right)
+    private fun initview() {
         jumpSignIn = findViewById(R.id.activity_login_jump_login)
         mEmailSignInButton = findViewById(R.id.email_sign_in_button)
         registButton = findViewById(R.id.activity_login_regist)
@@ -104,8 +97,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoginWidge() {
-        ll_activity_login_navagate.startAnimation(outToLeft)
-        include_login_view.startAnimation(infromRight)
+        TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.START))
         ll_activity_login_navagate.visibility = View.INVISIBLE
         include_login_view.visibility = View.VISIBLE
     }
@@ -227,8 +219,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         if (include_login_view.visibility == View.VISIBLE) {
-            include_login_view.startAnimation(outToRight)
-            ll_activity_login_navagate.startAnimation(infromLeft)
+            TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.END))
             include_login_view.visibility = View.INVISIBLE
             ll_activity_login_navagate.visibility = View.VISIBLE
         } else {
