@@ -72,7 +72,7 @@ ___
 
   
 
-9、APP前期由Java编写，在v2.0版本开始，陆续转用Kotlin实现新的功能，并在近期完成了全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
+9、APP前期由Java编写，在v2.0版本开始，陆续转用Kotlin实现新的功能，并在v2.5版本将全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
 
   
   
