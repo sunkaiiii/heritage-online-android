@@ -1,43 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl_focus_listview_layout">
+    android:id="@+id/rl_focus_listview_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
     <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/user_head_image"
         android:layout_width="48sp"
         android:layout_height="48sp"
         android:layout_alignParentLeft="true"
         android:layout_margin="6sp"
-        android:id="@+id/user_head_image"
         android:src="@drawable/ic_assignment_ind_deep_orange_200_48dp"
-        app:riv_oval="true"
-        />
-    <Button
+        app:riv_oval="true" />
+
+    <LinearLayout
+        android:id="@+id/ll_focus_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="已关注"
-        android:id="@+id/focus_btn"
-        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="6sp"/>
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/shape_button_unfocus"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_focus_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/ic_add_black_24dp" />
+
+        <TextView
+            android:id="@+id/focus_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/already_focus"
+            android:textColor="@color/colorPrimary" />
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48sp"
-        android:layout_toLeftOf="@id/focus_btn"
+        android:layout_alignBottom="@id/user_head_image"
+        android:layout_toEndOf="@id/user_head_image"
+        android:layout_toLeftOf="@id/ll_focus_btn"
         android:layout_toRightOf="@id/user_head_image"
-        android:layout_alignBottom="@id/user_head_image">
+        android:layout_toStartOf="@id/ll_focus_btn">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/user_name"
-            android:text=""
-            android:layout_centerInParent="true"
-            android:layout_alignParentLeft="true" />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/user_introduce"/>
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/user_introduce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

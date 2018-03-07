@@ -1,12 +1,15 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity
@@ -31,12 +34,15 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         val userImage: RoundedImageView
-        val focusBtn: Button
-
+        val focusBtn: TextView
+        val focusBtnLayout: LinearLayout
+        val focusBtnImg:ImageView
         init {
             userName = view.findViewById(R.id.user_name)
             userImage = view.findViewById(R.id.user_head_image)
             focusBtn = view.findViewById(R.id.focus_btn)
+            focusBtnLayout=view.findViewById(R.id.ll_focus_btn)
+            focusBtnImg=view.findViewById(R.id.iv_focus_btn)
         }
     }
 
@@ -60,6 +66,9 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
 
     private fun setData(holder: Holder, data: SearchUserInfo) {
         holder.userName.text = data.userName
+        holder.focusBtnImg.setImageResource(if(data.checked)R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
+        holder.focusBtnLayout.setBackgroundResource(if(data.checked)R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
+        holder.focusBtn.setTextColor(ContextCompat.getColor(context,if(data.checked) R.color.midGrey else R.color.colorPrimary))
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
     }
 
@@ -75,8 +84,8 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     }
 
     private fun setBtnClick(holder: Holder,data: SearchUserInfo){
-        holder.focusBtn.setOnClickListener {
-            holder.focusBtn.isEnabled=false
+        holder.focusBtnLayout.setOnClickListener {
+            holder.focusBtnLayout.isEnabled=false
             when(holder.focusBtn.text){
                 IS_FOCUS->cancelFocus(holder,data)
                 UNFOCUS->addFocus(holder,data)
@@ -88,7 +97,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
         ThreadPool.execute {
             val result=HandlePerson.CancelFocus(LoginActivity.userID,data.id)
             context.runOnUiThread {
-                holder.focusBtn.isEnabled=true
+                holder.focusBtnLayout.isEnabled=true
                 if (result){
                     setBtnState(holder,data,false)
                 }else{
@@ -102,9 +111,12 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
         ThreadPool.execute {
             val result=HandlePerson.AddFocus(LoginActivity.userID,data.id)
             context.runOnUiThread {
-                holder.focusBtn.isEnabled=true
+                holder.focusBtnLayout.isEnabled=true
                 if(result){
                     setBtnState(holder,data,true)
+                }
+                else{
+                    toast("出现问题，请稍后再试")
                 }
             }
         }
@@ -112,7 +124,14 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
 
     private fun setBtnState(holder: Holder,data: SearchUserInfo,success:Boolean){
         data.checked=success
+        val animation=AnimationUtils.loadAnimation(context,R.anim.float_btn_translate)
+        holder.focusBtnImg.startAnimation(animation)
+        holder.focusBtnImg.setImageResource(if(success)R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
+        holder.focusBtnLayout.setBackgroundResource(if(data.checked)R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
+        holder.focusBtn.setTextColor(ContextCompat.getColor(context,if(data.checked) R.color.midGrey else R.color.colorPrimary))
         holder.focusBtn.text=if(success) IS_FOCUS else UNFOCUS
+        val toastText=(if(success) IS_FOCUS else UNFOCUS)+"成功"
+        toast(toastText)
         onFocusChangeListener?.onFocusChange()
     }
 
