@@ -28,7 +28,7 @@ import com.example.sunkai.heritage.value.ERROR
  * 我的帖子的recyclerView的adapter
  * Created by sunkai on 2018/1/15.
  */
-class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder,UserCommentData>(datas) {
+class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
 
     private val lruCache: LruCache<Int, Bitmap>
     private var recyclerView: RecyclerView? = null
@@ -50,9 +50,10 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         val mycomment_item_image: ImageView
         val mycomment_item_title: TextView
         val mycomment_item_content: TextView
-        val view:View
+        val view: View
+
         init {
-            this.view=view
+            this.view = view
             mycomment_item_image = view.findViewById(R.id.mycomment_item_image)
             mycomment_item_title = view.findViewById(R.id.mycomment_item_title)
             mycomment_item_content = view.findViewById(R.id.mycomment_item_content)
@@ -61,22 +62,20 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         if (recyclerView == null)
             recyclerView = parent as RecyclerView
         val view = LayoutInflater.from(context).inflate(R.layout.mycomment_layout_item, parent, false)
-        view.visibility=View.GONE
+        view.visibility = View.GONE
         val holder = ViewHolder(view)
         view.setOnClickListener(this)
         view.setOnLongClickListener(this)
         return holder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            GetCommentImage(holder, datas[position])
-        }
+        GetCommentImage(holder, datas[position])
     }
 
     private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
@@ -97,21 +96,21 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         }
 
         override fun onPostExecute(url: String) {
-            if(!TextUtils.isEmpty(url)&&url!= ERROR) {
+            if (!TextUtils.isEmpty(url) && url != ERROR) {
                 val adpter = weakRefrece.get()
                 adpter?.let {
                     holder.mycomment_item_title.text = data.commentTitle
                     holder.mycomment_item_content.text = data.commentContent
-                    Glide.with(adpter.context).load(url).into(simpleTarget(holder,adpter))
-                    holder.view.visibility=View.VISIBLE
+                    Glide.with(adpter.context).load(url).into(simpleTarget(holder, adpter))
+                    holder.view.visibility = View.VISIBLE
                 }
             }
         }
 
-        class simpleTarget(val holder: ViewHolder, val adapter: MyOwnCommentRecyclerViewAdapter):SimpleTarget<Drawable>(){
+        class simpleTarget(val holder: ViewHolder, val adapter: MyOwnCommentRecyclerViewAdapter) : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 holder.mycomment_item_image.setImageDrawable(resource)
-                adapter.findDominateColor(resource.toBitmap(),holder)
+                adapter.findDominateColor(resource.toBitmap(), holder)
             }
 
         }

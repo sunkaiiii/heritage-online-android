@@ -41,40 +41,39 @@ class FocusListviewAdapter
         private val userIntrodeuce: TextView
         val userImage: RoundedImageView
         val focusBtn: TextView
-        val focusBtnLayout:LinearLayout
-        val focusBtnImg:ImageView
+        val focusBtnLayout: LinearLayout
+        val focusBtnImg: ImageView
+
         init {
             userName = view.findViewById(R.id.user_name)
             userIntrodeuce = view.findViewById(R.id.user_introduce)
             userImage = view.findViewById(R.id.user_head_image)
             focusBtn = view.findViewById(R.id.focus_btn)
             rl_focus_listview_layout = view.findViewById(R.id.rl_focus_listview_layout)
-            focusBtnLayout=view.findViewById(R.id.ll_focus_btn)
-            focusBtnImg=view.findViewById(R.id.iv_focus_btn)
+            focusBtnLayout = view.findViewById(R.id.ll_focus_btn)
+            focusBtnImg = view.findViewById(R.id.iv_focus_btn)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.focus_listview_layout, parent, false)
         return Holder(view)
     }
 
-    override fun onBindViewHolder(holder: Holder?, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            val data = getItem(position)
-            setDatas(holder, data)
-            getUserImage(holder, data)
-            setClick(holder, position, data)
-        }
+        val data = getItem(position)
+        setDatas(holder, data)
+        getUserImage(holder, data)
+        setClick(holder, position, data)
     }
 
     private fun setDatas(holder: Holder, data: FollowInformation) {
         holder.userName.text = data.userName
-        holder.focusBtnImg.setImageResource(if(data.checked)R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
+        holder.focusBtnImg.setImageResource(if (data.checked) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-        holder.focusBtnLayout.setBackgroundResource(if(data.checked)R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
-        holder.focusBtn.setTextColor(ContextCompat.getColor(context,if(data.checked) R.color.midGrey else R.color.colorPrimary))
+        holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
+        holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (data.checked) R.color.midGrey else R.color.colorPrimary))
         if (data.followEachother) {
             holder.focusBtn.text = FOLLOW_EACHOTHER
         } else {
@@ -153,12 +152,12 @@ class FocusListviewAdapter
 
         private fun setItemState(position: Int, holder: Holder, check: Boolean, followEachOther: Boolean) {
             onFocuschangeListener?.onFocusChange()
-            val animation= AnimationUtils.loadAnimation(context,R.anim.focus_btn_animation)
+            val animation = AnimationUtils.loadAnimation(context, R.anim.focus_btn_animation)
             holder.focusBtnImg.startAnimation(animation)
-            holder.focusBtnImg.setImageResource(if(check)R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
-            holder.focusBtnLayout.setBackgroundResource(if(check)R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
+            holder.focusBtnImg.setImageResource(if (check) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
+            holder.focusBtnLayout.setBackgroundResource(if (check) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
             holder.focusBtnLayout.isEnabled = true
-            holder.focusBtn.setTextColor(ContextCompat.getColor(context,if(check) R.color.midGrey else R.color.colorPrimary))
+            holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (check) R.color.midGrey else R.color.colorPrimary))
             holder.focusBtn.text = if (check) {
                 if (followEachOther) FOLLOW_EACHOTHER else IS_FOCUS
             } else UNFOCUS

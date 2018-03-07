@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference
 /*
  * Created by sunkai on 2018/1/2.
  */
-class OtherPersonActivityRecyclerViewAdapter(val activity:Activity,val userID: Int,datas:List<Int>) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder,Int>(datas) {
+class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID: Int, datas: List<Int>) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(datas) {
 
 
     init {
@@ -37,18 +37,15 @@ class OtherPersonActivityRecyclerViewAdapter(val activity:Activity,val userID: I
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(GlobalContext.instance).inflate(R.layout.other_person_view, parent, false)
         view.setOnClickListener(this)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            getImage(datas[position], holder.imageView)
-        }
-
+        getImage(datas[position], holder.imageView)
     }
 
 
@@ -83,9 +80,9 @@ class OtherPersonActivityRecyclerViewAdapter(val activity:Activity,val userID: I
 
 
     private fun getImage(imageID: Int, imageview: ImageView) {
-        ThreadPool.execute{
-            val url=HandleFind.GetUserCommentImageUrl(imageID)
-            if(!TextUtils.isEmpty(url)&&url!= ERROR){
+        ThreadPool.execute {
+            val url = HandleFind.GetUserCommentImageUrl(imageID)
+            if (!TextUtils.isEmpty(url) && url != ERROR) {
                 activity.runOnUiThread {
                     Glide.with(activity).load(url).into(imageview)
                 }

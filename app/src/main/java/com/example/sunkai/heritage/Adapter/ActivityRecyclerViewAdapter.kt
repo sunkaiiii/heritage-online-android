@@ -26,7 +26,7 @@ import com.example.sunkai.heritage.value.HOST
  * Created by sunkai on 2017/12/22.
  */
 
-class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder,ClassifyDivideData>(arrayListOf()) {
+class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder, ClassifyDivideData>(arrayListOf()) {
 
     private var imageAnimation: Animation//图片出现动画
 
@@ -36,17 +36,18 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
         val img: ImageView
         val title: TextView
-        val time:TextView
-        val number:TextView
-        val location:TextView
-        val content:TextView
+        val time: TextView
+        val number: TextView
+        val location: TextView
+        val content: TextView
+
         init {
             img = view.findViewById(R.id.activity_layout_img)
             title = view.findViewById(R.id.activity_layout_title)
-            time=view.findViewById(R.id.activity_layout_time)
-            number=view.findViewById(R.id.activity_layout_number)
-            location=view.findViewById(R.id.activity_layout_location)
-            content=view.findViewById(R.id.activity_layout_content)
+            time = view.findViewById(R.id.activity_layout_time)
+            number = view.findViewById(R.id.activity_layout_number)
+            location = view.findViewById(R.id.activity_layout_location)
+            content = view.findViewById(R.id.activity_layout_content)
         }
     }
 
@@ -64,31 +65,29 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            val data = datas[position]
-            holder.title.text = data.title
-            holder.location.text="地区:"+data.location
-            holder.time.text="时间:"+data.time
-            holder.number.text="编号:"+data.number
-            holder.content.text=data.content
-            holder.img.setImageResource(R.drawable.empty_background)
-            Glide.with(context).load(HOST+data.img).into(holder.img)
-        }
+        val data = datas[position]
+        holder.title.text = data.title
+        holder.location.text = "地区:" + data.location
+        holder.time.text = "时间:" + data.time
+        holder.number.text = "编号:" + data.number
+        holder.content.text = data.content
+        holder.img.setImageResource(R.drawable.empty_background)
+        Glide.with(context).load(HOST + data.img).into(holder.img)
     }
 
-    fun setOnPageLoadListner(onPageLoaded: OnPageLoaded){
-        mOnPagedListener=onPageLoaded
+    fun setOnPageLoadListner(onPageLoaded: OnPageLoaded) {
+        mOnPagedListener = onPageLoaded
     }
 
-    fun startGetInformation(){
+    fun startGetInformation() {
         mOnPagedListener?.onPreLoad()
-        datas= arrayListOf()
+        datas = arrayListOf()
         getChannelInformation(this).execute()
     }
 
-    internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : BaseAsyncTask<Void, Void, Void,ActivityRecyclerViewAdapter>(adapter) {
+    internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : BaseAsyncTask<Void, Void, Void, ActivityRecyclerViewAdapter>(adapter) {
 
         override fun doInBackground(vararg voids: Void): Void? {
             val adpter = weakRefrece.get()

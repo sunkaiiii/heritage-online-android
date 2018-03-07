@@ -16,45 +16,44 @@ import java.util.*
  * 帖子详情页RecyclerView的adapter
  * Created by sunkai on 2018/2/24.
  */
-class UserCommentReplyRecyclerAdapter(val context: Context,datas:List<CommentReplyInformation>):BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler,CommentReplyInformation>(datas) {
-    class ViewHodler(view:View):RecyclerView.ViewHolder(view){
-        val userName:TextView
-        val replyContent:TextView
+class UserCommentReplyRecyclerAdapter(val context: Context, datas: List<CommentReplyInformation>) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(datas) {
+    class ViewHodler(view: View) : RecyclerView.ViewHolder(view) {
+        val userName: TextView
+        val replyContent: TextView
+
         init {
-            userName=view.findViewById(R.id.reply_name)
-            replyContent=view.findViewById(R.id.reply_content)
+            userName = view.findViewById(R.id.reply_name)
+            replyContent = view.findViewById(R.id.reply_content)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHodler {
-        val view=LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information,parent,false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHodler {
+        val view = LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information, parent, false)
         view.setOnClickListener(this)
         return ViewHodler(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHodler?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHodler, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let{
-            val data=getItem(position)
-            setData(holder,data)
-        }
+        val data = getItem(position)
+        setData(holder, data)
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setData(holder: ViewHodler, data: CommentReplyInformation){
-        holder.userName.text=data.userName+":"
-        holder.replyContent.text=data.replyContent
+    private fun setData(holder: ViewHodler, data: CommentReplyInformation) {
+        holder.userName.text = data.userName + ":"
+        holder.replyContent.text = data.replyContent
     }
 
-    fun reverseData(){
+    fun reverseData() {
         Collections.reverse(datas)
         notifyDataSetChanged()
     }
 
-    fun addData(data: CommentReplyInformation){
-        val mutabledata=datas.toMutableList()
+    fun addData(data: CommentReplyInformation) {
+        val mutabledata = datas.toMutableList()
         mutabledata.add(data)
-        this.datas=mutabledata
+        this.datas = mutabledata
         notifyDataSetChanged()
     }
 }

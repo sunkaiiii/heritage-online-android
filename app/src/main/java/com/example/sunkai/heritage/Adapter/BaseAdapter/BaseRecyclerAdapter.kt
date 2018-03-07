@@ -39,8 +39,8 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<
         this.mOnItemLongClickListener = listener
     }
 
-    override fun onBindViewHolder(holder: T?, position: Int) {
-        holder?.itemView?.tag = position
+    override fun onBindViewHolder(holder: T, position: Int) {
+        holder.itemView?.tag = position
     }
 
     override fun onPreLoad() {

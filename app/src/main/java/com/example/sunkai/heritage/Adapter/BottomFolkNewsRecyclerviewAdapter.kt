@@ -45,18 +45,16 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Holder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_folk_news_layout, parent, false)
         view.setOnClickListener(this)
         return Holder(view)
     }
 
-    override fun onBindViewHolder(holder: Holder?, position: Int) {
+    override fun onBindViewHolder(holder: Holder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            val data = getItem(position)
-            setData(holder, data)
-        }
+        val data = getItem(position)
+        setData(holder, data)
     }
 
     private fun setData(holder: Holder, data: BottomFolkNewsLite) {

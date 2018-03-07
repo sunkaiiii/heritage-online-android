@@ -86,20 +86,18 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         return holder
     }
 
-    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder?.let {
-            val data = datas[position]
-            setHolderData(holder, data)
-            GetCommentImage(holder, data)
-            GetUserImage(holder, data)
-            setHolderLikeState(holder, data)
-            setLikeClick(holder, data, position)
-            setAddReplyClick(holder, data)
-            setHolderFocusState(holder, data)
-            setFocusClick(holder, data)
-            showMiniReply(holder, data)
-        }
+        val data = datas[position]
+        setHolderData(holder, data)
+        GetCommentImage(holder, data)
+        GetUserImage(holder, data)
+        setHolderLikeState(holder, data)
+        setLikeClick(holder, data, position)
+        setAddReplyClick(holder, data)
+        setHolderFocusState(holder, data)
+        setFocusClick(holder, data)
+        showMiniReply(holder, data)
     }
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
