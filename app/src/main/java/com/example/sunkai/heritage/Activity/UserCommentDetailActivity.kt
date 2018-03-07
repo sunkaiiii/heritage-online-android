@@ -153,7 +153,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                     } else {
                         MakeToast.MakeText(resources.getString(R.string.has_problem))
                     }
-                    setResult(DELETE_COMMENT, intent)
+                    setResult(DELETE_COMMENT)
                     onBackPressed()
                 }
             }

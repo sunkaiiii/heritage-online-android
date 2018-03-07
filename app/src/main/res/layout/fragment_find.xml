@@ -25,30 +25,38 @@
                     android:layout_height="wrap_content"
                     android:fitsSystemWindows="true"
                     app:contentScrim="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed"/>
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_margin="12dp"
-                    android:background="@color/colorPrimeryToBtn">
-                <Spinner
-                    android:id="@+id/find_select_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:entries="@array/find_select"
-                    android:textAlignment="center"/>
+                    android:background="@color/colorPrimeryToBtn"
+                    android:orientation="vertical">
+
+                    <Spinner
+                        android:id="@+id/find_select_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:entries="@array/find_select"
+                        android:textAlignment="center" />
                 </LinearLayout>
             </android.support.design.widget.AppBarLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/fragment_find_recyclerView"
+            <android.support.v4.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/superLightGrey"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layoutManager="@string/linearLayoutManager"/>
+                android:id="@+id/fragmentFindSwipeRefresh">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/fragment_find_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/superLightGrey"
+
+                    app:layoutManager="@string/linearLayoutManager" />
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </android.support.design.widget.CoordinatorLayout>
 
@@ -58,12 +66,12 @@
             android:layout_height="36sp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="36sp"
             android:layout_marginEnd="48sp"
+            android:layout_marginRight="48sp"
             app:fabSize="mini"
-            app:srcCompat="@drawable/ic_add_white_24dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="48sp" />
+            app:srcCompat="@drawable/ic_add_white_24dp" />
     </RelativeLayout>
 
 </FrameLayout>

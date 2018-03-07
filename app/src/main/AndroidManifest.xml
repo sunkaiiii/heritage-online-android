@@ -82,7 +82,8 @@
             android:name=".Activity.UserOwnTieziActivity"
             android:label="我的帖子" />
         <activity android:name=".Activity.AboutUSActivity" />
-        <activity android:name=".Activity.SettingListActivity" />
+        <activity android:name=".Activity.SettingListActivity"
+            android:label="@string/setting"/>
 
         <!-- 以下是接入mipush所需要的服务和receiver -->
         <service

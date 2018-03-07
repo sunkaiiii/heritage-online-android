@@ -20,8 +20,10 @@ import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Interface.OnItemClickListener
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ALL_COMMENT
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import kotlinx.android.synthetic.main.fragment_find.*
@@ -30,7 +32,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
  * 发现页面的类
  */
 
-class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
+class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
 
     internal lateinit var view: View
     private lateinit var recyclerView: RecyclerView
@@ -40,13 +42,22 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater.inflate(R.layout.fragment_find, container, false)
-        initview(view)
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initview(view)
     }
 
     private fun initview(view: View) {
         selectSpiner = view.findViewById(R.id.find_select_spinner)
         recyclerView = view.findViewById(R.id.fragment_find_recyclerView)
+        fragmentFindSwipeRefresh.setOnRefreshListener {
+            when(selectSpiner.selectedItemPosition){
+                0->loadUserCommentData(ALL_COMMENT)
+                1->loadUserCommentData(MY_FOCUS_COMMENT)
+            }
+        }
     }
 
     private fun loadInformation() {
@@ -104,7 +115,8 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
     private fun loadUserCommentData(what: Int) {
         val activiy = activity
         activiy?.let {
-            Thread {
+            onPreLoad()
+            ThreadPool.execute {
                 val datas = when (what) {
                     ALL_COMMENT -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                     MY_FOCUS_COMMENT -> HandleFind.GetUserCommentInformationByUser(LoginActivity.userID)
@@ -114,8 +126,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
                     val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what)
                     setAdpterClick(adapter)
                     recyclerView.adapter = adapter
+                    onPostLoad()
                 }
-            }.start()
+            }
         }
     }
 
@@ -151,11 +164,19 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT) {
+            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT||resultCode== DELETE_COMMENT) {
                 loadUserCommentData(find_select_spinner.selectedItemPosition)
             }
-            LOGIN, DELETE_COMMENT -> loadUserCommentData(find_select_spinner.selectedItemPosition)
+            LOGIN -> loadUserCommentData(find_select_spinner.selectedItemPosition)
         }
+    }
+
+    override fun onPreLoad() {
+        fragmentFindSwipeRefresh.isRefreshing=true
+    }
+
+    override fun onPostLoad() {
+        fragmentFindSwipeRefresh.isRefreshing=false
     }
 
     companion object {
