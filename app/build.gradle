@@ -8,8 +8,8 @@ android {
         applicationId "com.datong.heritage_online"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 11
-        versionName "3.0"
+        versionCode 12
+        versionName "3.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
