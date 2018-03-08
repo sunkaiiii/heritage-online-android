@@ -63,6 +63,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         startAnimation()
         setContentView(R.layout.activity_regist)
         initView()
+        window.setBackgroundDrawable(null)
     }
 
     @SuppressLint("InlinedApi")

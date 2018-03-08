@@ -1,16 +1,13 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/layout_line"
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="4dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -18,8 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <RelativeLayout
@@ -30,7 +25,6 @@
                     android:id="@+id/iv_fragment_main_scroll_change_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:background="@color/lightGrey"
                     android:scaleType="centerCrop" />
 
             </RelativeLayout>
@@ -46,9 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
-                    android:translationZ="4dp"
-                    app:cardElevation="4dp"
-                    tools:targetApi="lollipop">
+                    app:cardElevation="4dp">
 
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tab_layout"

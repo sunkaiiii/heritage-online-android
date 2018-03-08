@@ -12,11 +12,11 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.*
+import androidx.content.edit
 import at.markushi.ui.CircleButton
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
@@ -24,6 +24,7 @@ import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
 import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
@@ -34,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private var mAuthTask: UserLoginTask? = null
 
-    private lateinit var mEmailView: EditText
+    private lateinit var mEmailView: AutoCompleteTextView
     private lateinit var mPasswordView: EditText
     private lateinit var registButton: Button
     private lateinit var mEmailSignInButton: CircleButton
@@ -49,7 +50,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        window.setBackgroundDrawable(null)
         initview()
+        loadUserNames()
         isIntoMainpage = intent.getIntExtra("isInto", 0)
         jumpSignIn.visibility = if (isIntoMainpage == 0) View.VISIBLE else View.GONE
     }
@@ -79,6 +82,22 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             decorView.systemUiVisibility = option
         }
     }
+    private fun loadUserNames(){
+        ThreadPool.execute {
+            val usernames=loadSharePrefefenrecesUserNames().toList()
+            val userNameAdapter=ArrayAdapter<String>(this,android.R.layout.simple_list_item_1)
+            userNameAdapter.addAll(usernames)
+            runOnUiThread {
+                mEmailView.setAdapter(userNameAdapter)
+            }
+        }
+    }
+
+    private fun loadSharePrefefenrecesUserNames():Set<String>{
+        val userNames=getSharedPreferences("userNames", Context.MODE_PRIVATE).getStringSet("userNames", mutableSetOf())
+        Log.d("userNames",userNames.toString())
+        return userNames
+    }
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -97,7 +116,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoginWidge() {
-        TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.START))
+        TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.END))
         ll_activity_login_navagate.visibility = View.INVISIBLE
         include_login_view.visibility = View.VISIBLE
     }
@@ -182,12 +201,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun handleLogin(success:Boolean) {
+        val userName= userName?:return
         if (success) {
-            val editor = getSharedPreferences("data", Context.MODE_PRIVATE).edit()
-            editor.putInt("user_id", userID)
-            editor.putString("user_name", userName)
-            editor.putString("user_password", mPasswordView.text.toString())
-            editor.apply()
+            val userNames=loadSharePrefefenrecesUserNames().toMutableSet()
+            userNames.add(userName)
+            Log.d("putUserName",userNames.toString())
+            getSharedPreferences("data", Context.MODE_PRIVATE).edit {
+                putInt("user_id", userID)
+                putString("user_name", userName)
+                putString("user_password", mPasswordView.text.toString())
+            }
+            getSharedPreferences("userNames", Context.MODE_PRIVATE).edit {
+                putStringSet("userNames",userNames)
+            }
             GlobalContext.instance.registUser()
             //从Welcome页过来而并非从二级页面登录，则直接进入主页
             if (isIntoMainpage == 0 || isIntoMainpage == LOG_OUT) {
@@ -219,7 +245,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onBackPressed() {
         if (include_login_view.visibility == View.VISIBLE) {
-            TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.END))
+            TransitionManager.beginDelayedTransition(login_constraintLayout,Slide(Gravity.START))
             include_login_view.visibility = View.INVISIBLE
             ll_activity_login_navagate.visibility = View.VISIBLE
         } else {

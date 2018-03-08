@@ -36,7 +36,8 @@
                 android:src="@mipmap/login_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/user_image"/>
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -58,14 +59,14 @@
                     android:layout_marginTop="16dp"
                     >
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="24dp"
-                        android:hint="用户名"
+                        android:hint="@string/user_name"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:singleLine="true" />
@@ -87,7 +88,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_margin="8dp"
-                        android:hint="密码"
+                        android:hint="@string/password"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
@@ -128,7 +129,7 @@
                     android:layout_marginBottom="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="48dp"
-                    android:text="忘记密码?"
+                    android:text="@string/forget_password"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +155,7 @@
                     android:layout_gravity="end"
                     android:layout_marginBottom="12dp"
                     android:layout_marginEnd="8dp"
-                    android:text="跳过登录"
+                    android:text="@string/jump_login"
                     android:layout_marginRight="8dp" />
 
                 <Button
@@ -166,7 +167,7 @@
                     android:layout_marginStart="8dp"
                     android:alpha="0.8"
                     android:background="@color/colorPrimary"
-                    android:text="注册"
+                    android:text="@string/regist"
                     android:textColor="#ffffff"
                     android:textStyle="bold" />
 
@@ -179,7 +180,7 @@
                     android:layout_marginStart="8dp"
                     android:alpha="0.8"
                     android:background="@color/colorAccent"
-                    android:text="登陆"
+                    android:text="@string/login"
                     android:textColor="#ffffff"
                     android:textStyle="bold" />
             </LinearLayout>

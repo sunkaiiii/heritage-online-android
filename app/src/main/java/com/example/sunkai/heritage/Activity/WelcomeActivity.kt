@@ -8,12 +8,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import com.bumptech.glide.Glide
-
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
-import kotlinx.android.synthetic.main.activity_other_users.*
 
 /**
  * 此页面是欢迎界面的类
@@ -23,6 +20,7 @@ class WelcomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
+        window.setBackgroundDrawable(null)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_welcome)

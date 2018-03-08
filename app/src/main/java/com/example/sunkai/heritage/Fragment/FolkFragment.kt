@@ -165,7 +165,6 @@ class FolkFragment : BaseLazyLoadFragment() {
         iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
         fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
         fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
-        iv_fragment_main_scroll_change_image.setBackgroundColor(color)
         tableLayout.setBackgroundColor(color)
         if (Build.VERSION.SDK_INT >= 21) {
             if (MainActivity.GetViewpagerSelectPosition() == R.id.folk_layout) {

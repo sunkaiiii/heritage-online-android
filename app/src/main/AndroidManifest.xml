@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- 以下是接入mipush所需要的一些权限 -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />

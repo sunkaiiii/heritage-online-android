@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         viewPager.addOnPageChangeListener(onPageChangeListener)
 
         activity=this
+        window.setBackgroundDrawable(null)
     }
 
     //重写onKeyDown方法，监听返回键
