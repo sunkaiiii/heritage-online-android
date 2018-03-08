@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import at.markushi.ui.CircleButton
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -73,7 +73,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
                 if(result!= ERROR){
                     val replyID=result.toInt()
                     val userName= LoginActivity.userName ?: ""
-                    val data=CommentReplyInformation(replyID,"",commentID,LoginActivity.userID,userName,replyContent)
+                    val data=CommentReplyInformation(replyID,"",commentID, LoginActivity.userID,userName,replyContent)
                     toast("回复成功")
                     cancel()
                     onAddUserReplySuccess(data)

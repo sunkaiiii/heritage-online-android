@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Dialog.Base.BaseDialogFragment
 import com.example.sunkai.heritage.R
@@ -39,7 +39,7 @@ class ChangePasswordDialog: BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val holder=Holder(view)
-        val username=arguments?.getString("username")?:LoginActivity.userName?:return
+        val username=arguments?.getString("username")?: LoginActivity.userName?:return
         holder.userName.setText(username)
         holder.cancel.setOnClickListener { dialog.dismiss() }
         holder.submit.setOnClickListener{

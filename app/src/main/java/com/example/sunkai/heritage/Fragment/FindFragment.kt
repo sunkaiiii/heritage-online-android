@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.DELETE_COMMENT
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter

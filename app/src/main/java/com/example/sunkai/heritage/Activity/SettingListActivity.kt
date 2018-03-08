@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
 import android.widget.Switch
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R

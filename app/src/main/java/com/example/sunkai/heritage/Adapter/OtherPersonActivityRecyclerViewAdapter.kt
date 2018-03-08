@@ -90,4 +90,6 @@ class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID:
         }
     }
 
+
+
 }

@@ -14,7 +14,7 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.ERROR

@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.ConnectWebService
 
 
 import android.util.Log
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import okhttp3.FormBody
 import org.kobjects.base64.Base64
 

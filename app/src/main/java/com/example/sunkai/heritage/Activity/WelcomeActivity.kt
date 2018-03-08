@@ -1,14 +1,16 @@
 package com.example.sunkai.heritage.Activity
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.content.edit
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.Dialog.PushDialog
+import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
 
@@ -24,29 +26,30 @@ class WelcomeActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_welcome)
+
         val sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE)
         var startCount = sharedPreferences.getInt("startCount", 0)
         if (startCount == 0) {
             startCount++
-            val editor = getSharedPreferences("setting", Context.MODE_PRIVATE).edit()
-            editor.putInt("startCount", startCount)
-            editor.putBoolean("pushSwitch", false)
-            editor.apply()
-            val view = View.inflate(this, R.layout.push_warining_layout, null)
-            val ad = AlertDialog.Builder(this).setTitle("是否开启推送？")
-                    .setView(view)
-                    .setPositiveButton("开启") { _, _ ->
-                        editor.putBoolean("pushSwitch", true)
-                        editor.apply()
-                        GlobalContext.instance.registMipush()
-                    }
-                    .setNegativeButton("关闭") { _, _ -> }
-                    .create()
-            ad.setOnDismissListener { goToLogin(gotoLogin) }
-            ad.show()
+            getSharedPreferences("setting", Context.MODE_PRIVATE).edit {
+                putInt("startCount", startCount)
+                putBoolean("pushSwitch", false)
+            }
+            showDialog()
+
         } else {
             goToLogin(gotoLogin)
         }
+    }
+
+    private fun showDialog() {
+        val dialog = PushDialog()
+        dialog.setOnDialogMissListner(object :OnDialogDismiss{
+            override fun onDialogDismiss() {
+                goToLogin(gotoLogin)
+            }
+        })
+        dialog.show(supportFragmentManager, "开启推送？")
     }
 
     private fun goToLogin(what: Int) {
@@ -79,6 +82,7 @@ class WelcomeActivity : AppCompatActivity() {
             }
         }
     }
+
     companion object {
         private const val gotoLogin = 0
     }

@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.transition.AutoTransition
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
@@ -18,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Adapter.OtherUserActivityImageAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind

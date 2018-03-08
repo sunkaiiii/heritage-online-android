@@ -13,6 +13,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool

@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 import android.util.Log
-import com.example.sunkai.heritage.Activity.LoginActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Data.UserInfo
@@ -49,7 +49,7 @@ object HandlePerson : BaseSetting() {
         return SUCCESS == result
     }
 
-    fun GetUserAllInfo(userID: Int,thisUserID:Int=LoginActivity.userID): UserInfo? {
+    fun GetUserAllInfo(userID: Int,thisUserID:Int= LoginActivity.userID): UserInfo? {
         val getUrl = "$URL/GetUserAllInfo?userID=$userID"
         val result = PutGet(getUrl)
         Log.d("GetUserAllInfo",result)

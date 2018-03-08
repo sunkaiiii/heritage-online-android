@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.example.sunkai.heritage.Activity.LoginActivity.Companion.userID
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting

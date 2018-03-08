@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
@@ -62,7 +63,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun searchClass(searchText:String) {
         ThreadPool.execute {
-            val searchData=HandlePerson.GetSearchUserInfo(searchText,LoginActivity.userID)
+            val searchData=HandlePerson.GetSearchUserInfo(searchText, LoginActivity.userID)
             val adapter=SearchUserRecclerAdapter(this,searchData)
             setListener(adapter)
             setItemClick(adapter)

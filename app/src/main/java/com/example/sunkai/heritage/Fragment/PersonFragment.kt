@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic

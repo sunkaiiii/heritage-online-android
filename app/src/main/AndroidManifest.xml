@@ -37,7 +37,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".Activity.LoginActivity.LoginActivity"
             android:label="登录"
             android:theme="@style/LoginActivityTheme" />
         <activity
