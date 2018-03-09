@@ -25,9 +25,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:layout_toLeftOf="@id/search_activity_btn"
+            android:layout_toStartOf="@id/search_activity_btn"
             android:singleLine="true"
-            android:maxLines="1"/>
+            android:maxLines="1"
+            android:layout_toLeftOf="@id/search_activity_btn"
+            android:imeOptions="actionSearch"/>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

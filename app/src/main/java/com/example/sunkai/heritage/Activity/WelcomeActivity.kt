@@ -8,10 +8,12 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
+import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 
 /**
@@ -53,16 +55,27 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun goToLogin(what: Int) {
+        var result=false
+        var username:String?=null
         ThreadPool.execute {
             try {
-                Thread.sleep(1000)
+                Thread.sleep(800)
+                username = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_name", null)
+                val userPassword=getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_password",null)
+                result=login(username,userPassword)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
             runOnUiThread {
-                val sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE)
-                LoginActivity.userID = sharedPreferences.getInt("user_id", 0)
-                LoginActivity.userName = sharedPreferences.getString("user_name", null)
+                if(result) {
+                    val sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE)
+                    LoginActivity.userName = sharedPreferences.getString("user_name", null)
+                }else{
+                    if(username!=null){
+                        toast("您的密码已过期，请重新登陆")
+                    }
+                    LoginActivity.userID=0
+                }
                 if (what == gotoLogin) {
                     val intent: Intent
                     when (LoginActivity.userID) {
@@ -81,6 +94,12 @@ class WelcomeActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun login(userName:String?,userPassword:String?):Boolean{
+        val name=userName?:return false
+        val password=userPassword?:return false
+        return HandleUser.Sign_In(name,password)
     }
 
     companion object {

@@ -15,6 +15,7 @@ abstract class BaseSetting {
         const val SUCCESS = "SUCCESS"
         const val ERROR = "ERROR"
         const val URL = "http://btbudinner.win:8080"
+//        const val URL="http://sunkai.xyz:8080"
 //        const val URL="http://10.20.254.64:8080"
     }
     //定义扩展方法，简单化Gson的使用

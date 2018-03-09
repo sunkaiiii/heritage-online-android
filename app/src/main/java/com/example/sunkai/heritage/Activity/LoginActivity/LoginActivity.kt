@@ -27,7 +27,8 @@ import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
- * A login screen that offers login via email/password.
+ * 登陆页面采用了MVP结构
+ * 目前只是作为实验，未来根据是否需要MVP架构来改变其他的Activity
  */
 class LoginActivity : AppCompatActivity(),LoginView, View.OnClickListener {
 

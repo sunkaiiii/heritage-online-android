@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.view.menu.MenuBuilder
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -180,6 +181,22 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         inflater?.inflate(R.menu.person_fragment_menu, menu)
+    }
+
+    //通过反射来让弹出的菜单显示图标
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        menu?.let {
+            if (menu.javaClass==MenuBuilder::class.java){
+                try{
+                    val m=menu.javaClass.getDeclaredMethod("setOptionalIconsVisible", Boolean::class.java)
+                    m.isAccessible=true
+                    m.invoke(menu,true)
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+            }
+        }
+        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

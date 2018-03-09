@@ -27,6 +27,7 @@ class LoginInteractorImpl:Logininteractor {
             val result=HandleUser.Sign_In(username,encryptedPassword)
             Handler(Looper.getMainLooper()).post {
                 if(result){
+                    LoginActivity.userName=username
                     writeSharePrefrece(username,encryptedPassword)
                     listner.onSuccess()
                 }else{
@@ -41,7 +42,7 @@ class LoginInteractorImpl:Logininteractor {
         userNames.add(userName)
         GlobalContext.instance.getSharedPreferences("data", Context.MODE_PRIVATE).edit {
             putInt("user_id", LoginActivity.userID)
-            putString("user_name", LoginActivity.userName)
+            putString("user_name", userName)
             putString("user_password", userPassword)
         }
         GlobalContext.instance.getSharedPreferences("userNames", Context.MODE_PRIVATE).edit {

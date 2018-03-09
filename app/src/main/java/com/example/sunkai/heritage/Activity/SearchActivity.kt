@@ -5,8 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -21,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_search.*
 /**
  * 此类用于处理用户搜索的页面
  */
-class SearchActivity : AppCompatActivity(), View.OnClickListener {
+class SearchActivity : AppCompatActivity(), View.OnClickListener,TextView.OnEditorActionListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +36,14 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener {
     private fun initView() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         search_activity_btn.setOnClickListener(this)
+        search_activity_edit.setOnEditorActionListener(this)
+    }
 
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        when(actionId){
+            EditorInfo.IME_ACTION_SEARCH->submit()
+        }
+        return true
     }
 
     override fun onClick(v: View) {

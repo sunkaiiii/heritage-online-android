@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/change_password"
-        android:icon="@drawable/ic_power_settings_new_black_24dp"
+        android:icon="@drawable/ic_lock_open_white_24dp"
         android:title="@string/change_password"
         app:showAsAction="never|withText"/>
     <item
         android:id="@+id/log_out"
-        android:icon="@drawable/ic_save_black_24dp"
+        android:icon="@drawable/ic_power_settings_new_white_24dp"
         android:title="@string/logout"
         app:showAsAction="never|withText"/>
     <item android:id="@+id/search_user"
