@@ -174,21 +174,16 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         ThreadPool.execute {
             val success = when (divide) {
                 LIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
-                DISLIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
+                DISLIKE -> HandleFind.CancelUserLike(LoginActivity.userID, data.id)
                 else -> false
             }
             context.runOnUiThread {
                 if (success) {
+                    holder.dislike.isEnabled = true
                     changeLikeDataState(isLike, position)
                     when (divide) {
-                        LIKE -> {
-                            SetLike(holder, data.likeNum)
-                            holder.dislike.isEnabled = true
-                        }
-                        DISLIKE -> {
-                            CancelLike(holder, data.likeNum)
-                            holder.like.isEnabled = true
-                        }
+                        LIKE ->SetLike(holder, data.likeNum)
+                        DISLIKE ->CancelLike(holder, data.likeNum)
                     }
                 } else {
                     toast("出现错误")
