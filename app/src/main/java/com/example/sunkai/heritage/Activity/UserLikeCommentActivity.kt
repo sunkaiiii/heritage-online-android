@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyLikeCommentRecyclerAdapter
@@ -37,7 +38,11 @@ class UserLikeCommentActivity : AppCompatActivity(),OnPageLoaded {
                 onPostLoad()
                 val adapter=MyLikeCommentRecyclerAdapter(this,data)
                 setAdapterClick(adapter)
-                userLikeActivityRecyclerView.layoutManager=GridLayoutManager(this,2)
+                userLikeActivityRecyclerView.layoutManager=if(window.decorView.width<=1280){
+                    LinearLayoutManager(this)
+                }else {
+                    GridLayoutManager(this, 2)
+                }
                 userLikeActivityRecyclerView.adapter=adapter
             }
         }

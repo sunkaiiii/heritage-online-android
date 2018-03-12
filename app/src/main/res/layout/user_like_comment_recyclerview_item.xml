@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="2dp"
+    android:layout_margin="8dp"
     app:cardCornerRadius="2dp"
-    android:layout_margin="8dp">
+    app:cardElevation="2dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,12 +17,13 @@
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:contentDescription="@string/add_comment_image"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:scaleType="centerCrop"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:id="@+id/info_background"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
@@ -68,7 +69,7 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/user_name"
                     android:textColor="@color/white"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 

@@ -2,13 +2,17 @@ package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.OtherUsersActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
@@ -19,6 +23,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.SUCCESS
@@ -36,6 +41,7 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
         val commentImage: ImageView
         val likeButton: ImageView
         val collectButton: ImageView
+        val infoBackground: LinearLayout
 
         init {
             title = view.findViewById(R.id.comment_title)
@@ -44,6 +50,7 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
             commentImage = view.findViewById(R.id.coment_image)
             likeButton = view.findViewById(R.id.set_like)
             collectButton = view.findViewById(R.id.set_colelct)
+            infoBackground = view.findViewById(R.id.info_background)
         }
     }
 
@@ -69,7 +76,18 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
     }
 
     private fun getImages(holder: Holder, data: UserCommentData) {
-        Glide.with(context).load(BaseSetting.URL + data.imageUrl).into(holder.commentImage)
+        holder.commentImage.setImageDrawable(null)
+        val imageUrl = BaseSetting.URL + data.imageUrl
+        val simpleTarget = object : SimpleTarget<Drawable>() {
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                val color = resource.generateDarkColor()
+                holder.infoBackground.setBackgroundColor(color)
+                holder.commentImage.setImageDrawable(resource)
+                holder.likeButton.setColorFilter(color)
+                holder.collectButton.setColorFilter(color)
+            }
+        }
+        Glide.with(context).load(imageUrl).into(simpleTarget)
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.userID) ?: return@execute
             runOnUiThread(Runnable {
