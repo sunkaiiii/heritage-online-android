@@ -212,4 +212,18 @@ object HandleFind:BaseSetting() {
         val getUrl="$URL/DeleteUserCommentReply?replyID=$replyID"
         return PutGet(getUrl)== SUCCESS
     }
+
+    fun GetUserLikeComment(userID: Int):List<UserCommentData>{
+        val getUrl="$URL/GetUserLikeComment?userID=$userID"
+        val result= PutGet(getUrl)
+        if(result== ERROR){
+            return arrayListOf()
+        }
+        try{
+            return Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }

@@ -40,7 +40,8 @@ const val FOLLOW_EACHOTHER="互相关注"
 
 const val BaiduIPLocationUrl="https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
-const val ERROR="ERROR"
+const val SUCCESS = "SUCCESS"
+const val ERROR = "ERROR"
 
 const val HOST="http://btbudinner.win:8088"
 

@@ -38,6 +38,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/superLightGrey" />
+                <TextView
+                    android:id="@+id/fragment_person_my_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:drawableLeft="@drawable/ic_thumb_up_black_24dp"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ic_thumb_up_black_24dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/my_like" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/superLightGrey" />
 
                 <TextView
                     android:layout_width="match_parent"

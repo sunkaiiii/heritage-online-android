@@ -178,8 +178,11 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                 else -> false
             }
             context.runOnUiThread {
+                when(divide){
+                    LIKE->holder.dislike.isEnabled = true
+                    DISLIKE->holder.like.isEnabled=true
+                }
                 if (success) {
-                    holder.dislike.isEnabled = true
                     changeLikeDataState(isLike, position)
                     when (divide) {
                         LIKE ->SetLike(holder, data.likeNum)

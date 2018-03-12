@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
+import android.os.Looper
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils

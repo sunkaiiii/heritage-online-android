@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -115,7 +116,11 @@ class UserOwnTieziActivity : AppCompatActivity() {
                     activity.adapter = MyOwnCommentRecyclerViewAdapter(activity,datas)
                     activity.setAdpterClick(activity.adapter)
                     activity.setAdpterLongClick(activity.adapter)
-                    val layoutManager = GridLayoutManager(activity,2)
+                    val layoutManager = if(activity.window.decorView.width<=720){
+                        LinearLayoutManager(activity)
+                    }else{
+                        GridLayoutManager(activity,2)
+                    }
                     activity.myOwnList.layoutManager = layoutManager
                     activity.myOwnList.adapter = activity.adapter
                 }

@@ -35,23 +35,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="22dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:maxLines="1"
-                android:textSize="18sp"
                 android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.12"
+                app:layout_constraintEnd_toStartOf="@id/item_more"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginRight="22dp"
+                android:layout_marginRight="32dp"
                 android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/mycomment_item_content"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="14dp"
@@ -60,7 +60,7 @@
                 android:maxLines="1"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/item_more"
                 app:layout_constraintHorizontal_bias="0.06"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2"
@@ -73,6 +73,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="33dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_more_vert_grey_600_24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:id="@+id/item_more"/>
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

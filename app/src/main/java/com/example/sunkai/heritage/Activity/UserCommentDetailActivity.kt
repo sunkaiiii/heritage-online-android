@@ -71,7 +71,7 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
             }
         } else {
             val id = intent.getIntExtra("id", 0)
-            Log.d(TAG, "onCreate: getID:" + id)
+            Log.d(TAG, "onCreate: getID:$id")
             if (id == 0)
                 return
         }

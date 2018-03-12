@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.sunkai.heritage">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -56,8 +57,8 @@
             android:theme="@style/JoinActivityTheme" />
         <activity
             android:name=".Activity.UserCommentDetailActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppThemeNoActionBar"/>
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Activity.FocusInformationActivity" />
         <activity
             android:name=".Activity.SearchActivity"
@@ -81,8 +82,9 @@
             android:name=".Activity.UserOwnTieziActivity"
             android:label="我的帖子" />
         <activity android:name=".Activity.AboutUSActivity" />
-        <activity android:name=".Activity.SettingListActivity"
-            android:label="@string/setting"/>
+        <activity
+            android:name=".Activity.SettingListActivity"
+            android:label="@string/setting" />
 
         <!-- 以下是接入mipush所需要的服务和receiver -->
         <service
@@ -161,10 +163,13 @@
         <activity
             android:name=".Activity.AllFolkInfoActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".Activity.SeeMoreNewsActivity"
-            android:theme="@style/AppThemeNoActionBar"/>
+        <activity
+            android:name=".Activity.SeeMoreNewsActivity"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".Activity.NewsDetailActivity" />
-        <activity android:name=".Activity.BottomNewsDetailActivity"/>
+        <activity android:name=".Activity.BottomNewsDetailActivity" />
+        <activity android:name=".Activity.UserLikeCommentActivity"
+            android:label="@string/my_like"/>
     </application>
 
 </manifest>

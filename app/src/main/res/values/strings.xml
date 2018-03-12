@@ -45,6 +45,7 @@
     <string name="more">更多</string>
     <string name="focus_heritage">聚焦非遗</string>
     <string name="linearLayoutManager">android.support.v7.widget.LinearLayoutManager</string>
+    <string name="gridLayoutManager">android.support.v7.widget.GridLayoutManager</string>
     <string name="add_focus">加关注</string>
     <string name="already_focus">已关注</string>
     <string name="search">搜索</string>
@@ -71,4 +72,7 @@
     <string name="open">开启</string>
     <string name="close">关闭</string>
     <string name="open_or_close_push">开启推送？</string>
+    <string name="my_like">我的赞</string>
+    <string name="title">标题</string>
+    <string name="内容">内容</string>
 </resources>
