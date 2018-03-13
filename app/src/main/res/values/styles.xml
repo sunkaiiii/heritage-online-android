@@ -1,4 +1,4 @@
-<resources>
+<resources >
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -66,5 +66,4 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
     </style>
-
 </resources>

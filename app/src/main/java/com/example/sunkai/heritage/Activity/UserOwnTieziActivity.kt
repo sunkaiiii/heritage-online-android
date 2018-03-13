@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -16,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -25,6 +28,7 @@ import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import java.io.ByteArrayOutputStream
 
@@ -52,7 +56,9 @@ class UserOwnTieziActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 bundle.putSerializable("data", adapter.getItem(position))
                 bundle.putInt("position", position)
-                val imageView = view.findViewById<View>(R.id.mycomment_item_image) as ImageView
+                val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
+                val title=view.findViewById<TextView>(R.id.mycomment_item_title)
+                val content=view.findViewById<TextView>(R.id.mycomment_item_content)
                 imageView.isDrawingCacheEnabled = true
                 val drawable = imageView.drawable
                 val bitmapDrawable = drawable as BitmapDrawable
@@ -62,7 +68,11 @@ class UserOwnTieziActivity : AppCompatActivity() {
                 intent.putExtra("bitmap", out.toByteArray())
                 intent.putExtras(bundle)
                 if(Build.VERSION.SDK_INT>=21) {
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@UserOwnTieziActivity, imageView, "shareView").toBundle())
+                    val pairs=TransitionHelper.createSafeTransitionParticipants(this@UserOwnTieziActivity,false,
+                            Pair(imageView,getString(R.string.find_share_view)),
+                            Pair(title,getString(R.string.find_share_title)),
+                            Pair(content,getString(R.string.find_share_content)))
+                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this@UserOwnTieziActivity, *pairs).toBundle())
                 }else{
                     startActivity(intent)
                 }

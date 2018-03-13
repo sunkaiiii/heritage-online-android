@@ -72,6 +72,13 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
         textBackGround = findViewById(R.id.activity_informaiton_text_background)
         setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.enterTransition.duration=300
+            window.sharedElementExitTransition.duration = 300
+            window.sharedElementEnterTransition.duration = 300
+            window.sharedElementReenterTransition.duration = 300
+            window.sharedElementReturnTransition.duration = 300
+        }
     }
 
     @SuppressLint("SetTextI18n")

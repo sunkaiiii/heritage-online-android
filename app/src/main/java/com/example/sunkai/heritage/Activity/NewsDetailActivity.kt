@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -18,6 +19,9 @@ class NewsDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.enterTransition.duration=500
+        }
         val title=intent.getStringExtra("category")
         supportActionBar?.title=title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -65,7 +69,7 @@ class NewsDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
             android.R.id.home->{
-                finish()
+                onBackPressed()
                 return true
             }
 

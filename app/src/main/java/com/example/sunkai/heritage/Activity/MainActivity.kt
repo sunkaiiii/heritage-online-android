@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.transition.Slide
 import android.view.*
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Fragment.*

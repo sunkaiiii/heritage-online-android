@@ -117,10 +117,10 @@ class LoginActivity : AppCompatActivity(),LoginView, View.OnClickListener {
     }
 
     private fun jumpToRegist() {
-        val option = ActivityOptionsCompat.makeSceneTransitionAnimation(this)
         val intent = Intent(this@LoginActivity, RegistActivity::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            ActivityCompat.startActivityForResult(this, intent, requestCode, option.toBundle())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.exitTransition=android.transition.TransitionInflater.from(this).inflateTransition(android.R.transition.fade)
+            ActivityCompat.startActivityForResult(this,intent, requestCode, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
         } else {
             startActivityForResult(intent, requestCode)
         }

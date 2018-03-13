@@ -30,16 +30,17 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <LinearLayout
+                android:id="@+id/folk_activity_into_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/activity_layout_img"
+                android:background="@color/transparent"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@+id/activity_layout_img"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/activity_layout_img"
-                app:layout_constraintVertical_bias="1.0"
-                android:background="@color/transparent">
+                app:layout_constraintVertical_bias="1.0">
 
                 <TextView
                     android:id="@+id/activity_layout_title"
@@ -51,7 +52,6 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-
                     android:textColor="@color/white"
                     android:textSize="24sp" />
             </LinearLayout>

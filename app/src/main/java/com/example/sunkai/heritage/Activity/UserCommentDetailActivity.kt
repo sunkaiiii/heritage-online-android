@@ -14,14 +14,15 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
-import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
@@ -32,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 /**
  * 此类用于处理用户发帖详细信息页面
  */
-class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
+class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPageLoaded {
     private var isReply = false
     private lateinit var information_img: ImageView
     private lateinit var information_title: TextView
@@ -90,7 +91,11 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         setSupportActionBar(userCommentDetailToolbar)
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
-
+        userCommentSwipeRefresh.setOnRefreshListener {
+            if (commentID != 0) {
+                getReplysInfo(commentID)
+            }
+        }
     }
 
     private fun changeList() {
@@ -184,9 +189,12 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getReplysInfo(commentID: Int) {
+        onPreLoad()
         ThreadPool.execute {
+            Thread.sleep(500)
             val datas = HandleFind.GetUserCommentReply(commentID)
             runOnUiThread {
+                onPostLoad()
                 val adapter = UserCommentReplyRecyclerAdapter(this, datas)
                 userCommentReplyRecyclerView.adapter = adapter
             }
@@ -226,6 +234,12 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        //清除adapter的内容，防止返回时候的界面显示的问题
+        userCommentReplyRecyclerView.adapter=null
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             UPDATE_USER_COMMENT -> {
@@ -238,6 +252,15 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun onPreLoad() {
+        userCommentReplyRecyclerView.adapter=null
+        userCommentSwipeRefresh.isRefreshing=true
+    }
+
+    override fun onPostLoad() {
+        userCommentSwipeRefresh.isRefreshing=false
     }
 
     companion object {

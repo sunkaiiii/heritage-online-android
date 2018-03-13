@@ -78,4 +78,15 @@
 
     <string name="share_user_name">share_user_name</string>
     <string name="share_user_image">share_user_image</string>
+    <string name="share_folk_image">share_folk_image</string>
+    <string name="share_folk_title">share_folk_title</string>
+    <string name="share_folk_time">share_folk_time</string>
+    <string name="share_folk_number">share_folk_number</string>
+    <string name="share_folk_location">share_folk_location</string>
+    <string name="share_folk_content">share_folk_content</string>
+
+    <string name="find_share_view">find_share_view</string>
+    <string name="find_share_background">find_share_background</string>
+    <string name="find_share_title">find_share_title</string>
+    <string name="find_share_content">find_share_content</string>
 </resources>

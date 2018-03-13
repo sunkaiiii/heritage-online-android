@@ -1,27 +1,25 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintLayout
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
+import android.support.v4.util.Pair
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.ActivityInformationActivity
 import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 
 /**
@@ -66,17 +64,40 @@ class ActivityFragment : Fragment() {
                 intent.putExtra("from", ACTIVITY_FRAGMENT)
                 intent.putExtras(bundle)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+                    setTransitionStartActivity(intent,view)
                 }else{
                     startActivity(intent)
                 }
             }
         })
-
         //因为默认启动是首页，于是直接加载首页内容
         if(index==0)
             activityListviewAdapter!!.startGetInformation()
         return view
+    }
+
+    private fun setTransitionStartActivity(intent: Intent,view: View){
+        val activity=activity
+        if(activity==null){
+            startActivity(intent)
+        }else {
+            val image = view.findViewById<ImageView>(R.id.activity_layout_img)
+            val title = view.findViewById<TextView>(R.id.activity_layout_title)
+            val time = view.findViewById<TextView>(R.id.activity_layout_time)
+            val number = view.findViewById<TextView>(R.id.activity_layout_number)
+            val location = view.findViewById<TextView>(R.id.activity_layout_location)
+            val content = view.findViewById<TextView>(R.id.activity_layout_content)
+            val pairs = TransitionHelper.createSafeTransitionParticipants(activity,false,
+                    Pair(image,getString(R.string.share_user_image)),
+                    Pair(title,getString(R.string.share_folk_title)),
+                    Pair(time,getString(R.string.share_folk_time)),
+                    Pair(number,getString(R.string.share_folk_number)),
+                    Pair(location,getString(R.string.share_folk_location)),
+                    Pair(content,getString(R.string.share_folk_content))
+                    )
+            val transitionOptions=ActivityOptionsCompat.makeSceneTransitionAnimation(activity,*pairs)
+            startActivity(intent,transitionOptions.toBundle())
+        }
     }
 
     fun getInformation() {

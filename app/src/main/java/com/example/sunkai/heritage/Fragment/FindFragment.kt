@@ -1,10 +1,13 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.annotation.TargetApi
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.transition.Slide
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,10 +151,12 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
                     intent.putExtra("bitmap", imageByte)
                     intent.putExtras(bundle)
                     //如果手机是Android 5.0以上的话，使用新的Activity切换动画
-                    if (Build.VERSION.SDK_INT >= 21)
-                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, imageView, "shareView").toBundle())
-                    else
+                    if (Build.VERSION.SDK_INT >= 21) {
+                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, imageView, getString(R.string.find_share_view)).toBundle())
+                    }
+                    else {
                         startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
+                    }
                 }
             }
         })

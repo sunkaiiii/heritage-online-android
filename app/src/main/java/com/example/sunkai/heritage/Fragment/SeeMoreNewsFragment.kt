@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.OnSrollHelper
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CATEGORY
 import kotlinx.android.synthetic.main.see_more_news_viewpager_item.*
 import java.lang.ref.WeakReference
@@ -101,7 +102,7 @@ class SeeMoreNewsFragment:BaseLazyLoadFragment(),OnPageLoaded {
         override fun loadMoreData(recyclerView: RecyclerView) {
             val adapter=recyclerView.adapter
             if( adapter is SeeMoreNewsRecyclerViewAdapter){
-                Thread{
+                ThreadPool.execute{
                     setPageOnLoad()
                     val category=category
                     val activity=activity
@@ -112,7 +113,7 @@ class SeeMoreNewsFragment:BaseLazyLoadFragment(),OnPageLoaded {
                             setPageLoaded()
                         }
                     }
-                }.start()
+                }
             }
         }
     }

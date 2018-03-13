@@ -110,7 +110,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -169,7 +168,7 @@
         <activity android:name=".Activity.NewsDetailActivity" />
         <activity android:name=".Activity.BottomNewsDetailActivity" />
         <activity android:name=".Activity.UserLikeCommentActivity"
-            android:label="@string/my_like"/>
+            android:label="@string/my_like" />
     </application>
 
 </manifest>

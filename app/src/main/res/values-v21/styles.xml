@@ -18,5 +18,12 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="UserCommentDetailTheme" parent="AppThemeNoActionBar">
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowEnterTransition">@transition/find_item_transition</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/find_item_share_transition</item>
+    </style>
 
 </resources>

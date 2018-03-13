@@ -1,7 +1,10 @@
 package com.example.sunkai.heritage.Adapter
 
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +44,12 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         container.addView(view)
         view.setOnClickListener({
             val intent=setViewClick(data)
+            if(context is Activity) {
+                if(Build.VERSION.SDK_INT>=21) {
+                    context.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
+                    return@setOnClickListener
+                }
+            }
             context.startActivity(intent)
         })
         return view
