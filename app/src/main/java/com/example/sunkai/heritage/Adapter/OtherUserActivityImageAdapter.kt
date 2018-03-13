@@ -5,13 +5,11 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Interface.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
 import com.github.chrisbanes.photoview.PhotoView
-import java.lang.ref.WeakReference
 import java.util.*
 
 /**

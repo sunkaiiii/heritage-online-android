@@ -13,7 +13,7 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast

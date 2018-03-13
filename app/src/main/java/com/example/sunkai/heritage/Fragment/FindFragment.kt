@@ -152,6 +152,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
                     intent.putExtras(bundle)
                     //如果手机是Android 5.0以上的话，使用新的Activity切换动画
                     if (Build.VERSION.SDK_INT >= 21) {
+                        intent.putExtra("option",UserCommentDetailActivity.ANIMATION_SHOW)
                         startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, imageView, getString(R.string.find_share_view)).toBundle())
                     }
                     else {

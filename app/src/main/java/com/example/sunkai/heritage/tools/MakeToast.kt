@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 
-import com.example.sunkai.heritage.Data.GlobalContext
-
 /**全局可调用的toast工具类
  * Created by sunkai on 2017/12/29.
  */

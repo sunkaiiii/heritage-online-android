@@ -11,7 +11,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ERROR

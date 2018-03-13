@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginPresnte
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
 import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.LOG_OUT

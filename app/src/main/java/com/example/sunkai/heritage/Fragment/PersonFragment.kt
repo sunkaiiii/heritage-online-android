@@ -15,7 +15,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.R

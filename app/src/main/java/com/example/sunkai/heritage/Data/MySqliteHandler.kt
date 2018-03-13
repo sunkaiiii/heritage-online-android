@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Data
 
 import android.database.sqlite.SQLiteDatabase
+import com.example.sunkai.heritage.tools.GlobalContext
 
 /**
  * Created by sunkai on 2017/12/13.

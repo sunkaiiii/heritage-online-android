@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Data
+package com.example.sunkai.heritage.tools
 
 import android.app.ActivityManager
 import android.app.Application

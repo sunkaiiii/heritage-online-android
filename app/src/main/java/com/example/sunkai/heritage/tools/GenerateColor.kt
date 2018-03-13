@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.Palette
 import androidx.graphics.drawable.toBitmap
-import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.R
 
 /**

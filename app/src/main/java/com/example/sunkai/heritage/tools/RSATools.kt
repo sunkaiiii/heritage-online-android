@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.tools
 
-import com.example.sunkai.heritage.Data.GlobalContext
 import com.example.sunkai.heritage.value.ERROR
 import org.kobjects.base64.Base64
 import java.io.InputStreamReader

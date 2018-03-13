@@ -13,7 +13,7 @@ import android.widget.Spinner
 import android.widget.Switch
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.GlobalContext
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool

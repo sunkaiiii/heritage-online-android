@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.transition.doOnEnd
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
@@ -33,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 /**
  * 此类用于处理用户发帖详细信息页面
  */
-class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPageLoaded {
+class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener, OnPageLoaded {
     private var isReply = false
     private lateinit var information_img: ImageView
     private lateinit var information_title: TextView
@@ -56,8 +58,14 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
         setContentView(R.layout.activity_user_comment_detail)
         initView()
         getData()
-        if (commentID != 0) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.sharedElementEnterTransition.doOnEnd {
+                getReplysInfo(commentID)
+                showBackLinear()
+            }
+        } else {
             getReplysInfo(commentID)
+            showBackLinear()
         }
     }
 
@@ -95,6 +103,15 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
             if (commentID != 0) {
                 getReplysInfo(commentID)
             }
+        }
+    }
+
+    private fun showBackLinear(){
+        usercommentInformationLinear.visibility = View.VISIBLE
+        val option=intent.getIntExtra("option", COMMON_SHOW)
+        if(option== ANIMATION_SHOW) {
+            val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
+            usercommentInformationLinear.startAnimation(animation)
         }
     }
 
@@ -137,9 +154,6 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
         } else {
             Glide.with(this).load(BaseSetting.URL + data.imageUrl).into(information_img)
         }
-        usercommentInformationLinear.visibility = View.VISIBLE
-        val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
-        usercommentInformationLinear.startAnimation(animation)
     }
 
     private fun deleteComment() {
@@ -189,9 +203,9 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
     }
 
     private fun getReplysInfo(commentID: Int) {
+        if (commentID == 0) return
         onPreLoad()
         ThreadPool.execute {
-            Thread.sleep(500)
             val datas = HandleFind.GetUserCommentReply(commentID)
             runOnUiThread {
                 onPostLoad()
@@ -237,7 +251,8 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
     override fun onBackPressed() {
         super.onBackPressed()
         //清除adapter的内容，防止返回时候的界面显示的问题
-        userCommentReplyRecyclerView.adapter=null
+        this.commentID = 0
+        userCommentReplyRecyclerView.adapter = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -255,17 +270,19 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener,OnPa
     }
 
     override fun onPreLoad() {
-        userCommentReplyRecyclerView.adapter=null
-        userCommentSwipeRefresh.isRefreshing=true
+        userCommentReplyRecyclerView.adapter = null
+        userCommentSwipeRefresh.isRefreshing = true
     }
 
     override fun onPostLoad() {
-        userCommentSwipeRefresh.isRefreshing=false
+        userCommentSwipeRefresh.isRefreshing = false
     }
 
     companion object {
         const val ADD_COMMENT = 1
         const val DELETE_COMMENT = 2
+        const val COMMON_SHOW=3
+        const val ANIMATION_SHOW=4
 
         private const val TAG = "UserCommentDetail"
     }
