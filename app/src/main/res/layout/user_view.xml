@@ -47,7 +47,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:riv_oval="true"
-                android:layout_marginLeft="16dp" />
+                android:layout_marginLeft="16dp"
+                android:transitionName="@string/share_user_image"
+                tools:targetApi="lollipop" />
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
@@ -70,7 +72,9 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="6sp"
                     android:text="@string/user_name"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="@color/colorAccent"
+                    android:transitionName="@string/share_user_name"
+                    tools:targetApi="lollipop" />
 
             </LinearLayout>
 

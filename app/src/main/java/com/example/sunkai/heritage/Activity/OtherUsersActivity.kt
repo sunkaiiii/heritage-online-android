@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
@@ -55,11 +56,18 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
+        settupWindowAnimations()
         initview()
         userID = intent.getIntExtra("userID", NO_USERID)
         if (userID != NO_USERID) {
             getUserAllInfo(userID)
+        }
+    }
 
+
+    private fun settupWindowAnimations() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.enterTransition.duration = 500
         }
     }
 

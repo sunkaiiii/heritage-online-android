@@ -1,17 +1,25 @@
 package com.example.sunkai.heritage.Activity
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.util.Pair
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
+import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.*
+import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_focus_information.*
 
 class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
@@ -108,6 +116,7 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
             })
+            setAdapterClick(adapter)
             focus_information_recyclerview.adapter = adapter
         }
 
@@ -121,6 +130,26 @@ class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
         fun getFansInformation() {
             ThreadPool.execute(getFansinformation)
         }
+    }
+
+    private fun setAdapterClick(adapter: FocusListviewAdapter){
+        adapter.setOnItemClickListen(object:OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                val intent = Intent(this@FocusInformationActivity, OtherUsersActivity::class.java)
+                val data=adapter.getItem(position)
+                intent.putExtra("userID", data.focusFansID)
+                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP){
+                    val userName=view.findViewById<TextView>(R.id.user_name)
+                    val userImage=view.findViewById<RoundedImageView>(R.id.user_head_image)
+                    val pairs = TransitionHelper.createSafeTransitionParticipants(this@FocusInformationActivity, false, Pair(userName, getString(R.string.share_user_name)), Pair(userImage, getString(R.string.share_user_image)))
+                    val transitionOptions =ActivityOptionsCompat.makeSceneTransitionAnimation(this@FocusInformationActivity,*pairs)
+                    startActivity(intent,transitionOptions.toBundle())
+                }else {
+                    startActivity(intent)
+                }
+            }
+
+        })
     }
 
     override fun onClick(v: View) {}

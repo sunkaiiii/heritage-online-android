@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -24,6 +25,7 @@ import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import java.io.ByteArrayOutputStream
 
 class UserOwnTieziActivity : AppCompatActivity() {
@@ -116,12 +118,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                     activity.adapter = MyOwnCommentRecyclerViewAdapter(activity,datas)
                     activity.setAdpterClick(activity.adapter)
                     activity.setAdpterLongClick(activity.adapter)
-                    val layoutManager = if(activity.window.decorView.width<=720){
-                        LinearLayoutManager(activity)
-                    }else{
-                        GridLayoutManager(activity,2)
-                    }
-                    activity.myOwnList.layoutManager = layoutManager
+                    activity.myOwnList.layoutManager = GridLayoutManager(activity, GRID_LAYOUT_DESTINY)
                     activity.myOwnList.adapter = activity.adapter
                 }
 

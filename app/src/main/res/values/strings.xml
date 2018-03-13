@@ -75,4 +75,7 @@
     <string name="my_like">我的赞</string>
     <string name="title">标题</string>
     <string name="内容">内容</string>
+
+    <string name="share_user_name">share_user_name</string>
+    <string name="share_user_image">share_user_image</string>
 </resources>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="4dp"
     app:cardCornerRadius="2dp"
     app:cardElevation="2dp">
 
@@ -57,7 +57,8 @@
                     android:maxLines="1"
                     android:text="@string/title"
                     android:textColor="@color/white"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:gravity="center"/>
 
                 <TextView
                     android:id="@+id/user_name"
@@ -66,10 +67,12 @@
                     android:layout_marginEnd="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
                     android:text="@string/user_name"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:gravity="center"/>
             </LinearLayout>
         </LinearLayout>
 

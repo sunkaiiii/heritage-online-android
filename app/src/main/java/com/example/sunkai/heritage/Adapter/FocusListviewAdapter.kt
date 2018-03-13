@@ -2,7 +2,9 @@ package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.support.v4.util.Pair
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.*
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -57,6 +60,7 @@ class FocusListviewAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.focus_listview_layout, parent, false)
+        view.setOnClickListener(this)
         return Holder(view)
     }
 
@@ -111,11 +115,6 @@ class FocusListviewAdapter
                 handleFocus.AddFollow()
             }
         }
-        holder.rl_focus_listview_layout.setOnClickListener({
-            val intent = Intent(context, OtherUsersActivity::class.java)
-            intent.putExtra("userID", data.focusFansID)
-            context.startActivity(intent)
-        })
     }
 
 
