@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -15,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.transition.doOnEnd
 import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
@@ -28,6 +28,7 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.value.TYPE_FIND
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
@@ -35,7 +36,8 @@ import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 /**
  * 此类用于处理用户发帖详细信息页面
  */
-class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener, OnPageLoaded {
+class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListener, OnPageLoaded {
+
     private var isReply = false
     private lateinit var information_img: ImageView
     private lateinit var information_title: TextView
@@ -179,8 +181,8 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener, OnP
         }.setNegativeButton("取消") { _, _ -> }.create().show()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.user_comment_detail_item_delete -> deleteComment()
             R.id.user_comment_detail_item_edit -> {
@@ -189,17 +191,28 @@ class UserCommentDetailActivity : AppCompatActivity(), View.OnClickListener, OnP
                     val data: UserCommentData = data!!
                     intent.putExtra("data", data)
                     startActivityForResult(intent, UPDATE_USER_COMMENT)
+                    return true
                 }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (data != null && data!!.userID == userID) {
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val comemntData=data
+        if (comemntData != null && comemntData.userID == userID) {
             menuInflater.inflate(R.menu.user_comment_detail_menu, menu)
+            return true
         }
-        return true
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun getType(): String {
+        return TYPE_FIND
+    }
+
+    override fun getID(): Int? {
+        return if(commentID ==0)null else commentID
     }
 
     private fun getReplysInfo(commentID: Int) {

@@ -50,10 +50,7 @@
             android:label="注册"
             android:theme="@style/LoginActivityTheme" />
         <activity
-            android:name=".Activity.JoinActivity"
-            android:theme="@style/JoinActivityTheme" />
-        <activity
-            android:name=".Activity.ActivityInformationActivity"
+            android:name=".Activity.FolkInformationActivity"
             android:theme="@style/JoinActivityTheme" />
         <activity
             android:name=".Activity.UserCommentDetailActivity"
@@ -110,6 +107,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -167,8 +165,11 @@
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".Activity.NewsDetailActivity" />
         <activity android:name=".Activity.BottomNewsDetailActivity" />
-        <activity android:name=".Activity.UserLikeCommentActivity"
+        <activity
+            android:name=".Activity.UserLikeCommentActivity"
             android:label="@string/my_like" />
+        <activity android:name=".Activity.MyCollectionActivity"
+            android:label="@string/my_collection"/>
     </application>
 
 </manifest>

@@ -55,14 +55,21 @@
                     android:background="@color/superLightGrey" />
 
                 <TextView
+                    android:id="@+id/fragment_person_my_collect"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@drawable/collect"
+                    android:layout_margin="12dp"
+                    android:drawableLeft="@drawable/ic_bookmark_black_24dp"
                     android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/collect"
-                    android:text="@string/my_collection"
-                    android:visibility="gone" />
+                    android:drawableStart="@drawable/ic_bookmark_black_24dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/my_collection" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/superLightGrey" />
+
 
                 <TextView
                     android:layout_width="match_parent"

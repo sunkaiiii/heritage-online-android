@@ -40,6 +40,11 @@ const val IS_FOCUS="已关注"
 const val UNFOCUS="加关注"
 const val FOLLOW_EACHOTHER="互相关注"
 
+const val TYPE_MAIN="首页新闻"
+const val TYPE_FOCUS_HERITAGE="聚焦非遗"
+const val TYPE_FOLK="民间"
+const val TYPE_FIND="发现"
+
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 val GRID_LAYOUT_DESTINY=Math.round((GlobalContext.instance.resources.displayMetrics.widthPixels.toFloat()/ GlobalContext.instance.resources.displayMetrics.densityDpi)-1)
 

@@ -83,6 +83,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         settingLayout.setOnClickListener(this)
         fragment_person_about_us.setOnClickListener(this)
         fragment_person_my_like.setOnClickListener(this)
+        fragment_person_my_collect.setOnClickListener(this)
         val toolbar = view.findViewById<android.support.v7.widget.Toolbar>(R.id.fragment_person_toolbar)
         val activity = activity
         activity?.let {
@@ -167,6 +168,10 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                 }
                 R.id.fragment_person_my_like->{
                     intent=Intent(activity,UserLikeCommentActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.fragment_person_my_collect->{
+                    intent=Intent(activity,MyCollectionActivity::class.java)
                     startActivity(intent)
                 }
             }

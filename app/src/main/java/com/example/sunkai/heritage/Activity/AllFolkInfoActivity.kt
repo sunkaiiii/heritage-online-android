@@ -150,7 +150,7 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
             folkListviewAdapter.setOnItemClickListen(object :OnItemClickListener{
                 override fun onItemClick(view: View, position: Int) {
                     val data=folkListviewAdapter.getItem(position)
-                    val intent= Intent(this@AllFolkInfoActivity,ActivityInformationActivity::class.java)
+                    val intent= Intent(this@AllFolkInfoActivity,FolkInformationActivity::class.java)
                     intent.putExtra("data",data)
                     intent.putExtra("from", ALL_FOLK_INFO_ACTIVITY)
                     startActivity(intent)

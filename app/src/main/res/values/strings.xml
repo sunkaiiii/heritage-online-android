@@ -89,4 +89,5 @@
     <string name="find_share_background">find_share_background</string>
     <string name="find_share_title">find_share_title</string>
     <string name="find_share_content">find_share_content</string>
+    <string name="collect">收藏</string>
 </resources>

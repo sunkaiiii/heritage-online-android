@@ -2,9 +2,7 @@ package com.example.sunkai.heritage.ConnectWebService
 
 import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Data.FollowInformation
-import com.example.sunkai.heritage.Data.SearchUserInfo
-import com.example.sunkai.heritage.Data.UserInfo
+import com.example.sunkai.heritage.Data.*
 import com.google.gson.Gson
 import okhttp3.FormBody
 import org.kobjects.base64.Base64
@@ -176,5 +174,41 @@ object HandlePerson : BaseSetting() {
         val formBody=FormBody.Builder().add("userID",userID.toString()).add("image",imageString).build()
         val result=PutPost(postUrl,formBody)
         return result== SUCCESS
+    }
+
+    fun AddUserCollection(userID: Int,collectionType:String,typeID:Int):Boolean{
+        val getUrl="$URL/AddUserCollection?userID=$userID&typeID=$typeID&type=$collectionType"
+        return SUCCESS==PutGet(getUrl)
+    }
+
+    fun CancelUserCollect(userID: Int,collectionType:String,typeID:Int):Boolean{
+        val getUrl="$URL/CancelUserCollect?userID=$userID&typeID=$typeID&type=$collectionType"
+        return SUCCESS==PutGet(getUrl)
+    }
+
+    fun CheckIsCollection(userID: Int,collectionType:String,typeID:Int):Boolean{
+        val getUrl="$URL/CheckIsCollection?userID=$userID&typeID=$typeID&type=$collectionType"
+        val result=PutGet(getUrl)
+        Log.d("CheckIsCollection",result)
+        return SUCCESS==result
+    }
+
+    private fun GetUserCollection(userID: Int,collectionType: String):String{
+        val getUrl="$URL/GetUserCollection?userID=$userID&type=$collectionType"
+        val result=PutGet(getUrl)
+        Log.d("GetUserCollection",result)
+        return result
+    }
+
+    fun GetFolkColelction(userID: Int,collectionType: String):List<FolkDataLite>{
+        val result=GetUserCollection(userID,collectionType)
+        if(ERROR==result)
+            return arrayListOf()
+        try{
+            return Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
     }
 }

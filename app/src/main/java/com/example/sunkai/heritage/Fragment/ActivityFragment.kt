@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.sunkai.heritage.Activity.ActivityInformationActivity
+import com.example.sunkai.heritage.Activity.FolkInformationActivity
 import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
@@ -23,7 +23,7 @@ import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 
 /**
- * 首页viewpager五个页面的fragment
+ * 民间viewpager五个页面的fragment
  */
 class ActivityFragment : Fragment() {
     var activityListviewAdapter: ActivityRecyclerViewAdapter? = null
@@ -57,7 +57,7 @@ class ActivityFragment : Fragment() {
         activityListviewAdapter!!.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val activitydata = activityListviewAdapter!!.getItem(position)
-                val intent = Intent(activity, ActivityInformationActivity::class.java)
+                val intent = Intent(activity, FolkInformationActivity::class.java)
                 val bundle = Bundle()
                 bundle.putSerializable("activity", activitydata)
                 intent.putExtra("image", activitydata.img)

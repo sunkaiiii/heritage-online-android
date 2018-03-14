@@ -1,20 +1,20 @@
 package com.example.sunkai.heritage.Activity
 
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
-import android.view.MenuItem
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Data.MainPageSlideNews
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.value.RESULT_NULL
+import com.example.sunkai.heritage.value.TYPE_MAIN
 import kotlinx.android.synthetic.main.activity_news_detail.*
 
-class NewsDetailActivity : AppCompatActivity() {
+class NewsDetailActivity : BaseHandleCollectActivity() {
+
+    var id:Int?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +29,7 @@ class NewsDetailActivity : AppCompatActivity() {
             val data=intent.getSerializableExtra("data") as FolkNewsLite
             getNewsDetail(data.id)
             setDataToView(data)
+            id=data.id
         }else if(intent.getSerializableExtra("data") is MainPageSlideNews){
             val data=intent.getSerializableExtra("data") as MainPageSlideNews
             setDataToView(data)
@@ -66,14 +67,12 @@ class NewsDetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
-            android.R.id.home->{
-                onBackPressed()
-                return true
-            }
-
-        }
-        return super.onOptionsItemSelected(item)
+    override fun getType(): String {
+        return TYPE_MAIN
     }
+
+    override fun getID(): Int? {
+        return id
+    }
+
 }

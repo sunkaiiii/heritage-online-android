@@ -5,13 +5,12 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
-import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.Data.FolkDataLite
@@ -22,14 +21,15 @@ import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
 import com.example.sunkai.heritage.value.HOST
-import kotlinx.android.synthetic.main.activity_join.*
+import com.example.sunkai.heritage.value.TYPE_FOLK
+import kotlinx.android.synthetic.main.activity_folk_info.*
 
 /**
  * Created by sunkai on 2017-4-22.
  * 此类是在首页点击官方活动的list之后跳转的界面的类，用于显示活动的详细信息
  */
 
-class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
+class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListener {
 
     lateinit var textBackGround: View
     lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
@@ -39,27 +39,28 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
     lateinit var category: TextView
     lateinit var content: TextView
 
-    /**
-     * 在首页载入的时候，活动信息已被载入，点击list内容之后，将点击的类传入bundle（类实现了serializable接口，可以序列化），传入之后读取出来并赋值在控件上
-     */
+    var id:Int?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_join)
+        setContentView(R.layout.activity_folk_info)
         initView()
         val from = intent.getStringExtra("from")
         when (from) {
             ACTIVITY_FRAGMENT -> {
                 val data = intent.getSerializableExtra("activity") as ClassifyDivideData
                 setDatasToView(data)
+                id=data.id
             }
             ALL_FOLK_INFO_ACTIVITY->{
                 val data=intent.getSerializableExtra("data") as FolkDataLite
                 //使用lite的数据初始化完整的数据，并展示，同时后台读取全部的数据
                 setDatasToView(ClassifyDivideData(data))
                 getFolkData(data.id)
+                id=data.id
             }
         }
-
+        toast(id.toString())
     }
 
     private fun initView() {
@@ -117,11 +118,12 @@ class ActivityInformationActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
+    override fun getType(): String {
+        return TYPE_FOLK
+    }
+
+    override fun getID(): Int? {
+        return id
     }
 
     private val target = object : SimpleTarget<Drawable>() {
