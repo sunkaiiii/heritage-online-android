@@ -20,7 +20,7 @@ class MyCollectionViewpagerAdpater(manager:FragmentManager):FragmentPagerAdapter
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        super.destroyItem(container, position, `object`)
+
     }
 
     fun insertNewFragment(fragment: android.support.v4.app.Fragment) {

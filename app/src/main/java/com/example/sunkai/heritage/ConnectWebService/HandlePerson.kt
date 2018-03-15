@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.ConnectWebService
 import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.*
+import com.example.sunkai.heritage.value.MINI_REPLY
 import com.google.gson.Gson
 import okhttp3.FormBody
 import org.kobjects.base64.Base64
@@ -200,12 +201,50 @@ object HandlePerson : BaseSetting() {
         return result
     }
 
+    fun GetMainCollection(userID: Int,collectionType: String):List<FolkNewsLite>{
+        val result=GetUserCollection(userID,collectionType)
+        if(ERROR==result)
+            return arrayListOf()
+        try{
+            return Gson().fromJsonToList(result,Array<FolkNewsLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
+
+    fun GetFocusOnHeritageCollection(userID: Int,collectionType: String):List<BottomFolkNewsLite>{
+        val result=GetUserCollection(userID,collectionType)
+        if(ERROR==result)
+            return arrayListOf()
+        try{
+            return Gson().fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
+
     fun GetFolkColelction(userID: Int,collectionType: String):List<FolkDataLite>{
         val result=GetUserCollection(userID,collectionType)
         if(ERROR==result)
             return arrayListOf()
         try{
             return Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
+
+    fun GetFindCollection(userID: Int,collectionType: String):List<UserCommentData>{
+        val result=GetUserCollection(userID,collectionType)
+        if(ERROR==result)
+            return arrayListOf()
+        try{
+            val findResult= Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+            findResult.forEach { it.miniReplys=HandleFind.GetUserCommentReply(it.id, MINI_REPLY) }
+            return findResult
         }catch (e:Exception){
             e.printStackTrace()
         }
