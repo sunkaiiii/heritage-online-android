@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.TYPE_FIND
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
@@ -60,7 +61,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         setContentView(R.layout.activity_user_comment_detail)
         initView()
         getData()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&intent.getIntExtra("from",DEFAULT_FROM)!=FROM_COLLECTION) {
             window.sharedElementEnterTransition.doOnEnd {
                 getReplysInfo(commentID)
                 showBackLinear()
@@ -73,7 +74,15 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private fun getData() {
         val bundle = intent.extras
-        if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
+        if (intent.getSerializableExtra("data") is UserCommentData) {
+            data = intent.getSerializableExtra("data") as UserCommentData
+            val data = data
+            commentID = data?.id ?: 0
+            data?.let {
+                setUserCommentView(data, null)
+            }
+
+        } else if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
             data = bundle.getSerializable("data") as UserCommentData
             val imageByte = intent.getByteArrayExtra("bitmap")
             commentID = data?.id ?: 0
@@ -108,10 +117,10 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         }
     }
 
-    private fun showBackLinear(){
+    private fun showBackLinear() {
         usercommentInformationLinear.visibility = View.VISIBLE
-        val option=intent.getIntExtra("option", COMMON_SHOW)
-        if(option== ANIMATION_SHOW) {
+        val option = intent.getIntExtra("option", COMMON_SHOW)
+        if (option == ANIMATION_SHOW) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
             usercommentInformationLinear.startAnimation(animation)
         }
@@ -199,7 +208,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val comemntData=data
+        val comemntData = data
         if (comemntData != null && comemntData.userID == userID) {
             menuInflater.inflate(R.menu.user_comment_detail_menu, menu)
             return true
@@ -212,7 +221,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     override fun getID(): Int? {
-        return if(commentID ==0)null else commentID
+        return if (commentID == 0) null else commentID
     }
 
     private fun getReplysInfo(commentID: Int) {
@@ -294,8 +303,11 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     companion object {
         const val ADD_COMMENT = 1
         const val DELETE_COMMENT = 2
-        const val COMMON_SHOW=3
-        const val ANIMATION_SHOW=4
+        const val COMMON_SHOW = 3
+        const val ANIMATION_SHOW = 4
+
+        const val FROM_COLLECTION=0
+        const val DEFAULT_FROM=-1
 
         private const val TAG = "UserCommentDetail"
     }

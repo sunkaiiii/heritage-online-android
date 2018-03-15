@@ -39,7 +39,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     lateinit var category: TextView
     lateinit var content: TextView
 
-    var id:Int?=null
+    var id: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +50,16 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
             ACTIVITY_FRAGMENT -> {
                 val data = intent.getSerializableExtra("activity") as ClassifyDivideData
                 setDatasToView(data)
-                id=data.id
+                id = data.id
             }
-            ALL_FOLK_INFO_ACTIVITY->{
-                val data=intent.getSerializableExtra("data") as FolkDataLite
+            ALL_FOLK_INFO_ACTIVITY -> {
+                val data = intent.getSerializableExtra("data") as FolkDataLite
                 //使用lite的数据初始化完整的数据，并展示，同时后台读取全部的数据
                 setDatasToView(ClassifyDivideData(data))
                 getFolkData(data.id)
-                id=data.id
+                id = data.id
             }
         }
-        toast(id.toString())
     }
 
     private fun initView() {
@@ -74,7 +73,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
         setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.duration=300
+            window.enterTransition.duration = 300
             window.sharedElementExitTransition.duration = 300
             window.sharedElementEnterTransition.duration = 300
             window.sharedElementReenterTransition.duration = 300
@@ -93,22 +92,22 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
         content.text = data.content
     }
 
-    private fun setErrorInfo(){
-        location.text="未知"
-        number.text="未知"
+    private fun setErrorInfo() {
+        location.text = "未知"
+        number.text = "未知"
         toast("加载出现问题")
     }
 
-    private fun getFolkData(id:Int){
+    private fun getFolkData(id: Int) {
         ThreadPool.execute {
-            val folkData=HandleFolk.Get_Channel_Folk_Single_Information(id)
-            if(folkData!=null){
-                val data=ClassifyDivideData(folkData)
+            val folkData = HandleFolk.Get_Channel_Folk_Single_Information(id)
+            if (folkData != null) {
+                val data = ClassifyDivideData(folkData)
                 runOnUiThread {
                     setDatasToView(data)
                 }
-            }else{
-                runOnUiThread{
+            } else {
+                runOnUiThread {
                     setErrorInfo()
                 }
             }
