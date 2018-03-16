@@ -2,12 +2,13 @@ package com.example.sunkai.heritage.Activity
 
 
 import android.content.Intent
-import android.os.Build
-import android.os.Bundle
+import android.os.*
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
@@ -29,8 +30,7 @@ import kotlinx.android.synthetic.main.activity_search.*
 /**
  * 此类用于处理用户搜索的页面
  */
-class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener {
-
+class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener,TextWatcher {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +42,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdi
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         search_activity_btn.setOnClickListener(this)
         search_activity_edit.setOnEditorActionListener(this)
+        search_activity_edit.addTextChangedListener(this)
     }
 
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -115,4 +116,42 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdi
         })
     }
 
+
+
+    private val timeTaskHandler= object:Handler(Looper.getMainLooper()){
+        override fun handleMessage(msg: Message?) {
+            if(msg?.what==SEARCH_USER_MESSAGE){
+                val text=search_activity_edit.text.toString().trim()
+                if(TextUtils.isEmpty(text)){
+                    return
+                }
+                searchClass(text)
+            }
+        }
+    }
+    //当用户输入之后，自动搜索用户
+    //设置一个DELAY，减少请求的次数
+    override fun afterTextChanged(s: Editable?) {
+        if(timeTaskHandler.hasMessages(SEARCH_USER_MESSAGE)){
+            timeTaskHandler.removeMessages(SEARCH_USER_MESSAGE)
+        }
+        timeTaskHandler.sendEmptyMessageDelayed(SEARCH_USER_MESSAGE, DELAY)
+    }
+
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(timeTaskHandler.hasMessages(SEARCH_USER_MESSAGE)){
+            timeTaskHandler.removeMessages(SEARCH_USER_MESSAGE)
+        }
+
+    }
+
+    companion object {
+        const val SEARCH_USER_MESSAGE=1
+        const val DELAY=800L
+    }
 }
