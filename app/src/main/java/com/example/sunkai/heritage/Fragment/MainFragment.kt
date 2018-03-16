@@ -130,7 +130,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
                 activity?.let {
                     val adapter = recyclerView.adapter
                     if(adapter is BottomFolkNewsRecyclerviewAdapter) {
-                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation(adapter.itemCount, adapter.itemCount + 20)
+                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation(adapter.itemCount)
                         activity.runOnUiThread {
                             adapter.addNewData(moreData)
                             setPageLoaded()

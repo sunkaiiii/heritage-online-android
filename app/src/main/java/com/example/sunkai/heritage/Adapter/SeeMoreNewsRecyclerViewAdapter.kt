@@ -54,23 +54,22 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
         holder.time.text = data.time
         //防止复用的时候不显示图片的问题
         holder.imageview.visibility = View.VISIBLE
-        holder.imageview.setImageDrawable(null)
+        holder.imageview.setImageBitmap(null)
         if (TextUtils.isEmpty(data.img)) {
             holder.imageview.visibility = View.GONE
         } else {
-            Glide.with(context).load(BaseSetting.URL + data.img).into(SimpleTaget(holder))
+            val simpleTarget=object :SimpleTarget<Drawable>(){
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                    holder.imageview.setImageDrawable(resource)
+                }
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    holder.imageview.visibility = View.GONE
+                }
+            }
+            Glide.with(context).load(BaseSetting.URL + data.img).into(simpleTarget)
         }
     }
 
-    private class SimpleTaget(val holder: ViewHolder) : SimpleTarget<Drawable>() {
-        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            holder.imageview.setImageDrawable(resource)
-        }
-
-        override fun onLoadFailed(errorDrawable: Drawable?) {
-            holder.imageview.visibility = View.GONE
-        }
-    }
 
     override fun addNewData(datas: List<FolkNewsLite>) {
         val mutableDatas = this.datas.toMutableList()

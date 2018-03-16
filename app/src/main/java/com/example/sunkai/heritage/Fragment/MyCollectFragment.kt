@@ -12,15 +12,9 @@ import com.example.sunkai.heritage.Activity.FolkInformationActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
-import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
+import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.BottomFolkNewsLite
-import com.example.sunkai.heritage.Data.FolkDataLite
-import com.example.sunkai.heritage.Data.FolkNewsLite
-import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
@@ -87,7 +81,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
         when (typeName) {
             TYPE_MAIN -> handleMainCollection(result.map { it -> it as FolkNewsLite }.toList())
             TYPE_FOCUS_HERITAGE -> handleFocusOnHeritage(result.map { it -> it as BottomFolkNewsLite }.toList())
-            TYPE_FOLK -> handleFolkCollection(result.map { it -> it as FolkDataLite }.toList())
+            TYPE_FOLK -> handleFolkCollection(result.map { it -> it as ClassifyDivideData }.toList())
             TYPE_FIND -> handleFindCollection(result.map { it -> it as UserCommentData }.toList())
         }
     }
@@ -107,9 +101,9 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
         my_collect_recyclerview.adapter = adapter
     }
 
-    private fun handleFolkCollection(result: List<FolkDataLite>) {
+    private fun handleFolkCollection(result: List<ClassifyDivideData>) {
         val activity = activity ?: return
-        val adapter = FolkRecyclerViewAdapter(activity, result)
+        val adapter = ActivityRecyclerViewAdapter(activity, result)
         setAdapterClick(adapter)
         my_collect_recyclerview.adapter = adapter
 
@@ -144,12 +138,12 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
                 })
             }
-            is FolkRecyclerViewAdapter -> {
+            is ActivityRecyclerViewAdapter -> {
                 adapter.setOnItemClickListen(object : OnItemClickListener {
                     override fun onItemClick(view: View, position: Int) {
                         val intent = Intent(activity, FolkInformationActivity::class.java)
-                        intent.putExtra("data", adapter.getItem(position))
-                        intent.putExtra("from", ALL_FOLK_INFO_ACTIVITY)
+                        intent.putExtra("activity", adapter.getItem(position))
+                        intent.putExtra("from", ACTIVITY_FRAGMENT)
                         startActivity(intent)
                     }
 

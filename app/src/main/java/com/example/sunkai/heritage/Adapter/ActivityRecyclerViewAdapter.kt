@@ -26,11 +26,10 @@ import com.example.sunkai.heritage.value.HOST
  * Created by sunkai on 2017/12/22.
  */
 
-class ActivityRecyclerViewAdapter(private val context: Context, private val channel: String) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder, ClassifyDivideData>(arrayListOf()) {
+class ActivityRecyclerViewAdapter(private val context: Context,datas:List<ClassifyDivideData>) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder, ClassifyDivideData>(datas) {
 
     private var imageAnimation: Animation//图片出现动画
 
-    private var thisRecyclerView: RecyclerView? = null
 
 
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
@@ -56,8 +55,6 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (thisRecyclerView == null)
-            thisRecyclerView = parent as RecyclerView
         val view = LayoutInflater.from(context).inflate(R.layout.activity_layout, parent, false)
         val viewHolder = ViewHolder(view)
         view.setOnClickListener(this)
@@ -77,28 +74,4 @@ class ActivityRecyclerViewAdapter(private val context: Context, private val chan
         Glide.with(context).load(HOST + data.img).into(holder.img)
     }
 
-    fun setOnPageLoadListner(onPageLoaded: OnPageLoaded) {
-        mOnPagedListener = onPageLoaded
-    }
-
-    fun startGetInformation() {
-        mOnPagedListener?.onPreLoad()
-        datas = arrayListOf()
-        getChannelInformation(this).execute()
-    }
-
-    internal class getChannelInformation(adapter: ActivityRecyclerViewAdapter) : BaseAsyncTask<Void, Void, Void, ActivityRecyclerViewAdapter>(adapter) {
-
-        override fun doInBackground(vararg voids: Void): Void? {
-            val adpter = weakRefrece.get()
-            adpter?.datas = HandleFolk.GetChannelInformation(adpter?.channel!!)
-            return null
-        }
-
-        override fun onPostExecute(aVoid: Void?) {
-            val adpter = weakRefrece.get()
-            adpter?.mOnPagedListener?.onPostLoad()
-            adpter?.notifyDataSetChanged()
-        }
-    }
 }

@@ -225,12 +225,12 @@ object HandlePerson : BaseSetting() {
         return arrayListOf()
     }
 
-    fun GetFolkColelction(userID: Int,collectionType: String):List<FolkDataLite>{
+    fun GetFolkColelction(userID: Int,collectionType: String):List<ClassifyDivideData>{
         val result=GetUserCollection(userID,collectionType)
         if(ERROR==result)
             return arrayListOf()
         try{
-            return Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
+            return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

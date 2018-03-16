@@ -107,7 +107,7 @@ class SeeMoreNewsFragment:BaseLazyLoadFragment(),OnPageLoaded {
                     val category=category
                     val activity=activity
                     category?.let{
-                        val datas= HandleMainFragment.GetFolkNewsList(category,adapter.itemCount,adapter.itemCount+20)
+                        val datas= HandleMainFragment.GetFolkNewsList(category,adapter.itemCount,20)
                         activity?.runOnUiThread {
                             adapter.addNewData(datas)
                             setPageLoaded()
