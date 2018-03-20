@@ -5,14 +5,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.EditText
+import androidx.view.children
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
@@ -68,15 +69,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
 
     @SuppressLint("InlinedApi")
     private fun initView() {
-        views.add(regist_actitivy_username_editText)
-        views.add(regist_actitivy_password_editText)
-        views.add(regist_actitivy_insure_editText)
-        views.add(regist_actitivy_question_editText)
-        views.add(regist_actitivy_answer_editText)
-        views.add(registUserImage)
-        views.add(activity_regist_regist_button)
-        views.add(registCancel)
-
+        addAllViews(registAllViewLinearLatyout)
         setBackGround()
         setAllViewsOnclick()
         regist_actitivy_password_editText.addTextChangedListener(this)
@@ -92,12 +85,16 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         }
     }
 
-    private fun setBackGround(){
-        val calendar=Calendar.getInstance()
-        val hour=calendar.get(Calendar.HOUR_OF_DAY)
-        if(hour>=18 || hour<=9){
+    private fun addAllViews(viewgroup: ViewGroup) {
+        viewgroup.children.toList().forEach { if (it is ViewGroup) addAllViews(it) else views.add(it) }
+    }
+
+    private fun setBackGround() {
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        if (hour >= 18 || hour <= 9) {
             activityRegistBackground.setBackgroundResource(R.mipmap.at_night_background)
-        }else{
+        } else {
             activityRegistBackground.setBackgroundResource(R.mipmap.day_background)
         }
     }
@@ -114,13 +111,11 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         when (v.id) {
             R.id.activity_regist_regist_button -> submit()
             R.id.registCancel -> {
-                this.setResult(0)
+                this.setResult(CANCEL)
                 onBackPressed()
             }
             R.id.registUserImage -> {
                 chooseAlertDialog.show()
-            }
-            else -> {
             }
         }
     }
@@ -142,13 +137,15 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
 
     private fun judgeViewsTextIsEmpty(): Boolean {
         var OK = false
-        for ((i, view) in views.withIndex()) {
+        var count = 0
+        for (view in views) {
             if (view is EditText) {
                 val text = view.text.toString().trim()
                 if (TextUtils.isEmpty(text)) {
-                    view.error = errorMessage[i]
+                    view.error = errorMessage[count]
                     OK = true
                 }
+                count++
             }
         }
         return OK
@@ -194,19 +191,17 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         } else {
             HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswer, null)
         }
-        val msg = Message()
-        msg.what = result
         runOnUiThread {
-            when {
-                msg.what == 1 -> {
+            when (result) {
+                SUCCESS -> {
                     val intent = Intent()
                     intent.putExtra("userName", userName)
                     intent.putExtra("passWord", userPassword)
-                    setResult(1, intent)
+                    setResult(SUCCESS, intent)
                     MakeToast.MakeText("注册成功")
                     finish()
                 }
-                msg.what == 0 -> MakeToast.MakeText("已有该用户")
+                HAD_USER -> MakeToast.MakeText("已有该用户")
                 else -> MakeToast.MakeText("注册失败")
             }
             setViewsIsEnable()
@@ -228,6 +223,12 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    }
+
+    companion object {
+        const val CANCEL = 0
+        const val SUCCESS = 1
+        const val HAD_USER = 0
     }
 }
 

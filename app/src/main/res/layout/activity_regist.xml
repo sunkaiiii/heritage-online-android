@@ -22,6 +22,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/registAllViewLinearLatyout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -36,8 +37,8 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_margin="16dp"
-                    android:src="@drawable/ic_arrow_back_white_24dp"
-                    android:contentDescription="@string/cancel_regist" />
+                    android:contentDescription="@string/cancel_regist"
+                    android:src="@drawable/ic_arrow_back_white_24dp" />
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/registUserImage"
@@ -61,8 +62,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_account_circle_brown_50_24dp"
-                    android:contentDescription="@string/user_name" />
+                    android:contentDescription="@string/user_name"
+                    android:src="@drawable/ic_account_circle_brown_50_24dp" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_username_editText"
@@ -74,8 +75,8 @@
                     android:layout_marginStart="8dp"
                     android:ems="10"
                     android:hint="@string/user_name"
-                    android:inputType="textEmailAddress"
                     android:imeOptions="actionNext"
+                    android:inputType="textEmailAddress"
                     android:nextFocusDown="@id/regist_actitivy_password_editText" />
             </LinearLayout>
 
@@ -90,8 +91,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_lock_open_brown_50_24dp"
-                    android:contentDescription="@string/password" />
+                    android:contentDescription="@string/password"
+                    android:src="@drawable/ic_lock_open_brown_50_24dp" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_password_editText"
@@ -104,10 +105,10 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:selectAllOnFocus="true"
                     android:imeOptions="actionNext"
-                    android:nextFocusDown="@id/regist_actitivy_insure_editText" />
+                    android:inputType="textPassword"
+                    android:nextFocusDown="@id/regist_actitivy_insure_editText"
+                    android:selectAllOnFocus="true" />
             </LinearLayout>
 
             <LinearLayout
@@ -121,8 +122,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_lock_outline_brown_50_24dp"
-                    android:contentDescription="@string/insure_password" />
+                    android:contentDescription="@string/insure_password"
+                    android:src="@drawable/ic_lock_outline_brown_50_24dp" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_insure_editText"
@@ -135,10 +136,10 @@
                     android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="@string/insure_password"
-                    android:inputType="textPassword"
-                    android:selectAllOnFocus="true"
                     android:imeOptions="actionNext"
-                    android:nextFocusDown="@id/regist_actitivy_question_editText" />
+                    android:inputType="textPassword"
+                    android:nextFocusDown="@id/regist_actitivy_question_editText"
+                    android:selectAllOnFocus="true" />
             </LinearLayout>
 
 
@@ -153,8 +154,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_help_outline_brown_50_24dp"
-                    android:contentDescription="@string/find_password_question" />
+                    android:contentDescription="@string/find_password_question"
+                    android:src="@drawable/ic_help_outline_brown_50_24dp" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_question_editText"
@@ -167,8 +168,8 @@
                     android:layout_marginTop="4dp"
                     android:ems="10"
                     android:hint="@string/find_password_question"
-                    android:inputType="textPersonName"
                     android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
                     android:nextFocusDown="@id/regist_actitivy_answer_editText" />
             </LinearLayout>
 
@@ -183,8 +184,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_question_answer_brown_50_24dp"
-                    android:contentDescription="@string/find_password_answer" />
+                    android:contentDescription="@string/find_password_answer"
+                    android:src="@drawable/ic_question_answer_brown_50_24dp" />
 
                 <EditText
                     android:id="@+id/regist_actitivy_answer_editText"
@@ -199,7 +200,7 @@
                     android:hint="@string/find_password_answer"
                     android:imeOptions="actionDone"
                     android:inputType="textPersonName"
-                    android:nextFocusDown="@id/activity_regist_regist_button"/>
+                    android:nextFocusDown="@id/activity_regist_regist_button" />
             </LinearLayout>
 
             <RelativeLayout
