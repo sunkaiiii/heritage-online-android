@@ -17,11 +17,11 @@ import androidx.view.children
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
-import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.encryptionPassWord
+import com.example.sunkai.heritage.tools.toByteArray
 import com.example.sunkai.heritage.value.ERROR
 import kotlinx.android.synthetic.main.activity_regist.*
 import java.util.*
@@ -29,11 +29,7 @@ import java.util.*
 
 class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatcher {
 
-    private lateinit var userName: String
-    private lateinit var userPassword: String
-    private lateinit var findPasswordQuestion: String
-    private lateinit var findPasswordAnswer: String
-    private lateinit var imageByte: ByteArray
+    private var userImageBitmap:Bitmap?=null
 
     private var isUploadImage = false
 
@@ -101,8 +97,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
 
     override fun setImageToImageView(bitmap: Bitmap) {
         Glide.with(this).load(bitmap).into(registUserImage)
-        val byte = HandlePic.bitmapToByteArray(bitmap)
-        imageByte = byte
+        userImageBitmap=bitmap
         isUploadImage = true
 
     }
@@ -170,26 +165,28 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     private fun submit() {
+        setViewsIsDisable()
         if (judgeViewsTextIsEmpty() || judgePasswordIsSame()) {
             return
         }
-
         //开始注册
-        userName = regist_actitivy_username_editText.text.toString().trim()
-        userPassword = regist_actitivy_password_editText.text.toString().trim()
-        findPasswordQuestion = regist_actitivy_question_editText.text.toString().trim()
-        findPasswordAnswer = regist_actitivy_answer_editText.text.toString().trim()
-        setViewsIsDisable()
-        ThreadPool.execute(userRegist)
+        val userName = regist_actitivy_username_editText.text.toString().trim()
+        val userPassword = regist_actitivy_password_editText.text.toString().trim()
+        val findPasswordQuestion = regist_actitivy_question_editText.text.toString().trim()
+        val findPasswordAnswer = regist_actitivy_answer_editText.text.toString().trim()
+        ThreadPool.execute {
+            userRegist(userName, userPassword, findPasswordQuestion, findPasswordAnswer)
+        }
     }
 
-    private var userRegist: Runnable = Runnable {
-        val userPasswordDecript = (infoToRSA(userPassword) ?: return@Runnable)
-        findPasswordAnswer = (infoToRSA(findPasswordAnswer) ?: return@Runnable)
+    private fun userRegist(userName: String, userPassword: String, findPasswordQuestion: String, findPasswordAnswer: String) {
+        val userPasswordDecript = (infoToRSA(userPassword) ?: return)
+        val findPasswordAnswerDecript = (infoToRSA(findPasswordAnswer) ?: return)
         val result = if (isUploadImage) {
-            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswer, imageByte)
+            val bitmap=userImageBitmap?:return
+            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswerDecript, bitmap.toByteArray())
         } else {
-            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswer, null)
+            HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswerDecript, null)
         }
         runOnUiThread {
             when (result) {

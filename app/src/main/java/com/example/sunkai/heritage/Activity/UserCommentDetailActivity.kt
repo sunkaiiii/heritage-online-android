@@ -27,7 +27,6 @@ import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.TYPE_FIND
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS

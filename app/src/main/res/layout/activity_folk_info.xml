@@ -15,7 +15,7 @@
         android:fitsSystemWindows="true">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/activity_join_collapsing_toolbar"
+            android:id="@+id/activityJoinCollapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -42,7 +42,7 @@
                     tools:targetApi="lollipop" />
 
                 <View
-                    android:id="@+id/activity_informaiton_text_background"
+                    android:id="@+id/activityInformaitonTextBackground"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_alignParentBottom="true"
@@ -71,21 +71,22 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/join_activity_time"
+                android:id="@+id/joinActivityTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp"
+                android:drawableStart="@drawable/ic_access_time_grey_900_24dp"
                 android:drawablePadding="8dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
                 android:text="TextView"
                 android:textSize="16sp"
                 android:transitionName="@string/share_folk_time"
-                tools:targetApi="lollipop" />
+                tools:targetApi="lollipop"
+                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -93,7 +94,7 @@
                 android:background="@color/lightGrey" />
 
             <TextView
-                android:id="@+id/join_activity_locaction"
+                android:id="@+id/joinActivityLocaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -115,7 +116,7 @@
                 android:background="@color/lightGrey" />
 
             <TextView
-                android:id="@+id/join_activity_number"
+                android:id="@+id/joinActivityNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -137,7 +138,7 @@
                 android:background="@color/lightGrey" />
 
             <TextView
-                android:id="@+id/join_activity_category"
+                android:id="@+id/joinActivityCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -158,7 +159,7 @@
                 android:background="@color/lightGrey" />
 
             <TextView
-                android:id="@+id/join_activity_content"
+                android:id="@+id/joinActivityContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"

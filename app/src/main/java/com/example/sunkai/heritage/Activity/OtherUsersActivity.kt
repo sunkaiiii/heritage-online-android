@@ -342,5 +342,4 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-
 }

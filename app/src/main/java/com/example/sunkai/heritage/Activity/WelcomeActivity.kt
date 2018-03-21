@@ -40,7 +40,7 @@ class WelcomeActivity : AppCompatActivity() {
             showDialog()
 
         } else {
-            goToLogin(gotoLogin)
+            goToLogin(GOTO_LOGIN)
         }
     }
 
@@ -48,7 +48,7 @@ class WelcomeActivity : AppCompatActivity() {
         val dialog = PushDialog()
         dialog.setOnDialogMissListner(object :OnDialogDismiss{
             override fun onDialogDismiss() {
-                goToLogin(gotoLogin)
+                goToLogin(GOTO_LOGIN)
             }
         })
         dialog.show(supportFragmentManager, "开启推送？")
@@ -76,7 +76,7 @@ class WelcomeActivity : AppCompatActivity() {
                     }
                     LoginActivity.userID=0
                 }
-                if (what == gotoLogin) {
+                if (what == GOTO_LOGIN) {
                     val intent: Intent
                     when (LoginActivity.userID) {
                         0 -> {
@@ -103,6 +103,6 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val gotoLogin = 0
+        private const val GOTO_LOGIN = 0
     }
 }

@@ -4,9 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.CollapsingToolbarLayout
 import android.view.View
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -30,14 +28,6 @@ import kotlinx.android.synthetic.main.activity_folk_info.*
  */
 
 class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListener {
-
-    lateinit var textBackGround: View
-    lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
-    lateinit var time: TextView
-    lateinit var location: TextView
-    lateinit var number: TextView
-    lateinit var category: TextView
-    lateinit var content: TextView
 
     var id: Int? = null
 
@@ -63,13 +53,6 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     }
 
     private fun initView() {
-        time = findViewById(R.id.join_activity_time)
-        location = findViewById(R.id.join_activity_locaction)
-        number = findViewById(R.id.join_activity_number)
-        category = findViewById(R.id.join_activity_category)
-        content = findViewById(R.id.join_activity_content)
-        collapsingToolbarLayout = findViewById(R.id.activity_join_collapsing_toolbar)
-        textBackGround = findViewById(R.id.activity_informaiton_text_background)
         setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -84,17 +67,17 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     @SuppressLint("SetTextI18n")
     private fun setDatasToView(data: ClassifyDivideData) {
         Glide.with(this).load(HOST + data.img).into(target)
-        collapsingToolbarLayout.title = data.title
-        time.text = getString(R.string.apply_time) + data.time
-        location.text = getString(R.string.location) + data.location
-        number.text = getString(R.string.number) + data.number
-        category.text = getString(R.string.category) + data.category
-        content.text = data.content
+        activityJoinCollapsingToolbar.title = data.title
+        joinActivityTime.text = getString(R.string.apply_time) + data.time
+        joinActivityLocaction.text = getString(R.string.location) + data.location
+        joinActivityNumber.text = getString(R.string.number) + data.number
+        joinActivityCategory.text = getString(R.string.category) + data.category
+        joinActivityContent.text = data.content
     }
 
     private fun setErrorInfo() {
-        location.text = "未知"
-        number.text = "未知"
+        joinActivityLocaction.text = "未知"
+        joinActivityNumber.text = "未知"
         toast("加载出现问题")
     }
 
@@ -128,8 +111,8 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     private val target = object : SimpleTarget<Drawable>() {
         override fun onResourceReady(drawable: Drawable, transition: Transition<in Drawable>?) {
             val color = drawable.generateDarkColor()
-            collapsingToolbarLayout.setContentScrimColor(color)
-            textBackGround.setBackgroundColor(color)
+            activityJoinCollapsingToolbar.setContentScrimColor(color)
+            activityInformaitonTextBackground.setBackgroundColor(color)
             if (Build.VERSION.SDK_INT >= 21) {
                 window.statusBarColor = color
             }
