@@ -9,9 +9,11 @@ import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.LruCache
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
@@ -51,12 +53,14 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         val mycomment_item_title: TextView
         val mycomment_item_content: TextView
         val view: View
+        val more_menu:ImageView
 
         init {
             this.view = view
             mycomment_item_image = view.findViewById(R.id.mycomment_item_image)
             mycomment_item_title = view.findViewById(R.id.mycomment_item_title)
             mycomment_item_content = view.findViewById(R.id.mycomment_item_content)
+            more_menu=view.findViewById(R.id.item_more)
 
         }
     }
@@ -75,7 +79,9 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
-        GetCommentImage(holder, datas[position])
+        val data=getItem(position)
+        GetCommentImage(holder, data)
+        setMoreImageShowPopWindow(holder,data)
     }
 
     private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
@@ -87,6 +93,22 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
             findDominateColor(bitmap, holder)
         } else {
             GetCommentImageAsync(data, this, holder).execute()
+        }
+    }
+
+    private fun setMoreImageShowPopWindow(holder: ViewHolder,data: UserCommentData){
+        holder.more_menu.setOnClickListener {
+            val popMenu=PopupMenu(context,holder.more_menu)
+            popMenu.menuInflater.inflate(R.menu.my_own_tiezi_pop_menu,popMenu.menu)
+            popMenu.setOnMenuItemClickListener{
+                when(it.itemId){
+                    R.id.edit_comment->{return@setOnMenuItemClickListener true}
+                    R.id.delete_comment->{return@setOnMenuItemClickListener true}
+                    else->{return@setOnMenuItemClickListener true}
+                }
+            }
+            popMenu.show()
+
         }
     }
 

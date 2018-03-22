@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:icon="@drawable/ic_border_color_grey_700_24dp"
+        android:title="@string/edit_comment"
+        android:id="@+id/edit_comment"/>
+    <item
+        android:icon="@drawable/ic_delete_grey_700_24dp"
+        android:title="@string/delete_comment"
+        android:id="@+id/delete_comment"/>
+</menu>

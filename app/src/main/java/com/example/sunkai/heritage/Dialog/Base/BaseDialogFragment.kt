@@ -8,12 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
+import com.example.sunkai.heritage.R
 
 /**Dialog的基类
  * Created by sunkai on 2018/3/5.
  */
 abstract class BaseDialogFragment:DialogFragment() {
     private var listner:OnDialogDismiss?=null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.ThemeOverlay_AppCompat_Dialog_Alert)
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(getLayoutID(),container)
