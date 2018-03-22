@@ -35,7 +35,7 @@
                     android:orientation="vertical">
 
                     <Spinner
-                        android:id="@+id/find_select_spinner"
+                        android:id="@+id/selectSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
                         android:entries="@array/find_select"
@@ -50,7 +50,7 @@
                 android:id="@+id/fragmentFindSwipeRefresh">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/fragment_find_recyclerView"
+                    android:id="@+id/fragmentFindRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/superLightGrey"

@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.app.Fragment
 import android.support.v4.util.Pair
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,13 +21,12 @@ import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
+import kotlinx.android.synthetic.main.fragment_activity1.*
 
 /**
  * 民间viewpager五个页面的fragment
  */
 class ActivityFragment : Fragment(), OnPageLoaded {
-    private lateinit var activityRecyclerView: RecyclerView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var channelName: String
     private var index: Int = 0
     private var isLoadedData: Boolean = false
@@ -43,17 +40,17 @@ class ActivityFragment : Fragment(), OnPageLoaded {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_activity1, container, false)
-        activityRecyclerView = view.findViewById(R.id.activity_listview)
-        swipeRefresh = view.findViewById(R.id.fragment_activity_swipe_refresh)
-        swipeRefresh.setOnRefreshListener {
+        return inflater.inflate(R.layout.fragment_activity1, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        fragmentActivitySwipeRefresh.setOnRefreshListener {
             isLoadedData = false
             getInformation()
         }
         //因为默认启动是首页，于是直接加载首页内容
         if (index == 0)
             getInformation()
-        return view
     }
 
     private fun setTransitionStartActivity(intent: Intent, view: View) {
@@ -103,7 +100,7 @@ class ActivityFragment : Fragment(), OnPageLoaded {
         } else {
             null
         }
-        color?.let { swipeRefresh.setColorSchemeColors(color) }
+        color?.let { fragmentActivitySwipeRefresh.setColorSchemeColors(color) }
     }
 
     private fun setAdapterItemClick(adapter: ActivityRecyclerViewAdapter) {
@@ -129,11 +126,11 @@ class ActivityFragment : Fragment(), OnPageLoaded {
 
     override fun onPreLoad() {
         activityRecyclerView.adapter = null
-        swipeRefresh.isRefreshing = true
+        fragmentActivitySwipeRefresh.isRefreshing = true
     }
 
     override fun onPostLoad() {
-        swipeRefresh.isRefreshing = false
+        fragmentActivitySwipeRefresh.isRefreshing = false
         isLoadedData = true
         refreshRefreshViewColor()
     }

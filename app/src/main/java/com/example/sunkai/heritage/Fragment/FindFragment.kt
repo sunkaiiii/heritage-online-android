@@ -1,19 +1,14 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.annotation.TargetApi
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.RecyclerView
-import android.transition.Slide
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ImageView
-import android.widget.Spinner
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -37,26 +32,20 @@ import kotlinx.android.synthetic.main.fragment_find.*
 
 class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
 
-    internal lateinit var view: View
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var selectSpiner: Spinner
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        view = inflater.inflate(R.layout.fragment_find, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_find, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initview(view)
+        initview()
     }
 
-    private fun initview(view: View) {
-        selectSpiner = view.findViewById(R.id.find_select_spinner)
-        recyclerView = view.findViewById(R.id.fragment_find_recyclerView)
+    private fun initview() {
         fragmentFindSwipeRefresh.setOnRefreshListener {
-            when(selectSpiner.selectedItemPosition){
+            when(selectSpinner.selectedItemPosition){
                 0->loadUserCommentData(ALL_COMMENT)
                 1->loadUserCommentData(MY_FOCUS_COMMENT)
             }
@@ -69,7 +58,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
         loadUserCommentData(ALL_COMMENT)
 
         //Spinear切换，重新加载adpater的数据
-        selectSpiner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        selectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 when (position) {
                     0 -> {
@@ -110,7 +99,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
             val intent = Intent(activity, LoginActivity::class.java)
             intent.putExtra("isInto", 1)
             startActivityForResult(intent, 1)
-            selectSpiner.setSelection(0)
+            selectSpinner.setSelection(0)
             return
         }
     }
@@ -128,7 +117,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
                 activiy.runOnUiThread {
                     val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what)
                     setAdpterClick(adapter)
-                    recyclerView.adapter = adapter
+                    fragmentFindRecyclerView.adapter = adapter
                     onPostLoad()
                 }
             }
@@ -171,9 +160,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT||resultCode== DELETE_COMMENT) {
-                loadUserCommentData(find_select_spinner.selectedItemPosition)
+                loadUserCommentData(selectSpinner.selectedItemPosition)
             }
-            LOGIN -> loadUserCommentData(find_select_spinner.selectedItemPosition)
+            LOGIN -> loadUserCommentData(selectSpinner.selectedItemPosition)
         }
     }
 

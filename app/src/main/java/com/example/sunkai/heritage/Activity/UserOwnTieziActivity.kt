@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
-import android.app.ActivityOptions
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
@@ -11,9 +8,6 @@ import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -22,30 +16,36 @@ import android.widget.TextView
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
-import java.io.ByteArrayOutputStream
+import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 
 class UserOwnTieziActivity : AppCompatActivity() {
-    private lateinit var myOwnList: RecyclerView
     private lateinit var adapter: MyOwnCommentRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_own_tiezi)
-        initView()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        GetInformationAsyncTask(this).execute()
+        getInformation()
     }
 
-    private fun initView() {
-        myOwnList = findViewById(R.id.user_own_list)
+    private fun getInformation(){
+        ThreadPool.execute {
+            val datas=HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
+            runOnUiThread {
+                adapter = MyOwnCommentRecyclerViewAdapter(this,datas)
+                setAdpterClick(adapter)
+                setAdpterLongClick(adapter)
+                userOwnList.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)
+                userOwnList.adapter = adapter
+            }
+        }
     }
 
     private fun setAdpterClick(adapter: MyOwnCommentRecyclerViewAdapter) {
@@ -53,21 +53,11 @@ class UserOwnTieziActivity : AppCompatActivity() {
         adapter.setOnItemClickListen(object :OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("data", adapter.getItem(position))
-                bundle.putInt("position", position)
-                val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
-                val title=view.findViewById<TextView>(R.id.mycomment_item_title)
-                val content=view.findViewById<TextView>(R.id.mycomment_item_content)
-                imageView.isDrawingCacheEnabled = true
-                val drawable = imageView.drawable
-                val bitmapDrawable = drawable as BitmapDrawable
-                val bitmap = bitmapDrawable.bitmap
-                val out = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-                intent.putExtra("bitmap", out.toByteArray())
-                intent.putExtras(bundle)
+                intent.putExtra("data",adapter.getItem(position))
                 if(Build.VERSION.SDK_INT>=21) {
+                    val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
+                    val title=view.findViewById<TextView>(R.id.mycomment_item_title)
+                    val content=view.findViewById<TextView>(R.id.mycomment_item_content)
                     val pairs=TransitionHelper.createSafeTransitionParticipants(this@UserOwnTieziActivity,false,
                             Pair(imageView,getString(R.string.find_share_view)),
                             Pair(title,getString(R.string.find_share_title)),
@@ -117,25 +107,8 @@ class UserOwnTieziActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private class GetInformationAsyncTask(activity:UserOwnTieziActivity):BaseAsyncTask<Void,Void,List<UserCommentData>,UserOwnTieziActivity>(activity){
-        override fun doInBackground(vararg params: Void?): List<UserCommentData>? {
-            return HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
-        }
-
-        override fun onPostExecute(datas: List<UserCommentData>) {
-                val activity=weakRefrece.get()
-                activity?.let{
-                    activity.adapter = MyOwnCommentRecyclerViewAdapter(activity,datas)
-                    activity.setAdpterClick(activity.adapter)
-                    activity.setAdpterLongClick(activity.adapter)
-                    activity.myOwnList.layoutManager = GridLayoutManager(activity, GRID_LAYOUT_DESTINY)
-                    activity.myOwnList.adapter = activity.adapter
-                }
-
-        }
-    }
 
     fun refreshList(){
-        GetInformationAsyncTask(this).execute()
+        getInformation()
     }
 }

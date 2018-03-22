@@ -1,8 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragmentPersonLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/superLightGrey">
+    android:background="@color/superLightGrey"
+    android:orientation="vertical">
 
     <include layout="@layout/user_view" />
 
@@ -38,6 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/superLightGrey" />
+
                 <TextView
                     android:id="@+id/fragment_person_my_like"
                     android:layout_width="match_parent"

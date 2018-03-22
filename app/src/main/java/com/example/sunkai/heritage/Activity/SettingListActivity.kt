@@ -65,7 +65,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView?.id) {
-            R.id.push_swith -> setPushStatus(isChecked)
+            R.id.pushSwitch -> setPushStatus(isChecked)
         }
     }
 
@@ -94,8 +94,8 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
                 ThreadPool.execute {
                     val result: Boolean
                     result = when (id) {
-                        R.id.permission_spinner -> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
-                        R.id.permission_focus_fans_spinner -> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID, position - 1)
+                        R.id.permissionSpinner -> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
+                        R.id.focusAndFansViewPermissionSpinner -> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID, position - 1)
                         else -> false
                     }
                     runOnUiThread {
@@ -120,7 +120,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.id) {
-            R.id.permission_spinner, R.id.permission_focus_fans_spinner -> setPermission(parent.id, position)
+            R.id.permissionSpinner, R.id.focusAndFansViewPermissionSpinner -> setPermission(parent.id, position)
 
         }
     }

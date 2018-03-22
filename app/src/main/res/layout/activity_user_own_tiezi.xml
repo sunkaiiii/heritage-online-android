@@ -9,6 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="6sp"
-        android:id="@+id/user_own_list"
+        android:id="@+id/userOwnList"
         android:background="@color/superLightGrey"/>
 </LinearLayout>

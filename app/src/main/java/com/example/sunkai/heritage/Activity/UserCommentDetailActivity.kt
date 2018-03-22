@@ -9,9 +9,6 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.transition.doOnEnd
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
@@ -39,12 +36,6 @@ import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListener, OnPageLoaded {
 
     private var isReply = false
-    private lateinit var information_img: ImageView
-    private lateinit var information_title: TextView
-    private lateinit var information_content: TextView
-    private lateinit var reverse: TextView
-    private lateinit var information_reply_num: TextView
-    private lateinit var linearLayout4: LinearLayout
     internal var data: UserCommentData? = null
 
     private var isReverse = false
@@ -98,14 +89,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
 
     private fun initView() {
-        information_img = findViewById(R.id.fragment_find_litview_img)
-        information_title = findViewById(R.id.information_title)
-        information_content = findViewById(R.id.information_content)
-        information_reply_num = findViewById(R.id.information_reply_num)
-        reverse = findViewById(R.id.user_comment_detail_reverse)
-        linearLayout4 = findViewById(R.id.linearLayout4)
         userCommentAddReplyBtn.setOnClickListener(this)
-        reverse.setOnClickListener(this)
+        userCommentDetailReverse.setOnClickListener(this)
         setSupportActionBar(userCommentDetailToolbar)
         val actionBar = supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -136,15 +121,15 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun setTextViewReverse() {
-        reverse.setText(R.string.reverse_look)
-        reverse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
-        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_upward_black_24dp), null)
+        userCommentDetailReverse.setText(R.string.reverse_look)
+        userCommentDetailReverse.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        userCommentDetailReverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_upward_black_24dp), null)
     }
 
     private fun setTextViewBackup() {
-        reverse.setText(R.string.non_reverse_look)
-        reverse.setTextColor(ContextCompat.getColor(this, R.color.black))
-        reverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_downward_black_24dp), null)
+        userCommentDetailReverse.setText(R.string.non_reverse_look)
+        userCommentDetailReverse.setTextColor(ContextCompat.getColor(this, R.color.black))
+        userCommentDetailReverse.setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(this, R.drawable.ic_arrow_downward_black_24dp), null)
     }
 
     private fun reverseData() {
@@ -155,14 +140,14 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun setUserCommentView(data: UserCommentData, image: ByteArray?) {
-        information_title.text = data.commentTitle
-        information_content.text = data.commentContent
-        information_reply_num.text = data.replyNum.toString()
+        informationTitle.text = data.commentTitle
+        informationContent.text = data.commentContent
+        informationReplyNum.text = data.replyNum.toString()
         title = data.userName
         if (image != null) {
-            information_img.setImageBitmap(HandlePic.handlePic(image))
+            userCommentImage.setImageBitmap(HandlePic.handlePic(image))
         } else {
-            Glide.with(this).load(BaseSetting.URL + data.imageUrl).into(information_img)
+            Glide.with(this).load(BaseSetting.URL + data.imageUrl).into(userCommentImage)
         }
     }
 
@@ -255,7 +240,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                 if (adapter is UserCommentReplyRecyclerAdapter) {
                     adapter.addData(data)
                     userCommentReplyRecyclerView.smoothScrollToPosition(adapter.itemCount)
-                    information_reply_num.text = (information_reply_num.text.toString().toInt() + 1).toString()
+                    informationReplyNum.text = (informationReplyNum.text.toString().toInt() + 1).toString()
                 }
             }
         })
@@ -264,7 +249,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.user_comment_detail_reverse -> changeList()
+            R.id.userCommentDetailReverse -> changeList()
             R.id.userCommentAddReplyBtn -> generateDialog(commentID).show()
         }
     }
@@ -304,10 +289,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         const val DELETE_COMMENT = 2
         const val COMMON_SHOW = 3
         const val ANIMATION_SHOW = 4
-
         const val FROM_COLLECTION=0
         const val DEFAULT_FROM=-1
-
         private const val TAG = "UserCommentDetail"
     }
 }

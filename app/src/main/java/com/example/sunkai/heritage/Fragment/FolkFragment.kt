@@ -22,26 +22,21 @@ import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.ActivityData
 import com.example.sunkai.heritage.Data.ClassifyActivityDivide
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.fragment_folk.*
-import java.lang.ref.WeakReference
 import java.util.*
 
 
 class FolkFragment : BaseLazyLoadFragment() {
 
-    internal lateinit var tableLayout: TabLayout
-    private lateinit var viewPager: ViewPager
-
     private var urls: List<ActivityData>? = null
 
     var index = 0
-    lateinit var view:WeakReference<View>
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -50,21 +45,19 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        this.view= WeakReference(view)
+        initViews()
     }
 
-    private fun initViews(view: View) {
-        tableLayout = view.findViewById(R.id.tab_layout)
-        viewPager = view.findViewById(R.id.main_tab_content)
+    private fun initViews() {
 
-        setupViewPager(viewPager)
-        tableLayout.setupWithViewPager(viewPager)
-        tableLayout.setTabTextColors(Color.GRAY, Color.WHITE)
+        setupViewPager(mainTabContent)
+        tabayout.setupWithViewPager(mainTabContent)
+        tabayout.setTabTextColors(Color.GRAY, Color.WHITE)
         for (i in 0 until ClassifyActivityDivide.divide.size) {
-            tableLayout.getTabAt(i)?.text = ClassifyActivityDivide.divide[i]
+            tabayout.getTabAt(i)?.text = ClassifyActivityDivide.divide[i]
         }
-        tableLayout.addOnTabSelectedListener(tabLayoutListener)
-        tableLayout.getTabAt(0)!!.select()
+        tabayout.addOnTabSelectedListener(tabLayoutListener)
+        tabayout.getTabAt(0)!!.select()
         iv_fragment_main_scroll_change_image.setOnClickListener {
             val intent = Intent(activity, AllFolkInfoActivity::class.java)
             startActivity(intent)
@@ -74,10 +67,6 @@ class FolkFragment : BaseLazyLoadFragment() {
     override fun startLoadInformation() {
         //活动主页分类图片数据
         getMainFragmentDivideImageUrl()
-        val view=view.get()
-        view?.let {
-            initViews(view)
-        }
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
@@ -104,7 +93,7 @@ class FolkFragment : BaseLazyLoadFragment() {
         Thread {
             urls = HandleFolk.Get_Main_Divide_Activity_Image_Url()
             activity?.runOnUiThread {
-                getDivideImage(tableLayout.selectedTabPosition)
+                getDivideImage(tabayout.selectedTabPosition)
             }
         }.start()
     }
@@ -165,7 +154,7 @@ class FolkFragment : BaseLazyLoadFragment() {
         iv_fragment_main_scroll_change_image.startAnimation(outAnimation)
         fragment_main_collapsing_toolbar_layout.setContentScrimColor(color)
         fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
-        tableLayout.setBackgroundColor(color)
+        tabayout.setBackgroundColor(color)
         if (Build.VERSION.SDK_INT >= 21) {
             if (MainActivity.GetViewpagerSelectPosition() == R.id.folk_layout) {
                 activity?.window?.statusBarColor = color
@@ -180,10 +169,10 @@ class FolkFragment : BaseLazyLoadFragment() {
     private val simpleTarget: SimpleTarget<Drawable> by lazy {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                if (index == tableLayout.selectedTabPosition) {
+                if (index == tabayout.selectedTabPosition) {
                     val color = resource.generateColor()
                     val textColor = resource.generateTextColor()
-                    tableLayout.setTabTextColors(textColor, Color.WHITE)
+                    tabayout.setTabTextColors(textColor, Color.WHITE)
                     setColors(color, resource)
                 }
             }

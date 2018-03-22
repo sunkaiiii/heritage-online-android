@@ -74,11 +74,9 @@
     <string name="open_or_close_push">开启推送？</string>
     <string name="my_like">我的赞</string>
     <string name="title">标题</string>
-    <string name="内容">内容</string>
 
     <string name="share_user_name">share_user_name</string>
     <string name="share_user_image">share_user_image</string>
-    <string name="share_folk_image">share_folk_image</string>
     <string name="share_folk_title">share_folk_title</string>
     <string name="share_folk_time">share_folk_time</string>
     <string name="share_folk_number">share_folk_number</string>

@@ -5,31 +5,25 @@ import android.os.Bundle
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
 import com.github.chrisbanes.photoview.PhotoView
+import kotlinx.android.synthetic.main.activity_view_iamge.*
 import java.io.ByteArrayInputStream
 
 class ViewIamgeActivity : AppCompatActivity() {
 
-    lateinit var photoView: PhotoView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_iamge)
-        initview()
         val imageByte = intent.getByteArrayExtra("image")
         val bitmap = HandlePic.handlePic(ByteArrayInputStream(imageByte), 0)
-        photoView.setImageBitmap(bitmap)
-        photoView.setOnClickListener({
-            if(photoView.scale==1.0f){
+        pvActivityViewImage.setImageBitmap(bitmap)
+        pvActivityViewImage.setOnClickListener({
+            if(pvActivityViewImage.scale==1.0f){
                 finish()
             }
             else{
-                photoView.setScale(1.0f,true)
+                pvActivityViewImage.setScale(1.0f,true)
             }
         })
-    }
-
-    internal fun initview(){
-
-        photoView=findViewById(R.id.pv_activity_view_image)
     }
 }

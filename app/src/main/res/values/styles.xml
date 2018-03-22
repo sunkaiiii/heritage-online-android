@@ -25,9 +25,6 @@
 
     <style name="LoginActivityTheme" parent="AppThemeNoActionBar"/>
 
-    <style name="CollapsedAppBarTextSize" parent="@android:style/TextAppearance">
-        <item name="android:textSize">20sp</item>
-    </style>
     <style name="ExpandedAppBarSize" parent="@android:style/TextAppearance">
         <item name="android:textSize">24sp</item>
     </style>

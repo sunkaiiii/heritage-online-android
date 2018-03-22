@@ -10,13 +10,10 @@ import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
@@ -32,21 +29,10 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
-import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_other_users.*
+import kotlinx.android.synthetic.main.user_view.*
 
 class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
-    private lateinit var userNameTextView: TextView
-    private lateinit var userImageView: RoundedImageView
-    private lateinit var focusNumberTextView: TextView
-    private lateinit var fansNumberTextView: TextView
-    private lateinit var focusText: TextView
-    private lateinit var fansText: TextView
-    private lateinit var userinfosRecyclerView: RecyclerView
-    private lateinit var llBackground: LinearLayout
-    private lateinit var vpViewPager: ViewPager
-    private lateinit var viewPagerAdapter: OtherUserActivityImageAdapter
-    private lateinit var tvPermission: TextView
 
     private var userID: Int = NO_USERID
 
@@ -57,7 +43,6 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
         settupWindowAnimations()
-        initview()
         userID = intent.getIntExtra("userID", NO_USERID)
         if (userID != NO_USERID) {
             getUserAllInfo(userID)
@@ -71,27 +56,14 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    internal fun initview() {
-        userNameTextView = findViewById(R.id.sign_name_textview)
-        userImageView = findViewById(R.id.sign_in_icon)
-        focusNumberTextView = findViewById(R.id.person_follow_number)
-        fansNumberTextView = findViewById(R.id.person_fans_number)
-        focusText = findViewById(R.id.person_follow)
-        fansText = findViewById(R.id.person_fans)
-        userinfosRecyclerView = findViewById(R.id.rv_activity_other_users)
-        llBackground = findViewById(R.id.ll_activity_other_users_background)
-        vpViewPager = findViewById(R.id.vp_activity_other_users)
-        tvPermission = findViewById(R.id.tv_permission)
-    }
-
     private fun setViewsOnClick() {
-        userImageView.setOnClickListener(this)
-        focusNumberTextView.setOnClickListener(this)
-        fansNumberTextView.setOnClickListener(this)
-        focusText.setOnClickListener(this)
-        fansText.setOnClickListener(this)
-        llBackground.setOnClickListener(this)
-        vpViewPager.setOnClickListener(this)
+        sign_in_icon.setOnClickListener(this)
+        person_follow_number.setOnClickListener(this)
+        person_fans_number.setOnClickListener(this)
+        person_follow.setOnClickListener(this)
+        person_fans.setOnClickListener(this)
+        ll_activity_other_users_background.setOnClickListener(this)
+        vp_activity_other_users.setOnClickListener(this)
     }
 
     private fun getUserAllInfo(userID: Int) {
@@ -101,7 +73,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
                 runOnUiThread({
                     this.data = data
                     setViews(data)
-                    getUserImage(userID, userImageView)
+                    getUserImage(userID, sign_in_icon)
                     checkPermissions(data)
                 })
             }
@@ -152,9 +124,9 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setErrorMessage() {
-        tvPermission.visibility = View.VISIBLE
+        tv_permission.visibility = View.VISIBLE
         rv_activity_other_users.visibility = View.GONE
-        tvPermission.text = getString(R.string.permission_denaild_information)
+        tv_permission.text = getString(R.string.permission_denaild_information)
     }
 
 
@@ -174,9 +146,9 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun setViews(data: UserInfo) {
-        userNameTextView.text = data.userName
-        focusNumberTextView.text = data.focusNumber.toString()
-        fansNumberTextView.text = data.fansNumber.toString()
+        sign_name_textview.text = data.userName
+        person_follow_number.text = data.focusNumber.toString()
+        person_fans_number.text = data.fansNumber.toString()
         setFloatBtnState(data)
         addFocsFloatBtn.setOnClickListener(this)
     }
@@ -250,7 +222,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onBackPressed() {
-        if (llBackground.visibility == View.VISIBLE) {
+        if (ll_activity_other_users_background.visibility == View.VISIBLE) {
             closeImageView()
         } else {
             super.onBackPressed()
@@ -259,12 +231,12 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun setViewsOnFonsAndFocusPermissionDenailClick() {
-        userImageView.setOnClickListener(this)
+        sign_in_icon.setOnClickListener(this)
         val onPermissionDenailListner = View.OnClickListener { MakeToast.MakeText(getString(R.string.fans_and_view_permission_denail)) }
-        focusNumberTextView.setOnClickListener(onPermissionDenailListner)
-        fansNumberTextView.setOnClickListener(onPermissionDenailListner)
-        focusText.setOnClickListener(onPermissionDenailListner)
-        fansText.setOnClickListener(onPermissionDenailListner)
+        person_follow_number.setOnClickListener(onPermissionDenailListner)
+        person_fans_number.setOnClickListener(onPermissionDenailListner)
+        person_follow.setOnClickListener(onPermissionDenailListner)
+        person_fans.setOnClickListener(onPermissionDenailListner)
     }
 
     private fun startActivity(what: Int) {
@@ -276,7 +248,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun openImageView(position: Int, adapter: OtherPersonActivityRecyclerViewAdapter) {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
-        viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.datas)
+        val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.datas)
         viewPagerAdapter.setOnPhotoViewImageClickListener(object : onPhotoViewImageClick {
             override fun onImageClick(position: Int, photoView: PhotoView) {
                 if (photoView.scale == 1.0f) {
@@ -287,8 +259,8 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
             }
 
         })
-        vpViewPager.adapter = viewPagerAdapter
-        vpViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        vp_activity_other_users.adapter = viewPagerAdapter
+        vp_activity_other_users.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 getImage(position, viewPagerAdapter)
             }
@@ -298,31 +270,31 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
         })
-        vpViewPager.currentItem = position
+        vp_activity_other_users.currentItem = position
         //如果点击的是第一个图片，则要指定载入图片，其他情况因为会触发OnPageChangeListener,则无需管理
         if (position == 0) {
             getImage(position, viewPagerAdapter)
         }
         addFocsFloatBtn.visibility = View.GONE
-        llBackground.visibility = View.VISIBLE
-        vpViewPager.visibility = View.VISIBLE
+        ll_activity_other_users_background.visibility = View.VISIBLE
+        vp_activity_other_users.visibility = View.VISIBLE
     }
 
     private fun showUserImage() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
-        llBackground.visibility = View.VISIBLE
+        ll_activity_other_users_background.visibility = View.VISIBLE
         pv_activity_other_users.visibility = View.VISIBLE
         addFocsFloatBtn.visibility = View.GONE
-        pv_activity_other_users.setImageDrawable(userImageView.drawable)
+        pv_activity_other_users.setImageDrawable(sign_in_icon.drawable)
     }
 
     private fun closeImageView() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
-        llBackground.visibility = View.GONE
+        ll_activity_other_users_background.visibility = View.GONE
         addFocsFloatBtn.visibility = View.VISIBLE
-        if (vpViewPager.visibility == View.VISIBLE) {
-            vpViewPager.visibility = View.GONE
-            vpViewPager.adapter = null
+        if (vp_activity_other_users.visibility == View.VISIBLE) {
+            vp_activity_other_users.visibility = View.GONE
+            vp_activity_other_users.adapter = null
         }
         if (pv_activity_other_users.visibility == View.VISIBLE) {
             pv_activity_other_users.visibility = View.GONE
@@ -335,7 +307,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
             val url = HandleFind.GetUserCommentImageUrl(id)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 runOnUiThread {
-                    val photoView = viewPagerAdapter.photoViewMap[position] ?: return@runOnUiThread
+                    val photoView = adapter.photoViewMap[position] ?: return@runOnUiThread
                     Glide.with(this).load(url).into(photoView)
                 }
             }
