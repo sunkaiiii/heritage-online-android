@@ -40,7 +40,8 @@ const val LOG_OUT = 2
 const val IS_FOCUS = "已关注"
 const val UNFOCUS = "加关注"
 const val FOLLOW_EACHOTHER = "互相关注"
-
+const val MODIFY_USER_COMMENT=1
+const val DELETE_USER_COMMENT=2
 const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"

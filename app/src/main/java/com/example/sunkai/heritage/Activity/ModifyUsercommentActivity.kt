@@ -2,12 +2,16 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import androidx.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -30,11 +34,18 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_usercomment)
         initview()
-        if (intent?.getSerializableExtra("data") is UserCommentData) {
+        if (intent.getSerializableExtra("data") is UserCommentData) {
             data = intent?.getSerializableExtra("data") as UserCommentData
             add_comment_title.setText(data!!.commentTitle)
             add_comment_content.setText(data!!.commentContent)
-            Glide.with(this).load(BaseSetting.URL+data!!.imageUrl).into(add_comment_image)
+            Glide.with(this).load(BaseSetting.URL+data!!.imageUrl).into(simpleTarget)
+        }
+    }
+
+    private val simpleTarget=object:SimpleTarget<Drawable>(){
+        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+            modifyImageBitmap=resource.toBitmap()
+            add_comment_image.setImageDrawable(resource)
         }
     }
 
@@ -66,6 +77,9 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
     private fun updateUserCommentData(item: MenuItem) {
         val data=data
         val modifyBitmap=modifyImageBitmap?:return
+        val progressBar = ProgressBar(this@ModifyUsercommentActivity)
+        item.actionView = progressBar
+        item.isEnabled = false
         data?.let {
             setViewsUnable()
             ThreadPool.execute {
@@ -111,9 +125,6 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.modify_comment_menu_modify -> {
-                val progressBar = ProgressBar(this@ModifyUsercommentActivity)
-                item.actionView = progressBar
-                item.isEnabled = false
                 updateUserCommentData(item)
             }
         }

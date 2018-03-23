@@ -8,20 +8,27 @@
         android:id="@+id/warning_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
+        android:textSize="18sp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="16dp"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/warning_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:textSize="14sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp">
 
         <TextView
             android:id="@+id/warning_submit"
@@ -37,9 +44,14 @@
             android:id="@+id/warning_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:layout_toLeftOf="@id/warning_submit"
             android:layout_toStartOf="@id/warning_submit"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="8dp" />
     </RelativeLayout>
 </LinearLayout>

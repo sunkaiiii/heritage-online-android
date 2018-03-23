@@ -88,4 +88,6 @@
     <string name="find_share_title">find_share_title</string>
     <string name="find_share_content">find_share_content</string>
     <string name="collect">收藏</string>
+    <string name="delete_comment_title">删除帖子</string>
+    <string name="delete_comment_content">是否删除帖子？</string>
 </resources>

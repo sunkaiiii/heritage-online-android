@@ -22,7 +22,10 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
+import com.example.sunkai.heritage.value.DELETE_USER_COMMENT
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
+import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
+import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 
 class UserOwnTieziActivity : AppCompatActivity() {
@@ -42,6 +45,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                 adapter = MyOwnCommentRecyclerViewAdapter(this,datas)
                 setAdpterClick(adapter)
                 setAdpterLongClick(adapter)
+                setAdapterListener(adapter)
                 userOwnList.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)
                 userOwnList.adapter = adapter
             }
@@ -100,6 +104,15 @@ class UserOwnTieziActivity : AppCompatActivity() {
         })
     }
 
+    private fun setAdapterListener(adapter: MyOwnCommentRecyclerViewAdapter){
+        adapter.setOnDeleteSuccessListener(object :MyOwnCommentRecyclerViewAdapter.onDeleteSuccessListener{
+            override fun onDeleteSuccess() {
+                getInformation()
+            }
+
+        })
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> finish()
@@ -110,5 +123,16 @@ class UserOwnTieziActivity : AppCompatActivity() {
 
     fun refreshList(){
         getInformation()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode){
+            MODIFY_USER_COMMENT->{
+                if(resultCode== UPDATE_SUCCESS){
+                    getInformation()
+                }
+            }
+        }
     }
 }
