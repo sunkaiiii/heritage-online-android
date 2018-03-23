@@ -106,6 +106,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {
+        holder.like.isEnabled=!data.isLike()
+        holder.dislike.isEnabled=data.isLike()
         if (data.isLike()) {
             SetLike(holder, data.likeNum)
         } else {
@@ -240,6 +242,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         var likeNumber = datas[position].likeNum
         likeNumber = if (isLike) likeNumber + 1 else likeNumber - 1
         datas[position].likeNum = likeNumber
+        datas[position].isLike=if(isLike)"SUCCESS" else "ERROR"
     }
 
     private fun changeFocusDataState(isFocus: Boolean, userID: Int) {
