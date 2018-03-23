@@ -22,7 +22,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
-import com.example.sunkai.heritage.value.DELETE_USER_COMMENT
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
@@ -80,7 +79,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
                         .setPositiveButton("删除", { _, _ ->
                             val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
-                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, null))
+                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, userOwnList,false))
                                     .create()
                             ad.show()
                             Thread {

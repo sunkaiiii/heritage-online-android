@@ -51,7 +51,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         setContentView(R.layout.activity_user_comment_detail)
         initView()
         getData()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&intent.getIntExtra("from",DEFAULT_FROM)!=FROM_COLLECTION) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.getIntExtra("from", DEFAULT_FROM) != FROM_COLLECTION) {
             window.sharedElementEnterTransition.doOnEnd {
                 getReplysInfo(commentID)
                 showBackLinear()
@@ -154,7 +154,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     private fun deleteComment() {
         AlertDialog.Builder(this).setTitle("是否删除帖子?").setPositiveButton("删除") { _, _ ->
             @SuppressLint("InflateParams")
-            val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, null)).create()
+            val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, userCommentReplyAppbar, false)).create()
             ad.show()
             ThreadPool.execute {
                 val result = HandleFind.DeleteUserCommentByID(data!!.id)
@@ -289,8 +289,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         const val DELETE_COMMENT = 2
         const val COMMON_SHOW = 3
         const val ANIMATION_SHOW = 4
-        const val FROM_COLLECTION=0
-        const val DEFAULT_FROM=-1
+        const val FROM_COLLECTION = 0
+        const val DEFAULT_FROM = -1
         private const val TAG = "UserCommentDetail"
     }
 }
