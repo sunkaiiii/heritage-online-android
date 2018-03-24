@@ -73,20 +73,17 @@ ___
 
 5、其中，四个navigation bar对应的首页，民间页是负责获取以json包装的信息，并解析json显示，发现页提供了简单的发帖、回帖、点赞的功能。个人中心的完成了一些“微博”式的功能。
 
-  
-
-6、因功能需求但水平有限，在消息推送上使用了“小米推送”作为第三方推送
-
-  
-
-7、后端服务请参考 [heritage-webservice](https://github.com/sunkaiiii/heritage_webservice )
 
 
-8、2.x/1.x的老版本的后台请参考[heritage_webservice_old](https://github.com/sunkaiiii/heritage_webservice_old)
+6、后端服务请参考 [heritage-webservice](https://github.com/sunkaiiii/heritage_webservice )
+
+
+
+7、2.x/1.x的老版本的后台请参考[heritage_webservice_old](https://github.com/sunkaiiii/heritage_webservice_old)
+
 
   
-
-9、APP前期由Java编写，在v2.0版本开始，陆续转用Kotlin实现新的功能，并在v2.5版本将全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
+8、APP前期由Java编写，在v2.0版本开始，陆续转用Kotlin实现新的功能，并在v2.5版本将全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
 
   
   
