@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
+
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="6sp"/>
+        android:layout_margin="6sp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="请稍后"
         android:layout_gravity="center"
-        android:layout_marginLeft="12sp"/>
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/please_wait" />
 </LinearLayout>

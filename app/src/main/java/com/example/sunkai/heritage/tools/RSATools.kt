@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.tools
 
+import android.util.Base64
 import com.example.sunkai.heritage.value.ERROR
-import org.kobjects.base64.Base64
 import java.io.InputStreamReader
 import java.security.*
 import java.security.spec.X509EncodedKeySpec
@@ -28,7 +28,7 @@ fun infoToRSA(infos: String): String? {
 fun encryptionPassWord(password: String):String{
     val byte= readPublicKeyFromFile(password)
     byte?.let{
-        return Base64.encode(byte)
+        return Base64.encodeToString(byte,Base64.DEFAULT)
     }
     return ERROR
 }
@@ -62,7 +62,7 @@ private fun readPublicKeyFromFile(data:String):ByteArray?{
     val outString=out.toString()
     try {
         //加密
-        return encryptByPublicKey(data.toByteArray(), Base64.decode(outString))
+        return encryptByPublicKey(data.toByteArray(), Base64.decode(outString,Base64.DEFAULT))
     } catch (e: Exception) {
         e.printStackTrace()
     }

@@ -37,6 +37,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="32dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_add_circle_black_48dp" />
+            android:src="@drawable/ic_add_circle_black_48dp"
+            android:contentDescription="@string/add_comment_image"/>
     </LinearLayout>
 </ScrollView>

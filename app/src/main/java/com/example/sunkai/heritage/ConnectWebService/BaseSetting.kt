@@ -19,7 +19,7 @@ abstract class BaseSetting {
 //        const val URL="http://10.20.254.74:8080"
     }
     //定义扩展方法，简单化Gson的使用
-    inline fun <reified T:Any> Gson.fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
+    inline fun <reified T:Any> fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
         val arr = Gson().fromJson(s, clazz)
         return arr.toList()
     }

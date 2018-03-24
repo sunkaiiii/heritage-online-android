@@ -6,7 +6,7 @@
         android:id="@+id/user_comment_detail_item_edit"
         android:title="@string/edit_comment"
         android:icon="@drawable/ic_border_color_white_24dp"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         />
 
     <item

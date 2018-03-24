@@ -54,60 +54,56 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="8dp"
+                    android:gravity="center"
                     android:maxLines="1"
                     android:text="@string/title"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:gravity="center"/>
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
+                    android:gravity="center"
                     android:text="@string/user_name"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:gravity="center"/>
+                    android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/coment_image">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/set_like"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:contentDescription="@string/set_like"
+                android:src="@drawable/ic_favorite_orange_a700_24dp" />
 
-                <ImageView
-                    android:id="@+id/set_like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="12dp"
-                    android:src="@drawable/ic_favorite_orange_a700_24dp" />
-
-                <ImageView
-                    android:id="@+id/set_colelct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginStart="24dp"
-                    android:layout_marginTop="12dp"
-                    android:src="@drawable/ic_bookmark_black_24dp" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/set_colelct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:contentDescription="@string/collect"
+                android:src="@drawable/ic_bookmark_black_24dp" />
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>

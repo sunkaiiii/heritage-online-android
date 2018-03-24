@@ -20,6 +20,7 @@
         android:layout_marginEnd="18dp"
         android:layout_marginTop="8dp"
         android:scaleType="centerCrop"
-        android:id="@+id/bottom_news_detail_item_img"/>
+        android:id="@+id/bottom_news_detail_item_img"
+        android:contentDescription="@string/no_mean_content"/>
 
 </LinearLayout>

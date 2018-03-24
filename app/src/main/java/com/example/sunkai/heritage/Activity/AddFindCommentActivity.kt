@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,7 +19,6 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.toByteArray
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
-import org.kobjects.base64.Base64
 
 /**
  * 此类是处理发帖活动的类
@@ -40,7 +40,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         val addImageBitmap = imageBitmap ?: return@Runnable
         val title = add_comment_title.text.toString().trim()
         val content = add_comment_content.text.toString().trim()
-        val imageCode = Base64.encode(addImageBitmap.toByteArray())
+        val imageCode = Base64.encodeToString(addImageBitmap.toByteArray(),Base64.DEFAULT)
         val result = HandleFind.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
         val what = if (result) ADD_OK else ADD_ERROR
         addCommentInformationHandler.sendEmptyMessage(what)

@@ -9,7 +9,6 @@ import android.view.WindowManager
 import androidx.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
@@ -86,7 +85,6 @@ class WelcomeActivity : AppCompatActivity() {
                         }
                         else -> {
                             intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                            GlobalContext.instance.registUser()
                             startActivity(intent)
                             finish()
                         }

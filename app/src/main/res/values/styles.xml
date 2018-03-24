@@ -8,6 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppThemeNoBackGround" parent="AppTheme">
+        <item name="android:windowBackground">@null</item>
+    </style>
 
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -17,13 +20,18 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="AppThemeNoActionBarNoBackground" parent="AppThemeNoActionBar">
+        <item name="android:windowBackground">@null</item>
+    </style>
     <style name="translucent" parent="Theme.Design.Light.NoActionBar">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
 
-    <style name="LoginActivityTheme" parent="AppThemeNoActionBar"/>
+    <style name="LoginActivityTheme" parent="AppThemeNoActionBar">
+        <item name="android:windowBackground">@null</item>
+    </style>
 
     <style name="ExpandedAppBarSize" parent="@android:style/TextAppearance">
         <item name="android:textSize">24sp</item>

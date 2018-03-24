@@ -30,7 +30,7 @@ object HandleMainFragment : BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<FolkNewsLite>::class.java)
+            return fromJsonToList(result, Array<FolkNewsLite>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -45,7 +45,7 @@ object HandleMainFragment : BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<NewsDetail>::class.java)
+            return fromJsonToList(result, Array<NewsDetail>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -60,7 +60,7 @@ object HandleMainFragment : BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
+            return fromJsonToList(result, Array<BottomFolkNewsLite>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -84,7 +84,7 @@ object HandleMainFragment : BaseSetting() {
 
     fun GetBottomNewsDetailInfo(content:String):List<BottomNewsDetail>{
         try{
-            return Gson().fromJsonToList(content,Array<BottomNewsDetail>::class.java)
+            return fromJsonToList(content, Array<BottomNewsDetail>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -99,7 +99,7 @@ object HandleMainFragment : BaseSetting() {
             return null
         }
         try{
-            return Gson().fromJsonToList(result,Array<MainPageSlideNews>::class.java)
+            return fromJsonToList(result, Array<MainPageSlideNews>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -108,7 +108,7 @@ object HandleMainFragment : BaseSetting() {
 
     fun GetMainPageSlideDetailInfo(content:String):List<NewsDetail>{
         try{
-            return Gson().fromJsonToList(content,Array<NewsDetail>::class.java)
+            return fromJsonToList(content, Array<NewsDetail>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

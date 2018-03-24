@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.content.edit
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Dialog.Base.BaseDialogFragment
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.push_warining_layout.*
@@ -33,7 +32,6 @@ class PushDialog:BaseDialogFragment(),View.OnClickListener {
 
     private fun changePushState(pushState:Boolean){
         if(pushState){
-            GlobalContext.instance.registMipush()
         }
         context?.getSharedPreferences("setting",Context.MODE_PRIVATE)?.edit {
             putBoolean("pushSwitch", pushState)

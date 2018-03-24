@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +16,8 @@
         android:layout_above="@id/base_line"
         android:layout_marginBottom="12sp"
         android:layout_centerInParent="true"
-        android:id="@+id/imageView" />
+        android:id="@+id/imageView"
+        android:contentDescription="@string/logo"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="E迹项目小组:李悦 孙楷 王倩"
+        android:text="@string/gourp_names"
         android:layout_centerInParent="true"
         android:layout_below="@id/base_version"
         android:layout_marginTop="6dp"
@@ -40,7 +40,7 @@
         android:layout_centerInParent="true"
         android:layout_below="@id/base_people"
         android:layout_marginTop="6dp"
-        android:text="联合出品"
+        android:text="@string/products"
         android:id="@+id/base_out"/>
     <TextView
         android:layout_width="wrap_content"

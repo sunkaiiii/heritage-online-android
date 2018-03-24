@@ -1,12 +1,12 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import android.util.Base64
 import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.value.MINI_REPLY
 import com.google.gson.Gson
 import okhttp3.FormBody
-import org.kobjects.base64.Base64
 
 /**个人中心相关的类
  * Created by sunkai on 2018/2/22.
@@ -78,7 +78,7 @@ object HandlePerson : BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<FollowInformation>::class.java)
+            return fromJsonToList(result, Array<FollowInformation>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -93,7 +93,7 @@ object HandlePerson : BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<FollowInformation>::class.java)
+            return fromJsonToList(result, Array<FollowInformation>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -150,7 +150,7 @@ object HandlePerson : BaseSetting() {
             return arrayListOf()
         }
         try{
-            val searchInfo= Gson().fromJsonToList(result,Array<SearchUserInfo>::class.java)
+            val searchInfo= fromJsonToList(result, Array<SearchUserInfo>::class.java)
             searchInfo.forEach { it.checked= IsUserFollow(id,it.id) }
             return searchInfo
         }catch (e:Exception){
@@ -170,7 +170,7 @@ object HandlePerson : BaseSetting() {
     }
 
     fun UpdateUserImage(userID: Int,imageByteArray: ByteArray):Boolean{
-        val imageString=Base64.encode(imageByteArray)
+        val imageString= Base64.encodeToString(imageByteArray,Base64.DEFAULT)
         val postUrl="$URL/UpdateUserImage"
         val formBody=FormBody.Builder().add("userID",userID.toString()).add("image",imageString).build()
         val result=PutPost(postUrl,formBody)
@@ -206,7 +206,7 @@ object HandlePerson : BaseSetting() {
         if(ERROR==result)
             return arrayListOf()
         try{
-            return Gson().fromJsonToList(result,Array<FolkNewsLite>::class.java)
+            return fromJsonToList(result, Array<FolkNewsLite>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -218,7 +218,7 @@ object HandlePerson : BaseSetting() {
         if(ERROR==result)
             return arrayListOf()
         try{
-            return Gson().fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
+            return fromJsonToList(result, Array<BottomFolkNewsLite>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -230,7 +230,7 @@ object HandlePerson : BaseSetting() {
         if(ERROR==result)
             return arrayListOf()
         try{
-            return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
+            return fromJsonToList(result, Array<ClassifyDivideData>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -242,7 +242,7 @@ object HandlePerson : BaseSetting() {
         if(ERROR==result)
             return arrayListOf()
         try{
-            val findResult= Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+            val findResult= fromJsonToList(result, Array<UserCommentData>::class.java)
             findResult.forEach { it.miniReplys=HandleFind.GetUserCommentReply(it.id, MINI_REPLY) }
             return findResult
         }catch (e:Exception){

@@ -15,10 +15,12 @@
             android:id="@+id/search_activity_btn"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="12dp"
             android:alpha="0.85"
-            android:src="@drawable/ic_search_grey_400_24dp" />
+            android:src="@drawable/ic_search_grey_400_24dp"
+            android:contentDescription="@string/search"
+            android:layout_alignParentRight="true" />
 
         <EditText
             android:id="@+id/search_activity_edit"
@@ -29,7 +31,8 @@
             android:singleLine="true"
             android:maxLines="1"
             android:layout_toLeftOf="@id/search_activity_btn"
-            android:imeOptions="actionSearch"/>
+            android:imeOptions="actionSearch"
+            android:hint="@string/search"/>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

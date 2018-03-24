@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 import android.text.TextUtils
+import android.util.Base64
 import android.util.Log
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -8,7 +9,6 @@ import com.example.sunkai.heritage.value.COMMENT_REPLY
 import com.example.sunkai.heritage.value.MINI_REPLY
 import com.google.gson.Gson
 import okhttp3.FormBody
-import org.kobjects.base64.Base64
 
 /*
  * Created by sunkai on 2018/2/1.
@@ -35,7 +35,7 @@ object HandleFind:BaseSetting() {
             return arrayListOf()
         }else{
             try{
-                val datas=Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                val datas= fromJsonToList(result, Array<UserCommentData>::class.java)
                 for(data in datas){
                     data.miniReplys= GetUserCommentReply(data.id, MINI_REPLY)
                 }
@@ -55,7 +55,7 @@ object HandleFind:BaseSetting() {
             return arrayListOf()
         }else{
             try{
-                val datas= Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                val datas= fromJsonToList(result, Array<UserCommentData>::class.java)
                 for(data in datas){
                     data.miniReplys= GetUserCommentReply(data.id, MINI_REPLY)
                 }
@@ -74,7 +74,7 @@ object HandleFind:BaseSetting() {
             arrayListOf()
         }else{
             try{
-                Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+                fromJsonToList(result, Array<UserCommentData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
                 arrayListOf<UserCommentData>()
@@ -100,7 +100,7 @@ object HandleFind:BaseSetting() {
     }
 
     fun UpdateUserCommentImage(commentID:Int,image:ByteArray):Boolean{
-        val imgString=Base64.encode(image)
+        val imgString= Base64.encodeToString(image,Base64.DEFAULT)
         val formBody=FormBody.Builder().add("id",commentID.toString()).add("image",imgString).build()
         val postURL="$URL/UpdateUserCommentImage"
         val result=PutPost(postURL,formBody)
@@ -170,7 +170,7 @@ object HandleFind:BaseSetting() {
             arrayListOf()
         }else{
             try {
-                Gson().fromJsonToList(result,Array<CommentReplyInformation>::class.java)
+                fromJsonToList(result, Array<CommentReplyInformation>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
                 arrayListOf<CommentReplyInformation>()
@@ -220,7 +220,7 @@ object HandleFind:BaseSetting() {
             return arrayListOf()
         }
         try{
-            return Gson().fromJsonToList(result,Array<UserCommentData>::class.java)
+            return fromJsonToList(result, Array<UserCommentData>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -23,7 +24,6 @@ import com.example.sunkai.heritage.tools.toByteArray
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
-import org.kobjects.base64.Base64
 
 class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
 
@@ -84,7 +84,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             setViewsUnable()
             ThreadPool.execute {
                 setDatas()
-                val result = HandleFind.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent,Base64.encode(modifyBitmap.toByteArray()))
+                val result = HandleFind.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent, Base64.encodeToString(modifyBitmap.toByteArray(),Base64.DEFAULT))
                 runOnUiThread {
                     if (result!= ERROR) {
                         toast(getString(R.string.update_success))

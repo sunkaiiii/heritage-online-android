@@ -18,7 +18,6 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.LOG_OUT
 import com.example.sunkai.heritage.value.SETTING_ACTIVITY
@@ -226,7 +225,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         val activity = activity
         activity?.let {
             AlertDialog.Builder(activity).setTitle("是否注销?").setPositiveButton("确定") { _, _ ->
-                GlobalContext.instance.unregistUser() //注销的时候退出当前账号
                 activity.getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply()//清除自动登录的信息
                 LoginActivity.userID = 0
                 LoginActivity.userName = null

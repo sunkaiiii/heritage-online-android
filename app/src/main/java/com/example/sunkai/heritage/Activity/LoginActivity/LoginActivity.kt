@@ -20,7 +20,6 @@ import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginPresnte
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
 import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.LOG_OUT
@@ -165,7 +164,6 @@ class LoginActivity : AppCompatActivity(),LoginView, View.OnClickListener {
 
     override fun gotoMainPage() {
 
-        GlobalContext.instance.registUser()
         //从Welcome页过来而并非从二级页面登录，则直接进入主页
         if (isIntoMainpage == 0 || isIntoMainpage == LOG_OUT) {
             val intent = Intent(this@LoginActivity, MainActivity::class.java)

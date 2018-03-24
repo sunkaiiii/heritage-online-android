@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">E迹</string>
     <string name="verson_code">v3.1.0</string>
+    <string name="no_mean_content">null</string>
 
     <string name="action_sign_in_short">登陆</string>
     <string name="error_incorrect_password">密码不正确</string>
@@ -90,4 +91,20 @@
     <string name="collect">收藏</string>
     <string name="delete_comment_title">删除帖子</string>
     <string name="delete_comment_content">是否删除帖子？</string>
+    <string name="logo">logo</string>
+    <string name="gourp_names">E迹项目小组:李悦 孙楷 王倩</string>
+    <string name="products">联合出品</string>
+    <string name="time">时间:</string>
+    <string name="main_page_permission">主页权限</string>
+    <string name="see_fans_and_focus">查看粉丝和关注</string>
+    <string name="main_page">首页</string>
+    <string name="folk_page">民间</string>
+    <string name="find_page">发现</string>
+    <string name="person_center">个人中心</string>
+    <string name="please_input_username">请输入用户名</string>
+    <string name="please_wait">请稍候</string>
+    <string name="one">1</string>
+    <string name="three">3</string>
+    <string name="add_comment_reply_here">在这里输入回复</string>
+    <string name="content">内容</string>
 </resources>

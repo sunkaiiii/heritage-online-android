@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ImageView
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -16,7 +15,6 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.DELETE_COMMENT
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
@@ -30,8 +28,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
  * 发现页面的类
  */
 
-class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
-
+class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,9 +42,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
 
     private fun initview() {
         fragmentFindSwipeRefresh.setOnRefreshListener {
-            when(selectSpinner.selectedItemPosition){
-                0->loadUserCommentData(ALL_COMMENT)
-                1->loadUserCommentData(MY_FOCUS_COMMENT)
+            when (selectSpinner.selectedItemPosition) {
+                0 -> loadUserCommentData(ALL_COMMENT)
+                1 -> loadUserCommentData(MY_FOCUS_COMMENT)
             }
         }
     }
@@ -124,29 +121,18 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
         }
     }
 
-    private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter?) {
-        adpter!!.setOnItemClickListen(object : OnItemClickListener {
+    private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter) {
+        adpter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(activity, UserCommentDetailActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("data", adpter.getItem(position))
-                bundle.putInt("position", position)
-                val getview: View? = view.findViewById(R.id.fragment_find_litview_img)
-                getview?.let {
-                    val imageView = getview as ImageView
-                    imageView.isDrawingCacheEnabled = true
-                    val drawable = imageView.drawable
-                    val imageByte = HandlePic.drawableToByteArray(drawable)
-                    intent.putExtra("bitmap", imageByte)
-                    intent.putExtras(bundle)
-                    //如果手机是Android 5.0以上的话，使用新的Activity切换动画
-                    if (Build.VERSION.SDK_INT >= 21) {
-                        intent.putExtra("option",UserCommentDetailActivity.ANIMATION_SHOW)
-                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, imageView, getString(R.string.find_share_view)).toBundle())
-                    }
-                    else {
-                        startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
-                    }
+                intent.putExtra("data", adpter.getItem(position))
+                //如果手机是Android 5.0以上的话，使用新的Activity切换动画
+                if (Build.VERSION.SDK_INT >= 21) {
+                    val getview: View = view.findViewById(R.id.fragment_find_litview_img) ?: return
+                    intent.putExtra("option", UserCommentDetailActivity.ANIMATION_SHOW)
+                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, getview, getString(R.string.find_share_view)).toBundle())
+                } else {
+                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
                 }
             }
         })
@@ -159,7 +145,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT||resultCode== DELETE_COMMENT) {
+            FROM_USER_COMMENT_DETAIL -> if (resultCode == UserCommentDetailActivity.ADD_COMMENT || resultCode == DELETE_COMMENT) {
                 loadUserCommentData(selectSpinner.selectedItemPosition)
             }
             LOGIN -> loadUserCommentData(selectSpinner.selectedItemPosition)
@@ -167,11 +153,11 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,OnPageLoaded {
     }
 
     override fun onPreLoad() {
-        fragmentFindSwipeRefresh.isRefreshing=true
+        fragmentFindSwipeRefresh.isRefreshing = true
     }
 
     override fun onPostLoad() {
-        fragmentFindSwipeRefresh.isRefreshing=false
+        fragmentFindSwipeRefresh.isRefreshing = false
     }
 
     companion object {

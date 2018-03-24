@@ -9,12 +9,13 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.transition.Slide
-import android.view.*
+import android.view.KeyEvent
+import android.view.ViewGroup
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Fragment.*
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
+import java.lang.ref.WeakReference
 
 /**
  * 此类用于处理登陆
@@ -23,8 +24,9 @@ import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        lateinit var activity:MainActivity
+        var activityRef:WeakReference<MainActivity>?=null
         fun GetViewpagerSelectPosition():Int{
+            val activity= activityRef?.get()?:return 0
             return activity.bottomNavigation.selectedItemId
         }
     }
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activityRef= WeakReference(this)
         setContentView(R.layout.activity_main)
         fragmentManager = supportFragmentManager
         initViews()
@@ -70,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         viewPager.adapter=adapter
         viewPager.addOnPageChangeListener(onPageChangeListener)
 
-        activity=this
         window.setBackgroundDrawable(null)
     }
 

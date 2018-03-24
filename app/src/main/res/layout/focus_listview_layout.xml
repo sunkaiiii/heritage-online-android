@@ -9,11 +9,11 @@
         android:id="@+id/user_head_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="12dp"
         android:src="@drawable/ic_assignment_ind_deep_orange_200_48dp"
-        app:riv_oval="true"
-        android:layout_alignParentLeft="true" />
+        app:riv_oval="true" />
 
     <LinearLayout
         android:id="@+id/ll_focus_btn"
@@ -34,6 +34,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
+            android:contentDescription="@string/add_focus"
             android:src="@drawable/ic_add_black_24dp" />
 
         <TextView
@@ -65,6 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:text="" />
 

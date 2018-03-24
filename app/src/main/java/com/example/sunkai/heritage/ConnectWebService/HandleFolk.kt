@@ -22,7 +22,7 @@ object HandleFolk : BaseSetting() {
         return if(ERROR==result){
             null
         }else{
-            Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
+            fromJsonToList(result, Array<FolkDataLite>::class.java)
         }
     }
 
@@ -32,7 +32,7 @@ object HandleFolk : BaseSetting() {
         return if(ERROR==result){
             null
         }else{
-            Gson().fromJsonToList(result,Array<FolkDataLite>::class.java)
+            fromJsonToList(result, Array<FolkDataLite>::class.java)
         }
 
     }
@@ -53,7 +53,7 @@ object HandleFolk : BaseSetting() {
             return null
         }else{
             try{
-                return Gson().fromJsonToList(result,Array<ActivityData>::class.java)
+                return fromJsonToList(result, Array<ActivityData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
             }
@@ -68,7 +68,7 @@ object HandleFolk : BaseSetting() {
             return arrayListOf()
         }else{
             try{
-                return Gson().fromJsonToList(result,Array<ClassifyDivideData>::class.java)
+                return fromJsonToList(result, Array<ClassifyDivideData>::class.java)
             }catch (e:Exception){
                 e.printStackTrace()
             }

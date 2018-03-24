@@ -16,7 +16,8 @@
             android:layout_width="56dp"
             android:layout_height="86dp"
             android:layout_margin="8dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/no_mean_content"/>
         <TextView
             android:id="@+id/news_item_title"
             android:layout_width="match_parent"

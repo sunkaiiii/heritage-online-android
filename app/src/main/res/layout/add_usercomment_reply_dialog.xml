@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/lightGrey"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    tools:ignore="Overdraw">
 
     <at.markushi.ui.CircleButton
         android:id="@+id/add_comment_btn_send"
@@ -14,8 +16,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        app:cb_color="@color/colorAccent"
-        android:src="@drawable/ic_send_white_24dp"/>
+        android:src="@drawable/ic_send_white_24dp"
+        app:cb_color="@color/colorAccent" />
 
     <EditText
         android:id="@+id/add_reply_content"
@@ -26,6 +28,7 @@
         android:layout_toLeftOf="@id/add_comment_btn_send"
         android:layout_toStartOf="@id/add_comment_btn_send"
         android:background="@color/white"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:hint="@string/add_comment_reply_here"/>
 
 </RelativeLayout>

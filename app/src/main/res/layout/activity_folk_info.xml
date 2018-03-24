@@ -36,6 +36,7 @@
                     android:id="@+id/join_activity_img"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/share_user_name"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
                     android:transitionName="@string/share_user_image"
@@ -78,15 +79,15 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="8dp"
-                android:drawableStart="@drawable/ic_access_time_grey_900_24dp"
+                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_access_time_grey_900_24dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="TextView"
+                android:text=""
                 android:textSize="16sp"
                 android:transitionName="@string/share_folk_time"
-                tools:targetApi="lollipop"
-                android:drawableLeft="@drawable/ic_access_time_grey_900_24dp" />
+                tools:targetApi="lollipop" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,9 +104,10 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/ic_location_on_grey_900_24dp"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_location_on_grey_900_24dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="TextView"
+                android:text=""
                 android:textSize="16sp"
                 android:transitionName="@string/share_folk_location"
                 tools:targetApi="lollipop" />
@@ -125,9 +127,10 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/ic_format_list_numbered_grey_900_24dp"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_format_list_numbered_grey_900_24dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="TextView"
+                android:text=""
                 android:textSize="16sp"
                 android:transitionName="@string/share_folk_number"
                 tools:targetApi="lollipop" />
@@ -147,9 +150,10 @@
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@drawable/ic_dashboard_grey_900_24dp"
                 android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_dashboard_grey_900_24dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="TextView"
+                android:text=""
                 android:textSize="16sp"
                 tools:targetApi="lollipop" />
 
@@ -168,7 +172,7 @@
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="3dp"
                 android:lineSpacingMultiplier="1.3"
-                android:text="TextView"
+                android:text=""
                 android:textSize="16sp"
                 android:transitionName="@string/share_folk_content"
                 tools:targetApi="lollipop" />

@@ -6,7 +6,6 @@
     tools:context="com.example.sunkai.heritage.Fragment.MainFragment"
     android:focusableInTouchMode="true">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:id="@+id/ll_fragment_folk_top_options"
@@ -24,7 +23,7 @@
                 android:id="@+id/folk_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="搜索"
+                android:hint="@string/search"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -35,7 +34,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_search_grey_400_24dp" />
+                android:src="@drawable/ic_search_grey_400_24dp"
+                android:contentDescription="@string/search"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -46,8 +46,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24sp"
-                android:text="分类:" />
+                android:layout_marginStart="24dp"
+                android:text="@string/category"
+                android:layout_marginLeft="24dp" />
 
             <Spinner
                 android:id="@+id/folk_heritages_spinner"
@@ -58,8 +59,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="24sp"
-                android:text="地区" />
+                android:layout_marginStart="24dp"
+                android:text="@string/location"
+                android:layout_marginLeft="24dp" />
 
             <Spinner
                 android:id="@+id/folk_location_spinner"

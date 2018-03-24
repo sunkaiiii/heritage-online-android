@@ -3,17 +3,17 @@
     <item
         android:id="@+id/main_layout"
         android:icon="@drawable/ic_home_grey_500_24dp"
-        android:title="首页"/>
+        android:title="@string/main_page"/>
     <item
         android:id="@+id/folk_layout"
         android:icon="@drawable/ic_people_grey_500_24dp"
-        android:title="民间"/>
+        android:title="@string/folk_page"/>
     <item
         android:id="@+id/find_layout"
         android:icon="@drawable/ic_search_grey_400_24dp"
-        android:title="发现"/>
+        android:title="@string/find_page"/>
     <item
         android:id="@+id/person_layout"
         android:icon="@drawable/ic_assignment_ind_grey_500_24dp"
-        android:title="个人中心"/>
+        android:title="@string/person_center"/>
 </menu>

@@ -12,7 +12,6 @@ import androidx.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ALL
@@ -70,17 +69,6 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun setPushStatus(isChecked: Boolean) {
-        if (isChecked) {
-            GlobalContext.instance.registMipush() //在这里延迟一些注册用户，同时注册用户会注册失败，需要重新启动程序才可以
-            ThreadPool.execute {
-                Thread.sleep(5000)
-                GlobalContext.instance.registUser()
-            }
-        } else {
-            GlobalContext.instance.unregistUser()
-            GlobalContext.instance.unregistMipush()
-
-        }
         getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
             putBoolean("pushSwitch", isChecked)
         }

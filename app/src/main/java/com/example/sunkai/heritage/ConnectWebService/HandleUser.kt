@@ -1,10 +1,10 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 
+import android.util.Base64
 import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import okhttp3.FormBody
-import org.kobjects.base64.Base64
 
 
 /*
@@ -29,7 +29,7 @@ object HandleUser : BaseSetting() {
         val userImageString = if (userImage == null) {
             ""
         } else {
-            Base64.encode(userImage)
+            Base64.encodeToString(userImage,Base64.DEFAULT)
         }
         println(userImageString)
         val form = FormBody.Builder()

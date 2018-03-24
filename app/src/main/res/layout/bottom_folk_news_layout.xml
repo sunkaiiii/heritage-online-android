@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    style="@style/AppThemeNoActionBarNoBackground"
     android:background="?attr/selectableItemBackground"
     android:foreground="?attr/selectableItemBackground"
     android:layout_margin="12dp"
-    >
+    tools:ignore="Overdraw">
 
     <ImageView
         android:id="@+id/bottom_view_image"
@@ -15,7 +17,8 @@
         android:layout_gravity="center"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/no_mean_content" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +65,8 @@
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
             android:scaleType="centerCrop"
-            android:id="@+id/bottom_view_bottom_image1"/>
+            android:id="@+id/bottom_view_bottom_image1"
+            android:contentDescription="@string/no_mean_content"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -70,7 +74,8 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:scaleType="centerCrop"
-            android:id="@+id/bottom_view_bottom_image2"/>
+            android:id="@+id/bottom_view_bottom_image2"
+            android:contentDescription="@string/no_mean_content"/>
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -80,7 +85,8 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="12dp"
             android:scaleType="centerCrop"
-            android:id="@+id/bottom_view_bottom_image3"/>
+            android:id="@+id/bottom_view_bottom_image3"
+            android:contentDescription="@string/no_mean_content"/>
     </LinearLayout>
 
 
