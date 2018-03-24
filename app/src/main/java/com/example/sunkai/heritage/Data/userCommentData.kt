@@ -4,6 +4,7 @@ import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.SUCCE
 import java.io.Serializable
 
 /**
+ * 用户帖子的信息
  * Created by sunkai on 2018/2/21.
  */
 class UserCommentData(val id:Int,

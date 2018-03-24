@@ -6,6 +6,7 @@ import android.support.design.internal.BottomNavigationMenuView
 import android.support.design.widget.BottomNavigationView
 
 /**
+ * 底部切换按钮的辅助类
  * Created by sunkai on 2018/1/14.
  */
 object BottomNavigationViewHelper {

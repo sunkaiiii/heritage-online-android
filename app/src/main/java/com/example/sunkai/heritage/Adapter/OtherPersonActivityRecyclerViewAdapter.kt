@@ -54,7 +54,7 @@ class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID:
     }
 
     internal class GetUserInfoTask(val userID: Int, adapter: OtherPersonActivityRecyclerViewAdapter) : AsyncTask<Void, Void, Int>() {
-        val weakRefrece: WeakReference<OtherPersonActivityRecyclerViewAdapter>
+        private val weakRefrece: WeakReference<OtherPersonActivityRecyclerViewAdapter>
 
         init {
             weakRefrece = WeakReference(adapter)

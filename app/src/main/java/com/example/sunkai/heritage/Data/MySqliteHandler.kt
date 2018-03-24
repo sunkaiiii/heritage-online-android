@@ -4,6 +4,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.example.sunkai.heritage.tools.GlobalContext
 
 /**
+ * sqlite的辅助类
  * Created by sunkai on 2017/12/13.
  */
 object MySqliteHandler{

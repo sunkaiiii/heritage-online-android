@@ -1,10 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
-import android.content.Intent
-import android.os.Build
 import android.support.v4.content.ContextCompat
-import android.support.v4.util.Pair
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.*
 import com.bumptech.glide.Glide
-import com.example.sunkai.heritage.Activity.OtherUsersActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
@@ -20,8 +16,10 @@ import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.TransitionHelper
-import com.example.sunkai.heritage.value.*
+import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
+import com.example.sunkai.heritage.value.IS_FOCUS
+import com.example.sunkai.heritage.value.NO_USERID
+import com.example.sunkai.heritage.value.UNFOCUS
 import com.makeramen.roundedimageview.RoundedImageView
 
 /*
@@ -34,12 +32,11 @@ class FocusListviewAdapter
  * @param datas 关注、粉丝的数据
  * @param what  1为关注，2为粉丝3为查询页面
  */
-(private val context: Activity, var what: Int, datas: List<FollowInformation>) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas) {
+(private val context: Activity, private var what: Int, datas: List<FollowInformation>) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas) {
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
-        val rl_focus_listview_layout: RelativeLayout
         val userName: TextView
         private val userIntrodeuce: TextView
         val userImage: RoundedImageView
@@ -52,7 +49,6 @@ class FocusListviewAdapter
             userIntrodeuce = view.findViewById(R.id.user_introduce)
             userImage = view.findViewById(R.id.user_head_image)
             focusBtn = view.findViewById(R.id.focus_btn)
-            rl_focus_listview_layout = view.findViewById(R.id.rl_focus_listview_layout)
             focusBtnLayout = view.findViewById(R.id.ll_focus_btn)
             focusBtnImg = view.findViewById(R.id.iv_focus_btn)
         }

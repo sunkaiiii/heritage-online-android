@@ -111,12 +111,12 @@ class PermissionsActivity : AppCompatActivity() {
 
     companion object {
 
-        val PERMISSIONS_GRANTED = 0 // 权限授权
-        val PERMISSIONS_DENIED = 1 // 权限拒绝
+        const val PERMISSIONS_GRANTED = 0 // 权限授权
+        const val PERMISSIONS_DENIED = 1 // 权限拒绝
 
-        private val PERMISSION_REQUEST_CODE = 0 // 系统权限管理页面的参数
-        private val EXTRA_PERMISSIONS = "me.chunyu.clwang.permission.extra_permission" // 权限参数
-        private val PACKAGE_URL_SCHEME = "package:" // 方案
+        private const val PERMISSION_REQUEST_CODE = 0 // 系统权限管理页面的参数
+        private const val EXTRA_PERMISSIONS = "me.chunyu.clwang.permission.extra_permission" // 权限参数
+        private const val PACKAGE_URL_SCHEME = "package:" // 方案
 
         // 启动当前权限页面的公开接口
         fun startActivityForResult(activity: Activity, requestCode: Int, vararg permissions: String) {

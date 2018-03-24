@@ -1,9 +1,9 @@
 package com.example.sunkai.heritage.Data
 
 import java.io.Serializable
-import kotlin.jvm.internal.Intrinsics
 
 /**
+ * 民间页全部非遗信息的类
  * Created by sunkai on 2018/1/18.
  */
 class FolkDataLite(val id:Int=-1,

@@ -24,7 +24,7 @@ import com.example.sunkai.heritage.value.ERROR
  * 回帖的dialog
  * Created by sunkai on 2018/2/25.
  */
-class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBottomDialog(context),AddUserReplyDialog {
+class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int): BaseBottomDialog(context),AddUserReplyDialog {
     init {
         setContentView(R.layout.add_usercomment_reply_dialog)
         initViews()
@@ -97,7 +97,7 @@ class AddUserCommentBottomDialog(val context:Activity,val commentID:Int): BaseBo
         val intent = Intent(GlobalContext.instance, UserCommentDetailActivity::class.java)
         intent.putExtra("id", commentID)
         val uriString = intent.toUri(Intent.URI_INTENT_SCHEME)
-        Log.d("addCommentDialog", "uriString: " + uriString)
+        Log.d("addCommentDialog", "uriString: $uriString")
         return uriString
     }
 

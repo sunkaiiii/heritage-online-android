@@ -4,6 +4,7 @@ import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.CardView
 
 /**
+ * 首页卡片的adapter
  * Created by sunkai on 2018/2/9.
  */
 abstract class CardAdapter:PagerAdapter() {

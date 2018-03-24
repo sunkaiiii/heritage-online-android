@@ -1,10 +1,9 @@
 package com.example.sunkai.heritage.Activity
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.R
-import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_view_iamge.*
 import java.io.ByteArrayInputStream
 

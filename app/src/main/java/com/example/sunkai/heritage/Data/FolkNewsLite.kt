@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.Data
 import java.io.Serializable
 
 /**
+ * 首页卡片新闻的数据
  * Created by sunkai on 2018/2/8.
  */
 class FolkNewsLite(val id: Int

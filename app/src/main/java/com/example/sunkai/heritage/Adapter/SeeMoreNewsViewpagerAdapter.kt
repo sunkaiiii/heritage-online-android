@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import com.example.sunkai.heritage.value.CATEGORIES
 
 /**
+ * 更多新闻的viewpager的adapter
  * Created by sunkai on 2018/2/17.
  */
 class SeeMoreNewsViewpagerAdapter(manager:FragmentManager):FragmentPagerAdapter(manager) {

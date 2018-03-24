@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.Data
 import java.io.Serializable
 
 /**
+ * 民间页数据类
  * Created by sunkai on 2018/1/17.
  */
 class ClassifyDivideData(var id: Int,

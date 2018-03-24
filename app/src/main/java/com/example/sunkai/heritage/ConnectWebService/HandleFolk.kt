@@ -17,7 +17,7 @@ object HandleFolk : BaseSetting() {
 
 
     fun GetFolkInforMation(): List<FolkDataLite>? {
-        val getUrl= URL+"/GetChannelFolkInformation"
+        val getUrl= "$URL/GetChannelFolkInformation"
         val result=PutGet(getUrl)
         return if(ERROR==result){
             null
@@ -27,7 +27,7 @@ object HandleFolk : BaseSetting() {
     }
 
     fun Search_Folk_Info(searchInfo: String): List<FolkDataLite>? {
-        val getUrl= URL+"/SearchChannelForkInfo?searchInfo="+searchInfo
+        val getUrl= "$URL/SearchChannelForkInfo?searchInfo=$searchInfo"
         val result=PutGet(getUrl)
         return if(ERROR==result){
             null
@@ -47,7 +47,7 @@ object HandleFolk : BaseSetting() {
     }
 
     fun Get_Main_Divide_Activity_Image_Url():List<ActivityData>?{
-        val methodName=URL+"/GetMainDivideActivityImageUrl"
+        val methodName= "$URL/GetMainDivideActivityImageUrl"
         val result= HandleMainFragment.PutGet(methodName)
         if(ERROR==result){
             return null
@@ -62,7 +62,7 @@ object HandleFolk : BaseSetting() {
     }
 
     fun GetChannelInformation(channel: String): List<ClassifyDivideData> {
-        val methodName=URL+"/GetChannelInformation?divide="+channel
+        val methodName= "$URL/GetChannelInformation?divide=$channel"
         val result= HandleMainFragment.PutGet(methodName)
         if(ERROR==result){
             return arrayListOf()

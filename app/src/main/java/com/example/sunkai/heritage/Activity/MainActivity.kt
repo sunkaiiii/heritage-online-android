@@ -79,14 +79,13 @@ class MainActivity : AppCompatActivity() {
     //重写onKeyDown方法，监听返回键
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
             val builder = AlertDialog.Builder(this@MainActivity).setTitle("退出?").setPositiveButton("退出") { _, _ ->
                 ad.dismiss()
                 finish()
             }.setNegativeButton("取消") { _, _ -> ad.dismiss() }
             ad = builder.create()
             ad.show()
-            return super.onKeyDown(keyCode, event)
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }

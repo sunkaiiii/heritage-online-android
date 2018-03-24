@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths xmlns:android="http://schemas.android.com/apk/res/android">
+<paths>
 
     <!--external-path 就是用来指定URI共享的
     name属性的值可以随便写

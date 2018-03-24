@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +13,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-
 import com.example.sunkai.heritage.Data.ClassifyDivideData
-import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.value.HOST
 
 /*
