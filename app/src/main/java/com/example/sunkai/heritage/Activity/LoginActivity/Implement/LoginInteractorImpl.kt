@@ -28,7 +28,7 @@ class LoginInteractorImpl:Logininteractor {
             Handler(Looper.getMainLooper()).post {
                 if(result){
                     LoginActivity.userName=username
-                    writeSharePrefrece(username,encryptedPassword)
+                    writeSharePrefrece(username,password)
                     listner.onSuccess()
                 }else{
                     listner.onPasswordError()

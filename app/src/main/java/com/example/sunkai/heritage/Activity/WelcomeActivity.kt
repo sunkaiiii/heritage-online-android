@@ -3,7 +3,9 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import androidx.content.edit
@@ -14,6 +16,7 @@ import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.infoToRSA
 
 /**
  * 此页面是欢迎界面的类
@@ -97,7 +100,8 @@ class WelcomeActivity : AppCompatActivity() {
     private fun login(userName:String?,userPassword:String?):Boolean{
         val name=userName?:return false
         val password=userPassword?:return false
-        return HandleUser.Sign_In(name,password)
+        val encryptPassword= infoToRSA(password)?:return false
+        return HandleUser.Sign_In(name,encryptPassword)
     }
 
     companion object {
