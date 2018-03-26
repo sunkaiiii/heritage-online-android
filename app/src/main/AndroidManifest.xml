@@ -71,7 +71,6 @@
         <activity
             android:name=".Activity.SettingListActivity"
             android:label="@string/setting" />
-
         <activity
             android:name=".Activity.OtherUsersActivity"
             android:theme="@style/AppThemeNoActionBar" />
@@ -104,6 +103,11 @@
         <activity
             android:name=".Activity.MyCollectionActivity"
             android:label="@string/my_collection" />
+
+        <service
+            android:name=".Service.PushService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

@@ -1,7 +1,12 @@
 package com.example.sunkai.heritage.Activity
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
@@ -14,6 +19,7 @@ import android.view.ViewGroup
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Fragment.*
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.Service.PushService
 import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 import java.lang.ref.WeakReference
 
@@ -57,7 +63,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         fragmentManager = supportFragmentManager
         initViews()
+        startPushService()
     }
+
+    private var mBoundService:PushService?=null
+    private var mShouldBind=false
+    private val mConnection=object :ServiceConnection{
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            mBoundService=null
+        }
+
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            mBoundService=(p1 as PushService.LocalBinder).service
+        }
+    }
+    private fun startPushService() {
+        if(bindService(Intent(this,PushService::class.java),mConnection, Context.BIND_AUTO_CREATE)) {
+            mShouldBind = true
+        }
+    }
+
+
 
     private fun initViews() {
         viewPager=findViewById(R.id.activity_main_viewpager)
@@ -93,6 +119,14 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MySqliteHandler.Close()
+        doUnbindService()
+    }
+
+    private fun doUnbindService() {
+        if(mShouldBind){
+            unbindService(mConnection)
+            mShouldBind=false
+        }
     }
 
     private class adapter(val viewList: ArrayList<Fragment>,manager: android.support.v4.app.FragmentManager):FragmentPagerAdapter(manager){

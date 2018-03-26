@@ -107,4 +107,7 @@
     <string name="three">3</string>
     <string name="add_comment_reply_here">在这里输入回复</string>
     <string name="content">内容</string>
+    <string name="new_reply">新的回复</string>
+    <string name="push_channel">push_channel</string>
+    <string name="push_channel_name">帖子回复</string>
 </resources>
