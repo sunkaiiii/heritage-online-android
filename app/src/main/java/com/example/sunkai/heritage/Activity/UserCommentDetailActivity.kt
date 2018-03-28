@@ -82,12 +82,14 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             }
         } else {
             val id=intent.getIntExtra("id",0)
+            commentID=id
             ThreadPool.execute {
                 if(LoginActivity.userID==0||id==0) finish()
                 val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@execute
                 runOnUiThread {
                     setUserCommentView(userCommentData,null)
-                    getReplysInfo(userCommentData.id)
+                    showBackLinear()
+                    getReplysInfo(commentID)
                 }
             }
             Log.d(TAG, "onCreate: getID:$id")
@@ -149,6 +151,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun setUserCommentView(data: UserCommentData, image: ByteArray?) {
+        this.data=data
         informationTitle.text = data.commentTitle
         informationContent.text = data.commentContent
         informationReplyNum.text = data.replyNum.toString()
@@ -241,8 +244,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun generateDialog(commentID: Int): AddUserCommentBottomDialog {
-        val dialog = AddUserCommentBottomDialog(this, commentID)
+    private fun generateDialog(commentID: Int): AddUserCommentBottomDialog? {
+        val dialog = AddUserCommentBottomDialog(this, commentID,data?:return null)
         dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
             override fun onAddUserReplySuccess(data: CommentReplyInformation) {
                 val adapter = userCommentReplyRecyclerView.adapter
@@ -259,7 +262,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     override fun onClick(v: View) {
         when (v.id) {
             R.id.userCommentDetailReverse -> changeList()
-            R.id.userCommentAddReplyBtn -> generateDialog(commentID).show()
+            R.id.userCommentAddReplyBtn -> generateDialog(commentID)?.show()
         }
     }
 

@@ -13,6 +13,7 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
+import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
@@ -24,7 +25,7 @@ import com.example.sunkai.heritage.value.ERROR
  * 回帖的dialog
  * Created by sunkai on 2018/2/25.
  */
-class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int): BaseBottomDialog(context),AddUserReplyDialog {
+class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int,private val data:UserCommentData): BaseBottomDialog(context),AddUserReplyDialog {
     init {
         setContentView(R.layout.add_usercomment_reply_dialog)
         initViews()
@@ -66,9 +67,8 @@ class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int
     }
     private fun addReply(holder: Holder){
         val replyContent=holder.replyContent.text.toString()
-        val uriString=generateInentString()
         ThreadPool.execute{
-            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,uriString)
+            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,data.userID,data.userName)
             context.runOnUiThread {
                 if(result!= ERROR){
                     val replyID=result.toInt()
@@ -91,14 +91,6 @@ class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int
 
     fun setOnAddUserReplyListener(listner:AddUserReplyDialog){
         this.onAddUserReplyListener=listner
-    }
-
-    private fun generateInentString():String{
-        val intent = Intent(GlobalContext.instance, UserCommentDetailActivity::class.java)
-        intent.putExtra("id", commentID)
-        val uriString = intent.toUri(Intent.URI_INTENT_SCHEME)
-        Log.d("addCommentDialog", "uriString: $uriString")
-        return uriString
     }
 
     private fun checkUserLogin(): Boolean {
