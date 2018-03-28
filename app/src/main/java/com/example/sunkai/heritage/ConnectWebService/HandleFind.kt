@@ -128,8 +128,8 @@ object HandleFind:BaseSetting() {
         return URL+url
     }
 
-    fun GetAllUserCommentInfoByID(userID: Int): UserCommentData?{
-        val getUrl="$URL/GetAllUserCommentInfoByID?user=$userID"
+    fun GetAllUserCommentInfoByID(userID: Int,commentID: Int): UserCommentData?{
+        val getUrl="$URL/GetAllUserCommentInfoByID?user=$userID&commentID=$commentID"
         val result=PutGet(getUrl)
         return if(result== ERROR){
             null

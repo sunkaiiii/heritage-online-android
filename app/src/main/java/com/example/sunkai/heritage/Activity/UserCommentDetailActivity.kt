@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import androidx.transition.doOnEnd
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.Adapter.UserCommentReplyRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
@@ -80,7 +81,15 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                 setUserCommentView(data!!, imageByte)
             }
         } else {
-            val id = intent.getIntExtra("id", 0)
+            val id=intent.getIntExtra("id",0)
+            ThreadPool.execute {
+                if(LoginActivity.userID==0||id==0) finish()
+                val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@execute
+                runOnUiThread {
+                    setUserCommentView(userCommentData,null)
+                    getReplysInfo(userCommentData.id)
+                }
+            }
             Log.d(TAG, "onCreate: getID:$id")
             if (id == 0)
                 return
