@@ -18,13 +18,13 @@ import com.example.sunkai.heritage.Activity.UserOwnTieziActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePush
 import com.example.sunkai.heritage.Data.PushMessageData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.HOST_IP
 import com.example.sunkai.heritage.value.PUSH_PORT
 import com.google.gson.Gson
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.ref.WeakReference
@@ -76,21 +76,26 @@ class PushService : Service() {
         ThreadPool.execute {
             val resultList = HandlePush.GetPush(userID)
             if (resultList.isNotEmpty()) {
+                val notificationStringBuilder=StringBuilder()
+                resultList.forEach {
+                    notificationStringBuilder.append(String.format("%s:%s\n",it.userName,it.replyContent))
+                }
                 runOnUiThread(Runnable {
                     val pendingIntent=PendingIntent.getActivity(this,0,Intent(this,UserOwnTieziActivity::class.java),0)
-                    showNotification(resultList[0].replyContent,pendingIntent)
+                    showNotification(notificationStringBuilder.toString(),pendingIntent)
                 })
             }
         }
     }
 
     private fun handleSocketPushChannel(socket: Socket?) {
+        socket?:return
         ThreadPool.execute {
             if (LoginActivity.userID == 0) {
-                socket?.close()
+                socket.close()
                 return@execute
             }
-            if (socket != null && socket.isConnected) {
+            if (socket.isConnected) {
                 val bufferedReader = socket.getInputStream().bufferedReader()
                 val getSocketID = bufferedReader.readLine()
                 pushChannelID = getSocketID.toInt()
@@ -98,33 +103,39 @@ class PushService : Service() {
                 writer.write(LoginActivity.userID.toString())
                 writer.flush()
             }
-            socket?.keepAlive = true
+            socket.keepAlive = true
             var emtyTime = 0
-            inputStream = socket?.getInputStream() ?: return@execute
+            inputStream = socket.getInputStream() ?: return@execute
             inputStreamReader = InputStreamReader(inputStream)
             bufferedReader = BufferedReader(inputStreamReader)
             while (socket.isConnected && emtyTime < 100) {
-                val content = bufferedReader?.readLine()
-                if (content != null && !TextUtils.isEmpty(content)) {
-                    val pushMessageData=try{
-                        Gson().fromJson<PushMessageData>(content,PushMessageData::class.java)
-                    }catch (e:Exception){
-                        e.printStackTrace()
-                        continue
+                try {
+                    val content = bufferedReader?.readLine()
+                    if (content != null && !TextUtils.isEmpty(content)) {
+                        val pushMessageData = try {
+                            Gson().fromJson<PushMessageData>(content, PushMessageData::class.java)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            continue
+                        }
+                        runOnUiThread(Runnable {
+                            val intent = Intent(this@PushService, UserCommentDetailActivity::class.java)
+                            intent.putExtra("id", pushMessageData.replyCommentID)
+                            //这个flag非常重要，不添加的话将不会传递intent的信息
+                            val pendingIntent = PendingIntent.getActivity(this@PushService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                            showNotification(pushMessageData.replyContent, pendingIntent)
+                        })
+                    } else {
+                        emtyTime++
                     }
-                    runOnUiThread(Runnable {
-                        val intent=Intent(this,UserCommentDetailActivity::class.java)
-                        intent.putExtra("id",pushMessageData.replyCommentID)
-                        //这个flag非常重要，不添加的话将不会传递intent的信息
-                        val pendingIntent=PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT)
-                        showNotification(pushMessageData.replyContent,pendingIntent)
-                    })
-                } else {
+                }catch (e:IOException){
+                    e.printStackTrace()
                     emtyTime++
                 }
             }
         }
     }
+
 
     private fun showNotification(content: String,contentIntent:PendingIntent) {
         val text = getString(R.string.new_reply)
@@ -134,7 +145,7 @@ class PushService : Service() {
                 .setSmallIcon(R.mipmap.app_logo_image)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(content)
+                .setContentTitle(text)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
                 .setContentText(content)
@@ -147,15 +158,21 @@ class PushService : Service() {
         return START_NOT_STICKY
     }
 
-    override fun onDestroy() {
-        bufferedReader?.close()
-        bufferedReader = null
-        socketRef?.get()?.close()
-        mNM.cancel(NOTIFICATION)
-    }
 
     override fun onBind(intent: Intent): IBinder? {
         return mBinder
+    }
+
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        inputStream?.close()
+        inputStreamReader?.close()
+        bufferedReader?.close()
+        if(socketRef?.get()?.isConnected == true) {
+            socketRef?.get()?.close()
+        }
+        mNM.cancel(NOTIFICATION)
+        return super.onUnbind(intent)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -117,9 +117,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         MySqliteHandler.Close()
         doUnbindService()
+        stopService(Intent(this,PushService::class.java))
+        super.onDestroy()
     }
 
     private fun doUnbindService() {
