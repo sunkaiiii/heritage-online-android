@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
+import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Activity.UserOwnTieziActivity
@@ -23,10 +24,7 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.HOST_IP
 import com.example.sunkai.heritage.value.PUSH_PORT
 import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
+import java.io.*
 import java.lang.ref.WeakReference
 import java.net.ConnectException
 import java.net.Socket
@@ -38,9 +36,7 @@ class PushService : Service() {
     private val mBinder = LocalBinder()
     private var pushChannelID = -1
     private var socketRef: WeakReference<Socket>? = null
-    private var inputStream: InputStream? = null
-    private var inputStreamReader: InputStreamReader? = null
-    private var bufferedReader: BufferedReader? = null
+    private var bufferInputStream:BufferedInputStream?=null
 
     inner class LocalBinder : Binder() {
         internal val service: PushService
@@ -76,13 +72,14 @@ class PushService : Service() {
         ThreadPool.execute {
             val resultList = HandlePush.GetPush(userID)
             if (resultList.isNotEmpty()) {
-                val notificationStringBuilder=StringBuilder()
+                val notifiCationStringList=ArrayList<String>()
                 resultList.forEach {
-                    notificationStringBuilder.append(String.format("%s:%s\n",it.userName,it.replyContent))
+                    notifiCationStringList.add(String.format("%s:%s\n",it.userName,it.replyContent))
                 }
                 runOnUiThread(Runnable {
                     val pendingIntent=PendingIntent.getActivity(this,0,Intent(this,UserOwnTieziActivity::class.java),0)
-                    showNotification(notificationStringBuilder.toString(),pendingIntent)
+                    Log.d("notification",notifiCationStringList.toString())
+                    showNotification(notifiCationStringList.toTypedArray(),pendingIntent)
                 })
             }
         }
@@ -105,13 +102,17 @@ class PushService : Service() {
             }
             socket.keepAlive = true
             var emtyTime = 0
-            inputStream = socket.getInputStream() ?: return@execute
-            inputStreamReader = InputStreamReader(inputStream)
-            bufferedReader = BufferedReader(inputStreamReader)
+            bufferInputStream=BufferedInputStream(socket.getInputStream())
+            val buf=ByteArray(1024)
             while (socket.isConnected && emtyTime < 100) {
                 try {
-                    val content = bufferedReader?.readLine()
-                    if (content != null && !TextUtils.isEmpty(content)) {
+                    val count=bufferInputStream?.read(buf)
+                    if(count?:continue<0){
+                        continue
+                    }
+                    val content=String(buf,0,count)
+                    Log.d("content",content)
+                    if (!TextUtils.isEmpty(content)) {
                         val pushMessageData = try {
                             Gson().fromJson<PushMessageData>(content, PushMessageData::class.java)
                         } catch (e: Exception) {
@@ -123,7 +124,7 @@ class PushService : Service() {
                             intent.putExtra("id", pushMessageData.replyCommentID)
                             //这个flag非常重要，不添加的话将不会传递intent的信息
                             val pendingIntent = PendingIntent.getActivity(this@PushService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            showNotification(pushMessageData.replyContent, pendingIntent)
+                            showNotification(arrayOf(pushMessageData.replyContent), pendingIntent)
                         })
                     } else {
                         emtyTime++
@@ -137,18 +138,18 @@ class PushService : Service() {
     }
 
 
-    private fun showNotification(content: String,contentIntent:PendingIntent) {
+    private fun showNotification(content: Array<String>,contentIntent:PendingIntent) {
         val text = getString(R.string.new_reply)
-
-
+        val inboxStyle=NotificationCompat.InboxStyle()
+        inboxStyle.setBigContentTitle(text)
+        content.forEach { inboxStyle.addLine(it) }
         val notificaiton = NotificationCompat.Builder(this, getString(R.string.push_channel))
                 .setSmallIcon(R.mipmap.app_logo_image)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(text)
                 .setContentIntent(contentIntent)
                 .setAutoCancel(true)
-                .setContentText(content)
+                .setStyle(inboxStyle)
                 .build()
 
         mNM.notify(NOTIFICATION, notificaiton)
@@ -165,12 +166,13 @@ class PushService : Service() {
 
 
     override fun onUnbind(intent: Intent?): Boolean {
-        inputStream?.close()
-        inputStreamReader?.close()
-        bufferedReader?.close()
+        socketRef?.get()?.shutdownOutput()
+        socketRef?.get()?.shutdownInput()
         if(socketRef?.get()?.isConnected == true) {
             socketRef?.get()?.close()
         }
+        bufferInputStream?.close()
+        bufferInputStream=null
         mNM.cancel(NOTIFICATION)
         return super.onUnbind(intent)
     }
