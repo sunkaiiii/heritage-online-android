@@ -12,7 +12,7 @@ android {
         versionCode 15
         versionName "3.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        resConfigs "zh","en"
+        resConfigs "zh", "en"
     }
     buildTypes {
         release {

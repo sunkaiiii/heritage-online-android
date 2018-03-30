@@ -77,14 +77,20 @@
 
 
                 <TextView
+                    android:id="@+id/fragment_person_my_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawableLeft="@drawable/message"
+                    android:layout_margin="12dp"
+                    android:drawableLeft="@drawable/ic_message_black_24dp"
                     android:drawablePadding="8dp"
-                    android:drawableStart="@drawable/message"
-                    android:text="@string/my_message"
-                    android:visibility="gone" />
+                    android:drawableStart="@drawable/ic_message_black_24dp"
+                    android:text="@string/my_message" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/superLightGrey" />
 
                 <TextView
                     android:id="@+id/person_fragment_setting"

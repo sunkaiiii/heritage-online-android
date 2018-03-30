@@ -107,7 +107,10 @@
         <service
             android:name=".Service.PushService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".Activity.MyMessageActivity"
+            android:label="@string/my_message"/>
     </application>
 
 </manifest>

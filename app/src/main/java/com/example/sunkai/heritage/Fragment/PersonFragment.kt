@@ -150,6 +150,10 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                     intent = Intent(activity, MyCollectionActivity::class.java)
                     startActivity(intent)
                 }
+                R.id.fragment_person_my_message->{
+                    intent=Intent(activity,MyMessageActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
     }

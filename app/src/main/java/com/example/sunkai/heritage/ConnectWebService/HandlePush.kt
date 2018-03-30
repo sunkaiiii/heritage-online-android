@@ -22,6 +22,18 @@ object HandlePush:BaseSetting() {
         return arrayListOf()
     }
 
+    fun getUserPushMessages(userID: Int):List<PushMessageData>{
+        val url="$URL/GetAllPushReplyInfo?userID=$userID"
+        val result=PutGet(url)
+        if(result== ERROR) return arrayListOf()
+        try{
+            return fromJsonToList(result,Array<PushMessageData>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return  arrayListOf()
+    }
+
     fun AddPushMessage(userID: Int,replyCommentID:Int,replyToUserID:Int,userName:String,replyContent:String,replyToUserName:String,replyTime:String,originalReplyContent:String){
         val url="$URL/AddPushMessage"
         val formBody=FormBody.Builder()

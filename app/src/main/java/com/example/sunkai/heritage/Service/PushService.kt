@@ -124,7 +124,7 @@ class PushService : Service() {
                             intent.putExtra("id", pushMessageData.replyCommentID)
                             //这个flag非常重要，不添加的话将不会传递intent的信息
                             val pendingIntent = PendingIntent.getActivity(this@PushService, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-                            showNotification(arrayOf(pushMessageData.replyContent), pendingIntent)
+                            showNotification(arrayOf(String.format("%s:%s",pushMessageData.userName,pushMessageData.replyContent)), pendingIntent)
                         })
                     } else {
                         emtyTime++
