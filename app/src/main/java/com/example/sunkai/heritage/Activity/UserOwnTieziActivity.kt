@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -27,7 +27,7 @@ import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 
-class UserOwnTieziActivity : AppCompatActivity() {
+class UserOwnTieziActivity : BaseAutoLoginActivity() {
     private lateinit var adapter: MyOwnCommentRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +37,7 @@ class UserOwnTieziActivity : AppCompatActivity() {
         getInformation()
     }
 
-    private fun getInformation(){
+    override fun getInformation(){
         ThreadPool.execute {
             val datas=HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
             runOnUiThread {

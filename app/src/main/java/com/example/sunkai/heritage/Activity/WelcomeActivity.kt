@@ -3,20 +3,17 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Looper
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import androidx.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.infoToRSA
+import com.example.sunkai.heritage.tools.attempToLogin
 
 /**
  * 此页面是欢迎界面的类
@@ -64,7 +61,7 @@ class WelcomeActivity : AppCompatActivity() {
                 Thread.sleep(800)
                 username = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_name", null)
                 val userPassword=getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_password",null)
-                result=login(username,userPassword)
+                result= attempToLogin(username,userPassword)
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             }
@@ -97,12 +94,8 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun login(userName:String?,userPassword:String?):Boolean{
-        val name=userName?:return false
-        val password=userPassword?:return false
-        val encryptPassword= infoToRSA(password)?:return false
-        return HandleUser.Sign_In(name,encryptPassword)
-    }
+
+
 
     companion object {
         private const val GOTO_LOGIN = 0

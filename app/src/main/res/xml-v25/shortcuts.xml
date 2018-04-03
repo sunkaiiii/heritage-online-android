@@ -1,0 +1,34 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:shortcutId="add_comment"
+        android:shortcutLongLabel="@string/add_comment"
+        android:shortcutShortLabel="@string/add_comment">
+        <intent
+            android:action="com.ddmeng.hellonougat.action.MAIN"
+            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <intent
+            android:action="android.intent.action.STATIC_SHORTCUT_2"
+            android:targetClass="com.example.sunkai.heritage.Activity.AddFindCommentActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_format_size_orange_300_24dp"
+        android:shortcutId="my_comment"
+        android:shortcutLongLabel="@string/my_comment"
+        android:shortcutShortLabel="@string/my_comment">
+        <intent
+            android:action="com.ddmeng.hellonougat.action.MAIN"
+            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <intent
+            android:action="android.intent.action.STATIC_SHORTCUT_2"
+            android:targetClass="com.example.sunkai.heritage.Activity.UserOwnTieziActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

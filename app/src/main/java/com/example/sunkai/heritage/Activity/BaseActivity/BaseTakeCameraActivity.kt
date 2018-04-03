@@ -33,7 +33,7 @@ import java.io.IOException
  * 当某个页面需要打开或者拍摄图片时候所用的基类
  * Created by sunkai on 2018/1/4.
  */
-abstract class BaseTakeCameraActivity :AppCompatActivity(){
+abstract class BaseTakeCameraActivity :BaseAutoLoginActivity(){
 
     private fun openAlbum() {
         val intent = Intent("android.intent.action.GET_CONTENT")

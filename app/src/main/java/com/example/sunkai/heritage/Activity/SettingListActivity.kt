@@ -32,7 +32,6 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         initview()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         checkUserPermission()
-
     }
 
     private fun initview() {

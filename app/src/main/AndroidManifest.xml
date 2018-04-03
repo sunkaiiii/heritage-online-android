@@ -21,9 +21,11 @@
             android:theme="@style/AppThemeNoActionBarNoBackground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".Activity.LoginActivity.LoginActivity"
@@ -32,6 +34,7 @@
         <activity
             android:name=".Activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
+            android:launchMode="singleTask"
             android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".Activity.RegistActivity"
@@ -109,8 +112,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Activity.MyMessageActivity"
-            android:label="@string/my_message"/>
+        <activity
+            android:name=".Activity.MyMessageActivity"
+            android:label="@string/my_message" />
     </application>
 
 </manifest>
