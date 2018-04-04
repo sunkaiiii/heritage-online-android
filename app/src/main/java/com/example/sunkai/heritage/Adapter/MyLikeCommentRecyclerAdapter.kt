@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.SUCCESS
+import com.example.sunkai.heritage.value.TYPE_FIND
 import com.makeramen.roundedimageview.RoundedImageView
 
 /**
@@ -84,6 +85,7 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
                 holder.infoBackground.setBackgroundColor(color)
                 holder.commentImage.setImageDrawable(resource)
                 holder.likeButton.setColorFilter(color)
+                holder.collectButton.setImageResource(if (data.isCollect()) R.drawable.ic_bookmark_black_24dp else R.drawable.ic_bookmark_border_white_24dp)
                 holder.collectButton.setColorFilter(color)
             }
         }
@@ -104,7 +106,26 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
             handleLikeBtnClick(holder, data)
         }
         holder.collectButton.setOnClickListener {
+            handleCollecctBtnClick(holder, data)
+        }
+    }
 
+    private fun handleCollecctBtnClick(holder: Holder, data: UserCommentData) {
+        holder.collectButton.isEnabled = false
+        setCollectBtnState(holder,data)
+        ThreadPool.execute {
+            val result = if (data.isCollect())
+                HandlePerson.CancelUserCollect(LoginActivity.userID, TYPE_FIND, data.id)
+            else
+                HandlePerson.AddUserCollection(LoginActivity.userID, TYPE_FIND, data.id)
+            runOnUiThread(Runnable {
+                holder.collectButton.isEnabled = true
+                if (!result) {
+                    toast("出现问题，请稍后再试")
+                } else {
+                    setCollectDataState(data)
+                }
+            })
         }
     }
 
@@ -117,7 +138,7 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
 
     private fun handleLikeBtnClick(holder: Holder, data: UserCommentData) {
         holder.likeButton.isEnabled = false
-        setBtnState(holder, data)
+        setLikeBtnState(holder, data)
         ThreadPool.execute {
             val result = if (data.isLike())
                 HandleFind.CancelUserLike(LoginActivity.userID, data.id)
@@ -127,7 +148,7 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
                 holder.likeButton.isEnabled = true
                 if (!result) {
                     toast("出现问题，请稍后再试")
-                    setBtnState(holder, data) //出现问题，还原button的状态
+                    setLikeBtnState(holder, data) //出现问题，还原button的状态
                 } else {
                     setDataState(data)
                 }
@@ -135,11 +156,19 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
         }
     }
 
-    private fun setBtnState(holder: Holder, data: UserCommentData) {
+    private fun setLikeBtnState(holder: Holder, data: UserCommentData) {
         holder.likeButton.setImageResource(if (data.isLike()) R.drawable.ic_favorite_border_grey_700_24dp else R.drawable.ic_favorite_orange_a700_24dp)
+    }
+
+    private fun setCollectBtnState(holder: Holder,data: UserCommentData){
+        holder.collectButton.setImageResource(if (data.isCollect()) R.drawable.ic_bookmark_border_white_24dp else R.drawable.ic_bookmark_black_24dp)
     }
 
     private fun setDataState(data: UserCommentData) {
         data.isLike = if (data.isLike()) ERROR else SUCCESS
+    }
+
+    private fun setCollectDataState(data: UserCommentData) {
+        data.isCollect = if (data.isCollect()) ERROR else SUCCESS
     }
 }

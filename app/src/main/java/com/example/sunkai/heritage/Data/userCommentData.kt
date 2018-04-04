@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Data
 
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting.Companion.SUCCESS
+import com.example.sunkai.heritage.value.ERROR
 import java.io.Serializable
 
 /**
@@ -13,10 +14,11 @@ class UserCommentData(val id:Int,
                       var commentTitle:String,
                       var commentContent:String,
                       val userID:Int,
-                      var isLike:String,
-                      var isFollow:String,
+                      var isLike:String= ERROR,
+                      var isFollow:String= ERROR,
                       var likeNum:Int,
                       var replyNum:Int,
+                      var isCollect:String= ERROR,
                       var miniReplys:List<CommentReplyInformation>,
                       var imageUrl:String):Serializable {
     fun isLike():Boolean{
@@ -25,5 +27,9 @@ class UserCommentData(val id:Int,
 
     fun isFollow():Boolean{
         return SUCCESS==isFollow
+    }
+
+    fun isCollect():Boolean{
+        return SUCCESS==isCollect
     }
 }

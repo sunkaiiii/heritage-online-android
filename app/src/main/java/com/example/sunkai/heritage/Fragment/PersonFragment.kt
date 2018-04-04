@@ -138,10 +138,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                 R.id.sign_in_icon -> {
                     chooseAlertDialog.show()
                 }
-                R.id.fragment_person_about_us -> {
-                    intent = Intent(activity, AboutUSActivity::class.java)
-                    startActivity(intent)
-                }
                 R.id.fragment_person_my_like -> {
                     intent = Intent(activity, UserLikeCommentActivity::class.java)
                     startActivity(intent)
@@ -200,6 +196,9 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             R.id.search_user -> {
                 searchUser()
             }
+            R.id.about_us->{
+                showAboutUs()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -251,6 +250,11 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     private fun searchUser() {
         val intent = Intent(activity, SearchActivity::class.java)
         startActivityForResult(intent, FROM_SEARCH_ACTIVITY)
+    }
+
+    private fun showAboutUs(){
+        val intent = Intent(activity, AboutUSActivity::class.java)
+        startActivity(intent)
     }
 
     private fun checkLogin(): Boolean {
