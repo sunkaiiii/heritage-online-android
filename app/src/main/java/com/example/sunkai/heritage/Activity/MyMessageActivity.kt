@@ -1,12 +1,15 @@
 package com.example.sunkai.heritage.Activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.view.MenuItem
+import android.view.View
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyMessageRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePush
+import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
@@ -36,11 +39,25 @@ class MyMessageActivity : AppCompatActivity(),OnPageLoaded {
             runOnUiThread {
                 val adapter=MyMessageRecyclerAdapter(this,messages)
                 myMessageRecyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
+                setAdapterClick(adapter)
                 myMessageRecyclerView.adapter=adapter
                 onPostLoad()
             }
         }
     }
+
+    private fun setAdapterClick(adapter: MyMessageRecyclerAdapter) {
+        adapter.setOnItemClickListen(object:OnItemClickListener{
+            override fun onItemClick(view: View, position: Int) {
+                val data=adapter.getItem(position)
+                val intent=Intent(this@MyMessageActivity,UserCommentDetailActivity::class.java)
+                intent.putExtra("id",data.replyCommentID)
+                startActivity(intent)
+            }
+
+        })
+    }
+
 
     override fun onPreLoad() {
         myMessageSwipeRefresh.isRefreshing=true

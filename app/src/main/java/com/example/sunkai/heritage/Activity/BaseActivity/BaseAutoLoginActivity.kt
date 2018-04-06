@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.example.sunkai.heritage.Activity.RegistActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
@@ -13,6 +14,8 @@ abstract class BaseAutoLoginActivity : AppCompatActivity(), onAutoLogin {
     var dialog: NormalWarningDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //容错，防止注册页无法进入的问题（注册页继承了BaseTakeCameraActivity)
+        if(this is RegistActivity) return
         if (!checkLogin()) {
             showProcess()
             ThreadPool.execute {
