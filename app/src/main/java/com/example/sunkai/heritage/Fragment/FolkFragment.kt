@@ -90,8 +90,8 @@ class FolkFragment : BaseLazyLoadFragment() {
         viewPager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 val frament = adapter.getItem(position)
-                if (frament is ActivityFragment) {
-                    frament.getInformation()
+                if (frament is BaseLazyLoadFragment) {
+                    frament.lazyLoad()
                 }
             }
 

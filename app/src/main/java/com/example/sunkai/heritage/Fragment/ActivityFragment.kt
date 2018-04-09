@@ -26,10 +26,9 @@ import kotlinx.android.synthetic.main.fragment_activity1.*
 /**
  * 民间viewpager五个页面的fragment
  */
-class ActivityFragment : Fragment(), OnPageLoaded {
+class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private lateinit var channelName: String
     private var index: Int = 0
-    private var isLoadedData: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +43,23 @@ class ActivityFragment : Fragment(), OnPageLoaded {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         fragmentActivitySwipeRefresh.setOnRefreshListener {
-            isLoadedData = false
             getInformation()
         }
-        //因为默认启动是首页，于是直接加载首页内容
-        if (index == 0)
-            getInformation()
+
+        //如果是第一页，直接加载内容
+        if (index==0){
+            lazyLoad()
+        }
+    }
+
+    override fun startLoadInformation() {
+        getInformation()
+    }
+
+    override fun onRestoreFragmentLoadInformation() {
+        getInformation()
     }
 
     private fun setTransitionStartActivity(intent: Intent, view: View) {
@@ -77,20 +86,18 @@ class ActivityFragment : Fragment(), OnPageLoaded {
         }
     }
 
-    fun getInformation() {
+    private fun getInformation() {
         val activity = activity ?: return
-        if (!isLoadedData) {
-            onPreLoad()
-            ThreadPool.execute {
-                val datas = HandleFolk.GetChannelInformation(channelName)
-                runOnUiThread(Runnable {
-                    val adapter = ActivityRecyclerViewAdapter(activity, datas)
-                    setAdapterItemClick(adapter)
-                    activityRecyclerView.adapter = adapter
-                    refreshRefreshViewColor()
-                    onPostLoad()
-                })
-            }
+        onPreLoad()
+        ThreadPool.execute {
+            val datas = HandleFolk.GetChannelInformation(channelName)
+            runOnUiThread(Runnable {
+                val adapter = ActivityRecyclerViewAdapter(activity, datas)
+                setAdapterItemClick(adapter)
+                activityRecyclerView?.adapter = adapter
+                refreshRefreshViewColor()
+                onPostLoad()
+            })
         }
     }
 
@@ -131,7 +138,6 @@ class ActivityFragment : Fragment(), OnPageLoaded {
 
     override fun onPostLoad() {
         fragmentActivitySwipeRefresh.isRefreshing = false
-        isLoadedData = true
         refreshRefreshViewColor()
     }
 

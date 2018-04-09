@@ -101,7 +101,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 activiy.runOnUiThread {
                     val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what)
                     setAdpterClick(adapter)
-                    fragmentFindRecyclerView.adapter = adapter
+                    fragmentFindRecyclerView?.adapter = adapter
                     onPostLoad()
                 }
             }
@@ -144,7 +144,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
     }
 
     override fun onPostLoad() {
-        fragmentFindSwipeRefresh.isRefreshing = false
+        fragmentFindSwipeRefresh?.isRefreshing = false
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
