@@ -45,8 +45,17 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initViews()
+        super.onViewCreated(view, savedInstanceState)
+        if(savedInstanceState==null) {
+            initViews()
+        }
     }
+
+    override fun onRestoreFragmentLoadInformation() {
+        initViews()
+        lazyLoad()
+    }
+
 
     private fun initViews() {
 
@@ -70,6 +79,7 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     private fun setupViewPager(viewPager: ViewPager) {
+        viewPager.adapter=null
         val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
         //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容,并传入对应的viewpager当中的index
         for ((count, channelName) in ClassifyActivityDivide.divide.withIndex()) {
@@ -163,7 +173,10 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     fun getStatusBarShouldChangeColor(): Int {
-        return iv_fragment_main_scroll_change_image.drawable?.generateColor() ?: ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
+        return if (!this.isDetachhed)
+            iv_fragment_main_scroll_change_image.drawable?.generateColor()
+                    ?: ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary)
+        else ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary)
     }
 
     private val simpleTarget: SimpleTarget<Drawable> by lazy {

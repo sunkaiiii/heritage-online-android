@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         startPushService()
     }
 
+
     private var mBoundService:PushService?=null
     private var mShouldBind=false
     private val mConnection=object :ServiceConnection{

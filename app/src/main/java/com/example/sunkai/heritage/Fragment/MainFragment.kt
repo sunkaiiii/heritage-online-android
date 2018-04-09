@@ -35,9 +35,11 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initview()
         loadSomeMainNews()
     }
+
 
     private fun initview(){
         fragmentMainViewpager.offscreenPageLimit=1

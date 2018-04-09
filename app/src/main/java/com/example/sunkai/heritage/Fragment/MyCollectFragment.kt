@@ -46,9 +46,21 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(savedInstanceState==null) {
+            initViews()
+        }
+    }
+
+    private fun initViews(){
         my_colelct_refresh.setOnRefreshListener {
             startLoadInformation()
         }
+    }
+
+    override fun onRestoreFragmentLoadInformation() {
+        initViews()
+        lazyLoad()
     }
 
     override fun startLoadInformation() {

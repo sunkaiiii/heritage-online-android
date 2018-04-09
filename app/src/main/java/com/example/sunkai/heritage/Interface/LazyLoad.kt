@@ -6,4 +6,5 @@ package com.example.sunkai.heritage.Interface
  */
 interface LazyLoad {
     fun startLoadInformation()
+    fun onRestoreFragmentLoadInformation()
 }

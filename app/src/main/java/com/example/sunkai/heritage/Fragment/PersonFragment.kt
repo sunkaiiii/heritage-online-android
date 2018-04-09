@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.user_view.*
  */
 
 
-class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
+class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
 
     private lateinit var builder: AlertDialog.Builder
     private lateinit var ad: AlertDialog
@@ -47,12 +47,19 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initview()
+        if(savedInstanceState==null) {
+            initview()
+        }
         if (LoginActivity.userName == null) {
             sign_name_textview.text = "没有登录"
         } else {
             sign_name_textview.text = LoginActivity.userName
         }
+    }
+
+    override fun onRestoreFragmentLoadInformation(){
+        initview()
+        lazyLoad()
     }
 
     private fun initview() {

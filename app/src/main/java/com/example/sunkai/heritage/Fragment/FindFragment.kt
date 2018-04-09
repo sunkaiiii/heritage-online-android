@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
  * 发现页面的类
  */
 
-class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded {
+class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.OnItemSelectedListener, OnPageLoaded {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -37,7 +37,15 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if(savedInstanceState==null) {
+            initview()
+        }
+    }
+
+    override fun onRestoreFragmentLoadInformation(){
         initview()
+        lazyLoad()
     }
 
     private fun initview() {
@@ -47,31 +55,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded 
                 1 -> loadUserCommentData(MY_FOCUS_COMMENT)
             }
         }
-    }
-
-    private fun loadInformation() {
-
-        //程序默认显示广场的全部帖子
-        loadUserCommentData(ALL_COMMENT)
 
         //Spinear切换，重新加载adpater的数据
-        selectSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                when (position) {
-                    0 -> {
-                        loadUserCommentData(ALL_COMMENT)
-                    }
-                    1 -> {
-                        checkUserIsLogin()
-                        loadUserCommentData(MY_FOCUS_COMMENT)
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
+        selectSpinner.onItemSelectedListener =this
         //发帖
         fragmentFindAddCommentBtn.setOnClickListener {
             if (LoginActivity.userID == 0) {
@@ -86,8 +72,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded 
         }
     }
 
+
     override fun startLoadInformation() {
-        loadInformation()
+        loadUserCommentData(ALL_COMMENT)
     }
 
     private fun checkUserIsLogin() {
@@ -158,6 +145,22 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener, OnPageLoaded 
 
     override fun onPostLoad() {
         fragmentFindSwipeRefresh.isRefreshing = false
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        when (position) {
+            0 -> {
+                loadUserCommentData(ALL_COMMENT)
+            }
+            1 -> {
+                checkUserIsLogin()
+                loadUserCommentData(MY_FOCUS_COMMENT)
+            }
+        }
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>) {
+
     }
 
     companion object {

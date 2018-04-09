@@ -34,8 +34,17 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initView()
+        super.onViewCreated(view, savedInstanceState)
+        if(savedInstanceState==null) {
+            initView()
+        }
     }
+
+    override fun onRestoreFragmentLoadInformation(){
+        initView()
+        lazyLoad()
+    }
+
 
     private fun initView() {
         seeMoreNewsRefresh.setOnRefreshListener {
