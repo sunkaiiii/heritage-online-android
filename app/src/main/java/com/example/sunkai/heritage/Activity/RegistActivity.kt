@@ -47,14 +47,14 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        window.setBackgroundDrawable(null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFullScreen()
             startAnimation()
         }
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regist)
         initView()
-        window.setBackgroundDrawable(null)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
