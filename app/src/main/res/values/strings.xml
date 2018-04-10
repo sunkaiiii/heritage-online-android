@@ -111,4 +111,6 @@
     <string name="push_channel">push_channel</string>
     <string name="push_channel_name">帖子回复</string>
     <string name="add_comment">发帖</string>
+    <string name="original_content">原帖：</string>
+    <string name="reply">回复：</string>
 </resources>

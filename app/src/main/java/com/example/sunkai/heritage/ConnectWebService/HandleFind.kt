@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.ConnectWebService
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
-import android.util.TimeUtils
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -194,7 +193,7 @@ object HandleFind : BaseSetting() {
         return PutGet(getUrl) == SUCCESS
     }
 
-    fun AddUserCommentReply(userID: Int, commentID: Int, reply: String, writterID: Int, writterName: String): String {
+    fun AddUserCommentReply(userID: Int, commentID: Int, reply: String, writterID: Int, writterName: String,originalReplyContent:String): String {
         val postUrl = "$URL/AddUserCommentReply"
         val formBody = FormBody.Builder()
                 .add("userID", userID.toString())
@@ -206,7 +205,10 @@ object HandleFind : BaseSetting() {
             if (LoginActivity.userID != 0) {
                 ThreadPool.execute {
                     val userName = LoginActivity.userName ?: return@execute
-                    HandlePush.AddPushMessage(LoginActivity.userID, commentID, writterID, userName, reply, writterName, "20180303", "1")
+                    val replyTime= Calendar.getInstance().time
+                    val timeformat=SimpleDateFormat.getDateInstance().format(replyTime)
+                    Log.d("test",timeformat)
+                    HandlePush.AddPushMessage(LoginActivity.userID, commentID, writterID, userName, reply, writterName, "20180202", originalReplyContent)
                 }
             }
         }

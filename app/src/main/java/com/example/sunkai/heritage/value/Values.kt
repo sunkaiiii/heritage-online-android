@@ -52,8 +52,8 @@ else
 const val SUCCESS = "SUCCESS"
 const val ERROR = "ERROR"
 
-const val HOST = "http://btbudinner.win:8088"
-const val HOST_IP="10.20.254.81"
+const val HOST = "http://sunkai.xyz:8080"
+const val HOST_IP="sunkai.xyz"
 const val PUSH_PORT=8088
 
 const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"

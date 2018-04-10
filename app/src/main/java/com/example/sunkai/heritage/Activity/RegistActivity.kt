@@ -1,10 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -29,7 +30,7 @@ import java.util.*
 
 class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatcher {
 
-    private var userImageBitmap:Bitmap?=null
+    private var userImageBitmap: Bitmap? = null
 
     private var isUploadImage = false
 
@@ -45,34 +46,47 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                 "密码输入不一致")
     }
 
-    private fun startAnimation() {
-        if (Build.VERSION.SDK_INT >= 21) {
-            window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
-            val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
-            window.enterTransition = slideRight
-        } else {
-            return
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startAnimation()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setWindowFullScreen()
+            startAnimation()
+        }
         setContentView(R.layout.activity_regist)
         initView()
         window.setBackgroundDrawable(null)
     }
 
-    @SuppressLint("InlinedApi")
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun startAnimation() {
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+        val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
+        window.enterTransition = slideRight
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun setWindowFullScreen() {
+        val decorView = window.decorView
+        var option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            option = option or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            option = option or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        }
+        window.navigationBarColor = Color.TRANSPARENT
+        decorView.systemUiVisibility = option
+    }
+
     private fun initView() {
         addAllViews(registAllViewLinearLatyout)
         setBackGround()
         setAllViewsOnclick()
         regist_actitivy_password_editText.addTextChangedListener(this)
         regist_actitivy_insure_editText.addTextChangedListener(this)
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         if (Build.VERSION.SDK_INT >= 16) {
             val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -97,7 +111,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
 
     override fun setImageToImageView(bitmap: Bitmap) {
         Glide.with(this).load(bitmap).into(registUserImage)
-        userImageBitmap=bitmap
+        userImageBitmap = bitmap
         isUploadImage = true
 
     }
@@ -183,7 +197,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         val userPasswordDecript = (infoToRSA(userPassword) ?: return)
         val findPasswordAnswerDecript = (infoToRSA(findPasswordAnswer) ?: return)
         val result = if (isUploadImage) {
-            val bitmap=userImageBitmap?:return
+            val bitmap = userImageBitmap ?: return
             HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswerDecript, bitmap.toByteArray())
         } else {
             HandleUser.User_Regist(userName, userPasswordDecript, findPasswordQuestion, findPasswordAnswerDecript, null)

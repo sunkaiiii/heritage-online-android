@@ -52,7 +52,7 @@ class MyMessageRecyclerAdapter(val context:Context,data:List<PushMessageData>):B
     private fun getUserImage(holder: Holder,userID: Int) {
         ThreadPool.execute {
             val userImagUrl=HandlePerson.GetUserImageURL(userID)
-            if(userImagUrl!= ERROR){
+            if(userImagUrl!= ERROR||!userImagUrl.isNullOrEmpty()){
                 runOnUiThread(Runnable {
                     Glide.with(context).load(userImagUrl).into(holder.userImage)
                 })

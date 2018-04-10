@@ -19,8 +19,9 @@ abstract class BaseAutoLoginActivity : AppCompatActivity(), onAutoLogin {
         if (!checkLogin()) {
             showProcess()
             ThreadPool.execute {
+                val result=backGroundLogin()
                 runOnUiThread {
-                    if (backGroundLogin()) {
+                    if (result) {
                         dismissProgress()
                         getInformation()
                     } else {

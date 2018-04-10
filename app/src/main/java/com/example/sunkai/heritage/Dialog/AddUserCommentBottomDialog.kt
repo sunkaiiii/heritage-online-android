@@ -68,7 +68,7 @@ class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int
     private fun addReply(holder: Holder){
         val replyContent=holder.replyContent.text.toString()
         ThreadPool.execute{
-            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,data.userID,data.userName)
+            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,data.userID,data.userName,data.commentContent)
             context.runOnUiThread {
                 if(result!= ERROR){
                     val replyID=result.toInt()
