@@ -14,11 +14,6 @@ class GlobalContext : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-
-        val sharePrefrence=getSharedPreferences("setting",Context.MODE_PRIVATE)
-        if(sharePrefrence.getBoolean("pushSwitch",false)) {
-
-        }
     }
 
 

@@ -71,6 +71,11 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
             putBoolean("pushSwitch", isChecked)
         }
+        if(isChecked){
+            MainActivity.activityRef?.get()?.startPushService()
+        }else{
+            MainActivity.activityRef?.get()?.doUnbindService()
+        }
     }
 
     private fun setPermission(id: Int, position: Int) {

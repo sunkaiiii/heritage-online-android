@@ -63,7 +63,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         fragmentManager = supportFragmentManager
         initViews()
-        startPushService()
+        val sharePrefrence=getSharedPreferences("setting",Context.MODE_PRIVATE)
+        if(sharePrefrence.getBoolean("pushSwitch",false)) {
+            startPushService()
+        }
     }
 
 
@@ -78,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             mBoundService=(p1 as PushService.LocalBinder).service
         }
     }
-    private fun startPushService() {
+    fun startPushService() {
         if(bindService(Intent(this,PushService::class.java),mConnection, Context.BIND_AUTO_CREATE)) {
             mShouldBind = true
         }
@@ -124,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun doUnbindService() {
+    fun doUnbindService() {
         if(mShouldBind){
             unbindService(mConnection)
             mShouldBind=false
