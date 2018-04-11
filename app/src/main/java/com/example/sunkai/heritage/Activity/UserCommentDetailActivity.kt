@@ -9,7 +9,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
-import androidx.transition.doOnEnd
+import androidx.core.transition.doOnEnd
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity

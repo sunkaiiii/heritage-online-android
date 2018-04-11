@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.content.edit
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Dialog.Base.BaseDialogFragment
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.push_warining_layout.*

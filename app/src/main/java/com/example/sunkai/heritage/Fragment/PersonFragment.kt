@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.view.menu.MenuBuilder
 import android.view.*
 import android.widget.Toast
-import androidx.view.forEach
+import androidx.core.view.forEach
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*

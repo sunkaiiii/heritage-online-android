@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import androidx.content.edit
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.Logininteractor
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser

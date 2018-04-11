@@ -14,7 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.EditText
-import androidx.view.children
+import androidx.core.view.children
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
@@ -47,19 +47,18 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         window.setBackgroundDrawable(null)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFullScreen()
             startAnimation()
         }
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_regist)
         initView()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startAnimation() {
-        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
         val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
         window.enterTransition = slideRight
     }
@@ -67,16 +66,11 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setWindowFullScreen() {
         val decorView = window.decorView
-        var option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            option = option or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            option = option or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        }
         window.navigationBarColor = Color.TRANSPARENT
+        window.statusBarColor=Color.TRANSPARENT
         decorView.systemUiVisibility = option
     }
 
@@ -87,12 +81,6 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         regist_actitivy_password_editText.addTextChangedListener(this)
         regist_actitivy_insure_editText.addTextChangedListener(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (Build.VERSION.SDK_INT >= 16) {
-            val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-            window.decorView.systemUiVisibility = option
-        }
     }
 
     private fun addAllViews(viewgroup: ViewGroup) {

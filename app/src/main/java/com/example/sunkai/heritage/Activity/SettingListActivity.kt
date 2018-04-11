@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
-import androidx.content.edit
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R

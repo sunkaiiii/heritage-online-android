@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
-import androidx.content.edit
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
