@@ -60,7 +60,7 @@
                     >
 
                     <AutoCompleteTextView
-                        android:id="@+id/email"
+                        android:id="@+id/userNameEditText"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_marginEnd="8dp"
@@ -86,7 +86,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/text_input_layout1">
 
                     <EditText
-                        android:id="@+id/password"
+                        android:id="@+id/passwordEditText"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:layout_margin="8dp"
@@ -99,7 +99,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <at.markushi.ui.CircleButton
-                    android:id="@+id/email_sign_in_button"
+                    android:id="@+id/signInButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -114,7 +114,7 @@
                 <ProgressBar
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:id="@+id/pg_activity_login_progress"
+                    android:id="@+id/loginProgressBar"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
@@ -125,7 +125,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/activity_login_find_password"
+                    android:id="@+id/findPasswordTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
@@ -135,7 +135,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/email_sign_in_button"
+                    app:layout_constraintTop_toBottomOf="@+id/signInButton"
                     app:layout_constraintVertical_bias="0.9"
                     android:layout_marginLeft="8dp" />
             </android.support.constraint.ConstraintLayout>
@@ -151,7 +151,7 @@
                 app:layout_constraintVertical_bias="0.8">
 
                 <TextView
-                    android:id="@+id/activity_login_jump_login"
+                    android:id="@+id/jumpSignIn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
@@ -161,7 +161,7 @@
                     android:layout_marginRight="8dp" />
 
                 <Button
-                    android:id="@+id/activity_login_regist"
+                    android:id="@+id/registButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
@@ -174,7 +174,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/btn_activity_login_goto_login"
+                    android:id="@+id/goToLoginButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"

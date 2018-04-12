@@ -8,7 +8,7 @@ import com.example.sunkai.heritage.R
 
 /**
  * Created by sunkai on 2017/12/29.
- *
+ *关于我们页面
  */
 class AboutUSActivity:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -39,6 +39,11 @@ const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
 const val TYPE_FIND = "发现"
+const val FIRST_OPEN=0
+const val NOT_FIRST_OPEN=1
+const val NOT_LOGIN=0
+const val FROM_WELCOME=0
+const val FROM_REGIST=0
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

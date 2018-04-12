@@ -28,6 +28,7 @@ class LoginInteractorImpl:Logininteractor {
             Handler(Looper.getMainLooper()).post {
                 if(result){
                     LoginActivity.userName=username
+                    //登陆成功，写入sharePrefrece自动登录信息
                     writeSharePrefrece(username,password)
                     listner.onSuccess()
                 }else{

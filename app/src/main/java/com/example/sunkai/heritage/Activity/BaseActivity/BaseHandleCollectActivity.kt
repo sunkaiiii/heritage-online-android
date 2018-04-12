@@ -19,54 +19,6 @@ import com.example.sunkai.heritage.value.TYPE_MAIN
 abstract class BaseHandleCollectActivity : AppCompatActivity(), HandleCollect {
     private var menuItem: Menu? = null
 
-    override fun checkIsCollect(userID: Int, typeName: String, typeID: Int): Boolean {
-        val id = getID() ?: return false
-        return HandlePerson.CheckIsCollection(LoginActivity.userID, getType(), id)
-    }
-
-    override fun handleCollect(item: MenuItem) {
-        val id = getID() ?: return
-        ThreadPool.execute {
-            val isCollect = checkIsCollect(LoginActivity.userID, getType(), id)
-            val result = if (isCollect) {
-                HandlePerson.CancelUserCollect(LoginActivity.userID, getType(), id)
-            } else {
-                HandlePerson.AddUserCollection(LoginActivity.userID, getType(), id)
-            }
-            runOnUiThread {
-                setItemState(item, result, !isCollect)
-            }
-        }
-    }
-
-    override fun setItemState(item: MenuItem, success: Boolean, checked: Boolean, showToast: Boolean) {
-        item.isEnabled = true
-        if (success) {
-            item.setIcon(if (checked) R.drawable.ic_bookmark_white_24dp else R.drawable.ic_bookmark_border_white_24dp)
-            val toastString = if (checked) "添加收藏成功" else "取消收藏成功"
-            if(showToast) {
-                toast(toastString)
-            }
-        } else {
-            toast("出现问题，请稍后再试")
-        }
-    }
-
-    private fun getCollectInfo() {
-        val item = menuItem?.findItem(R.id.user_collect) ?: return
-        val id = getID() ?: return
-        if (LoginActivity.userID == 0) {
-            return
-        }
-        item.isEnabled = false
-        ThreadPool.execute {
-            val result = checkIsCollect(LoginActivity.userID, TYPE_MAIN, id)
-            runOnUiThread {
-                setItemState(item, true, result,false)
-            }
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.user_collect_menu, menu)
         menuItem = menu
@@ -88,6 +40,54 @@ abstract class BaseHandleCollectActivity : AppCompatActivity(), HandleCollect {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+    //判断是否已经收藏了这个页面，如果已经收藏，则更新按钮状态
+    private fun getCollectInfo() {
+        val item = menuItem?.findItem(R.id.user_collect) ?: return
+        val id = getID() ?: return
+        if (LoginActivity.userID == 0) {
+            return
+        }
+        item.isEnabled = false
+        ThreadPool.execute {
+            val result = checkIsCollect(LoginActivity.userID, getType(), id)
+            runOnUiThread {
+                setItemState(item, true, result, false)
+            }
+        }
+    }
+
+    override fun handleCollect(item: MenuItem) {
+        val id = getID() ?: return
+        ThreadPool.execute {
+            val isCollect = checkIsCollect(LoginActivity.userID, getType(), id)
+            val result = if (isCollect) {
+                HandlePerson.CancelUserCollect(LoginActivity.userID, getType(), id)
+            } else {
+                HandlePerson.AddUserCollection(LoginActivity.userID, getType(), id)
+            }
+            runOnUiThread {
+                setItemState(item, result, !isCollect)
+            }
+        }
+    }
+
+    override fun checkIsCollect(userID: Int, typeName: String, typeID: Int): Boolean {
+        val id = getID() ?: return false
+        return HandlePerson.CheckIsCollection(LoginActivity.userID, getType(), id)
+    }
+
+    override fun setItemState(item: MenuItem, success: Boolean, checked: Boolean, showToast: Boolean) {
+        item.isEnabled = true
+        if (success) {
+            item.setIcon(if (checked) R.drawable.ic_bookmark_white_24dp else R.drawable.ic_bookmark_border_white_24dp)
+            val toastString = if (checked) "添加收藏成功" else "取消收藏成功"
+            if (showToast) {
+                toast(toastString)
+            }
+        } else {
+            toast("出现问题，请稍后再试")
+        }
     }
 
     private fun checkIsLogin(): Boolean {

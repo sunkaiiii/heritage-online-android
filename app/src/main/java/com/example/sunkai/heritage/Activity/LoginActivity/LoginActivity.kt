@@ -13,8 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.widget.*
-import at.markushi.ui.CircleButton
+import android.widget.ArrayAdapter
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginInteractorImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginPresnterImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
@@ -22,6 +21,8 @@ import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
 import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.FROM_REGIST
+import com.example.sunkai.heritage.value.FROM_WELCOME
 import com.example.sunkai.heritage.value.LOG_OUT
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -31,16 +32,7 @@ import kotlinx.android.synthetic.main.activity_login.*
  */
 class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
-    private lateinit var mEmailView: AutoCompleteTextView
-    private lateinit var mPasswordView: EditText
-    private lateinit var registButton: Button
-    private lateinit var mEmailSignInButton: CircleButton
-    private lateinit var jumpSignIn: TextView
-    private lateinit var findPassword: TextView
-    private lateinit var presenter: LoginPresnterImpl
-
-    private val requestCode: Int = 0
-
+    private val presenter = LoginPresnterImpl(this, LoginInteractorImpl())
     private var isIntoMainpage = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,39 +43,33 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFullScreen()
         }
-        isIntoMainpage = intent.getIntExtra("isInto", 0)
-        jumpSignIn.visibility = if (isIntoMainpage == 0) View.VISIBLE else View.GONE
-        presenter = LoginPresnterImpl(this, LoginInteractorImpl())
+        //如果是从欢迎页进入的，则显示跳过登录
+        isIntoMainpage = intent.getIntExtra("isInto", FROM_WELCOME)
+        jumpSignIn.visibility = if (isIntoMainpage == FROM_WELCOME) View.VISIBLE else View.GONE
         presenter.loadUserNamesInShareprefrence()
     }
 
 
     private fun initview() {
-        jumpSignIn = findViewById(R.id.activity_login_jump_login)
-        mEmailSignInButton = findViewById(R.id.email_sign_in_button)
-        registButton = findViewById(R.id.activity_login_regist)
-        mEmailView = findViewById(R.id.email)
-        mPasswordView = findViewById(R.id.password)
-        findPassword = findViewById(R.id.activity_login_find_password)
-        activity_login_jump_login.setOnClickListener(this)
-        btn_activity_login_goto_login.setOnClickListener(this)
-        email_sign_in_button.setOnClickListener(this)
-        activity_login_regist.setOnClickListener(this)
-        activity_login_find_password.setOnClickListener(this)
-
+        jumpSignIn.setOnClickListener(this)
+        goToLoginButton.setOnClickListener(this)
+        signInButton.setOnClickListener(this)
+        registButton.setOnClickListener(this)
+        findPasswordTextView.setOnClickListener(this)
     }
 
+    //设置全屏沉浸窗口
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun setWindowFullScreen() {
         val decorView = window.decorView
-        var option=(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        var option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             option = option or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            option=option or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            option = option or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         }
         window.navigationBarColor = Color.TRANSPARENT
         decorView.systemUiVisibility = option
@@ -92,26 +78,29 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.activity_login_jump_login -> jumpToMainActivity()
-            R.id.btn_activity_login_goto_login -> showLoginWidge()
-            R.id.email_sign_in_button -> presenter.attemptoLogin(mEmailView.text.toString(), mPasswordView.text.toString())
-            R.id.activity_login_regist -> jumpToRegist()
-            R.id.activity_login_find_password -> showFindPassWordDialog()
+            R.id.jumpSignIn -> jumpToMainActivity()
+            R.id.goToLoginButton -> showLoginWidge()
+            R.id.signInButton -> presenter.attemptoLogin(userNameEditText.text.toString(), passwordEditText.text.toString())
+            R.id.registButton -> jumpToRegist()
+            R.id.findPasswordTextView -> showFindPassWordDialog()
         }
     }
 
+    //跳过登录
     private fun jumpToMainActivity() {
         val intent = Intent(this@LoginActivity, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
 
+    //点击登录按钮，显示登陆模块
     override fun showLoginWidge() {
         TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(Gravity.END))
         ll_activity_login_navagate.visibility = View.INVISIBLE
         include_login_view.visibility = View.VISIBLE
     }
 
+    //在登录模块点击返回，显示第一页
     override fun showFirstPageWidge() {
         TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(Gravity.START))
         include_login_view.visibility = View.INVISIBLE
@@ -122,9 +111,9 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         val intent = Intent(this@LoginActivity, RegistActivity::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.exitTransition = android.transition.TransitionInflater.from(this).inflateTransition(android.R.transition.fade)
-            ActivityCompat.startActivityForResult(this, intent, requestCode, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
+            ActivityCompat.startActivityForResult(this, intent, FROM_REGIST, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
         } else {
-            startActivityForResult(intent, requestCode)
+            startActivityForResult(intent, FROM_REGIST)
         }
     }
 
@@ -133,42 +122,47 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         dialog.show(supportFragmentManager, "找回密码问题")
     }
 
+
     override fun disableWidge() {
-        mEmailSignInButton.isEnabled = false
-        mEmailSignInButton.visibility = View.INVISIBLE
-        pg_activity_login_progress.visibility = View.VISIBLE
+        setWidhgeState(false)
     }
 
     override fun enableWidge() {
-        mEmailSignInButton.isEnabled = true
-        mEmailSignInButton.visibility = View.VISIBLE
-        pg_activity_login_progress.visibility = View.GONE
+        setWidhgeState(true)
     }
 
+    private fun setWidhgeState(state: Boolean) {
+        signInButton.isEnabled = state
+        signInButton.visibility = if (state) View.VISIBLE else View.INVISIBLE
+        loginProgressBar.visibility = if (state) View.GONE else View.VISIBLE
+    }
+
+    //读取登陆过的用户的用户名（不包括密码）
     override fun updateAutoCompleteUserNames(userNames: Set<String>) {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1)
         adapter.addAll(userNames)
-        mEmailView.setAdapter(adapter)
+        userNameEditText.setAdapter(adapter)
     }
 
     override fun showTextEmptyError() {
-        if (TextUtils.isEmpty(mEmailView.text.toString())) {
-            mEmailView.error = "用户名不能为空"
+        if (TextUtils.isEmpty(userNameEditText.text.toString())) {
+            userNameEditText.error = "用户名不能为空"
         }
-        if (TextUtils.isEmpty(mPasswordView.text.toString())) {
-            mPasswordView.error = "密码不能为空"
+        if (TextUtils.isEmpty(passwordEditText.text.toString())) {
+            passwordEditText.error = "密码不能为空"
         }
     }
 
+    //登陆返回密码错误的时候，显示密码错误
     override fun setPasswordError() {
-        mPasswordView.error = getString(R.string.error_incorrect_password)
-        mPasswordView.requestFocus()
+        passwordEditText.error = getString(R.string.error_incorrect_password)
+        passwordEditText.requestFocus()
     }
 
     override fun gotoMainPage() {
 
         //从Welcome页过来而并非从二级页面登录，则直接进入主页
-        if (isIntoMainpage == 0 || isIntoMainpage == LOG_OUT) {
+        if (isIntoMainpage == FROM_WELCOME || isIntoMainpage == LOG_OUT) {
             val intent = Intent(this@LoginActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -180,12 +174,13 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
     }
 
 
+    //从注册页会带回用户名和密码，执行登陆
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
-            1 -> {
-                val loginName = data!!.getStringExtra("userName")
-                val loginPassword = data.getStringExtra("passWord")
+            FROM_REGIST -> {
+                val loginName = data?.getStringExtra("userName") ?: return
+                val loginPassword = data.getStringExtra("passWord") ?: return
                 presenter.attemptoLogin(loginName, loginPassword)
             }
         }

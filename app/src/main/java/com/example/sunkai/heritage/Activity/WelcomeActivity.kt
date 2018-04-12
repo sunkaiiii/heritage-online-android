@@ -14,6 +14,9 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.attempToLogin
+import com.example.sunkai.heritage.value.FIRST_OPEN
+import com.example.sunkai.heritage.value.NOT_FIRST_OPEN
+import com.example.sunkai.heritage.value.NOT_LOGIN
 
 /**
  * 此页面是欢迎界面的类
@@ -27,77 +30,58 @@ class WelcomeActivity : AppCompatActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_welcome)
-
-        val sharedPreferences = getSharedPreferences("setting", Context.MODE_PRIVATE)
-        var startCount = sharedPreferences.getInt("startCount", 0)
-        if (startCount == 0) {
-            startCount++
+        //判断是否是第一次启动，如果是第一次启动则显示是否打开推送的弹窗
+        if (getSharedPreferences("setting", Context.MODE_PRIVATE).getInt("startCount", FIRST_OPEN) == FIRST_OPEN) {
             getSharedPreferences("setting", Context.MODE_PRIVATE).edit {
-                putInt("startCount", startCount)
+                putInt("startCount", NOT_FIRST_OPEN)
                 putBoolean("pushSwitch", false)
             }
             showDialog()
 
         } else {
-            goToLogin(GOTO_LOGIN)
+            goToLogin()
         }
     }
 
     private fun showDialog() {
         val dialog = PushDialog()
-        dialog.setOnDialogMissListner(object :OnDialogDismiss{
+        dialog.setOnDialogMissListner(object : OnDialogDismiss {
             override fun onDialogDismiss() {
-                goToLogin(GOTO_LOGIN)
+                goToLogin()
             }
         })
         dialog.show(supportFragmentManager, "开启推送？")
     }
 
-    private fun goToLogin(what: Int) {
-        var result=false
-        var username:String?=null
+    private fun goToLogin() {
         ThreadPool.execute {
-            try {
-                Thread.sleep(800)
-                username = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_name", null)
-                val userPassword=getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_password",null)
-                result= attempToLogin(username,userPassword)
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            }
+            //首先，获取自动登录的信息
+            val username = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_name", null)
+            val userPassword = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_password", null)
+            //尝试尝试自动登录
+            val result = attempToLogin(username, userPassword)
             runOnUiThread {
-                if(result) {
-                    val sharedPreferences = getSharedPreferences("data", Context.MODE_PRIVATE)
-                    LoginActivity.userName = sharedPreferences.getString("user_name", null)
-                }else{
-                    if(username!=null){
-                        toast("您的密码已过期，请重新登陆")
-                    }
-                    LoginActivity.userID=0
-                }
-                if (what == GOTO_LOGIN) {
-                    val intent: Intent
-                    when (LoginActivity.userID) {
-                        0 -> {
-                            intent = Intent(this@WelcomeActivity, LoginActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                        else -> {
-                            intent = Intent(this@WelcomeActivity, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }
-                }
+                handleLogin(result, username)
             }
         }
     }
 
-
-
-
-    companion object {
-        private const val GOTO_LOGIN = 0
+    private fun handleLogin(autoLoginSuccess: Boolean, username: String?) {
+        val intent: Intent
+        if (autoLoginSuccess) {
+            LoginActivity.userName = username
+            intent = Intent(this@WelcomeActivity, MainActivity::class.java)
+        } else {
+            //如果自动登录失败，但存有自动登录用户信息，则提示密码过期
+            if (username != null) {
+                toast("您的密码已过期，请重新登陆")
+            }
+            LoginActivity.userID = NOT_LOGIN
+            intent = Intent(this@WelcomeActivity, LoginActivity::class.java)
+        }
+        startActivity(intent)
+        finish()
     }
 }
+
+
