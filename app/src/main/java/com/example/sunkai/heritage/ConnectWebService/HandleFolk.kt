@@ -9,7 +9,7 @@ import com.google.gson.Gson
 
 
 /**
- * Created by sunkai on 2017-1-9.
+ * Created by sunkai on 2018-1-9.
  * 此类封装了有关民间页相关的功能的服务器请求的方法
  */
 

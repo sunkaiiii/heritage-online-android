@@ -21,12 +21,13 @@ import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.ActivityData
-import com.example.sunkai.heritage.Data.ClassifyActivityDivide
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
+import com.example.sunkai.heritage.value.CLASIIFY_DIVIDE
+import com.example.sunkai.heritage.value.CLASSIFY_DIVIDE_TABVIEWSHOW
 import com.example.sunkai.heritage.value.HOST
 import kotlinx.android.synthetic.main.fragment_folk.*
 import java.util.*
@@ -62,8 +63,8 @@ class FolkFragment : BaseLazyLoadFragment() {
         setupViewPager(mainTabContent)
         tabayout.setupWithViewPager(mainTabContent)
         tabayout.setTabTextColors(Color.GRAY, Color.WHITE)
-        for (i in 0 until ClassifyActivityDivide.divide.size) {
-            tabayout.getTabAt(i)?.text = ClassifyActivityDivide.divide[i]
+        for (i in 0 until CLASSIFY_DIVIDE_TABVIEWSHOW.size) {
+            tabayout.getTabAt(i)?.text = CLASSIFY_DIVIDE_TABVIEWSHOW[i]
         }
         tabayout.addOnTabSelectedListener(tabLayoutListener)
         tabayout.getTabAt(0)!!.select()
@@ -82,7 +83,7 @@ class FolkFragment : BaseLazyLoadFragment() {
         viewPager.adapter=null
         val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
         //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容,并传入对应的viewpager当中的index
-        for ((count, channelName) in ClassifyActivityDivide.divide.withIndex()) {
+        for ((count, channelName) in CLASIIFY_DIVIDE.withIndex()) {
             adapter.insertNewFragment(ActivityFragment.newInstance(channelName, count))
         }
 

@@ -1,9 +1,11 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.value.ERROR
 import org.junit.Assert
 import org.junit.Test
 
-class HandleFindTest {
+class HandleFindTest:BaseTestClass() {
 
     @Test
     fun add_User_Comment_Information() {
@@ -11,100 +13,70 @@ class HandleFindTest {
 
     @Test
     fun getUserCommentInformation() {
-        val result=HandleFind.GetUserCommentInformation(0)
-        Assert.assertNotNull(result)
-        Assert.assertTrue(result.isNotEmpty())
-        result.forEach {
-            println(it.commentTitle)
-        }
-        val result2=HandleFind.GetUserCommentInformation(123213214)
-        Assert.assertNotNull(result2)
-        Assert.assertTrue(result2.isNotEmpty())
+        assertData(HandleFind.GetUserCommentInformation(0))
+        assertData(HandleFind.GetUserCommentInformation(123213214))
     }
 
     @Test
     fun getUserCommentInformationByUser(){
-        val result=HandleFind.GetUserCommentInformationByUser(55)
-        Assert.assertNotNull(result)
-        Assert.assertTrue(result.isNotEmpty())
-        result.forEach {
-            println(it.commentTitle)
-        }
-        val emptyResult=HandleFind.GetUserCommentInformationByUser(0)
-        Assert.assertNotNull(emptyResult)
-        Assert.assertTrue(emptyResult.size==1)
+        assertData(HandleFind.GetUserCommentInformationByUser(55))
+        assertEmptyData(HandleFind.GetUserCommentInformationByUser(0))
     }
 
     @Test
     fun getUserCommentInformaitonByOwn() {
-        val result=HandleFind.GetUserCommentInformaitonByOwn(12)
-        Assert.assertNotNull(result)
-        Assert.assertTrue(result.isNotEmpty())
-        result.forEach {
-            it.commentTitle
-        }
-        val emptyResult=HandleFind.GetUserCommentInformaitonByOwn(0)
-        Assert.assertNotNull(emptyResult)
-        Assert.assertTrue(emptyResult.size==1)
+        assertData(HandleFind.GetUserCommentInformaitonByOwn(12))
+        assertEmptyData(HandleFind.GetUserCommentInformaitonByOwn(0))
     }
 
     @Test
     fun getUserCommentIdByUser() {
+        assertData(HandleFind.GetUserCommentIdByUser(12).toList())
+        assertEmptyData(HandleFind.GetUserCommentIdByUser(0).toList())
     }
 
     @Test
     fun deleteUserCommentByID() {
-    }
-
-    @Test
-    fun updateUserCommentImage() {
-    }
-
-    @Test
-    fun updateUserCommentInformaiton() {
+        Assert.assertFalse(HandleFind.DeleteUserCommentByID(141214))
     }
 
     @Test
     fun getUserCommentImageUrl() {
+        Assert.assertTrue(HandleFind.GetUserCommentImageUrl(1)!= ERROR)
     }
 
     @Test
     fun getAllUserCommentInfoByID() {
+        Assert.assertSame(UserCommentData::class.java,HandleFind.GetAllUserCommentInfoByID(13,1)!!::class.java)
     }
 
     @Test
     fun getCommentLikeNumber() {
+        Assert.assertTrue(HandleFind.GetCommentLikeNumber(13).toInt()>0)
     }
 
     @Test
     fun getUserCommentCount() {
+        Assert.assertTrue(HandleFind.GetUserCommentCount(9).toInt()>0)
     }
 
     @Test
     fun getUserCommentReply() {
+        assertData(HandleFind.GetUserCommentReply(9))
     }
 
     @Test
     fun setUserLike() {
+        Assert.assertTrue(HandleFind.SetUserLike(12,1))
     }
 
     @Test
     fun cancelUserLike() {
-    }
-
-    @Test
-    fun addUserCommentReply() {
-    }
-
-    @Test
-    fun updateUserCommentReply() {
-    }
-
-    @Test
-    fun deleteUserCommentReply() {
+        Assert.assertTrue(HandleFind.CancelUserLike(12,1))
     }
 
     @Test
     fun getUserLikeComment() {
+        assertData(HandleFind.GetUserLikeComment(55))
     }
 }

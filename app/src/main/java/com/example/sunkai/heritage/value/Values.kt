@@ -60,5 +60,6 @@ const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"
 const val ACTIVITY_FRAGMENT = "ActivityFragment"
 const val SETTING_ACTIVITY = 100
 
-
+val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
+val CLASSIFY_DIVIDE_TABVIEWSHOW= arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
 val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
