@@ -6,6 +6,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.sunkai.heritage.Dialog.Base.BaseDialogFragment
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.GlobalContext
 
 /**
  * 通用的提示框，用于替代AlertDialog
@@ -14,6 +15,9 @@ import com.example.sunkai.heritage.R
 class NormalWarningDialog : BaseDialogFragment() {
     private var title = ""
     private var content = ""
+    //在dialog创建的时候，还不会取得上下文，所以需要用全局context来获取string value
+    private var submitText=GlobalContext.instance.getString(R.string.submit)
+    private var cancelText=GlobalContext.instance.getString(R.string.cancel)
     private var progressVisibility=false
     private var submitVisibility=true
     private var cancelVIsibility=true
@@ -63,6 +67,8 @@ class NormalWarningDialog : BaseDialogFragment() {
         holder.progressBar.visibility=progressVisibility.toViewVisible()
         holder.submit.visibility=submitVisibility.toViewVisible()
         holder.cancel.visibility=cancelVIsibility.toViewVisible()
+        holder.submit.text=submitText
+        holder.cancel.text=cancelText
         holder.submit.setOnClickListener { submitListener.onSubmit(holder.submit,this) }
         holder.cancel.setOnClickListener { cancelListener.onCanceled(holder.cancel,this) }
     }
@@ -92,6 +98,16 @@ class NormalWarningDialog : BaseDialogFragment() {
 
     fun setContent(content: String): NormalWarningDialog {
         this.content = content
+        return this
+    }
+
+    fun setCancelText(cancelText:String):NormalWarningDialog{
+        this.cancelText=cancelText
+        return this
+    }
+
+    fun setSubmitText(submitText:String):NormalWarningDialog{
+        this.submitText=submitText
         return this
     }
 

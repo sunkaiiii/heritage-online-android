@@ -15,6 +15,9 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.activity_my_message.*
 
+/**
+ * 我的消息Activity
+ */
 class MyMessageActivity : AppCompatActivity(),OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {

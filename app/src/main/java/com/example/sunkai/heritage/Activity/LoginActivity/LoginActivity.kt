@@ -21,9 +21,7 @@ import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
 import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.value.FROM_REGIST
-import com.example.sunkai.heritage.value.FROM_WELCOME
-import com.example.sunkai.heritage.value.LOG_OUT
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -44,7 +42,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
             setWindowFullScreen()
         }
         //如果是从欢迎页进入的，则显示跳过登录
-        isIntoMainpage = intent.getIntExtra("isInto", FROM_WELCOME)
+        isIntoMainpage = intent.getIntExtra(IS_INTO, FROM_WELCOME)
         jumpSignIn.visibility = if (isIntoMainpage == FROM_WELCOME) View.VISIBLE else View.GONE
         presenter.loadUserNamesInShareprefrence()
     }
@@ -179,8 +177,8 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         when (resultCode) {
             FROM_REGIST -> {
-                val loginName = data?.getStringExtra("userName") ?: return
-                val loginPassword = data.getStringExtra("passWord") ?: return
+                val loginName = data?.getStringExtra(USER_NAME) ?: return
+                val loginPassword = data.getStringExtra(PASSWORD) ?: return
                 presenter.attemptoLogin(loginName, loginPassword)
             }
         }

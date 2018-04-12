@@ -43,7 +43,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
         settupWindowAnimations()
-        userID = intent.getIntExtra("userID", NO_USERID)
+        userID = intent.getIntExtra(USER_ID, NO_USERID)
         if (userID != NO_USERID) {
             getUserAllInfo(userID)
         }
@@ -241,13 +241,13 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun startActivity(what: Int) {
         val intent = Intent(this, FocusInformationActivity::class.java)
-        intent.putExtra("information", what.toString())
-        intent.putExtra("userID", userID)
+        intent.putExtra(INFORMATION, what.toString())
+        intent.putExtra(USER_ID, userID)
         startActivity(intent)
     }
 
     private fun openImageView(position: Int, adapter: OtherPersonActivityRecyclerViewAdapter) {
-        TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
+        TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.datas)
         viewPagerAdapter.setOnPhotoViewImageClickListener(object : onPhotoViewImageClick {
             override fun onImageClick(position: Int, photoView: PhotoView) {
@@ -281,7 +281,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showUserImage() {
-        TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
+        TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.VISIBLE
         pv_activity_other_users.visibility = View.VISIBLE
         addFocsFloatBtn.visibility = View.GONE
@@ -289,7 +289,7 @@ class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun closeImageView() {
-        TransitionManager.beginDelayedTransition(otherUsersFrameLayout,Fade().setDuration(200))
+        TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.GONE
         addFocsFloatBtn.visibility = View.VISIBLE
         if (vp_activity_other_users.visibility == View.VISIBLE) {

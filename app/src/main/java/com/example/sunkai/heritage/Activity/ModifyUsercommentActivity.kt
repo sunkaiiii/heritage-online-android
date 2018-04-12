@@ -21,10 +21,15 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.toByteArray
+import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.ERROR
+import com.example.sunkai.heritage.value.IMAGE
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
 
+/**
+ * 修改帖子的页面
+ */
 class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
 
     var data: UserCommentData? = null
@@ -34,8 +39,8 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modify_usercomment)
         initview()
-        if (intent.getSerializableExtra("data") is UserCommentData) {
-            data = intent?.getSerializableExtra("data") as UserCommentData
+        if (intent.getSerializableExtra(DATA) is UserCommentData) {
+            data = intent?.getSerializableExtra(DATA) as UserCommentData
             add_comment_title.setText(data!!.commentTitle)
             add_comment_content.setText(data!!.commentContent)
             Glide.with(this).load(BaseSetting.URL+data!!.imageUrl).into(simpleTarget)
@@ -90,8 +95,8 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
                         toast(getString(R.string.update_success))
                         data.imageUrl=result
                         val intent = Intent()
-                        intent.putExtra("data", data)
-                        intent.putExtra("image",modifyBitmap.toByteArray())
+                        intent.putExtra(DATA, data)
+                        intent.putExtra(IMAGE,modifyBitmap.toByteArray())
                         setResult(UPDATE_SUCCESS, intent)
                         finish()
                     } else {

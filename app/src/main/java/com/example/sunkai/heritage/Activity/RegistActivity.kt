@@ -24,6 +24,8 @@ import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.encryptionPassWord
 import com.example.sunkai.heritage.tools.toByteArray
 import com.example.sunkai.heritage.value.ERROR
+import com.example.sunkai.heritage.value.PASSWORD
+import com.example.sunkai.heritage.value.USER_NAME
 import kotlinx.android.synthetic.main.activity_regist.*
 import java.util.*
 
@@ -83,6 +85,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    //将所有的view放入到list
     private fun addAllViews(viewgroup: ViewGroup) {
         viewgroup.children.toList().forEach { if (it is ViewGroup) addAllViews(it) else views.add(it) }
     }
@@ -118,24 +121,25 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
 
-    private fun setViewsEnable(isEnable: Boolean) {
-        for (view in views) {
-            view.isEnabled = isEnable
+    private fun setViewsIsEnable(isEnable: Boolean) {
+        views.forEach {
+            it.isEnabled = isEnable
         }
     }
 
     private fun setViewsIsEnable() {
-        setViewsEnable(true)
+        setViewsIsEnable(true)
     }
 
     private fun setViewsIsDisable() {
-        setViewsEnable(false)
+        setViewsIsEnable(false)
     }
 
     private fun judgeViewsTextIsEmpty(): Boolean {
         var OK = false
         var count = 0
         for (view in views) {
+            //遍历所有的edittext，发现为空的时候显示对应的提示
             if (view is EditText) {
                 val text = view.text.toString().trim()
                 if (TextUtils.isEmpty(text)) {
@@ -194,8 +198,8 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
             when (result) {
                 SUCCESS -> {
                     val intent = Intent()
-                    intent.putExtra("userName", userName)
-                    intent.putExtra("passWord", userPassword)
+                    intent.putExtra(USER_NAME, userName)
+                    intent.putExtra(PASSWORD, userPassword)
                     setResult(SUCCESS, intent)
                     MakeToast.MakeText("注册成功")
                     finish()

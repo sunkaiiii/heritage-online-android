@@ -23,6 +23,8 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
+import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.FROM
 import kotlinx.android.synthetic.main.activity_all_folk_info.*
 import java.util.ArrayList
 import java.util.TreeSet
@@ -160,8 +162,8 @@ class AllFolkInfoActivity : AppCompatActivity(), View.OnClickListener, AdapterVi
                 override fun onItemClick(view: View, position: Int) {
                     val data=folkListviewAdapter.getItem(position)
                     val intent= Intent(this@AllFolkInfoActivity,FolkInformationActivity::class.java)
-                    intent.putExtra("data",data)
-                    intent.putExtra("from", ALL_FOLK_INFO_ACTIVITY)
+                    intent.putExtra(DATA,data)
+                    intent.putExtra(FROM, ALL_FOLK_INFO_ACTIVITY)
                     startActivity(intent)
                 }
 

@@ -10,7 +10,7 @@ import com.example.sunkai.heritage.Interface.HandleCollect
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.value.TYPE_MAIN
+import com.example.sunkai.heritage.value.IS_INTO
 
 /**
  * 可以收藏的Activity页面基类
@@ -94,7 +94,7 @@ abstract class BaseHandleCollectActivity : AppCompatActivity(), HandleCollect {
         if (LoginActivity.userID == 0) {
             toast("没有登录")
             val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("isInto", 1)
+            intent.putExtra(IS_INTO, 1)
             startActivityForResult(intent, 1)
             return false
         }

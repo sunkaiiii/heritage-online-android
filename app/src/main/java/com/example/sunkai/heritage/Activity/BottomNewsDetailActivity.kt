@@ -7,6 +7,8 @@ import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
@@ -17,11 +19,11 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_news_detail)
-        val title=intent.getStringExtra("title")
+        val title=intent.getStringExtra(TITLE)
         supportActionBar?.title=title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(intent.getSerializableExtra("data") is BottomFolkNewsLite) {
-            val data = intent.getSerializableExtra("data") as BottomFolkNewsLite
+        if(intent.getSerializableExtra(DATA) is BottomFolkNewsLite) {
+            val data = intent.getSerializableExtra(DATA) as BottomFolkNewsLite
             setDataToView(data)
             GetNewsDetail(data.id)
             this.id=data.id

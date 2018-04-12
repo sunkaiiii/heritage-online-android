@@ -19,10 +19,7 @@ import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.value.LOG_OUT
-import com.example.sunkai.heritage.value.SETTING_ACTIVITY
-import com.example.sunkai.heritage.value.SIGN_OUT
-import com.example.sunkai.heritage.value.STATE_CHANGE
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.android.synthetic.main.user_view.*
 
@@ -134,12 +131,12 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
                 }
                 R.id.person_follow, R.id.person_follow_number -> {
                     intent = Intent(activity, FocusInformationActivity::class.java)
-                    intent.putExtra("information", "focus")
+                    intent.putExtra(INFORMATION, FROM_FOCUS)
                     startActivityForResult(intent, FROM_FOCUS_AND_FANS_INFORMATION)
                 }
                 R.id.person_fans, R.id.person_fans_number -> {
                     intent = Intent(activity, FocusInformationActivity::class.java)
-                    intent.putExtra("information", "fans")
+                    intent.putExtra(INFORMATION, FROM_FANS)
                     startActivityForResult(intent, FROM_FOCUS_AND_FANS_INFORMATION)
                 }
                 R.id.sign_in_icon -> {

@@ -1,15 +1,14 @@
 package com.example.sunkai.heritage.Activity
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.core.transition.doOnEnd
+import androidx.core.widget.toast
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -24,11 +23,8 @@ import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.value.TYPE_FIND
-import com.example.sunkai.heritage.value.UPDATE_SUCCESS
-import com.example.sunkai.heritage.value.UPDATE_USER_COMMENT
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
 /**
@@ -41,9 +37,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private var isReverse = false
 
-    /**
-     * 记录帖子的ID
-     */
+    //用于收藏的id
     private var commentID: Int = 0
 
 
@@ -52,7 +46,10 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         setContentView(R.layout.activity_user_comment_detail)
         initView()
         getData()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.getIntExtra("from", DEFAULT_FROM) != FROM_COLLECTION) {
+        //从发现页点进来的时候执行动画，其他页面点进来不执行动画
+        //当动画完成后，再显示帖子标题栏
+        //防止在动画行进的时候，标题栏遮挡图片的问题
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.getIntExtra(FROM, DEFAULT_FROM) != FROM_COLLECTION) {
             window.sharedElementEnterTransition.doOnEnd {
                 getReplysInfo(commentID)
                 showBackLinear()
@@ -64,24 +61,17 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun getData() {
-        val bundle = intent.extras
-        if (intent.getSerializableExtra("data") is UserCommentData) {
-            data = intent.getSerializableExtra("data") as UserCommentData
+        if (intent.getSerializableExtra(DATA) is UserCommentData) {
+            data = intent.getSerializableExtra(DATA) as UserCommentData
             val data = data
             commentID = data?.id ?: 0
             data?.let {
                 setUserCommentView(data, null)
             }
 
-        } else if (bundle != null && bundle.getSerializable("data") is UserCommentData) {
-            data = bundle.getSerializable("data") as UserCommentData
-            val imageByte = intent.getByteArrayExtra("bitmap")
-            commentID = data?.id ?: 0
-            data?.let {
-                setUserCommentView(data!!, imageByte)
-            }
         } else {
-            val id=intent.getIntExtra("id",0)
+            //从我的消息页面进入的时候，只会传来帖子id，这时候要获取全部的内容
+            val id=intent.getIntExtra(ID,0)
             commentID=id
             ThreadPool.execute {
                 if(LoginActivity.userID==0||id==0) finish()
@@ -92,9 +82,6 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                     getReplysInfo(commentID)
                 }
             }
-            Log.d(TAG, "onCreate: getID:$id")
-            if (id == 0)
-                return
         }
     }
 
@@ -114,7 +101,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private fun showBackLinear() {
         usercommentInformationLinear.visibility = View.VISIBLE
-        val option = intent.getIntExtra("option", COMMON_SHOW)
+        val option = intent.getIntExtra(OPTION, COMMON_SHOW)
         if (option == ANIMATION_SHOW) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
             usercommentInformationLinear.startAnimation(animation)
@@ -165,7 +152,6 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private fun deleteComment() {
         AlertDialog.Builder(this).setTitle("是否删除帖子?").setPositiveButton("删除") { _, _ ->
-            @SuppressLint("InflateParams")
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, userCommentReplyAppbar, false)).create()
             ad.show()
             ThreadPool.execute {
@@ -175,9 +161,9 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                         ad.dismiss()
                     }
                     if (result) {
-                        MakeToast.MakeText(resources.getString(R.string.delete_success))
+                        toast(resources.getString(R.string.delete_success))
                     } else {
-                        MakeToast.MakeText(resources.getString(R.string.has_problem))
+                        toast(resources.getString(R.string.has_problem))
                     }
                     setResult(DELETE_COMMENT)
                     onBackPressed()
@@ -191,10 +177,10 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             android.R.id.home -> onBackPressed()
             R.id.user_comment_detail_item_delete -> deleteComment()
             R.id.user_comment_detail_item_edit -> {
+                val data=data
                 data?.let {
                     val intent = Intent(this@UserCommentDetailActivity, ModifyUsercommentActivity::class.java)
-                    val data: UserCommentData = data!!
-                    intent.putExtra("data", data)
+                    intent.putExtra(DATA, data)
                     startActivityForResult(intent, UPDATE_USER_COMMENT)
                     return true
                 }
@@ -203,6 +189,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         return super.onOptionsItemSelected(item)
     }
 
+    //如果登陆用户是作者，则显示编辑和删除帖子的menu，否则，显示收藏menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val comemntData = data
         if (comemntData != null && comemntData.userID == userID) {
@@ -278,8 +265,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             UPDATE_USER_COMMENT -> {
                 if (resultCode == UPDATE_SUCCESS) {
                     data?.let {
-                        if (data.getSerializableExtra("data") is UserCommentData) {
-                            setUserCommentView(data.getSerializableExtra("data") as UserCommentData, data.getByteArrayExtra("image"))
+                        if (data.getSerializableExtra(DATA) is UserCommentData) {
+                            setUserCommentView(data.getSerializableExtra(DATA) as UserCommentData, data.getByteArrayExtra("image"))
                         }
                     }
                 }
@@ -303,6 +290,5 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         const val ANIMATION_SHOW = 4
         const val FROM_COLLECTION = 0
         const val DEFAULT_FROM = -1
-        private const val TAG = "UserCommentDetail"
     }
 }

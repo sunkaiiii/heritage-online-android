@@ -3,7 +3,8 @@ package com.example.sunkai.heritage.value
 import android.content.res.Configuration
 import com.example.sunkai.heritage.tools.GlobalContext
 
-/*
+/**
+ * 这个文件包含了项目用到的常量
  * Created by 70472 on 2018/1/1.
  */
 
@@ -44,6 +45,25 @@ const val NOT_FIRST_OPEN=1
 const val NOT_LOGIN=0
 const val FROM_WELCOME=0
 const val FROM_REGIST=0
+const val INFORMATION="information"
+const val FROM_FANS="fans"
+const val FROM_FOCUS="focus"
+const val USER_ID="userID"
+const val FROM="from"
+const val DATA="data"
+const val ACTIVITY="activity"
+const val USER_NAME="userName"
+const val PASSWORD="passWord"
+const val PUSH_SWITCH="pushSwitch"
+const val ID="id"
+const val OPTION="option"
+const val SETTING="setting"
+const val START_COUNT="startCount"
+const val SHARE_PREFRENCE_USERNAME="user_name"
+const val SHARE_PREFRENCE_PASSWORD="user_password"
+const val TITLE="title"
+const val IMAGE="image"
+const val IS_INTO="isInto"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

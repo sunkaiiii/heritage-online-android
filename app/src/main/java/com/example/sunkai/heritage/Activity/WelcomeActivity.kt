@@ -14,9 +14,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.attempToLogin
-import com.example.sunkai.heritage.value.FIRST_OPEN
-import com.example.sunkai.heritage.value.NOT_FIRST_OPEN
-import com.example.sunkai.heritage.value.NOT_LOGIN
+import com.example.sunkai.heritage.value.*
 
 /**
  * 此页面是欢迎界面的类
@@ -31,10 +29,10 @@ class WelcomeActivity : AppCompatActivity() {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_welcome)
         //判断是否是第一次启动，如果是第一次启动则显示是否打开推送的弹窗
-        if (getSharedPreferences("setting", Context.MODE_PRIVATE).getInt("startCount", FIRST_OPEN) == FIRST_OPEN) {
-            getSharedPreferences("setting", Context.MODE_PRIVATE).edit {
-                putInt("startCount", NOT_FIRST_OPEN)
-                putBoolean("pushSwitch", false)
+        if (getSharedPreferences(SETTING, Context.MODE_PRIVATE).getInt(START_COUNT, FIRST_OPEN) == FIRST_OPEN) {
+            getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
+                putInt(START_COUNT, NOT_FIRST_OPEN)
+                putBoolean(PUSH_SWITCH, false)
             }
             showDialog()
 
@@ -56,8 +54,8 @@ class WelcomeActivity : AppCompatActivity() {
     private fun goToLogin() {
         ThreadPool.execute {
             //首先，获取自动登录的信息
-            val username = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_name", null)
-            val userPassword = getSharedPreferences("data", Context.MODE_PRIVATE).getString("user_password", null)
+            val username = getSharedPreferences(DATA, Context.MODE_PRIVATE).getString(SHARE_PREFRENCE_USERNAME, null)
+            val userPassword = getSharedPreferences(DATA, Context.MODE_PRIVATE).getString(SHARE_PREFRENCE_PASSWORD, null)
             //尝试尝试自动登录
             val result = attempToLogin(username, userPassword)
             runOnUiThread {

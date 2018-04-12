@@ -77,9 +77,6 @@
         <activity
             android:name=".Activity.OtherUsersActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity
-            android:name=".Activity.ViewIamgeActivity"
-            android:theme="@style/translucent" />
         <activity android:name=".Activity.ModifyUsercommentActivity" />
 
         <provider

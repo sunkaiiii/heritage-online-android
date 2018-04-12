@@ -19,8 +19,13 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
+import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import kotlinx.android.synthetic.main.activity_user_like_comment.*
+
+/**
+ * 我的赞的Activity
+ */
 
 class UserLikeCommentActivity : AppCompatActivity(), OnPageLoaded {
 
@@ -59,7 +64,7 @@ class UserLikeCommentActivity : AppCompatActivity(), OnPageLoaded {
                 val imageview = view.findViewById<ImageView>(R.id.coment_image)
                 val infoBackGround = view.findViewById<LinearLayout>(R.id.info_background)
                 val intent = Intent(this@UserLikeCommentActivity, UserCommentDetailActivity::class.java)
-                intent.putExtra("data", data)
+                intent.putExtra(DATA, data)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val pairs = TransitionHelper.createSafeTransitionParticipants(this@UserLikeCommentActivity, false,
                             Pair(imageview, getString(R.string.find_share_view)),

@@ -17,6 +17,9 @@ import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.CATEGORY
 import kotlinx.android.synthetic.main.activity_see_more_news.*
 
+/**
+ * 首页更多新闻的Activity
+ */
 class SeeMoreNewsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +27,7 @@ class SeeMoreNewsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_see_more_news)
         initView()
         val category = intent.getStringExtra(CATEGORY)
+        //如果没有取到category，则默认低1个分类
         if (!TextUtils.isEmpty(category)) {
             setPositionToSelectCategory(category)
         } else {

@@ -22,11 +22,15 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
+import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
 import com.example.sunkai.heritage.value.UPDATE_SUCCESS
 import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 
+/**
+ * 我的帖子的Activity
+ */
 class UserOwnTieziActivity : BaseAutoLoginActivity() {
     private lateinit var adapter: MyOwnCommentRecyclerViewAdapter
 
@@ -56,7 +60,7 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
         adapter.setOnItemClickListen(object :OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
-                intent.putExtra("data",adapter.getItem(position))
+                intent.putExtra(DATA,adapter.getItem(position))
                 if(Build.VERSION.SDK_INT>=21) {
                     val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
                     val title=view.findViewById<TextView>(R.id.mycomment_item_title)

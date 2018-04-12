@@ -20,10 +20,11 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.STATE_CHANGE
+import com.example.sunkai.heritage.value.USER_ID
 import com.makeramen.roundedimageview.RoundedImageView
 import kotlinx.android.synthetic.main.activity_search.*
 
@@ -61,12 +62,10 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdi
     private fun submit() {
         val edit = search_activity_edit.text.toString().trim()
         if (TextUtils.isEmpty(edit)) {
-            MakeToast.MakeText("内容不能为空")
+            toast("内容不能为空")
             return
         }
-        /**
-         * 将搜索的文本传入搜索类，并搜索内容
-         */
+        //将搜索的文本传入搜索类，并搜索内容
         searchClass(edit)
     }
 
@@ -102,7 +101,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdi
             override fun onItemClick(view: View, position: Int) {
                 val data = adapter.getItem(position)
                 val intent = Intent(this@SearchActivity, OtherUsersActivity::class.java)
-                intent.putExtra("userID", data.id)
+                intent.putExtra(USER_ID, data.id)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val userImage = view.findViewById<RoundedImageView>(R.id.user_head_image)
                     val userName = view.findViewById<TextView>(R.id.user_name)
@@ -116,8 +115,7 @@ class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEdi
         })
     }
 
-
-
+    //处理postDelay事件，当收到事件的时候自动搜索用户输入的内容
     private val timeTaskHandler= object:Handler(Looper.getMainLooper()){
         override fun handleMessage(msg: Message?) {
             if(msg?.what==SEARCH_USER_MESSAGE){

@@ -16,6 +16,9 @@ import com.example.sunkai.heritage.value.TYPE_FOLK
 import com.example.sunkai.heritage.value.TYPE_MAIN
 import kotlinx.android.synthetic.main.activity_my_collection.*
 
+/**
+ * 我的收藏的Activity
+ */
 class MyCollectionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

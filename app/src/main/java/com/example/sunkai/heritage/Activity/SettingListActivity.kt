@@ -14,9 +14,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.value.ALL
-import com.example.sunkai.heritage.value.DENIALD
-import com.example.sunkai.heritage.value.ONLYFOCUS
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**
@@ -39,7 +37,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
         focusAndFansViewPermissionSpinner.isEnabled = false
         pushSwitch.setOnCheckedChangeListener(this)
         val sharedPreferences = getSharedPreferences(SETTING, Context.MODE_PRIVATE) ?: return
-        pushSwitch.isChecked = sharedPreferences.getBoolean("pushSwitch", false)
+        pushSwitch.isChecked = sharedPreferences.getBoolean(PUSH_SWITCH, false)
 
     }
 
@@ -69,7 +67,7 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     private fun setPushStatus(isChecked: Boolean) {
         getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
-            putBoolean("pushSwitch", isChecked)
+            putBoolean(PUSH_SWITCH, isChecked)
         }
         if(isChecked){
             MainActivity.activityRef?.get()?.startPushService()
@@ -119,7 +117,4 @@ class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeL
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
 
-    companion object {
-        const val SETTING = "setting"
-    }
 }
