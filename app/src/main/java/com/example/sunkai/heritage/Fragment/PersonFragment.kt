@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.*

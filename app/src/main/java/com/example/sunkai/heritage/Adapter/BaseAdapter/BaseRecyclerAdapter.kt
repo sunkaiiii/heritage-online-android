@@ -20,8 +20,9 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<
     }
 
     override fun onLongClick(v: View): Boolean {
-        mOnItemLongClickListener?.let {
-            mOnItemLongClickListener!!.onItemlongClick(v, v.tag as Int)
+        val longClickListner=this.mOnItemLongClickListener
+        longClickListner?.let {
+            longClickListner.onItemlongClick(v, v.tag as Int)
             return true
         }
         return false

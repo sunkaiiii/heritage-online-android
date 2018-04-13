@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
-import com.example.sunkai.heritage.Fragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.MyCollectFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener

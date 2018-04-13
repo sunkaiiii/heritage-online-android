@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.ActivityData
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.GlobalContext

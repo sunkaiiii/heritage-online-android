@@ -19,6 +19,7 @@ import android.view.ViewGroup
 import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.*
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
 import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
