@@ -13,6 +13,7 @@
     <color name="midGrey">#9E9E9E</color>
     <color name="colorPrimeryToBtn">#b46a2e05</color>
     <color name="transparent">#50000000</color>
+    <color name="transparent_dark">#80000000</color>
     <color name="transparent_full">#00000000</color>
     <color name="transparent_light">#dfffffff</color>
 </resources>

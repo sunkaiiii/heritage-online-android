@@ -11,7 +11,7 @@
         android:id="@+id/list_img"
         android:layout_width="match_parent"
         android:layout_height="165dp"
-        android:alpha="0.95"
+        android:alpha="0.92"
         android:contentDescription="@string/no_mean_content"
         android:scaleType="centerCrop" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@color/transparent"
+        android:background="@color/transparent_dark"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
