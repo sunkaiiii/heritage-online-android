@@ -4,50 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.AboutUSActivity">
+
     <TextView
+        android:id="@+id/base_line"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/base_line"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true" />
+
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="48sp"
         android:layout_height="48sp"
-        android:src="@mipmap/app_logo_image"
         android:layout_above="@id/base_line"
-        android:layout_marginBottom="12sp"
         android:layout_centerInParent="true"
-        android:id="@+id/imageView"
-        android:contentDescription="@string/logo"/>
+        android:layout_marginBottom="12sp"
+        android:contentDescription="@string/logo"
+        android:src="@mipmap/app_logo_image" />
+
     <TextView
+        android:id="@+id/base_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/verson_code"
         android:layout_below="@id/base_line"
         android:layout_centerInParent="true"
-        android:id="@+id/base_version"
-        />
+        android:text="@string/verson_code" />
+
     <TextView
+        android:id="@+id/base_git_url"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/gourp_names"
-        android:layout_centerInParent="true"
         android:layout_below="@id/base_version"
-        android:layout_marginTop="6dp"
-        android:id="@+id/base_people"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_below="@id/base_people"
-        android:layout_marginTop="6dp"
-        android:text="@string/products"
-        android:id="@+id/base_out"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/base_out"
+        android:layout_marginTop="8dp"
         android:text="@string/program_git_url"
-        android:layout_marginTop="6dp"/>
+        android:textIsSelectable="true" />
+
+    <TextView
+        android:id="@+id/licenceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/base_git_url"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="8dp"
+        android:text="@string/licence" />
 
 </RelativeLayout>
