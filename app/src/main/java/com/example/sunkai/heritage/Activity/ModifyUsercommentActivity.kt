@@ -33,7 +33,7 @@ import kotlinx.android.synthetic.main.activity_add_find_comment.*
 class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
 
     var data: UserCommentData? = null
-    private var modifyImageBitmap:Bitmap?=null
+    private var modifyImageBitmap: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,13 +43,13 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             data = intent?.getSerializableExtra(DATA) as UserCommentData
             add_comment_title.setText(data!!.commentTitle)
             add_comment_content.setText(data!!.commentContent)
-            Glide.with(this).load(BaseSetting.URL+data!!.imageUrl).into(simpleTarget)
+            Glide.with(this).load(BaseSetting.URL + data!!.imageUrl).into(simpleTarget)
         }
     }
 
-    private val simpleTarget=object:SimpleTarget<Drawable>(){
+    private val simpleTarget = object : SimpleTarget<Drawable>() {
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            modifyImageBitmap=resource.toBitmap()
+            modifyImageBitmap = resource.toBitmap()
             add_comment_image.setImageDrawable(resource)
         }
     }
@@ -73,15 +73,15 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
     }
 
     private fun setDatas() {
-        val data=data?:return
+        val data = data ?: return
         data.commentTitle = add_comment_title.text.toString()
         data.commentContent = add_comment_content.text.toString()
-        this.data=data
+        this.data = data
     }
 
     private fun updateUserCommentData(item: MenuItem) {
-        val data=data
-        val modifyBitmap=modifyImageBitmap?:return
+        val data = data
+        val modifyBitmap = modifyImageBitmap ?: return
         val progressBar = ProgressBar(this@ModifyUsercommentActivity)
         item.actionView = progressBar
         item.isEnabled = false
@@ -89,14 +89,14 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             setViewsUnable()
             ThreadPool.execute {
                 setDatas()
-                val result = HandleFind.UpdateUserCommentInformaiton(data.id,data.commentTitle,data.commentContent, Base64.encodeToString(modifyBitmap.toByteArray(),Base64.DEFAULT))
+                val result = HandleFind.UpdateUserCommentInformaiton(data.id, data.commentTitle, data.commentContent, Base64.encodeToString(modifyBitmap.toByteArray(), Base64.DEFAULT))
                 runOnUiThread {
-                    if (result!= ERROR) {
+                    if (result != ERROR) {
                         toast(getString(R.string.update_success))
-                        data.imageUrl=result
+                        data.imageUrl = result
                         val intent = Intent()
                         intent.putExtra(DATA, data)
-                        intent.putExtra(IMAGE,modifyBitmap.toByteArray())
+                        intent.putExtra(IMAGE, modifyBitmap.toByteArray())
                         setResult(UPDATE_SUCCESS, intent)
                         finish()
                     } else {
@@ -113,13 +113,13 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
 
     override fun setImageToImageView(bitmap: Bitmap) {
         add_comment_image.setImageBitmap(bitmap)
-        modifyImageBitmap=bitmap
+        modifyImageBitmap = bitmap
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.add_comment_image -> chooseAlertDialog.show()
-        }
+    override fun onClick(v: View?) {}
+
+    override fun getNeedOpenChooseImageView(): Array<View> {
+        return arrayOf(add_comment_image)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -138,6 +138,6 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
 
     override fun onDestroy() {
         super.onDestroy()
-        modifyImageBitmap=null
+        modifyImageBitmap = null
     }
 }

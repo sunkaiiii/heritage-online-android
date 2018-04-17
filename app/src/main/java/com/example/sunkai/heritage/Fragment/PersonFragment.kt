@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.user_view.*
  */
 
 
-class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
+class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     private lateinit var builder: AlertDialog.Builder
     private lateinit var ad: AlertDialog
@@ -45,7 +45,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(savedInstanceState==null) {
+        if (savedInstanceState == null) {
             initview()
         }
         if (LoginActivity.userName == null) {
@@ -55,7 +55,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
         }
     }
 
-    override fun onRestoreFragmentLoadInformation(){
+    override fun onRestoreFragmentLoadInformation() {
         initview()
         lazyLoad()
     }
@@ -140,9 +140,6 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
                     intent.putExtra(INFORMATION, FROM_FANS)
                     startActivityForResult(intent, FROM_FOCUS_AND_FANS_INFORMATION)
                 }
-                R.id.sign_in_icon -> {
-                    chooseAlertDialog.show()
-                }
                 R.id.fragment_person_my_like -> {
                     intent = Intent(activity, UserLikeCommentActivity::class.java)
                     startActivity(intent)
@@ -151,12 +148,16 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
                     intent = Intent(activity, MyCollectionActivity::class.java)
                     startActivity(intent)
                 }
-                R.id.fragment_person_my_message->{
-                    intent=Intent(activity,MyMessageActivity::class.java)
+                R.id.fragment_person_my_message -> {
+                    intent = Intent(activity, MyMessageActivity::class.java)
                     startActivity(intent)
                 }
             }
         }
+    }
+
+    override fun getNeedOpenChooseImageView(): Array<View> {
+        return arrayOf(sign_in_icon)
     }
 
     //设置用户头像的回调
@@ -201,7 +202,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
             R.id.search_user -> {
                 searchUser()
             }
-            R.id.about_us->{
+            R.id.about_us -> {
                 showAboutUs()
             }
         }
@@ -257,7 +258,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener{
         startActivityForResult(intent, FROM_SEARCH_ACTIVITY)
     }
 
-    private fun showAboutUs(){
+    private fun showAboutUs() {
         val intent = Intent(activity, AboutUSActivity::class.java)
         startActivity(intent)
     }

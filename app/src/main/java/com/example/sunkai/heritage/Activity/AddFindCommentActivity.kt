@@ -38,7 +38,6 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     private fun initView() {
         val actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
-        add_comment_image.setOnClickListener(this)
         //标志位0，防止返回find时刷新页面
         setResult(0, intent)
     }
@@ -48,7 +47,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         if (isSavePicture) return
         val title = add_comment_title.text.toString().trim()
         val content = add_comment_content.text.toString().trim()
-        if(checkValues(title,content)) {
+        if (checkValues(title, content)) {
             isSavePicture = true
             setItemStates(true)
             ThreadPool.execute {
@@ -57,8 +56,8 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         }
     }
 
-    private fun setItemStates(isUpLoad:Boolean){
-        item?.actionView = if(isUpLoad) ProgressBar(this) else null
+    private fun setItemStates(isUpLoad: Boolean) {
+        item?.actionView = if (isUpLoad) ProgressBar(this) else null
         item?.isEnabled = !isUpLoad
     }
 
@@ -79,9 +78,9 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         return true
     }
 
-    private fun addCommentInformation(title:String,content:String){
+    private fun addCommentInformation(title: String, content: String) {
         val addImageBitmap = imageBitmap ?: return
-        val imageCode = Base64.encodeToString(addImageBitmap.toByteArray(),Base64.DEFAULT)
+        val imageCode = Base64.encodeToString(addImageBitmap.toByteArray(), Base64.DEFAULT)
         val result = HandleFind.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
         runOnUiThread {
             setItemStates(false)
@@ -109,10 +108,10 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.add_comment_image -> chooseAlertDialog.show()
-        }
+    override fun onClick(v: View) {}
+
+    override fun getNeedOpenChooseImageView(): Array<View> {
+        return arrayOf(add_comment_image)
     }
 
 

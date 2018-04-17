@@ -64,6 +64,7 @@ const val SHARE_PREFRENCE_PASSWORD="user_password"
 const val TITLE="title"
 const val IMAGE="image"
 const val IS_INTO="isInto"
+const val READ="r"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

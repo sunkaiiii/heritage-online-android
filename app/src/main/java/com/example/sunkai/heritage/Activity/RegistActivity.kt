@@ -114,10 +114,11 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                 this.setResult(CANCEL)
                 onBackPressed()
             }
-            R.id.registUserImage -> {
-                chooseAlertDialog.show()
-            }
         }
+    }
+
+    override fun getNeedOpenChooseImageView(): Array<View> {
+        return arrayOf(registUserImage)
     }
 
 

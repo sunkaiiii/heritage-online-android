@@ -4,9 +4,10 @@
     package="com.example.sunkai.heritage">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18"/>
 
     <application
         android:name=".tools.GlobalContext"
@@ -56,16 +57,6 @@
             android:label="发帖"
             android:theme="@style/AppThemeNoBackGround" />
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.sunkai.heritage.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
-
         <activity android:name=".Activity.PermissionsActivity" />
         <activity
             android:name=".Activity.UserOwnTieziActivity"
@@ -79,15 +70,6 @@
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".Activity.ModifyUsercommentActivity" />
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.sunkai.heritage.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
 
         <activity
             android:name=".Activity.AllFolkInfoActivity"
@@ -107,7 +89,7 @@
         <service
             android:name=".Service.PushService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".Activity.MyMessageActivity"
