@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.MyCollectFragment
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_my_collection.*
 /**
  * 我的收藏的Activity
  */
-class MyCollectionActivity : AppCompatActivity() {
+class MyCollectionActivity : BaseStopGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

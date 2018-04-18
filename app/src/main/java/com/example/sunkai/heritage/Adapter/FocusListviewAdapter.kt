@@ -1,13 +1,16 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.app.Activity
+import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -16,6 +19,7 @@ import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.NO_USERID
@@ -32,7 +36,7 @@ class FocusListviewAdapter
  * @param datas 关注、粉丝的数据
  * @param what  1为关注，2为粉丝3为查询页面
  */
-(private val context: Activity, private var what: Int, datas: List<FollowInformation>) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas) {
+(private val context: Context, private var what: Int, datas: List<FollowInformation>) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas) {
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 
@@ -91,9 +95,9 @@ class FocusListviewAdapter
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
-                    context.runOnUiThread {
+                    runOnUiThread(Runnable {
                         Glide.with(context).load(url).into(holder.userImage)
-                    }
+                    })
                 }
             }
         }
@@ -120,7 +124,7 @@ class FocusListviewAdapter
                 val result = HandlePerson.AddFocus(data.focusFocusID, data.focusFansID)
                 //因为是关注用户，重新运行查看互关进程，判断是否为互相关注
                 val followEachOther = HandlePerson.CheckFollowEachother(data.focusFocusID, data.focusFansID)
-                context.runOnUiThread {
+                runOnUiThread(Runnable {
                     if (result) {
                         //关注完成则执行回调，使其重新加载粉丝、关注数据
                         setItemState(position, holder, true, followEachOther)
@@ -128,20 +132,20 @@ class FocusListviewAdapter
                         Toast.makeText(context, "操作失败，请稍后再试", Toast.LENGTH_SHORT).show()
                     }
 
-                }
+                })
             }
         }
 
         fun CancelFollow() {
             ThreadPool.execute {
                 val result = HandlePerson.CancelFocus(data.focusFocusID, data.focusFansID)
-                context.runOnUiThread {
+                runOnUiThread(Runnable {
                     if (result) {
                         setItemState(position, holder, false, false)
                     } else {
                         toast("操作失败，请稍后再试")
                     }
-                }
+                })
             }
         }
 

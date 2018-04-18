@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyLikeCommentRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -27,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_user_like_comment.*
  * 我的赞的Activity
  */
 
-class UserLikeCommentActivity : AppCompatActivity(), OnPageLoaded {
+class UserLikeCommentActivity : BaseStopGlideActivity(), OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

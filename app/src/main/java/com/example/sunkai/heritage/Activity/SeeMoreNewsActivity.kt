@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsViewpagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -20,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_see_more_news.*
 /**
  * 首页更多新闻的Activity
  */
-class SeeMoreNewsActivity : AppCompatActivity() {
+class SeeMoreNewsActivity : BaseStopGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_setting_list.*
  * 用户设置的activity
  * Created by sunkai on 2017/12/15.
  */
-class SettingListActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

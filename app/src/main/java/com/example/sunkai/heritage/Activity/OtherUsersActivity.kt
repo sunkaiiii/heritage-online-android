@@ -15,6 +15,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Adapter.OtherUserActivityImageAdapter
@@ -32,7 +33,7 @@ import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import kotlinx.android.synthetic.main.user_view.*
 
-class OtherUsersActivity : AppCompatActivity(), View.OnClickListener {
+class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
 
     private var userID: Int = NO_USERID
 

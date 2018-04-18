@@ -16,7 +16,7 @@ import com.example.sunkai.heritage.value.IS_INTO
  * 可以收藏的Activity页面基类
  * Created by sunkai on 2018/3/14.
  */
-abstract class BaseHandleCollectActivity : AppCompatActivity(), HandleCollect {
+abstract class BaseHandleCollectActivity : BaseStopGlideActivity(), HandleCollect {
     private var menuItem: Menu? = null
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -31,7 +32,7 @@ import kotlinx.android.synthetic.main.activity_search.*
 /**
  * 此类用于处理用户搜索的页面
  */
-class SearchActivity : AppCompatActivity(), View.OnClickListener, TextView.OnEditorActionListener,TextWatcher {
+class SearchActivity : BaseStopGlideActivity(), View.OnClickListener, TextView.OnEditorActionListener,TextWatcher {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

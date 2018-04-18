@@ -20,6 +20,7 @@ import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.android.synthetic.main.user_view.*
@@ -83,20 +84,22 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     //获取用户的信息
     private fun GetUserInfo() {
-        Thread {
-            val userInfo = HandlePerson.GetUserAllInfo(LoginActivity.userID) ?: return@Thread
+        ThreadPool.execute {
+            val userInfo = HandlePerson.GetUserAllInfo(LoginActivity.userID) ?: return@execute
             val userImageUrl = HandlePerson.GetUserImageURL(LoginActivity.userID)
-            activity?.runOnUiThread {
+            val activity = activity ?: return@execute
+            activity.runOnUiThread {
                 sign_name_textview.text = userInfo.userName
                 person_fans_number.text = userInfo.fansNumber.toString()
                 person_follow_number.text = userInfo.focusNumber.toString()
                 if (userImageUrl != null) {
                     this.userImageUrl = userImageUrl
                     val requestOption = RequestOptions().placeholder(R.drawable.ic_assignment_ind_deep_orange_200_48dp).error(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-                    Glide.with(this).load(userImageUrl).apply(requestOption).into(sign_in_icon)
+                    Glide.with(activity).load(userImageUrl).apply(requestOption).into(sign_in_icon)
+//                Glide.with(this).
                 }
             }
-        }.start()
+        }
     }
 
     private fun UpdateUserImage(bitmap: Bitmap) {

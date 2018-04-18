@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.PermissionsChecker
@@ -16,7 +17,7 @@ import com.example.sunkai.heritage.tools.PermissionsChecker
 /**
  * 此类用于处理不同安卓系统间的权限申请，安卓6.0需要动态申请权限
  */
-class PermissionsActivity : AppCompatActivity() {
+class PermissionsActivity : BaseStopGlideActivity() {
 
     private var mChecker: PermissionsChecker? = null // 权限检测器
     private var isRequireCheck: Boolean = false // 是否需要系统权限检测

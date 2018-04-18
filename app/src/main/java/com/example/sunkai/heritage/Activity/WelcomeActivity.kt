@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.edit
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
@@ -19,7 +20,7 @@ import com.example.sunkai.heritage.value.*
 /**
  * 此页面是欢迎界面的类
  */
-class WelcomeActivity : AppCompatActivity() {
+class WelcomeActivity : BaseStopGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

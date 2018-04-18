@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -25,7 +26,7 @@ import kotlinx.android.synthetic.main.activity_focus_information.*
 /**
  * 用户粉丝、关注列表的Activity
  */
-class FocusInformationActivity : AppCompatActivity(), View.OnClickListener {
+class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

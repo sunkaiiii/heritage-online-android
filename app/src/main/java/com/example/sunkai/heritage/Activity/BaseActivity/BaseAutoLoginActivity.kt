@@ -10,7 +10,7 @@ import com.example.sunkai.heritage.tools.backGroundLogin
 import com.example.sunkai.heritage.tools.checkLogin
 import com.example.sunkai.heritage.tools.gotoLogin
 
-abstract class BaseAutoLoginActivity : AppCompatActivity(), onAutoLogin {
+abstract class BaseAutoLoginActivity : BaseStopGlideActivity(), onAutoLogin {
     var dialog: NormalWarningDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

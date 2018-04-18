@@ -16,6 +16,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.*
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -31,7 +33,7 @@ import java.lang.ref.WeakReference
  * 此类用于处理登陆
  */
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseStopGlideActivity() {
 
     //让其他Activity可以访问MainActivity的方法，提供了一个弱引用
     companion object {

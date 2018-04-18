@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.view.MenuItem
 import android.view.View
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyMessageRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePush
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_my_message.*
 /**
  * 我的消息Activity
  */
-class MyMessageActivity : AppCompatActivity(),OnPageLoaded {
+class MyMessageActivity : BaseStopGlideActivity(),OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
