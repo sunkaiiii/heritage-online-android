@@ -3,6 +3,14 @@
 
 E迹 非遗掌上信息化平台（毕设）
 
+#### v3.2.1 <br>
+
+1、去除了不必要的软件权限
+
+2、修复了一些闪退的bug
+
+3、修改图片压缩功能的实现。
+
 
 #### v3.2 <br>
 
@@ -120,7 +128,7 @@ ___
 
 
 
-[okhttp](https://github.com/bumptech/glide)：网络请求
+[okhttp](https://github.com/square/okhttp)：网络请求
 
   
 
@@ -128,7 +136,7 @@ ___
 
   
 
-[Luban](https://github.com/Curzibn/Luban)：图片压缩
+[Luban](https://github.com/Curzibn/Luban)：图片压缩。项目并没有直接使用Luban，但是使用的压缩算法来源于Luban提供的算法，对参数进行了一定的修改
 
 
 
