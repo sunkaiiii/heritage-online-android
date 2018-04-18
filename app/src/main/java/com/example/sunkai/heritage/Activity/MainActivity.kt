@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import com.example.sunkai.heritage.Data.MySqliteHandler
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.*
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -118,7 +117,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        MySqliteHandler.Close()
         doUnbindService()
         stopService(Intent(this, PushService::class.java))
         super.onDestroy()

@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -13,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.tools.HandleImage
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CHOOSE_PHOTO
 
 /**
@@ -74,7 +74,7 @@ abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(),OnPageLoaded {
     private fun handleUri(data: Uri?) {
         data?:return
         onPreLoad()
-        AsyncTask.SERIAL_EXECUTOR.execute {
+        ThreadPool.execute {
             val bitmap=HandleImage(data)
             if(bitmap==null){
                 onPostLoad()

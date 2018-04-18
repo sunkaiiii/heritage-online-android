@@ -66,7 +66,7 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
                     holder.imageview.visibility = View.GONE
                 }
             }
-            Glide.with(context).load(BaseSetting.URL + data.img).into(simpleTarget)
+            Glide.with(context).load(BaseSetting.URL + data.img).into(holder.imageview)
         }
     }
 

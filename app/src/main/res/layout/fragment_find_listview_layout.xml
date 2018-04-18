@@ -18,7 +18,7 @@
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.example.sunkai.heritage.tools.RectangleImageView
@@ -47,8 +47,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:contentDescription="@string/add_comment_reply"
                 android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/add_comment_reply"
                 android:foreground="?attr/selectableItemBackground"
                 android:src="@drawable/ic_message_grey_700_24dp"
                 app:layout_constraintStart_toEndOf="@+id/fragment_find_like_frame"

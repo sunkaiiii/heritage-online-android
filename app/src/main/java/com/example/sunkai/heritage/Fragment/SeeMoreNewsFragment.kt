@@ -109,14 +109,13 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val adapter = recyclerView.adapter
             if (adapter is SeeMoreNewsRecyclerViewAdapter) {
                 ThreadPool.execute {
-                    setPageOnLoad()
                     val category = category
                     val activity = activity
                     category?.let {
                         val datas = HandleMainFragment.GetFolkNewsList(category, adapter.itemCount, 20)
                         activity?.runOnUiThread {
                             adapter.addNewData(datas)
-                            setPageLoaded()
+                            this.setPageLoaded()
                         }
                     }
                 }

@@ -38,8 +38,6 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     private fun initView() {
         val actionBack = supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
-        //标志位0，防止返回find时刷新页面
-        setResult(0, intent)
     }
 
     private fun submit() {

@@ -68,7 +68,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 startActivityForResult(intent, 1)
             } else {
                 val intent = Intent(activity, AddFindCommentActivity::class.java)
-                startActivityForResult(intent, 1)
+                startActivityForResult(intent, FROM_ADD_COMMENT_DETAIL)
             }
         }
     }
@@ -137,6 +137,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 loadUserCommentData(selectSpinner.selectedItemPosition)
             }
             LOGIN -> loadUserCommentData(selectSpinner.selectedItemPosition)
+            FROM_ADD_COMMENT_DETAIL->if(resultCode==AddFindCommentActivity.ADD_OK) loadUserCommentData(selectSpinner.selectedItemPosition)
         }
     }
 
@@ -167,5 +168,6 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
     companion object {
         private const val LOGIN = 1
         private const val FROM_USER_COMMENT_DETAIL = 0
+        private const val FROM_ADD_COMMENT_DETAIL=2
     }
 }

@@ -59,12 +59,14 @@ private fun calculateSize(bitmap: Bitmap): Int {
     val shortSide = Math.min(srcWidth, srcHeight)
     val scale = shortSide.toFloat() / longSide
     return if (scale <= 1 && scale > 0.5625) {
-        if (longSide < 1664) {
+        if (longSide < 664) {
             1
-        } else if (longSide in 1664..4989) {
+        } else if (longSide in 900..2200) {
             2
-        } else if (longSide in 4991..10239) {
+        } else if (longSide in 2200..5889) {
             4
+        }else if(longSide in 5889..20480){
+            8
         } else {
             if (longSide / 1280 == 0) 1 else longSide / 1280
         }

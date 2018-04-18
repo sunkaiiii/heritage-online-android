@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 'android-P'
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.datong.heritage_online"

@@ -1,6 +1,3 @@
 1、服务端、客户端代码重构
 7、微信、QQ登陆
 
-bug
-1、更多新闻页图片重复
-2、constraintLayout一些bug

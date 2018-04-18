@@ -17,6 +17,7 @@ abstract class OnSrollHelper:RecyclerView.OnScrollListener() {
             if ((layoutManager is LinearLayoutManager) && notOnLoad) {
                 val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                 if (lastVisibleItemPosition + 3 > recyclerView.adapter.itemCount) {
+                    setPageOnLoad()
                     loadMoreData(recyclerView)
                 }
             }

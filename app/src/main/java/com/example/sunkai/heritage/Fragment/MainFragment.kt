@@ -134,7 +134,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
                         val moreData = HandleMainFragment.GetBottomNewsLiteInformation(adapter.itemCount)
                         activity.runOnUiThread {
                             adapter.addNewData(moreData)
-                            setPageLoaded()
+                            this.setPageLoaded()
                         }
                     }
                 }
