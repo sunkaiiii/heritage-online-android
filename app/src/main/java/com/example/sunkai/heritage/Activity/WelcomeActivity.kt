@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.edit
@@ -59,6 +58,7 @@ class WelcomeActivity : BaseStopGlideActivity() {
             val userPassword = getSharedPreferences(DATA, Context.MODE_PRIVATE).getString(SHARE_PREFRENCE_PASSWORD, null)
             //尝试尝试自动登录
             val result = attempToLogin(username, userPassword)
+            if(isDestroy)return@execute
             runOnUiThread {
                 handleLogin(result, username)
             }

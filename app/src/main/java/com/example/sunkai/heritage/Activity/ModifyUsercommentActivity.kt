@@ -10,7 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.core.graphics.drawable.toBitmap
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
@@ -43,7 +42,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             data = intent?.getSerializableExtra(DATA) as UserCommentData
             add_comment_title.setText(data!!.commentTitle)
             add_comment_content.setText(data!!.commentContent)
-            Glide.with(this).load(BaseSetting.URL + data!!.imageUrl).into(simpleTarget)
+            glide.load(BaseSetting.URL + data!!.imageUrl).into(simpleTarget)
         }
     }
 
@@ -90,6 +89,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
             ThreadPool.execute {
                 setDatas()
                 val result = HandleFind.UpdateUserCommentInformaiton(data.id, data.commentTitle, data.commentContent, Base64.encodeToString(modifyBitmap.toByteArray(), Base64.DEFAULT))
+                if(isDestroy)return@execute
                 runOnUiThread {
                     if (result != ERROR) {
                         toast(getString(R.string.update_success))

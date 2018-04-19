@@ -100,7 +100,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                     else -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                 }
                 activiy.runOnUiThread {
-                    val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what)
+                    val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what,glide)
                     setAdpterClick(adapter)
                     fragmentFindRecyclerView?.adapter = adapter
                     onPostLoad()

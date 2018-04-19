@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
@@ -36,7 +36,7 @@ class FocusListviewAdapter
  * @param datas 关注、粉丝的数据
  * @param what  1为关注，2为粉丝3为查询页面
  */
-(private val context: Context, private var what: Int, datas: List<FollowInformation>) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas) {
+(private val context: Context, private var what: Int, datas: List<FollowInformation>,glide: RequestManager) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas,glide) {
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 
@@ -96,7 +96,7 @@ class FocusListviewAdapter
                 val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
                     runOnUiThread(Runnable {
-                        Glide.with(context).load(url).into(holder.userImage)
+                        glide.load(url).into(holder.userImage)
                     })
                 }
             }

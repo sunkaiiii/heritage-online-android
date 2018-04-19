@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
@@ -49,6 +48,7 @@ class MyCollectionActivity : BaseStopGlideActivity() {
         //不优雅的方法
         ThreadPool.execute {
             Thread.sleep(300)
+            if(isDestroy)return@execute
             runOnUiThread {
                 val fragment=adapter.getItem(0)
                 if(fragment is BaseLazyLoadFragment){

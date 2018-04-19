@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
@@ -22,7 +22,7 @@ import com.example.sunkai.heritage.R
  * 点击更多之后，展示全部内容的adapter
  * Created by sunkai on 2018/2/9.
  */
-class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsLite>) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(datas) {
+class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(datas,glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -66,7 +66,7 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
                     holder.imageview.visibility = View.GONE
                 }
             }
-            Glide.with(context).load(BaseSetting.URL + data.img).into(holder.imageview)
+            glide.load(BaseSetting.URL + data.img).into(holder.imageview)
         }
     }
 

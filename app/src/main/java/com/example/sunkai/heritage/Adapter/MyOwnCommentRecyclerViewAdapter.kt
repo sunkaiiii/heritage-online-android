@@ -18,7 +18,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.core.graphics.drawable.toBitmap
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.ModifyUsercommentActivity
@@ -38,7 +38,7 @@ import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
  * 我的帖子的recyclerView的adapter
  * Created by sunkai on 2018/1/15.
  */
-class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
+class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas,glide) {
 
     private val lruCache: LruCache<Int, Bitmap>
     private var recyclerView: RecyclerView? = null
@@ -167,7 +167,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
                 adpter?.let {
                     holder.mycomment_item_title.text = data.commentTitle
                     holder.mycomment_item_content.text = data.commentContent
-                    Glide.with(adpter.context).load(url).into(simpleTarget(holder, adpter))
+                    adpter.glide.load(url).into(simpleTarget(holder, adpter))
                     holder.view.visibility = View.VISIBLE
                 }
             }

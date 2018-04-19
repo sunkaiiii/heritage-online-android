@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.tools.GlobalContext
@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference
 /*
  * Created by sunkai on 2018/1/2.
  */
-class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID: Int, datas: List<Int>) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(datas) {
+class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID: Int, datas: List<Int>,glide: RequestManager) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(datas,glide) {
 
 
     init {
@@ -84,7 +84,7 @@ class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID:
             val url = HandleFind.GetUserCommentImageUrl(imageID)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 activity.runOnUiThread {
-                    Glide.with(activity).load(url).into(imageview)
+                    glide.load(url).into(imageview)
                 }
             }
         }

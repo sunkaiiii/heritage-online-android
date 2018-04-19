@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.DividerItemDecoration
@@ -10,11 +9,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
@@ -27,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
 /**
  * 首页
  */
-class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
+class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -58,7 +57,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
                 }
                 activity.runOnUiThread{
                     //初始化顶部viewpager
-                    val adapter=MainPageCardViewPagerAdapter(views,news)
+                    val adapter=MainPageCardViewPagerAdapter(views,news,glide)
                     fragmentMainViewpager.adapter=adapter
                     //加载滑动时候的阴影效果
                     val transformer=ShadowTransformer(fragmentMainViewpager,adapter)
@@ -78,7 +77,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
             val activity=activity
             activity?.let{
                 activity.runOnUiThread {
-                    val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas)
+                    val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas,glide)
                     setAdapterClick(adapter)
                     fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter=adapter
@@ -114,7 +113,7 @@ class MainFragment : Fragment(),View.OnClickListener,OnPageLoaded {
         val context=activity
         context?.let {
             val drawable = ContextCompat.getDrawable(context,R.mipmap.main_page_background)
-            Glide.with(context).load(drawable).into(mainPageTopImage)
+            glide.load(drawable).into(mainPageTopImage)
         }
     }
 

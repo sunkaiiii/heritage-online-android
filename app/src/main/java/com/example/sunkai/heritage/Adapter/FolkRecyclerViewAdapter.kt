@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkDataLite
@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.value.HOST
  * 民间页recyclerview的adapter
  * Created by sunkai on 2018/1/19.
  */
-class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(datas) {
+class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(datas,glide) {
 
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -60,7 +60,7 @@ class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>) :
         holder.listTitle.text = data.title
         holder.listDivide.text = data.divide
         holder.listLocation.text = data.category
-        Glide.with(context).load(HOST + data.img).into(holder.listImage)
+        glide.load(HOST + data.img).into(holder.listImage)
     }
 
     fun startGetInformation() {

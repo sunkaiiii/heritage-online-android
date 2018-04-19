@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.MainPageSlideNews
@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.R
  * 显示更多新闻顶部滑动条的adapter
  * Created by sunkai on 2018/2/18.
  */
-class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>):PagerAdapter() {
+class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager):PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view==`object`
     }
@@ -40,7 +40,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         val title=view.findViewById<TextView>(R.id.main_page_slide_title)
         val data=datas[position%datas.size]
         title.text=data.content
-        Glide.with(context).load(BaseSetting.URL+data.img).into(image)
+        glide.load(BaseSetting.URL+data.img).into(image)
         container.addView(view)
         view.setOnClickListener({
             val intent=setViewClick(data)

@@ -10,7 +10,6 @@ import android.support.v7.view.menu.MenuBuilder
 import android.view.*
 import android.widget.Toast
 import androidx.core.view.forEach
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -95,8 +94,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
                 if (userImageUrl != null) {
                     this.userImageUrl = userImageUrl
                     val requestOption = RequestOptions().placeholder(R.drawable.ic_assignment_ind_deep_orange_200_48dp).error(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
-                    Glide.with(activity).load(userImageUrl).apply(requestOption).into(sign_in_icon)
-//                Glide.with(this).
+                    glide.load(userImageUrl).apply(requestOption).into(sign_in_icon)
                 }
             }
         }

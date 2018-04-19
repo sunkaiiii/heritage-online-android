@@ -9,7 +9,6 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.core.transition.doOnEnd
 import androidx.core.widget.toast
-import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
@@ -76,6 +75,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             ThreadPool.execute {
                 if(LoginActivity.userID==0||id==0) finish()
                 val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@execute
+                if(isDestroy)return@execute
                 runOnUiThread {
                     setUserCommentView(userCommentData,null)
                     showBackLinear()
@@ -146,7 +146,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         if (image != null) {
             userCommentImage.setImageBitmap(HandlePic.handlePic(image))
         } else {
-            Glide.with(this).load(BaseSetting.URL + data.imageUrl).into(userCommentImage)
+            glide.load(BaseSetting.URL + data.imageUrl).into(userCommentImage)
         }
     }
 
@@ -156,6 +156,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             ad.show()
             ThreadPool.execute {
                 val result = HandleFind.DeleteUserCommentByID(data!!.id)
+                if(isDestroy)return@execute
                 runOnUiThread {
                     if (ad.isShowing) {
                         ad.dismiss()
@@ -212,9 +213,10 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         onPreLoad()
         ThreadPool.execute {
             val datas = HandleFind.GetUserCommentReply(commentID)
+            if(isDestroy)return@execute
             runOnUiThread {
                 onPostLoad()
-                val adapter = UserCommentReplyRecyclerAdapter(this, datas)
+                val adapter = UserCommentReplyRecyclerAdapter(this, datas,glide)
                 userCommentReplyRecyclerView.adapter = adapter
             }
         }

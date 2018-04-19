@@ -92,7 +92,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
         ThreadPool.execute {
             val datas = HandleFolk.GetChannelInformation(channelName)
             runOnUiThread(Runnable {
-                val adapter = ActivityRecyclerViewAdapter(activity, datas)
+                val adapter = ActivityRecyclerViewAdapter(activity, datas,glide)
                 setAdapterItemClick(adapter)
                 activityRecyclerView?.adapter = adapter
                 refreshRefreshViewColor()

@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DividerItemDecoration
 import android.view.MenuItem
 import android.view.View
@@ -40,8 +39,9 @@ class MyMessageActivity : BaseStopGlideActivity(),OnPageLoaded {
         onPreLoad()
         ThreadPool.execute {
             val messages=HandlePush.getUserPushMessages(LoginActivity.userID)
+            if(isDestroy)return@execute
             runOnUiThread {
-                val adapter=MyMessageRecyclerAdapter(this,messages)
+                val adapter=MyMessageRecyclerAdapter(this,messages,glide)
                 myMessageRecyclerView.addItemDecoration(DividerItemDecoration(this,DividerItemDecoration.VERTICAL))
                 setAdapterClick(adapter)
                 myMessageRecyclerView.adapter=adapter

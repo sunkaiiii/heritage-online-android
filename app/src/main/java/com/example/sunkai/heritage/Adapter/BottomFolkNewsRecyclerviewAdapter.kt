@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
@@ -19,7 +19,7 @@ import com.google.gson.Gson
  * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<BottomFolkNewsLite>) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(datas) {
+class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<BottomFolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(datas,glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -72,7 +72,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
                 }
                 imgArray.size < 3 -> {
                     holder.image.visibility = View.VISIBLE
-                    Glide.with(context).load(BaseSetting.URL + imgArray[0]).into(holder.image)
+                    glide.load(BaseSetting.URL + imgArray[0]).into(holder.image)
                     holder.bottomLinear.visibility = View.GONE
                     holder.briefly.visibility = View.GONE
                 }
@@ -81,7 +81,7 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
                     holder.bottomLinear.visibility = View.VISIBLE
                     holder.briefly.visibility = View.VISIBLE
                     for ((position, imageview) in holder.imageViews.withIndex()) {
-                        Glide.with(context).load(BaseSetting.URL + imgArray[position]).into(imageview)
+                        glide.load(BaseSetting.URL + imgArray[position]).into(imageview)
                     }
                 }
             }

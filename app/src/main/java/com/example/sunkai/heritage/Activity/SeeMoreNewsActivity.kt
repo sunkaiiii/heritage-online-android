@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
@@ -48,6 +47,7 @@ class SeeMoreNewsActivity : BaseStopGlideActivity() {
         ThreadPool.execute {
             val datas = HandleMainFragment.GetMainPageSlideNewsInfo()
             if (datas != null) {
+                if(isDestroy)return@execute
                 runOnUiThread {
                     setMainPageSlideAdapter(datas)
                 }
@@ -77,7 +77,7 @@ class SeeMoreNewsActivity : BaseStopGlideActivity() {
     }
 
     private fun setMainPageSlideAdapter(datas: List<MainPageSlideNews>) {
-        val adapter = MainPageSlideAdapter(this, datas)
+        val adapter = MainPageSlideAdapter(this, datas,glide)
         seeMoreNewsMainPageSlideViewpager.adapter = adapter
         //让他在初始的时候在中间的位置，且保证是第一个页面，可以做到左翻页
         val middleItem = 0 + 4 * 200

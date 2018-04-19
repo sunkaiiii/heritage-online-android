@@ -69,7 +69,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val datas = HandleMainFragment.GetFolkNewsList(category, 0, 20)
             val activity = activity
             activity?.runOnUiThread {
-                val adapter = SeeMoreNewsRecyclerViewAdapter(activity, datas)
+                val adapter = SeeMoreNewsRecyclerViewAdapter(activity, datas,glide)
                 seeMoreNewsRecyclerView.adapter = adapter
                 onPostLoad()
                 setRecyclerClick(adapter)

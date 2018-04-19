@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.*
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
-import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -80,9 +79,10 @@ class SearchActivity : BaseStopGlideActivity(), View.OnClickListener, TextView.O
     private fun searchClass(searchText: String) {
         ThreadPool.execute {
             val searchData = HandlePerson.GetSearchUserInfo(searchText, LoginActivity.userID)
-            val adapter = SearchUserRecclerAdapter(this, searchData)
+            val adapter = SearchUserRecclerAdapter(this, searchData,glide)
             setListener(adapter)
             setItemClick(adapter)
+            if(isDestroy)return@execute
             runOnUiThread {
                 searchActivityList.adapter = adapter
             }

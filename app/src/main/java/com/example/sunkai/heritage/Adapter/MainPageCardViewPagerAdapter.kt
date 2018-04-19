@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
@@ -25,7 +25,7 @@ import com.example.sunkai.heritage.value.CATEGORIES
  * 首页viewapger卡片的adapter
  * Created by sunkai on 2018/2/9.
  */
-class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<List<FolkNewsLite>>):BaseCardPagerAdapter(views) {
+class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<List<FolkNewsLite>>,val glide: RequestManager):BaseCardPagerAdapter(views) {
     override fun setDataInView(view: View, position: Int, context: Context) {
         val textView=view.findViewById<TextView>(R.id.see_more)
         val linearLayout=view.findViewById<LinearLayout>(R.id.main_news_other_news)
@@ -58,7 +58,7 @@ class MainPageCardViewPagerAdapter(views:MutableList<CardView>,val datas:List<Li
         if (TextUtils.isEmpty(item.img)) {
             itemHolder.image.visibility = View.GONE
         } else {
-            Glide.with(context).load(BaseSetting.URL + item.img).into(simpleTarget(itemHolder))
+            glide.load(BaseSetting.URL + item.img).into(simpleTarget(itemHolder))
         }
         linearLayout.addView(itemView)
     }

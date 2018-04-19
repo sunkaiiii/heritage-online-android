@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -34,7 +34,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 个人中心我的赞的recyclerview的adapter
  * Created by sunkai on 2018/3/12.
  */
-class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommentData>) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(datas) {
+class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(datas,glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val userName: TextView
@@ -89,11 +89,11 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
                 holder.collectButton.setColorFilter(color)
             }
         }
-        Glide.with(context).load(imageUrl).into(simpleTarget)
+        glide.load(imageUrl).into(simpleTarget)
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.userID) ?: return@execute
             runOnUiThread(Runnable {
-                Glide.with(context).load(url).into(holder.userImage)
+                glide.load(url).into(holder.userImage)
             })
         }
     }

@@ -8,7 +8,6 @@ import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.text.TextUtils
 import android.view.View
@@ -70,6 +69,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
     private fun getUserAllInfo(userID: Int) {
         ThreadPool.execute {
             val data = HandlePerson.GetUserAllInfo(userID)
+            if(isDestroy)return@execute
             data?.let {
                 runOnUiThread({
                     this.data = data
@@ -88,6 +88,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
             ONLYFOCUS -> {
                 ThreadPool.execute {
                     val result = judgeFocus(userID, LoginActivity.userID)
+                    if(isDestroy)return@execute
                     runOnUiThread {
                         if (result) {
                             setAdapter(userID)
@@ -108,6 +109,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
             ONLYFOCUS -> {
                 ThreadPool.execute {
                     val result = judgeFocus(userID, LoginActivity.userID)
+                    if(isDestroy)return@execute
                     runOnUiThread {
                         if (result) {
                             setViewsOnClick()
@@ -135,6 +137,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(userID)
             url?.let {
+                if(isDestroy)return@execute
                 runOnUiThread {
                     Glide.with(this).load(url).into(photoView)
                 }
@@ -164,7 +167,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
 
 
     private fun setAdapter(userID: Int) {
-        val adapter = OtherPersonActivityRecyclerViewAdapter(this, userID, arrayListOf())
+        val adapter = OtherPersonActivityRecyclerViewAdapter(this, userID, arrayListOf(),glide)
         val layoutManager = GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
@@ -183,6 +186,7 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
         data?.let {
             ThreadPool.execute {
                 val result = if (data.checked) HandlePerson.CancelFocus(LoginActivity.userID, data.id) else HandlePerson.AddFocus(LoginActivity.userID, data.id)
+                if(isDestroy)return@execute
                 runOnUiThread {
                     addFocsFloatBtn.isEnabled = true
                     if (result) {
@@ -307,9 +311,10 @@ class OtherUsersActivity : BaseStopGlideActivity(), View.OnClickListener {
             val id = adapter.datas[position]
             val url = HandleFind.GetUserCommentImageUrl(id)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
+                if(isDestroy)return@execute
                 runOnUiThread {
                     val photoView = adapter.photoViewMap[position] ?: return@runOnUiThread
-                    Glide.with(this).load(url).into(photoView)
+                    glide.load(url).into(photoView)
                 }
             }
         }

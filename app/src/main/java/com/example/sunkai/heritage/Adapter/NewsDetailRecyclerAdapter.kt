@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.NewsDetail
 import com.example.sunkai.heritage.R
@@ -16,7 +16,7 @@ import com.example.sunkai.heritage.R
  * 展示新闻详情
  * Created by sunkai on 2018/2/9.
  */
-class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail>) : RecyclerView.Adapter<NewsDetailRecyclerAdapter.ViewHolder>() {
+class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail>,val glide: RequestManager) : RecyclerView.Adapter<NewsDetailRecyclerAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textview: TextView
@@ -43,7 +43,7 @@ class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail
         } else {
             holder.textview.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            Glide.with(context).load(BaseSetting.URL + data.info).into(holder.imageView)
+            glide.load(BaseSetting.URL + data.info).into(holder.imageView)
         }
     }
 

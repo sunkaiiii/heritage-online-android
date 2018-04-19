@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.View
@@ -47,9 +46,10 @@ class UserLikeCommentActivity : BaseStopGlideActivity(), OnPageLoaded {
         onPreLoad()
         ThreadPool.execute {
             val data = HandleFind.GetUserLikeComment(LoginActivity.userID)
+            if(isDestroy)return@execute
             runOnUiThread {
                 onPostLoad()
-                val adapter = MyLikeCommentRecyclerAdapter(this, data)
+                val adapter = MyLikeCommentRecyclerAdapter(this, data,glide)
                 setAdapterClick(adapter)
                 Log.d("destiny", GRID_LAYOUT_DESTINY.toString())
                 userLikeActivityRecyclerView.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)

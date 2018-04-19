@@ -47,8 +47,9 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
             val data=HandleMainFragment.GetBottomNewsInformationByID(id)
             data?.let{
                 val contentInfos=HandleMainFragment.GetBottomNewsDetailInfo(data.content)
+                if(isDestroy)return@execute
                 runOnUiThread {
-                    val adapter=BottomNewsDetailRecyclerViewAdapter(this,contentInfos)
+                    val adapter=BottomNewsDetailRecyclerViewAdapter(this,contentInfos,glide)
                     bottomNewsDetailRecyclerview.adapter=adapter
                 }
             }

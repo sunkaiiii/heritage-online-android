@@ -80,6 +80,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         val addImageBitmap = imageBitmap ?: return
         val imageCode = Base64.encodeToString(addImageBitmap.toByteArray(), Base64.DEFAULT)
         val result = HandleFind.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
+        if(isDestroy) return
         runOnUiThread {
             setItemStates(false)
             isSavePicture = false

@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -37,7 +37,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas) {
+class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas, glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
@@ -106,8 +106,8 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {
-        holder.like.isEnabled=!data.isLike()
-        holder.dislike.isEnabled=data.isLike()
+        holder.like.isEnabled = !data.isLike()
+        holder.dislike.isEnabled = data.isLike()
         if (data.isLike()) {
             SetLike(holder, data.likeNum)
         } else {
@@ -151,7 +151,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun setAddReplyClick(holder: ViewHolder, data: UserCommentData) {
         holder.comment.setOnClickListener {
-            val dialog = AddUserCommentBottomDialog(context, data.id,data)
+            val dialog = AddUserCommentBottomDialog(context, data.id, data)
             //设置当回复成功的时候，刷新显示的回复内容
             dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
                 override fun onAddUserReplySuccess(data: CommentReplyInformation) {
@@ -180,15 +180,15 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                 else -> false
             }
             context.runOnUiThread {
-                when(divide){
-                    LIKE->holder.dislike.isEnabled = true
-                    DISLIKE->holder.like.isEnabled=true
+                when (divide) {
+                    LIKE -> holder.dislike.isEnabled = true
+                    DISLIKE -> holder.like.isEnabled = true
                 }
                 if (success) {
                     changeLikeDataState(isLike, position)
                     when (divide) {
-                        LIKE ->SetLike(holder, data.likeNum)
-                        DISLIKE ->CancelLike(holder, data.likeNum)
+                        LIKE -> SetLike(holder, data.likeNum)
+                        DISLIKE -> CancelLike(holder, data.likeNum)
                     }
                 } else {
                     toast("出现错误")
@@ -242,7 +242,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         var likeNumber = datas[position].likeNum
         likeNumber = if (isLike) likeNumber + 1 else likeNumber - 1
         datas[position].likeNum = likeNumber
-        datas[position].isLike=if(isLike)"SUCCESS" else "ERROR"
+        datas[position].isLike = if (isLike) "SUCCESS" else "ERROR"
     }
 
     private fun changeFocusDataState(isFocus: Boolean, userID: Int) {
@@ -272,7 +272,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
         val requestOption = RequestOptions().placeholder(R.color.lightGrey).error(R.color.lightGrey)
-        Glide.with(context).load(BaseSetting.URL + data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
+        glide.load(BaseSetting.URL + data.imageUrl).apply(requestOption).transition(DrawableTransitionOptions.withCrossFade()).into(holder.img)
     }
 
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
@@ -280,7 +280,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         ThreadPool.execute {
             val userImageURL = HandlePerson.GetUserImageURL(data.userID)
             context.runOnUiThread {
-                Glide.with(context).load(userImageURL).apply(requestOptions).into(holder.userImage)
+                glide.load(userImageURL).apply(requestOptions).into(holder.userImage)
             }
         }
     }

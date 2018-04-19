@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -29,7 +29,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 搜索用户的RecyclerView的adapter
  * Created by sunkai on 2018/3/6.
  */
-class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo>) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(datas) {
+class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(datas,glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
@@ -76,7 +76,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
             val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 context.runOnUiThread {
-                    Glide.with(context).load(url).into(holder.userImage)
+                    glide.load(url).into(holder.userImage)
                 }
             }
         }

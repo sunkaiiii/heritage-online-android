@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -46,6 +45,7 @@ class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedCha
         ThreadPool.execute {
             val permission = HandlePerson.GetUserPermission(LoginActivity.userID)
             val focusAndFansViewPermission = HandlePerson.GetUserFocusAndFansViewPermission(LoginActivity.userID)
+            if(isDestroy)return@execute
             runOnUiThread {
                 permissionSpinner.setSelection(permission + 1, true)
                 permissionSpinner.isEnabled = true
@@ -89,6 +89,7 @@ class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedCha
                         R.id.focusAndFansViewPermissionSpinner -> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID, position - 1)
                         else -> false
                     }
+                    if(isDestroy)return@execute
                     runOnUiThread {
                         spinner.isEnabled = true
                         if (!result) {

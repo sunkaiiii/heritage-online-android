@@ -12,10 +12,8 @@ import android.text.TextWatcher
 import android.transition.TransitionInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.EditText
 import androidx.core.view.children
-import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
@@ -101,7 +99,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     override fun setImageToImageView(bitmap: Bitmap) {
-        Glide.with(this).load(bitmap).into(registUserImage)
+        glide.load(bitmap).into(registUserImage)
         userImageBitmap = bitmap
         isUploadImage = true
 

@@ -101,14 +101,14 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private fun handleMainCollection(result: List<FolkNewsLite>) {
         val activity = activity ?: return
-        val adapter = SeeMoreNewsRecyclerViewAdapter(activity, result)
+        val adapter = SeeMoreNewsRecyclerViewAdapter(activity, result,glide)
         setAdapterClick(adapter)
         my_collect_recyclerview.adapter = adapter
     }
 
     private fun handleFocusOnHeritage(result: List<BottomFolkNewsLite>) {
         val activity = activity ?: return
-        val adapter = BottomFolkNewsRecyclerviewAdapter(activity, result)
+        val adapter = BottomFolkNewsRecyclerviewAdapter(activity, result,glide)
         setAdapterClick(adapter)
         my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         my_collect_recyclerview.adapter = adapter
@@ -116,7 +116,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private fun handleFolkCollection(result: List<ClassifyDivideData>) {
         val activity = activity ?: return
-        val adapter = ActivityRecyclerViewAdapter(activity, result)
+        val adapter = ActivityRecyclerViewAdapter(activity, result,glide)
         setAdapterClick(adapter)
         my_collect_recyclerview.adapter = adapter
 
@@ -124,7 +124,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private fun handleFindCollection(result: List<UserCommentData>) {
         val activity = activity ?: return
-        val adapter = FindFragmentRecyclerViewAdapter(activity, result, MY_FOCUS_COMMENT)
+        val adapter = FindFragmentRecyclerViewAdapter(activity, result, MY_FOCUS_COMMENT,glide)
         setAdapterClick(adapter)
         my_collect_recyclerview.adapter = adapter
     }

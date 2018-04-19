@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.PushMessageData
@@ -16,7 +16,7 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.makeramen.roundedimageview.RoundedImageView
 
-class MyMessageRecyclerAdapter(val context:Context,data:List<PushMessageData>):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(data) {
+class MyMessageRecyclerAdapter(val context:Context,data:List<PushMessageData>,glide: RequestManager):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(data,glide) {
     class Holder(view:View):RecyclerView.ViewHolder(view){
         val userImage:RoundedImageView
         val userName:TextView
@@ -54,7 +54,7 @@ class MyMessageRecyclerAdapter(val context:Context,data:List<PushMessageData>):B
             val userImagUrl=HandlePerson.GetUserImageURL(userID)
             if(userImagUrl!= ERROR||!userImagUrl.isNullOrEmpty()){
                 runOnUiThread(Runnable {
-                    Glide.with(context).load(userImagUrl).into(holder.userImage)
+                    glide.load(userImagUrl).into(holder.userImage)
                 })
             }
         }

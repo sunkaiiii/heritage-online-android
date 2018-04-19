@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
@@ -66,7 +65,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     //警报很烦，屏蔽掉
     @SuppressLint("SetTextI18n")
     private fun setDatasToView(data: ClassifyDivideData) {
-        Glide.with(this).load(HOST + data.img).into(target)
+        glide.load(HOST + data.img).into(target)
         activityJoinCollapsingToolbar.title = data.title
         joinActivityTime.text = getString(R.string.apply_time) + data.time
         joinActivityLocaction.text = getString(R.string.location) + data.location
@@ -99,10 +98,12 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
             val folkData = HandleFolk.Get_Channel_Folk_Single_Information(id)
             if (folkData != null) {
                 val data = ClassifyDivideData(folkData)
+                if(isDestroy)return@execute
                 runOnUiThread {
                     setDatasToView(data)
                 }
             } else {
+                if(isDestroy)return@execute
                 runOnUiThread {
                     setErrorInfo()
                 }

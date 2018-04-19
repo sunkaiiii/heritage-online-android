@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -102,6 +101,7 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
             } else {
                 HandlePerson.GetOtherFollowInformation(LoginActivity.userID, userID)
             }
+            if(isDestroy)return@Runnable
             runOnUiThread {
                 setAdpter(datas)
             }
@@ -114,6 +114,7 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
             } else {
                 HandlePerson.GetOtherFansInformation(LoginActivity.userID, userID)
             }
+            if(isDestroy)return@Runnable
             runOnUiThread {
                 setAdpter(datas)
             }
@@ -122,7 +123,7 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
 
 
         private fun setAdpter(datas: List<FollowInformation>) {
-            val adapter = FocusListviewAdapter(this@FocusInformationActivity, what, datas)
+            val adapter = FocusListviewAdapter(this@FocusInformationActivity, what, datas,glide)
             adapter.setOnFocusChangeListener(object : OnFocusChangeListener {
                 override fun onFocusChange() {
                     setResult(STATE_CHANGE)

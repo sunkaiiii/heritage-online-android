@@ -14,7 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
@@ -133,7 +132,7 @@ class FolkFragment : BaseLazyLoadFragment() {
     private fun getDivideImage(index: Int) {
         urls?.let {
             val url = urls!![index].url
-            Glide.with(context!!).load(HOST + url).into(simpleTarget)
+            glide.load(HOST + url).into(simpleTarget)
         }
     }
 

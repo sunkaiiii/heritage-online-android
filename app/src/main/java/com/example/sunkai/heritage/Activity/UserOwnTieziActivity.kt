@@ -44,8 +44,9 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
     override fun getInformation(){
         ThreadPool.execute {
             val datas=HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
+            if(isDestroy)return@execute
             runOnUiThread {
-                adapter = MyOwnCommentRecyclerViewAdapter(this,datas)
+                adapter = MyOwnCommentRecyclerViewAdapter(this,datas,glide)
                 setAdpterClick(adapter)
                 setAdpterLongClick(adapter)
                 setAdapterListener(adapter)
@@ -89,6 +90,7 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
                             Thread {
                                 val userCommentData = adapter.getItem(position)
                                 val result = HandleFind.DeleteUserCommentByID(userCommentData.id)
+                                if(isDestroy)return@Thread
                                 runOnUiThread {
                                     if (ad.isShowing) {
                                         ad.dismiss()

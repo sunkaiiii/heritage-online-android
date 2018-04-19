@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
@@ -27,8 +26,7 @@ import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.FROM
 import kotlinx.android.synthetic.main.activity_all_folk_info.*
-import java.util.ArrayList
-import java.util.TreeSet
+import java.util.*
 
 /**
  * 用于展示所有民间信息的Activity
@@ -49,7 +47,7 @@ class AllFolkInfoActivity : BaseStopGlideActivity(), View.OnClickListener, Adapt
         initView()
         folk_location_spinner.onItemSelectedListener = this
         folk_heritages_spinner.onItemSelectedListener = this
-        folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf())
+        folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf(),glide)
         folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
     }
