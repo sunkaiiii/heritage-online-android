@@ -183,7 +183,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onPostLoad() {
-        my_colelct_refresh.isRefreshing = false
+        my_colelct_refresh?.isRefreshing = false
     }
 
     companion object {

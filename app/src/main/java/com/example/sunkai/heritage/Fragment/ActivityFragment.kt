@@ -137,7 +137,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onPostLoad() {
-        fragmentActivitySwipeRefresh.isRefreshing = false
+        fragmentActivitySwipeRefresh?.isRefreshing = false
         refreshRefreshViewColor()
     }
 
