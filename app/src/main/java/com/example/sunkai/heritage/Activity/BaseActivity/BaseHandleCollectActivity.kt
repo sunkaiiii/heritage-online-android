@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -16,7 +15,7 @@ import com.example.sunkai.heritage.value.IS_INTO
  * 可以收藏的Activity页面基类
  * Created by sunkai on 2018/3/14.
  */
-abstract class BaseHandleCollectActivity : BaseStopGlideActivity(), HandleCollect {
+abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
     private var menuItem: Menu? = null
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

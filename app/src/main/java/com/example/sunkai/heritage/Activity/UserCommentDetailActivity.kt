@@ -72,10 +72,9 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             //从我的消息页面进入的时候，只会传来帖子id，这时候要获取全部的内容
             val id=intent.getIntExtra(ID,0)
             commentID=id
-            ThreadPool.execute {
+            requestHttp {
                 if(LoginActivity.userID==0||id==0) finish()
-                val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@execute
-                if(isDestroy)return@execute
+                val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@requestHttp
                 runOnUiThread {
                     setUserCommentView(userCommentData,null)
                     showBackLinear()
@@ -154,9 +153,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         AlertDialog.Builder(this).setTitle("是否删除帖子?").setPositiveButton("删除") { _, _ ->
             val ad = AlertDialog.Builder(this).setView(LayoutInflater.from(this).inflate(R.layout.progress_view, userCommentReplyAppbar, false)).create()
             ad.show()
-            ThreadPool.execute {
+            requestHttp {
                 val result = HandleFind.DeleteUserCommentByID(data!!.id)
-                if(isDestroy)return@execute
                 runOnUiThread {
                     if (ad.isShowing) {
                         ad.dismiss()
@@ -211,9 +209,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     private fun getReplysInfo(commentID: Int) {
         if (commentID == 0) return
         onPreLoad()
-        ThreadPool.execute {
+        requestHttp {
             val datas = HandleFind.GetUserCommentReply(commentID)
-            if(isDestroy)return@execute
             runOnUiThread {
                 onPostLoad()
                 val adapter = UserCommentReplyRecyclerAdapter(this, datas,glide)

@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.FolkDataLite
@@ -32,7 +32,7 @@ import java.util.*
  * 用于展示所有民间信息的Activity
  */
 
-class AllFolkInfoActivity : BaseStopGlideActivity(), View.OnClickListener, AdapterView.OnItemSelectedListener {
+class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterView.OnItemSelectedListener {
     internal lateinit var datas: List<FolkDataLite> //首次加载获取的初始数据，用于各种搜索条件归位的时候，数据的归位
 
     private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter

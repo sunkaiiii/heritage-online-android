@@ -94,16 +94,14 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     }
 
     private fun getFolkData(id: Int) {
-        ThreadPool.execute {
+        requestHttp {
             val folkData = HandleFolk.Get_Channel_Folk_Single_Information(id)
             if (folkData != null) {
                 val data = ClassifyDivideData(folkData)
-                if(isDestroy)return@execute
                 runOnUiThread {
                     setDatasToView(data)
                 }
             } else {
-                if(isDestroy)return@execute
                 runOnUiThread {
                     setErrorInfo()
                 }

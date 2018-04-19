@@ -75,6 +75,7 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         val data = data ?: return
         data.commentTitle = add_comment_title.text.toString()
         data.commentContent = add_comment_content.text.toString()
+
         this.data = data
     }
 
@@ -86,10 +87,9 @@ class ModifyUsercommentActivity : BaseTakeCameraActivity(), View.OnClickListener
         item.isEnabled = false
         data?.let {
             setViewsUnable()
-            ThreadPool.execute {
+            requestHttp {
                 setDatas()
                 val result = HandleFind.UpdateUserCommentInformaiton(data.id, data.commentTitle, data.commentContent, Base64.encodeToString(modifyBitmap.toByteArray(), Base64.DEFAULT))
-                if(isDestroy)return@execute
                 runOnUiThread {
                     if (result != ERROR) {
                         toast(getString(R.string.update_success))

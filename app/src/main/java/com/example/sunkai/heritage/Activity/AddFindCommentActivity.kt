@@ -48,7 +48,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         if (checkValues(title, content)) {
             isSavePicture = true
             setItemStates(true)
-            ThreadPool.execute {
+            requestHttp {
                 addCommentInformation(title, content)
             }
         }

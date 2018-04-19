@@ -11,8 +11,8 @@ fun runOnUiThread(runnable: Runnable) {
     Handler(Looper.getMainLooper()).post(runnable)
 }
 
-fun runOnUiThread(runnable:()->Runnable){
-    runOnUiThread(runnable)
+fun runOnUiThread(runnable:()->Unit){
+    runOnUiThread(Runnable(runnable))
 }
 
 

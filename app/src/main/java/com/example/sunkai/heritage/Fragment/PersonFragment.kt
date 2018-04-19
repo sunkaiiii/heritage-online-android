@@ -19,7 +19,6 @@ import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.android.synthetic.main.user_view.*
@@ -83,10 +82,10 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     //获取用户的信息
     private fun GetUserInfo() {
-        ThreadPool.execute {
-            val userInfo = HandlePerson.GetUserAllInfo(LoginActivity.userID) ?: return@execute
+        requestHttp {
+            val userInfo = HandlePerson.GetUserAllInfo(LoginActivity.userID) ?: return@requestHttp
             val userImageUrl = HandlePerson.GetUserImageURL(LoginActivity.userID)
-            val activity = activity ?: return@execute
+            val activity = activity ?: return@requestHttp
             activity.runOnUiThread {
                 sign_name_textview.text = userInfo.userName
                 person_fans_number.text = userInfo.fansNumber.toString()

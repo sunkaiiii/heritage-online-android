@@ -15,7 +15,7 @@ import android.support.v4.view.ViewPager
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.FindFragment
@@ -34,7 +34,7 @@ import java.lang.ref.WeakReference
  * 此类用于处理登陆
  */
 
-class MainActivity : BaseStopGlideActivity() {
+class MainActivity : BaseGlideActivity() {
 
     //让其他Activity可以访问MainActivity的方法，提供了一个弱引用
     companion object {

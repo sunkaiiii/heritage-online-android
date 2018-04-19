@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.MyCollectFragment
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_my_collection.*
 /**
  * 我的收藏的Activity
  */
-class MyCollectionActivity : BaseStopGlideActivity() {
+class MyCollectionActivity : BaseGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +46,8 @@ class MyCollectionActivity : BaseStopGlideActivity() {
         //自动加载第一页
         //第一次加载的时候，因为viewpager的fragment还没有create，所以无法取得args
         //不优雅的方法
-        ThreadPool.execute {
+        requestHttp {
             Thread.sleep(300)
-            if(isDestroy)return@execute
             runOnUiThread {
                 val fragment=adapter.getItem(0)
                 if(fragment is BaseLazyLoadFragment){

@@ -8,12 +8,11 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import androidx.core.widget.toast
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
@@ -21,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_setting_list.*
  * 用户设置的activity
  * Created by sunkai on 2017/12/15.
  */
-class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
+class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeListener, AdapterView.OnItemSelectedListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,10 +41,9 @@ class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedCha
     }
 
     private fun checkUserPermission() {
-        ThreadPool.execute {
+        requestHttp {
             val permission = HandlePerson.GetUserPermission(LoginActivity.userID)
             val focusAndFansViewPermission = HandlePerson.GetUserFocusAndFansViewPermission(LoginActivity.userID)
-            if(isDestroy)return@execute
             runOnUiThread {
                 permissionSpinner.setSelection(permission + 1, true)
                 permissionSpinner.isEnabled = true
@@ -82,18 +80,17 @@ class SettingListActivity : BaseStopGlideActivity(), CompoundButton.OnCheckedCha
         when (position - 1) {
             DENIALD, ONLYFOCUS, ALL -> {
                 spinner.isEnabled = false
-                ThreadPool.execute {
+                requestHttp {
                     val result: Boolean
                     result = when (id) {
                         R.id.permissionSpinner -> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
                         R.id.focusAndFansViewPermissionSpinner -> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID, position - 1)
                         else -> false
                     }
-                    if(isDestroy)return@execute
                     runOnUiThread {
                         spinner.isEnabled = true
                         if (!result) {
-                            MakeToast.MakeText(getString(R.string.had_error))
+                            toast(getString(R.string.had_error))
                         }
                     }
 

@@ -6,7 +6,6 @@ import com.example.sunkai.heritage.Adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
@@ -43,11 +42,10 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
     }
 
     private fun GetNewsDetail(id:Int){
-        ThreadPool.execute{
+        requestHttp {
             val data=HandleMainFragment.GetBottomNewsInformationByID(id)
             data?.let{
                 val contentInfos=HandleMainFragment.GetBottomNewsDetailInfo(data.content)
-                if(isDestroy)return@execute
                 runOnUiThread {
                     val adapter=BottomNewsDetailRecyclerViewAdapter(this,contentInfos,glide)
                     bottomNewsDetailRecyclerview.adapter=adapter

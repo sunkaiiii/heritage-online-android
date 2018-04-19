@@ -12,14 +12,19 @@ import com.example.sunkai.heritage.Activity.FolkInformationActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
-import com.example.sunkai.heritage.Adapter.*
+import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
+import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
+import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
+import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.*
+import com.example.sunkai.heritage.Data.BottomFolkNewsLite
+import com.example.sunkai.heritage.Data.ClassifyDivideData
+import com.example.sunkai.heritage.Data.FolkNewsLite
+import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.my_collect_item.*
@@ -75,18 +80,18 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     private fun getCollectInformation(typeName: String) {
-        ThreadPool.execute {
+        requestHttp {
             val result = when (typeName) {
                 TYPE_MAIN -> HandlePerson.GetMainCollection(LoginActivity.userID, typeName)
                 TYPE_FOCUS_HERITAGE -> HandlePerson.GetFocusOnHeritageCollection(LoginActivity.userID, typeName)
                 TYPE_FOLK -> HandlePerson.GetFolkColelction(LoginActivity.userID, typeName)
                 TYPE_FIND -> HandlePerson.GetFindCollection(LoginActivity.userID, typeName)
-                else -> return@execute
+                else -> return@requestHttp
             }
-            runOnUiThread(Runnable {
+            runOnUiThread{
                 onPostLoad()
                 handleColelction(result, typeName)
-            })
+            }
         }
     }
 

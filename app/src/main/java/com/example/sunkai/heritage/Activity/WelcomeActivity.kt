@@ -6,20 +6,19 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.edit
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.attempToLogin
 import com.example.sunkai.heritage.value.*
 
 /**
  * 此页面是欢迎界面的类
  */
-class WelcomeActivity : BaseStopGlideActivity() {
+class WelcomeActivity : BaseGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +51,12 @@ class WelcomeActivity : BaseStopGlideActivity() {
     }
 
     private fun goToLogin() {
-        ThreadPool.execute {
+        requestHttp {
             //首先，获取自动登录的信息
             val username = getSharedPreferences(DATA, Context.MODE_PRIVATE).getString(SHARE_PREFRENCE_USERNAME, null)
             val userPassword = getSharedPreferences(DATA, Context.MODE_PRIVATE).getString(SHARE_PREFRENCE_PASSWORD, null)
             //尝试尝试自动登录
             val result = attempToLogin(username, userPassword)
-            if(isDestroy)return@execute
             runOnUiThread {
                 handleLogin(result, username)
             }

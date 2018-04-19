@@ -101,12 +101,12 @@ class FolkFragment : BaseLazyLoadFragment() {
     }
 
     private fun getMainFragmentDivideImageUrl() {
-        Thread {
+        requestHttp {
             urls = HandleFolk.Get_Main_Divide_Activity_Image_Url()
             activity?.runOnUiThread {
                 getDivideImage(tabayout.selectedTabPosition)
             }
-        }.start()
+        }
     }
 
     internal inner class ViewPagerAdapter(manager: android.support.v4.app.FragmentManager) : FragmentPagerAdapter(manager) {

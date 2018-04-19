@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.Activity
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.text.TextUtils
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsViewpagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_see_more_news.*
 /**
  * 首页更多新闻的Activity
  */
-class SeeMoreNewsActivity : BaseStopGlideActivity() {
+class SeeMoreNewsActivity : BaseGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +44,9 @@ class SeeMoreNewsActivity : BaseStopGlideActivity() {
 
 
     private fun initMainPageSlide() {
-        ThreadPool.execute {
+        requestHttp{
             val datas = HandleMainFragment.GetMainPageSlideNewsInfo()
             if (datas != null) {
-                if(isDestroy)return@execute
                 runOnUiThread {
                     setMainPageSlideAdapter(datas)
                 }
@@ -91,7 +90,7 @@ class SeeMoreNewsActivity : BaseStopGlideActivity() {
                 if (adapter is SeeMoreNewsViewpagerAdapter) {
                     val fragment = adapter.getItem(i)
                     if (fragment is BaseLazyLoadFragment) {
-                        ThreadPool.execute {
+                        requestHttp {
                             //在第一次加载的时候，因为viewpager的fragment还没有create，所以无法取得args
                             //于是在第一次启动的时候延迟一段时间再lazyload
                             //目前的方式还不够优雅

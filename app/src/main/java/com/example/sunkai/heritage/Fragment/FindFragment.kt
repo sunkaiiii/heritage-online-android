@@ -20,7 +20,6 @@ import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ALL_COMMENT
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import kotlinx.android.synthetic.main.fragment_find.*
@@ -93,7 +92,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
         val activiy = activity
         activiy?.let {
             onPreLoad()
-            ThreadPool.execute {
+            requestHttp {
                 val datas = when (what) {
                     ALL_COMMENT -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                     MY_FOCUS_COMMENT -> HandleFind.GetUserCommentInformationByUser(LoginActivity.userID)

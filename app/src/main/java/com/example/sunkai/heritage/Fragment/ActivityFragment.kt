@@ -17,7 +17,6 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
@@ -89,15 +88,15 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private fun getInformation() {
         val activity = activity ?: return
         onPreLoad()
-        ThreadPool.execute {
+        requestHttp {
             val datas = HandleFolk.GetChannelInformation(channelName)
-            runOnUiThread(Runnable {
+            runOnUiThread {
                 val adapter = ActivityRecyclerViewAdapter(activity, datas,glide)
                 setAdapterItemClick(adapter)
                 activityRecyclerView?.adapter = adapter
                 refreshRefreshViewColor()
                 onPostLoad()
-            })
+            }
         }
     }
 

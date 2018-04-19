@@ -179,7 +179,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         val userPassword = regist_actitivy_password_editText.text.toString().trim()
         val findPasswordQuestion = regist_actitivy_question_editText.text.toString().trim()
         val findPasswordAnswer = regist_actitivy_answer_editText.text.toString().trim()
-        ThreadPool.execute {
+        requestHttp {
             userRegist(userName, userPassword, findPasswordQuestion, findPasswordAnswer)
         }
     }

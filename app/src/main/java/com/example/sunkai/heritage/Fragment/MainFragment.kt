@@ -19,7 +19,6 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.ShadowTransformer
-import com.example.sunkai.heritage.tools.ThreadPool
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -47,7 +46,7 @@ class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
 
     private fun loadSomeMainNews(refreshBottom:Boolean=true){
         onPreLoad()
-        ThreadPool.execute{
+        requestHttp{
             val news=HandleMainFragment.ReadMainNews()
             val activity=activity
             activity?.let{
@@ -72,7 +71,7 @@ class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
     }
 
     private fun loadBottomNews(){
-        ThreadPool.execute{
+        requestHttp{
             val datas=HandleMainFragment.GetBottomNewsLiteInformation()
             val activity=activity
             activity?.let{
@@ -125,7 +124,7 @@ class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
 
     private val onScroller=object:OnSrollHelper(){
         override fun loadMoreData(recyclerView: RecyclerView) {
-            ThreadPool.execute{
+            requestHttp{
                 val activity=activity
                 activity?.let {
                     val adapter = recyclerView.adapter

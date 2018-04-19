@@ -54,9 +54,8 @@ class NewsDetailActivity : BaseHandleCollectActivity() {
     }
 
     private fun getNewsDetail(id:Int){
-        ThreadPool.execute{
+        requestHttp{
             val datas=HandleMainFragment.GetFolkNewsInformation(id)
-            if(isDestroy)return@execute
             runOnUiThread {
                 val adapter=NewsDetailRecyclerAdapter(this,datas,glide)
                 newsDetailRecyclerView.adapter=adapter
@@ -65,9 +64,8 @@ class NewsDetailActivity : BaseHandleCollectActivity() {
     }
 
     private fun generateDetail(detail:String){
-        ThreadPool.execute{
+        requestHttp{
             val data=HandleMainFragment.GetMainPageSlideDetailInfo(detail)
-            if(isDestroy)return@execute
             runOnUiThread {
                 val adapter=NewsDetailRecyclerAdapter(this,data,glide)
                 newsDetailRecyclerView.adapter=adapter

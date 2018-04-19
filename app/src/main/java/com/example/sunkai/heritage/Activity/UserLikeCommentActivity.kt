@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyLikeCommentRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_user_like_comment.*
  * 我的赞的Activity
  */
 
-class UserLikeCommentActivity : BaseStopGlideActivity(), OnPageLoaded {
+class UserLikeCommentActivity : BaseGlideActivity(), OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +44,8 @@ class UserLikeCommentActivity : BaseStopGlideActivity(), OnPageLoaded {
 
     private fun getMyLikeData() {
         onPreLoad()
-        ThreadPool.execute {
+        requestHttp {
             val data = HandleFind.GetUserLikeComment(LoginActivity.userID)
-            if(isDestroy)return@execute
             runOnUiThread {
                 onPostLoad()
                 val adapter = MyLikeCommentRecyclerAdapter(this, data,glide)

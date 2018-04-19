@@ -41,12 +41,11 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
         getInformation()
     }
 
-    override fun getInformation(){
-        ThreadPool.execute {
-            val datas=HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
-            if(isDestroy)return@execute
+    override fun getInformation() {
+        requestHttp {
+            val datas = HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
             runOnUiThread {
-                adapter = MyOwnCommentRecyclerViewAdapter(this,datas,glide)
+                adapter = MyOwnCommentRecyclerViewAdapter(this, datas, glide)
                 setAdpterClick(adapter)
                 setAdpterLongClick(adapter)
                 setAdapterListener(adapter)
@@ -58,20 +57,20 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
 
     private fun setAdpterClick(adapter: MyOwnCommentRecyclerViewAdapter) {
 
-        adapter.setOnItemClickListen(object :OnItemClickListener {
+        adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
-                intent.putExtra(DATA,adapter.getItem(position))
-                if(Build.VERSION.SDK_INT>=21) {
+                intent.putExtra(DATA, adapter.getItem(position))
+                if (Build.VERSION.SDK_INT >= 21) {
                     val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
-                    val title=view.findViewById<TextView>(R.id.mycomment_item_title)
-                    val content=view.findViewById<TextView>(R.id.mycomment_item_content)
-                    val pairs=TransitionHelper.createSafeTransitionParticipants(this@UserOwnTieziActivity,false,
-                            Pair(imageView,getString(R.string.find_share_view)),
-                            Pair(title,getString(R.string.find_share_title)),
-                            Pair(content,getString(R.string.find_share_content)))
+                    val title = view.findViewById<TextView>(R.id.mycomment_item_title)
+                    val content = view.findViewById<TextView>(R.id.mycomment_item_content)
+                    val pairs = TransitionHelper.createSafeTransitionParticipants(this@UserOwnTieziActivity, false,
+                            Pair(imageView, getString(R.string.find_share_view)),
+                            Pair(title, getString(R.string.find_share_title)),
+                            Pair(content, getString(R.string.find_share_content)))
                     startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this@UserOwnTieziActivity, *pairs).toBundle())
-                }else{
+                } else {
                     startActivity(intent)
                 }
             }
@@ -79,18 +78,17 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
     }
 
     private fun setAdpterLongClick(adapter: MyOwnCommentRecyclerViewAdapter) {
-        this.adapter.setOnItemLongClickListener(object :OnItemLongClickListener{
+        this.adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
             override fun onItemlongClick(view: View, position: Int) {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
                         .setPositiveButton("删除", { _, _ ->
                             val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
-                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, userOwnList,false))
+                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, userOwnList, false))
                                     .create()
                             ad.show()
-                            Thread {
+                            requestHttp {
                                 val userCommentData = adapter.getItem(position)
                                 val result = HandleFind.DeleteUserCommentByID(userCommentData.id)
-                                if(isDestroy)return@Thread
                                 runOnUiThread {
                                     if (ad.isShowing) {
                                         ad.dismiss()
@@ -102,15 +100,15 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
                                     }
                                     refreshList()
                                 }
-                            }.start()
+                            }
                         }).setNegativeButton("取消", { _, _ -> })
                         .create().show()
             }
         })
     }
 
-    private fun setAdapterListener(adapter: MyOwnCommentRecyclerViewAdapter){
-        adapter.setOnDeleteSuccessListener(object :MyOwnCommentRecyclerViewAdapter.onDeleteSuccessListener{
+    private fun setAdapterListener(adapter: MyOwnCommentRecyclerViewAdapter) {
+        adapter.setOnDeleteSuccessListener(object : MyOwnCommentRecyclerViewAdapter.onDeleteSuccessListener {
             override fun onDeleteSuccess() {
                 getInformation()
             }
@@ -126,15 +124,15 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
     }
 
 
-    fun refreshList(){
+    fun refreshList() {
         getInformation()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            MODIFY_USER_COMMENT->{
-                if(resultCode== UPDATE_SUCCESS){
+        when (requestCode) {
+            MODIFY_USER_COMMENT -> {
+                if (resultCode == UPDATE_SUCCESS) {
                     getInformation()
                 }
             }

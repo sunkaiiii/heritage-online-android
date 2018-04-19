@@ -1,16 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
-import android.animation.ObjectAnimator
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.ActionBar
-import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.view.ViewAnimationUtils
-import android.view.animation.LinearInterpolator
 import androidx.core.net.toUri
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Dialog.LicenceDialog
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_about_us.*
@@ -19,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_about_us.*
  * Created by sunkai on 2017/12/29.
  *关于我们页面
  */
-class AboutUSActivity:BaseStopGlideActivity() {
+class AboutUSActivity:BaseGlideActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_us)

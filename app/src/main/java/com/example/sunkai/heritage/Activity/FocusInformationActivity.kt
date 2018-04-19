@@ -8,7 +8,7 @@ import android.support.v4.util.Pair
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseStopGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -16,7 +16,6 @@ import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.*
 import com.makeramen.roundedimageview.RoundedImageView
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_focus_information.*
 /**
  * 用户粉丝、关注列表的Activity
  */
-class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
+class FocusInformationActivity : BaseGlideActivity(), View.OnClickListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,11 +86,11 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
          * 根据what的不同，执行不同的方法
          */
         fun getFollowInformaiton() {
-            ThreadPool.execute(getFollowinformation)
+            requestHttp(getFollowinformation)
         }
 
         fun getFansInformation() {
-            ThreadPool.execute(getFansinformation)
+            requestHttp(getFansinformation)
         }
 
         private val getFollowinformation = Runnable {
@@ -101,7 +100,6 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
             } else {
                 HandlePerson.GetOtherFollowInformation(LoginActivity.userID, userID)
             }
-            if(isDestroy)return@Runnable
             runOnUiThread {
                 setAdpter(datas)
             }
@@ -114,7 +112,6 @@ class FocusInformationActivity : BaseStopGlideActivity(), View.OnClickListener {
             } else {
                 HandlePerson.GetOtherFansInformation(LoginActivity.userID, userID)
             }
-            if(isDestroy)return@Runnable
             runOnUiThread {
                 setAdpter(datas)
             }

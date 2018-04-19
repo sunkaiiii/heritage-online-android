@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -10,7 +9,7 @@ import com.example.sunkai.heritage.tools.backGroundLogin
 import com.example.sunkai.heritage.tools.checkLogin
 import com.example.sunkai.heritage.tools.gotoLogin
 
-abstract class BaseAutoLoginActivity : BaseStopGlideActivity(), onAutoLogin {
+abstract class BaseAutoLoginActivity : BaseGlideActivity(), onAutoLogin {
     var dialog: NormalWarningDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
