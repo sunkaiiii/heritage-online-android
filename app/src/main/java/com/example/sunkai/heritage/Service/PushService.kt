@@ -182,7 +182,7 @@ class PushService : Service() {
         val channel = NotificationChannel(getString(R.string.push_channel), getString(R.string.push_channel_name), NotificationManager.IMPORTANCE_DEFAULT)
         channel.enableLights(true)
         channel.lightColor = getColor(R.color.colorPrimary)
-        channel.setShowBadge(true)
+        channel.setShowBadge(true) //是否显示通知角标
         mNM.createNotificationChannel(channel)
     }
 

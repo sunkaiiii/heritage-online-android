@@ -3,13 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 'android-P'
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.datong.heritage_online"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 23
+        versionCode 24
         versionName "3.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resConfigs "zh","de","en","es","ja","ko","ru","th","zh-rTW"

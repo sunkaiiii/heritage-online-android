@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">ลบโพสต์</string>
 	<string name="delete_comment_content">คุณแน่ใจว่าต้องการลบกระทู้？</string>
 	<string name="logo">โลโก้</string>
-	<string name="gourp_names">ติดตามโครงการกลุ่ม E : 李悦孙ไคเฉียน</string>
-	<string name="products">ร่วมสร้าง</string>
-	<string name="time">เวลา :</string>
+    <string name="time">เวลา :</string>
 	<string name="main_page_permission">หน้าแรกสิทธิ์</string>
 	<string name="see_fans_and_focus">ดูแฟนๆและความสนใจ</string>
 	<string name="main_page">ที่หน้าแรก</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">โพสต์เมื่อ :</string>
 	<string name="original_content">โพสต์ต้นฉบับ :</string>
 	<string name="reply">Re :</string>
-	<string name="lience">ข้อตกลงใบอนุญาตเปิดแหล่งที่มา</string>
-	<string name="okhttp_licence">ได้รับใบอนุญาตภายใต้ Apache License , รุ่น 2.0 ( " อนุญาต " ) ;</string>
+    <string name="okhttp_licence">ได้รับใบอนุญาตภายใต้ Apache License , รุ่น 2.0 ( " อนุญาต " ) ;</string>
 	<string name="photoview_licence">ลิขสิทธิ์ 2017 คริส เบนส์</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>

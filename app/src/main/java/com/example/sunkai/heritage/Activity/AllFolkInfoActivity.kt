@@ -40,7 +40,6 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
     private lateinit var refreshLayout: SwipeRefreshLayout
     internal var getDatas: MutableList<FolkDataLite> = ArrayList()//用于处理搜索的List，各种搜索的结果都会操作这个list
 
-    private var isLoadData:Boolean=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_folk_info)
@@ -50,14 +49,9 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
         folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf(),glide)
         folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
+        startLoadInformation()
     }
 
-    override fun onResume() {
-        super.onResume()
-        if(!isLoadData) {
-            startLoadInformation()
-        }
-    }
 
     private fun startLoadInformation() {
         folk_show_recyclerview.adapter=null
@@ -100,7 +94,6 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
     private fun initView() {
         refreshLayout = findViewById(R.id.fragment_folk_swipe_refresh)
         refreshLayout.setOnRefreshListener {
-            isLoadData=false
             startLoadInformation()
         }
         folk_search_btn = findViewById(R.id.folk_searchbtn)
@@ -167,7 +160,6 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
                 }
 
             })
-            isLoadData=true
         }
 
     }

@@ -92,8 +92,6 @@
     <string name="delete_comment_title">删除帖子</string>
     <string name="delete_comment_content">是否删除帖子？</string>
     <string name="logo">logo</string>
-    <string name="gourp_names">E迹项目小组:李悦 孙楷 王倩</string>
-    <string name="products">联合出品</string>
     <string name="time">时间:</string>
     <string name="main_page_permission">主页权限</string>
     <string name="see_fans_and_focus">查看粉丝和关注</string>
@@ -113,7 +111,6 @@
     <string name="add_comment">发帖</string>
     <string name="original_content">原帖：</string>
     <string name="reply">回复：</string>
-    <string name="lience">开源许可条款</string>
 
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

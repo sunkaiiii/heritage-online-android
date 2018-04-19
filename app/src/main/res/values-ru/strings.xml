@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">Удалить сообщение</string>
 	<string name="delete_comment_content">ли удалять сообщения?</string>
 	<string name="logo">логотип</string>
-	<string name="gourp_names">Группа E: 李悦孙楷 анисса отслеживать проекта</string>
-	<string name="products">совместное производство</string>
-	<string name="time">время:</string>
+    <string name="time">время:</string>
 	<string name="main_page_permission">Страницы разрешения</string>
 	<string name="see_fans_and_focus">просмотреть поклонников и внимание</string>
 	<string name="main_page">Домашняя страница</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">должность</string>
 	<string name="original_content">или:</string>
 	<string name="reply">Ответ:</string>
-	<string name="lience">Открытое лицензирование положения</string>
-	<string name="okhttp_licence">лицензии Apache License, версии 2.0 ("лицензия");</string>
+    <string name="okhttp_licence">лицензии Apache License, версии 2.0 ("лицензия");</string>
 	<string name="photoview_licence">Copyright 2017 года крис банес</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>

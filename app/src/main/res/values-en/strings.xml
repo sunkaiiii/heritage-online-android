@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">Delete a post</string>
 	<string name="delete_comment_content">Do you delete a post?</string>
 	<string name="logo">logo</string>
-	<string name="gourp_names">E track project group: Li Yuesunkai Wang Qian</string>
-	<string name="products">Co-presented by</string>
-	<string name="time">Time:</string>
+    <string name="time">Time:</string>
 	<string name="main_page_permission">Home page permissions</string>
 	<string name="see_fans_and_focus">Look at fans and concerns</string>
 	<string name="main_page">home page</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">Post</string>
 	<string name="original_content">The original post:</string>
 	<string name="reply">Reply：</string>
-	<string name="lience">Open source licensing terms</string>
-	<string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
+    <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 

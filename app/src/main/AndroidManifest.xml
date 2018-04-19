@@ -4,7 +4,6 @@
     package="com.example.sunkai.heritage">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".tools.GlobalContext"
         android:allowBackup="false"

@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">Die löschung</string>
 	<string name="delete_comment_content">Ob die Beiträge löschen?</string>
 	<string name="logo">logo</string>
-	<string name="gourp_names">E - Team: 李悦孙楷 Wang.</string>
-	<string name="products">Gemeinsame PRODUKTION</string>
-	<string name="time">Die Zeit:</string>
+    <string name="time">Die Zeit:</string>
 	<string name="main_page_permission">Homepage autorität</string>
 	<string name="see_fans_and_focus">Fans und der sorge um</string>
 	<string name="main_page">Homepage</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">Post</string>
 	<string name="original_content">Die Original - zitat:</string>
 	<string name="reply">Die antwort:</string>
-	<string name="lience">Open - source - Lizenz</string>
-	<string name="okhttp_licence">lizenziert unter der apache license, version 2.0 ("lizenz");</string>
+    <string name="okhttp_licence">lizenziert unter der apache license, version 2.0 ("lizenz");</string>
 	<string name="photoview_licence">copyright 2017 chris fluch</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>

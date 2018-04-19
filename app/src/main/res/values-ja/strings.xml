@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">招待状を削除する</string>
 	<string name="delete_comment_content">招待状を削除しますか？</string>
 	<string name="logo">ロゴ</string>
-	<string name="gourp_names">E跡プロジェクトグループ：李悦孙楷王倩</string>
-	<string name="products">共同製品</string>
-	<string name="time">時間：</string>
+    <string name="time">時間：</string>
 	<string name="main_page_permission">ホームページの権限</string>
 	<string name="see_fans_and_focus">ファンや注目を見る</string>
 	<string name="main_page">トップページ</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">書き込み</string>
 	<string name="original_content">原帖：</string>
 	<string name="reply">返信:</string>
-	<string name="lience">オープンソースのライセンス条項</string>
-	<string name="okhttp_licence">アパッチ・ライセンスの下でライセンス、バージョン2 .（「免許」という。）</string>
+    <string name="okhttp_licence">アパッチ・ライセンスの下でライセンス、バージョン2 .（「免許」という。）</string>
 	<string name="photoview_licence">著作権は2017年クリスバネス</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>

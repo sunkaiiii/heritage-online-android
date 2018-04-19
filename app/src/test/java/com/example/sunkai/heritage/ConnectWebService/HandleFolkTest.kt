@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.ConnectWebService
 
-import com.example.sunkai.heritage.Data.ClassifyActivityDivide
 import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.Data.FolkDataLite
 import org.junit.Assert

@@ -68,7 +68,7 @@ class FolkFragment : BaseLazyLoadFragment() {
         }
         tabayout.addOnTabSelectedListener(tabLayoutListener)
         tabayout.getTabAt(0)!!.select()
-        iv_fragment_main_scroll_change_image.setOnClickListener {
+        fragmentFolkSeeAllFolk.setOnClickListener {
             val intent = Intent(activity, AllFolkInfoActivity::class.java)
             startActivity(intent)
         }

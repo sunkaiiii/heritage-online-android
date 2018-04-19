@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">La supresión de puestos de trabajo</string>
 	<string name="delete_comment_content">¿Si la supresión de puestos de trabajo?</string>
 	<string name="logo">Logo</string>
-	<string name="gourp_names">Equipo de proyecto: E. 李悦孙 Kai anissa</string>
-	<string name="products">La producción conjunta</string>
-	<string name="time">Tiempo:</string>
+    <string name="time">Tiempo:</string>
 	<string name="main_page_permission">La página de inicio de permisos</string>
 	<string name="see_fans_and_focus">Atención fans y ver</string>
 	<string name="main_page">La</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">Post</string>
 	<string name="original_content">El tema:</string>
 	<string name="reply">La respuesta:</string>
-	<string name="lience">Términos de licencia de código abierto</string>
-	<string name="okhttp_licence">Licenciado bajo la licencia Apache, versión 2.0 (la "licencia");</string>
+    <string name="okhttp_licence">Licenciado bajo la licencia Apache, versión 2.0 (la "licencia");</string>
 	<string name="photoview_licence">Copyright 2012 Chris Banes</string>
 	<string name="okhttp">Okhttp</string>
 	<string name="photoview">Photoview</string>

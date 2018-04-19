@@ -25,9 +25,9 @@ fun HandleImage(uri: Uri?): Bitmap? {
 private fun compressImage(uri: Uri): Bitmap {
     val parcelFileDescrptor = GlobalContext.instance.contentResolver.openFileDescriptor(uri, READ)
     val fileDescriptor = parcelFileDescrptor.fileDescriptor
-    val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor)
+    val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor) //用这个方法可以得到Bitmap
     //获取图片exif信息
-    val exifInterface = ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri))
+    val exifInterface = ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri)) //用这个方法可以得到流
     parcelFileDescrptor.close()
     return corpImage(bitmap, exifInterface)
 }

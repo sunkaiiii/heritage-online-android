@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">댓글 삭제</string>
 	<string name="delete_comment_content">게시물을 삭제하시겠습니까?</string>
 	<string name="logo">표지</string>
-	<string name="gourp_names">E 적 프로젝트 그룹: 이화 손서 왕천</string>
-	<string name="products">공동 출품하다.</string>
-	<string name="time">시간:</string>
+    <string name="time">시간:</string>
 	<string name="main_page_permission">홈페이지 권한</string>
 	<string name="see_fans_and_focus">팬과 관심 보기.</string>
 	<string name="main_page">페이지</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">청첩장</string>
 	<string name="original_content">원첩:</string>
 	<string name="reply">회복:</string>
-	<string name="lience">개원 허가 조항.</string>
-	<string name="okhttp_licence">아파치 허가 허락 하에, 버전 2 ("자격증");</string>
+    <string name="okhttp_licence">아파치 허가 허락 하에, 버전 2 ("자격증");</string>
 	<string name="photoview_licence">저작권 2014 크리스 피해</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>

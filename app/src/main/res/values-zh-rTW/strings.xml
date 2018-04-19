@@ -86,9 +86,7 @@
 	<string name="delete_comment_title">删除帖子</string>
 	<string name="delete_comment_content">是否删除帖子？</string>
 	<string name="logo">標誌</string>
-	<string name="gourp_names">E迹項目小組：李悅孫楷王倩</string>
-	<string name="products">聯合出品</string>
-	<string name="time">時間：</string>
+    <string name="time">時間：</string>
 	<string name="main_page_permission">主頁許可權</string>
 	<string name="see_fans_and_focus">查看粉絲和關注</string>
 	<string name="main_page">首頁</string>
@@ -107,8 +105,7 @@
 	<string name="add_comment">發帖</string>
 	<string name="original_content">原帖：</string>
 	<string name="reply">回復：</string>
-	<string name="lience">開源許可條款</string>
-	<string name="okhttp_licence">根據APACHE許可證，2版（“許可證”）授權；</string>
+    <string name="okhttp_licence">根據APACHE許可證，2版（“許可證”）授權；</string>
 	<string name="photoview_licence">版權所有2017 Chris Banes</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">PhotoView</string>
