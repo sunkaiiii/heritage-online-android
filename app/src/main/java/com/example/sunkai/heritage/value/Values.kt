@@ -36,36 +36,36 @@ const val LOG_OUT = 2
 const val IS_FOCUS = "已关注"
 const val UNFOCUS = "加关注"
 const val FOLLOW_EACHOTHER = "互相关注"
-const val MODIFY_USER_COMMENT=1
+const val MODIFY_USER_COMMENT = 1
 const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
 const val TYPE_FIND = "发现"
-const val FIRST_OPEN=0
-const val NOT_FIRST_OPEN=1
-const val NOT_LOGIN=0
-const val FROM_WELCOME=0
-const val FROM_REGIST=0
-const val INFORMATION="information"
-const val FROM_FANS="fans"
-const val FROM_FOCUS="focus"
-const val USER_ID="userID"
-const val FROM="from"
-const val DATA="data"
-const val ACTIVITY="activity"
-const val USER_NAME="userName"
-const val PASSWORD="passWord"
-const val PUSH_SWITCH="pushSwitch"
-const val ID="id"
-const val OPTION="option"
-const val SETTING="setting"
-const val START_COUNT="startCount"
-const val SHARE_PREFRENCE_USERNAME="user_name"
-const val SHARE_PREFRENCE_PASSWORD="user_password"
-const val TITLE="title"
-const val IMAGE="image"
-const val IS_INTO="isInto"
-const val READ="r"
+const val FIRST_OPEN = 0
+const val NOT_FIRST_OPEN = 1
+const val NOT_LOGIN = 0
+const val FROM_WELCOME = 0
+const val FROM_REGIST = 0
+const val INFORMATION = "information"
+const val FROM_FANS = "fans"
+const val FROM_FOCUS = "focus"
+const val USER_ID = "userID"
+const val FROM = "from"
+const val DATA = "data"
+const val ACTIVITY = "activity"
+const val USER_NAME = "userName"
+const val PASSWORD = "passWord"
+const val PUSH_SWITCH = "pushSwitch"
+const val ID = "id"
+const val OPTION = "option"
+const val SETTING = "setting"
+const val START_COUNT = "startCount"
+const val SHARE_PREFRENCE_USERNAME = "user_name"
+const val SHARE_PREFRENCE_PASSWORD = "user_password"
+const val TITLE = "title"
+const val IMAGE = "image"
+const val IS_INTO = "isInto"
+const val READ = "r"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误
@@ -80,18 +80,28 @@ const val SUCCESS = "SUCCESS"
 const val ERROR = "ERROR"
 
 const val HOST = "http://sunkai.xyz:8080"
-const val HOST_IP="sunkai.xyz"
-const val PUSH_PORT=8088
+const val HOST_IP = "sunkai.xyz"
+const val PUSH_PORT = 8088
 
 const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"
 const val ACTIVITY_FRAGMENT = "ActivityFragment"
 const val SETTING_ACTIVITY = 100
 
 val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
-val CLASSIFY_DIVIDE_TABVIEWSHOW= arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
-val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
-val MAIN_PAGE_TABLAYOUT_TEXT=arrayListOf(GlobalContext.instance.getString(R.string.focus_heritage),GlobalContext.instance.getString(R.string.all_news))
-const val GLIDE_LICENCE="License for everything not in third_party and not otherwise marked:\n" +
+val CLASSIFY_DIVIDE_TABVIEWSHOW = arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
+val CATEGORIES = arrayOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
+val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.focus_heritage), GlobalContext.instance.getString(R.string.all_news))
+val MAIN_PAGE_CATEGORY_NEWS_IMAGE = arrayOf("yao_wen.jpg"
+        , "zhongguo_tese.jpg"
+        ,"chuantong_cuoluo.jpg"
+        , "tese_xiaozhen.jpg"
+        , "meili_china.jpg"
+        , "feiyi_china.jpg"
+        , "shidai_yingxiang.jpg"
+        , "faxian_zhilv.jpg"
+        , "yidai_yilu.jpg"
+        , "min_feng.jpg")
+const val GLIDE_LICENCE = "License for everything not in third_party and not otherwise marked:\n" +
         "\n" +
         "Copyright 2014 Google, Inc. All rights reserved.\n" +
         "\n" +

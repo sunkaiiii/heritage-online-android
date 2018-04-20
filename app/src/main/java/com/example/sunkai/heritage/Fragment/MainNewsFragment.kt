@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.children
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
@@ -23,8 +24,11 @@ import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.CATEGORIES
+import com.example.sunkai.heritage.value.HOST
+import com.example.sunkai.heritage.value.MAIN_PAGE_CATEGORY_NEWS_IMAGE
 import kotlinx.android.synthetic.main.main_news_fragment_layout.*
 
 class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
@@ -67,14 +71,20 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private fun createSecondViews(it: List<FolkNewsLite>, activity: FragmentActivity, position: Int): CardView {
         val view = LayoutInflater.from(activity).inflate(R.layout.main_news_card, mainNewsList, false)
         val seeMoreTextview = view.findViewById<TextView>(R.id.see_more)
-        val LinearLayout = view.findViewById<LinearLayout>(R.id.main_news_other_news)
+        val linearLayout = view.findViewById<LinearLayout>(R.id.main_news_other_news)
         val categoryTextView = view.findViewById<TextView>(R.id.main_news_card_category)
+        val categoryBackGroundImageView=view.findViewById<ImageView>(R.id.main_news_card_category_image)
         categoryTextView.text = CATEGORIES[position]
         setClick(position, seeMoreTextview, activity)
         it.forEach {
-            setNewsItem(it, LinearLayout, activity)
+            setNewsItem(it, linearLayout, activity)
         }
+        getCategoryImage(position,categoryBackGroundImageView,linearLayout,categoryTextView,seeMoreTextview)
         return view as CardView
+    }
+
+    private fun getCategoryImage(position: Int,imageView: ImageView,linearLayout:LinearLayout,categoryTextView:TextView,seeMoreTextview:TextView){
+        glide.load(HOST+"/img/main_news_divide_img/"+ MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(categoryImageSimpleTarget(imageView,linearLayout,categoryTextView,seeMoreTextview))
     }
 
     private fun setClick(position: Int, textView: TextView, context: Context) {
@@ -97,7 +107,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
         }
         itemHolder.title.text = item.title
         if (TextUtils.isEmpty(item.img)) {
-            itemHolder.image.visibility = View.GONE
+            itemHolder.image.visibility = View.INVISIBLE
         } else {
             glide.load(BaseSetting.URL + item.img).into(simpleTarget(itemHolder))
         }
@@ -120,7 +130,17 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
         }
 
         override fun onLoadFailed(errorDrawable: Drawable?) {
-            holder.image.visibility = View.GONE
+            holder.image.visibility = View.INVISIBLE
+        }
+
+    }
+
+    private class categoryImageSimpleTarget(val imageView: ImageView,val linearLayout: LinearLayout,val categoryTextView: TextView,val seeMoreTextView: TextView):SimpleTarget<Drawable>(){
+        override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+            val darkColor=resource.generateDarkColor()
+            imageView.setImageDrawable(resource)
+            linearLayout.children.forEach { it.findViewById<TextView>(R.id.news_item_title)?.setTextColor(darkColor)  }
+            seeMoreTextView.setTextColor(darkColor)
         }
 
     }

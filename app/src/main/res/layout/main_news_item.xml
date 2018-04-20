@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="?attr/selectableItemBackground"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -15,21 +15,38 @@
             android:id="@+id/news_item_image"
             android:layout_width="80dp"
             android:layout_height="60dp"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:contentDescription="@string/no_mean_content"
-            android:layout_gravity="center"/>
+            android:scaleType="centerCrop" />
+
         <TextView
             android:id="@+id/news_item_title"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_margin="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@id/news_item_image"
+            android:layout_toStartOf="@id/news_item_image"
             android:gravity="center|start"
             android:textColor="@color/black"
             android:textSize="15sp" />
-    </LinearLayout>
+
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/lightGrey"/>
+        android:background="@color/lightGrey" />
 </LinearLayout>
