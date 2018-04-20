@@ -13,15 +13,16 @@
 
         <ImageView
             android:id="@+id/news_item_image"
-            android:layout_width="56dp"
-            android:layout_height="86dp"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
             android:layout_margin="8dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/no_mean_content"/>
+            android:contentDescription="@string/no_mean_content"
+            android:layout_gravity="center"/>
         <TextView
             android:id="@+id/news_item_title"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="70dp"
             android:layout_margin="8dp"
             android:gravity="center|start"
             android:textColor="@color/black"

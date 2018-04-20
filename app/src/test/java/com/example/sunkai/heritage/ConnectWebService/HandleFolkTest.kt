@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.ConnectWebService
 
 import com.example.sunkai.heritage.Data.FolkData
 import com.example.sunkai.heritage.Data.FolkDataLite
+import com.example.sunkai.heritage.value.CLASIIFY_DIVIDE
 import org.junit.Assert
 import org.junit.Test
 
@@ -35,7 +36,7 @@ class HandleFolkTest:BaseTestClass() {
 
     @Test
     fun getChannelInformation() {
-        ClassifyActivityDivide.divide.forEach {
+        CLASIIFY_DIVIDE.forEach {
             assertData(HandleFolk.GetChannelInformation(it))
         }
     }

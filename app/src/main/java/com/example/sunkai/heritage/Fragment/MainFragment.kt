@@ -1,31 +1,28 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.RecyclerView
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.sunkai.heritage.Activity.BottomNewsDetailActivity
-import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
-import com.example.sunkai.heritage.Adapter.MainPageCardViewPagerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
+import androidx.core.view.get
+import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.OnSrollHelper
-import com.example.sunkai.heritage.tools.ShadowTransformer
+import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
 /**
  * 首页
  */
-class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
+class MainFragment : BaseGlideFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,112 +31,46 @@ class MainFragment : BaseGlideFragment(),View.OnClickListener,OnPageLoaded {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initview()
-        loadSomeMainNews()
+        val manager=activity?.supportFragmentManager?:return
+        setViewPager(manager)
     }
 
-
-    private fun initview(){
-        fragmentMainViewpager.offscreenPageLimit=1
-        fragmentMainRecyclerview.addOnScrollListener(onScroller)
+    private fun setViewPager(manager: FragmentManager) {
+        mainPageTabLayout.setupWithViewPager(mainPageViewPager)
+        val fragments=createFragments()
+        val adapter=MainPageViewPagerAdapter(manager,fragments)
+        setViewPagerListener(mainPageViewPager)
+        mainPageViewPager.adapter=adapter
+        mainPageTabLayout.setTabTextColors(ContextCompat.getColor(context?:return,R.color.colorPrimaryDark),Color.WHITE )
+        MAIN_PAGE_TABLAYOUT_TEXT.withIndex().forEach { mainPageTabLayout.getTabAt(it.index)?.text=it.value }
     }
 
-    private fun loadSomeMainNews(refreshBottom:Boolean=true){
-        onPreLoad()
-        requestHttp{
-            val news=HandleMainFragment.ReadMainNews()
-            val activity=activity
-            activity?.let{
-                val views=ArrayList<CardView>()
-                for(i in news){
-                    views.add(CardView(activity))
-                }
-                activity.runOnUiThread{
-                    //初始化顶部viewpager
-                    val adapter=MainPageCardViewPagerAdapter(views,news,glide)
-                    fragmentMainViewpager.adapter=adapter
-                    //加载滑动时候的阴影效果
-                    val transformer=ShadowTransformer(fragmentMainViewpager,adapter)
-                    fragmentMainViewpager.setPageTransformer(false,transformer)
-                    onPostLoad()
-                    if(refreshBottom){
-                        loadBottomNews()
+    private fun setViewPagerListener(mainPageViewPager:ViewPager) {
+        mainPageViewPager.addOnPageChangeListener(object:ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(state: Int) {            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {          }
+
+            override fun onPageSelected(position: Int) {
+                val adapter=mainPageViewPager.adapter?:return
+                if(adapter is MainPageViewPagerAdapter){
+                    val item=adapter.getItem(position)
+                    if(item is BaseLazyLoadFragment){
+                        item.lazyLoad()
                     }
-                }
-            }
-        }
-    }
-
-    private fun loadBottomNews(){
-        requestHttp{
-            val datas=HandleMainFragment.GetBottomNewsLiteInformation()
-            val activity=activity
-            activity?.let{
-                activity.runOnUiThread {
-                    val adapter=BottomFolkNewsRecyclerviewAdapter(activity,datas,glide)
-                    setAdapterClick(adapter)
-                    fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-                    fragmentMainRecyclerview.adapter=adapter
-                }
-
-            }
-        }
-    }
-
-    private fun setAdapterClick(adapter: BottomFolkNewsRecyclerviewAdapter) {
-        adapter.setOnItemClickListen(object :OnItemClickListener{
-            override fun onItemClick(view: View, position: Int) {
-                val activity=activity
-                activity?.let{
-                    val data=adapter.getItem(position)
-                    val intent= Intent(activity,BottomNewsDetailActivity::class.java)
-                    intent.putExtra("data",data)
-                    intent.putExtra("title",getString(R.string.focus_heritage))
-                    startActivity(intent)
                 }
             }
 
         })
     }
 
-    override fun onPreLoad() {
-//        swipeRefresh.isRefreshing=true
+    private fun createFragments(): List<Fragment> {
+        val bottomNewsFragment=BottomNewsFragment()
+        val fragments= arrayListOf<Fragment>()
+        fragments.add(bottomNewsFragment)
+        fragments.add(MainNewsFragment())
+        return fragments
     }
 
-    override fun onPostLoad() {
-//        swipeRefresh.isRefreshing=false
-        //顶部卡片加载完成后，显示顶部卡片的背景图片
-        val context=activity
-        context?.let {
-            val drawable = ContextCompat.getDrawable(context,R.mipmap.main_page_background)
-            glide.load(drawable).into(mainPageTopImage)
-        }
-    }
-
-
-    override fun onClick(v: View) {
-        when(v.id){
-        }
-    }
-
-    private val onScroller=object:OnSrollHelper(){
-        override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp{
-                val activity=activity
-                activity?.let {
-                    val adapter = recyclerView.adapter
-                    if(adapter is BottomFolkNewsRecyclerviewAdapter) {
-                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation(adapter.itemCount)
-                        activity.runOnUiThread {
-                            adapter.addNewData(moreData)
-                            this.setPageLoaded()
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
 
 }

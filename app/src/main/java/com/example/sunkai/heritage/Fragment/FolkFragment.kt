@@ -67,7 +67,7 @@ class FolkFragment : BaseLazyLoadFragment() {
             tabayout.getTabAt(i)?.text = CLASSIFY_DIVIDE_TABVIEWSHOW[i]
         }
         tabayout.addOnTabSelectedListener(tabLayoutListener)
-        tabayout.getTabAt(0)!!.select()
+        tabayout.getTabAt(0)?.select()
         fragmentFolkSeeAllFolk.setOnClickListener {
             val intent = Intent(activity, AllFolkInfoActivity::class.java)
             startActivity(intent)
@@ -81,7 +81,8 @@ class FolkFragment : BaseLazyLoadFragment() {
 
     private fun setupViewPager(viewPager: ViewPager) {
         viewPager.adapter=null
-        val adapter = ViewPagerAdapter(activity!!.supportFragmentManager)
+        val manager=activity?.supportFragmentManager?:return
+        val adapter = ViewPagerAdapter(manager)
         //给viewpager添加Fragment，以并传输通道名以显示对应通道的内容,并传入对应的viewpager当中的index
         for ((count, channelName) in CLASIIFY_DIVIDE.withIndex()) {
             adapter.insertNewFragment(ActivityFragment.newInstance(channelName, count))

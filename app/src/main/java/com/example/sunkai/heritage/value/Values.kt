@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.value
 
 import android.content.res.Configuration
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 
 /**
@@ -89,7 +90,7 @@ const val SETTING_ACTIVITY = 100
 val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
 val CLASSIFY_DIVIDE_TABVIEWSHOW= arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
 val CATEGORIES = arrayListOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
-
+val MAIN_PAGE_TABLAYOUT_TEXT=arrayListOf(GlobalContext.instance.getString(R.string.focus_heritage),GlobalContext.instance.getString(R.string.all_news))
 const val GLIDE_LICENCE="License for everything not in third_party and not otherwise marked:\n" +
         "\n" +
         "Copyright 2014 Google, Inc. All rights reserved.\n" +
