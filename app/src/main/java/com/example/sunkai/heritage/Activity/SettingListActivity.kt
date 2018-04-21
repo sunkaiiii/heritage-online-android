@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
@@ -27,7 +26,6 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting_list)
         initview()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         checkUserPermission()
     }
 
@@ -100,12 +98,6 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
     }
 
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         when (parent?.id) {

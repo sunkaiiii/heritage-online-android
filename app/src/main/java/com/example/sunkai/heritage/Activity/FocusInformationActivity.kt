@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.util.Pair
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
@@ -30,12 +29,7 @@ class FocusInformationActivity : BaseGlideActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_focus_information)
-        initView()
         GetInformationToListView()
-    }
-
-    private fun initView() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun GetInformationToListView() {
@@ -153,12 +147,6 @@ class FocusInformationActivity : BaseGlideActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {}
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     companion object {
         const val FROM_PERSON = 1

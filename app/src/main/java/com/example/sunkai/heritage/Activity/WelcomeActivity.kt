@@ -22,7 +22,6 @@ class WelcomeActivity : BaseGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setBackgroundDrawable(null)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)

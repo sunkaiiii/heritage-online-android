@@ -10,6 +10,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -24,6 +25,7 @@ import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.CATEGORIES
@@ -75,25 +77,32 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
         val categoryTextView = view.findViewById<TextView>(R.id.main_news_card_category)
         val categoryBackGroundImageView=view.findViewById<ImageView>(R.id.main_news_card_category_image)
         categoryTextView.text = CATEGORIES[position]
-        setClick(position, seeMoreTextview, activity)
+        setClick(position, seeMoreTextview, activity,categoryBackGroundImageView)
         it.forEach {
             setNewsItem(it, linearLayout, activity)
         }
-        getCategoryImage(position,categoryBackGroundImageView,linearLayout,categoryTextView,seeMoreTextview)
+        getCategoryImage(position,categoryBackGroundImageView,linearLayout,seeMoreTextview)
         return view as CardView
     }
 
-    private fun getCategoryImage(position: Int,imageView: ImageView,linearLayout:LinearLayout,categoryTextView:TextView,seeMoreTextview:TextView){
-        glide.load(HOST+"/img/main_news_divide_img/"+ MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(categoryImageSimpleTarget(imageView,linearLayout,categoryTextView,seeMoreTextview))
+    private fun getCategoryImage(position: Int,imageView: ImageView,linearLayout:LinearLayout,seeMoreTextview:TextView){
+        glide.load(HOST+"/img/main_news_divide_img/"+ MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(categoryImageSimpleTarget(imageView,linearLayout,seeMoreTextview))
     }
 
-    private fun setClick(position: Int, textView: TextView, context: Context) {
+    private fun setClick(position: Int, textView: TextView, context: Context,categoryBackgroundImageView: ImageView) {
         val category = CATEGORIES[position]
         textView.setOnClickListener {
-            val intent = Intent(context, SeeMoreNewsActivity::class.java)
-            intent.putExtra("category", category)
-            context.startActivity(intent)
+            loadSeemoreNewsActivity(category,context)
         }
+        categoryBackgroundImageView.setOnClickListener {
+            loadSeemoreNewsActivity(category,context)
+        }
+    }
+
+    private fun loadSeemoreNewsActivity(category:String,context: Context){
+        val intent = Intent(context, SeeMoreNewsActivity::class.java)
+        intent.putExtra("category", category)
+        context.startActivity(intent)
     }
 
     private fun setNewsItem(item: FolkNewsLite, linearLayout: LinearLayout, context: Context) {
@@ -135,10 +144,12 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     }
 
-    private class categoryImageSimpleTarget(val imageView: ImageView,val linearLayout: LinearLayout,val categoryTextView: TextView,val seeMoreTextView: TextView):SimpleTarget<Drawable>(){
+    private class categoryImageSimpleTarget(val imageView: ImageView,val linearLayout: LinearLayout,val seeMoreTextView: TextView):SimpleTarget<Drawable>(){
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
             val darkColor=resource.generateDarkColor()
+            val animation=AnimationUtils.loadAnimation(GlobalContext.instance,R.anim.fade_in_quick)
             imageView.setImageDrawable(resource)
+            imageView.startAnimation(animation)
             linearLayout.children.forEach { it.findViewById<TextView>(R.id.news_item_title)?.setTextColor(darkColor)  }
             seeMoreTextView.setTextColor(darkColor)
         }
@@ -151,7 +162,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onPostLoad() {
-        mainNewsSwipeRefresh.isRefreshing = false
+        mainNewsSwipeRefresh?.isRefreshing = false
     }
 
     override fun onRestoreFragmentLoadInformation() {

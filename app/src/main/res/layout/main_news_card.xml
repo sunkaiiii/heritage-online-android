@@ -22,14 +22,14 @@
             android:orientation="vertical">
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:background="@color/colorPrimary">
+                android:layout_height="160dp">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:id="@+id/main_news_card_category_image"
-                    android:alpha="0.9"/>
+                    android:alpha="0.9"
+                    android:src="@color/colorPrimary"/>
                 <TextView
                     android:id="@+id/main_news_card_category"
                     android:layout_width="wrap_content"

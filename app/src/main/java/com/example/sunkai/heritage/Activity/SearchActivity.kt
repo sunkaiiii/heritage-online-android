@@ -39,7 +39,6 @@ class SearchActivity : BaseGlideActivity(), View.OnClickListener, TextView.OnEdi
     }
 
     private fun initView() {
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         search_activity_btn.setOnClickListener(this)
         search_activity_edit.setOnEditorActionListener(this)
         search_activity_edit.addTextChangedListener(this)
@@ -66,13 +65,6 @@ class SearchActivity : BaseGlideActivity(), View.OnClickListener, TextView.OnEdi
         }
         //将搜索的文本传入搜索类，并搜索内容
         searchClass(edit)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun searchClass(searchText: String) {

@@ -15,6 +15,7 @@ abstract class BaseGlideFragment:Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         glide= Glide.with(this)
+
     }
 
     protected fun requestHttp(runnable:()->Unit){

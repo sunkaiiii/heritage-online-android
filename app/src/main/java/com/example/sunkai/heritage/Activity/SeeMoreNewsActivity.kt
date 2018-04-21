@@ -36,6 +36,9 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
     }
 
     private fun initView() {
+        seeMoreNewsActivityToolbar.title=""
+        setSupportActionBar(seeMoreNewsActivityToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val adapter = SeeMoreNewsViewpagerAdapter(supportFragmentManager)
         initMainPageSlide()
         initViewPager(adapter)

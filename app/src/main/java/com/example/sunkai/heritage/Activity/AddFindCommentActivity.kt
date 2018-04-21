@@ -32,12 +32,6 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_find_comment)
-        initView()
-    }
-
-    private fun initView() {
-        val actionBack = supportActionBar
-        actionBack?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun submit() {
@@ -99,10 +93,9 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         isHadImage = true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
             R.id.action_save_comment -> submit()
-            android.R.id.home -> finish()
         }
         return super.onOptionsItemSelected(item)
     }

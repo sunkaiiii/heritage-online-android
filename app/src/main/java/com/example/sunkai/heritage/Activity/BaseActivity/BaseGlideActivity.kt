@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.ThreadPool
@@ -17,6 +18,14 @@ abstract class BaseGlideActivity :AppCompatActivity(){
         super.onCreate(savedInstanceState)
         isDestroy=false
         glide=Glide.with(this)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            android.R.id.home->onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
     override fun onDestroy() {
         super.onDestroy()
