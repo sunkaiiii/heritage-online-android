@@ -6,6 +6,7 @@ import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.COMMENT_REPLY
 import com.example.sunkai.heritage.value.MINI_REPLY
@@ -21,54 +22,47 @@ object HandleFind : BaseSetting() {
 
     fun Add_User_Comment_Information(user_id: Int, comment_title: String, comment_content: String, comment_image: String): Boolean {
         val postUrl = "$URL/AddUserCommentInformation"
+        val locaiton = BaiduLocation.GetIPAddress()
         val form = FormBody.Builder()
                 .add("userID", user_id.toString())
                 .add("commentTitle", comment_title)
                 .add("commentContent", comment_content)
                 .add("commentImage", comment_image)
+                .add("location", locaiton)
                 .build()
         val result = PutPost(postUrl, form)
         return SUCCESS == result
+    }
+
+    private fun handleCommentData(result:String):List<UserCommentData>{
+        if (result == ERROR) {
+            return arrayListOf()
+        } else {
+            try {
+                val datas = fromJsonToList(result, Array<UserCommentData>::class.java)
+                for (data in datas) {
+                    data.miniReplys = GetUserCommentReply(data.id, MINI_REPLY)
+                }
+                return datas
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return arrayListOf()
     }
 
     fun GetUserCommentInformation(userID: Int, start: Int = 0): List<UserCommentData> {
         val getUrl = "$URL/GetUserCommentInformation?userID=$userID&start=$start"
         val result = PutGet(getUrl)
         Log.d("GetUserCommentInfo", result)
-        if (result == ERROR) {
-            return arrayListOf()
-        } else {
-            try {
-                val datas = fromJsonToList(result, Array<UserCommentData>::class.java)
-                for (data in datas) {
-                    data.miniReplys = GetUserCommentReply(data.id, MINI_REPLY)
-                }
-                return datas
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        return arrayListOf()
+        return handleCommentData(result)
     }
 
     fun GetUserCommentInformationByUser(userID: Int, start: Int = 0): List<UserCommentData> {
         val getUrl = "$URL/GetUserCommentInformationByUser?userID=$userID&start=$start"
         val result = PutGet(getUrl)
         Log.d("GetUserCommentInfoByUsr", result)
-        if (result == ERROR) {
-            return arrayListOf()
-        } else {
-            try {
-                val datas = fromJsonToList(result, Array<UserCommentData>::class.java)
-                for (data in datas) {
-                    data.miniReplys = GetUserCommentReply(data.id, MINI_REPLY)
-                }
-                return datas
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-        return arrayListOf()
+        return handleCommentData(result)
     }
 
     fun GetUserCommentInformaitonByOwn(userID: Int, start: Int = 0): List<UserCommentData> {
@@ -85,6 +79,13 @@ object HandleFind : BaseSetting() {
             }
 
         }
+    }
+
+    fun GetUserCommentInformationBySameLocation(userID: Int, location: String, start: Int = 0): List<UserCommentData> {
+        val getUrl = "$URL/GetUserCommentInformationBySameLocation?userID=$userID&start=$start&location=$location"
+        val result = PutGet(getUrl)
+        Log.d("GetCommentSameLocation",result)
+        return handleCommentData(result)
     }
 
     fun GetUserCommentIdByUser(userID: Int): IntArray {
@@ -193,7 +194,7 @@ object HandleFind : BaseSetting() {
         return PutGet(getUrl) == SUCCESS
     }
 
-    fun AddUserCommentReply(userID: Int, commentID: Int, reply: String, writterID: Int, writterName: String,originalReplyContent:String): String {
+    fun AddUserCommentReply(userID: Int, commentID: Int, reply: String, writterID: Int, writterName: String, originalReplyContent: String): String {
         val postUrl = "$URL/AddUserCommentReply"
         val formBody = FormBody.Builder()
                 .add("userID", userID.toString())
@@ -205,9 +206,9 @@ object HandleFind : BaseSetting() {
             if (LoginActivity.userID != 0) {
                 ThreadPool.execute {
                     val userName = LoginActivity.userName ?: return@execute
-                    val replyTime= Calendar.getInstance().time
-                    val timeformat=SimpleDateFormat.getDateInstance().format(replyTime)
-                    Log.d("test",timeformat)
+                    val replyTime = Calendar.getInstance().time
+                    val timeformat = SimpleDateFormat.getDateInstance().format(replyTime)
+                    Log.d("test", timeformat)
                     HandlePush.AddPushMessage(LoginActivity.userID, commentID, writterID, userName, reply, writterName, "20180202", originalReplyContent)
                 }
             }

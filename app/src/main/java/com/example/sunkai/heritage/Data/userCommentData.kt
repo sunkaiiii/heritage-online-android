@@ -19,6 +19,7 @@ class UserCommentData(val id:Int,
                       var likeNum:Int,
                       var replyNum:Int,
                       var isCollect:String= ERROR,
+                      val location:String,
                       var miniReplys:List<CommentReplyInformation>,
                       var imageUrl:String):Serializable {
     fun isLike():Boolean{

@@ -26,6 +26,7 @@ const val ONLYFOCUS = 0
 const val ALL = 1
 const val ALL_COMMENT = 0
 const val MY_FOCUS_COMMENT = 1
+const val SAME_LOCATION=2
 const val MINI_REPLY = -1
 const val COMMENT_REPLY = 0
 const val SIGN_OUT = 11
@@ -74,7 +75,7 @@ val GRID_LAYOUT_DESTINY = if (GlobalContext.instance.resources.configuration.ori
 else
     Math.round((GlobalContext.instance.resources.displayMetrics.heightPixels.toFloat() / GlobalContext.instance.resources.displayMetrics.densityDpi) - 1)
 
-//const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
+const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
 const val SUCCESS = "SUCCESS"
 const val ERROR = "ERROR"

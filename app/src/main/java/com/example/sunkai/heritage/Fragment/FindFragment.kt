@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +20,11 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.ALL_COMMENT
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
+import com.example.sunkai.heritage.value.SAME_LOCATION
 import kotlinx.android.synthetic.main.fragment_find.*
 
 /**
@@ -53,6 +56,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
             when (selectSpinner.selectedItemPosition) {
                 0 -> loadUserCommentData(ALL_COMMENT)
                 1 -> loadUserCommentData(MY_FOCUS_COMMENT)
+                2->loadUserCommentData(SAME_LOCATION)
             }
         }
 
@@ -96,6 +100,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 val datas = when (what) {
                     ALL_COMMENT -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                     MY_FOCUS_COMMENT -> HandleFind.GetUserCommentInformationByUser(LoginActivity.userID)
+                    SAME_LOCATION->HandleFind.GetUserCommentInformationBySameLocation(LoginActivity.userID,BaiduLocation.GetIPAddress())
                     else -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                 }
                 activiy.runOnUiThread {
@@ -156,6 +161,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
             1 -> {
                 checkUserIsLogin()
                 loadUserCommentData(MY_FOCUS_COMMENT)
+            }
+            2->{
+                loadUserCommentData(SAME_LOCATION)
             }
         }
     }
