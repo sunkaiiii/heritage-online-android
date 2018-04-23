@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.content.ContextCompat
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -63,7 +64,7 @@ class MyCollectionActivity : BaseGlideActivity() {
         for (i in 0 until collectionTypes.size) {
             myCollectTabLayout.getTabAt(i)?.text = collectionTypes[i]
         }
-        myCollectTabLayout.setTabTextColors(Color.GRAY, Color.WHITE)
+        myCollectTabLayout.setTabTextColors(ContextCompat.getColor(this,R.color.normalGrey), Color.WHITE)
         myCollectTabLayout.addOnTabSelectedListener(initTabSelectListner())
     }
 

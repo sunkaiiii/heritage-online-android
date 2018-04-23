@@ -41,7 +41,7 @@ class MainFragment : BaseGlideFragment() {
         val adapter=MainPageViewPagerAdapter(manager,fragments)
         setViewPagerListener(mainPageViewPager)
         mainPageViewPager.adapter=adapter
-        mainPageTabLayout.setTabTextColors(ContextCompat.getColor(context?:return,R.color.colorPrimaryDark),Color.WHITE )
+        mainPageTabLayout.setTabTextColors(ContextCompat.getColor(context?:return,R.color.normalGrey),Color.WHITE )
         MAIN_PAGE_TABLAYOUT_TEXT.withIndex().forEach { mainPageTabLayout.getTabAt(it.index)?.text=it.value }
     }
 

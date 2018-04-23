@@ -1,7 +1,9 @@
 package com.example.sunkai.heritage.Activity
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
@@ -15,6 +17,7 @@ import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.CATEGORY
+import kotlinx.android.synthetic.main.activity_my_collection.*
 import kotlinx.android.synthetic.main.activity_see_more_news.*
 
 /**
@@ -60,6 +63,7 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
     private fun initTabLayout() {
         seeMoreNewsTablayout.setupWithViewPager(seeMoreNewsViewpager)
         seeMoreNewsTablayout.tabMode = TabLayout.MODE_SCROLLABLE
+        seeMoreNewsTablayout.setTabTextColors(ContextCompat.getColor(this,R.color.normalGrey), Color.WHITE)
     }
 
     private fun initViewPager(adapter: SeeMoreNewsViewpagerAdapter) {
