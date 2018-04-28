@@ -16,6 +16,7 @@ abstract class BaseLazyLoadFragment:BaseGlideFragment(),LazyLoad{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         this.isDetachhed=false
         this.isLoaded=false
+        //如果savedInstance不为空，则是重新重建的Fragment，自动读取信息
         savedInstanceState?.let{
             onRestoreFragmentLoadInformation()
         }
