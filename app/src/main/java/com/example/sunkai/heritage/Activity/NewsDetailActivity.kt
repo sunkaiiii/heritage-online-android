@@ -2,17 +2,21 @@ package com.example.sunkai.heritage.Activity
 
 import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Slide
+import android.view.Gravity
+import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Data.MainPageSlideNews
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CATEGORY
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TYPE_MAIN
 import kotlinx.android.synthetic.main.activity_news_detail.*
+import java.io.Serializable
 
 /**
  * 新闻详情页的Activity
@@ -25,32 +29,48 @@ class NewsDetailActivity : BaseHandleCollectActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.duration=500
-        }
         val title=intent.getStringExtra(CATEGORY)
+        val data=intent.getSerializableExtra(DATA)
+        setupWindowAnimations(data)
+        setDataToView(data)
         supportActionBar?.title=title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(intent.getSerializableExtra(DATA) is FolkNewsLite){
-            val data=intent.getSerializableExtra(DATA) as FolkNewsLite
-            getNewsDetail(data.id)
-            setDataToView(data)
-            id=data.id
-        }else if(intent.getSerializableExtra(DATA) is MainPageSlideNews){
-            val data=intent.getSerializableExtra(DATA) as MainPageSlideNews
-            setDataToView(data)
+    }
+
+    private fun setupWindowAnimations(data:Serializable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val slide= Slide(Gravity.END)
+            val fade=Fade()
+            slide.duration=500
+            fade.duration=300
+            window.enterTransition=slide
+            window.exitTransition=fade
+            window.returnTransition=fade
+            window.enterTransition.doOnEnd {
+                continueSetIntentData(data)
+            }
+        }else{
+            continueSetIntentData(data)
         }
     }
 
-    private fun setDataToView(data:FolkNewsLite){
-        news_detail_title.text=data.title
-        news_detail_time.text=data.time
+    private fun continueSetIntentData(data: Serializable){
+        if(data is FolkNewsLite){
+            getNewsDetail(data.id)
+            id=data.id
+        }else if(data is MainPageSlideNews){
+            generateDetail(data.detail)
+        }
     }
 
-    private fun setDataToView(data:MainPageSlideNews){
-        news_detail_title.text=data.content
-        news_detail_time.text=""
-        generateDetail(data.detail)
+    private fun setDataToView(data:Serializable){
+        if(data is FolkNewsLite) {
+            news_detail_title.text = data.title
+            news_detail_time.text = data.time
+        }else if (data is MainPageSlideNews){
+            news_detail_title.text=data.content
+            news_detail_time.text=""
+        }
     }
 
     private fun getNewsDetail(id:Int){

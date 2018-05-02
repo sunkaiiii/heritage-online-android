@@ -94,8 +94,6 @@ class MainActivity : BaseGlideActivity() {
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
-
-        window.setBackgroundDrawable(null)
     }
 
     //重写onKeyDown方法，监听返回键
@@ -173,6 +171,17 @@ class MainActivity : BaseGlideActivity() {
                 2 -> R.id.find_layout
                 3 -> R.id.person_layout
                 else -> R.id.main_layout
+            }
+            when(position){
+                0->{
+                    window.setBackgroundDrawableResource(R.color.white)
+                }
+                else->{
+                    window.setBackgroundDrawable(null)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        window.exitTransition=null
+                    }
+                }
             }
         }
     }

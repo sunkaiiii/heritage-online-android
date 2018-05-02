@@ -1,12 +1,16 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.CardView
 import android.text.TextUtils
+import android.transition.Slide
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,6 +66,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     }
 
+    //创建每个分类的卡片
     private fun createNewsListView(news: List<List<FolkNewsLite>>, activity: FragmentActivity): List<CardView> {
         val cardViews = arrayListOf<CardView>()
         for ((i, folkNews) in news.withIndex()) {
@@ -70,6 +75,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
         return cardViews
     }
 
+    //构建每个卡片的item
     private fun createSecondViews(it: List<FolkNewsLite>, activity: FragmentActivity, position: Int): CardView {
         val view = LayoutInflater.from(activity).inflate(R.layout.main_news_card, mainNewsList, false)
         val seeMoreTextview = view.findViewById<TextView>(R.id.see_more)
@@ -112,7 +118,12 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val intent = Intent(context, NewsDetailActivity::class.java)
             intent.putExtra("data", item)
             intent.putExtra("category", item.category)
-            context.startActivity(intent)
+            val activity=activity
+            if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,itemHolder.title,getString(R.string.news_detail_share_title)).toBundle())
+            }else{
+                startActivity(intent)
+            }
         }
         itemHolder.title.text = item.title
         if (TextUtils.isEmpty(item.img)) {

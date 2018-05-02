@@ -1,11 +1,16 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
+import android.transition.Slide
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -82,11 +87,26 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             override fun onItemClick(view: View, position: Int) {
                 val data = adapter.getItem(position)
                 val intent = Intent(activity, NewsDetailActivity::class.java)
+                val titleView=view.findViewById<TextView>(R.id.see_more_news_item_title)
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
-                startActivity(intent)
+                setupWindowExitAnimations()
+                val activity=activity
+                if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,titleView,getString(R.string.news_detail_share_title)).toBundle())
+                }else{
+                    startActivity(intent)
+                }
             }
         })
+    }
+
+    fun setupWindowExitAnimations(){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+            val slide = Slide(Gravity.START)
+            slide.duration = 500
+            activity?.window?.exitTransition=slide
+        }
     }
 
     private fun setRecyclerScrollListener() {

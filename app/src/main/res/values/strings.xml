@@ -112,6 +112,9 @@
     <string name="original_content">原帖：</string>
     <string name="reply">回复：</string>
     <string name="all_news">全部新闻</string>
+    <string name="news_detail_share_title">news_detail_share_title</string>
+    <string name="bottom_news_share_title">bottom_news_share_title</string>
+    <string name="bottom_news_share_time">bottom_news_share_time</string>
 
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

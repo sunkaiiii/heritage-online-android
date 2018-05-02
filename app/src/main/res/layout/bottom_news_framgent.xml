@@ -13,7 +13,6 @@
             android:id="@+id/fragmentMainRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
             app:layoutManager="@string/linearLayoutManager" />
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

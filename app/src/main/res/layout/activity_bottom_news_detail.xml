@@ -29,14 +29,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:transitionName="@string/bottom_news_share_title"
+                    tools:targetApi="lollipop" />
 
                 <TextView
                     android:id="@+id/bottomNewsDetailTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="13sp" />
+                    android:textSize="13sp"
+                    android:transitionName="@string/bottom_news_share_time"
+                    tools:targetApi="lollipop" />
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>

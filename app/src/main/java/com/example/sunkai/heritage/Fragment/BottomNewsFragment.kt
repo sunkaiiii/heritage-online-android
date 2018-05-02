@@ -1,12 +1,18 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
+import android.transition.Slide
+import android.util.Pair
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.sunkai.heritage.Activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -19,7 +25,7 @@ import kotlinx.android.synthetic.main.bottom_news_framgent.*
 
 class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottom_news_framgent, container,false)
+        return inflater.inflate(R.layout.bottom_news_framgent, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,15 +63,22 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
         adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val activity = activity
-                activity?.let {
-                    val data = adapter.getItem(position)
-                    val intent = Intent(activity, BottomNewsDetailActivity::class.java)
-                    intent.putExtra("data", data)
-                    intent.putExtra("title", getString(R.string.focus_heritage))
+                val data = adapter.getItem(position)
+                val intent = Intent(activity, BottomNewsDetailActivity::class.java)
+                intent.putExtra("data", data)
+                intent.putExtra("title", getString(R.string.focus_heritage))
+                if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
+                    val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
+                    val slide= Slide(Gravity.START)
+                    slide.duration=500
+                    activity.window.exitTransition=slide
+                    val paris= arrayListOf<android.util.Pair<View,String>>(android.util.Pair(titleView,getString(R.string.bottom_news_share_title)),Pair(timeView,getString(R.string.bottom_news_share_time))).toTypedArray()
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, *paris).toBundle())
+                } else {
                     startActivity(intent)
                 }
             }
-
         })
     }
 

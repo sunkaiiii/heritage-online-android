@@ -1,6 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
+import android.os.Build
 import android.os.Bundle
+import android.transition.Fade
+import android.transition.Slide
+import android.view.Gravity
+import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -13,21 +18,39 @@ import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
 class BottomNewsDetailActivity : BaseHandleCollectActivity() {
 
-    var id:Int?=null
+    var id: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_news_detail)
-        val title=intent.getStringExtra(TITLE)
-        supportActionBar?.title=title
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if(intent.getSerializableExtra(DATA) is BottomFolkNewsLite) {
-            val data = intent.getSerializableExtra(DATA) as BottomFolkNewsLite
+        val title = intent.getStringExtra(TITLE)
+        val data = intent.getSerializableExtra(DATA)
+        if (data is BottomFolkNewsLite) {
+            this.id = data.id
+            initAnimationAndLoadData(data)
             setDataToView(data)
-            GetNewsDetail(data.id)
-            this.id=data.id
+            supportActionBar?.title = title
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
     }
+
+    private fun initAnimationAndLoadData(data: BottomFolkNewsLite) {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            val slide=Slide(Gravity.END)
+            val fade=Fade()
+            slide.duration=500
+            fade.duration=500
+            window.enterTransition=slide
+            window.exitTransition=fade
+            window.returnTransition=fade
+            window.enterTransition.doOnEnd {
+                GetNewsDetail(data.id)
+            }
+        }else {
+            GetNewsDetail(data.id)
+        }
+    }
+
     override fun getType(): String {
         return TYPE_FOCUS_HERITAGE
     }
@@ -36,19 +59,19 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
         return id
     }
 
-    private fun setDataToView(data:BottomFolkNewsLite){
-        bottomNewsDetailTitle.text=data.title
-        bottomNewsDetailTime.text=data.time
+    private fun setDataToView(data: BottomFolkNewsLite) {
+        bottomNewsDetailTitle.text = data.title
+        bottomNewsDetailTime.text = data.time
     }
 
-    private fun GetNewsDetail(id:Int){
+    private fun GetNewsDetail(id: Int) {
         requestHttp {
-            val data=HandleMainFragment.GetBottomNewsInformationByID(id)
-            data?.let{
-                val contentInfos=HandleMainFragment.GetBottomNewsDetailInfo(data.content)
+            val data = HandleMainFragment.GetBottomNewsInformationByID(id)
+            data?.let {
+                val contentInfos = HandleMainFragment.GetBottomNewsDetailInfo(data.content)
                 runOnUiThread {
-                    val adapter=BottomNewsDetailRecyclerViewAdapter(this,contentInfos,glide)
-                    bottomNewsDetailRecyclerview.adapter=adapter
+                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, contentInfos, glide)
+                    bottomNewsDetailRecyclerview.adapter = adapter
                 }
             }
         }
