@@ -18,9 +18,9 @@ import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
@@ -31,21 +31,30 @@ import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 /**
  * 我的帖子的Activity
  */
-class UserOwnTieziActivity : BaseAutoLoginActivity() {
-    private lateinit var adapter: MyOwnCommentRecyclerViewAdapter
+class UserOwnTieziActivity : BaseAutoLoginActivity(),OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_own_tiezi)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initView()
         getInformation()
     }
 
+    private fun initView(){
+        userOwnTieziRefresh.setOnRefreshListener {
+            getInformation()
+        }
+    }
+
+
     override fun getInformation() {
+        onPreLoad()
         requestHttp {
             val datas = HandleFind.GetUserCommentInformaitonByOwn(LoginActivity.userID)
             runOnUiThread {
-                adapter = MyOwnCommentRecyclerViewAdapter(this, datas, glide)
+                onPostLoad()
+                val adapter = MyOwnCommentRecyclerViewAdapter(this, datas, glide)
                 setAdpterClick(adapter)
                 setAdpterLongClick(adapter)
                 setAdapterListener(adapter)
@@ -78,7 +87,7 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
     }
 
     private fun setAdpterLongClick(adapter: MyOwnCommentRecyclerViewAdapter) {
-        this.adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
+        adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
             override fun onItemlongClick(view: View, position: Int) {
                 AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
                         .setPositiveButton("删除", { _, _ ->
@@ -126,6 +135,15 @@ class UserOwnTieziActivity : BaseAutoLoginActivity() {
 
     fun refreshList() {
         getInformation()
+    }
+
+    override fun onPreLoad() {
+        userOwnTieziRefresh.isRefreshing=true
+        userOwnList.adapter=null
+    }
+
+    override fun onPostLoad() {
+        userOwnTieziRefresh.isRefreshing=false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

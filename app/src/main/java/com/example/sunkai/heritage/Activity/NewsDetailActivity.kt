@@ -11,6 +11,7 @@ import com.example.sunkai.heritage.Adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Data.MainPageSlideNews
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.CATEGORY
 import com.example.sunkai.heritage.value.DATA
@@ -21,7 +22,7 @@ import java.io.Serializable
 /**
  * 新闻详情页的Activity
  */
-class NewsDetailActivity : BaseHandleCollectActivity() {
+class NewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
 
     //用于处理收藏
     var id:Int?=null
@@ -67,16 +68,24 @@ class NewsDetailActivity : BaseHandleCollectActivity() {
         if(data is FolkNewsLite) {
             news_detail_title.text = data.title
             news_detail_time.text = data.time
+            newsDetailRefresh.setOnRefreshListener {
+                getNewsDetail(data.id)
+            }
         }else if (data is MainPageSlideNews){
             news_detail_title.text=data.content
             news_detail_time.text=""
+            newsDetailRefresh.setOnRefreshListener {
+                generateDetail(data.detail)
+            }
         }
     }
 
     private fun getNewsDetail(id:Int){
+        onPreLoad()
         requestHttp{
             val datas=HandleMainFragment.GetFolkNewsInformation(id)
             runOnUiThread {
+                onPostLoad()
                 val adapter=NewsDetailRecyclerAdapter(this,datas,glide)
                 newsDetailRecyclerView.adapter=adapter
             }
@@ -84,13 +93,24 @@ class NewsDetailActivity : BaseHandleCollectActivity() {
     }
 
     private fun generateDetail(detail:String){
+        onPreLoad()
         requestHttp{
             val data=HandleMainFragment.GetMainPageSlideDetailInfo(detail)
             runOnUiThread {
+                onPostLoad()
                 val adapter=NewsDetailRecyclerAdapter(this,data,glide)
                 newsDetailRecyclerView.adapter=adapter
             }
         }
+    }
+
+    override fun onPreLoad() {
+        newsDetailRefresh.isRefreshing=true
+        newsDetailRecyclerView.adapter=null
+    }
+
+    override fun onPostLoad() {
+        newsDetailRefresh.isRefreshing=false
     }
 
     override fun getType(): String {

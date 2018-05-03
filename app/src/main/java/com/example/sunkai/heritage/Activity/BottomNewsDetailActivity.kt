@@ -10,13 +10,14 @@ import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivi
 import com.example.sunkai.heritage.Adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
+import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
-class BottomNewsDetailActivity : BaseHandleCollectActivity() {
+class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
 
     var id: Int? = null
 
@@ -31,6 +32,9 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
             setDataToView(data)
             supportActionBar?.title = title
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            bottomNewsDetailRefresh.setOnRefreshListener {
+                GetNewsDetail(data.id)
+            }
         }
     }
 
@@ -65,15 +69,26 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity() {
     }
 
     private fun GetNewsDetail(id: Int) {
+        onPreLoad()
         requestHttp {
             val data = HandleMainFragment.GetBottomNewsInformationByID(id)
             data?.let {
                 val contentInfos = HandleMainFragment.GetBottomNewsDetailInfo(data.content)
                 runOnUiThread {
+                    onPostLoad()
                     val adapter = BottomNewsDetailRecyclerViewAdapter(this, contentInfos, glide)
                     bottomNewsDetailRecyclerview.adapter = adapter
                 }
             }
         }
+    }
+
+    override fun onPreLoad() {
+        bottomNewsDetailRefresh.isRefreshing=true
+        bottomNewsDetailRecyclerview.adapter=null
+    }
+
+    override fun onPostLoad() {
+        bottomNewsDetailRefresh.isRefreshing=false
     }
 }
