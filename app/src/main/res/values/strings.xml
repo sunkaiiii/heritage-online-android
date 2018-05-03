@@ -174,4 +174,5 @@ limitations under the License.</string>
     <string name="licence">开源许可声明</string>
     <string name="roundedimageview">RoundedImageView</string>
     <string name="same_location">同城</string>
+    <string name="comment_location">帖子位置</string>
 </resources>

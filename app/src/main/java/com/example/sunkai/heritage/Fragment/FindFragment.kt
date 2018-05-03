@@ -1,10 +1,10 @@
 package com.example.sunkai.heritage.Fragment
 
+
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
 class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.OnItemSelectedListener, OnPageLoaded {
 
 
+    var firstSpinnerSwitch=true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_find, container, false)
@@ -54,9 +55,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
     private fun initview() {
         fragmentFindSwipeRefresh.setOnRefreshListener {
             when (selectSpinner.selectedItemPosition) {
-                0 -> loadUserCommentData(ALL_COMMENT)
-                1 -> loadUserCommentData(MY_FOCUS_COMMENT)
-                2->loadUserCommentData(SAME_LOCATION)
+                ALL_COMMENT -> loadUserCommentData(ALL_COMMENT)
+                MY_FOCUS_COMMENT -> loadUserCommentData(MY_FOCUS_COMMENT)
+                SAME_LOCATION->loadUserCommentData(SAME_LOCATION)
             }
         }
 
@@ -154,15 +155,20 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        //在绑定Spiner的itemLitener的时候，第一次帮顶会触发一次Listener，所以在这里做一次检验，过滤掉第一次切换响应
+        if(firstSpinnerSwitch){
+            firstSpinnerSwitch=false
+            return
+        }
         when (position) {
-            0 -> {
+            ALL_COMMENT -> {
                 loadUserCommentData(ALL_COMMENT)
             }
-            1 -> {
+            MY_FOCUS_COMMENT -> {
                 checkUserIsLogin()
                 loadUserCommentData(MY_FOCUS_COMMENT)
             }
-            2->{
+            SAME_LOCATION->{
                 loadUserCommentData(SAME_LOCATION)
             }
         }
@@ -170,6 +176,11 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
 
     override fun onNothingSelected(parent: AdapterView<*>) {
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        firstSpinnerSwitch=true
     }
 
     companion object {

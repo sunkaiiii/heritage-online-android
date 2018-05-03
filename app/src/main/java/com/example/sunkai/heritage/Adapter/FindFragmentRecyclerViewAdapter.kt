@@ -4,13 +4,17 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.core.view.setPadding
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
@@ -53,6 +57,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val userImage: RoundedImageView
         val likeCount: TextView
         val miniReplys: LinearLayout
+        val locatiomImageView:ImageView
 
         init {
             img = view.findViewById(R.id.fragment_find_litview_img)
@@ -66,6 +71,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             cancelFocusText = view.findViewById(R.id.cancel_focus_text)
             likeCount = view.findViewById(R.id.user_comment_like_number_textview)
             miniReplys = view.findViewById(R.id.user_comment_mini_replys)
+            locatiomImageView=view.findViewById(R.id.user_comment_location_imageview)
         }
     }
 
@@ -100,6 +106,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         setAddReplyClick(holder, data)
         setHolderFocusState(holder, data)
         setFocusClick(holder, data)
+        setLocationClick(holder,data)
         showMiniReply(holder, data)
     }
 
@@ -213,6 +220,27 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             }
         }
     }
+
+    private fun setLocationClick(holder: ViewHolder,data: UserCommentData){
+        val onClickListener by lazy {
+            View.OnClickListener {
+                val cardView=CardView(context)
+                val textView=TextView(context)
+                textView.text = data.location
+                textView.setPadding(8*(context.resources.displayMetrics.densityDpi/160))
+                textView.setTextColor(ContextCompat.getColor(context,R.color.black))
+                textView.setBackgroundColor(ContextCompat.getColor(context,R.color.white))
+                cardView.addView(textView)
+                val popWindow= PopupWindow(cardView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true)
+                val location=IntArray(2)
+                it.getLocationOnScreen(location)
+                popWindow.animationStyle=R.style.PopupAnimation
+                popWindow.showAtLocation(it,Gravity.NO_GRAVITY,location[0],(location[1]-holder.locatiomImageView.height*1.4).toInt())
+            }
+        }
+        holder.locatiomImageView.setOnClickListener(onClickListener)
+    }
+
 
     private fun handleFocus(holder: ViewHolder, data: UserCommentData, divide: Int) {
         holder.addfocusText.isEnabled = false
