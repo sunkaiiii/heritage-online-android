@@ -22,7 +22,7 @@ object HandleFind : BaseSetting() {
 
     fun Add_User_Comment_Information(user_id: Int, comment_title: String, comment_content: String, comment_image: String): Boolean {
         val postUrl = "$URL/AddUserCommentInformation"
-        val locaiton = BaiduLocation.GetIPAddress()
+        val locaiton = BaiduLocation.location
         val form = FormBody.Builder()
                 .add("userID", user_id.toString())
                 .add("commentTitle", comment_title)

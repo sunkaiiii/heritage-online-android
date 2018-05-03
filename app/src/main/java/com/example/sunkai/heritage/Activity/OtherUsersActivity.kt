@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.support.transition.Fade
@@ -161,7 +162,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         //设置按下时候的颜色
         addFocsFloatBtn.rippleColor = ContextCompat.getColor(this, if (data.checked) R.color.colorAccent else R.color.lightGrey)
         //给FloatActionButton着色
-        ViewCompat.setBackgroundTintList(addFocsFloatBtn, ContextCompat.getColorStateList(this, if (data.checked) R.color.midGrey else R.color.colorAccent))
+        addFocsFloatBtn.backgroundTintList= ContextCompat.getColorStateList(this, if (data.checked) R.color.midGrey else R.color.colorAccent)
     }
 
 

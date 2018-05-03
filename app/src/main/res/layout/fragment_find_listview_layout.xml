@@ -2,10 +2,10 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppThemeNoActionBarNoBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    style="@style/AppThemeNoActionBarNoBackground"
     android:background="?attr/selectableItemBackground"
     android:foreground="?attr/selectableItemBackground"
     app:cardCornerRadius="2dp"
@@ -81,6 +81,31 @@
                     android:contentDescription="@string/cancel_like"
                     android:src="@drawable/ic_favorite_border_grey_700_24dp" />
             </FrameLayout>
+
+            <ImageView
+                android:id="@+id/user_comment_location_imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_location_on_grey_700_24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageview_comment"
+                app:layout_constraintStart_toEndOf="@+id/imageview_comment"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
+            <TextView
+                android:id="@+id/user_comment_location_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/same_location"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
+
 
             <RelativeLayout
                 android:id="@+id/linearLayout"

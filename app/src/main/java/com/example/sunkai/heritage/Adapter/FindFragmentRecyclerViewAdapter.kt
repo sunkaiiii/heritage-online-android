@@ -26,6 +26,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
@@ -45,6 +46,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val like: ImageView
         val dislike: ImageView
         val comment: ImageView
+        val sameLocation:TextView
         val addfocusText: TextView
         val cancelFocusText: TextView
         val name_text: TextView
@@ -56,6 +58,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             img = view.findViewById(R.id.fragment_find_litview_img)
             comment = view.findViewById(R.id.imageview_comment)
             like = view.findViewById(R.id.imageView_like)
+            sameLocation=view.findViewById(R.id.user_comment_location_textview)
             dislike = view.findViewById(R.id.imageView_dislike)
             addfocusText = view.findViewById(R.id.add_focus_text)
             name_text = view.findViewById(R.id.name_text)
@@ -103,6 +106,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         holder.name_text.text = data.userName
+        holder.sameLocation.text=if(data.location==BaiduLocation.location)context.getString(R.string.same_location) else ""
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {

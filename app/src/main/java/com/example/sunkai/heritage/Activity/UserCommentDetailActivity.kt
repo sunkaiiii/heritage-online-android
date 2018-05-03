@@ -1,14 +1,19 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.core.transition.doOnEnd
 import androidx.core.widget.toast
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity.Companion.userID
@@ -22,7 +27,7 @@ import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
@@ -100,6 +105,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private fun showBackLinear() {
         usercommentInformationLinear.visibility = View.VISIBLE
+        userCommentDetailToolbar.visibility=View.VISIBLE
         val option = intent.getIntExtra(OPTION, COMMON_SHOW)
         if (option == ANIMATION_SHOW) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
@@ -142,10 +148,24 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         informationContent.text = data.commentContent
         informationReplyNum.text = data.replyNum.toString()
         title = data.userName
+        val simpleTarget=object : SimpleTarget<Drawable>(){
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
+                val color=resource.generateDarkColor()
+                userCommentDetailToolbar.setBackgroundColor(color)
+                userCommentImage.setImageDrawable(resource)
+                usercommentInformationLinear.setBackgroundColor(color)
+                userCommentCollapsingToolbarLayout.setContentScrimColor(color)
+                userCommentAddReplyBtn.backgroundTintList= ColorStateList.valueOf(color)
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+                    window.statusBarColor=color
+                }
+            }
+
+        }
         if (image != null) {
-            userCommentImage.setImageBitmap(HandlePic.handlePic(image))
+            glide.load(HandlePic.handlePic(image)).into(simpleTarget)
         } else {
-            glide.load(BaseSetting.URL + data.imageUrl).into(userCommentImage)
+            glide.load(BaseSetting.URL + data.imageUrl).into(simpleTarget)
         }
     }
 

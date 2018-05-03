@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.CardView
 import android.text.TextUtils
-import android.transition.Slide
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,31 +79,31 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
         val seeMoreTextview = view.findViewById<TextView>(R.id.see_more)
         val linearLayout = view.findViewById<LinearLayout>(R.id.main_news_other_news)
         val categoryTextView = view.findViewById<TextView>(R.id.main_news_card_category)
-        val categoryBackGroundImageView=view.findViewById<ImageView>(R.id.main_news_card_category_image)
+        val categoryBackGroundImageView = view.findViewById<ImageView>(R.id.main_news_card_category_image)
         categoryTextView.text = CATEGORIES[position]
-        setClick(position, seeMoreTextview, activity,categoryBackGroundImageView)
+        setClick(position, seeMoreTextview, activity, categoryBackGroundImageView)
         it.forEach {
             setNewsItem(it, linearLayout, activity)
         }
-        getCategoryImage(position,categoryBackGroundImageView,linearLayout,seeMoreTextview)
+        getCategoryImage(position, categoryBackGroundImageView, linearLayout, seeMoreTextview)
         return view as CardView
     }
 
-    private fun getCategoryImage(position: Int,imageView: ImageView,linearLayout:LinearLayout,seeMoreTextview:TextView){
-        glide.load(HOST+"/img/main_news_divide_img/"+ MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(categoryImageSimpleTarget(imageView,linearLayout,seeMoreTextview))
+    private fun getCategoryImage(position: Int, imageView: ImageView, linearLayout: LinearLayout, seeMoreTextview: TextView) {
+        glide.load(HOST + "/img/main_news_divide_img/" + MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(categoryImageSimpleTarget(imageView, linearLayout, seeMoreTextview))
     }
 
-    private fun setClick(position: Int, textView: TextView, context: Context,categoryBackgroundImageView: ImageView) {
+    private fun setClick(position: Int, textView: TextView, context: Context, categoryBackgroundImageView: ImageView) {
         val category = CATEGORIES[position]
         textView.setOnClickListener {
-            loadSeemoreNewsActivity(category,context)
+            loadSeemoreNewsActivity(category, context)
         }
         categoryBackgroundImageView.setOnClickListener {
-            loadSeemoreNewsActivity(category,context)
+            loadSeemoreNewsActivity(category, context)
         }
     }
 
-    private fun loadSeemoreNewsActivity(category:String,context: Context){
+    private fun loadSeemoreNewsActivity(category: String, context: Context) {
         val intent = Intent(context, SeeMoreNewsActivity::class.java)
         intent.putExtra("category", category)
         context.startActivity(intent)
@@ -118,10 +116,10 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val intent = Intent(context, NewsDetailActivity::class.java)
             intent.putExtra("data", item)
             intent.putExtra("category", item.category)
-            val activity=activity
-            if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,itemHolder.title,getString(R.string.news_detail_share_title)).toBundle())
-            }else{
+            val activity = activity
+            if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, itemHolder.title, getString(R.string.news_detail_share_title)).toBundle())
+            } else {
                 startActivity(intent)
             }
         }
@@ -155,13 +153,13 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     }
 
-    private class categoryImageSimpleTarget(val imageView: ImageView,val linearLayout: LinearLayout,val seeMoreTextView: TextView):SimpleTarget<Drawable>(){
+    private class categoryImageSimpleTarget(val imageView: ImageView, val linearLayout: LinearLayout, val seeMoreTextView: TextView) : SimpleTarget<Drawable>() {
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            val darkColor=resource.generateDarkColor()
-            val animation=AnimationUtils.loadAnimation(GlobalContext.instance,R.anim.fade_in_quick)
+            val darkColor = resource.generateDarkColor()
+            val animation = AnimationUtils.loadAnimation(GlobalContext.instance, R.anim.fade_in_quick)
             imageView.setImageDrawable(resource)
             imageView.startAnimation(animation)
-            linearLayout.children.forEach { it.findViewById<TextView>(R.id.news_item_title)?.setTextColor(darkColor)  }
+            linearLayout.children.forEach { it.findViewById<TextView>(R.id.news_item_title)?.setTextColor(darkColor) }
             seeMoreTextView.setTextColor(darkColor)
         }
 

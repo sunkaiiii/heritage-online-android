@@ -100,7 +100,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 val datas = when (what) {
                     ALL_COMMENT -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                     MY_FOCUS_COMMENT -> HandleFind.GetUserCommentInformationByUser(LoginActivity.userID)
-                    SAME_LOCATION->HandleFind.GetUserCommentInformationBySameLocation(LoginActivity.userID,BaiduLocation.GetIPAddress())
+                    SAME_LOCATION->HandleFind.GetUserCommentInformationBySameLocation(LoginActivity.userID,BaiduLocation.location)
                     else -> HandleFind.GetUserCommentInformation(LoginActivity.userID)
                 }
                 activiy.runOnUiThread {
