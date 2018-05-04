@@ -18,7 +18,7 @@ object BaiduLocation {
         }
     }
 
-    private fun IPLocation(): String {
+    fun IPLocation(): String {
         val request = Request.Builder()
                 .url(BaiduIPLocationUrl)
                 .build()

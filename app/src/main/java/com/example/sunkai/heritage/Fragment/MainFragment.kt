@@ -15,6 +15,9 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
+import com.example.sunkai.heritage.value.SEARCH_TYPE
+import com.example.sunkai.heritage.value.TYPE_BOTTOM_NEWS
+import com.example.sunkai.heritage.value.TYPE_NEWS
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -90,7 +93,9 @@ class MainFragment : BaseGlideFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
             R.id.search_menu->{
-                startActivity(Intent(activity,SearchNewsActivity::class.java))
+                val intent=Intent(activity,SearchNewsActivity::class.java)
+                intent.putExtra(SEARCH_TYPE,if(mainPageTabLayout.selectedTabPosition==0) TYPE_BOTTOM_NEWS else TYPE_NEWS)
+                startActivity(intent)
             }
         }
         return super.onOptionsItemSelected(item)

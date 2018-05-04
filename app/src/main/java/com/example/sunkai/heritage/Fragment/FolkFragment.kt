@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.Activity.MainActivity
+import com.example.sunkai.heritage.Activity.SearchNewsActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Data.ActivityData
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -26,14 +27,12 @@ import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
-import com.example.sunkai.heritage.value.CLASIIFY_DIVIDE
-import com.example.sunkai.heritage.value.CLASSIFY_DIVIDE_TABVIEWSHOW
-import com.example.sunkai.heritage.value.HOST
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_folk.*
 import java.util.*
 
 
-class FolkFragment : BaseLazyLoadFragment() {
+class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
 
     private var urls: List<ActivityData>? = null
 
@@ -68,10 +67,8 @@ class FolkFragment : BaseLazyLoadFragment() {
         }
         tabayout.addOnTabSelectedListener(tabLayoutListener)
         tabayout.getTabAt(0)?.select()
-        fragmentFolkSeeAllFolk.setOnClickListener {
-            val intent = Intent(activity, AllFolkInfoActivity::class.java)
-            startActivity(intent)
-        }
+        fragmentFolkSearch.setOnClickListener(this)
+        fragmentFolkSeeAllFolk.setOnClickListener(this)
     }
 
     override fun startLoadInformation() {
@@ -106,6 +103,20 @@ class FolkFragment : BaseLazyLoadFragment() {
             urls = HandleFolk.Get_Main_Divide_Activity_Image_Url()
             activity?.runOnUiThread {
                 getDivideImage(tabayout.selectedTabPosition)
+            }
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.fragmentFolkSeeAllFolk->{
+                val intent = Intent(activity, AllFolkInfoActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.fragmentFolkSearch->{
+                val intent =Intent(activity,SearchNewsActivity::class.java)
+                intent.putExtra(SEARCH_TYPE, TYPE_FOLK_HERITAGE)
+                startActivity(intent)
             }
         }
     }

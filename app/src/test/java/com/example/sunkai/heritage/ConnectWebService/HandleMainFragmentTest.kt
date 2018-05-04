@@ -47,6 +47,16 @@ class HandleMainFragmentTest : BaseTestClass() {
         }
     }
 
+    @Test
+    fun SearchBottomNewsInfoTest(){
+        assertData(HandleMainFragment.SearchBottomNewsInfo("地方"))
+    }
+
+    @Test
+    fun SearchAllNewsInfoTest(){
+        assertData(HandleMainFragment.SearchAllNewsInfo("非遗"))
+    }
+
     private fun getBottomNewsInformationByID(id: Int) {
         println(id)
         val result = HandleMainFragment.GetBottomNewsInformationByID(id)

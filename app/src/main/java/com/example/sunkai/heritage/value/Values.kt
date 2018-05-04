@@ -71,6 +71,7 @@ const val SEARCH_TYPE="searchType"
 const val TYPE_NEWS="news"
 const val TYPE_BOTTOM_NEWS="bottom_news"
 const val TYPE_COMMENT="comment"
+const val TYPE_FOLK_HERITAGE="folk_heritage"
 const val TYPE_USER="user"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样

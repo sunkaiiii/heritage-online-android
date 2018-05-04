@@ -5,13 +5,13 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.app.AppCompatActivity
+import android.view.*
 import android.widget.AdapterView
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
+import com.example.sunkai.heritage.Activity.SearchNewsActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.DELETE_COMMENT
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
@@ -22,9 +22,7 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.value.ALL_COMMENT
-import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
-import com.example.sunkai.heritage.value.SAME_LOCATION
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_find.*
 
 /**
@@ -75,6 +73,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 startActivityForResult(intent, FROM_ADD_COMMENT_DETAIL)
             }
         }
+        fragmentFindSearchButton.setOnClickListener(this)
     }
 
 
@@ -133,6 +132,11 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
 
     override fun onClick(v: View) {
         when (v.id) {
+            R.id.fragmentFindSearchButton->{
+                val intent=Intent(activity,SearchNewsActivity::class.java)
+                intent.putExtra(SEARCH_TYPE, TYPE_COMMENT)
+                startActivity(intent)
+            }
         }
     }
 
@@ -173,6 +177,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
             }
         }
     }
+
 
     override fun onNothingSelected(parent: AdapterView<*>) {
 

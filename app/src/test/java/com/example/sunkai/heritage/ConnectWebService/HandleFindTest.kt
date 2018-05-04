@@ -79,4 +79,9 @@ class HandleFindTest:BaseTestClass() {
     fun getUserLikeComment() {
         assertData(HandleFind.GetUserLikeComment(55))
     }
+
+    @Test
+    fun testSearchUserComment(){
+        assertData(HandleFind.SearchUserCommentInfo("非遗"))
+    }
 }

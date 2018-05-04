@@ -242,4 +242,19 @@ object HandleFind : BaseSetting() {
         }
         return arrayListOf()
     }
+
+    fun SearchUserCommentInfo(searchInfo:String,userID: Int=LoginActivity.userID):List<UserCommentData>{
+        val url="$URL/SearchUserCommentInfo?userID=$userID&searchInfo=$searchInfo"
+        val result=PutGet(url)
+        Log.d("SearchUserCommentInfo",result)
+        if(result== ERROR){
+            return arrayListOf()
+        }
+        try{
+            return handleCommentData(result)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }

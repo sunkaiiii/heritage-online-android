@@ -8,14 +8,17 @@ import android.text.Editable
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
+import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
+import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
+import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
-import com.example.sunkai.heritage.value.SEARCH_TYPE
-import com.example.sunkai.heritage.value.STATE_CHANGE
-import com.example.sunkai.heritage.value.TYPE_USER
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
 
 class SearchNewsActivity : BaseGlideActivity() {
@@ -55,6 +58,18 @@ class SearchNewsActivity : BaseGlideActivity() {
             val data:List<*>
             val adapter:BaseRecyclerAdapter<*,*>
             when(searchType){
+                TYPE_BOTTOM_NEWS->{
+                    data=HandleMainFragment.SearchBottomNewsInfo(searchInfo)
+                    adapter=BottomFolkNewsRecyclerviewAdapter(this,data,glide)
+                }
+                TYPE_NEWS->{
+                    data=HandleMainFragment.SearchAllNewsInfo(searchInfo)
+                    adapter=SeeMoreNewsRecyclerViewAdapter(this,data,glide)
+                }
+                TYPE_COMMENT->{
+                    data=HandleFind.SearchUserCommentInfo(searchInfo)
+                    adapter=FindFragmentRecyclerViewAdapter(this,data, ALL_COMMENT,glide)
+                }
                 TYPE_USER->{
                     data=HandlePerson.GetSearchUserInfo(searchInfo,LoginActivity.userID)
                     adapter=SearchUserRecclerAdapter(this,data,glide)

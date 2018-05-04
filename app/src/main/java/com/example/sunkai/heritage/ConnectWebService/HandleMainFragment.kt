@@ -114,4 +114,32 @@ object HandleMainFragment : BaseSetting() {
         }
         return arrayListOf()
     }
+
+    fun SearchBottomNewsInfo(searchInfo:String):List<BottomFolkNewsLite>{
+        val url="$URL/SearchBottomNewsInformation?searchInfo=$searchInfo"
+        val result=PutGet(url)
+        if(result== ERROR){
+            return arrayListOf()
+        }
+        try{
+            return fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
+
+    fun SearchAllNewsInfo(searchInfo: String):List<FolkNewsLite>{
+        val url="$URL/SearchFolkNewsInformaiton?searchInfo=$searchInfo"
+        val result=PutGet(url)
+        if(result== ERROR){
+            return arrayListOf()
+        }
+        try{
+            return fromJsonToList(result,Array<FolkNewsLite>::class.java)
+        }catch (e:Exception){
+            e.printStackTrace()
+        }
+        return arrayListOf()
+    }
 }
