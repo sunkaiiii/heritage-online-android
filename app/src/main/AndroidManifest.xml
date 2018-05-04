@@ -4,6 +4,7 @@
     package="com.example.sunkai.heritage">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".tools.GlobalContext"
         android:allowBackup="false"
@@ -17,8 +18,10 @@
             android:theme="@style/AppThemeNoActionBarNoBackground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
@@ -51,7 +54,6 @@
             android:name=".Activity.AddFindCommentActivity"
             android:label="发帖"
             android:theme="@style/AppThemeNoBackGround" />
-
         <activity
             android:name=".Activity.UserOwnTieziActivity"
             android:label="我的帖子" />
@@ -63,8 +65,6 @@
             android:name=".Activity.OtherUsersActivity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".Activity.ModifyUsercommentActivity" />
-
-
         <activity
             android:name=".Activity.AllFolkInfoActivity"
             android:theme="@style/AppThemeNoActionBar" />
@@ -88,6 +88,8 @@
         <activity
             android:name=".Activity.MyMessageActivity"
             android:label="@string/my_message" />
+        <activity android:name=".Activity.SearchNewsActivity"
+            android:theme="@style/AppThemeNoActionBarNoBackground"/>
     </application>
 
 </manifest>

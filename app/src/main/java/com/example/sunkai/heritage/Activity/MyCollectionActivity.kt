@@ -4,13 +4,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.content.ContextCompat
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.MyCollectFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.TYPE_FIND
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import com.example.sunkai.heritage.value.TYPE_FOLK
@@ -20,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_my_collection.*
 /**
  * 我的收藏的Activity
  */
-class MyCollectionActivity : BaseGlideActivity() {
+class MyCollectionActivity : BaseAutoLoginActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

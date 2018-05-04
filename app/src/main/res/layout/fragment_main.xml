@@ -11,18 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="6dp">
-        <LinearLayout
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/fragmentMainToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:orientation="vertical">
-            <android.support.design.widget.TabLayout
-                android:id="@+id/mainPageTabLayout"
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:tabPadding="8dp"/>
-        </LinearLayout>
+                android:orientation="horizontal">
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/mainPageTabLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    app:tabPadding="8dp" />
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
 
 
     </android.support.v7.widget.CardView>

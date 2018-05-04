@@ -1,14 +1,15 @@
 package com.example.sunkai.heritage.Fragment
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.support.v7.app.AppCompatActivity
+import android.view.*
+import com.example.sunkai.heritage.Activity.SearchNewsActivity
 import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : BaseGlideFragment() {
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
@@ -30,7 +32,17 @@ class MainFragment : BaseGlideFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val manager=activity?.supportFragmentManager?:return
+        setToolbar()
         setViewPager(manager)
+    }
+
+    private fun setToolbar(){
+        fragmentMainToolbar.title=""
+        val activity=activity?:return
+        if(activity is AppCompatActivity){
+            activity.setSupportActionBar(fragmentMainToolbar)
+            setHasOptionsMenu(true)
+        }
     }
 
     private fun setViewPager(manager: FragmentManager) {
@@ -70,5 +82,18 @@ class MainFragment : BaseGlideFragment() {
         return fragments
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.seach_menu,menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.search_menu->{
+                startActivity(Intent(activity,SearchNewsActivity::class.java))
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 }

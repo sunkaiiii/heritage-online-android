@@ -67,6 +67,11 @@ const val TITLE = "title"
 const val IMAGE = "image"
 const val IS_INTO = "isInto"
 const val READ = "r"
+const val SEARCH_TYPE="searchType"
+const val TYPE_NEWS="news"
+const val TYPE_BOTTOM_NEWS="bottom_news"
+const val TYPE_COMMENT="comment"
+const val TYPE_USER="user"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

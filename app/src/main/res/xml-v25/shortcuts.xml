@@ -31,4 +31,20 @@
             android:targetPackage="com.datong.heritage_online" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_bookmark_black_24dp"
+        android:shortcutId="my_collect"
+        android:shortcutLongLabel="@string/my_collection"
+        android:shortcutShortLabel="@string/my_collection">
+        <intent
+            android:action="com.ddmeng.hellonougat.action.MAIN"
+            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <intent
+            android:action="android.intent.action.STATIC_SHORTCUT_2"
+            android:targetClass="com.example.sunkai.heritage.Activity.MyCollectionActivity"
+            android:targetPackage="com.datong.heritage_online" />
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
 </shortcuts>
