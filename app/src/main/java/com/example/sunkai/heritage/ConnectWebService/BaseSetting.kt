@@ -16,8 +16,8 @@ abstract class BaseSetting {
         const val SUCCESS = "SUCCESS"
         const val ERROR = "ERROR"
 //        const val URL = "http://btbudinner.win:8080"
-        const val URL=HOST
-//        const val URL="http://10.20.254.74:8080"
+//        const val URL=HOST
+        const val URL="http://192.168.31.44:8080"
     }
     //定义泛型方法，简单化Gson的使用
     fun <T> fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {

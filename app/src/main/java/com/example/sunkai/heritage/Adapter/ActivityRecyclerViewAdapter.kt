@@ -27,7 +27,6 @@ class ActivityRecyclerViewAdapter(private val context: Context,datas:List<Classi
     private var imageAnimation: Animation//图片出现动画
 
 
-
     class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
         val img: ImageView
         val title: TextView

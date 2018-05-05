@@ -90,23 +90,17 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
                 val titleView=view.findViewById<TextView>(R.id.see_more_news_item_title)
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
-                setupWindowExitAnimations()
                 val activity=activity
                 if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                    val slide = Slide(Gravity.START)
+                    slide.duration = 500
+                    activity.window?.exitTransition=slide
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,titleView,getString(R.string.news_detail_share_title)).toBundle())
                 }else{
                     startActivity(intent)
                 }
             }
         })
-    }
-
-    fun setupWindowExitAnimations(){
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
-            val slide = Slide(Gravity.START)
-            slide.duration = 500
-            activity?.window?.exitTransition=slide
-        }
     }
 
     private fun setRecyclerScrollListener() {

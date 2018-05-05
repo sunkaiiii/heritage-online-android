@@ -189,8 +189,8 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
     }
 
     companion object {
-        private const val LOGIN = 1
-        private const val FROM_USER_COMMENT_DETAIL = 0
-        private const val FROM_ADD_COMMENT_DETAIL=2
+        const val LOGIN = 1
+        const val FROM_USER_COMMENT_DETAIL = 0
+        const val FROM_ADD_COMMENT_DETAIL=2
     }
 }

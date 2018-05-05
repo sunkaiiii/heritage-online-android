@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.value.ERROR
 import org.junit.Assert
@@ -84,4 +86,5 @@ class HandleFindTest:BaseTestClass() {
     fun testSearchUserComment(){
         assertData(HandleFind.SearchUserCommentInfo("非遗"))
     }
+
 }

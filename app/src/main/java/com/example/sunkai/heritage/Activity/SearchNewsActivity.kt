@@ -7,23 +7,23 @@ import android.os.Message
 import android.text.Editable
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
+import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
-import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
+import com.example.sunkai.heritage.tools.HandleAdapterClickUtils
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
 
 class SearchNewsActivity : BaseGlideActivity() {
 
     var searchType= TYPE_USER
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_news)
@@ -66,6 +66,10 @@ class SearchNewsActivity : BaseGlideActivity() {
                     data=HandleMainFragment.SearchAllNewsInfo(searchInfo)
                     adapter=SeeMoreNewsRecyclerViewAdapter(this,data,glide)
                 }
+                TYPE_FOLK_HERITAGE->{
+                    data=HandleFolk.Search_Folk_Info(searchInfo)?:return@requestHttp
+                    adapter=FolkRecyclerViewAdapter(this,data,glide)
+                }
                 TYPE_COMMENT->{
                     data=HandleFind.SearchUserCommentInfo(searchInfo)
                     adapter=FindFragmentRecyclerViewAdapter(this,data, ALL_COMMENT,glide)
@@ -79,7 +83,7 @@ class SearchNewsActivity : BaseGlideActivity() {
                     adapter=SearchUserRecclerAdapter(this,data,glide)
                 }
             }
-
+            HandleAdapterClickUtils.handleAdapterItemClick(this,adapter)
             if(adapter is SearchUserRecclerAdapter){
                 setListener(adapter)
             }
@@ -111,6 +115,6 @@ class SearchNewsActivity : BaseGlideActivity() {
     companion object {
         const val SEARCH_FLAG=1
         const val SEARCH_TEXT="searchText"
-        const val DELAY=400L
+        const val DELAY=300L
     }
 }
