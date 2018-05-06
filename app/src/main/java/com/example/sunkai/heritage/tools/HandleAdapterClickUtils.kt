@@ -25,6 +25,9 @@ import com.example.sunkai.heritage.value.FROM
 import com.example.sunkai.heritage.value.USER_ID
 import com.makeramen.roundedimageview.RoundedImageView
 
+/**
+ * 对adapter的item点击事件进行了统一的封装
+ */
 object HandleAdapterClickUtils:AbsHandleAdapter() {
     override fun handleBottomNewsAdapterItemClick(context: Context, adapter: BottomFolkNewsRecyclerviewAdapter) {
         adapter.setOnItemClickListen(object : OnItemClickListener {

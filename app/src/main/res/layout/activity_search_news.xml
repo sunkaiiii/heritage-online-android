@@ -40,10 +40,12 @@
                 android:layout_toRightOf="@+id/activitySearchBackButton"
                 android:layout_toStartOf="@id/activitySearchClearButton"
                 android:background="@color/transparent_full"
-                android:focusableInTouchMode="true"
+                android:focusable="true"
                 android:hint="@string/please_input_search"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                />
 
             <ImageView
                 android:id="@+id/activitySearchClearButton"
@@ -69,14 +71,16 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-    <TableLayout
+    <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/searchActivityTablayout"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/searchActivityViewPager"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

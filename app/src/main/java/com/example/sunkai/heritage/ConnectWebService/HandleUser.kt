@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.ConnectWebService
 
 
 import android.util.Base64
-import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import okhttp3.FormBody
 
@@ -54,7 +53,6 @@ object HandleUser : BaseSetting() {
     fun Check_Question_Answer(userName: String, questionAnswer: String): Boolean {
         val form = FormBody.Builder().add("username", userName).add("answer", questionAnswer).build()
         val result = PutPost("$URL/CheckQuestionAnswer", form)
-        Log.d("Check_Question_Answer", result)
         return SUCCESS == result
     }
 

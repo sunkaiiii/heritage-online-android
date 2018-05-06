@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.ConnectWebService
 
 import android.text.TextUtils
 import android.util.Base64
-import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
@@ -54,14 +53,12 @@ object HandleFind : BaseSetting() {
     fun GetUserCommentInformation(userID: Int, start: Int = 0): List<UserCommentData> {
         val getUrl = "$URL/GetUserCommentInformation?userID=$userID&start=$start"
         val result = PutGet(getUrl)
-        Log.d("GetUserCommentInfo", result)
         return handleCommentData(result)
     }
 
     fun GetUserCommentInformationByUser(userID: Int, start: Int = 0): List<UserCommentData> {
         val getUrl = "$URL/GetUserCommentInformationByUser?userID=$userID&start=$start"
         val result = PutGet(getUrl)
-        Log.d("GetUserCommentInfoByUsr", result)
         return handleCommentData(result)
     }
 
@@ -84,7 +81,6 @@ object HandleFind : BaseSetting() {
     fun GetUserCommentInformationBySameLocation(userID: Int, location: String, start: Int = 0): List<UserCommentData> {
         val getUrl = "$URL/GetUserCommentInformationBySameLocation?userID=$userID&start=$start&location=$location"
         val result = PutGet(getUrl)
-        Log.d("GetCommentSameLocation",result)
         return handleCommentData(result)
     }
 
@@ -126,7 +122,6 @@ object HandleFind : BaseSetting() {
     fun GetUserCommentImageUrl(commentID: Int): String {
         val getUrl = "$URL/GetUserCommentImageUrl?id=$commentID"
         val url = PutGet(getUrl)
-        Log.d("GetUserCommentImageUrl", url)
         if (TextUtils.isEmpty(url) || url == ERROR) {
             return ERROR
         }
@@ -208,7 +203,6 @@ object HandleFind : BaseSetting() {
                     val userName = LoginActivity.userName ?: return@execute
                     val replyTime = Calendar.getInstance().time
                     val timeformat = SimpleDateFormat.getDateInstance().format(replyTime)
-                    Log.d("test", timeformat)
                     HandlePush.AddPushMessage(LoginActivity.userID, commentID, writterID, userName, reply, writterName, "20180202", originalReplyContent)
                 }
             }
@@ -246,7 +240,6 @@ object HandleFind : BaseSetting() {
     fun SearchUserCommentInfo(searchInfo:String,userID: Int=LoginActivity.userID):List<UserCommentData>{
         val url="$URL/SearchUserCommentInfo?userID=$userID&searchInfo=$searchInfo"
         val result=PutGet(url)
-        Log.d("SearchUserCommentInfo",result)
         if(result== ERROR){
             return arrayListOf()
         }

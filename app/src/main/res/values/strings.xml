@@ -75,6 +75,7 @@
     <string name="open_or_close_push">开启推送？</string>
     <string name="my_like">我的赞</string>
     <string name="title">标题</string>
+    <string name="user_comment">帖子</string>
 
     <string name="share_user_name">share_user_name</string>
     <string name="share_user_image">share_user_image</string>
@@ -115,6 +116,7 @@
     <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
+    <string name="user">用户</string>
 
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

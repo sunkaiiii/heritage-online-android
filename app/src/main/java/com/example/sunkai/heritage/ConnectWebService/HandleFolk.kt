@@ -26,15 +26,19 @@ object HandleFolk : BaseSetting() {
         }
     }
 
-    fun Search_Folk_Info(searchInfo: String): List<FolkDataLite>? {
+    fun Search_Folk_Info(searchInfo: String): List<FolkDataLite> {
         val getUrl= "$URL/SearchChannelForkInfo?searchInfo=$searchInfo"
         val result=PutGet(getUrl)
-        return if(ERROR==result){
-            null
+        if(ERROR==result){
+            return arrayListOf()
         }else{
-            fromJsonToList(result, Array<FolkDataLite>::class.java)
+            try {
+                return fromJsonToList(result, Array<FolkDataLite>::class.java)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
-
+        return arrayListOf()
     }
 
     fun Get_Channel_Folk_Single_Information(id:Int):FolkData?{

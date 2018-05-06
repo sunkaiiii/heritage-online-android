@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.ConnectWebService
 
+import android.util.Log
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
 import okhttp3.FormBody
@@ -16,8 +17,8 @@ abstract class BaseSetting {
         const val SUCCESS = "SUCCESS"
         const val ERROR = "ERROR"
 //        const val URL = "http://btbudinner.win:8080"
-//        const val URL=HOST
-        const val URL="http://192.168.31.44:8080"
+        const val URL=HOST
+//        const val URL="http://192.168.31.44:8080"
     }
     //定义泛型方法，简单化Gson的使用
     fun <T> fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
@@ -30,7 +31,9 @@ abstract class BaseSetting {
         val client=OkHttpClient()
         try {
             val response = client.newCall(request).execute()
-            return response.body()?.string() ?: ERROR
+            val result=response.body()?.string() ?: ERROR
+            Log.e("PutGet",url+"\n"+result)
+            return result
         }catch (e:IOException){
             e.printStackTrace()
         }
@@ -42,7 +45,9 @@ abstract class BaseSetting {
         val client=OkHttpClient()
         try {
             val response = client.newCall(request).execute()
-            return response?.body()?.string() ?: ERROR
+            val result=response.body()?.string() ?: ERROR
+            Log.e("PutGet",url+"\n"+result)
+            return result
         }catch (e:IOException){
             e.printStackTrace()
         }
