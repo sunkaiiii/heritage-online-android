@@ -5,22 +5,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-<<<<<<< HEAD
 import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
-=======
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-<<<<<<< HEAD
 import androidx.core.content.edit
-=======
-import androidx.core.widget.toast
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.*
@@ -33,10 +26,7 @@ import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-<<<<<<< HEAD
 import com.example.sunkai.heritage.tools.*
-=======
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
 import com.example.sunkai.heritage.tools.HandleAdapterClickUtils
@@ -47,7 +37,6 @@ import kotlin.collections.set
 
 class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
 
-<<<<<<< HEAD
 
     private var searchType = TYPE_USER
     private var searchString = ""
@@ -61,10 +50,6 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
                 GlobalContext.instance.getString(R.string.user_comment),
                 GlobalContext.instance.getString(R.string.user))
     }
-=======
-    var searchType = TYPE_USER
-    var searchString = ""
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +61,6 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
     }
 
     private fun initView() {
-<<<<<<< HEAD
         setEditTextHint()
         val searchHistoryList = getSearchHistoryList()
         val adapter = SearchActivitySearchHistoryAdapter(this, searchHistoryList, glide)
@@ -90,17 +74,11 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
                 } else {
                     searchActivitySearchHistoryRecyckerView.visibility = View.GONE
                 }
-=======
-        searchActivitySearchEditText.addTextChangedListener(object : BaseOnTextChangeListner() {
-            override fun afterTextChanged(p0: Editable?) {
-                p0 ?: return
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
                 searchString = p0.toString()
                 handleSearchText(p0)
             }
         })
         searchActivitySearchEditText.setOnEditorActionListener(this)
-<<<<<<< HEAD
         searchActivityViewPager.adapter = SearchActivityViewpagerAdapter(this, divide, searchTypes)
         searchActivityViewPager.addOnPageChangeListener(viewpagerChangeListner)
         searchActivityTablayout.setupWithViewPager(searchActivityViewPager)
@@ -130,18 +108,6 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
             }
 
         })
-=======
-        val divide = arrayOf(getString(R.string.focus_heritage),
-                getString(R.string.all_news),
-                getString(R.string.folk_page),
-                getString(R.string.user_comment),
-                getString(R.string.user))
-        val searchTypes = arrayOf(TYPE_BOTTOM_NEWS, TYPE_NEWS, TYPE_FOLK_HERITAGE, TYPE_COMMENT, TYPE_USER)
-        searchActivityViewPager.adapter = SearchActivityViewpagerAdapter(this, divide, searchTypes)
-        searchActivityViewPager.addOnPageChangeListener(viewpagerChangeListner)
-        searchActivityTablayout.setupWithViewPager(searchActivityViewPager)
-        divide.withIndex().forEach { searchActivityTablayout.getTabAt(it.index)?.text=it.value }
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
     }
 
     private fun handleSearchText(editable: Editable) {
@@ -171,19 +137,11 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
             TYPE_FOLK_HERITAGE -> {
                 data = HandleFolk.Search_Folk_Info(searchInfo)
                 adapter = FolkRecyclerViewAdapter(this, data, glide)
-<<<<<<< HEAD
             }
             TYPE_COMMENT -> {
                 data = HandleFind.SearchUserCommentInfo(searchInfo)
                 adapter = FindFragmentRecyclerViewAdapter(this, data, ALL_COMMENT, glide)
             }
-=======
-            }
-            TYPE_COMMENT -> {
-                data = HandleFind.SearchUserCommentInfo(searchInfo)
-                adapter = FindFragmentRecyclerViewAdapter(this, data, ALL_COMMENT, glide)
-            }
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
             TYPE_USER -> {
                 data = HandlePerson.GetSearchUserInfo(searchInfo, LoginActivity.userID)
                 adapter = SearchUserRecclerAdapter(this, data, glide)
@@ -233,13 +191,8 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
             val adapter = searchActivityViewPager.adapter ?: return
             if (adapter is SearchActivityViewpagerAdapter) {
                 val view = adapter.views[position]
-<<<<<<< HEAD
                 if (!adapter.isDivideSetData[position] && view is RecyclerView) {
                     adapter.isDivideSetData[position] = true
-=======
-                if (!adapter.isDivideSetData[position]&&view is RecyclerView) {
-                    adapter.isDivideSetData[position]=true
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
                     requestHttp {
                         val recyclerViewAdapter = getSearchDataAndAdapter(searchString, adapter.searchType[position])
                         runOnUiThread {
@@ -252,7 +205,6 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
         }
     }
 
-<<<<<<< HEAD
     private fun changeSearchViewState(showSecondlyView: Boolean) {
         TransitionManager.beginDelayedTransition(activitySearchNewsLinearLayout, AutoTransition())
         searchActivityRecyclerView.visibility = if (showSecondlyView) View.GONE else View.VISIBLE
@@ -320,20 +272,10 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
     override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
         if (p1 == KeyEvent.ACTION_DOWN || p1 == EditorInfo.IME_ACTION_DONE) {
             handleKeyEvent()
-=======
-    //监控在输入框按下搜索键
-    override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
-        if (p1 == KeyEvent.ACTION_DOWN || p1 == EditorInfo.IME_ACTION_DONE) {
-            SoftInputTools.hideKeyboard(this)
-            searchActivityRecyclerView.visibility = View.GONE
-            searchActivityTablayout.visibility = View.VISIBLE
-            searchActivityViewPager.visibility = View.VISIBLE
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
         }
         return true
     }
 
-<<<<<<< HEAD
     override fun onBackPressed() {
         if (searchActivityRecyclerView.visibility == View.GONE) {
             changeSearchViewState(false)
@@ -341,8 +283,6 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
         }
         super.onBackPressed()
     }
-=======
->>>>>>> 94449dde05578e528b7634e454e346a92f104431
 
     companion object {
         const val SEARCH_FLAG = 1
