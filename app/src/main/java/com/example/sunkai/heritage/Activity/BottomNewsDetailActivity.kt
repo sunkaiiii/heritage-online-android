@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
@@ -40,7 +41,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
 
     private fun initAnimationAndLoadData(data: BottomFolkNewsLite) {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
-            val slide=Slide(Gravity.END)
+            val slide=Slide(GravityCompat.getAbsoluteGravity(Gravity.END,resources.configuration.layoutDirection))
             val fade=Fade()
             slide.duration=500
             fade.duration=500
