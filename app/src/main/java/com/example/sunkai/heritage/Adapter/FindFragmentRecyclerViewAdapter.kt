@@ -50,20 +50,20 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val like: ImageView
         val dislike: ImageView
         val comment: ImageView
-        val sameLocation:TextView
+        val sameLocation: TextView
         val addfocusText: TextView
         val cancelFocusText: TextView
         val name_text: TextView
         val userImage: RoundedImageView
         val likeCount: TextView
         val miniReplys: LinearLayout
-        val locatiomImageView:ImageView
+        val locatiomImageView: ImageView
 
         init {
             img = view.findViewById(R.id.fragment_find_litview_img)
             comment = view.findViewById(R.id.imageview_comment)
             like = view.findViewById(R.id.imageView_like)
-            sameLocation=view.findViewById(R.id.user_comment_location_textview)
+            sameLocation = view.findViewById(R.id.user_comment_location_textview)
             dislike = view.findViewById(R.id.imageView_dislike)
             addfocusText = view.findViewById(R.id.add_focus_text)
             name_text = view.findViewById(R.id.name_text)
@@ -71,7 +71,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
             cancelFocusText = view.findViewById(R.id.cancel_focus_text)
             likeCount = view.findViewById(R.id.user_comment_like_number_textview)
             miniReplys = view.findViewById(R.id.user_comment_mini_replys)
-            locatiomImageView=view.findViewById(R.id.user_comment_location_imageview)
+            locatiomImageView = view.findViewById(R.id.user_comment_location_imageview)
         }
     }
 
@@ -106,14 +106,14 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         setAddReplyClick(holder, data)
         setHolderFocusState(holder, data)
         setFocusClick(holder, data)
-        setLocationClick(holder,data)
+        setLocationClick(holder, data)
         showMiniReply(holder, data)
     }
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         holder.name_text.text = data.userName
-        holder.sameLocation.text=if(data.location==BaiduLocation.location)context.getString(R.string.same_location) else ""
+        holder.sameLocation.text = if (!BaiduLocation.location.isEmpty()&&data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {
@@ -221,21 +221,21 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         }
     }
 
-    private fun setLocationClick(holder: ViewHolder,data: UserCommentData){
+    private fun setLocationClick(holder: ViewHolder, data: UserCommentData) {
         val onClickListener by lazy {
             View.OnClickListener {
-                val cardView=CardView(context)
-                val textView=TextView(context)
-                textView.text = data.location
-                textView.setPadding(8*(context.resources.displayMetrics.densityDpi/160))
-                textView.setTextColor(ContextCompat.getColor(context,R.color.black))
-                textView.setBackgroundColor(ContextCompat.getColor(context,R.color.white))
+                val cardView = CardView(context)
+                val textView = TextView(context)
+                textView.text = if (data.location.isEmpty()) context.getString(R.string.no_location_info) else data.location
+                textView.setPadding(8 * (context.resources.displayMetrics.densityDpi / 160))
+                textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+                textView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
                 cardView.addView(textView)
-                val popWindow= PopupWindow(cardView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true)
-                val location=IntArray(2)
+                val popWindow = PopupWindow(cardView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+                val location = IntArray(2)
                 it.getLocationOnScreen(location)
-                popWindow.animationStyle=R.style.PopupAnimation
-                popWindow.showAtLocation(it,Gravity.NO_GRAVITY,location[0],(location[1]-holder.locatiomImageView.height*1.4).toInt())
+                popWindow.animationStyle = R.style.PopupAnimation
+                popWindow.showAtLocation(it, Gravity.NO_GRAVITY, location[0], (location[1] - holder.locatiomImageView.height * 1.4).toInt())
             }
         }
         holder.locatiomImageView.setOnClickListener(onClickListener)

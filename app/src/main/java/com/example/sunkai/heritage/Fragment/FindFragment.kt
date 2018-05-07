@@ -74,6 +74,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
             }
         }
         fragmentFindSearchButton.setOnClickListener(this)
+        selectSpinnerImage.setOnClickListener(this)
     }
 
 
@@ -136,6 +137,9 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 val intent=Intent(activity,SearchNewsActivity::class.java)
                 intent.putExtra(SEARCH_TYPE, TYPE_COMMENT)
                 startActivity(intent)
+            }
+            R.id.selectSpinnerImage->{
+               selectSpinner.performClick()
             }
         }
     }

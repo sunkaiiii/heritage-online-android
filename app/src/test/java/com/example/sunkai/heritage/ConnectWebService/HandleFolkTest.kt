@@ -21,7 +21,7 @@ class HandleFolkTest:BaseTestClass() {
     fun search_Folk_Info() {
         val result=HandleFolk.Search_Folk_Info("山东")
         Assert.assertNotNull(result)
-        assertData(result!!)
+        assertData(result)
     }
 
     @Test

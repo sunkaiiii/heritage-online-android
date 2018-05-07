@@ -39,26 +39,15 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
     }
 
     private fun initView() {
-        seeMoreNewsActivityToolbar.title=""
         setSupportActionBar(seeMoreNewsActivityToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val adapter = SeeMoreNewsViewpagerAdapter(supportFragmentManager)
-        initMainPageSlide()
         initViewPager(adapter)
         initTabLayout()
     }
 
 
-    private fun initMainPageSlide() {
-        requestHttp{
-            val datas = HandleMainFragment.GetMainPageSlideNewsInfo()
-            if (datas != null) {
-                runOnUiThread {
-                    setMainPageSlideAdapter(datas)
-                }
-            }
-        }
-    }
+
 
     private fun initTabLayout() {
         seeMoreNewsTablayout.setupWithViewPager(seeMoreNewsViewpager)
@@ -82,13 +71,7 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
         seeMoreNewsViewpager.adapter = adapter
     }
 
-    private fun setMainPageSlideAdapter(datas: List<MainPageSlideNews>) {
-        val adapter = MainPageSlideAdapter(this, datas,glide)
-        seeMoreNewsMainPageSlideViewpager.adapter = adapter
-        //让他在初始的时候在中间的位置，且保证是第一个页面，可以做到左翻页
-        val middleItem = 0 + 4 * 200
-        seeMoreNewsMainPageSlideViewpager.setCurrentItem(middleItem, false)
-    }
+
 
     private fun setPositionToSelectCategory(category: String) {
         for ((i, findCategory) in CATEGORIES.withIndex()) {

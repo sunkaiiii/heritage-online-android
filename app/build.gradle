@@ -9,8 +9,8 @@ android {
         applicationId "com.datong.heritage_online"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 24
-        versionName "3.2.2"
+        versionCode 25
+        versionName "3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resConfigs "zh", "de", "en", "es", "ja", "ko", "ru", "th", "zh-rTW"
     }

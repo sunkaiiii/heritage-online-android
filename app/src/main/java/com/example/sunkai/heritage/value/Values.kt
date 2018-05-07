@@ -74,7 +74,6 @@ const val TYPE_COMMENT="comment"
 const val TYPE_FOLK_HERITAGE="folk_heritage"
 const val TYPE_USER="user"
 const val SEARCH_SHAREPREF_NAME="search_info"
-const val SEARCH_LIST="search_list"
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

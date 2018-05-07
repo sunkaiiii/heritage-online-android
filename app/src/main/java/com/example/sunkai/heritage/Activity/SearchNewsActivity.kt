@@ -71,8 +71,10 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
                 p0 ?: return
                 if (p0.isNullOrEmpty() && searchActivityRecyclerView.visibility == View.VISIBLE) {
                     searchActivitySearchHistoryRecyckerView.visibility = View.VISIBLE
+                    searchActivityRecyclerView.visibility=View.GONE
                 } else {
                     searchActivitySearchHistoryRecyckerView.visibility = View.GONE
+                    searchActivityRecyclerView.visibility=View.VISIBLE
                 }
                 searchString = p0.toString()
                 handleSearchText(p0)
@@ -85,6 +87,11 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
         divide.withIndex().forEach { searchActivityTablayout.getTabAt(it.index)?.text = it.value }
         activitySearchBackButton.setOnClickListener {
             onBackPressed()
+        }
+        activitySearchClearButton.setOnClickListener {
+            searchString=""
+            searchActivitySearchEditText.setText("")
+            changeSearchViewState(false)
         }
     }
 
@@ -151,6 +158,7 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
                 adapter = SearchUserRecclerAdapter(this, data, glide)
             }
         }
+        HandleAdapterClickUtils.handleAdapterItemClick(this,adapter)
         return adapter
     }
 
@@ -210,6 +218,16 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
         searchActivityRecyclerView.visibility = if (showSecondlyView) View.GONE else View.VISIBLE
         searchActivityViewPager.visibility = if (showSecondlyView) View.VISIBLE else View.GONE
         searchActivityTablayout.visibility = searchActivityViewPager.visibility
+        searchActivitySearchHistoryRecyckerView.visibility=if(showSecondlyView){
+            View.GONE
+        }else{
+            if(searchActivitySearchEditText.text.toString().isEmpty()){
+                searchActivityRecyclerView.visibility=View.GONE
+                View.VISIBLE
+            }else{
+                View.GONE
+            }
+        }
     }
 
     private fun writeSearchSharePrefrence(searchString: String, searchType: String) {
@@ -277,7 +295,7 @@ class SearchNewsActivity : BaseGlideActivity(), TextView.OnEditorActionListener 
     }
 
     override fun onBackPressed() {
-        if (searchActivityRecyclerView.visibility == View.GONE) {
+        if (searchActivityViewPager.visibility==View.VISIBLE) {
             changeSearchViewState(false)
             return
         }

@@ -32,4 +32,5 @@ abstract class BaseGlideFragment:Fragment() {
         runnableList.forEach { ThreadPool.remove(it) }
         runnableList.clear()
     }
+
 }

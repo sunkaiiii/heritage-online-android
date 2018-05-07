@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/no_mean_content"
+        android:alpha="0.90"
         android:scaleType="centerCrop" />
 
     <LinearLayout

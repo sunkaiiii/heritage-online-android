@@ -11,6 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.SEARCH_SHAREPREF_NAME
 
 class SearchActivitySearchHistoryAdapter(val context:Context,datas:List<SearchHistoryData>,glide:RequestManager):BaseRecyclerAdapter<SearchActivitySearchHistoryAdapter.Holder,SearchHistoryData>(datas,glide) {
     class Holder(view:View):RecyclerView.ViewHolder(view){
@@ -32,5 +33,18 @@ class SearchActivitySearchHistoryAdapter(val context:Context,datas:List<SearchHi
         super.onBindViewHolder(holder, position)
         val data=getItem(position)
         holder.searchHistoryTextView.text=data.searchString
+        holder.deleteHistoryImageView.setOnClickListener {
+            deleteThisHistory(data)
+        }
+    }
+
+    private fun deleteThisHistory(data: SearchHistoryData) {
+        val sharePref=context.getSharedPreferences(SEARCH_SHAREPREF_NAME,Context.MODE_PRIVATE)
+        val historySet=sharePref.getStringSet(data.searchType, mutableSetOf())
+        historySet.remove(data.searchString)
+        val datas=datas.toMutableList()
+        datas.remove(data)
+        this.datas=datas
+        notifyDataSetChanged()
     }
 }

@@ -182,4 +182,5 @@ limitations under the License.</string>
     <string name="clear_content">清除内容</string>
     <string name="see_all_folk">查看所有非遗</string>
     <string name="delete_this_history">清除此历史</string>
+    <string name="no_location_info">地点信息消失在银河系里了~</string>
 </resources>
