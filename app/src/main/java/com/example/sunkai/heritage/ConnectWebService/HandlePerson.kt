@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.ConnectWebService
 
 import android.util.Base64
-import android.util.Log
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.value.MINI_REPLY
@@ -51,7 +50,6 @@ object HandlePerson : BaseSetting() {
     fun GetUserAllInfo(userID: Int,thisUserID:Int= LoginActivity.userID): UserInfo? {
         val getUrl = "$URL/GetUserAllInfo?userID=$userID"
         val result = PutGet(getUrl)
-        Log.d("GetUserAllInfo",result)
         if (result == ERROR) {
             return null
         }
@@ -73,7 +71,6 @@ object HandlePerson : BaseSetting() {
     fun GetFollowInformation(userID: Int): List<FollowInformation> {
         val getUrl = "$URL/GetFollowInformation?userID=$userID"
         val result = PutGet(getUrl)
-        Log.d("getFollowInfo",result)
         if (result == ERROR) {
             return arrayListOf()
         }
@@ -88,7 +85,6 @@ object HandlePerson : BaseSetting() {
     fun GetFansInformation(userID: Int):List<FollowInformation>{
         val getUrl="$URL/GetFansInformation?userID=$userID"
         val result = PutGet(getUrl)
-        Log.d("getFansInfo",result)
         if (result == ERROR) {
             return arrayListOf()
         }
@@ -145,7 +141,6 @@ object HandlePerson : BaseSetting() {
     fun GetSearchUserInfo(searchName:String,id:Int):List<SearchUserInfo>{
         val getUrl="$URL/GetSearchUserInfo?searchName=$searchName"
         val result=PutGet(getUrl)
-        Log.d("GetSearchUserInfo",result)
         if(result== ERROR){
             return arrayListOf()
         }
@@ -190,14 +185,12 @@ object HandlePerson : BaseSetting() {
     fun CheckIsCollection(userID: Int,collectionType:String,typeID:Int):Boolean{
         val getUrl="$URL/CheckIsCollection?userID=$userID&typeID=$typeID&type=$collectionType"
         val result=PutGet(getUrl)
-        Log.d("CheckIsCollection",result)
         return SUCCESS==result
     }
 
     private fun GetUserCollection(userID: Int,collectionType: String):String{
         val getUrl="$URL/GetUserCollection?userID=$userID&type=$collectionType"
         val result=PutGet(getUrl)
-        Log.d("GetUserCollection",result)
         return result
     }
 

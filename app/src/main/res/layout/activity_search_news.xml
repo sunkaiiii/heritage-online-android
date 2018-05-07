@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activitySearchNewsLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/superLightGrey"
@@ -27,8 +28,8 @@
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="@string/exit"
                 android:padding="8dp"
-                android:src="@drawable/ic_arrow_back_grey_500_24dp"
-                android:scaleType="center"/>
+                android:scaleType="center"
+                android:src="@drawable/ic_arrow_back_grey_500_24dp" />
 
             <EditText
                 android:id="@+id/searchActivitySearchEditText"
@@ -40,8 +41,9 @@
                 android:layout_toRightOf="@+id/activitySearchBackButton"
                 android:layout_toStartOf="@id/activitySearchClearButton"
                 android:background="@color/transparent_full"
-                android:focusableInTouchMode="true"
+                android:focusable="true"
                 android:hint="@string/please_input_search"
+                android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1" />
 
@@ -64,19 +66,29 @@
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/searchActivitySearchHistoryRecyckerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/searchActivityRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <android.support.design.widget.TabLayout
         android:id="@+id/searchActivityTablayout"
-        android:visibility="gone"/>
-    <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <android.support.v4.view.ViewPager
         android:id="@+id/searchActivityViewPager"
-        android:visibility="gone"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
 </LinearLayout>
