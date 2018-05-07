@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/superLightGrey"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.SearchNewsActivity">
+    tools:context="com.example.sunkai.heritage.Activity.SearchActivity">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

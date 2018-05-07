@@ -49,9 +49,6 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Activity.FocusInformationActivity" />
         <activity
-            android:name=".Activity.SearchActivity"
-            android:label="搜索" />
-        <activity
             android:name=".Activity.AddFindCommentActivity"
             android:label="发帖"
             android:theme="@style/AppThemeNoBackGround" />
@@ -89,7 +86,7 @@
         <activity
             android:name=".Activity.MyMessageActivity"
             android:label="@string/my_message" />
-        <activity android:name=".Activity.SearchNewsActivity"
+        <activity android:name=".Activity.SearchActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground"/>
     </application>
 

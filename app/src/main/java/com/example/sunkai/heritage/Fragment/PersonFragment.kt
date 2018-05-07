@@ -254,7 +254,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     }
 
     private fun searchUser() {
-        val intent = Intent(activity, SearchNewsActivity::class.java)
+        val intent = Intent(activity, SearchActivity::class.java)
         intent.putExtra(SEARCH_TYPE, TYPE_USER)
         startActivityForResult(intent, FROM_SEARCH_ACTIVITY)
     }

@@ -12,7 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import com.example.sunkai.heritage.Activity.SearchNewsActivity
+import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -147,7 +147,7 @@ class MainFragment : BaseGlideFragment() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.search_menu -> {
-                val intent = Intent(activity, SearchNewsActivity::class.java)
+                val intent = Intent(activity, SearchActivity::class.java)
                 intent.putExtra(SEARCH_TYPE, if (mainPageTabLayout.selectedTabPosition == 0) TYPE_BOTTOM_NEWS else TYPE_NEWS)
                 startActivity(intent)
             }
