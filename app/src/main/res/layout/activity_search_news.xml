@@ -45,7 +45,9 @@
                 android:hint="@string/please_input_search"
                 android:imeOptions="actionDone"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                />
 
             <ImageView
                 android:id="@+id/activitySearchClearButton"
@@ -71,9 +73,13 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+<<<<<<< HEAD
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchActivityRecyclerView"
+=======
+    <android.support.design.widget.TabLayout
+>>>>>>> 94449dde05578e528b7634e454e346a92f104431
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
@@ -81,6 +87,7 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/searchActivityTablayout"
+<<<<<<< HEAD
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
@@ -91,4 +98,14 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:visibility="gone" />
+=======
+        android:visibility="gone"
+        />
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/searchActivityViewPager"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+>>>>>>> 94449dde05578e528b7634e454e346a92f104431
 </LinearLayout>
