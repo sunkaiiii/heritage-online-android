@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Build
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.transition.Slide
 import android.util.Pair
@@ -39,7 +40,7 @@ object HandleAdapterClickUtils:AbsHandleAdapter() {
                 if (context is AppCompatActivity&&Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
                     val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
-                    val slide= Slide(Gravity.START)
+                    val slide= Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
                     slide.duration=500
                     context.window.exitTransition=slide
                     val paris= arrayListOf<android.util.Pair<View,String>>(android.util.Pair(titleView,context.getString(R.string.bottom_news_share_title)), Pair(timeView,context.getString(R.string.bottom_news_share_time))).toTypedArray()
@@ -60,7 +61,7 @@ object HandleAdapterClickUtils:AbsHandleAdapter() {
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
                 if(context is AppCompatActivity && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
-                    val slide = Slide(Gravity.START)
+                    val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
                     slide.duration = 500
                     context.window?.exitTransition=slide
                     context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context,titleView,context.getString(R.string.news_detail_share_title)).toBundle())

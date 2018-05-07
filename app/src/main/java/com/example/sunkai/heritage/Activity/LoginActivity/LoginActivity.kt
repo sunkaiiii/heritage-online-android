@@ -9,6 +9,7 @@ import android.support.transition.Slide
 import android.support.transition.TransitionManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.view.GravityCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Gravity
@@ -100,7 +101,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     //在登录模块点击返回，显示第一页
     override fun showFirstPageWidge() {
-        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(Gravity.START))
+        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection)))
         include_login_view.visibility = View.INVISIBLE
         ll_activity_login_navagate.visibility = View.VISIBLE
     }

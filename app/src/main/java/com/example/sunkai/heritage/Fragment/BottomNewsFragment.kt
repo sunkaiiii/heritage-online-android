@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.transition.Slide
@@ -70,7 +71,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
                 if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
                     val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
-                    val slide= Slide(Gravity.START)
+                    val slide= Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
                     slide.duration=500
                     activity.window.exitTransition=slide
                     val paris= arrayListOf<android.util.Pair<View,String>>(android.util.Pair(titleView,getString(R.string.bottom_news_share_title)),Pair(timeView,getString(R.string.bottom_news_share_time))).toTypedArray()

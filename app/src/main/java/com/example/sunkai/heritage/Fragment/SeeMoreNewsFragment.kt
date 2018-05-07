@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
 import android.support.v7.widget.RecyclerView
 import android.transition.Slide
 import android.view.Gravity
@@ -92,7 +93,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
                 intent.putExtra("data", data)
                 val activity=activity
                 if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
-                    val slide = Slide(Gravity.START)
+                    val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
                     slide.duration = 500
                     activity.window?.exitTransition=slide
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,titleView,getString(R.string.news_detail_share_title)).toBundle())
