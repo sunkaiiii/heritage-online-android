@@ -90,7 +90,6 @@ class MainActivity : BaseGlideActivity() {
         viewList.add(FolkFragment())
         viewList.add(FindFragment())
         viewList.add(PersonFragment())
-
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
