@@ -9,14 +9,15 @@ import android.support.v7.widget.RecyclerView
  */
 abstract class OnSrollHelper:RecyclerView.OnScrollListener() {
     private var notOnLoad=true
-    override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (notOnLoad) {
-            val layoutManager = recyclerView?.layoutManager
+            val layoutManager = recyclerView.layoutManager
             //gridLayoutManager继承自LinearLayoutManger，所以此类也适用于网格视图
             if ((layoutManager is LinearLayoutManager) && notOnLoad) {
                 val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                if (lastVisibleItemPosition + 3 > recyclerView.adapter.itemCount) {
+                val itemCount=recyclerView.adapter?.itemCount?:return
+                if (lastVisibleItemPosition + 3 > itemCount) {
                     setPageOnLoad()
                     loadMoreData(recyclerView)
                 }
