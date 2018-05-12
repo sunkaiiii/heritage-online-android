@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.ActionBar
 import android.view.MenuItem
 import androidx.core.net.toUri
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
@@ -18,7 +17,7 @@ class AboutUSActivity:BaseGlideActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about_us)
-        val actionBack:ActionBar?= supportActionBar
+        val actionBack= supportActionBar
         actionBack?.setDisplayHomeAsUpEnabled(true)
         licenceTextView.setOnClickListener {
             LicenceDialog().show(supportFragmentManager,"licence")

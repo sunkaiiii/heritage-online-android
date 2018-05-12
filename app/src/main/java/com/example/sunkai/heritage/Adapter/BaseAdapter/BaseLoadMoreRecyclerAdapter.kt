@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.Adapter.BaseAdapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 
 /**

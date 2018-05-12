@@ -5,16 +5,16 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
-import android.support.transition.Slide
-import android.support.transition.TransitionManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.view.GravityCompat
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
+import androidx.appcompat.app.AppCompatActivity
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginInteractorImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginPresnterImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
@@ -39,9 +39,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         setContentView(R.layout.activity_login)
         window.setBackgroundDrawable(null)
         initview()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFullScreen()
-        }
+        setWindowFullScreen()
         //如果是从欢迎页进入的，则显示跳过登录
         isIntoMainpage = intent.getIntExtra(IS_INTO, FROM_WELCOME)
         jumpSignIn.visibility = if (isIntoMainpage == FROM_WELCOME) View.VISIBLE else View.GONE

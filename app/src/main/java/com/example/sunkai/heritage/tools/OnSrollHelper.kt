@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.tools
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * 用于自动加载更多的OnScrollListener的辅助类

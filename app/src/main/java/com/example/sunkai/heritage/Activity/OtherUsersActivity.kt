@@ -8,7 +8,7 @@ import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.support.v7.widget.GridLayoutManager
 import android.text.TextUtils
 import android.view.View

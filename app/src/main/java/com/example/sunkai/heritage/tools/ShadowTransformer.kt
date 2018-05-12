@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.tools
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.example.sunkai.heritage.Adapter.BaseAdapter.CardAdapter
 
