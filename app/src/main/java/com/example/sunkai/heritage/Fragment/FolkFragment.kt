@@ -179,7 +179,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
         tabayout.setBackgroundColor(color)
         if (Build.VERSION.SDK_INT >= 21) {
-            if (MainActivity.getViewpagerSelectPosition() == R.id.folk_layout) {
+            if (MainActivity.GetViewpagerSelectPosition() == R.id.folk_layout) {
                 activity?.window?.statusBarColor = color
             }
         }
