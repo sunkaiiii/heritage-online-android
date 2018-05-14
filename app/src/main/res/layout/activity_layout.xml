@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="490dp"
     android:orientation="vertical">
-    <com.google.android.material.card.MaterialCardView
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="6dp"
@@ -129,5 +130,5 @@
                 app:layout_constraintTop_toBottomOf="@+id/activity_layout_number" />
 
         </android.support.constraint.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

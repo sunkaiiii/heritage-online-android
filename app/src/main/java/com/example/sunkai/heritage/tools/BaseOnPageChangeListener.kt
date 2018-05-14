@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.tools
 
-import androidx.viewpager.widget.ViewPager
+import android.support.v4.view.ViewPager
 
 /**
  * ViewPager的OnPageChangeListener的基类，重写了两个不常用的方法，简单化无用代码

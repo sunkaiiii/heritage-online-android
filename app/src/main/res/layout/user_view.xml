@@ -10,7 +10,7 @@
         android:layout_height="150dp"
         android:background="@drawable/person_background"
         android:contentDescription="@string/no_mean_content"/>
-    <androidx.appcompat.widget.Toolbar
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent_full"

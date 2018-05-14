@@ -7,7 +7,7 @@ import android.os.Looper
 import android.os.Message
 import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
-import androidx.recyclerview.widget.RecyclerView
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.view.KeyEvent
 import android.view.View

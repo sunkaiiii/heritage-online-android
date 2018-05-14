@@ -70,14 +70,16 @@
                 android:entries="@array/location" />
         </LinearLayout>
     </LinearLayout>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/fragment_folk_swipe_refresh">
-        <androidx.recyclerview.widget.RecyclerView
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/folk_show_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="6sp" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

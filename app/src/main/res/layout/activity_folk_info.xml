@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,13 +8,13 @@
     tools:context="com.example.sunkai.heritage.Activity.FolkInformationActivity">
     <!--fitsSystemWindows可以让图片深入透明之后的状态栏-->
 
-    <com.google.android.material.appbar.AppBarLayout
+    <android.support.design.widget.AppBarLayout
         android:id="@+id/activit_join_app_bar"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/activityJoinCollapsingToolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,14 +50,15 @@
                     android:background="@color/transparent" />
 
             </RelativeLayout>
-            <androidx.appcompat.widget.Toolbar
+
+            <android.support.v7.widget.Toolbar
                 android:id="@+id/activity_join_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -178,4 +179,4 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-</com.google.android.material.circularreveal.coordinatorlayout.CircularRevealCoordinatorLayout>
+</android.support.design.widget.CoordinatorLayout>

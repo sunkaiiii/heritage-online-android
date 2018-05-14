@@ -1,13 +1,13 @@
 package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.ThreadPool
 
-abstract class BaseGlideActivity : AppCompatActivity(){
+abstract class BaseGlideActivity :AppCompatActivity(){
     protected var isDestroy=true
     protected lateinit var glide: RequestManager
     private val runnableList:MutableList<Runnable>

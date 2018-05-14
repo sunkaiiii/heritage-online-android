@@ -1,12 +1,12 @@
 package com.example.sunkai.heritage.Fragment.BaseFragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.support.v4.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.ThreadPool
 
-abstract class BaseGlideFragment: Fragment() {
+abstract class BaseGlideFragment:Fragment() {
     protected lateinit var glide: RequestManager
     private val runnableList:MutableList<Runnable>
     init {
@@ -14,8 +14,7 @@ abstract class BaseGlideFragment: Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val activity=activity?:return
-        glide= Glide.with(activity)
+        glide= Glide.with(this)
 
     }
 

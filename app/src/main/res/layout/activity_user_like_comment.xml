@@ -6,15 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".Activity.UserLikeCommentActivity">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/userLikeActivityRefresh">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/userLikeActivityRecyclerView"
             app:layoutManager="@string/gridLayoutManager"/>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.constraint.ConstraintLayout>

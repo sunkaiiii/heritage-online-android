@@ -7,14 +7,14 @@ import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
+import android.support.v4.view.ViewPager
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -26,7 +26,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -85,7 +84,7 @@ class MainActivity : BaseGlideActivity() {
         viewList.add(FolkFragment())
         viewList.add(FindFragment())
         viewList.add(PersonFragment())
-        val adapter = FragmentAdapter(viewList, supportFragmentManager)
+        val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
     }
@@ -124,7 +123,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private class FragmentAdapter(val viewList: ArrayList<Fragment>, manager:FragmentManager) : FragmentPagerAdapter(manager) {
+    private class adapter(val viewList: ArrayList<Fragment>, manager: android.support.v4.app.FragmentManager) : FragmentPagerAdapter(manager) {
         override fun getItem(position: Int): Fragment {
             return viewList[position]
         }
@@ -153,7 +152,7 @@ class MainActivity : BaseGlideActivity() {
                 }
             }
             val adapter = activityMainViewpager.adapter
-            if (adapter is FragmentAdapter) {
+            if (adapter is adapter) {
                 val fragment = adapter.getItem(position)
                 if (fragment is BaseLazyLoadFragment) {
                     fragment.lazyLoad()
