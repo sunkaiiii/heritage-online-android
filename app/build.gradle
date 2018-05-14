@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.datong.heritage_online"
         minSdkVersion 14
-        targetSdkVersion "P"
+        targetSdkVersion 28
         versionCode 28
         versionName "3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -44,15 +44,17 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //    android support
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:palette-v7:27.1.1'
-    implementation 'com.android.support:cardview-v7:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:exifinterface:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0-alpha1'
+    implementation 'com.android.support:support-v4:28.0.0-alpha1'
+    implementation 'com.android.support:design:28.0.0-alpha1'
+    implementation 'com.android.support:palette-v7:28.0.0-alpha1'
+    implementation 'com.android.support:cardview-v7:28.0.0-alpha1'
+    implementation 'com.android.support:recyclerview-v7:28.0.0-alpha1'
+    implementation 'com.android.support:exifinterface:28.0.0-alpha1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.core:core-ktx:0.3'
+    //有些冲突，先不用了
+    //implementation 'com.google.android.material:material:1.0.0-alpha1'
     //    network
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'

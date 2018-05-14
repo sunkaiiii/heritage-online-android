@@ -24,7 +24,6 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
-import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import kotlinx.android.synthetic.main.activity_main.*
@@ -84,7 +83,7 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun initViews() {
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
+        //BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
