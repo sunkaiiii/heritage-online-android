@@ -24,6 +24,7 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import kotlinx.android.synthetic.main.activity_main.*
@@ -38,14 +39,18 @@ class MainActivity : BaseGlideActivity() {
     //让其他Activity可以访问MainActivity的方法，提供了一个弱引用
     companion object {
         var activityRef: WeakReference<MainActivity>? = null
-        fun getViewpagerSelectPosition(): Int {
+        fun GetViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
             return activity.bottomNavigationButton?.selectedItemId ?: return 0
         }
     }
 
-    private val viewList: ArrayList<Fragment> = ArrayList()
+    private val viewList: ArrayList<Fragment>
+
+    init {
+        viewList = ArrayList()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +84,7 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun initViews() {
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())

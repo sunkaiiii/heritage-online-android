@@ -42,7 +42,7 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<
     }
 
     override fun onBindViewHolder(holder: T, position: Int) {
-        holder.itemView.tag = position
+        holder.itemView?.tag = position
     }
 
     override fun onPreLoad() {
