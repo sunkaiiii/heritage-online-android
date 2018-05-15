@@ -13,7 +13,7 @@ import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_folk_info.*
@@ -66,6 +66,9 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     @SuppressLint("SetTextI18n")
     private fun setDatasToView(data: ClassifyDivideData) {
         glide.load(HOST + data.img).into(target)
+        join_activity_img.setOnClickListener {
+            ViewImageUtils.setViewImageClick(this,join_activity_img,data.img)
+        }
         activityJoinCollapsingToolbar.title = data.title
         joinActivityTime.text = getString(R.string.apply_time) + data.time
         joinActivityLocaction.text = getString(R.string.location) + data.location

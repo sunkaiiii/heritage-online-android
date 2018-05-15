@@ -84,6 +84,7 @@
     <string name="share_folk_number">share_folk_number</string>
     <string name="share_folk_location">share_folk_location</string>
     <string name="share_folk_content">share_folk_content</string>
+    <string name="share_view_image">share_view_image</string>
 
     <string name="find_share_view">find_share_view</string>
     <string name="find_share_background">find_share_background</string>

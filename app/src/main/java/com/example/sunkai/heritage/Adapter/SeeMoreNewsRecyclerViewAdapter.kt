@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ViewImageUtils
 
 /**
  * 点击更多之后，展示全部内容的adapter
@@ -67,6 +68,9 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
                 }
             }
             glide.load(BaseSetting.URL + data.img).into(simpleTarget)
+            holder.imageview.setOnClickListener {
+                ViewImageUtils.setViewImageClick(context,holder.imageview,data.img)
+            }
         }
     }
 

@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppThemeNoActionBarNoBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/AppThemeNoActionBarNoBackground"
+    android:layout_margin="12dp"
     android:background="?attr/selectableItemBackground"
     android:foreground="?attr/selectableItemBackground"
-    android:layout_margin="12dp"
     tools:ignore="Overdraw">
 
     <ImageView
         android:id="@+id/bottom_view_image"
         android:layout_width="112dp"
         android:layout_height="73dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:contentDescription="@string/no_mean_content" />
+        android:layout_gravity="center"
+        android:contentDescription="@string/no_mean_content"
+        android:scaleType="centerCrop" />
+
     <LinearLayout
+        android:id="@+id/news_layout_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/news_layout_linear"
         android:layout_toLeftOf="@id/bottom_view_image"
-        android:layout_toStartOf="@id/bottom_view_image">
+        android:layout_toStartOf="@id/bottom_view_image"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/bottom_view_title"
@@ -48,45 +49,46 @@
             android:maxLines="2"
             android:textSize="16sp" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/bottom_view_bottom_images_linear"
         android:layout_width="match_parent"
         android:layout_height="73dp"
-        android:orientation="horizontal"
         android:layout_below="@id/news_layout_linear"
-        android:id="@+id/bottom_view_bottom_images_linear"
+        android:layout_marginBottom="4dp"
+        android:orientation="horizontal"
         android:visibility="gone"
-        android:layout_marginBottom="12dp">
+        android:layout_marginTop="4dp">
+
         <ImageView
+            android:id="@+id/bottom_view_bottom_image1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:layout_marginLeft="12dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/bottom_view_bottom_image1"
-            android:contentDescription="@string/no_mean_content"/>
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:scaleType="centerCrop"
+            android:contentDescription="@string/no_mean_content"
+            android:scaleType="centerCrop" />
+
+        <ImageView
             android:id="@+id/bottom_view_bottom_image2"
-            android:contentDescription="@string/no_mean_content"/>
-        <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="12dp"
-            android:scaleType="centerCrop"
+            android:layout_weight="1"
+            android:contentDescription="@string/no_mean_content"
+            android:scaleType="centerCrop" />
+
+        <ImageView
             android:id="@+id/bottom_view_bottom_image3"
-            android:contentDescription="@string/no_mean_content"/>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:contentDescription="@string/no_mean_content"
+            android:scaleType="centerCrop" />
     </LinearLayout>
 
 
