@@ -113,7 +113,6 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 handleKeyEvent()
                 setEditTextHint()
             }
-
         })
     }
 

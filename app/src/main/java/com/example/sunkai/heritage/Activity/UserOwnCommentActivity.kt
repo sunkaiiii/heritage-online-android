@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.activity_user_own_tiezi.*
 /**
  * 我的帖子的Activity
  */
-class UserOwnTieziActivity : BaseAutoLoginActivity(),OnPageLoaded {
+class UserOwnCommentActivity : BaseAutoLoginActivity(),OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +54,6 @@ class UserOwnTieziActivity : BaseAutoLoginActivity(),OnPageLoaded {
             runOnUiThread {
                 onPostLoad()
                 val adapter = MyOwnCommentRecyclerViewAdapter(this, datas, glide)
-                setAdpterClick(adapter)
                 setAdpterLongClick(adapter)
                 setAdapterListener(adapter)
                 userOwnList.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)
@@ -63,34 +62,14 @@ class UserOwnTieziActivity : BaseAutoLoginActivity(),OnPageLoaded {
         }
     }
 
-    private fun setAdpterClick(adapter: MyOwnCommentRecyclerViewAdapter) {
-
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val intent = Intent(this@UserOwnTieziActivity, UserCommentDetailActivity::class.java)
-                intent.putExtra(DATA, adapter.getItem(position))
-                if (Build.VERSION.SDK_INT >= 21) {
-                    val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
-                    val title = view.findViewById<TextView>(R.id.mycomment_item_title)
-                    val content = view.findViewById<TextView>(R.id.mycomment_item_content)
-                    val pairs = arrayOf(CreateTransitionPair(imageView, R.string.find_share_view),
-                            CreateTransitionPair(title, R.string.find_share_title),
-                            CreateTransitionPair(content, R.string.find_share_content))
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@UserOwnTieziActivity, *pairs).toBundle())
-                } else {
-                    startActivity(intent)
-                }
-            }
-        })
-    }
 
     private fun setAdpterLongClick(adapter: MyOwnCommentRecyclerViewAdapter) {
         adapter.setOnItemLongClickListener(object : OnItemLongClickListener {
             override fun onItemlongClick(view: View, position: Int) {
-                AlertDialog.Builder(this@UserOwnTieziActivity).setTitle("是否删除帖子")
+                AlertDialog.Builder(this@UserOwnCommentActivity).setTitle("是否删除帖子")
                         .setPositiveButton("删除", { _, _ ->
-                            val ad = AlertDialog.Builder(this@UserOwnTieziActivity)
-                                    .setView(LayoutInflater.from(this@UserOwnTieziActivity).inflate(R.layout.progress_view, userOwnList, false))
+                            val ad = AlertDialog.Builder(this@UserOwnCommentActivity)
+                                    .setView(LayoutInflater.from(this@UserOwnCommentActivity).inflate(R.layout.progress_view, userOwnList, false))
                                     .create()
                             ad.show()
                             requestHttp {

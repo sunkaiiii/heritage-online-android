@@ -29,6 +29,26 @@ import com.makeramen.roundedimageview.RoundedImageView
  */
 
 object HandleAdapterItemClickClickUtils:AbsHandleAdapterItemClick() {
+    override fun handleMyOwnCommentRecyclerViewItemClick(context: Context, adapter: MyOwnCommentRecyclerViewAdapter) {
+        adapter.setOnItemClickListen(object : OnItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                val intent = Intent(context, UserCommentDetailActivity::class.java)
+                intent.putExtra(DATA, adapter.getItem(position))
+                if (Build.VERSION.SDK_INT >= 21 && context is Activity) {
+                    val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
+                    val title = view.findViewById<TextView>(R.id.mycomment_item_title)
+                    val content = view.findViewById<TextView>(R.id.mycomment_item_content)
+                    val pairs = arrayOf(CreateTransitionPair(imageView, R.string.find_share_view),
+                            CreateTransitionPair(title, R.string.find_share_title),
+                            CreateTransitionPair(content, R.string.find_share_content))
+                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *pairs).toBundle())
+                } else {
+                    context.startActivity(intent)
+                }
+            }
+        })
+    }
+
     override fun handleMyLikeCommentRecyclerviewItemClick(context: Context, adapter: MyLikeCommentRecyclerAdapter) {
         adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {

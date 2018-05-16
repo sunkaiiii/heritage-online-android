@@ -16,6 +16,7 @@ abstract class AbsHandleAdapterItemClick : IHandleAdapterItemClick {
             BottomFolkNewsRecyclerviewAdapter::class.java.name->handleBottomFolkNewsRecyclerItemClick(context,adapter as BottomFolkNewsRecyclerviewAdapter)
             FocusListviewAdapter::class.java.name->handleFocusListviewItemClick(context,adapter as FocusListviewAdapter)
             MyLikeCommentRecyclerAdapter::class.java.name->handleMyLikeCommentRecyclerviewItemClick(context,adapter as MyLikeCommentRecyclerAdapter)
+            MyOwnCommentRecyclerViewAdapter::class.java.name->handleMyOwnCommentRecyclerViewItemClick(context,adapter as MyOwnCommentRecyclerViewAdapter)
         }
     }
 
@@ -28,4 +29,5 @@ abstract class AbsHandleAdapterItemClick : IHandleAdapterItemClick {
     protected abstract fun handleBottomFolkNewsRecyclerItemClick(context: Context,adapter: BottomFolkNewsRecyclerviewAdapter)
     protected abstract fun handleFocusListviewItemClick(context: Context,adapter: FocusListviewAdapter)
     protected abstract fun handleMyLikeCommentRecyclerviewItemClick(context: Context,adapter:MyLikeCommentRecyclerAdapter)
+    protected abstract fun handleMyOwnCommentRecyclerViewItemClick(context: Context,adapter: MyOwnCommentRecyclerViewAdapter)
 }

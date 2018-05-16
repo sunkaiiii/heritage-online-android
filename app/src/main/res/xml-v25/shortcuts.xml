@@ -27,7 +27,7 @@
             android:targetPackage="com.datong.heritage_online" />
         <intent
             android:action="android.intent.action.STATIC_SHORTCUT_2"
-            android:targetClass="com.example.sunkai.heritage.Activity.UserOwnTieziActivity"
+            android:targetClass="com.example.sunkai.heritage.Activity.UserOwnCommentActivity"
             android:targetPackage="com.datong.heritage_online" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
