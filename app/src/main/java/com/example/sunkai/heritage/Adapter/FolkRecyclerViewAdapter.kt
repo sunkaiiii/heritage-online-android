@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.value.HOST
  * 民间页recyclerview的adapter
  * Created by sunkai on 2018/1/19.
  */
-class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(datas,glide) {
+class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(context,datas,glide) {
 
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {

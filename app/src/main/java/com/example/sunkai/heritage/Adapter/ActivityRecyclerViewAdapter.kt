@@ -11,7 +11,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.ClassifyDivideData
@@ -22,7 +21,7 @@ import com.example.sunkai.heritage.value.HOST
  * Created by sunkai on 2017/12/22.
  */
 
-class ActivityRecyclerViewAdapter(private val context: Context,datas:List<ClassifyDivideData>,glide:RequestManager) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder, ClassifyDivideData>(datas,glide) {
+class ActivityRecyclerViewAdapter(context: Context,datas:List<ClassifyDivideData>,glide:RequestManager) : BaseRecyclerAdapter<ActivityRecyclerViewAdapter.ViewHolder, ClassifyDivideData>(context,datas,glide) {
 
     private var imageAnimation: Animation//图片出现动画
 
@@ -51,9 +50,7 @@ class ActivityRecyclerViewAdapter(private val context: Context,datas:List<Classi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.activity_layout, parent, false)
-        val viewHolder = ViewHolder(view)
-        view.setOnClickListener(this)
-        return viewHolder
+        return ViewHolder(view)
     }
 
     @SuppressLint("SetTextI18n")

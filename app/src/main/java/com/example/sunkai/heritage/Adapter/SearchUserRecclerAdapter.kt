@@ -20,6 +20,7 @@ import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.UNFOCUS
@@ -29,7 +30,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 搜索用户的RecyclerView的adapter
  * Created by sunkai on 2018/3/6.
  */
-class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(datas,glide) {
+class SearchUserRecclerAdapter(context: Activity, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
@@ -75,7 +76,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
             if (!TextUtils.isEmpty(url) && url != ERROR) {
-                context.runOnUiThread {
+                runOnUiThread {
                     glide.load(url).into(holder.userImage)
                 }
             }
@@ -95,7 +96,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     private fun cancelFocus(holder: Holder, data: SearchUserInfo) {
         ThreadPool.execute {
             val result = HandlePerson.CancelFocus(LoginActivity.userID, data.id)
-            context.runOnUiThread {
+            runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true
                 if (result) {
                     setBtnState(holder, data, false)
@@ -109,7 +110,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     private fun addFocus(holder: Holder, data: SearchUserInfo) {
         ThreadPool.execute {
             val result = HandlePerson.AddFocus(LoginActivity.userID, data.id)
-            context.runOnUiThread {
+            runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true
                 if (result) {
                     setBtnState(holder, data, true)

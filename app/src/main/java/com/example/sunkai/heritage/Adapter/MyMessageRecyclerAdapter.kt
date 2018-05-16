@@ -16,7 +16,7 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.makeramen.roundedimageview.RoundedImageView
 
-class MyMessageRecyclerAdapter(val context:Context,data:List<PushMessageData>,glide: RequestManager):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(data,glide) {
+class MyMessageRecyclerAdapter(context:Context,data:List<PushMessageData>,glide: RequestManager):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(context,data,glide) {
     class Holder(view:View):RecyclerView.ViewHolder(view){
         val userImage:RoundedImageView
         val userName:TextView

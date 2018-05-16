@@ -26,17 +26,13 @@ import com.example.sunkai.heritage.value.NO_USERID
 import com.example.sunkai.heritage.value.UNFOCUS
 import com.makeramen.roundedimageview.RoundedImageView
 
-/*
- * Created by sunkai on 2018-3-1.
- */
-
-class FocusListviewAdapter
 /**
- *
+ * Created by sunkai on 2018-3-1.
  * @param datas 关注、粉丝的数据
  * @param what  1为关注，2为粉丝3为查询页面
  */
-(private val context: Context, private var what: Int, datas: List<FollowInformation>,glide: RequestManager) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas,glide) {
+
+class FocusListviewAdapter(context: Context, private var what: Int, datas: List<FollowInformation>, glide: RequestManager) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(context, datas, glide) {
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 

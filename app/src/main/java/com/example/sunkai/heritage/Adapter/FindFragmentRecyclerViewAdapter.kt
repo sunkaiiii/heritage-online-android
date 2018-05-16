@@ -33,6 +33,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import com.makeramen.roundedimageview.RoundedImageView
 
@@ -42,7 +43,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas, glide) {
+class FindFragmentRecyclerViewAdapter(context: Activity, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
@@ -162,21 +163,23 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
 
     private fun setAddReplyClick(holder: ViewHolder, data: UserCommentData) {
         holder.comment.setOnClickListener {
-            val dialog = AddUserCommentBottomDialog(context, data.id, data)
-            //设置当回复成功的时候，刷新显示的回复内容
-            dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
-                override fun onAddUserReplySuccess(data: CommentReplyInformation) {
-                    if (holder.miniReplys.childCount > 2) {
-                        holder.miniReplys.removeViewAt(0)
+            if(context is Activity) {
+                val dialog = AddUserCommentBottomDialog(context, data.id, data)
+                //设置当回复成功的时候，刷新显示的回复内容
+                dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
+                    override fun onAddUserReplySuccess(data: CommentReplyInformation) {
+                        if (holder.miniReplys.childCount > 2) {
+                            holder.miniReplys.removeViewAt(0)
+                        }
+                        val view = LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information, holder.miniReplys, false)
+                        val miniReplyHolder = MiniReplyHolder(view)
+                        setDataInMiniReply(miniReplyHolder, data)
+                        holder.miniReplys.addView(view)
                     }
-                    val view = LayoutInflater.from(context).inflate(R.layout.user_comment_reply_information, holder.miniReplys, false)
-                    val miniReplyHolder = MiniReplyHolder(view)
-                    setDataInMiniReply(miniReplyHolder, data)
-                    holder.miniReplys.addView(view)
-                }
 
-            })
-            dialog.show()
+                })
+                dialog.show()
+            }
         }
     }
 
@@ -190,7 +193,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                 DISLIKE -> HandleFind.CancelUserLike(LoginActivity.userID, data.id)
                 else -> false
             }
-            context.runOnUiThread {
+            runOnUiThread {
                 when (divide) {
                     LIKE -> holder.dislike.isEnabled = true
                     DISLIKE -> holder.like.isEnabled = true
@@ -252,7 +255,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
                 CANCEL_FOCUS -> HandlePerson.CancelFocus(LoginActivity.userID, data.userID)
                 else -> false
             }
-            context.runOnUiThread {
+            runOnUiThread {
                 if (success) {
                     changeFocusDataState(isFocus, data.userID)
                     val tostText = if (isFocus) "关注成功" else "取消关注成功"
@@ -311,7 +314,7 @@ class FindFragmentRecyclerViewAdapter(private val context: Activity, datas: List
         val requestOptions = RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         ThreadPool.execute {
             val userImageURL = HandlePerson.GetUserImageURL(data.userID)
-            context.runOnUiThread {
+            runOnUiThread {
                 glide.load(userImageURL).apply(requestOptions).into(holder.userImage)
             }
         }

@@ -17,7 +17,7 @@ import java.util.*
  * 帖子详情页RecyclerView的adapter
  * Created by sunkai on 2018/2/24.
  */
-class UserCommentReplyRecyclerAdapter(val context: Context, datas: List<CommentReplyInformation>,glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(datas,glide) {
+class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReplyInformation>,glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(context,datas,glide) {
     class ViewHodler(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         val replyContent: TextView
@@ -47,7 +47,7 @@ class UserCommentReplyRecyclerAdapter(val context: Context, datas: List<CommentR
     }
 
     fun reverseData() {
-        Collections.reverse(datas)
+        datas=datas.asReversed()
         notifyDataSetChanged()
     }
 

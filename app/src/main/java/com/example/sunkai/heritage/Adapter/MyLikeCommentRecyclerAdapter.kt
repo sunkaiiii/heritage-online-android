@@ -34,7 +34,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 个人中心我的赞的recyclerview的adapter
  * Created by sunkai on 2018/3/12.
  */
-class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(datas,glide) {
+class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(context,datas,glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val userName: TextView

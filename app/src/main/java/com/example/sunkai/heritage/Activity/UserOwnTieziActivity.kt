@@ -1,10 +1,9 @@
 package com.example.sunkai.heritage.Activity
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.util.Pair
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
@@ -20,8 +19,8 @@ import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.CreateTransitionPair
 import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
@@ -74,11 +73,10 @@ class UserOwnTieziActivity : BaseAutoLoginActivity(),OnPageLoaded {
                     val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
                     val title = view.findViewById<TextView>(R.id.mycomment_item_title)
                     val content = view.findViewById<TextView>(R.id.mycomment_item_content)
-                    val pairs = TransitionHelper.createSafeTransitionParticipants(this@UserOwnTieziActivity, false,
-                            Pair(imageView, getString(R.string.find_share_view)),
-                            Pair(title, getString(R.string.find_share_title)),
-                            Pair(content, getString(R.string.find_share_content)))
-                    startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this@UserOwnTieziActivity, *pairs).toBundle())
+                    val pairs = arrayOf(CreateTransitionPair(imageView, R.string.find_share_view),
+                            CreateTransitionPair(title, R.string.find_share_title),
+                            CreateTransitionPair(content, R.string.find_share_content))
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this@UserOwnTieziActivity, *pairs).toBundle())
                 } else {
                     startActivity(intent)
                 }

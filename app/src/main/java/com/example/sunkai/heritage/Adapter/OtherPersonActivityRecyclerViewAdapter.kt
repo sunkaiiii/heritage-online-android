@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.app.Activity
+import android.content.Context
 import android.os.AsyncTask
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -11,9 +11,10 @@ import android.widget.ImageView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.RESULT_NULL
 import com.example.sunkai.heritage.value.RESULT_OK
@@ -22,7 +23,7 @@ import java.lang.ref.WeakReference
 /*
  * Created by sunkai on 2018/1/2.
  */
-class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID: Int, datas: List<Int>,glide: RequestManager) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(datas,glide) {
+class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, datas: List<Int>, glide: RequestManager) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(context, datas, glide) {
 
 
     init {
@@ -83,13 +84,12 @@ class OtherPersonActivityRecyclerViewAdapter(val activity: Activity, val userID:
         ThreadPool.execute {
             val url = HandleFind.GetUserCommentImageUrl(imageID)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
-                activity.runOnUiThread {
+                runOnUiThread {
                     glide.load(url).into(imageview)
                 }
             }
         }
     }
-
 
 
 }

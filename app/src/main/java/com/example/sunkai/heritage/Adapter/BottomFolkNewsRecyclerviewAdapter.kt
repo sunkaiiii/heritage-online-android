@@ -20,7 +20,7 @@ import com.google.gson.Gson
  * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<BottomFolkNewsLite>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(datas, glide) {
+class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolkNewsLite>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(context,datas, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -48,7 +48,6 @@ class BottomFolkNewsRecyclerviewAdapter(val context: Context, datas: List<Bottom
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_folk_news_layout, parent, false)
-        view.setOnClickListener(this)
         return Holder(view)
     }
 

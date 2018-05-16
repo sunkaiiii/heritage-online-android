@@ -23,7 +23,7 @@ import com.example.sunkai.heritage.tools.ViewImageUtils
  * 点击更多之后，展示全部内容的adapter
  * Created by sunkai on 2018/2/9.
  */
-class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(datas,glide) {
+class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(context,datas,glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView

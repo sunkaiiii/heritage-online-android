@@ -13,7 +13,8 @@ import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.SEARCH_SHAREPREF_NAME
 
-class SearchActivitySearchHistoryAdapter(val context:Context,datas:List<SearchHistoryData>,glide:RequestManager):BaseRecyclerAdapter<SearchActivitySearchHistoryAdapter.Holder,SearchHistoryData>(datas,glide) {
+//搜索历史的adapter
+class SearchActivitySearchHistoryAdapter(context:Context,datas:List<SearchHistoryData>,glide:RequestManager):BaseRecyclerAdapter<SearchActivitySearchHistoryAdapter.Holder,SearchHistoryData>(context,datas,glide) {
     class Holder(view:View):RecyclerView.ViewHolder(view){
         val searchHistoryTextView:TextView
         val deleteHistoryImageView:ImageView

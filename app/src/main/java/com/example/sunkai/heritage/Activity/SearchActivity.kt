@@ -29,7 +29,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
-import com.example.sunkai.heritage.tools.HandleAdapterClickUtils
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.SoftInputTools
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
@@ -158,14 +158,14 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 adapter = SearchUserRecclerAdapter(this, data, glide)
             }
         }
-        HandleAdapterClickUtils.handleAdapterItemClick(this,adapter)
+        HandleAdapterItemClickClickUtils.handleAdapterItemClick(this,adapter)
         return adapter
     }
 
     private fun startSearchInfo(searchInfo: String) {
         requestHttp {
             val adapter = getSearchDataAndAdapter(searchInfo)
-            HandleAdapterClickUtils.handleAdapterItemClick(this, adapter)
+            HandleAdapterItemClickClickUtils.handleAdapterItemClick(this, adapter)
             if (adapter is SearchUserRecclerAdapter) {
                 setListener(adapter)
             }

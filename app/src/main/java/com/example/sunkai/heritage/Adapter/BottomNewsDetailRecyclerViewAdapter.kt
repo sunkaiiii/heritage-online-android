@@ -19,7 +19,7 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class BottomNewsDetailRecyclerViewAdapter(val context: Context, datas: List<BottomNewsDetail>,glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(datas,glide) {
+class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNewsDetail>,glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(context,datas,glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView

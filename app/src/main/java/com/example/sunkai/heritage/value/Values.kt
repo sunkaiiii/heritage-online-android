@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage.value
 
 import android.content.res.Configuration
+import android.util.Pair
+import android.view.View
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 
@@ -20,7 +22,6 @@ const val OTHER_FANS = 4
 const val UPDATE_USER_COMMENT = 12
 const val UPDATE_SUCCESS = 4
 const val CHOOSE_PHOTO = 2
-const val TAKE_PHOTO = 1
 const val DENIALD = -1
 const val ONLYFOCUS = 0
 const val ALL = 1
@@ -75,6 +76,7 @@ const val TYPE_FOLK_HERITAGE="folk_heritage"
 const val TYPE_USER="user"
 const val SEARCH_SHAREPREF_NAME="search_info"
 const val IMAGE_URL="image_url"
+typealias TransitionPair= Pair<View, String>
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误

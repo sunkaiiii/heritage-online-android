@@ -1,25 +1,16 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import com.example.sunkai.heritage.Activity.FolkInformationActivity
 import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFolk
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.TransitionHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
-import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 import kotlinx.android.synthetic.main.fragment_activity1.*
 
 /**
@@ -61,29 +52,6 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
         getInformation()
     }
 
-    private fun setTransitionStartActivity(intent: Intent, view: View) {
-        val activity = activity
-        if (activity == null) {
-            startActivity(intent)
-        } else {
-            val image = view.findViewById<ImageView>(R.id.activity_layout_img)
-            val title = view.findViewById<TextView>(R.id.activity_layout_title)
-            val time = view.findViewById<TextView>(R.id.activity_layout_time)
-            val number = view.findViewById<TextView>(R.id.activity_layout_number)
-            val location = view.findViewById<TextView>(R.id.activity_layout_location)
-            val content = view.findViewById<TextView>(R.id.activity_layout_content)
-            val pairs = TransitionHelper.createSafeTransitionParticipants(activity, false,
-                    Pair(image, getString(R.string.share_user_image)),
-                    Pair(title, getString(R.string.share_folk_title)),
-                    Pair(time, getString(R.string.share_folk_time)),
-                    Pair(number, getString(R.string.share_folk_number)),
-                    Pair(location, getString(R.string.share_folk_location)),
-                    Pair(content, getString(R.string.share_folk_content))
-            )
-            val transitionOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, *pairs)
-            startActivity(intent, transitionOptions.toBundle())
-        }
-    }
 
     private fun getInformation() {
         val activity = activity ?: return
@@ -92,7 +60,6 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val datas = HandleFolk.GetChannelInformation(channelName)
             runOnUiThread {
                 val adapter = ActivityRecyclerViewAdapter(activity, datas,glide)
-                setAdapterItemClick(adapter)
                 activityRecyclerView?.adapter = adapter
                 refreshRefreshViewColor()
                 onPostLoad()
@@ -107,26 +74,6 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
             null
         }
         color?.let { fragmentActivitySwipeRefresh.setColorSchemeColors(color) }
-    }
-
-    private fun setAdapterItemClick(adapter: ActivityRecyclerViewAdapter) {
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val activitydata = adapter.getItem(position)
-                val intent = Intent(activity, FolkInformationActivity::class.java)
-                val bundle = Bundle()
-                bundle.putSerializable("activity", activitydata)
-                intent.putExtra("image", activitydata.img)
-                intent.putExtra("from", ACTIVITY_FRAGMENT)
-                intent.putExtras(bundle)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setTransitionStartActivity(intent, view)
-                } else {
-                    startActivity(intent)
-                }
-            }
-
-        })
     }
 
 

@@ -1,17 +1,19 @@
 package com.example.sunkai.heritage.Adapter.BaseAdapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 
 /**
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<W>,val glide: RequestManager) :RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
+abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val context: Context, var datas:List<W>, val glide: RequestManager) :RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener:OnPageLoaded?=null
@@ -42,7 +44,9 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(var datas:List<
     }
 
     override fun onBindViewHolder(holder: T, position: Int) {
+        holder.itemView.setOnClickListener(this)
         holder.itemView.tag = position
+        HandleAdapterItemClickClickUtils.handleAdapterItemClick(context,this)
     }
 
     override fun onPreLoad() {

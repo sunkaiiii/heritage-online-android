@@ -105,29 +105,11 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 }
                 activiy.runOnUiThread {
                     val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what,glide)
-                    setAdpterClick(adapter)
                     fragmentFindRecyclerView?.adapter = adapter
                     onPostLoad()
                 }
             }
         }
-    }
-
-    private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter) {
-        adpter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val intent = Intent(activity, UserCommentDetailActivity::class.java)
-                intent.putExtra("data", adpter.getItem(position))
-                //如果手机是Android 5.0以上的话，使用新的Activity切换动画
-                if (Build.VERSION.SDK_INT >= 21) {
-                    val getview: View = view.findViewById(R.id.fragment_find_litview_img) ?: return
-                    intent.putExtra("option", UserCommentDetailActivity.ANIMATION_SHOW)
-                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, getview, getString(R.string.find_share_view)).toBundle())
-                } else {
-                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
-                }
-            }
-        })
     }
 
     override fun onClick(v: View) {
