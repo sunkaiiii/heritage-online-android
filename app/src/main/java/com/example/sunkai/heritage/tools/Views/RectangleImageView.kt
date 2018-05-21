@@ -1,14 +1,14 @@
-package com.example.sunkai.heritage.tools
+package com.example.sunkai.heritage.tools.Views
 
 import android.content.Context
-import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
+import android.widget.ImageView
 
 
 /**正方形ImageView
  * Created by sunkai on 2018/2/22.
  */
-class RectangleImageView:AppCompatImageView{
+class RectangleImageView:ImageView{
     private var radius=1.0
     constructor(context: Context):super(context)
     constructor(context: Context,attrs:AttributeSet):super(context,attrs)

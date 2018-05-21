@@ -37,7 +37,6 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
-import com.makeramen.roundedimageview.RoundedImageView
 
 
 /**
@@ -57,7 +56,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         val addfocusText: TextView
         val cancelFocusText: TextView
         val name_text: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val likeCount: TextView
         val miniReplys: LinearLayout
         val locatiomImageView: ImageView

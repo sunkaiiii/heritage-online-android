@@ -41,7 +41,7 @@ class MainActivity : BaseGlideActivity() {
         fun GetViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
-            return activity.bottomNavigationButton?.selectedItemId ?: return 0
+            return activity.bottomNavigationButton.selectedItemId
         }
     }
 

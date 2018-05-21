@@ -3,18 +3,15 @@ package com.example.sunkai.heritage.Dialog
 import android.app.Activity
 import android.content.Intent
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
-import at.markushi.ui.CircleButton
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
-import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.Data.UserCommentData
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.Dialog.Base.BaseBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -33,7 +30,7 @@ class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int
     private var onAddUserReplyListener:AddUserReplyDialog?=null
     class Holder(view:View){
         val replyContent:EditText
-        val btnSend:CircleButton
+        val btnSend:ImageButton
         init {
             replyContent=view.findViewById(R.id.add_reply_content)
             btnSend=view.findViewById(R.id.add_comment_btn_send)

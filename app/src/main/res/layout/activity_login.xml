@@ -24,31 +24,30 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/login_constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/login_constraintLayout">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/iv_activity_login_background"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
+                android:contentDescription="@string/user_image"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/login_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/user_image"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.constraint.ConstraintLayout
+                android:id="@+id/include_login_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_activity_login_background"
-                android:id="@+id/include_login_view"
-                android:visibility="invisible"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/iv_activity_login_background">
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/text_input_layout1"
@@ -56,8 +55,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    >
+                    android:layout_marginTop="16dp">
 
                     <AutoCompleteTextView
                         android:id="@+id/userNameEditText"
@@ -67,11 +65,11 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="24dp"
                         android:hint="@string/user_name"
+                        android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:singleLine="true"
-                        android:imeOptions="actionNext"
-                        android:nextFocusDown="@string/password"/>
+                        android:nextFocusDown="@string/password"
+                        android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -98,31 +96,35 @@
                         android:singleLine="true" />
                 </android.support.design.widget.TextInputLayout>
 
-                <at.markushi.ui.CircleButton
+                <ImageButton
                     android:id="@+id/signInButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/shape_circle_button_coloraccent"
+                    android:contentDescription="@string/login"
+                    android:elevation="6dp"
                     android:src="@drawable/ic_arrow_forward_white_24dp"
-                    app:cb_color="@color/colorAccent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/text_input_layout2" />
-                <ProgressBar
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:id="@+id/loginProgressBar"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:stateListAnimator="@animator/button_transitionz_animator"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_input_layout2"
+                    tools:targetApi="lollipop" />
+
+                <ProgressBar
+                    android:id="@+id/loginProgressBar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:visibility="gone"
-                    />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_input_layout2" />
 
                 <TextView
                     android:id="@+id/findPasswordTextView"
@@ -160,8 +162,8 @@
                     android:layout_gravity="end"
                     android:layout_marginBottom="12dp"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/jump_login"
-                    android:layout_marginRight="8dp" />
+                    android:layout_marginRight="8dp"
+                    android:text="@string/jump_login" />
 
                 <Button
                     android:id="@+id/registButton"

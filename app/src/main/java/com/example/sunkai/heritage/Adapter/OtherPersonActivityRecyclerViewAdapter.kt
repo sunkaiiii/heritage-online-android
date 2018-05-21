@@ -65,7 +65,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
             val adapter = weakRefrece.get()
             adapter?.let {
                 val getDatas = HandleFind.GetUserCommentIdByUser(userID)
-                adapter.datas = getDatas.toList()
+                adapter.datas = getDatas.toMutableList()
                 return RESULT_OK
             }
             return RESULT_NULL

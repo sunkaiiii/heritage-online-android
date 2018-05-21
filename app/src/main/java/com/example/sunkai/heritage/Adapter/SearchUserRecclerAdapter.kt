@@ -26,7 +26,6 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.UNFOCUS
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * 搜索用户的RecyclerView的adapter
@@ -36,7 +35,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val focusBtn: TextView
         val focusBtnLayout: LinearLayout
         val focusBtnImg: ImageView
@@ -62,7 +61,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setData(holder, data)
-        getUserImage(holder, data)
+        getUserImage(holder, data,position)
         setBtnClick(holder, data)
     }
 
@@ -74,11 +73,13 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
     }
 
-    private fun getUserImage(holder: Holder, data: SearchUserInfo) {
+    private fun getUserImage(holder: Holder, data: SearchUserInfo,position: Int) {
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 runOnUiThread {
+                    data.imageUrl=url
+                    datas[position]=data
                     glide.load(url).into(holder.userImage)
                 }
             }

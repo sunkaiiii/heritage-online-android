@@ -1,11 +1,11 @@
 package com.example.sunkai.heritage.Fragment
 
 
-import android.app.ActivityOptions
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
@@ -16,7 +16,6 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaiduLocation
@@ -31,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
 class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.OnItemSelectedListener, OnPageLoaded {
 
 
-    var firstSpinnerSwitch=true
+    private var firstSpinnerSwitch=true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_find, container, false)

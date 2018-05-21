@@ -25,7 +25,6 @@ import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.NO_USERID
 import com.example.sunkai.heritage.value.UNFOCUS
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * Created by sunkai on 2018-3-1.
@@ -40,7 +39,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         private val userIntrodeuce: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val focusBtn: TextView
         val focusBtnLayout: LinearLayout
         val focusBtnImg: ImageView
@@ -65,7 +64,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setDatas(holder, data)
-        getUserImage(holder, data)
+        getUserImage(holder, data,position)
         setClick(holder, position, data)
     }
 
@@ -86,13 +85,15 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
         }
     }
 
-    private fun getUserImage(holder: Holder, data: FollowInformation) {
+    private fun getUserImage(holder: Holder, data: FollowInformation,position: Int) {
         ThreadPool.execute {
             val id = data.focusFansID
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
                     runOnUiThread(Runnable {
+                        data.imageUrl=url
+                        datas[position]=data
                         glide.load(url).into(holder.userImage)
                     })
                 }

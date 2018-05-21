@@ -72,7 +72,7 @@ class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide:
     }
 
     fun setNewDatas(setDatas: List<FolkDataLite>) {
-        datas = setDatas
+        datas = setDatas.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -90,7 +90,7 @@ class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide:
             val getDatas = HandleFolk.GetFolkInforMation()
             getDatas?.let {
                 val adapter = weakRefrece.get()
-                adapter?.datas = getDatas
+                adapter?.datas = getDatas.toMutableList()
             }
             return null
         }

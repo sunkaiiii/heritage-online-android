@@ -12,10 +12,14 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val context: Context, var datas:List<W>, val glide: RequestManager) :RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
+abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val context: Context,datas:List<W>, val glide: RequestManager) :RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener:OnPageLoaded?=null
+    protected var datas:MutableList<W>
+    init {
+        this.datas=datas.toMutableList()
+    }
 
     override fun onClick(v: View) {
         mOnItemClickListener?.onItemClick(v,v.tag as Int)
@@ -58,6 +62,10 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val c
 
     fun getItem(position: Int):W{
         return datas[position]
+    }
+
+    fun getAdapterDatas():MutableList<W>{
+        return ArrayList(datas)
     }
     protected open fun setItemClick(){}
 }

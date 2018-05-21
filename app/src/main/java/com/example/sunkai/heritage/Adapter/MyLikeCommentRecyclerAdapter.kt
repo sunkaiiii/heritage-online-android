@@ -29,7 +29,6 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.SUCCESS
 import com.example.sunkai.heritage.value.TYPE_FIND
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * 个人中心我的赞的recyclerview的adapter
@@ -39,7 +38,7 @@ class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentDat
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val userName: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val commentImage: ImageView
         val likeButton: ImageView
         val collectButton: ImageView

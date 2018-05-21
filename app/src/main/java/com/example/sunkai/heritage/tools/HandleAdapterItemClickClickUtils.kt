@@ -22,7 +22,6 @@ import com.example.sunkai.heritage.Interface.IHandleAdapterItemClick
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.*
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * 对adapter的item点击事件进行了统一的封装
@@ -73,10 +72,10 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(context, OtherUsersActivity::class.java)
                 val data = adapter.getItem(position)
-                intent.putExtra(USER_ID, data.focusFansID)
+                intent.putExtra(DATA,data)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&context is Activity) {
                     val userName = view.findViewById<TextView>(R.id.user_name)
-                    val userImage = view.findViewById<RoundedImageView>(R.id.user_head_image)
+                    val userImage = view.findViewById<ImageView>(R.id.user_head_image)
                     val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name)
                             , CreateTransitionPair(userImage, R.string.share_user_image))
                     val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
@@ -204,12 +203,12 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
             override fun onItemClick(view: View, position: Int) {
                 val data = adapter.getItem(position)
                 val intent = Intent(context, OtherUsersActivity::class.java)
-                intent.putExtra(USER_ID, data.id)
+                intent.putExtra(DATA, data)
                 if (context is AppCompatActivity&&Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val userImage = view.findViewById<RoundedImageView>(R.id.user_head_image)
+                    val userImage = view.findViewById<ImageView>(R.id.user_head_image)
                     val userName = view.findViewById<TextView>(R.id.user_name)
-                    val pairs = arrayListOf<TransitionPair>(Pair(userName, context.getString(R.string.share_user_name)),
-                            Pair(userImage, context.getString(R.string.share_user_image))).toTypedArray()
+                    val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name),
+                            CreateTransitionPair(userImage, R.string.share_user_image))
                     val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
                     context.startActivity(intent, transitionOptions.toBundle())
                 } else {

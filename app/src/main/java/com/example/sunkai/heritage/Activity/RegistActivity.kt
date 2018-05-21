@@ -172,6 +172,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     private fun submit() {
         setViewsIsDisable()
         if (judgeViewsTextIsEmpty() || judgePasswordIsSame()) {
+            setViewsIsEnable()
             return
         }
         //开始注册
