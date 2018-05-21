@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.support.v4.content.ContextCompat
@@ -44,7 +45,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(context: Activity, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
+class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好

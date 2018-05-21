@@ -15,19 +15,17 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
+import com.example.sunkai.heritage.Adapter.SearchActivitySearchHistoryAdapter
+import com.example.sunkai.heritage.Adapter.SearchActivityViewpagerAdapter
+import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
+import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.CreateCorrespondingAdapterFactory
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.SoftInputTools
 import com.example.sunkai.heritage.value.*
@@ -129,7 +127,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
 
     private fun startSearchInfo(searchInfo: String) {
         requestHttp {
-            val adapter = getSearchDataAndAdapter(searchInfo)
+            val adapter = getCorrespodingAdapter(searchInfo)
             if (adapter is SearchUserRecclerAdapter) {
                 setListener(adapter)
             }
@@ -139,37 +137,6 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         }
     }
 
-    private fun getSearchDataAndAdapter(searchInfo: String, searchType: String = this.searchType): BaseRecyclerAdapter<*, *> {
-        val data: List<*>
-        val adapter: BaseRecyclerAdapter<*, *>
-        when (searchType) {
-            TYPE_BOTTOM_NEWS -> {
-                data = HandleMainFragment.SearchBottomNewsInfo(searchInfo)
-                adapter = BottomFolkNewsRecyclerviewAdapter(this, data, glide)
-            }
-            TYPE_NEWS -> {
-                data = HandleMainFragment.SearchAllNewsInfo(searchInfo)
-                adapter = SeeMoreNewsRecyclerViewAdapter(this, data, glide)
-            }
-            TYPE_FOLK_HERITAGE -> {
-                data = HandleFolk.Search_Folk_Info(searchInfo)
-                adapter = FolkRecyclerViewAdapter(this, data, glide)
-            }
-            TYPE_COMMENT -> {
-                data = HandleFind.SearchUserCommentInfo(searchInfo)
-                adapter = FindFragmentRecyclerViewAdapter(this, data, ALL_COMMENT, glide)
-            }
-            TYPE_USER -> {
-                data = HandlePerson.GetSearchUserInfo(searchInfo, LoginActivity.userID)
-                adapter = SearchUserRecclerAdapter(this, data, glide)
-            }
-            else -> {
-                data = HandlePerson.GetSearchUserInfo(searchInfo, LoginActivity.userID)
-                adapter = SearchUserRecclerAdapter(this, data, glide)
-            }
-        }
-        return adapter
-    }
 
     private fun setListener(adapter: SearchUserRecclerAdapter) {
         adapter.setOnFocusChangeListener(object : OnFocusChangeListener {
@@ -198,7 +165,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 if (!adapter.isDivideSetData[position] && view is RecyclerView) {
                     adapter.isDivideSetData[position] = true
                     requestHttp {
-                        val recyclerViewAdapter = getSearchDataAndAdapter(searchString, adapter.searchType[position])
+                        val recyclerViewAdapter = getCorrespodingAdapter(searchString, adapter.searchType[position])
                         runOnUiThread {
                             view.adapter = recyclerViewAdapter
                         }
@@ -227,6 +194,10 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 View.GONE
             }
         }
+    }
+
+    private fun getCorrespodingAdapter(searchInfo:String,searchType: String=this.searchType):BaseRecyclerAdapter<*,*>?{
+        return CreateCorrespondingAdapterFactory.create(this,glide,searchType,searchInfo)
     }
 
     private fun writeSearchSharePrefrence(searchString: String, searchType: String) {
@@ -277,7 +248,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                     requestHttp {
                         val recyclerView = adapter.views[index]
                         if (recyclerView is RecyclerView) {
-                            val getAdapter = getSearchDataAndAdapter(searchString, searchType)
+                            val getAdapter = getCorrespodingAdapter(searchString, searchType)
                             runOnUiThread {
                                 recyclerView.adapter = getAdapter
                             }

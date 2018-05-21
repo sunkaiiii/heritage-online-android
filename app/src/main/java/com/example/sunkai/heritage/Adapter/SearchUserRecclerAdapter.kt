@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
+import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -31,7 +32,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 搜索用户的RecyclerView的adapter
  * Created by sunkai on 2018/3/6.
  */
-class SearchUserRecclerAdapter(context: Activity, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
+class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
