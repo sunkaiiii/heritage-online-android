@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.value.HOST
 
 /**
@@ -98,5 +99,9 @@ class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide:
             weakRefrece.get()?.onPostLoad()
             weakRefrece.get()?.notifyDataSetChanged()
         }
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleFolkHeritageAdapterItemCLick(context,this)
     }
 }

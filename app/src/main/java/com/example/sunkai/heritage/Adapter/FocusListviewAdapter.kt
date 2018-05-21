@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -165,5 +166,9 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
 
     fun setOnFocusChangeListener(listener: OnFocusChangeListener) {
         this.onFocuschangeListener = listener
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleFocusListviewItemClick(context,this)
     }
 }

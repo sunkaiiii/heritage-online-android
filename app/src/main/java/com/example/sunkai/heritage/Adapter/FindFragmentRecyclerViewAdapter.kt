@@ -31,6 +31,7 @@ import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaiduLocation
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -367,6 +368,10 @@ class FindFragmentRecyclerViewAdapter(context: Activity, datas: List<UserComment
             return false
         }
         return true
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleFindUserCommentAdapterItemClick(context,this)
     }
 
     companion object {

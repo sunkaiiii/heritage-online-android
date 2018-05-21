@@ -15,6 +15,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.ClassifyDivideData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.value.HOST
 
 /*
@@ -64,6 +65,10 @@ class ActivityRecyclerViewAdapter(context: Context,datas:List<ClassifyDivideData
         holder.content.text = data.content
         holder.img.setImageResource(R.drawable.empty_background)
         glide.load(HOST + data.img).into(holder.img)
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleActivityRecyclerViewItemClick(context,this)
     }
 
 }

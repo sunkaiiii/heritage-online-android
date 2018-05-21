@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -170,4 +171,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         fun onDeleteSuccess()
     }
 
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleMyOwnCommentRecyclerViewItemClick(context,this)
+    }
 }

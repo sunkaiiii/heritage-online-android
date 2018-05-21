@@ -26,10 +26,9 @@ import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.SoftInputTools
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
@@ -71,10 +70,10 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 p0 ?: return
                 if (p0.isNullOrEmpty() && searchActivityRecyclerView.visibility == View.VISIBLE) {
                     searchActivitySearchHistoryRecyckerView.visibility = View.VISIBLE
-                    searchActivityRecyclerView.visibility=View.GONE
+                    searchActivityRecyclerView.visibility = View.GONE
                 } else {
                     searchActivitySearchHistoryRecyckerView.visibility = View.GONE
-                    searchActivityRecyclerView.visibility=View.VISIBLE
+                    searchActivityRecyclerView.visibility = View.VISIBLE
                 }
                 searchString = p0.toString()
                 handleSearchText(p0)
@@ -89,7 +88,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             onBackPressed()
         }
         activitySearchClearButton.setOnClickListener {
-            searchString=""
+            searchString = ""
             searchActivitySearchEditText.setText("")
             changeSearchViewState(false)
         }
@@ -128,6 +127,18 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         searchHandler.sendMessageDelayed(msg, DELAY)
     }
 
+    private fun startSearchInfo(searchInfo: String) {
+        requestHttp {
+            val adapter = getSearchDataAndAdapter(searchInfo)
+            if (adapter is SearchUserRecclerAdapter) {
+                setListener(adapter)
+            }
+            runOnUiThread {
+                searchActivityRecyclerView.adapter = adapter
+            }
+        }
+    }
+
     private fun getSearchDataAndAdapter(searchInfo: String, searchType: String = this.searchType): BaseRecyclerAdapter<*, *> {
         val data: List<*>
         val adapter: BaseRecyclerAdapter<*, *>
@@ -157,21 +168,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 adapter = SearchUserRecclerAdapter(this, data, glide)
             }
         }
-        HandleAdapterItemClickClickUtils.handleAdapterItemClick(this,adapter)
         return adapter
-    }
-
-    private fun startSearchInfo(searchInfo: String) {
-        requestHttp {
-            val adapter = getSearchDataAndAdapter(searchInfo)
-            HandleAdapterItemClickClickUtils.handleAdapterItemClick(this, adapter)
-            if (adapter is SearchUserRecclerAdapter) {
-                setListener(adapter)
-            }
-            runOnUiThread {
-                searchActivityRecyclerView.adapter = adapter
-            }
-        }
     }
 
     private fun setListener(adapter: SearchUserRecclerAdapter) {
@@ -216,17 +213,17 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         TransitionManager.beginDelayedTransition(activitySearchNewsLinearLayout, AutoTransition())
         searchActivityRecyclerView.visibility = if (showSecondlyView) View.GONE else View.VISIBLE
         searchActivityViewPager.visibility = if (showSecondlyView) View.VISIBLE else {
-            searchActivityViewPager.adapter=null
+            searchActivityViewPager.adapter = null
             View.GONE
         }
         searchActivityTablayout.visibility = searchActivityViewPager.visibility
-        searchActivitySearchHistoryRecyckerView.visibility=if(showSecondlyView){
+        searchActivitySearchHistoryRecyckerView.visibility = if (showSecondlyView) {
             View.GONE
-        }else{
-            if(searchActivitySearchEditText.text.toString().isEmpty()){
-                searchActivityRecyclerView.visibility=View.GONE
+        } else {
+            if (searchActivitySearchEditText.text.toString().isEmpty()) {
+                searchActivityRecyclerView.visibility = View.GONE
                 View.VISIBLE
-            }else{
+            } else {
                 View.GONE
             }
         }
@@ -256,10 +253,10 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         val searchMap = getSearchSharePrefrenceSearchMap()
         val searchHistoryList = mutableListOf<SearchHistoryData>()
         searchMap.keys.forEach {
-            val searchSet=searchMap[it]
-            if(searchSet!=null){
-                for(seachInfo in searchSet){
-                    searchHistoryList.add(SearchHistoryData(seachInfo,it))
+            val searchSet = searchMap[it]
+            if (searchSet != null) {
+                for (seachInfo in searchSet) {
+                    searchHistoryList.add(SearchHistoryData(seachInfo, it))
                 }
             }
         }
@@ -300,7 +297,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
     }
 
     override fun onBackPressed() {
-        if (searchActivityViewPager.visibility==View.VISIBLE) {
+        if (searchActivityViewPager.visibility == View.VISIBLE) {
             changeSearchViewState(false)
             return
         }

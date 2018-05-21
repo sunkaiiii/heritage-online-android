@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.generateDarkColor
@@ -170,5 +171,9 @@ class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentDat
 
     private fun setCollectDataState(data: UserCommentData) {
         data.isCollect = if (data.isCollect()) ERROR else SUCCESS
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleMyLikeCommentRecyclerviewItemClick(context,this)
     }
 }

@@ -7,7 +7,6 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 
 /**
  * Created by sunkai on 2018/1/2.
@@ -46,7 +45,7 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val c
     override fun onBindViewHolder(holder: T, position: Int) {
         holder.itemView.setOnClickListener(this)
         holder.itemView.tag = position
-        HandleAdapterItemClickClickUtils.handleAdapterItemClick(context,this)
+        setItemClick()
     }
 
     override fun onPreLoad() {
@@ -60,4 +59,5 @@ abstract class BaseRecyclerAdapter<T:RecyclerView.ViewHolder, W>(protected val c
     fun getItem(position: Int):W{
         return datas[position]
     }
+    protected open fun setItemClick(){}
 }

@@ -18,7 +18,7 @@ import android.widget.TextView
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.Fragment.FindFragment
-import com.example.sunkai.heritage.Interface.AbsHandleAdapterItemClick
+import com.example.sunkai.heritage.Interface.IHandleAdapterItemClick
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.*
@@ -28,7 +28,7 @@ import com.makeramen.roundedimageview.RoundedImageView
  * 对adapter的item点击事件进行了统一的封装
  */
 
-object HandleAdapterItemClickClickUtils:AbsHandleAdapterItemClick() {
+object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
     override fun handleMyOwnCommentRecyclerViewItemClick(context: Context, adapter: MyOwnCommentRecyclerViewAdapter) {
         adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
@@ -88,29 +88,6 @@ object HandleAdapterItemClickClickUtils:AbsHandleAdapterItemClick() {
         })
     }
 
-    override fun handleBottomFolkNewsRecyclerItemClick(context: Context, adapter: BottomFolkNewsRecyclerviewAdapter) {
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val data = adapter.getItem(position)
-                val intent = Intent(context, BottomNewsDetailActivity::class.java)
-                intent.putExtra("data", data)
-                intent.putExtra("title", context.getString(R.string.focus_heritage))
-                if (context is Activity && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
-                    val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
-                    val slide= Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, context.resources.configuration.layoutDirection))
-                    slide.duration=300
-                    context.window.exitTransition=slide
-                    val paris= arrayOf(CreateTransitionPair(titleView,R.string.bottom_news_share_title)
-                            ,CreateTransitionPair(timeView,R.string.bottom_news_share_time))
-                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *paris).toBundle())
-                } else {
-                    context.startActivity(intent)
-                }
-            }
-        })
-    }
-
     override fun handleActivityRecyclerViewItemClick(context: Context, adapter: ActivityRecyclerViewAdapter) {
         adapter.setOnItemClickListen(object :OnItemClickListener{
             override fun onItemClick(view: View, position: Int) {
@@ -156,9 +133,10 @@ object HandleAdapterItemClickClickUtils:AbsHandleAdapterItemClick() {
                     val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
                     val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
                     val slide= Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
-                    slide.duration=500
+                    slide.duration=300
                     context.window.exitTransition=slide
-                    val paris= arrayListOf<android.util.Pair<View,String>>(android.util.Pair(titleView,context.getString(R.string.bottom_news_share_title)), Pair(timeView,context.getString(R.string.bottom_news_share_time))).toTypedArray()
+                    val paris= arrayOf(CreateTransitionPair(titleView,R.string.bottom_news_share_title)
+                            ,CreateTransitionPair(timeView,R.string.bottom_news_share_time))
                     context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *paris).toBundle())
                 } else {
                     context.startActivity(intent)

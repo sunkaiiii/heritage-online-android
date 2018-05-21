@@ -13,6 +13,7 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.google.gson.Gson
 
@@ -103,5 +104,9 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         extendData.addAll(datas)
         this.datas = extendData
         notifyDataSetChanged()
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleBottomNewsAdapterItemClick(context,this)
     }
 }

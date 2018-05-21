@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.ViewImageUtils
 
 /**
@@ -81,6 +82,10 @@ class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>
             this.datas = mutableDatas
             notifyDataSetChanged()
         }
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleAllFolkNewsAdapterItemClick(context,this)
     }
 
 }

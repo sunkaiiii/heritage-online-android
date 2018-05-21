@@ -18,6 +18,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -136,6 +137,10 @@ class SearchUserRecclerAdapter(context: Activity, datas: List<SearchUserInfo>,gl
 
     fun setOnFocusChangeListener(listner: OnFocusChangeListener) {
         this.onFocusChangeListener = listner
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handlePersonAdapterItemClick(context,this)
     }
 
 }
