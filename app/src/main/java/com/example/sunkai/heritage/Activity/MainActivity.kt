@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
+import com.example.sunkai.heritage.value.TYPE_FOLK_HERITAGE
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -92,6 +94,7 @@ class MainActivity : BaseGlideActivity() {
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
+        Log.d("javaname",TYPE_FOLK_HERITAGE)
     }
 
     //重写onKeyDown方法，监听返回键

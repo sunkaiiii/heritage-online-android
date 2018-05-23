@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="12sp"
         android:background="@color/superLightGrey"
-        app:layoutManager="@string/linearLayoutManager" />
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 </android.support.v4.widget.SwipeRefreshLayout>
 

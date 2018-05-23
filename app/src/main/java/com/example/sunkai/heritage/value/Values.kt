@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.util.Pair
 import android.view.View
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.*
 import com.example.sunkai.heritage.tools.GlobalContext
 
 /**
@@ -69,13 +70,13 @@ const val IMAGE = "image"
 const val IS_INTO = "isInto"
 const val READ = "r"
 const val SEARCH_TYPE="searchType"
-const val TYPE_NEWS="news"
-const val TYPE_BOTTOM_NEWS="bottom_news"
-const val TYPE_COMMENT="comment"
-const val TYPE_FOLK_HERITAGE="folk_heritage"
-const val TYPE_USER="user"
-const val SEARCH_SHAREPREF_NAME="search_info"
-const val IMAGE_URL="image_url"
+val TYPE_NEWS=CreateSearchAllNewsSearchAdapter::class.java.name!!
+val TYPE_BOTTOM_NEWS=CreateBottomActivitySearchAdapter::class.java.name!!
+val TYPE_COMMENT=CreateSearchCommentAdapter::class.java.name!!
+val TYPE_FOLK_HERITAGE=CreateFolkInfoSearchAdapter::class.java.name!!
+val TYPE_USER=CreateSearchUserAdapter::class.java.name!!
+val SEARCH_SHAREPREF_NAME="search_info"
+val IMAGE_URL="image_url"
 typealias TransitionPair= Pair<View, String>
 
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样

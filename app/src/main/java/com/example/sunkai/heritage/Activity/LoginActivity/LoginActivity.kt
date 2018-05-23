@@ -94,14 +94,18 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     //点击登录按钮，显示登陆模块
     override fun showLoginWidge() {
-        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(Gravity.END))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(Gravity.END,resources.configuration.layoutDirection)))
+        }
         ll_activity_login_navagate.visibility = View.INVISIBLE
         include_login_view.visibility = View.VISIBLE
     }
 
     //在登录模块点击返回，显示第一页
     override fun showFirstPageWidge() {
-        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection)))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection)))
+        }
         include_login_view.visibility = View.INVISIBLE
         ll_activity_login_navagate.visibility = View.VISIBLE
     }

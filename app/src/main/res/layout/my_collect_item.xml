@@ -9,6 +9,6 @@
         android:id="@+id/my_collect_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="@string/linearLayoutManager" />
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
 </android.support.v4.widget.SwipeRefreshLayout>
