@@ -88,7 +88,7 @@
                 android:visibility="gone"
                 tools:targetApi="lollipop">
 
-                <com.makeramen.roundedimageview.RoundedImageView
+                <com.example.sunkai.heritage.tools.Views.RoundedImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </android.support.v7.widget.Toolbar>
