@@ -41,8 +41,8 @@
 	<string name="news_title">Schlagzeilen</string>
 	<string name="more">Mehr</string>
 	<string name="focus_heritage">Konzentriert, die nicht mehr</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">MIT sorge</string>
 	<string name="already_focus">Es wurden bedenken</string>
 	<string name="search">Suche</string>

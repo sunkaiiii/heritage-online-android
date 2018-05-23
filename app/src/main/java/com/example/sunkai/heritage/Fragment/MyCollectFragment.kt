@@ -64,7 +64,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private fun getCollectInformation(typeName: String) {
         requestHttp {
             val adapter=getCorrespondingMyCollectAdapter(typeName)
-            runOnUiThread{
+            activity?.runOnUiThread{
                 onPostLoad()
                 if(typeName== TYPE_FOCUS_HERITAGE){
                     my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))

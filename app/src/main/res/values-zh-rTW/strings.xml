@@ -41,8 +41,8 @@
 	<string name="news_title">新聞標題</string>
 	<string name="more">更多</string>
 	<string name="focus_heritage">聚焦非遺</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">加關注</string>
 	<string name="already_focus">已關注</string>
 	<string name="search">蒐索</string>

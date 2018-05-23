@@ -41,8 +41,8 @@
 	<string name="news_title">Titulares de prensa</string>
 	<string name="more">Más</string>
 	<string name="focus_heritage">Centrado en el patrimonio cultural inmaterial</string>
-	<string name="linearLayoutManager">Android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">Android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">Además de la atención</string>
 	<string name="already_focus">Se ha preocupado</string>
 	<string name="search">La búsqueda de</string>

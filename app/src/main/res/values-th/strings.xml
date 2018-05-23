@@ -41,8 +41,8 @@
 	<string name="news_title">ข่าว</string>
 	<string name="more">เพิ่มเติม</string>
 	<string name="focus_heritage">เน้นรักษา</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">ที่เกี่ยวข้องกับ</string>
 	<string name="already_focus">มีความสนใจ</string>
 	<string name="search">ค้นหา</string>
