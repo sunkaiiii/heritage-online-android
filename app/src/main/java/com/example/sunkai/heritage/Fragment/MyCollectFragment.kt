@@ -10,7 +10,6 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateMyCollectAdapterFactory
-import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.my_collect_item.*
 
@@ -22,12 +21,14 @@ import kotlinx.android.synthetic.main.my_collect_item.*
 class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private var typeName: String? = null
+    private var className=""
     private var index: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val argument = arguments ?: return
         typeName = argument.getString(TYPE_NAME)
+        className=argument.getString(ADAPTER_CLASSNAME)
         index = argument.getInt(INDEX)
     }
 
@@ -56,14 +57,12 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     override fun startLoadInformation() {
         onPreLoad()
         val typeName = typeName ?: return
-        when (typeName) {
-            TYPE_MAIN, TYPE_FOCUS_HERITAGE, TYPE_FOLK, TYPE_FIND -> getCollectInformation(typeName)
-        }
+        getCollectInformation(typeName)
     }
 
     private fun getCollectInformation(typeName: String) {
         requestHttp {
-            val adapter=getCorrespondingMyCollectAdapter(typeName)
+            val adapter=getCorrespondingMyCollectAdapter(typeName,className)
             activity?.runOnUiThread{
                 onPostLoad()
                 if(typeName== TYPE_FOCUS_HERITAGE){
@@ -74,8 +73,8 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
         }
     }
 
-    private fun getCorrespondingMyCollectAdapter(typeName: String):BaseRecyclerAdapter<*,*>?{
-        return CreateMyCollectAdapterFactory.createCorrespondingAdapter(activity?:return null,glide,typeName)
+    private fun getCorrespondingMyCollectAdapter(typeName: String,className: String):BaseRecyclerAdapter<*,*>?{
+        return CreateMyCollectAdapterFactory.createCorrespondingAdapter(activity?:return null,glide,typeName,className)
     }
 
     override fun onPreLoad() {
@@ -90,12 +89,14 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     companion object {
         private const val TYPE_NAME = "channel"
         private const val INDEX = "index"
+        private const val ADAPTER_CLASSNAME="class_name"
 
         //创建一个此instance的实例，传同样需要传入TypeName
-        fun newInstance(channelName: String, index: Int): MyCollectFragment {
+        fun newInstance(index: Int,channelName: String,className:String): MyCollectFragment {
             val fragment = MyCollectFragment()
             val args = Bundle()
             args.putString(TYPE_NAME, channelName)
+            args.putString(ADAPTER_CLASSNAME,className)
             args.putInt(INDEX, index)
             fragment.arguments = args
             return fragment

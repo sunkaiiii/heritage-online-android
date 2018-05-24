@@ -10,14 +10,15 @@ import com.example.sunkai.heritage.value.TYPE_MAIN
 
 object CreateMyCollectAdapterFactory {
 
-    fun createCorrespondingAdapter(context: Context,glide:RequestManager,typeName:String):BaseRecyclerAdapter<*,*>?{
-        val adapterCreater=when(typeName){
-            TYPE_MAIN -> CreateAllNewsCollectAdapter(context,glide,typeName)
-            TYPE_FOCUS_HERITAGE -> CreateBottomNewsCollectAdapter(context,glide,typeName)
-            TYPE_FOLK -> CreateFolkCollectionAdapter(context,glide,typeName)
-            TYPE_FIND -> CreateCommentCollectaAdapter(context,glide,typeName)
-            else->null
+    fun createCorrespondingAdapter(context: Context,glide:RequestManager,typeName:String,className:String):BaseRecyclerAdapter<*,*>?{
+        try {
+            return (Class.forName(className)
+                    .getConstructor(Context::class.java,RequestManager::class.java,String::class.java)
+                    .newInstance(context,glide,typeName) as ICreateMyCollectAdapter)
+                    .createCorrespondingMyCollectAdapter()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-        return adapterCreater?.createCorrespondingMyCollectAdapter()
+        return null
     }
 }
