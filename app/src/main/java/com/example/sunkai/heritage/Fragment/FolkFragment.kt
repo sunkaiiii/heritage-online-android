@@ -186,9 +186,8 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
     }
 
     fun getStatusBarShouldChangeColor(): Int {
-        return if (!this.isDetachhed)
-            iv_fragment_main_scroll_change_image.drawable?.generateColor()
-                    ?: ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary)
+        return if (!this.isDetachhed&&iv_fragment_main_scroll_change_image.drawable!=null)
+            iv_fragment_main_scroll_change_image.drawable.generateColor()
         else ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary)
     }
 

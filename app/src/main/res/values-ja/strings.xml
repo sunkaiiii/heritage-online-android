@@ -41,8 +41,8 @@
 	<string name="news_title">ニュースのタイトル</string>
 	<string name="more">もっと</string>
 	<string name="focus_heritage">フォーカス非遗</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">気をつける</string>
 	<string name="already_focus">注目している</string>
 	<string name="search">検索</string>

@@ -10,10 +10,7 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Fragment.MyCollectFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.value.TYPE_FIND
-import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
-import com.example.sunkai.heritage.value.TYPE_FOLK
-import com.example.sunkai.heritage.value.TYPE_MAIN
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_my_collection.*
 
 /**
@@ -31,8 +28,8 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
 
     private fun setupViewPager() {
         val adapter = MyCollectionViewpagerAdpater(supportFragmentManager)
-        for ((typeName, index) in collectionTypes.withIndex()) {
-            adapter.insertNewFragment(MyCollectFragment.newInstance(index, typeName))
+        for ((index, typeName) in collectionTypes.withIndex()) {
+            adapter.insertNewFragment(MyCollectFragment.newInstance(index, typeName.first, typeName.second))
         }
         myCollectViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
@@ -49,8 +46,8 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
         requestHttp {
             Thread.sleep(300)
             runOnUiThread {
-                val fragment=adapter.getItem(0)
-                if(fragment is BaseLazyLoadFragment){
+                val fragment = adapter.getItem(0)
+                if (fragment is BaseLazyLoadFragment) {
                     fragment.lazyLoad()
                 }
             }
@@ -60,10 +57,10 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
     private fun setupTableLayout() {
         myCollectTabLayout.setupWithViewPager(myCollectViewpager)
         //给tablayout写上文字
-        for (i in 0 until collectionTypes.size) {
-            myCollectTabLayout.getTabAt(i)?.text = collectionTypes[i]
+        for ((i, typeName) in collectionTypes.withIndex()) {
+            myCollectTabLayout.getTabAt(i)?.text = typeName.first
         }
-        myCollectTabLayout.setTabTextColors(ContextCompat.getColor(this,R.color.normalGrey), Color.WHITE)
+        myCollectTabLayout.setTabTextColors(ContextCompat.getColor(this, R.color.normalGrey), Color.WHITE)
         myCollectTabLayout.addOnTabSelectedListener(initTabSelectListner())
     }
 
@@ -81,6 +78,9 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
     }
 
     companion object {
-        val collectionTypes = arrayListOf(TYPE_MAIN, TYPE_FOCUS_HERITAGE, TYPE_FOLK, TYPE_FIND)
+        val collectionTypes = arrayOf(Pair(TYPE_MAIN, COLLECT_TYPE_MAIN)
+                , Pair(TYPE_FOCUS_HERITAGE, COLLECT_TYPE_FOCUS_HERITAGE)
+                , Pair(TYPE_FOLK, COLLECT_TYPE_FOLK)
+                , Pair(TYPE_FIND, COLLECT_TYPE_FIND))
     }
 }

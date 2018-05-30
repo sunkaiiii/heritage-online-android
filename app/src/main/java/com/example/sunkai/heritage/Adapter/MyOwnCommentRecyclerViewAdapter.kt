@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.graphics.Palette
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.LruCache
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +27,7 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -38,34 +38,17 @@ import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
  * 我的帖子的recyclerView的adapter
  * Created by sunkai on 2018/1/15.
  */
-class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder, UserCommentData>(datas,glide) {
+class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyOwnCommentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas,glide) {
 
-    private val lruCache: LruCache<Int, Bitmap>
-    private var recyclerView: RecyclerView? = null
-    private val context: Context
     private var onDeleteListener:onDeleteSuccessListener?=null
-
-    init {
-        this.datas = datas
-        this.context = context
-        val avilableMemory = Runtime.getRuntime().maxMemory().toInt() / 8
-        val cacheSize = avilableMemory / 4
-        lruCache = object : LruCache<Int, Bitmap>(cacheSize) {
-            override fun sizeOf(key: Int, value: Bitmap): Int {
-                return value.byteCount
-            }
-        }
-    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mycomment_item_image: ImageView
         val mycomment_item_title: TextView
         val mycomment_item_content: TextView
-        val view: View
         val more_menu: ImageView
 
         init {
-            this.view = view
             mycomment_item_image = view.findViewById(R.id.mycomment_item_image)
             mycomment_item_title = view.findViewById(R.id.mycomment_item_title)
             mycomment_item_content = view.findViewById(R.id.mycomment_item_content)
@@ -76,10 +59,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (recyclerView == null)
-            recyclerView = parent as RecyclerView
         val view = LayoutInflater.from(context).inflate(R.layout.mycomment_layout_item, parent, false)
-        view.visibility = View.GONE
         val holder = ViewHolder(view)
         view.setOnClickListener(this)
         view.setOnLongClickListener(this)
@@ -89,20 +69,16 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
+        setData(holder,data)
         GetCommentImage(holder, data)
         setMoreImageShowPopWindow(holder, data)
     }
-
+    private fun setData(holder: ViewHolder,data: UserCommentData){
+        holder.mycomment_item_title.text=data.commentTitle
+        holder.mycomment_item_content.text=data.commentContent
+    }
     private fun GetCommentImage(holder: ViewHolder, data: UserCommentData) {
-        val bitmap = lruCache.get(data.id)
-        if (null != bitmap) {
-            holder.mycomment_item_title.text = data.commentTitle
-            holder.mycomment_item_content.text = data.commentContent
-            holder.mycomment_item_image.setImageBitmap(bitmap)
-            findDominateColor(bitmap, holder)
-        } else {
-            GetCommentImageAsync(data, this, holder).execute()
-        }
+        GetCommentImageAsync(data, this, holder).execute()
     }
 
     private fun setMoreImageShowPopWindow(holder: ViewHolder, data: UserCommentData) {
@@ -165,10 +141,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 val adpter = weakRefrece.get()
                 adpter?.let {
-                    holder.mycomment_item_title.text = data.commentTitle
-                    holder.mycomment_item_content.text = data.commentContent
                     adpter.glide.load(url).into(simpleTarget(holder, adpter))
-                    holder.view.visibility = View.VISIBLE
                 }
             }
         }
@@ -198,4 +171,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         fun onDeleteSuccess()
     }
 
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleMyOwnCommentRecyclerViewItemClick(context,this)
+    }
 }

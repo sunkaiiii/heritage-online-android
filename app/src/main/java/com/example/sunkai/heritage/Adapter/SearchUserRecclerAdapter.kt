@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.app.Activity
+import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -18,22 +19,23 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.UNFOCUS
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * 搜索用户的RecyclerView的adapter
  * Created by sunkai on 2018/3/6.
  */
-class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(datas,glide) {
+class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val focusBtn: TextView
         val focusBtnLayout: LinearLayout
         val focusBtnImg: ImageView
@@ -59,7 +61,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setData(holder, data)
-        getUserImage(holder, data)
+        getUserImage(holder, data,position)
         setBtnClick(holder, data)
     }
 
@@ -71,11 +73,13 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
     }
 
-    private fun getUserImage(holder: Holder, data: SearchUserInfo) {
+    private fun getUserImage(holder: Holder, data: SearchUserInfo,position: Int) {
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
             if (!TextUtils.isEmpty(url) && url != ERROR) {
-                context.runOnUiThread {
+                runOnUiThread {
+                    data.imageUrl=url
+                    datas[position]=data
                     glide.load(url).into(holder.userImage)
                 }
             }
@@ -95,7 +99,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     private fun cancelFocus(holder: Holder, data: SearchUserInfo) {
         ThreadPool.execute {
             val result = HandlePerson.CancelFocus(LoginActivity.userID, data.id)
-            context.runOnUiThread {
+            runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true
                 if (result) {
                     setBtnState(holder, data, false)
@@ -109,7 +113,7 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
     private fun addFocus(holder: Holder, data: SearchUserInfo) {
         ThreadPool.execute {
             val result = HandlePerson.AddFocus(LoginActivity.userID, data.id)
-            context.runOnUiThread {
+            runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true
                 if (result) {
                     setBtnState(holder, data, true)
@@ -135,6 +139,10 @@ class SearchUserRecclerAdapter(val context: Activity, datas: List<SearchUserInfo
 
     fun setOnFocusChangeListener(listner: OnFocusChangeListener) {
         this.onFocusChangeListener = listner
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handlePersonAdapterItemClick(context,this)
     }
 
 }

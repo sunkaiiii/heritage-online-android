@@ -11,6 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.NewsDetail
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ViewImageUtils
 
 /**
  * 展示新闻详情
@@ -44,6 +45,9 @@ class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail
             holder.textview.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
             glide.load(BaseSetting.URL + data.info).into(holder.imageView)
+            holder.imageView.setOnClickListener {
+                ViewImageUtils.setViewImageClick(context,holder.imageView,data.info)
+            }
         }
     }
 

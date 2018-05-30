@@ -17,12 +17,14 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.ViewImageUtils
 
 /**
  * 点击更多之后，展示全部内容的adapter
  * Created by sunkai on 2018/2/9.
  */
-class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(datas,glide) {
+class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(context,datas,glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -67,6 +69,9 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
                 }
             }
             glide.load(BaseSetting.URL + data.img).into(simpleTarget)
+            holder.imageview.setOnClickListener {
+                ViewImageUtils.setViewImageClick(context,holder.imageview,data.img)
+            }
         }
     }
 
@@ -77,6 +82,10 @@ class SeeMoreNewsRecyclerViewAdapter(val context: Context, datas: List<FolkNewsL
             this.datas = mutableDatas
             notifyDataSetChanged()
         }
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleAllFolkNewsAdapterItemClick(context,this)
     }
 
 }

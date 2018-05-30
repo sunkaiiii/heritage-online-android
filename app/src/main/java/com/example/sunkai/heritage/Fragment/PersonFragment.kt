@@ -121,7 +121,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
             val intent: Intent
             when (v.id) {
                 R.id.fragment_person_my_tiezi -> {
-                    intent = Intent(activity, UserOwnTieziActivity::class.java)
+                    intent = Intent(activity, UserOwnCommentActivity::class.java)
                     startActivity(intent)
                 }
                 R.id.person_fragment_setting -> {

@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity

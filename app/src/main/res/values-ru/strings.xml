@@ -41,8 +41,8 @@
 	<string name="news_title">Заголовки новостей</string>
 	<string name="more">больше</string>
 	<string name="focus_heritage">сосредоточение нематериального культурного наследия</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">пристальное внимание</string>
 	<string name="already_focus">уже внимание</string>
 	<string name="search">поиск</string>

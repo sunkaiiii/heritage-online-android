@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">E迹</string>
-    <string name="verson_code">v3.3</string>
+    <string name="verson_code">v3.3.1</string>
     <string name="no_mean_content">null</string>
 
     <string name="action_sign_in_short">登陆</string>
@@ -45,8 +45,6 @@
     <string name="news_title">新闻标题</string>
     <string name="more">更多</string>
     <string name="focus_heritage">聚焦非遗</string>
-    <string name="linearLayoutManager">android.support.v7.widget.LinearLayoutManager</string>
-    <string name="gridLayoutManager">android.support.v7.widget.GridLayoutManager</string>
     <string name="add_focus">加关注</string>
     <string name="already_focus">已关注</string>
     <string name="search">搜索</string>
@@ -84,6 +82,7 @@
     <string name="share_folk_number">share_folk_number</string>
     <string name="share_folk_location">share_folk_location</string>
     <string name="share_folk_content">share_folk_content</string>
+    <string name="share_view_image">share_view_image</string>
 
     <string name="find_share_view">find_share_view</string>
     <string name="find_share_background">find_share_background</string>
@@ -143,22 +142,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
-    <string name="okhttp">okhttp</string>
-    <string name="photoview">photoview</string>
-    <string name="roundedimageview_licence">Copyright 2017 Vincent Mi
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</string>
-    <string name="luban_licence">Copyright 2016 Zheng Zibin
+    <string name="gson_liccence">Copyright 2008 Google Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -171,10 +155,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
-    <string name="luban">Luban</string>
+    <string name="okhttp">okhttp</string>
+    <string name="photoview">photoview</string>
     <string name="glide">glide</string>
+    <string name="gson">gson</string>
     <string name="licence">开源许可声明</string>
-    <string name="roundedimageview">RoundedImageView</string>
     <string name="same_location">同城</string>
     <string name="comment_location">帖子位置</string>
     <string name="please_input_search">请在这里输入搜索的内容</string>

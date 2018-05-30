@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.Data
 
+import java.io.Serializable
+
 /**搜索用户的类
  * Created by sunkai on 2018/2/22.
  */
@@ -9,4 +11,5 @@ class FollowInformation(val focusFansID:Int,
                         var focusFocusID:Int,
                         val userName:String,
                         var followEachother:Boolean=false,
-                        var checked:Boolean=false)
+                        var checked:Boolean=false,
+                        var imageUrl:String?=null):Serializable

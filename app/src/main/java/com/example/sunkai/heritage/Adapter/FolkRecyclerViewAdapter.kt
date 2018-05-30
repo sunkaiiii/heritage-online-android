@@ -14,13 +14,14 @@ import com.example.sunkai.heritage.Data.FolkDataLite
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.value.HOST
 
 /**
  * 民间页recyclerview的adapter
  * Created by sunkai on 2018/1/19.
  */
-class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(datas,glide) {
+class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(context,datas,glide) {
 
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -71,7 +72,7 @@ class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,gl
     }
 
     fun setNewDatas(setDatas: List<FolkDataLite>) {
-        datas = setDatas
+        datas = setDatas.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -89,7 +90,7 @@ class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,gl
             val getDatas = HandleFolk.GetFolkInforMation()
             getDatas?.let {
                 val adapter = weakRefrece.get()
-                adapter?.datas = getDatas
+                adapter?.datas = getDatas.toMutableList()
             }
             return null
         }
@@ -98,5 +99,9 @@ class FolkRecyclerViewAdapter(val context: Context, datas: List<FolkDataLite>,gl
             weakRefrece.get()?.onPostLoad()
             weakRefrece.get()?.notifyDataSetChanged()
         }
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleFolkHeritageAdapterItemCLick(context,this)
     }
 }

@@ -1,11 +1,11 @@
 package com.example.sunkai.heritage.Fragment
 
 
-import android.app.ActivityOptions
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import com.example.sunkai.heritage.Activity.AddFindCommentActivity
@@ -16,7 +16,6 @@ import com.example.sunkai.heritage.Activity.UserCommentDetailActivity.Companion.
 import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaiduLocation
@@ -31,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_find.*
 class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.OnItemSelectedListener, OnPageLoaded {
 
 
-    var firstSpinnerSwitch=true
+    private var firstSpinnerSwitch=true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_find, container, false)
@@ -105,29 +104,11 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
                 }
                 activiy.runOnUiThread {
                     val adapter = FindFragmentRecyclerViewAdapter(activiy, datas, what,glide)
-                    setAdpterClick(adapter)
                     fragmentFindRecyclerView?.adapter = adapter
                     onPostLoad()
                 }
             }
         }
-    }
-
-    private fun setAdpterClick(adpter: FindFragmentRecyclerViewAdapter) {
-        adpter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val intent = Intent(activity, UserCommentDetailActivity::class.java)
-                intent.putExtra("data", adpter.getItem(position))
-                //如果手机是Android 5.0以上的话，使用新的Activity切换动画
-                if (Build.VERSION.SDK_INT >= 21) {
-                    val getview: View = view.findViewById(R.id.fragment_find_litview_img) ?: return
-                    intent.putExtra("option", UserCommentDetailActivity.ANIMATION_SHOW)
-                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(activity, getview, getString(R.string.find_share_view)).toBundle())
-                } else {
-                    startActivityForResult(intent, FROM_USER_COMMENT_DETAIL)
-                }
-            }
-        })
     }
 
     override fun onClick(v: View) {

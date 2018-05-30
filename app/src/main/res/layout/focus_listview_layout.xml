@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.makeramen.roundedimageview.RoundedImageView
+    <com.example.sunkai.heritage.tools.Views.RoundedImageView
         android:id="@+id/user_head_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="12dp"
-        android:src="@drawable/ic_assignment_ind_deep_orange_200_48dp"
-        app:riv_oval="true" />
+        android:src="@drawable/ic_assignment_ind_deep_orange_200_48dp" />
 
     <LinearLayout
         android:id="@+id/ll_focus_btn"

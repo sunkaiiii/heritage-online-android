@@ -52,7 +52,7 @@ class PushService : Service() {
         ThreadPool.execute {
             try {
                 initSocket()
-            }catch (e:ConnectException){
+            } catch (e: ConnectException) {
                 e.printStackTrace()
                 return@execute
             }
@@ -61,9 +61,9 @@ class PushService : Service() {
     }
 
     @Throws(ConnectException::class)
-    private fun initSocket(){
-        val socket=Socket(HOST_IP, PUSH_PORT)
-        socketRef=WeakReference(socket)
+    private fun initSocket() {
+        val socket = Socket(HOST_IP, PUSH_PORT)
+        socketRef = WeakReference(socket)
     }
 
     private fun getPushMessage() {
@@ -104,7 +104,7 @@ class PushService : Service() {
                 }
                 val content = String(buf, 0, count)
                 Log.d("content", content)
-                if(content.isEmpty()){
+                if (content.isEmpty()) {
                     emtyTime++
                     continue
                 }
@@ -116,7 +116,8 @@ class PushService : Service() {
         }
     }
 
-    private fun sendUserIdToServer(socket: Socket){
+
+    private fun sendUserIdToServer(socket: Socket) {
         val bufferedReader = socket.getInputStream().bufferedReader()
         val getSocketID = bufferedReader.readLine()
         pushChannelID = getSocketID.toInt()
@@ -125,7 +126,7 @@ class PushService : Service() {
         writer.flush()
     }
 
-    private fun handlePushData(content:String){
+    private fun handlePushData(content: String) {
         val pushMessageData = try {
             Gson().fromJson<PushMessageData>(content, PushMessageData::class.java)
         } catch (e: Exception) {
@@ -165,17 +166,27 @@ class PushService : Service() {
         return mBinder
     }
 
-
-    override fun onUnbind(intent: Intent?): Boolean {
-        socketRef?.get()?.shutdownOutput()
-        socketRef?.get()?.shutdownInput()
-        if (socketRef?.get()?.isConnected == true) {
-            socketRef?.get()?.close()
+    private fun clearAllConnect() {
+        try {
+            if (socketRef?.get()?.isConnected == true) {
+                socketRef?.get()?.close()
+            }
+            bufferInputStream?.close()
+        }catch (e:Exception){
+            e.printStackTrace()
         }
-        bufferInputStream?.close()
         bufferInputStream = null
         mNM.cancel(NOTIFICATION)
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        clearAllConnect()
         return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        clearAllConnect()
+        super.onDestroy()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

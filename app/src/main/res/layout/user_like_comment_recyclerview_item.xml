@@ -31,14 +31,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <com.example.sunkai.heritage.tools.Views.RoundedImageView
                 android:id="@+id/user_image"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_gravity="center"
                 android:layout_margin="8dp"
-                android:src="@drawable/ic_account_circle_brown_50_24dp"
-                app:riv_oval="true" />
+                android:src="@drawable/ic_account_circle_brown_50_24dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

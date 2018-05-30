@@ -28,6 +28,7 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.CATEGORIES
@@ -128,6 +129,10 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             itemHolder.image.visibility = View.INVISIBLE
         } else {
             glide.load(BaseSetting.URL + item.img).into(simpleTarget(itemHolder))
+            itemHolder.image.setOnClickListener {
+                val activity=activity?:return@setOnClickListener
+                ViewImageUtils.setViewImageClick(activity,itemHolder.image,item.img)
+            }
         }
         linearLayout.addView(itemView)
     }

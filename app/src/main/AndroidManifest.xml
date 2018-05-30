@@ -20,7 +20,7 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.MONKEY"/>
+                <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
 
             <meta-data
@@ -53,7 +53,7 @@
             android:label="发帖"
             android:theme="@style/AppThemeNoBackGround" />
         <activity
-            android:name=".Activity.UserOwnTieziActivity"
+            android:name=".Activity.UserOwnCommentActivity"
             android:label="我的帖子" />
         <activity android:name=".Activity.AboutUSActivity" />
         <activity
@@ -86,7 +86,10 @@
         <activity
             android:name=".Activity.MyMessageActivity"
             android:label="@string/my_message" />
-        <activity android:name=".Activity.SearchActivity"
+        <activity
+            android:name=".Activity.SearchActivity"
+            android:theme="@style/AppThemeNoActionBarNoBackground" />
+        <activity android:name=".Activity.ViewImageActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground"/>
     </application>
 

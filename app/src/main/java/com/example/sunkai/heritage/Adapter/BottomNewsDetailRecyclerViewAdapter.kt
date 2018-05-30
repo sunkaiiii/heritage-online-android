@@ -12,13 +12,14 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.Data.BottomNewsDetail
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.value.TYPE_TEXT
 
 /**
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class BottomNewsDetailRecyclerViewAdapter(val context: Context, datas: List<BottomNewsDetail>,glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(datas,glide) {
+class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNewsDetail>,glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(context,datas,glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: TextView
@@ -53,6 +54,9 @@ class BottomNewsDetailRecyclerViewAdapter(val context: Context, datas: List<Bott
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
             glide.load(BaseSetting.URL + data.info).into(holder.imageView)
+            holder.imageView.setOnClickListener {
+                ViewImageUtils.setViewImageClick(context,holder.imageView,data.info)
+            }
         }
     }
 

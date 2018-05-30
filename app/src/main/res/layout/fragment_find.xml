@@ -59,13 +59,13 @@
             android:layout_height="match_parent"
             android:background="@color/superLightGrey"
 
-            app:layoutManager="@string/linearLayoutManager" />
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fragmentFindAddCommentBtn"
-        android:layout_width="36sp"
-        android:layout_height="36sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

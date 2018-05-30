@@ -41,8 +41,8 @@
 	<string name="news_title">News headlines</string>
 	<string name="more">More</string>
 	<string name="focus_heritage">The focus of intangible cultural heritage</string>
-	<string name="linearLayoutManager">android.support.v7.widget.LinearLayoutManager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.GridLayoutManager</string>
+
+
 	<string name="add_focus">Plus interest</string>
 	<string name="already_focus">Already paid attention to</string>
 	<string name="search">search</string>

@@ -15,21 +15,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
+import com.example.sunkai.heritage.Adapter.SearchActivitySearchHistoryAdapter
+import com.example.sunkai.heritage.Adapter.SearchActivityViewpagerAdapter
+import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
-import com.example.sunkai.heritage.tools.HandleAdapterClickUtils
+import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.CreateCorrespondingAdapterFactory
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.SoftInputTools
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
@@ -71,10 +68,10 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 p0 ?: return
                 if (p0.isNullOrEmpty() && searchActivityRecyclerView.visibility == View.VISIBLE) {
                     searchActivitySearchHistoryRecyckerView.visibility = View.VISIBLE
-                    searchActivityRecyclerView.visibility=View.GONE
+                    searchActivityRecyclerView.visibility = View.GONE
                 } else {
                     searchActivitySearchHistoryRecyckerView.visibility = View.GONE
-                    searchActivityRecyclerView.visibility=View.VISIBLE
+                    searchActivityRecyclerView.visibility = View.VISIBLE
                 }
                 searchString = p0.toString()
                 handleSearchText(p0)
@@ -89,7 +86,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             onBackPressed()
         }
         activitySearchClearButton.setOnClickListener {
-            searchString=""
+            searchString = ""
             searchActivitySearchEditText.setText("")
             changeSearchViewState(false)
         }
@@ -113,7 +110,6 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 handleKeyEvent()
                 setEditTextHint()
             }
-
         })
     }
 
@@ -129,43 +125,9 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         searchHandler.sendMessageDelayed(msg, DELAY)
     }
 
-    private fun getSearchDataAndAdapter(searchInfo: String, searchType: String = this.searchType): BaseRecyclerAdapter<*, *> {
-        val data: List<*>
-        val adapter: BaseRecyclerAdapter<*, *>
-        when (searchType) {
-            TYPE_BOTTOM_NEWS -> {
-                data = HandleMainFragment.SearchBottomNewsInfo(searchInfo)
-                adapter = BottomFolkNewsRecyclerviewAdapter(this, data, glide)
-            }
-            TYPE_NEWS -> {
-                data = HandleMainFragment.SearchAllNewsInfo(searchInfo)
-                adapter = SeeMoreNewsRecyclerViewAdapter(this, data, glide)
-            }
-            TYPE_FOLK_HERITAGE -> {
-                data = HandleFolk.Search_Folk_Info(searchInfo)
-                adapter = FolkRecyclerViewAdapter(this, data, glide)
-            }
-            TYPE_COMMENT -> {
-                data = HandleFind.SearchUserCommentInfo(searchInfo)
-                adapter = FindFragmentRecyclerViewAdapter(this, data, ALL_COMMENT, glide)
-            }
-            TYPE_USER -> {
-                data = HandlePerson.GetSearchUserInfo(searchInfo, LoginActivity.userID)
-                adapter = SearchUserRecclerAdapter(this, data, glide)
-            }
-            else -> {
-                data = HandlePerson.GetSearchUserInfo(searchInfo, LoginActivity.userID)
-                adapter = SearchUserRecclerAdapter(this, data, glide)
-            }
-        }
-        HandleAdapterClickUtils.handleAdapterItemClick(this,adapter)
-        return adapter
-    }
-
     private fun startSearchInfo(searchInfo: String) {
         requestHttp {
-            val adapter = getSearchDataAndAdapter(searchInfo)
-            HandleAdapterClickUtils.handleAdapterItemClick(this, adapter)
+            val adapter = getCorrespodingAdapter(searchInfo)
             if (adapter is SearchUserRecclerAdapter) {
                 setListener(adapter)
             }
@@ -174,6 +136,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             }
         }
     }
+
 
     private fun setListener(adapter: SearchUserRecclerAdapter) {
         adapter.setOnFocusChangeListener(object : OnFocusChangeListener {
@@ -202,7 +165,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 if (!adapter.isDivideSetData[position] && view is RecyclerView) {
                     adapter.isDivideSetData[position] = true
                     requestHttp {
-                        val recyclerViewAdapter = getSearchDataAndAdapter(searchString, adapter.searchType[position])
+                        val recyclerViewAdapter = getCorrespodingAdapter(searchString, adapter.searchType[position])
                         runOnUiThread {
                             view.adapter = recyclerViewAdapter
                         }
@@ -217,20 +180,24 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         TransitionManager.beginDelayedTransition(activitySearchNewsLinearLayout, AutoTransition())
         searchActivityRecyclerView.visibility = if (showSecondlyView) View.GONE else View.VISIBLE
         searchActivityViewPager.visibility = if (showSecondlyView) View.VISIBLE else {
-            searchActivityViewPager.adapter=null
+            searchActivityViewPager.adapter = null
             View.GONE
         }
         searchActivityTablayout.visibility = searchActivityViewPager.visibility
-        searchActivitySearchHistoryRecyckerView.visibility=if(showSecondlyView){
+        searchActivitySearchHistoryRecyckerView.visibility = if (showSecondlyView) {
             View.GONE
-        }else{
-            if(searchActivitySearchEditText.text.toString().isEmpty()){
-                searchActivityRecyclerView.visibility=View.GONE
+        } else {
+            if (searchActivitySearchEditText.text.toString().isEmpty()) {
+                searchActivityRecyclerView.visibility = View.GONE
                 View.VISIBLE
-            }else{
+            } else {
                 View.GONE
             }
         }
+    }
+
+    private fun getCorrespodingAdapter(searchInfo:String,searchType: String=this.searchType):BaseRecyclerAdapter<*,*>?{
+        return CreateCorrespondingAdapterFactory.create(this,glide,searchType,searchInfo)
     }
 
     private fun writeSearchSharePrefrence(searchString: String, searchType: String) {
@@ -257,10 +224,10 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         val searchMap = getSearchSharePrefrenceSearchMap()
         val searchHistoryList = mutableListOf<SearchHistoryData>()
         searchMap.keys.forEach {
-            val searchSet=searchMap[it]
-            if(searchSet!=null){
-                for(seachInfo in searchSet){
-                    searchHistoryList.add(SearchHistoryData(seachInfo,it))
+            val searchSet = searchMap[it]
+            if (searchSet != null) {
+                for (seachInfo in searchSet) {
+                    searchHistoryList.add(SearchHistoryData(seachInfo, it))
                 }
             }
         }
@@ -281,7 +248,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                     requestHttp {
                         val recyclerView = adapter.views[index]
                         if (recyclerView is RecyclerView) {
-                            val getAdapter = getSearchDataAndAdapter(searchString, searchType)
+                            val getAdapter = getCorrespodingAdapter(searchString, searchType)
                             runOnUiThread {
                                 recyclerView.adapter = getAdapter
                             }
@@ -301,7 +268,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
     }
 
     override fun onBackPressed() {
-        if (searchActivityViewPager.visibility==View.VISIBLE) {
+        if (searchActivityViewPager.visibility == View.VISIBLE) {
             changeSearchViewState(false)
             return
         }

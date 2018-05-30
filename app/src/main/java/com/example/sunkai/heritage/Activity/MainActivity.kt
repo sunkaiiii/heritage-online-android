@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -24,9 +25,9 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
-import com.example.sunkai.heritage.tools.BottomNavigationViewHelper
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
+import com.example.sunkai.heritage.value.TYPE_FOLK_HERITAGE
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -42,7 +43,7 @@ class MainActivity : BaseGlideActivity() {
         fun GetViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
-            return activity.bottomNavigationButton?.selectedItemId ?: return 0
+            return activity.bottomNavigationButton.selectedItemId
         }
     }
 
@@ -84,7 +85,7 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun initViews() {
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
+        //BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
@@ -93,6 +94,7 @@ class MainActivity : BaseGlideActivity() {
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
+        Log.d("javaname",TYPE_FOLK_HERITAGE)
     }
 
     //重写onKeyDown方法，监听返回键

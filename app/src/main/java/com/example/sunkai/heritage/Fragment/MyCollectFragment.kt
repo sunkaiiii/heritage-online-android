@@ -1,34 +1,17 @@
 package com.example.sunkai.heritage.Fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.sunkai.heritage.Activity.BottomNewsDetailActivity
-import com.example.sunkai.heritage.Activity.FolkInformationActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Activity.NewsDetailActivity
-import com.example.sunkai.heritage.Activity.UserCommentDetailActivity
-import com.example.sunkai.heritage.Adapter.ActivityRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
-import com.example.sunkai.heritage.Adapter.FindFragmentRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.BottomFolkNewsLite
-import com.example.sunkai.heritage.Data.ClassifyDivideData
-import com.example.sunkai.heritage.Data.FolkNewsLite
-import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.runOnUiThread
+import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateMyCollectAdapterFactory
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.my_collect_item.*
-import java.io.Serializable
 
 
 /**
@@ -38,12 +21,14 @@ import java.io.Serializable
 class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private var typeName: String? = null
+    private var className=""
     private var index: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val argument = arguments ?: return
         typeName = argument.getString(TYPE_NAME)
+        className=argument.getString(ADAPTER_CLASSNAME)
         index = argument.getInt(INDEX)
     }
 
@@ -72,114 +57,24 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     override fun startLoadInformation() {
         onPreLoad()
         val typeName = typeName ?: return
-        when (typeName) {
-            TYPE_MAIN, TYPE_FOCUS_HERITAGE, TYPE_FOLK, TYPE_FIND -> {
-                getCollectInformation(typeName)
-            }
-        }
+        getCollectInformation(typeName)
     }
 
     private fun getCollectInformation(typeName: String) {
         requestHttp {
-            val result = when (typeName) {
-                TYPE_MAIN -> HandlePerson.GetMainCollection(LoginActivity.userID, typeName)
-                TYPE_FOCUS_HERITAGE -> HandlePerson.GetFocusOnHeritageCollection(LoginActivity.userID, typeName)
-                TYPE_FOLK -> HandlePerson.GetFolkColelction(LoginActivity.userID, typeName)
-                TYPE_FIND -> HandlePerson.GetFindCollection(LoginActivity.userID, typeName)
-                else -> return@requestHttp
-            }
-            runOnUiThread{
+            val adapter=getCorrespondingMyCollectAdapter(typeName,className)
+            activity?.runOnUiThread{
                 onPostLoad()
-                handleColelction(result, typeName)
+                if(typeName== TYPE_FOCUS_HERITAGE){
+                    my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+                }
+                my_collect_recyclerview.adapter = adapter
             }
         }
     }
 
-    private fun handleColelction(result: List<Serializable>, typeName: String) {
-        when (typeName) {
-            TYPE_MAIN -> handleMainCollection(result.map { it -> it as FolkNewsLite }.toList())
-            TYPE_FOCUS_HERITAGE -> handleFocusOnHeritage(result.map { it -> it as BottomFolkNewsLite }.toList())
-            TYPE_FOLK -> handleFolkCollection(result.map { it -> it as ClassifyDivideData }.toList())
-            TYPE_FIND -> handleFindCollection(result.map { it -> it as UserCommentData }.toList())
-        }
-    }
-
-    private fun handleMainCollection(result: List<FolkNewsLite>) {
-        val activity = activity ?: return
-        val adapter = SeeMoreNewsRecyclerViewAdapter(activity, result,glide)
-        setAdapterClick(adapter)
-        my_collect_recyclerview.adapter = adapter
-    }
-
-    private fun handleFocusOnHeritage(result: List<BottomFolkNewsLite>) {
-        val activity = activity ?: return
-        val adapter = BottomFolkNewsRecyclerviewAdapter(activity, result,glide)
-        setAdapterClick(adapter)
-        my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        my_collect_recyclerview.adapter = adapter
-    }
-
-    private fun handleFolkCollection(result: List<ClassifyDivideData>) {
-        val activity = activity ?: return
-        val adapter = ActivityRecyclerViewAdapter(activity, result,glide)
-        setAdapterClick(adapter)
-        my_collect_recyclerview.adapter = adapter
-
-    }
-
-    private fun handleFindCollection(result: List<UserCommentData>) {
-        val activity = activity ?: return
-        val adapter = FindFragmentRecyclerViewAdapter(activity, result, MY_FOCUS_COMMENT,glide)
-        setAdapterClick(adapter)
-        my_collect_recyclerview.adapter = adapter
-    }
-
-    private fun setAdapterClick(adapter: RecyclerView.Adapter<*>) {
-        when (adapter) {
-            is SeeMoreNewsRecyclerViewAdapter -> {
-                adapter.setOnItemClickListen(object : OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val intent = Intent(activity, NewsDetailActivity::class.java)
-                        intent.putExtra("data", adapter.getItem(position))
-                        startActivity(intent)
-                    }
-
-                })
-            }
-            is BottomFolkNewsRecyclerviewAdapter -> {
-                adapter.setOnItemClickListen(object : OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val intent = Intent(activity, BottomNewsDetailActivity::class.java)
-                        intent.putExtra("data", adapter.getItem(position))
-                        startActivity(intent)
-                    }
-
-                })
-            }
-            is ActivityRecyclerViewAdapter -> {
-                adapter.setOnItemClickListen(object : OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val intent = Intent(activity, FolkInformationActivity::class.java)
-                        intent.putExtra("activity", adapter.getItem(position))
-                        intent.putExtra("from", ACTIVITY_FRAGMENT)
-                        startActivity(intent)
-                    }
-
-                })
-            }
-            is FindFragmentRecyclerViewAdapter -> {
-                adapter.setOnItemClickListen(object : OnItemClickListener {
-                    override fun onItemClick(view: View, position: Int) {
-                        val intent = Intent(activity, UserCommentDetailActivity::class.java)
-                        intent.putExtra("data", adapter.getItem(position))
-                        intent.putExtra("from", UserCommentDetailActivity.FROM_COLLECTION)
-                        startActivity(intent)
-                    }
-
-                })
-            }
-            else -> return
-        }
+    private fun getCorrespondingMyCollectAdapter(typeName: String,className: String):BaseRecyclerAdapter<*,*>?{
+        return CreateMyCollectAdapterFactory.createCorrespondingAdapter(activity?:return null,glide,typeName,className)
     }
 
     override fun onPreLoad() {
@@ -194,12 +89,14 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     companion object {
         private const val TYPE_NAME = "channel"
         private const val INDEX = "index"
+        private const val ADAPTER_CLASSNAME="class_name"
 
         //创建一个此instance的实例，传同样需要传入TypeName
-        fun newInstance(channelName: String, index: Int): MyCollectFragment {
+        fun newInstance(index: Int,channelName: String,className:String): MyCollectFragment {
             val fragment = MyCollectFragment()
             val args = Bundle()
             args.putString(TYPE_NAME, channelName)
+            args.putString(ADAPTER_CLASSNAME,className)
             args.putInt(INDEX, index)
             fragment.arguments = args
             return fragment

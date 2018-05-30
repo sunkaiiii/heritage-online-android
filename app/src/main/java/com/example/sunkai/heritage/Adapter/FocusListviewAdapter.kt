@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.FollowInformation
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -24,26 +25,21 @@ import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.NO_USERID
 import com.example.sunkai.heritage.value.UNFOCUS
-import com.makeramen.roundedimageview.RoundedImageView
 
-/*
- * Created by sunkai on 2018-3-1.
- */
-
-class FocusListviewAdapter
 /**
- *
+ * Created by sunkai on 2018-3-1.
  * @param datas 关注、粉丝的数据
  * @param what  1为关注，2为粉丝3为查询页面
  */
-(private val context: Context, private var what: Int, datas: List<FollowInformation>,glide: RequestManager) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(datas,glide) {
+
+class FocusListviewAdapter(context: Context, private var what: Int, datas: List<FollowInformation>, glide: RequestManager) : BaseRecyclerAdapter<FocusListviewAdapter.Holder, FollowInformation>(context, datas, glide) {
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         private val userIntrodeuce: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val focusBtn: TextView
         val focusBtnLayout: LinearLayout
         val focusBtnImg: ImageView
@@ -68,7 +64,7 @@ class FocusListviewAdapter
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setDatas(holder, data)
-        getUserImage(holder, data)
+        getUserImage(holder, data,position)
         setClick(holder, position, data)
     }
 
@@ -89,13 +85,15 @@ class FocusListviewAdapter
         }
     }
 
-    private fun getUserImage(holder: Holder, data: FollowInformation) {
+    private fun getUserImage(holder: Holder, data: FollowInformation,position: Int) {
         ThreadPool.execute {
             val id = data.focusFansID
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
                     runOnUiThread(Runnable {
+                        data.imageUrl=url
+                        datas[position]=data
                         glide.load(url).into(holder.userImage)
                     })
                 }
@@ -169,5 +167,9 @@ class FocusListviewAdapter
 
     fun setOnFocusChangeListener(listener: OnFocusChangeListener) {
         this.onFocuschangeListener = listener
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleFocusListviewItemClick(context,this)
     }
 }

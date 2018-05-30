@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v7.app.AlertDialog
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -27,6 +26,7 @@ import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
@@ -166,6 +166,9 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             glide.load(HandlePic.handlePic(image)).into(simpleTarget)
         } else {
             glide.load(BaseSetting.URL + data.imageUrl).into(simpleTarget)
+            userCommentImage.setOnClickListener {
+                ViewImageUtils.setViewImageClick(this,userCommentImage,data.imageUrl)
+            }
         }
     }
 

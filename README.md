@@ -2,6 +2,13 @@
 # heritage-online-android
 
 E迹 非遗掌上信息化平台（毕设）
+#### v3.3.1 <br>
+
+1、现在大部分页面的图片均可以点击查看大图 
+
+2、修复了一些闪退问题
+
+3、代码结构调整
 
 #### v3.3 <br>
 
@@ -138,10 +145,6 @@ ___
 
 #### 使用到的第三方库
 
-  
-
-[roundedimageview](https://github.com/vinc3m1/RoundedImageView)：圆形头像
-
 
 
 [okhttp](https://github.com/square/okhttp)：网络请求
@@ -149,10 +152,6 @@ ___
   
 
 [PhotoView](https://github.com/chrisbanes/PhotoView)：图片预览
-
-  
-
-[Luban](https://github.com/Curzibn/Luban)：图片压缩。项目并没有直接使用Luban，但是使用的压缩算法来源于Luban提供的算法，对参数进行了一定的修改
 
 
 
@@ -162,4 +161,4 @@ ___
   
   
 
-![](https://sunkaiiii.github.io/docs/images/1.png)![](https://sunkaiiii.github.io/docs/images/2.png)![](https://sunkaiiii.github.io/docs/images/3.png)![](https://sunkaiiii.github.io/docs/images/4.png)![](https://sunkaiiii.github.io/docs/images/5.png)![](https://sunkaiiii.github.io/docs/images/6.png)![](https://sunkaiiii.github.io/docs/images/7.png)![](https://sunkaiiii.github.io/docs/images/8.png)![](https://sunkaiiii.github.io/docs/images/9.png)![](https://sunkaiiii.github.io/docs/images/10.png)
+![](https://sunkaiiii.github.io/docs/images/1.png)![](https://sunkaiiii.github.io/docs/images/2.png)![](https://sunkaiiii.github.io/docs/images/3.png)![](https://sunkaiiii.github.io/docs/images/11.png)![](https://sunkaiiii.github.io/docs/images/4.png)![](https://sunkaiiii.github.io/docs/images/5.png)![](https://sunkaiiii.github.io/docs/images/6.png)![](https://sunkaiiii.github.io/docs/images/7.png)![](https://sunkaiiii.github.io/docs/images/8.png)![](https://sunkaiiii.github.io/docs/images/9.png)![](https://sunkaiiii.github.io/docs/images/10.png)

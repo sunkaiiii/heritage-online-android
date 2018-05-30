@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.generateDarkColor
@@ -28,17 +29,16 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.SUCCESS
 import com.example.sunkai.heritage.value.TYPE_FIND
-import com.makeramen.roundedimageview.RoundedImageView
 
 /**
  * 个人中心我的赞的recyclerview的adapter
  * Created by sunkai on 2018/3/12.
  */
-class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(datas,glide) {
+class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(context,datas,glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val userName: TextView
-        val userImage: RoundedImageView
+        val userImage: ImageView
         val commentImage: ImageView
         val likeButton: ImageView
         val collectButton: ImageView
@@ -170,5 +170,9 @@ class MyLikeCommentRecyclerAdapter(val context: Activity, datas: List<UserCommen
 
     private fun setCollectDataState(data: UserCommentData) {
         data.isCollect = if (data.isCollect()) ERROR else SUCCESS
+    }
+
+    override fun setItemClick() {
+        HandleAdapterItemClickClickUtils.handleMyLikeCommentRecyclerviewItemClick(context,this)
     }
 }

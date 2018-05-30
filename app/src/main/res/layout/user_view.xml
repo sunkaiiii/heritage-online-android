@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <com.example.sunkai.heritage.tools.Views.RoundedImageView
                 android:id="@+id/sign_in_icon"
                 android:layout_width="77dp"
                 android:layout_height="77dp"
@@ -47,7 +47,6 @@
                 android:src="@drawable/ic_assignment_ind_deep_orange_200_48dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:riv_oval="true"
                 android:layout_marginLeft="16dp"
                 android:transitionName="@string/share_user_image"
                 tools:targetApi="lollipop" />

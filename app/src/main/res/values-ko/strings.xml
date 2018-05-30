@@ -41,8 +41,8 @@
 	<string name="news_title">뉴스 제목</string>
 	<string name="more">더...</string>
 	<string name="focus_heritage">초점을 맞추다.</string>
-	<string name="linearLayoutManager">android.support.v7.widget.linearlayoutmanager</string>
-	<string name="gridLayoutManager">android.support.v7.widget.gridlayoutmanager</string>
+
+
 	<string name="add_focus">관심을 가지다</string>
 	<string name="already_focus">주목하다.</string>
 	<string name="search">수색.</string>

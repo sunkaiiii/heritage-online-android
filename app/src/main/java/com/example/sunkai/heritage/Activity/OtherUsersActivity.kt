@@ -1,26 +1,25 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.support.transition.Fade
 import android.support.transition.TransitionManager
 import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.GridLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.Adapter.OtherUserActivityImageAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
+import com.example.sunkai.heritage.Data.FollowInformation
+import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.onPhotoViewImageClick
@@ -44,9 +43,18 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
         settupWindowAnimations()
-        userID = intent.getIntExtra(USER_ID, NO_USERID)
-        if (userID != NO_USERID) {
-            getUserAllInfo(userID)
+        val data=intent.getSerializableExtra(DATA)
+        if(data is FollowInformation){
+            userID=data.focusFansID
+            if (userID != NO_USERID) {
+                getUserAllInfo(data)
+            }
+        }
+        if(data is SearchUserInfo){
+            userID=data.id
+            if(userID!= NO_USERID){
+                getUserAllInfo(data)
+            }
         }
     }
 
@@ -67,7 +75,22 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         vp_activity_other_users.setOnClickListener(this)
     }
 
-    private fun getUserAllInfo(userID: Int) {
+    private fun setDataIntoView(userName:String,imageUrl:String?){
+        sign_name_textview.text=userName
+        if(!imageUrl.isNullOrEmpty()){
+            glide.load(imageUrl).into(sign_in_icon)
+        }
+    }
+    private fun getUserAllInfo(searchUserData:SearchUserInfo){
+        setDataIntoView(searchUserData.userName,searchUserData.imageUrl)
+        requestAllUserInfo(searchUserData.id)
+    }
+    private fun getUserAllInfo(userData:FollowInformation) {
+        setDataIntoView(userData.userName,userData.imageUrl)
+        requestAllUserInfo(userData.focusFansID)
+    }
+
+    private fun requestAllUserInfo(userID: Int){
         requestHttp {
             val data = HandlePerson.GetUserAllInfo(userID)
             data?.let {
@@ -78,7 +101,6 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
                     checkPermissions(data)
                 })
             }
-
         }
     }
 
@@ -139,7 +161,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
             url?.let {
                 if(isDestroy)return@execute
                 runOnUiThread {
-                    Glide.with(this).load(url).into(photoView)
+                    glide.load(url).into(photoView)
                 }
             }
         }
@@ -253,7 +275,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
     private fun openImageView(position: Int, adapter: OtherPersonActivityRecyclerViewAdapter) {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
-        val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.datas)
+        val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.getAdapterDatas())
         viewPagerAdapter.setOnPhotoViewImageClickListener(object : onPhotoViewImageClick {
             override fun onImageClick(position: Int, photoView: PhotoView) {
                 if (photoView.scale == 1.0f) {
