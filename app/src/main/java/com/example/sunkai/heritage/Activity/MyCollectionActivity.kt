@@ -2,8 +2,8 @@ package com.example.sunkai.heritage.Activity
 
 import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.content.ContextCompat
+import com.google.android.material.tabs.TabLayout
+import androidx.core.content.ContextCompat
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
 import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -64,13 +64,13 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
         myCollectTabLayout.addOnTabSelectedListener(initTabSelectListner())
     }
 
-    private fun initTabSelectListner(): TabLayout.OnTabSelectedListener {
-        return object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+    private fun initTabSelectListner(): com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+        return object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
 
-            override fun onTabSelected(tab: TabLayout.Tab?) {
+            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
                 val positon = tab?.position ?: return
                 myCollectViewpager.setCurrentItem(positon, true)
             }

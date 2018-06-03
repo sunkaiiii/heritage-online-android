@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.ActionBar
+import androidx.appcompat.app.ActionBar
 import android.view.MenuItem
 import androidx.core.net.toUri
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity

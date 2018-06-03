@@ -1,8 +1,8 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.PagerAdapter
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -16,7 +16,7 @@ import java.util.*
  * 其他用户照片墙的adapter
  * Created by sunkai on 2018/3/7.
  */
-class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>):PagerAdapter() {
+class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): androidx.viewpager.widget.PagerAdapter() {
     val photoViewMap: WeakHashMap<Int, PhotoView>
     private var photoViewImageClickListener:onPhotoViewImageClick?=null
     init {

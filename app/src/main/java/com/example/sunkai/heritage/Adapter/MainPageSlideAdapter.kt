@@ -5,7 +5,7 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.R
  * 显示更多新闻顶部滑动条的adapter
  * Created by sunkai on 2018/2/18.
  */
-class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager):PagerAdapter() {
+class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager): androidx.viewpager.widget.PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view==`object`
     }

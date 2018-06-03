@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.util.Log
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -39,7 +39,7 @@ class UserLikeCommentActivity : BaseGlideActivity(), OnPageLoaded {
                 onPostLoad()
                 val adapter = MyLikeCommentRecyclerAdapter(this, data,glide)
                 Log.d("destiny", GRID_LAYOUT_DESTINY.toString())
-                userLikeActivityRecyclerView.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)
+                userLikeActivityRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, GRID_LAYOUT_DESTINY)
                 userLikeActivityRecyclerView.adapter = adapter
             }
         }

@@ -1,17 +1,17 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import com.example.sunkai.heritage.value.CATEGORIES
 
 /**
  * 更多新闻的viewpager的adapter
  * Created by sunkai on 2018/2/17.
  */
-class SeeMoreNewsViewpagerAdapter(manager:FragmentManager):FragmentPagerAdapter(manager) {
-    private val fragmentList=ArrayList<Fragment>()
-    override fun getItem(position: Int): Fragment {
+class SeeMoreNewsViewpagerAdapter(manager: androidx.fragment.app.FragmentManager): androidx.fragment.app.FragmentPagerAdapter(manager) {
+    private val fragmentList=ArrayList<androidx.fragment.app.Fragment>()
+    override fun getItem(position: Int): androidx.fragment.app.Fragment {
         return fragmentList[position]
     }
 
@@ -23,7 +23,7 @@ class SeeMoreNewsViewpagerAdapter(manager:FragmentManager):FragmentPagerAdapter(
         return CATEGORIES[position]
     }
 
-    fun insertNewFragment(fragment: Fragment){
+    fun insertNewFragment(fragment: androidx.fragment.app.Fragment){
         fragmentList.add(fragment)
     }
 }

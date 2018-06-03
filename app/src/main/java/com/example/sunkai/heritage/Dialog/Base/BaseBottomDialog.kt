@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.Dialog.Base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatDialog
+import androidx.appcompat.app.AppCompatDialog
 import android.view.*
 import com.example.sunkai.heritage.R
 

@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
 import android.os.AsyncTask
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +30,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
         getUserIdInfo(userID)
     }
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val imageView: ImageView
 
         init {

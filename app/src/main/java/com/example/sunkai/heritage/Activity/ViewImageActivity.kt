@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.Activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.transition.Fade
 import android.view.View
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity

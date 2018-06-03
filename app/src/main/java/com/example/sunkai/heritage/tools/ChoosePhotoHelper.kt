@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.support.media.ExifInterface
+import androidx.exifinterface.media.ExifInterface
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.READ
 import java.io.ByteArrayInputStream
@@ -27,12 +27,12 @@ private fun compressImage(uri: Uri): Bitmap {
     val fileDescriptor = parcelFileDescrptor.fileDescriptor
     val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor) //用这个方法可以得到Bitmap
     //获取图片exif信息
-    val exifInterface = ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri)) //用这个方法可以得到流
+    val exifInterface = androidx.exifinterface.media.ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri)) //用这个方法可以得到流
     parcelFileDescrptor.close()
     return corpImage(bitmap, exifInterface)
 }
 
-private fun corpImage(bitmap: Bitmap, exifInterface: ExifInterface): Bitmap {
+private fun corpImage(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
     return if (isBitmapNeedCompress(bitmap)) {
         compressBitmap(bitmap, exifInterface)
     } else {
@@ -44,7 +44,7 @@ private fun isBitmapNeedCompress(bitmap: Bitmap): Boolean {
     return bitmap.toByteArray().size > (compressMinLimit shl 10)
 }
 
-private fun compressBitmap(bitmap: Bitmap, exifInterface: ExifInterface): Bitmap {
+private fun compressBitmap(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
     val factoryOptions = BitmapFactory.Options()
     factoryOptions.inSampleSize = calculateSize(bitmap)
     val corpBitmap = BitmapFactory.decodeStream(ByteArrayInputStream(bitmap.toByteArray()), null, factoryOptions)
@@ -77,14 +77,14 @@ private fun calculateSize(bitmap: Bitmap): Int {
     }
 }
 
-private fun rotatingImage(bitmap: Bitmap, exifInterface: ExifInterface): Bitmap {
+private fun rotatingImage(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
     val matrix = Matrix()
     var angle = 0
-    val orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+    val orientation = exifInterface.getAttributeInt(androidx.exifinterface.media.ExifInterface.TAG_ORIENTATION, androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL)
     when (orientation) {
-        ExifInterface.ORIENTATION_ROTATE_90 -> angle = 90
-        ExifInterface.ORIENTATION_ROTATE_180 -> angle = 180
-        ExifInterface.ORIENTATION_ROTATE_270 -> angle = 270
+        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_90 -> angle = 90
+        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_180 -> angle = 180
+        androidx.exifinterface.media.ExifInterface.ORIENTATION_ROTATE_270 -> angle = 270
     }
     matrix.postRotate(angle.toFloat())
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)

@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.transition.AutoTransition
-import android.support.transition.TransitionManager
-import android.support.v7.widget.RecyclerView
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.view.KeyEvent
 import android.view.View
@@ -162,7 +162,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             val adapter = searchActivityViewPager.adapter ?: return
             if (adapter is SearchActivityViewpagerAdapter) {
                 val view = adapter.views[position]
-                if (!adapter.isDivideSetData[position] && view is RecyclerView) {
+                if (!adapter.isDivideSetData[position] && view is androidx.recyclerview.widget.RecyclerView) {
                     adapter.isDivideSetData[position] = true
                     requestHttp {
                         val recyclerViewAdapter = getCorrespodingAdapter(searchString, adapter.searchType[position])
@@ -247,7 +247,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 if (adapter is SearchActivityViewpagerAdapter) {
                     requestHttp {
                         val recyclerView = adapter.views[index]
-                        if (recyclerView is RecyclerView) {
+                        if (recyclerView is androidx.recyclerview.widget.RecyclerView) {
                             val getAdapter = getCorrespodingAdapter(searchString, searchType)
                             runOnUiThread {
                                 recyclerView.adapter = getAdapter

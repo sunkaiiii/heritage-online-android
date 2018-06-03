@@ -3,11 +3,11 @@ package com.example.sunkai.heritage.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.transition.Fade
-import android.support.transition.TransitionManager
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.GridLayoutManager
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.GridLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -190,7 +190,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
     private fun setAdapter(userID: Int) {
         val adapter = OtherPersonActivityRecyclerViewAdapter(this, userID, arrayListOf(),glide)
-        val layoutManager = GridLayoutManager(this, 4)
+        val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
 
@@ -287,7 +287,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
         })
         vp_activity_other_users.adapter = viewPagerAdapter
-        vp_activity_other_users.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        vp_activity_other_users.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 getImage(position, viewPagerAdapter)
             }

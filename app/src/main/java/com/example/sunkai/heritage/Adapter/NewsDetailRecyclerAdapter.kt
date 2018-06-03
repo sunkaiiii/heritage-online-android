@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +17,9 @@ import com.example.sunkai.heritage.tools.ViewImageUtils
  * 展示新闻详情
  * Created by sunkai on 2018/2/9.
  */
-class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail>,val glide: RequestManager) : RecyclerView.Adapter<NewsDetailRecyclerAdapter.ViewHolder>() {
+class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail>,val glide: RequestManager) : androidx.recyclerview.widget.RecyclerView.Adapter<NewsDetailRecyclerAdapter.ViewHolder>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val textview: TextView
         val imageView: ImageView
 

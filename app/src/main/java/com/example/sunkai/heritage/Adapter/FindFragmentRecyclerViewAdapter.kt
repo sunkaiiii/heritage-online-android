@@ -5,9 +5,9 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +46,7 @@ import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 
 class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
         val img: ImageView
         val like: ImageView
@@ -228,7 +228,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     private fun setLocationClick(holder: ViewHolder, data: UserCommentData) {
         val onClickListener by lazy {
             View.OnClickListener {
-                val cardView = CardView(context)
+                val cardView = androidx.cardview.widget.CardView(context)
                 val textView = TextView(context)
                 textView.text = if (data.location.isEmpty()) context.getString(R.string.no_location_info) else data.location
                 textView.setPadding(8 * (context.resources.displayMetrics.densityDpi / 160))

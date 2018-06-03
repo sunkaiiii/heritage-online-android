@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ import com.example.sunkai.heritage.value.HOST
 class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide: RequestManager) : BaseRecyclerAdapter<FolkRecyclerViewAdapter.Holder, FolkDataLite>(context,datas,glide) {
 
 
-    class Holder(view: View) : RecyclerView.ViewHolder(view) {
+    class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val listImage: ImageView
         val listTitle: TextView
         val listLocation: TextView

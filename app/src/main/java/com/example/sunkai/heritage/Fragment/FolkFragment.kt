@@ -5,10 +5,10 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,7 +76,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         getMainFragmentDivideImageUrl()
     }
 
-    private fun setupViewPager(viewPager: ViewPager) {
+    private fun setupViewPager(viewPager: androidx.viewpager.widget.ViewPager) {
         viewPager.adapter=null
         val manager=activity?.supportFragmentManager?:return
         val adapter = ViewPagerAdapter(manager)
@@ -121,10 +121,10 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         }
     }
 
-    internal inner class ViewPagerAdapter(manager: android.support.v4.app.FragmentManager) : FragmentPagerAdapter(manager) {
-        private val mFragmentList = ArrayList<android.support.v4.app.Fragment>()
+    internal inner class ViewPagerAdapter(manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(manager) {
+        private val mFragmentList = ArrayList<androidx.fragment.app.Fragment>()
 
-        override fun getItem(position: Int): android.support.v4.app.Fragment {
+        override fun getItem(position: Int): androidx.fragment.app.Fragment {
             return mFragmentList[position]
         }
 
@@ -135,7 +135,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         }
 
-        fun insertNewFragment(fragment: android.support.v4.app.Fragment) {
+        fun insertNewFragment(fragment: androidx.fragment.app.Fragment) {
             mFragmentList.add(fragment)
         }
 
@@ -148,12 +148,12 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         }
     }
 
-    private val tabLayoutListener = object : TabLayout.OnTabSelectedListener {
-        override fun onTabReselected(tab: TabLayout.Tab?) {}
+    private val tabLayoutListener = object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+        override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
 
-        override fun onTabSelected(tab: TabLayout.Tab?) {
+        override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
             index = tab?.position!!
             getDivideImage(tab.position)
         }

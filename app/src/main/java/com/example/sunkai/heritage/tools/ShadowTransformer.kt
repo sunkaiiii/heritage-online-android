@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.tools
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 import com.example.sunkai.heritage.Adapter.BaseAdapter.CardAdapter
 
@@ -8,7 +8,7 @@ import com.example.sunkai.heritage.Adapter.BaseAdapter.CardAdapter
  * card轮换时候的控制阴影的类
  * Created by sunkai on 2018/2/9.
  */
-class ShadowTransformer(private val mViewPager: ViewPager, private val mAdapter: CardAdapter) : ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
+class ShadowTransformer(private val mViewPager: androidx.viewpager.widget.ViewPager, private val mAdapter: CardAdapter) : androidx.viewpager.widget.ViewPager.OnPageChangeListener, androidx.viewpager.widget.ViewPager.PageTransformer {
     private var mLastOffset: Float = 0.toFloat()
     private var mScalingEnabled: Boolean = false
 

@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.graphics.Palette
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.palette.graphics.Palette
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +42,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
 
     private var onDeleteListener:onDeleteSuccessListener?=null
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val mycomment_item_image: ImageView
         val mycomment_item_title: TextView
         val mycomment_item_content: TextView
@@ -157,7 +157,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun findDominateColor(bitmap: Bitmap, holder: ViewHolder) {
-        val color = Palette.from(bitmap).generate().getDarkMutedColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
+        val color = androidx.palette.graphics.Palette.from(bitmap).generate().getDarkMutedColor(ContextCompat.getColor(context, R.color.colorPrimaryDark))
         holder.mycomment_item_image.setImageBitmap(bitmap)
         holder.mycomment_item_title.setTextColor(color)
         holder.mycomment_item_content.setTextColor(color)

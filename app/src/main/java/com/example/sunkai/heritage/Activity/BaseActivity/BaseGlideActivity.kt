@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Activity.BaseActivity
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager

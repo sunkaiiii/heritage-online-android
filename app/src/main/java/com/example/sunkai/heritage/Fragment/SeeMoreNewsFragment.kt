@@ -4,8 +4,8 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.view.GravityCompat
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.RecyclerView
 import android.transition.Slide
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -119,7 +119,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     //滑动到接近底部的时候，自动加载更多的数据
     private val onScroll = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: RecyclerView) {
+        override fun loadMoreData(recyclerView: androidx.recyclerview.widget.RecyclerView) {
             val adapter = recyclerView.adapter
             if (adapter is SeeMoreNewsRecyclerViewAdapter) {
                 requestHttp {

@@ -23,7 +23,7 @@
             android:gravity="center"
             android:textSize="14sp"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_activity_other_users"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -35,7 +35,7 @@
         android:visibility="gone"
         android:id="@+id/ll_activity_other_users_background"
         android:orientation="vertical"/>
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/vp_activity_other_users"
@@ -46,7 +46,7 @@
         android:scaleType="fitCenter"
         android:id="@+id/pv_activity_other_users"
         android:visibility="gone"/>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_add_white_24dp"

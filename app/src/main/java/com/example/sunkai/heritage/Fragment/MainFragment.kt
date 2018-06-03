@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
 import android.view.*
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
@@ -57,7 +57,7 @@ class MainFragment : BaseGlideFragment() {
         }
     }
 
-    private fun setViewPager(manager: FragmentManager) {
+    private fun setViewPager(manager: androidx.fragment.app.FragmentManager) {
         mainPageTabLayout.setupWithViewPager(mainPageViewPager)
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
@@ -68,8 +68,8 @@ class MainFragment : BaseGlideFragment() {
         MAIN_PAGE_TABLAYOUT_TEXT.withIndex().forEach { mainPageTabLayout.getTabAt(it.index)?.text = it.value }
     }
 
-    private fun setViewPagerListener(mainPageViewPager: ViewPager) {
-        mainPageViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+    private fun setViewPagerListener(mainPageViewPager: androidx.viewpager.widget.ViewPager) {
+        mainPageViewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -131,9 +131,9 @@ class MainFragment : BaseGlideFragment() {
         }
     }
 
-    private fun createFragments(): List<Fragment> {
+    private fun createFragments(): List<androidx.fragment.app.Fragment> {
         val bottomNewsFragment = BottomNewsFragment()
-        val fragments = arrayListOf<Fragment>()
+        val fragments = arrayListOf<androidx.fragment.app.Fragment>()
         fragments.add(bottomNewsFragment)
         fragments.add(MainNewsFragment())
         return fragments

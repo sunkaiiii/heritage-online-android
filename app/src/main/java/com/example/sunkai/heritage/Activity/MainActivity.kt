@@ -7,11 +7,11 @@ import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.ViewPager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -47,7 +47,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val viewList: ArrayList<Fragment>
+    private val viewList: ArrayList<androidx.fragment.app.Fragment>
 
     init {
         viewList = ArrayList()
@@ -131,8 +131,8 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private class adapter(val viewList: ArrayList<Fragment>, manager: android.support.v4.app.FragmentManager) : FragmentPagerAdapter(manager) {
-        override fun getItem(position: Int): Fragment {
+    private class adapter(val viewList: ArrayList<androidx.fragment.app.Fragment>, manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(manager) {
+        override fun getItem(position: Int): androidx.fragment.app.Fragment {
             return viewList[position]
         }
 
@@ -145,7 +145,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val onPageChangeListener = object : ViewPager.OnPageChangeListener {
+    private val onPageChangeListener = object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {
         }
 
@@ -187,7 +187,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val onNavigationItemSelectedListener = com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener { item ->
         activityMainViewpager.currentItem = when (item.itemId) {
             R.id.main_layout -> 0
             R.id.folk_layout -> 1

@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ import com.google.gson.Gson
  */
 class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolkNewsLite>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(context,datas, glide) {
 
-    class Holder(view: View) : RecyclerView.ViewHolder(view) {
+    class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val title: TextView
         val time: TextView
         val briefly: TextView

@@ -2,8 +2,8 @@ package com.example.sunkai.heritage.tools
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.graphics.Palette
+import androidx.core.content.ContextCompat
+import androidx.palette.graphics.Palette
 import androidx.core.graphics.drawable.toBitmap
 import com.example.sunkai.heritage.R
 
@@ -23,11 +23,11 @@ fun Drawable.generateDarkColor():Int{
 }
 
 fun Bitmap.generateColor():Int{
-    return Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
+    return androidx.palette.graphics.Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
 }
 
 fun Bitmap.generateDarkColor():Int{
-    return Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
+    return androidx.palette.graphics.Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
 }
 
 fun Drawable.generateTextColor():Int{
@@ -36,5 +36,5 @@ fun Drawable.generateTextColor():Int{
 }
 
 fun Bitmap.generateTextColor():Int{
-    return Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
+    return androidx.palette.graphics.Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
 }

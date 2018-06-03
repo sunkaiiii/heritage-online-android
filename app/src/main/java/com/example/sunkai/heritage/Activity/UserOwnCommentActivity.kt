@@ -4,8 +4,8 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.GridLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -56,7 +56,7 @@ class UserOwnCommentActivity : BaseAutoLoginActivity(),OnPageLoaded {
                 val adapter = MyOwnCommentRecyclerViewAdapter(this, datas, glide)
                 setAdpterLongClick(adapter)
                 setAdapterListener(adapter)
-                userOwnList.layoutManager = GridLayoutManager(this, GRID_LAYOUT_DESTINY)
+                userOwnList.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, GRID_LAYOUT_DESTINY)
                 userOwnList.adapter = adapter
             }
         }

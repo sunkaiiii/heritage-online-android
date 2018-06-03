@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +27,7 @@ class ActivityRecyclerViewAdapter(context: Context,datas:List<ClassifyDivideData
     private var imageAnimation: Animation//图片出现动画
 
 
-    class ViewHolder(var view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(var view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val img: ImageView
         val title: TextView
         val time: TextView

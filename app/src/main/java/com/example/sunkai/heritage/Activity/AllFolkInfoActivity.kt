@@ -3,8 +3,8 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -37,7 +37,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
 
     private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter
     private lateinit var folk_search_btn: ImageView
-    private lateinit var refreshLayout: SwipeRefreshLayout
+    private lateinit var refreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     internal var getDatas: MutableList<FolkDataLite> = ArrayList()//用于处理搜索的List，各种搜索的结果都会操作这个list
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +47,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
         folk_location_spinner.onItemSelectedListener = this
         folk_heritages_spinner.onItemSelectedListener = this
         folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf(),glide)
-        folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
+        folk_show_recyclerview.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
         startLoadInformation()
     }

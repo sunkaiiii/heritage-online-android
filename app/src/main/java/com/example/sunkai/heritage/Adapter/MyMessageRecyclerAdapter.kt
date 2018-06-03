@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 
 class MyMessageRecyclerAdapter(context:Context,data:List<PushMessageData>,glide: RequestManager):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(context,data,glide) {
-    class Holder(view:View):RecyclerView.ViewHolder(view){
+    class Holder(view:View): androidx.recyclerview.widget.RecyclerView.ViewHolder(view){
         val userImage:ImageView
         val userName:TextView
         val replyContent:TextView

@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.view.GravityCompat
+import androidx.core.view.GravityCompat
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity

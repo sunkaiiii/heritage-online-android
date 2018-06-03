@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.Adapter.BaseAdapter
 
 import android.content.Context
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +11,13 @@ import com.example.sunkai.heritage.R
  * 来源于开源项目 https://github.com/rubensousa/ViewPagerCards
  * Created by sunkai on 2018/2/9.
  */
-abstract class BaseCardPagerAdapter(private val views:MutableList<CardView>):CardAdapter() {
+abstract class BaseCardPagerAdapter(private val views:MutableList<androidx.cardview.widget.CardView>):CardAdapter() {
     private var baseElevation:Float=0F
     override fun getBaseElevation(): Float {
         return baseElevation
     }
 
-    override fun getCardViewAt(position: Int): CardView {
+    override fun getCardViewAt(position: Int): androidx.cardview.widget.CardView {
         return views[position]
     }
 
@@ -32,7 +32,7 @@ abstract class BaseCardPagerAdapter(private val views:MutableList<CardView>):Car
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view=LayoutInflater.from(container.context).inflate(R.layout.main_news_card,container,false)
         container.addView(view)
-        val cardView=view.findViewById<CardView>(R.id.main_news_cardview)
+        val cardView=view.findViewById<androidx.cardview.widget.CardView>(R.id.main_news_cardview)
         if(baseElevation==0F){
             baseElevation=cardView.cardElevation
         }

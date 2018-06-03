@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import java.util.*
  * Created by sunkai on 2018/2/24.
  */
 class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReplyInformation>,glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(context,datas,glide) {
-    class ViewHodler(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHodler(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val userName: TextView
         val replyContent: TextView
 
