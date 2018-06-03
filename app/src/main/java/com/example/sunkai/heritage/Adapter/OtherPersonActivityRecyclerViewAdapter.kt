@@ -2,12 +2,12 @@ package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
 import android.os.AsyncTask
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
@@ -30,7 +30,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
         getUserIdInfo(userID)
     }
 
-    class ViewHolder(val view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView
 
         init {

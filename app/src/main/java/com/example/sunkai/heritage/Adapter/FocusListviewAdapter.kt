@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -36,7 +36,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
 
     private var onFocuschangeListener: OnFocusChangeListener? = null
 
-    class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         private val userIntrodeuce: TextView
         val userImage: ImageView

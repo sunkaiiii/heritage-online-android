@@ -16,7 +16,7 @@ import java.util.*
  * 其他用户照片墙的adapter
  * Created by sunkai on 2018/3/7.
  */
-class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): androidx.viewpager.widget.PagerAdapter() {
+class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): PagerAdapter() {
     val photoViewMap: WeakHashMap<Int, PhotoView>
     private var photoViewImageClickListener:onPhotoViewImageClick?=null
     init {

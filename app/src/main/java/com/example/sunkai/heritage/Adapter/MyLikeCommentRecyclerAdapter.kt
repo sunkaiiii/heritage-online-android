@@ -3,13 +3,13 @@ package com.example.sunkai.heritage.Adapter
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -35,7 +35,7 @@ import com.example.sunkai.heritage.value.TYPE_FIND
  * Created by sunkai on 2018/3/12.
  */
 class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentData>,glide: RequestManager) : BaseRecyclerAdapter<MyLikeCommentRecyclerAdapter.Holder, UserCommentData>(context,datas,glide) {
-    class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val userName: TextView
         val userImage: ImageView

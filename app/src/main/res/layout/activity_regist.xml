@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.sunkai.heritage.Activity.RegistActivity">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
@@ -221,5 +221,5 @@
                     tools:targetApi="lollipop" />
             </RelativeLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

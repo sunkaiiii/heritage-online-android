@@ -1,9 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.app.Activity
 import android.content.Context
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +10,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
@@ -33,7 +32,7 @@ import com.example.sunkai.heritage.value.UNFOCUS
  */
 class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
 
-    class Holder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
         val userImage: ImageView
         val focusBtn: TextView

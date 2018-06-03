@@ -3,18 +3,18 @@ package com.example.sunkai.heritage.Adapter
 import android.content.Context
 import androidx.viewpager.widget.PagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 
-class SearchActivityViewpagerAdapter(val context:Context,val divide:Array<String>,val searchType:Array<String>): androidx.viewpager.widget.PagerAdapter() {
+class SearchActivityViewpagerAdapter(val context:Context,val divide:Array<String>,val searchType:Array<String>): PagerAdapter() {
     val views:MutableList<View>
     init {
         views= arrayListOf()
         divide.forEach {
-            val recyclerView= androidx.recyclerview.widget.RecyclerView(context)
-            recyclerView.layoutManager= androidx.recyclerview.widget.LinearLayoutManager(context)
-            val layoutParams= androidx.recyclerview.widget.RecyclerView.LayoutParams(androidx.recyclerview.widget.RecyclerView.LayoutParams.MATCH_PARENT, androidx.recyclerview.widget.RecyclerView.LayoutParams.MATCH_PARENT)
+            val recyclerView= RecyclerView(context)
+            recyclerView.layoutManager= LinearLayoutManager(context)
+            val layoutParams= RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT)
             layoutParams.height=ViewGroup.LayoutParams.MATCH_PARENT
             layoutParams.width=ViewGroup.LayoutParams.MATCH_PARENT
             recyclerView.layoutParams=layoutParams

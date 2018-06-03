@@ -6,8 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.core.view.setPadding
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
@@ -46,7 +46,7 @@ import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 
 class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
 
-    class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
         val img: ImageView
         val like: ImageView
@@ -228,7 +228,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     private fun setLocationClick(holder: ViewHolder, data: UserCommentData) {
         val onClickListener by lazy {
             View.OnClickListener {
-                val cardView = androidx.cardview.widget.CardView(context)
+                val cardView = MaterialCardView(context)
                 val textView = TextView(context)
                 textView.text = if (data.location.isEmpty()) context.getString(R.string.no_location_info) else data.location
                 textView.setPadding(8 * (context.resources.displayMetrics.densityDpi / 160))

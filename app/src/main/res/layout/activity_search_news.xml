@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Activity.SearchActivity">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
@@ -63,7 +63,7 @@
                 android:paddingTop="8dp"
                 android:src="@drawable/ic_backspace_grey_700_18dp" />
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchActivitySearchHistoryRecyckerView"

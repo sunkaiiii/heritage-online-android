@@ -1,8 +1,8 @@
 package com.example.sunkai.heritage.Adapter.BaseAdapter
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.OnItemLongClickListener
@@ -12,7 +12,7 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter<T: androidx.recyclerview.widget.RecyclerView.ViewHolder, W>(protected val context: Context, datas:List<W>, val glide: RequestManager) : androidx.recyclerview.widget.RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
+abstract class BaseRecyclerAdapter<T: RecyclerView.ViewHolder, W>(protected val context: Context, datas:List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener:OnPageLoaded?=null

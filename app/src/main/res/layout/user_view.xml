@@ -18,7 +18,7 @@
         android:theme="@style/Fragment_Person_Theme"
         app:title="" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -144,5 +144,5 @@
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

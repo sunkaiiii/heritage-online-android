@@ -7,13 +7,14 @@ import android.os.Looper
 import android.os.Message
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
-import androidx.recyclerview.widget.RecyclerView
+
 import android.text.Editable
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Adapter.SearchActivitySearchHistoryAdapter
@@ -162,7 +163,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             val adapter = searchActivityViewPager.adapter ?: return
             if (adapter is SearchActivityViewpagerAdapter) {
                 val view = adapter.views[position]
-                if (!adapter.isDivideSetData[position] && view is androidx.recyclerview.widget.RecyclerView) {
+                if (!adapter.isDivideSetData[position] && view is RecyclerView) {
                     adapter.isDivideSetData[position] = true
                     requestHttp {
                         val recyclerViewAdapter = getCorrespodingAdapter(searchString, adapter.searchType[position])
@@ -247,7 +248,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
                 if (adapter is SearchActivityViewpagerAdapter) {
                     requestHttp {
                         val recyclerView = adapter.views[index]
-                        if (recyclerView is androidx.recyclerview.widget.RecyclerView) {
+                        if (recyclerView is RecyclerView) {
                             val getAdapter = getCorrespodingAdapter(searchString, searchType)
                             runOnUiThread {
                                 recyclerView.adapter = getAdapter

@@ -44,17 +44,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //    android support
     implementation 'androidx.constraintlayout:constraintlayout:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-alpha1'
-    implementation 'com.google.android.material:material:1.0.0-alpha1'
-    implementation 'androidx.palette:palette:1.0.0-alpha1'
-    implementation 'androidx.cardview:cardview:1.0.0-alpha1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-alpha1'
-    implementation 'androidx.exifinterface:exifinterface:1.0.0-alpha1'
+    implementation "androidx.palette:palette:$androidx_version"
+    implementation "androidx.exifinterface:exifinterface:$androidx_version"
+    implementation "androidx.core:core-ktx:$androidx_version"
+    implementation "com.google.android.material:material:$androidx_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.0.0-alpha1'
-    implementation 'com.google.android.material:material:1.0.0-alpha1'
     //    network
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'

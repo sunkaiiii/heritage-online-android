@@ -1,10 +1,10 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
@@ -66,7 +66,7 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
             activity?.runOnUiThread{
                 onPostLoad()
                 if(typeName== TYPE_FOCUS_HERITAGE){
-                    my_collect_recyclerview.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(activity, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+                    my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                 }
                 my_collect_recyclerview.adapter = adapter
             }

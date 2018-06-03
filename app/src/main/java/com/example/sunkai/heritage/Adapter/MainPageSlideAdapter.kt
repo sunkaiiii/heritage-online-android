@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.R
  * 显示更多新闻顶部滑动条的adapter
  * Created by sunkai on 2018/2/18.
  */
-class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager): androidx.viewpager.widget.PagerAdapter() {
+class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager): PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view==`object`
     }

@@ -3,13 +3,13 @@ package com.example.sunkai.heritage.Adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -26,7 +26,7 @@ import com.example.sunkai.heritage.tools.ViewImageUtils
  */
 class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>,glide: RequestManager) : BaseLoadMoreRecyclerAdapter<SeeMoreNewsRecyclerViewAdapter.ViewHolder, FolkNewsLite>(context,datas,glide) {
 
-    class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val time: TextView
         val imageview: ImageView

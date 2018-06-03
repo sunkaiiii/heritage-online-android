@@ -7,7 +7,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
-import androidx.cardview.widget.CardView
+import com.google.android.material.card.MaterialCardView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -66,8 +66,8 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     //创建每个分类的卡片
-    private fun createNewsListView(news: List<List<FolkNewsLite>>, activity: androidx.fragment.app.FragmentActivity): List<androidx.cardview.widget.CardView> {
-        val cardViews = arrayListOf<androidx.cardview.widget.CardView>()
+    private fun createNewsListView(news: List<List<FolkNewsLite>>, activity: androidx.fragment.app.FragmentActivity): List<MaterialCardView> {
+        val cardViews = arrayListOf<MaterialCardView>()
         for ((i, folkNews) in news.withIndex()) {
             cardViews.add(createSecondViews(folkNews, activity, i))
         }
@@ -75,7 +75,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     //构建每个卡片的item
-    private fun createSecondViews(it: List<FolkNewsLite>, activity: androidx.fragment.app.FragmentActivity, position: Int): androidx.cardview.widget.CardView {
+    private fun createSecondViews(it: List<FolkNewsLite>, activity: androidx.fragment.app.FragmentActivity, position: Int): MaterialCardView {
         val view = LayoutInflater.from(activity).inflate(R.layout.main_news_card, mainNewsList, false)
         val seeMoreTextview = view.findViewById<TextView>(R.id.see_more)
         val linearLayout = view.findViewById<LinearLayout>(R.id.main_news_other_news)
@@ -87,7 +87,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             setNewsItem(it, linearLayout, activity)
         }
         getCategoryImage(position, categoryBackGroundImageView, linearLayout, seeMoreTextview)
-        return view as androidx.cardview.widget.CardView
+        return view as MaterialCardView
     }
 
     private fun getCategoryImage(position: Int, imageView: ImageView, linearLayout: LinearLayout, seeMoreTextview: TextView) {

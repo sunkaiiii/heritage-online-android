@@ -23,11 +23,11 @@ fun Drawable.generateDarkColor():Int{
 }
 
 fun Bitmap.generateColor():Int{
-    return androidx.palette.graphics.Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
+    return Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
 }
 
 fun Bitmap.generateDarkColor():Int{
-    return androidx.palette.graphics.Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
+    return Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
 }
 
 fun Drawable.generateTextColor():Int{
@@ -36,5 +36,5 @@ fun Drawable.generateTextColor():Int{
 }
 
 fun Bitmap.generateTextColor():Int{
-    return androidx.palette.graphics.Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
+    return Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
 }

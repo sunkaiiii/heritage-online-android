@@ -5,13 +5,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.transition.Slide
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -119,7 +118,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     //滑动到接近底部的时候，自动加载更多的数据
     private val onScroll = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+        override fun loadMoreData(recyclerView: RecyclerView) {
             val adapter = recyclerView.adapter
             if (adapter is SeeMoreNewsRecyclerViewAdapter) {
                 requestHttp {

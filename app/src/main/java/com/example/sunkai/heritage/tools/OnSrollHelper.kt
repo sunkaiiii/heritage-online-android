@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
  * 用于自动加载更多的OnScrollListener的辅助类
  * Created by sunkai on 2018/2/9.
  */
-abstract class OnSrollHelper: androidx.recyclerview.widget.RecyclerView.OnScrollListener() {
+abstract class OnSrollHelper: RecyclerView.OnScrollListener() {
     private var notOnLoad=true
-    override fun onScrolled(recyclerView: androidx.recyclerview.widget.RecyclerView, dx: Int, dy: Int) {
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (notOnLoad) {
             val layoutManager = recyclerView.layoutManager
             //gridLayoutManager继承自LinearLayoutManger，所以此类也适用于网格视图
-            if ((layoutManager is androidx.recyclerview.widget.LinearLayoutManager) && notOnLoad) {
+            if ((layoutManager is LinearLayoutManager) && notOnLoad) {
                 val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
                 if (lastVisibleItemPosition + 3 > recyclerView.adapter?.itemCount?:return) {
                     setPageOnLoad()
@@ -29,5 +29,5 @@ abstract class OnSrollHelper: androidx.recyclerview.widget.RecyclerView.OnScroll
     fun setPageLoaded(){
         this.notOnLoad=true
     }
-    abstract fun loadMoreData(recyclerView: androidx.recyclerview.widget.RecyclerView)
+    abstract fun loadMoreData(recyclerView: RecyclerView)
 }

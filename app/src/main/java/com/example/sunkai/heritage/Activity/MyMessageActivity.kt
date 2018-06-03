@@ -2,9 +2,9 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyMessageRecyclerAdapter
@@ -40,7 +40,7 @@ class MyMessageActivity : BaseGlideActivity(),OnPageLoaded {
             val messages=HandlePush.getUserPushMessages(LoginActivity.userID)
             runOnUiThread {
                 val adapter=MyMessageRecyclerAdapter(this,messages,glide)
-                myMessageRecyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+                myMessageRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
                 setAdapterClick(adapter)
                 myMessageRecyclerView.adapter=adapter
                 onPostLoad()

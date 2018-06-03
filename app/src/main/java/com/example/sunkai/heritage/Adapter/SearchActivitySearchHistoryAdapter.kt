@@ -1,12 +1,12 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
@@ -15,7 +15,7 @@ import com.example.sunkai.heritage.value.SEARCH_SHAREPREF_NAME
 
 //搜索历史的adapter
 class SearchActivitySearchHistoryAdapter(context:Context,datas:List<SearchHistoryData>,glide:RequestManager):BaseRecyclerAdapter<SearchActivitySearchHistoryAdapter.Holder,SearchHistoryData>(context,datas,glide) {
-    class Holder(view:View): androidx.recyclerview.widget.RecyclerView.ViewHolder(view){
+    class Holder(view:View): RecyclerView.ViewHolder(view){
         val searchHistoryTextView:TextView
         val deleteHistoryImageView:ImageView
         init {

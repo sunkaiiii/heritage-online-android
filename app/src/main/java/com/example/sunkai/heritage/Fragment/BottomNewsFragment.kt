@@ -1,11 +1,11 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.os.Bundle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.Adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
@@ -40,7 +40,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
             activity?.let {
                 activity.runOnUiThread {
                     val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
-                    fragmentMainRecyclerview.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(activity, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+                    fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter = adapter
                     onPostLoad()
                 }
@@ -61,7 +61,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
     }
 
     private val onScroller = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+        override fun loadMoreData(recyclerView: RecyclerView) {
             requestHttp {
                 val activity = activity
                 activity?.let {
