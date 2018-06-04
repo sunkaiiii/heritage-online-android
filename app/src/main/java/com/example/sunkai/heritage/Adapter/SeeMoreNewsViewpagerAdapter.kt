@@ -9,9 +9,9 @@ import com.example.sunkai.heritage.value.CATEGORIES
  * 更多新闻的viewpager的adapter
  * Created by sunkai on 2018/2/17.
  */
-class SeeMoreNewsViewpagerAdapter(manager: androidx.fragment.app.FragmentManager): androidx.fragment.app.FragmentPagerAdapter(manager) {
-    private val fragmentList=ArrayList<androidx.fragment.app.Fragment>()
-    override fun getItem(position: Int): androidx.fragment.app.Fragment {
+class SeeMoreNewsViewpagerAdapter(manager: FragmentManager): FragmentPagerAdapter(manager) {
+    private val fragmentList=ArrayList<Fragment>()
+    override fun getItem(position: Int): Fragment {
         return fragmentList[position]
     }
 
@@ -23,7 +23,7 @@ class SeeMoreNewsViewpagerAdapter(manager: androidx.fragment.app.FragmentManager
         return CATEGORIES[position]
     }
 
-    fun insertNewFragment(fragment: androidx.fragment.app.Fragment){
+    fun insertNewFragment(fragment: Fragment){
         fragmentList.add(fragment)
     }
 }

@@ -57,7 +57,7 @@ class MainFragment : BaseGlideFragment() {
         }
     }
 
-    private fun setViewPager(manager: androidx.fragment.app.FragmentManager) {
+    private fun setViewPager(manager: FragmentManager) {
         mainPageTabLayout.setupWithViewPager(mainPageViewPager)
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
@@ -68,8 +68,8 @@ class MainFragment : BaseGlideFragment() {
         MAIN_PAGE_TABLAYOUT_TEXT.withIndex().forEach { mainPageTabLayout.getTabAt(it.index)?.text = it.value }
     }
 
-    private fun setViewPagerListener(mainPageViewPager: androidx.viewpager.widget.ViewPager) {
-        mainPageViewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+    private fun setViewPagerListener(mainPageViewPager: ViewPager) {
+        mainPageViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
 
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
@@ -131,9 +131,9 @@ class MainFragment : BaseGlideFragment() {
         }
     }
 
-    private fun createFragments(): List<androidx.fragment.app.Fragment> {
+    private fun createFragments(): List<Fragment> {
         val bottomNewsFragment = BottomNewsFragment()
-        val fragments = arrayListOf<androidx.fragment.app.Fragment>()
+        val fragments = arrayListOf<Fragment>()
         fragments.add(bottomNewsFragment)
         fragments.add(MainNewsFragment())
         return fragments

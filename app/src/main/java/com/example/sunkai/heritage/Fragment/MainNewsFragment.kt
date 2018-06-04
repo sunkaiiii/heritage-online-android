@@ -66,7 +66,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     //创建每个分类的卡片
-    private fun createNewsListView(news: List<List<FolkNewsLite>>, activity: androidx.fragment.app.FragmentActivity): List<MaterialCardView> {
+    private fun createNewsListView(news: List<List<FolkNewsLite>>, activity: FragmentActivity): List<MaterialCardView> {
         val cardViews = arrayListOf<MaterialCardView>()
         for ((i, folkNews) in news.withIndex()) {
             cardViews.add(createSecondViews(folkNews, activity, i))
@@ -75,7 +75,7 @@ class MainNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     //构建每个卡片的item
-    private fun createSecondViews(it: List<FolkNewsLite>, activity: androidx.fragment.app.FragmentActivity, position: Int): MaterialCardView {
+    private fun createSecondViews(it: List<FolkNewsLite>, activity: FragmentActivity, position: Int): MaterialCardView {
         val view = LayoutInflater.from(activity).inflate(R.layout.main_news_card, mainNewsList, false)
         val seeMoreTextview = view.findViewById<TextView>(R.id.see_more)
         val linearLayout = view.findViewById<LinearLayout>(R.id.main_news_other_news)

@@ -76,7 +76,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         getMainFragmentDivideImageUrl()
     }
 
-    private fun setupViewPager(viewPager: androidx.viewpager.widget.ViewPager) {
+    private fun setupViewPager(viewPager: ViewPager) {
         viewPager.adapter=null
         val manager=activity?.supportFragmentManager?:return
         val adapter = ViewPagerAdapter(manager)
@@ -121,10 +121,10 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         }
     }
 
-    internal inner class ViewPagerAdapter(manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(manager) {
-        private val mFragmentList = ArrayList<androidx.fragment.app.Fragment>()
+    internal inner class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
+        private val mFragmentList = ArrayList<Fragment>()
 
-        override fun getItem(position: Int): androidx.fragment.app.Fragment {
+        override fun getItem(position: Int): Fragment {
             return mFragmentList[position]
         }
 
@@ -135,7 +135,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         }
 
-        fun insertNewFragment(fragment: androidx.fragment.app.Fragment) {
+        fun insertNewFragment(fragment: Fragment) {
             mFragmentList.add(fragment)
         }
 

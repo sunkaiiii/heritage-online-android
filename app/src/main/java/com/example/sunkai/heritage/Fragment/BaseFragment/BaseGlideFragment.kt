@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.ThreadPool
 
-abstract class BaseGlideFragment: androidx.fragment.app.Fragment() {
+abstract class BaseGlideFragment: Fragment() {
     protected lateinit var glide: RequestManager
     private val runnableList:MutableList<Runnable>
     init {

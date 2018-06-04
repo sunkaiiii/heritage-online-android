@@ -287,7 +287,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
         })
         vp_activity_other_users.adapter = viewPagerAdapter
-        vp_activity_other_users.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+        vp_activity_other_users.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 getImage(position, viewPagerAdapter)
             }

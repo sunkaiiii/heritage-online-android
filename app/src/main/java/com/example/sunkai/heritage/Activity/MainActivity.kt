@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -47,11 +48,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val viewList: ArrayList<androidx.fragment.app.Fragment>
-
-    init {
-        viewList = ArrayList()
-    }
+    private val viewList: ArrayList<Fragment> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,8 +128,8 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private class adapter(val viewList: ArrayList<androidx.fragment.app.Fragment>, manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentPagerAdapter(manager) {
-        override fun getItem(position: Int): androidx.fragment.app.Fragment {
+    private class adapter(val viewList: ArrayList<Fragment>, manager: FragmentManager) : FragmentPagerAdapter(manager) {
+        override fun getItem(position: Int): Fragment {
             return viewList[position]
         }
 
@@ -145,7 +142,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val onPageChangeListener = object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+    private val onPageChangeListener = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {
         }
 
@@ -187,7 +184,7 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
-    private val onNavigationItemSelectedListener = com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener { item ->
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         activityMainViewpager.currentItem = when (item.itemId) {
             R.id.main_layout -> 0
             R.id.folk_layout -> 1
