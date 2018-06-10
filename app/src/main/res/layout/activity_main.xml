@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,15 +8,14 @@
        android:id="@+id/bottomNavigationButton"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:layout_alignParentBottom="true"
-       android:background="?android:windowBackground"
+       android:layout_gravity="bottom"
+       style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
        app:menu="@menu/bottom_navigation_menu"
        />
 
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomNavigationButton"
         android:id="@+id/activityMainViewpager"/>
 
-</RelativeLayout>
+</FrameLayout>

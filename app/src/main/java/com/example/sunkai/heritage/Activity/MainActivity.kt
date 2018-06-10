@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -41,6 +42,7 @@ class MainActivity : BaseGlideActivity() {
     //让其他Activity可以访问MainActivity的方法，提供了一个弱引用
     companion object {
         var activityRef: WeakReference<MainActivity>? = null
+        var bottomNavigationRef:WeakReference<BottomNavigationView>?=null
         fun GetViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
@@ -60,6 +62,12 @@ class MainActivity : BaseGlideActivity() {
         if (sharePrefrence.getBoolean(PUSH_SWITCH, false)) {
             startPushService()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        //在onCreate里面初始化，Fragment并不能找到弱引用里引用的view，不知道为啥……
+        bottomNavigationRef= WeakReference(bottomNavigationButton)
     }
 
 
@@ -82,7 +90,6 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun initViews() {
-        //BottomNavigationViewHelper.disableShiftMode(bottomNavigationButton)
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
@@ -150,9 +157,16 @@ class MainActivity : BaseGlideActivity() {
         }
 
         override fun onPageSelected(position: Int) {
+            bottomNavigationButton.setBackgroundColor(ContextCompat.getColor(this@MainActivity,R.color.colorPrimary))
+            bottomNavigationButton.itemTextColor=ColorStateList.valueOf(ContextCompat.getColor(this@MainActivity,R.color.white))
             if (Build.VERSION.SDK_INT >= 21) {
                 window.statusBarColor = when (position) {
-                    1 -> (viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
+                    1 -> {
+                        //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
+                        val color=(viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
+                        bottomNavigationButton.setBackgroundColor(color)
+                        color
+                    }
                     else -> ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
                 }
             }

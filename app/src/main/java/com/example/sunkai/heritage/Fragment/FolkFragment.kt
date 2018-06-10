@@ -5,15 +5,16 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
@@ -25,6 +26,7 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.*
@@ -61,10 +63,6 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
 
         setupViewPager(mainTabContent)
         tabayout.setupWithViewPager(mainTabContent)
-        tabayout.setTabTextColors(Color.GRAY, Color.WHITE)
-        for (i in 0 until CLASSIFY_DIVIDE_TABVIEWSHOW.size) {
-            tabayout.getTabAt(i)?.text = CLASSIFY_DIVIDE_TABVIEWSHOW[i]
-        }
         tabayout.addOnTabSelectedListener(tabLayoutListener)
         tabayout.getTabAt(0)?.select()
         fragmentFolkSearch.setOnClickListener(this)
@@ -123,7 +121,9 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
 
     internal inner class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
         private val mFragmentList = ArrayList<Fragment>()
-
+        override fun getPageTitle(position: Int): CharSequence? {
+            return CLASSIFY_DIVIDE_TABVIEWSHOW[position]
+        }
         override fun getItem(position: Int): Fragment {
             return mFragmentList[position]
         }
@@ -198,6 +198,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
                     val color = resource.generateColor()
                     val textColor = resource.generateTextColor()
                     tabayout.setTabTextColors(textColor, Color.WHITE)
+                    MainActivity.bottomNavigationRef?.get()?.setBackgroundColor(color)
                     setColors(color, resource)
                 }
             }

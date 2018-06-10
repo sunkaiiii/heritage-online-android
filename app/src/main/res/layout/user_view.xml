@@ -32,7 +32,7 @@
         app:cardElevation="6dp"
         app:cardCornerRadius="0dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -143,6 +143,6 @@
                     android:text="@string/one"
                     android:textColor="@color/colorAccent" />
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

@@ -57,31 +57,6 @@
 
 
             </FrameLayout>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/tb_fragment_main"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="bottom"
-                app:layout_collapseMode="pin">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginTop="6dp"
-                    app:cardElevation="4dp">
-
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/tabayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/midBrown"
-                        app:tabTextAppearance="@style/MainFragmentTabLayoutSize" />
-                </com.google.android.material.card.MaterialCardView>
-            </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -90,5 +65,14 @@
         android:id="@+id/mainTabContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/midBrown"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextAppearance="@style/MainFragmentTabLayoutSize"
+            app:tabTextColor="@color/normalGrey" />
+    </androidx.viewpager.widget.ViewPager>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,7 +7,7 @@
     app:cardCornerRadius="2dp"
     app:cardElevation="2dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -104,5 +104,5 @@
                 android:src="@drawable/ic_bookmark_black_24dp" />
         </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

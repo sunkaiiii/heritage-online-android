@@ -58,22 +58,14 @@ class MainFragment : BaseGlideFragment() {
     }
 
     private fun setViewPager(manager: FragmentManager) {
-        mainPageTabLayout.setupWithViewPager(mainPageViewPager)
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
         setViewPagerListener(mainPageViewPager)
         mainPageViewPager.adapter = adapter
-        mainPageTabLayout.setTabTextColors(ContextCompat.getColor(context
-                ?: return, R.color.normalGrey), Color.WHITE)
-        MAIN_PAGE_TABLAYOUT_TEXT.withIndex().forEach { mainPageTabLayout.getTabAt(it.index)?.text = it.value }
     }
 
     private fun setViewPagerListener(mainPageViewPager: ViewPager) {
-        mainPageViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
+        mainPageViewPager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 val adapter = mainPageViewPager.adapter ?: return
                 if (adapter is MainPageViewPagerAdapter) {
@@ -83,7 +75,6 @@ class MainFragment : BaseGlideFragment() {
                     }
                 }
             }
-
         })
     }
 
