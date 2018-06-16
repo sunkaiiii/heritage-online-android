@@ -14,7 +14,7 @@
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp">
 
-        <androidx.constraintlayout.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -129,6 +129,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_layout_number" />
 
-        </androidx.constraintlayout.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

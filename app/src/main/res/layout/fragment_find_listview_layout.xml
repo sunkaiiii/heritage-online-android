@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -176,7 +176,7 @@
                     android:textColor="@color/deepGrey"
                     android:visibility="gone" />
             </RelativeLayout>
-        </androidx.constraintlayout.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <LinearLayout

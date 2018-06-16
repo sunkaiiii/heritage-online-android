@@ -15,6 +15,7 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginInteractorImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Implement.LoginPresnterImpl
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
