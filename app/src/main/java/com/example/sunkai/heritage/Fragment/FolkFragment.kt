@@ -198,7 +198,9 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
                     val color = resource.generateColor()
                     val textColor = resource.generateTextColor()
                     tabayout.setTabTextColors(textColor, Color.WHITE)
-                    MainActivity.bottomNavigationRef?.get()?.setBackgroundColor(color)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        activity?.window?.navigationBarColor=color
+                    }
                     setColors(color, resource)
                 }
             }

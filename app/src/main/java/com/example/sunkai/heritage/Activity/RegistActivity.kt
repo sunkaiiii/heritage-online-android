@@ -17,10 +17,7 @@ import androidx.core.view.children
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast
-import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.encryptionPassWord
-import com.example.sunkai.heritage.tools.toByteArray
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.PASSWORD
 import com.example.sunkai.heritage.value.USER_NAME
@@ -49,8 +46,8 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawable(null)
+        setWindowFullScreen()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFullScreen()
             startAnimation()
         }
         setContentView(R.layout.activity_regist)
@@ -63,15 +60,8 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         window.enterTransition = slideRight
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setWindowFullScreen() {
-        val decorView = window.decorView
-        val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-        window.navigationBarColor = Color.TRANSPARENT
-        window.statusBarColor=Color.TRANSPARENT
-        decorView.systemUiVisibility = option
+       WindowHelper.setWindowFullScreen(this)
     }
 
     private fun initView() {

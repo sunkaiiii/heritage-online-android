@@ -11,6 +11,7 @@ import com.example.sunkai.heritage.Dialog.PushDialog
 import com.example.sunkai.heritage.Interface.OnDialogDismiss
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.tools.attempToLogin
 import com.example.sunkai.heritage.value.*
 
@@ -25,6 +26,7 @@ class WelcomeActivity : BaseGlideActivity() {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_welcome)
+        WindowHelper.setWindowFullScreen(this)
         //判断是否是第一次启动，如果是第一次启动则显示是否打开推送的弹窗
         if (getSharedPreferences(SETTING, Context.MODE_PRIVATE).getInt(START_COUNT, FIRST_OPEN) == FIRST_OPEN) {
             getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {

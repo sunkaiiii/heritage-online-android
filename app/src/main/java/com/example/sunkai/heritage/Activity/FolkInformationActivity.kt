@@ -85,6 +85,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
             activityInformaitonTextBackground.setBackgroundColor(color)
             if (Build.VERSION.SDK_INT >= 21) {
                 window.statusBarColor = color
+                window.navigationBarColor=color
             }
             join_activity_img.setImageDrawable(drawable)
         }

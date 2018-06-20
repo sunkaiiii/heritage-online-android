@@ -9,6 +9,7 @@ import android.view.View
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.value.IMAGE_URL
 import kotlinx.android.synthetic.main.activity_view_image.*
 
@@ -18,9 +19,9 @@ class ViewImageActivity : BaseGlideActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_image)
+        setWindowFullScreen()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowAnimation()
-            setWindowFullScreen()
         }
         setPhotoViewClickAction()
         getImage()
@@ -47,14 +48,7 @@ class ViewImageActivity : BaseGlideActivity() {
         window.exitTransition=fade
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setWindowFullScreen(){
-        val decorView = window.decorView
-        val option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-        window.navigationBarColor = Color.TRANSPARENT
-        window.statusBarColor= Color.TRANSPARENT
-        decorView.systemUiVisibility = option
+        WindowHelper.setWindowFullScreen(this)
     }
 }

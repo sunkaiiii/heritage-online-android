@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.RegistActivity
 import com.example.sunkai.heritage.Dialog.FindPasswordDialog
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -61,18 +62,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
     //设置全屏沉浸窗口
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun setWindowFullScreen() {
-        val decorView = window.decorView
-        var option = (View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            option = option or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            option = option or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        }
-        window.navigationBarColor = Color.TRANSPARENT
-        decorView.systemUiVisibility = option
+        WindowHelper.setWindowFullScreen(this)
     }
 
 

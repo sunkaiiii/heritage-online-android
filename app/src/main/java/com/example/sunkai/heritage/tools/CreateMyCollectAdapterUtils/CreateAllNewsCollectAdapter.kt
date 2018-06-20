@@ -12,5 +12,4 @@ class CreateAllNewsCollectAdapter(private val context: Context, private val glid
         val data = HandlePerson.GetMainCollection(LoginActivity.userID, typeName)
         return SeeMoreNewsRecyclerViewAdapter(context, data, glide)
     }
-
 }

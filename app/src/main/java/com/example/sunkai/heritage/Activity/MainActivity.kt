@@ -4,20 +4,18 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
@@ -30,6 +28,7 @@ import com.example.sunkai.heritage.Service.PushService
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import com.example.sunkai.heritage.value.TYPE_FOLK_HERITAGE
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -157,14 +156,16 @@ class MainActivity : BaseGlideActivity() {
         }
 
         override fun onPageSelected(position: Int) {
-            bottomNavigationButton.setBackgroundColor(ContextCompat.getColor(this@MainActivity,R.color.colorPrimary))
-            bottomNavigationButton.itemTextColor=ColorStateList.valueOf(ContextCompat.getColor(this@MainActivity,R.color.white))
+            //bottomNavigationButton.setBackgroundColor(ContextCompat.getColor(this@MainActivity,R.color.colorPrimary))
+            //bottomNavigationButton.itemTextColor=ColorStateList.valueOf(ContextCompat.getColor(this@MainActivity,R.color.white))
             if (Build.VERSION.SDK_INT >= 21) {
+                window.navigationBarColor=ContextCompat.getColor(this@MainActivity,R.color.colorPrimary)
                 window.statusBarColor = when (position) {
                     1 -> {
                         //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
                         val color=(viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
-                        bottomNavigationButton.setBackgroundColor(color)
+                        window.navigationBarColor=color
+                        //bottomNavigationButton.setBackgroundColor(color)
                         color
                     }
                     else -> ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)

@@ -158,6 +158,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                 userCommentAddReplyBtn.backgroundTintList= ColorStateList.valueOf(color)
                 if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
                     window.statusBarColor=color
+                    window.navigationBarColor=color
                 }
             }
 
