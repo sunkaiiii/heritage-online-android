@@ -46,6 +46,7 @@ class MyMessageRecyclerAdapter(context:Context,data:List<PushMessageData>,glide:
         holder.userName.text=data.userName
         holder.replyContent.text=data.replyContent
         holder.originalReplyContent.text=data.originalReplyContent
+        holder.userImage.setImageBitmap(null)
         getUserImage(holder,data.userID)
     }
 

@@ -30,7 +30,7 @@ import com.example.sunkai.heritage.value.UNFOCUS
  * 搜索用户的RecyclerView的adapter
  * Created by sunkai on 2018/3/6.
  */
-class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context,datas,glide) {
+class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context, datas, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
@@ -60,11 +60,12 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setData(holder, data)
-        getUserImage(holder, data,position)
+        getUserImage(holder, data, position)
         setBtnClick(holder, data)
     }
 
     private fun setData(holder: Holder, data: SearchUserInfo) {
+        holder.focusBtnLayout.visibility = if (data.id == LoginActivity.userID) View.GONE else View.VISIBLE
         holder.userName.text = data.userName
         holder.focusBtnImg.setImageResource(if (data.checked) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
         holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
@@ -72,13 +73,13 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
     }
 
-    private fun getUserImage(holder: Holder, data: SearchUserInfo,position: Int) {
+    private fun getUserImage(holder: Holder, data: SearchUserInfo, position: Int) {
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 runOnUiThread {
-                    data.imageUrl=url
-                    datas[position]=data
+                    data.imageUrl = url
+                    datas[position] = data
                     glide.load(url).into(holder.userImage)
                 }
             }
@@ -141,7 +142,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>,gli
     }
 
     override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handlePersonAdapterItemClick(context,this)
+        HandleAdapterItemClickClickUtils.handlePersonAdapterItemClick(context, this)
     }
 
 }

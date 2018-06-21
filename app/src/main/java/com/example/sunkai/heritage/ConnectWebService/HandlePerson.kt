@@ -116,6 +116,8 @@ object HandlePerson : BaseSetting() {
     }
 
     fun AddFocus(userID: Int,focusID:Int):Boolean{
+        if(userID==focusID)
+            return false
         val getUrl="$URL/AddFocus?userID=$userID&focusID=$focusID"
         val result=PutGet(getUrl)
         return SUCCESS==result

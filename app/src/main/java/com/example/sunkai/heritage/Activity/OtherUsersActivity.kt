@@ -43,16 +43,16 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_users)
         settupWindowAnimations()
-        val data=intent.getSerializableExtra(DATA)
-        if(data is FollowInformation){
-            userID=data.focusFansID
+        val data = intent.getSerializableExtra(DATA)
+        if (data is FollowInformation) {
+            userID = data.focusFansID
             if (userID != NO_USERID) {
                 getUserAllInfo(data)
             }
         }
-        if(data is SearchUserInfo){
-            userID=data.id
-            if(userID!= NO_USERID){
+        if (data is SearchUserInfo) {
+            userID = data.id
+            if (userID != NO_USERID) {
                 getUserAllInfo(data)
             }
         }
@@ -75,31 +75,33 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         vp_activity_other_users.setOnClickListener(this)
     }
 
-    private fun setDataIntoView(userName:String,imageUrl:String?){
-        sign_name_textview.text=userName
-        if(!imageUrl.isNullOrEmpty()){
+    private fun setDataIntoView(userName: String, imageUrl: String?) {
+        sign_name_textview.text = userName
+        if (!imageUrl.isNullOrEmpty()) {
             glide.load(imageUrl).into(sign_in_icon)
         }
     }
-    private fun getUserAllInfo(searchUserData:SearchUserInfo){
-        setDataIntoView(searchUserData.userName,searchUserData.imageUrl)
+
+    private fun getUserAllInfo(searchUserData: SearchUserInfo) {
+        setDataIntoView(searchUserData.userName, searchUserData.imageUrl)
         requestAllUserInfo(searchUserData.id)
     }
-    private fun getUserAllInfo(userData:FollowInformation) {
-        setDataIntoView(userData.userName,userData.imageUrl)
+
+    private fun getUserAllInfo(userData: FollowInformation) {
+        setDataIntoView(userData.userName, userData.imageUrl)
         requestAllUserInfo(userData.focusFansID)
     }
 
-    private fun requestAllUserInfo(userID: Int){
+    private fun requestAllUserInfo(userID: Int) {
         requestHttp {
             val data = HandlePerson.GetUserAllInfo(userID)
             data?.let {
-                runOnUiThread({
+                runOnUiThread {
                     this.data = data
                     setViews(data)
                     getUserImage(userID, sign_in_icon)
                     checkPermissions(data)
-                })
+                }
             }
         }
     }
@@ -110,7 +112,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
             ONLYFOCUS -> {
                 ThreadPool.execute {
                     val result = judgeFocus(userID, LoginActivity.userID)
-                    if(isDestroy)return@execute
+                    if (isDestroy) return@execute
                     runOnUiThread {
                         if (result) {
                             setAdapter(userID)
@@ -131,7 +133,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
             ONLYFOCUS -> {
                 ThreadPool.execute {
                     val result = judgeFocus(userID, LoginActivity.userID)
-                    if(isDestroy)return@execute
+                    if (isDestroy) return@execute
                     runOnUiThread {
                         if (result) {
                             setViewsOnClick()
@@ -159,7 +161,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         ThreadPool.execute {
             val url = HandlePerson.GetUserImageURL(userID)
             url?.let {
-                if(isDestroy)return@execute
+                if (isDestroy) return@execute
                 runOnUiThread {
                     glide.load(url).into(photoView)
                 }
@@ -172,6 +174,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     }
 
     private fun setViews(data: UserInfo) {
+        addFocsFloatBtn.visibility = if (data.id == LoginActivity.userID) View.GONE else View.VISIBLE
         sign_name_textview.text = data.userName
         person_follow_number.text = data.focusNumber.toString()
         person_fans_number.text = data.fansNumber.toString()
@@ -184,12 +187,12 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         //设置按下时候的颜色
         addFocsFloatBtn.rippleColor = ContextCompat.getColor(this, if (data.checked) R.color.colorAccent else R.color.lightGrey)
         //给FloatActionButton着色
-        addFocsFloatBtn.backgroundTintList= ContextCompat.getColorStateList(this, if (data.checked) R.color.midGrey else R.color.colorAccent)
+        addFocsFloatBtn.backgroundTintList = ContextCompat.getColorStateList(this, if (data.checked) R.color.midGrey else R.color.colorAccent)
     }
 
 
     private fun setAdapter(userID: Int) {
-        val adapter = OtherPersonActivityRecyclerViewAdapter(this, userID, arrayListOf(),glide)
+        val adapter = OtherPersonActivityRecyclerViewAdapter(this, userID, arrayListOf(), glide)
         val layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 4)
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
@@ -208,7 +211,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         data?.let {
             ThreadPool.execute {
                 val result = if (data.checked) HandlePerson.CancelFocus(LoginActivity.userID, data.id) else HandlePerson.AddFocus(LoginActivity.userID, data.id)
-                if(isDestroy)return@execute
+                if (isDestroy) return@execute
                 runOnUiThread {
                     addFocsFloatBtn.isEnabled = true
                     if (result) {
@@ -318,7 +321,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     private fun closeImageView() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.GONE
-        addFocsFloatBtn.visibility = View.VISIBLE
+        addFocsFloatBtn.visibility = if(data?.id==LoginActivity.userID) View.GONE else View.VISIBLE
         if (vp_activity_other_users.visibility == View.VISIBLE) {
             vp_activity_other_users.visibility = View.GONE
             vp_activity_other_users.adapter = null
@@ -333,7 +336,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
             val id = adapter.datas[position]
             val url = HandleFind.GetUserCommentImageUrl(id)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
-                if(isDestroy)return@execute
+                if (isDestroy) return@execute
                 runOnUiThread {
                     val photoView = adapter.photoViewMap[position] ?: return@runOnUiThread
                     glide.load(url).into(photoView)
