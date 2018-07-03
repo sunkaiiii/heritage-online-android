@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.ConnectWebService
 import com.example.sunkai.heritage.Data.*
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 /**
@@ -69,7 +70,7 @@ object HandleMainFragment : BaseSetting() {
             return null
         }
         try{
-            return Gson().fromJson(result,BottomFolkNews::class.java)
+            return gsonInstance.fromJson(result,BottomFolkNews::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -78,7 +79,8 @@ object HandleMainFragment : BaseSetting() {
 
     fun GetBottomNewsDetailInfo(content:String):List<BottomNewsDetail>{
         try{
-            return fromJsonToList(content, Array<BottomNewsDetail>::class.java)
+            return gsonInstance.fromJson<List<BottomNewsDetail>>(content,object:TypeToken<List<BottomNewsDetail>>(){}.type)
+            //return fromJsonToList(content, Array<BottomNewsDetail>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

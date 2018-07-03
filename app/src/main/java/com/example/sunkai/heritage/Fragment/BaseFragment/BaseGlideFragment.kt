@@ -14,6 +14,7 @@ abstract class BaseGlideFragment: Fragment() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //glide不认androidx下的fragment，但是似乎编译能过
         glide= Glide.with(this)
 
     }

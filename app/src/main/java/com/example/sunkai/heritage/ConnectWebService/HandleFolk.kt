@@ -45,7 +45,7 @@ object HandleFolk : BaseSetting() {
         val getUrl="$URL/GetChannelFolkSingleInformation?id=$id"
         val result=PutGet(getUrl)
         if(result!= ERROR){
-            return Gson().fromJson(result,FolkData::class.java)
+            return gsonInstance.fromJson(result,FolkData::class.java)
         }
         return null
     }

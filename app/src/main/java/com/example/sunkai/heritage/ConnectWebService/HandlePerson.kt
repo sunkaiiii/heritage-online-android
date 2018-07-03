@@ -54,7 +54,7 @@ object HandlePerson : BaseSetting() {
             return null
         }
         try {
-            val data= Gson().fromJson(result, UserInfo::class.java)
+            val data= gsonInstance.fromJson(result, UserInfo::class.java)
             if(data.id==thisUserID){
                 data.checked=false
             }else{

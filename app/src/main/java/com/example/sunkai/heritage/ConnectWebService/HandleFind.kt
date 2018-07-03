@@ -90,7 +90,7 @@ object HandleFind : BaseSetting() {
         return if (ERROR == result) {
             IntArray(0)
         } else {
-            Gson().fromJson(result, IntArray::class.java)
+            gsonInstance.fromJson(result, IntArray::class.java)
         }
     }
 
@@ -135,7 +135,7 @@ object HandleFind : BaseSetting() {
             null
         } else {
             try {
-                Gson().fromJson(result, UserCommentData::class.java)
+                gsonInstance.fromJson(result, UserCommentData::class.java)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
