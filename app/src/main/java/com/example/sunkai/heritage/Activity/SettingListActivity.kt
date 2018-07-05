@@ -7,12 +7,12 @@ import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
-import androidx.core.widget.toast
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.*
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**

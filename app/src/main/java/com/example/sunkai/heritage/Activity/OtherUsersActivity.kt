@@ -262,7 +262,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
     private fun setViewsOnFonsAndFocusPermissionDenailClick() {
         sign_in_icon.setOnClickListener(this)
-        val onPermissionDenailListner = View.OnClickListener { MakeToast.MakeText(getString(R.string.fans_and_view_permission_denail)) }
+        val onPermissionDenailListner = View.OnClickListener { toast(R.string.fans_and_view_permission_denail) }
         person_follow_number.setOnClickListener(onPermissionDenailListner)
         person_fans_number.setOnClickListener(onPermissionDenailListner)
         person_follow.setOnClickListener(onPermissionDenailListner)

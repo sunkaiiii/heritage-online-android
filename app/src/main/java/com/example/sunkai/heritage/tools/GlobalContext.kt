@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.tools
 
 import android.app.Application
-import android.content.Context
 
 
 /**
@@ -14,8 +13,8 @@ class GlobalContext : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        MakeToast.initToast(this)
     }
-
 
     companion object {
         lateinit var instance: GlobalContext

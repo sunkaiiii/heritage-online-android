@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.tools
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.widget.Toast
 
 /**全局可调用的toast工具类
@@ -7,9 +9,27 @@ import android.widget.Toast
  */
 
 object MakeToast {
-    fun MakeText(toastText: String) {
-        Toast.makeText(GlobalContext.instance, toastText, Toast.LENGTH_SHORT).show()
+    private var toastInstance: Toast? = null
+
+    @Synchronized
+    fun toast(toastText: String) {
+        toastInstance?.setText(toastText)
+        toastInstance?.show()
     }
 
-    fun toast(toastText: String)= MakeText(toastText)
+    @Synchronized
+    fun toast(resID: Int) {
+        if (resID < 0) {
+            return
+        }
+        toastInstance?.setText(resID)
+        toastInstance?.show()
+    }
+
+
+    @SuppressLint("ShowToast")
+    fun initToast(application: Application) {
+        toastInstance = Toast.makeText(application.applicationContext, "", Toast.LENGTH_SHORT)
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
+import android.annotation.TargetApi
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -18,6 +19,7 @@ import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.PASSWORD
 import com.example.sunkai.heritage.value.USER_NAME
@@ -54,7 +56,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         initView()
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startAnimation() {
         val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
         window.enterTransition = slideRight
@@ -191,11 +193,11 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
                     intent.putExtra(USER_NAME, userName)
                     intent.putExtra(PASSWORD, userPassword)
                     setResult(SUCCESS, intent)
-                    MakeToast.MakeText("注册成功")
+                    toast("注册成功")
                     finish()
                 }
-                HAD_USER -> MakeToast.MakeText("已有该用户")
-                else -> MakeToast.MakeText("注册失败")
+                HAD_USER -> toast("已有该用户")
+                else -> toast("注册失败")
             }
             setViewsIsEnable()
         }

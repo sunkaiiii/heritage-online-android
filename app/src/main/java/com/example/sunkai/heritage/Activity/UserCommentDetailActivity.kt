@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import android.view.*
 import android.view.animation.AnimationUtils
 import androidx.core.transition.doOnEnd
-import androidx.core.widget.toast
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
@@ -29,6 +28,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.*
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
 /**
@@ -75,13 +75,14 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
         } else {
             //从我的消息页面进入的时候，只会传来帖子id，这时候要获取全部的内容
-            val id=intent.getIntExtra(ID,0)
-            commentID=id
+            val id = intent.getIntExtra(ID, 0)
+            commentID = id
             requestHttp {
-                if(LoginActivity.userID==0||id==0) finish()
-                val userCommentData=HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID,id)?:return@requestHttp
+                if (LoginActivity.userID == 0 || id == 0) finish()
+                val userCommentData = HandleFind.GetAllUserCommentInfoByID(LoginActivity.userID, id)
+                        ?: return@requestHttp
                 runOnUiThread {
-                    setUserCommentView(userCommentData,null)
+                    setUserCommentView(userCommentData, null)
                     showBackLinear()
                     getReplysInfo(commentID)
                 }
@@ -105,7 +106,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     private fun showBackLinear() {
         usercommentInformationLinear.visibility = View.VISIBLE
-        userCommentDetailToolbar.visibility=View.VISIBLE
+        userCommentDetailToolbar.visibility = View.VISIBLE
         val option = intent.getIntExtra(OPTION, COMMON_SHOW)
         if (option == ANIMATION_SHOW) {
             val animation = AnimationUtils.loadAnimation(this, R.anim.fade_in_quick)
@@ -143,22 +144,22 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun setUserCommentView(data: UserCommentData, image: ByteArray?) {
-        this.data=data
+        this.data = data
         informationTitle.text = data.commentTitle
         informationContent.text = data.commentContent
         informationReplyNum.text = data.replyNum.toString()
         title = data.userName
-        val simpleTarget=object : SimpleTarget<Drawable>(){
+        val simpleTarget = object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-                val color=resource.generateDarkColor()
+                val color = resource.generateDarkColor()
                 userCommentDetailToolbar.setBackgroundColor(color)
                 userCommentImage.setImageDrawable(resource)
                 usercommentInformationLinear.setBackgroundColor(color)
                 userCommentCollapsingToolbarLayout.setContentScrimColor(color)
-                userCommentAddReplyBtn.backgroundTintList= ColorStateList.valueOf(color)
-                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
-                    window.statusBarColor=color
-                    window.navigationBarColor=color
+                userCommentAddReplyBtn.backgroundTintList = ColorStateList.valueOf(color)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window.statusBarColor = color
+                    window.navigationBarColor = color
                 }
             }
 
@@ -168,7 +169,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         } else {
             glide.load(BaseSetting.URL + data.imageUrl).into(simpleTarget)
             userCommentImage.setOnClickListener {
-                ViewImageUtils.setViewImageClick(this,userCommentImage,data.imageUrl)
+                ViewImageUtils.setViewImageClick(this, userCommentImage, data.imageUrl)
             }
         }
     }
@@ -200,7 +201,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             android.R.id.home -> onBackPressed()
             R.id.user_comment_detail_item_delete -> deleteComment()
             R.id.user_comment_detail_item_edit -> {
-                val data=data
+                val data = data
                 data?.let {
                     val intent = Intent(this@UserCommentDetailActivity, ModifyUsercommentActivity::class.java)
                     intent.putExtra(DATA, data)
@@ -237,7 +238,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
             val datas = HandleFind.GetUserCommentReply(commentID)
             runOnUiThread {
                 onPostLoad()
-                val adapter = UserCommentReplyRecyclerAdapter(this, datas,glide)
+                val adapter = UserCommentReplyRecyclerAdapter(this, datas, glide)
                 userCommentReplyRecyclerView.adapter = adapter
             }
         }
@@ -255,7 +256,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun generateDialog(commentID: Int): AddUserCommentBottomDialog? {
-        val dialog = AddUserCommentBottomDialog(this, commentID,data?:return null)
+        val dialog = AddUserCommentBottomDialog(this, commentID, data ?: return null)
         dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
             override fun onAddUserReplySuccess(data: CommentReplyInformation) {
                 val adapter = userCommentReplyRecyclerView.adapter

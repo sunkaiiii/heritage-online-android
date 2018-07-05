@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.50'
-    ext.androidx_version='1.0.0-alpha3'
+    ext.androidx_version='1.0.0-beta01'
     repositories {
         jcenter()
         google()
