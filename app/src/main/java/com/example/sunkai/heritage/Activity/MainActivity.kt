@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -41,7 +42,7 @@ class MainActivity : BaseGlideActivity() {
     //让其他Activity可以访问MainActivity的方法，提供了一个弱引用
     companion object {
         var activityRef: WeakReference<MainActivity>? = null
-        var bottomNavigationRef:WeakReference<BottomNavigationView>?=null
+        var bottomNavigationRef: WeakReference<BottomNavigationView>? = null
         fun GetViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
@@ -66,7 +67,7 @@ class MainActivity : BaseGlideActivity() {
     override fun onStart() {
         super.onStart()
         //在onCreate里面初始化，Fragment并不能找到弱引用里引用的view，不知道为啥……
-        bottomNavigationRef= WeakReference(bottomNavigationButton)
+        bottomNavigationRef = WeakReference(bottomNavigationButton)
     }
 
 
@@ -97,7 +98,7 @@ class MainActivity : BaseGlideActivity() {
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
-        Log.d("javaname",TYPE_FOLK_HERITAGE)
+        Log.d("javaname", TYPE_FOLK_HERITAGE)
     }
 
     //重写onKeyDown方法，监听返回键
@@ -156,49 +157,53 @@ class MainActivity : BaseGlideActivity() {
         }
 
         override fun onPageSelected(position: Int) {
-            //bottomNavigationButton.setBackgroundColor(ContextCompat.getColor(this@MainActivity,R.color.colorPrimary))
-            //bottomNavigationButton.itemTextColor=ColorStateList.valueOf(ContextCompat.getColor(this@MainActivity,R.color.white))
+            val themeColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
+            bottomNavigationButton.itemTextColor = ColorStateList.valueOf(themeColor)
+            bottomNavigationButton.itemIconTintList = ColorStateList.valueOf(themeColor)
             if (Build.VERSION.SDK_INT >= 21) {
-                window.navigationBarColor=ContextCompat.getColor(this@MainActivity,R.color.colorPrimary)
+                window.navigationBarColor = themeColor
                 window.statusBarColor = when (position) {
                     1 -> {
                         //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
-                        val color=(viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
-                        window.navigationBarColor=color
-                        //bottomNavigationButton.setBackgroundColor(color)
+                        val color = (viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
+                        window.navigationBarColor = color
+                        bottomNavigationButton.itemTextColor = ColorStateList.valueOf(color)
+                        bottomNavigationButton.itemIconTintList = ColorStateList.valueOf(color)
                         color
                     }
-                    else -> ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
+                    else -> {
+                        ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
+                    }
                 }
-            }
-            val adapter = activityMainViewpager.adapter
-            if (adapter is adapter) {
-                val fragment = adapter.getItem(position)
-                if (fragment is BaseLazyLoadFragment) {
-                    fragment.lazyLoad()
+                val adapter = activityMainViewpager.adapter
+                if (adapter is adapter) {
+                    val fragment = adapter.getItem(position)
+                    if (fragment is BaseLazyLoadFragment) {
+                        fragment.lazyLoad()
+                    }
                 }
-            }
-            bottomNavigationButton.selectedItemId = when (position) {
-                0 -> R.id.main_layout
-                1 -> R.id.folk_layout
-                2 -> R.id.find_layout
-                3 -> R.id.person_layout
-                else -> R.id.main_layout
-            }
-            when(position){
-                0->{
-                    window.setBackgroundDrawableResource(R.color.white)
+                bottomNavigationButton.selectedItemId = when (position) {
+                    0 -> R.id.main_layout
+                    1 -> R.id.folk_layout
+                    2 -> R.id.find_layout
+                    3 -> R.id.person_layout
+                    else -> R.id.main_layout
                 }
-                else->{
-                    window.setBackgroundDrawable(null)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        window.exitTransition=null
+                when (position) {
+                    0 -> {
+                        window.setBackgroundDrawableResource(R.color.white)
+                    }
+                    else -> {
+                        window.setBackgroundDrawable(null)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            window.exitTransition = null
+                        }
                     }
                 }
             }
         }
-    }
 
+    }
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         activityMainViewpager.currentItem = when (item.itemId) {
             R.id.main_layout -> 0

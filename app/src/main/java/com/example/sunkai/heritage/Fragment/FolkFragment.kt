@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Fragment
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -30,6 +31,7 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.generateColor
 import com.example.sunkai.heritage.tools.generateTextColor
 import com.example.sunkai.heritage.value.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_folk.*
 import java.util.*
 
@@ -200,6 +202,13 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
                     tabayout.setTabTextColors(textColor, Color.WHITE)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         activity?.window?.navigationBarColor=color
+                    }
+                    if(activity is MainActivity){
+                        val navigationView=activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationButton)
+                        navigationView?.let{
+                            it.itemTextColor= ColorStateList.valueOf(color)
+                            it.itemIconTintList=ColorStateList.valueOf(color)
+                        }
                     }
                     setColors(color, resource)
                 }

@@ -29,6 +29,7 @@ import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.value.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
 /**
