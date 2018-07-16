@@ -31,6 +31,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
 
 
     private var firstSpinnerSwitch=true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_find, container, false)
@@ -41,6 +42,10 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
         if(savedInstanceState==null) {
             initview()
         }
+    }
+
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.fragmentFindToolbar)
     }
 
     override fun onRestoreFragmentLoadInformation(){

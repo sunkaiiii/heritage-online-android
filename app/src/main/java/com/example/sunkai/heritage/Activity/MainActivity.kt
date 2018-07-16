@@ -63,6 +63,7 @@ class MainActivity : BaseGlideActivity() {
         if (sharePrefrence.getBoolean(PUSH_SWITCH, false)) {
             startPushService()
         }
+        setIgnoreToolbar(true)
     }
 
     override fun onStart() {

@@ -7,14 +7,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
-import android.view.*
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
@@ -25,7 +22,6 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.runOnUiThread
-import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
 import com.example.sunkai.heritage.value.SEARCH_TYPE
 import com.example.sunkai.heritage.value.TYPE_BOTTOM_NEWS
 import com.example.sunkai.heritage.value.TYPE_NEWS

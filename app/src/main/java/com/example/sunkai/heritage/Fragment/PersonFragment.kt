@@ -8,7 +8,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
 import android.view.*
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.children
 import androidx.core.view.forEach
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
@@ -19,6 +21,7 @@ import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.android.synthetic.main.user_view.*
@@ -59,6 +62,14 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         lazyLoad()
     }
 
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.fragment_person_my_tiezi)
+        changeThemeWidge.add(R.id.fragment_person_my_like)
+        changeThemeWidge.add(R.id.fragment_person_my_collect)
+        changeThemeWidge.add(R.id.fragment_person_my_message)
+        changeThemeWidge.add(R.id.person_fragment_setting)
+    }
+
     private fun initview() {
         setClick(fragmentPersonLinearLayout)
         val activity = activity
@@ -71,6 +82,17 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         }
     }
 
+    private fun setThemeColor(viewGroup: ViewGroup,lightThemeColor:Int){
+        viewGroup.forEach {
+            if(it is ViewGroup){
+                setThemeColor(it,lightThemeColor)
+            }else{
+                if (it is TextView) {
+                    it.setTextColor(lightThemeColor)
+                }
+            }
+        }
+    }
     private fun setClick(viewGroup: ViewGroup) {
         viewGroup.forEach { if (it is ViewGroup) setClick(it) else it.setOnClickListener(this) }
     }

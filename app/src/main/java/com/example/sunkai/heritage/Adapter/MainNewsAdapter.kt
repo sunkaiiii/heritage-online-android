@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
@@ -26,8 +25,8 @@ import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.ViewImageUtils
-import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.tintTextView
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.HOST
 import com.example.sunkai.heritage.value.MAIN_PAGE_CATEGORY_NEWS_IMAGE
@@ -83,6 +82,7 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
     private fun setThemeColor(holder: Holder) {
         val themeColor = getThemeColor()
         holder.seeMoreTextview.setTextColor(themeColor)
+        tintTextView(holder.seeMoreTextview)
     }
 
 

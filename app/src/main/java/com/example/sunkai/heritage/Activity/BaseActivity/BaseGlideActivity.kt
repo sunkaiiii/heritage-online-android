@@ -18,7 +18,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     protected lateinit var glide: RequestManager
     private val runnableList: MutableList<Runnable>
     protected var changeThemeWidge:MutableList<Int>
-
+    private var ignoreToolbar=false
     init {
         runnableList = arrayListOf()
         changeThemeWidge= arrayListOf()
@@ -38,7 +38,9 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val color = getThemeColor()
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
+        if(!ignoreToolbar) {
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = color
             window.navigationBarColor = color
@@ -71,6 +73,9 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         ThreadPool.execute(runnable)
     }
 
+    protected fun setIgnoreToolbar(ignore:Boolean){
+        this.ignoreToolbar=ignore
+    }
     open fun setNeedChangeThemeColorWidget(){}
 
 }
