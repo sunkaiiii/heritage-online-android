@@ -23,11 +23,11 @@ fun Drawable.generateDarkColor():Int{
 }
 
 fun Bitmap.generateColor():Int{
-    return Palette.from(this).generate().getDominantColor(ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimaryDark))
+    return Palette.from(this).generate().getDominantColor(getThemeColor())
 }
 
 fun Bitmap.generateDarkColor():Int{
-    return Palette.from(this).generate().getDarkVibrantColor(ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary))
+    return Palette.from(this).generate().getDarkVibrantColor(getThemeColor())
 }
 
 fun Drawable.generateTextColor():Int{
@@ -36,5 +36,5 @@ fun Drawable.generateTextColor():Int{
 }
 
 fun Bitmap.generateTextColor():Int{
-    return Palette.from(this).generate().dominantSwatch?.titleTextColor?:ContextCompat.getColor(GlobalContext.instance,R.color.colorPrimary)
+    return Palette.from(this).generate().dominantSwatch?.titleTextColor?: getThemeColor()
 }

@@ -197,17 +197,21 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 if (index == tabayout.selectedTabPosition) {
+                    val activity=activity?:return
                     val color = resource.generateColor()
                     val textColor = resource.generateTextColor()
                     tabayout.setTabTextColors(textColor, Color.WHITE)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        activity?.window?.navigationBarColor=color
+                        activity.window?.navigationBarColor=color
                     }
                     if(activity is MainActivity){
-                        val navigationView=activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationButton)
+                        val navigationView=activity.findViewById<BottomNavigationView>(R.id.bottomNavigationButton)
                         navigationView?.let{
-                            it.itemTextColor= ColorStateList.valueOf(color)
-                            it.itemIconTintList=ColorStateList.valueOf(color)
+                            val colors= arrayOf(color,ContextCompat.getColor(activity,R.color.midGrey)).toIntArray()
+                            val states=arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
+                            val colorStateList=ColorStateList(states,colors)
+                            it.itemTextColor= colorStateList
+                            it.itemIconTintList=colorStateList
                         }
                     }
                     setColors(color, resource)

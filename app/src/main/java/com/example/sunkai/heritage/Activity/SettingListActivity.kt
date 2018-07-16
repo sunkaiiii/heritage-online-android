@@ -1,8 +1,10 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
@@ -13,6 +15,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.Views.RoundedImageView
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**
@@ -27,6 +30,7 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         setContentView(R.layout.activity_setting_list)
         initview()
         checkUserPermission()
+        readThemeColorList()
     }
 
     private fun initview() {
@@ -56,6 +60,24 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
 
     }
 
+    private fun readThemeColorList(){
+        THEME_COLOR_ARRAYS.forEach {
+            val color= Color.parseColor(it)
+            val colorImageView=RoundedImageView(this)
+            val layputParames= ViewGroup.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layputParames.height=80
+            layputParames.width=80
+            colorImageView.layoutParams=layputParames
+            colorImageView.setBackgroundColor(color)
+            colorImageView.setOnClickListener {
+                getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
+                    putInt(THEME_COLOR,color)
+                }
+            }
+            themeColorList.addView(colorImageView)
+        }
+    }
+
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView?.id) {
             R.id.pushSwitch -> setPushStatus(isChecked)
@@ -79,8 +101,7 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
             DENIALD, ONLYFOCUS, ALL -> {
                 spinner.isEnabled = false
                 requestHttp {
-                    val result: Boolean
-                    result = when (id) {
+                    val result: Boolean = when (id) {
                         R.id.permissionSpinner -> HandlePerson.SetUserPermission(LoginActivity.userID, position - 1)
                         R.id.focusAndFansViewPermissionSpinner -> HandlePerson.SetUserFocusAndFansViewPermission(LoginActivity.userID, position - 1)
                         else -> false

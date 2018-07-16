@@ -26,6 +26,7 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import com.example.sunkai.heritage.value.TYPE_FOLK_HERITAGE
@@ -70,7 +71,6 @@ class MainActivity : BaseGlideActivity() {
         bottomNavigationRef = WeakReference(bottomNavigationButton)
     }
 
-
     private var mBoundService: PushService? = null
     private var mShouldBind = false
     private val mConnection = object : ServiceConnection {
@@ -90,6 +90,13 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun initViews() {
+        val themeColor = getThemeColor()
+        val midGrey = ContextCompat.getColor(this@MainActivity, R.color.midGrey)
+        val colors = arrayOf(themeColor, midGrey).toIntArray()
+        val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
+        val colorStateList = ColorStateList(states, colors)
+        bottomNavigationButton.itemTextColor = colorStateList
+        bottomNavigationButton.itemIconTintList = colorStateList
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
@@ -157,9 +164,13 @@ class MainActivity : BaseGlideActivity() {
         }
 
         override fun onPageSelected(position: Int) {
-            val themeColor = ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
-            bottomNavigationButton.itemTextColor = ColorStateList.valueOf(themeColor)
-            bottomNavigationButton.itemIconTintList = ColorStateList.valueOf(themeColor)
+            val themeColor = getThemeColor()
+            val midGrey = ContextCompat.getColor(this@MainActivity, R.color.midGrey)
+            val colors = arrayOf(themeColor, midGrey).toIntArray()
+            val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
+            val colorStateList = ColorStateList(states, colors)
+            bottomNavigationButton.itemTextColor = colorStateList
+            bottomNavigationButton.itemIconTintList = colorStateList
             if (Build.VERSION.SDK_INT >= 21) {
                 window.navigationBarColor = themeColor
                 window.statusBarColor = when (position) {
@@ -167,12 +178,15 @@ class MainActivity : BaseGlideActivity() {
                         //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
                         val color = (viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
                         window.navigationBarColor = color
-                        bottomNavigationButton.itemTextColor = ColorStateList.valueOf(color)
-                        bottomNavigationButton.itemIconTintList = ColorStateList.valueOf(color)
+                        val folkColors = arrayOf(color, midGrey).toIntArray()
+                        val folkStates = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
+                        val folkColorStateList = ColorStateList(folkStates, folkColors)
+                        bottomNavigationButton.itemTextColor = folkColorStateList
+                        bottomNavigationButton.itemIconTintList = folkColorStateList
                         color
                     }
                     else -> {
-                        ContextCompat.getColor(applicationContext, R.color.colorPrimaryDark)
+                        themeColor
                     }
                 }
                 val adapter = activityMainViewpager.adapter

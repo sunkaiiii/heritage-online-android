@@ -27,6 +27,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.HOST
 import com.example.sunkai.heritage.value.MAIN_PAGE_CATEGORY_NEWS_IMAGE
@@ -69,13 +70,19 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
         secondlyView?.forEach {
             it.image.setImageBitmap(null)
         }
-        getCategoryImage(position, holder.categoryBackGroundImageView, holder.linearLayout, holder.seeMoreTextview)
+        setThemeColor(holder)
+        getCategoryImage(position, holder.categoryBackGroundImageView)
         setData(holder, position)
         setCardClick(position, holder)
     }
 
-    private fun getCategoryImage(position: Int, imageView: ImageView, linearLayout: LinearLayout, seeMoreTextview: TextView) {
-        glide.load(HOST + "/img/main_news_divide_img/" + MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(CategoryImageSimpleTarget(imageView, linearLayout, seeMoreTextview))
+    private fun getCategoryImage(position: Int, imageView: ImageView) {
+        glide.load(HOST + "/img/main_news_divide_img/" + MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(CategoryImageSimpleTarget(imageView))
+    }
+
+    private fun setThemeColor(holder: Holder) {
+        val themeColor = getThemeColor()
+        holder.seeMoreTextview.setTextColor(themeColor)
     }
 
 
@@ -141,14 +148,11 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
 
     }
 
-    private class CategoryImageSimpleTarget(val imageView: ImageView, val linearLayout: LinearLayout, val seeMoreTextView: TextView) : SimpleTarget<Drawable>() {
+    private class CategoryImageSimpleTarget(val imageView: ImageView) : SimpleTarget<Drawable>() {
         override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
-            val darkColor = resource.generateDarkColor()
             val animation = AnimationUtils.loadAnimation(GlobalContext.instance, R.anim.fade_in_quick)
             imageView.setImageDrawable(resource)
             imageView.startAnimation(animation)
-            linearLayout.children.forEach { it.findViewById<TextView>(R.id.news_item_title)?.setTextColor(darkColor) }
-            seeMoreTextView.setTextColor(darkColor)
         }
     }
 }

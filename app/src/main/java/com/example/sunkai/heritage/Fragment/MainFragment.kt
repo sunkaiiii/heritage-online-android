@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import android.view.*
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
@@ -34,10 +37,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 class MainFragment : BaseGlideFragment() {
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_main, container, false)
+    }
+
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.mainPageTabLayout)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +60,14 @@ class MainFragment : BaseGlideFragment() {
         if (activity is AppCompatActivity) {
             activity.setSupportActionBar(fragmentMainToolbar)
             setHasOptionsMenu(true)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val activity=activity?:return
+        if(activity is AppCompatActivity){
+            activity.supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
 

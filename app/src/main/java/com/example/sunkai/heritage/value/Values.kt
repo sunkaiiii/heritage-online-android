@@ -78,6 +78,7 @@ const val IMAGE = "image"
 const val IS_INTO = "isInto"
 const val READ = "r"
 const val SEARCH_TYPE="searchType"
+const val THEME_COLOR="theme_color"
 val TYPE_NEWS=CreateSearchAllNewsSearchAdapter::class.java.name!!
 val TYPE_BOTTOM_NEWS=CreateBottomActivitySearchAdapter::class.java.name!!
 val TYPE_COMMENT=CreateSearchCommentAdapter::class.java.name!!
@@ -86,7 +87,10 @@ val TYPE_USER=CreateSearchUserAdapter::class.java.name!!
 const val SEARCH_SHAREPREF_NAME="search_info"
 const val IMAGE_URL="image_url"
 typealias TransitionPair= Pair<View, String>
-
+const val THEME_COLOR_PUEPLE="#850091"
+const val THEME_COLOR_GREEN="#009100"
+const val THEME_COLOR_PINK="#b30062"
+val THEME_COLOR_ARRAYS= arrayOf(THEME_COLOR_PUEPLE, THEME_COLOR_GREEN, THEME_COLOR_PINK)
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误
 val GRID_LAYOUT_DESTINY = if (GlobalContext.instance.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)

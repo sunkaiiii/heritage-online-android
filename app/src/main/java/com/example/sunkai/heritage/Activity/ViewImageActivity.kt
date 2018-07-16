@@ -1,11 +1,10 @@
 package com.example.sunkai.heritage.Activity
 
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import android.transition.Fade
-import android.view.View
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
 import com.example.sunkai.heritage.R
@@ -19,36 +18,41 @@ class ViewImageActivity : BaseGlideActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_image)
-        setWindowFullScreen()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowAnimation()
-        }
+        setWindowAnimation()
         setPhotoViewClickAction()
         getImage()
     }
-    private fun getImage(){
-        val imageUrl=intent.getStringExtra(IMAGE_URL)
-        glide.load(BaseSetting.URL+imageUrl).into(activityViewImage)
+
+    override fun onStart() {
+        super.onStart()
+        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        setWindowFullScreen()
     }
 
-    private fun setPhotoViewClickAction(){
+    private fun getImage() {
+        val imageUrl = intent.getStringExtra(IMAGE_URL)
+        glide.load(BaseSetting.URL + imageUrl).into(activityViewImage)
+    }
+
+    private fun setPhotoViewClickAction() {
         activityViewImage.setOnClickListener {
-            if(activityViewImage.scale==1.0f){
+            if (activityViewImage.scale == 1.0f) {
                 onBackPressed()
-            }else{
-                activityViewImage.setScale(1.0f,true)
+            } else {
+                activityViewImage.setScale(1.0f, true)
             }
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setWindowAnimation(){
-        val fade=Fade()
-        window.enterTransition=fade
-        window.exitTransition=fade
+    private fun setWindowAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val fade = Fade()
+            window.enterTransition = fade
+            window.exitTransition = fade
+        }
     }
 
-    private fun setWindowFullScreen(){
+    private fun setWindowFullScreen() {
         WindowHelper.setWindowFullScreen(this)
     }
 }

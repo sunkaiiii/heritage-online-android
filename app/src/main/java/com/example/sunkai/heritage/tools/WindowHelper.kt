@@ -23,6 +23,7 @@ object WindowHelper {
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 activity.window.navigationBarColor = Color.TRANSPARENT
+                activity.window.statusBarColor=Color.TRANSPARENT
             }
             decorView.systemUiVisibility = option
         }
