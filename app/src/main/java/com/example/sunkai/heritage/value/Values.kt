@@ -88,9 +88,20 @@ const val SEARCH_SHAREPREF_NAME="search_info"
 const val IMAGE_URL="image_url"
 typealias TransitionPair= Pair<View, String>
 const val THEME_COLOR_PUEPLE="#850091"
-const val THEME_COLOR_GREEN="#009100"
+const val THEME_COLOR_GREEN="#26a69a"
 const val THEME_COLOR_PINK="#b30062"
-val THEME_COLOR_ARRAYS= arrayOf(THEME_COLOR_PUEPLE, THEME_COLOR_GREEN, THEME_COLOR_PINK)
+const val THEME_SUNLIGHT_ORANGE="#ff7043"
+const val THEME_HIGHLEVEL_GREY="#9e9e9e"
+const val THEME_PEACE_BLUE_GREY="#607d8b"
+const val THEME_WATER_PINK="#f8bbd0"
+const val THEME_WATER_ORANGE="#ffab91"
+const val THEME_LIGHT_BLUE="#b3e5fc"
+const val THEME_ZHIHU_BLUE="#1565c0"
+const val THEME_METAL_BLACK="#263238"
+const val THEME_ROCK_BLACK="#212121"
+val THEME_COLOR_ARRAYS= arrayOf(THEME_COLOR_PUEPLE, THEME_COLOR_GREEN, THEME_COLOR_PINK,THEME_SUNLIGHT_ORANGE
+        ,THEME_HIGHLEVEL_GREY,THEME_PEACE_BLUE_GREY,THEME_WATER_PINK,THEME_WATER_ORANGE,THEME_LIGHT_BLUE,THEME_ZHIHU_BLUE
+        ,THEME_METAL_BLACK,THEME_ROCK_BLACK)
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误
 val GRID_LAYOUT_DESTINY = if (GlobalContext.instance.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)

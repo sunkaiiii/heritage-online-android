@@ -38,6 +38,16 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        changeWidgeTheme()
+    }
+
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.seeMoreNewsActivityToolbar)
+        changeThemeWidge.add(R.id.seeMoreNewsTablayout)
+    }
+
     private fun initView() {
         setSupportActionBar(seeMoreNewsActivityToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -47,12 +57,10 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
     }
 
 
-
-
     private fun initTabLayout() {
         seeMoreNewsTablayout.setupWithViewPager(seeMoreNewsViewpager)
         seeMoreNewsTablayout.tabMode = com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
-        seeMoreNewsTablayout.setTabTextColors(ContextCompat.getColor(this,R.color.normalGrey), Color.WHITE)
+        seeMoreNewsTablayout.setTabTextColors(ContextCompat.getColor(this, R.color.normalGrey), Color.WHITE)
     }
 
     private fun initViewPager(adapter: SeeMoreNewsViewpagerAdapter) {
@@ -70,7 +78,6 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
         seeMoreNewsViewpager.offscreenPageLimit = CATEGORIES.size
         seeMoreNewsViewpager.adapter = adapter
     }
-
 
 
     private fun setPositionToSelectCategory(category: String) {

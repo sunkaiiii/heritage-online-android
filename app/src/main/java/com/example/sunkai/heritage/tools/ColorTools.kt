@@ -12,27 +12,43 @@ import com.example.sunkai.heritage.value.THEME_COLOR
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 
-fun getThemeColor(): Int {
-    return GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
-}
+/**
+ * 2018/7/17
+ * 用于处理主题切换的工具类
+ */
 
-fun getLightThemeColor(): Int {
-    val color = getThemeColor()
-    val hsvArray=FloatArray(3)
-    Color.colorToHSV(color,hsvArray)
-    hsvArray[1]-=0.25f
-    hsvArray[2]+=0.25f
-    return Color.HSVToColor(hsvArray)
+private var themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+private var darkThemeColor = getDarkerColor(getThemeColor())
+private var lightThemeColor = getLighterColor(getThemeColor())
+
+fun getThemeColor(): Int {
+    return themeColor
 }
 
 fun getDarkThemeColor(): Int {
-    val color = getThemeColor()
+    return darkThemeColor
+}
+
+fun getLightThemeColor(): Int {
+    return lightThemeColor
+}
+
+fun getDarkerColor(color: Int): Int {
     val hsvArray = FloatArray(3)
     Color.colorToHSV(color, hsvArray)
-    hsvArray[1] += 0.3f
-    hsvArray[2] -= 0.3f
+    hsvArray[1] += 0.25f
+    hsvArray[2] -= 0.25f
     return Color.HSVToColor(hsvArray)
 }
+
+fun getLighterColor(color: Int): Int {
+    val hsvArray = FloatArray(3)
+    Color.colorToHSV(color, hsvArray)
+    hsvArray[1] -= 0.25f
+    hsvArray[2] += 0.25f
+    return Color.HSVToColor(hsvArray)
+}
+
 
 fun tintTextView(textView: TextView) {
     val drawalbeList = textView.compoundDrawables
@@ -53,5 +69,5 @@ fun tintTablayout(tabLayout: TabLayout) {
 
 fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
     floatActionButton.backgroundTintList = ColorStateList.valueOf(getLightThemeColor())
-    floatActionButton.rippleColor= getThemeColor()
+    floatActionButton.rippleColor = getThemeColor()
 }

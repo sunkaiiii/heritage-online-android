@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage.Activity
 
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
@@ -13,6 +15,7 @@ import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.toByteArray
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
 
@@ -31,6 +34,9 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_find_comment)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            add_comment_image.imageTintList= ColorStateList.valueOf(getThemeColor())
+        }
     }
 
     private fun submit() {

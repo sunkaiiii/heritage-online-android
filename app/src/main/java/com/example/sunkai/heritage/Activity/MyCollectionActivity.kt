@@ -26,6 +26,10 @@ class MyCollectionActivity : BaseAutoLoginActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.myCollectTabLayout)
+    }
+
     private fun setupViewPager() {
         val adapter = MyCollectionViewpagerAdpater(supportFragmentManager)
         for ((index, typeName) in collectionTypes.withIndex()) {
