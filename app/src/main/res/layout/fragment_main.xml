@@ -15,6 +15,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:background="@color/midGrey"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll">
@@ -46,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:background="@color/colorPrimary"
+            android:background="@color/midGrey"
             app:tabSelectedTextColor="@color/white"
             app:tabTextColor="@color/normalGrey" />
     </androidx.viewpager.widget.ViewPager>

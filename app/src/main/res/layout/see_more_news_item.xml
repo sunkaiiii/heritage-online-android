@@ -16,6 +16,7 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:scaleType="centerCrop"
+            android:src="@color/lightGrey"
             android:contentDescription="@string/no_mean_content"/>
 
         <LinearLayout

@@ -30,7 +30,7 @@
                     android:layout_height="match_parent"
                     android:alpha="0.9"
                     android:scaleType="centerCrop"
-                    android:src="@color/colorPrimary" />
+                    android:src="@color/midGrey" />
 
                 <TextView
                     android:id="@+id/main_news_card_category"

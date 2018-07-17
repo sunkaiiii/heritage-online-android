@@ -7,6 +7,8 @@ import android.widget.TextView
 import com.example.sunkai.heritage.Dialog.Base.BaseDialogFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.getDarkThemeColor
+import com.example.sunkai.heritage.tools.getThemeColor
 
 /**
  * 通用的提示框，用于替代AlertDialog
@@ -47,6 +49,8 @@ class NormalWarningDialog : BaseDialogFragment() {
             submit = view.findViewById(R.id.warning_submit)
             cancel = view.findViewById(R.id.warning_cancel)
             progressBar=view.findViewById(R.id.warning_progress)
+            title.setTextColor(getDarkThemeColor())
+            submit.setTextColor(getThemeColor())
         }
     }
 

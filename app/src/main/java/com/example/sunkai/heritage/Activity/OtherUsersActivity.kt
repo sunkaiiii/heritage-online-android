@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import androidx.transition.Fade
@@ -27,6 +28,8 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.getLightThemeColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_other_users.*
@@ -185,9 +188,9 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     private fun setFloatBtnState(data: UserInfo) {
         addFocsFloatBtn.setImageResource(if (data.checked) R.drawable.ic_remove_white_24dp else R.drawable.ic_add_white_24dp)
         //设置按下时候的颜色
-        addFocsFloatBtn.rippleColor = ContextCompat.getColor(this, if (data.checked) R.color.colorAccent else R.color.lightGrey)
+        addFocsFloatBtn.rippleColor = if (data.checked) getThemeColor() else ContextCompat.getColor(this, R.color.lightGrey)
         //给FloatActionButton着色
-        addFocsFloatBtn.backgroundTintList = ContextCompat.getColorStateList(this, if (data.checked) R.color.midGrey else R.color.colorAccent)
+        addFocsFloatBtn.backgroundTintList = if (data.checked) ContextCompat.getColorStateList(this, R.color.midGrey) else ColorStateList.valueOf(getLightThemeColor())
     }
 
 
@@ -321,7 +324,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     private fun closeImageView() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.GONE
-        addFocsFloatBtn.visibility = if(data?.id==LoginActivity.userID) View.GONE else View.VISIBLE
+        addFocsFloatBtn.visibility = if (data?.id == LoginActivity.userID) View.GONE else View.VISIBLE
         if (vp_activity_other_users.visibility == View.VISIBLE) {
             vp_activity_other_users.visibility = View.GONE
             vp_activity_other_users.adapter = null

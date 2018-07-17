@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.SEARCH_TYPE
 import com.example.sunkai.heritage.value.TYPE_BOTTOM_NEWS

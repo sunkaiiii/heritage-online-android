@@ -5,23 +5,26 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
 
 abstract class BaseGlideActivity : AppCompatActivity() {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
     private val runnableList: MutableList<Runnable>
-    protected var changeThemeWidge:MutableList<Int>
-    private var ignoreToolbar=false
+    protected var changeThemeWidge: MutableList<Int>
+    private var ignoreToolbar = false
+
     init {
         runnableList = arrayListOf()
-        changeThemeWidge= arrayListOf()
+        changeThemeWidge = arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,20 +36,27 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         glide = Glide.with(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setNeedChangeThemeColorWidget()
+        changeWidgeTheme()
     }
 
-    override fun onStart() {
-        super.onStart()
+    private fun changeWidgeTheme() {
         val color = getThemeColor()
-        if(!ignoreToolbar) {
+        val darkColor= getDarkThemeColor()
+        if (!ignoreToolbar) {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = color
+            window.statusBarColor = darkColor
             window.navigationBarColor = color
         }
         changeThemeWidge.forEach {
-            findViewById<View>(it).setBackgroundColor(color)
+            val view = findViewById<View>(it)
+            when (view) {
+                is TextView -> tintTextView(view)
+                is TabLayout -> tintTablayout(view)
+                is FloatingActionButton -> tintFloatActionButton(view)
+                else -> view?.setBackgroundColor(color)
+            }
         }
     }
 
@@ -73,9 +83,10 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         ThreadPool.execute(runnable)
     }
 
-    protected fun setIgnoreToolbar(ignore:Boolean){
-        this.ignoreToolbar=ignore
+    protected fun setIgnoreToolbar(ignore: Boolean) {
+        this.ignoreToolbar = ignore
     }
-    open fun setNeedChangeThemeColorWidget(){}
+
+    open fun setNeedChangeThemeColorWidget() {}
 
 }

@@ -26,6 +26,7 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
@@ -66,9 +67,10 @@ class MainActivity : BaseGlideActivity() {
         setIgnoreToolbar(true)
     }
 
-    override fun onStart() {
-        super.onStart()
-        //在onCreate里面初始化，Fragment并不能找到弱引用里引用的view，不知道为啥……
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        //当window建立起来之后，初始化里面的view
         bottomNavigationRef = WeakReference(bottomNavigationButton)
     }
 
@@ -106,7 +108,6 @@ class MainActivity : BaseGlideActivity() {
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
-        Log.d("javaname", TYPE_FOLK_HERITAGE)
     }
 
     //重写onKeyDown方法，监听返回键
@@ -187,7 +188,7 @@ class MainActivity : BaseGlideActivity() {
                         color
                     }
                     else -> {
-                        themeColor
+                        getDarkThemeColor()
                     }
                 }
                 val adapter = activityMainViewpager.adapter

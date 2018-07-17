@@ -31,6 +31,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_folk_info)
+        setIgnoreToolbar(true)
         initView()
         val from = intent.getStringExtra(FROM)
         when (from) {
@@ -39,7 +40,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
                 setDatasToView(data)
                 id = data.id
             }
-            //从全部非遗的页面进入，使用lite的数据先初始化，然后获取非遗信息
+        //从全部非遗的页面进入，使用lite的数据先初始化，然后获取非遗信息
             ALL_FOLK_INFO_ACTIVITY -> {
                 val data = intent.getSerializableExtra(DATA) as FolkDataLite
                 //使用lite的数据初始化完整的数据，并展示，同时后台读取全部的数据
@@ -67,7 +68,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     private fun setDatasToView(data: ClassifyDivideData) {
         glide.load(HOST + data.img).into(target)
         join_activity_img.setOnClickListener {
-            ViewImageUtils.setViewImageClick(this,join_activity_img,data.img)
+            ViewImageUtils.setViewImageClick(this, join_activity_img, data.img)
         }
         activityJoinCollapsingToolbar.title = data.title
         joinActivityTime.text = getString(R.string.apply_time) + data.time
@@ -85,7 +86,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
             activityInformaitonTextBackground.setBackgroundColor(color)
             if (Build.VERSION.SDK_INT >= 21) {
                 window.statusBarColor = color
-                window.navigationBarColor=color
+                window.navigationBarColor = color
             }
             join_activity_img.setImageDrawable(drawable)
         }

@@ -12,6 +12,7 @@
         android:id="@+id/activit_join_app_bar"
         android:layout_width="match_parent"
         android:layout_height="350dp"
+        android:background="@color/transparent_full"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -21,7 +22,6 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:collapsedTitleGravity="start"
-            app:contentScrim="?attr/colorPrimary"
             app:expandedTitleGravity="start|bottom"
             app:expandedTitleMarginBottom="24dp"
             app:expandedTitleTextAppearance="@style/ExpandedAppBarSize"

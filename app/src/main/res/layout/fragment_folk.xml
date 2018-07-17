@@ -14,6 +14,7 @@
             android:id="@+id/fragment_main_collapsing_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/lightGrey"
             android:fitsSystemWindows="true"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -65,12 +66,13 @@
         android:id="@+id/mainTabContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/midBrown"
+            android:background="@color/midGrey"
             app:tabSelectedTextColor="@color/white"
             app:tabTextAppearance="@style/MainFragmentTabLayoutSize"
             app:tabTextColor="@color/normalGrey" />

@@ -24,6 +24,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:src="@color/lightGrey"
             android:contentDescription="@string/no_mean_content"
             android:scaleType="centerCrop" />
 

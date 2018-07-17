@@ -23,10 +23,8 @@ class WelcomeActivity : BaseGlideActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawable(null)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setContentView(R.layout.activity_welcome)
         WindowHelper.setWindowFullScreen(this)
+        setContentView(R.layout.activity_welcome)
         //判断是否是第一次启动，如果是第一次启动则显示是否打开推送的弹窗
         if (getSharedPreferences(SETTING, Context.MODE_PRIVATE).getInt(START_COUNT, FIRST_OPEN) == FIRST_OPEN) {
             getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
@@ -39,6 +37,7 @@ class WelcomeActivity : BaseGlideActivity() {
             goToLogin()
         }
     }
+
 
     private fun showDialog() {
         val dialog = PushDialog()

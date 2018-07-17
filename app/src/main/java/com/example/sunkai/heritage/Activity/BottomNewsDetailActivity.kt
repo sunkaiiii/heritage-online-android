@@ -13,6 +13,7 @@ import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
 import com.example.sunkai.heritage.Data.BottomFolkNewsLite
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
@@ -65,6 +66,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
     }
 
     private fun setDataToView(data: BottomFolkNewsLite) {
+        bottomNewsDetailTime.setTextColor(getThemeColor())
         bottomNewsDetailTitle.text = data.title
         bottomNewsDetailTime.text = data.time
     }

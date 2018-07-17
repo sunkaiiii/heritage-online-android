@@ -63,7 +63,6 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder.categoryBackGroundImageView.setImageBitmap(null)
         holder.categoryTextView.text = CATEGORIES[position]
         val secondlyView = secondViewHolders[position]
         secondlyView?.forEach {

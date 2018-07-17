@@ -21,13 +21,10 @@ class ViewImageActivity : BaseGlideActivity() {
         setWindowAnimation()
         setPhotoViewClickAction()
         getImage()
+        setWindowFullScreen()
+        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
     }
 
-    override fun onStart() {
-        super.onStart()
-        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
-        setWindowFullScreen()
-    }
 
     private fun getImage() {
         val imageUrl = intent.getStringExtra(IMAGE_URL)

@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.Data.FolkNewsLite
 import com.example.sunkai.heritage.Data.MainPageSlideNews
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CATEGORY
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TYPE_MAIN
@@ -38,6 +39,7 @@ class NewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
         supportActionBar?.title=title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
+
 
     private fun setupWindowAnimations(data:Serializable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -66,6 +68,7 @@ class NewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
     }
 
     private fun setDataToView(data:Serializable){
+        news_detail_time.setTextColor(getThemeColor())
         if(data is FolkNewsLite) {
             news_detail_title.text = data.title
             news_detail_time.text = data.time

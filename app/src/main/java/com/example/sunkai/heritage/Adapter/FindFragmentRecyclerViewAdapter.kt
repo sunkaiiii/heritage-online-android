@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import androidx.core.content.ContextCompat
 import com.google.android.material.card.MaterialCardView
 import android.view.Gravity
@@ -31,11 +33,8 @@ import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.Dialog.AddUserCommentBottomDialog
 import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.BaiduLocation
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 
 
@@ -44,7 +43,7 @@ import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
  * Created by sunkai on 2017/12/22.
  */
 
-class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context,datas, glide) {
+class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentData>, private var what: Int, glide: RequestManager) : BaseRecyclerAdapter<FindFragmentRecyclerViewAdapter.ViewHolder, UserCommentData>(context, datas, glide) {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         //仿照Instagram的正方形照片，我也不知道这样好不好
@@ -74,6 +73,11 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
             likeCount = view.findViewById(R.id.user_comment_like_number_textview)
             miniReplys = view.findViewById(R.id.user_comment_mini_replys)
             locatiomImageView = view.findViewById(R.id.user_comment_location_imageview)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                dislike.imageTintList = ColorStateList.valueOf(getThemeColor())
+                addfocusText.setTextColor(getThemeColor())
+                tintTextView(addfocusText)
+            }
         }
     }
 
@@ -115,7 +119,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         holder.name_text.text = data.userName
-        holder.sameLocation.text = if (!BaiduLocation.location.isEmpty()&&data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""
+        holder.sameLocation.text = if (!BaiduLocation.location.isEmpty() && data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""
     }
 
     private fun setHolderLikeState(holder: ViewHolder, data: UserCommentData) {
@@ -164,7 +168,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
 
     private fun setAddReplyClick(holder: ViewHolder, data: UserCommentData) {
         holder.comment.setOnClickListener {
-            if(context is Activity) {
+            if (context is Activity) {
                 val dialog = AddUserCommentBottomDialog(context, data.id, data)
                 //设置当回复成功的时候，刷新显示的回复内容
                 dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
@@ -371,7 +375,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleFindUserCommentAdapterItemClick(context,this)
+        HandleAdapterItemClickClickUtils.handleFindUserCommentAdapterItemClick(context, this)
     }
 
     companion object {

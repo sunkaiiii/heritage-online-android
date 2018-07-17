@@ -46,6 +46,7 @@ class FindFragment : BaseLazyLoadFragment(), View.OnClickListener,AdapterView.On
 
     override fun setNeedChangeThemeColorWidget() {
         changeThemeWidge.add(R.id.fragmentFindToolbar)
+        changeThemeWidge.add(R.id.fragmentFindAddCommentBtn)
     }
 
     override fun onRestoreFragmentLoadInformation(){
