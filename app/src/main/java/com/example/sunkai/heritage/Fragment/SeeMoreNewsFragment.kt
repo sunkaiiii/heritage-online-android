@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -40,16 +41,19 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(savedInstanceState==null) {
+        if (savedInstanceState == null) {
             initView()
         }
     }
 
-    override fun onRestoreFragmentLoadInformation(){
+    override fun onRestoreFragmentLoadInformation() {
         initView()
         lazyLoad()
     }
 
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.seeMoreNewsRecyclerView)
+    }
 
     private fun initView() {
         seeMoreNewsRefresh.setOnRefreshListener {
@@ -73,7 +77,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             val datas = HandleMainFragment.GetFolkNewsList(category, 0, 20)
             val activity = activity
             activity?.runOnUiThread {
-                val adapter = SeeMoreNewsRecyclerViewAdapter(activity, datas,glide)
+                val adapter = SeeMoreNewsRecyclerViewAdapter(activity, datas, glide)
                 seeMoreNewsRecyclerView.adapter = adapter
                 onPostLoad()
                 setRecyclerClick(adapter)
@@ -87,16 +91,16 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             override fun onItemClick(view: View, position: Int) {
                 val data = adapter.getItem(position)
                 val intent = Intent(activity, NewsDetailActivity::class.java)
-                val titleView=view.findViewById<TextView>(R.id.see_more_news_item_title)
+                val titleView = view.findViewById<TextView>(R.id.see_more_news_item_title)
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
-                val activity=activity
-                if(activity!=null && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                val activity = activity
+                if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
                     slide.duration = 500
-                    activity.window?.exitTransition=slide
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity,titleView,getString(R.string.news_detail_share_title)).toBundle())
-                }else{
+                    activity.window?.exitTransition = slide
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, titleView, getString(R.string.news_detail_share_title)).toBundle())
+                } else {
                     startActivity(intent)
                 }
             }

@@ -92,6 +92,10 @@ class MainActivity : BaseGlideActivity() {
         }
     }
 
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.activityMainViewpager)
+    }
+
     private fun initViews() {
         val themeColor = getThemeColor()
         val midGrey = ContextCompat.getColor(this@MainActivity, R.color.midGrey)

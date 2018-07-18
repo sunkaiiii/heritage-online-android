@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
@@ -16,12 +17,8 @@ import com.example.sunkai.heritage.value.SEARCH_SHAREPREF_NAME
 //搜索历史的adapter
 class SearchActivitySearchHistoryAdapter(context:Context,datas:List<SearchHistoryData>,glide:RequestManager):BaseRecyclerAdapter<SearchActivitySearchHistoryAdapter.Holder,SearchHistoryData>(context,datas,glide) {
     class Holder(view:View): RecyclerView.ViewHolder(view){
-        val searchHistoryTextView:TextView
-        val deleteHistoryImageView:ImageView
-        init {
-            searchHistoryTextView=view.findViewById(R.id.search_history_textview)
-            deleteHistoryImageView=view.findViewById(R.id.search_history_delete_history)
-        }
+        val searchHistoryTextView:TextView = view.findViewById(R.id.search_history_textview)
+        val deleteHistoryImageView:ImageView = view.findViewById(R.id.search_history_delete_history)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {

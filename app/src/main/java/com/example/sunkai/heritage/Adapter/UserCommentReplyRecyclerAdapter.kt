@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.CommentReplyInformation
@@ -18,13 +19,8 @@ import com.example.sunkai.heritage.R
  */
 class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReplyInformation>,glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(context,datas,glide) {
     class ViewHodler(view: View) : RecyclerView.ViewHolder(view) {
-        val userName: TextView
-        val replyContent: TextView
-
-        init {
-            userName = view.findViewById(R.id.reply_name)
-            replyContent = view.findViewById(R.id.reply_content)
-        }
+        val userName: TextView = view.findViewById(R.id.reply_name)
+        val replyContent: TextView = view.findViewById(R.id.reply_content)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHodler {

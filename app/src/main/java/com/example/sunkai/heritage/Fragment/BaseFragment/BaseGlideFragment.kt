@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.*
@@ -36,7 +38,8 @@ abstract class BaseGlideFragment : Fragment() {
             when (view) {
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
-                is FloatingActionButton->tintFloatActionButton(view)
+                is FloatingActionButton -> tintFloatActionButton(view)
+                is ViewPager -> tintViewPager(view)
                 else -> view?.setBackgroundColor(color)
             }
         }

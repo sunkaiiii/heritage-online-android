@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Adapter.SearchActivitySearchHistoryAdapter

@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.tools
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 
 /**
  * 用于自动加载更多的OnScrollListener的辅助类

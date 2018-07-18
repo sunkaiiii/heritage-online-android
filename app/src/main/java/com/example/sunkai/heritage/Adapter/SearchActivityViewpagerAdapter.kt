@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 
 class SearchActivityViewpagerAdapter(val context:Context,val divide:Array<String>,val searchType:Array<String>): PagerAdapter() {
     val views:MutableList<View>

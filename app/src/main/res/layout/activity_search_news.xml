@@ -65,14 +65,14 @@
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
         android:id="@+id/searchActivitySearchHistoryRecyckerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
         android:id="@+id/searchActivityRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

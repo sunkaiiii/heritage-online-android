@@ -53,12 +53,11 @@
         android:layout_height="match_parent"
         android:layout_below="@id/fragmentFindToolbar">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
             android:id="@+id/fragmentFindRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/superLightGrey"
-
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -69,9 +68,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="82sp"
-        android:layout_marginEnd="48sp"
-        android:layout_marginRight="48sp"
+        android:layout_margin="48dp"
         android:src="@drawable/ic_add_white_24dp"
         app:fabSize="mini" />
 </RelativeLayout>

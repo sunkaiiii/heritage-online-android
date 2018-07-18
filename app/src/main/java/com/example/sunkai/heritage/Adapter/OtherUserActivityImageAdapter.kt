@@ -17,11 +17,8 @@ import java.util.*
  * Created by sunkai on 2018/3/7.
  */
 class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): PagerAdapter() {
-    val photoViewMap: WeakHashMap<Int, PhotoView>
+    val photoViewMap: WeakHashMap<Int, PhotoView> = WeakHashMap()
     private var photoViewImageClickListener:onPhotoViewImageClick?=null
-    init {
-        photoViewMap = WeakHashMap()
-    }
     override fun getCount(): Int {
         return datas.size
     }

@@ -4,8 +4,11 @@ import android.content.Context.MODE_PRIVATE
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
+import android.widget.EdgeEffect
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.SETTING
 import com.example.sunkai.heritage.value.THEME_COLOR
@@ -70,4 +73,27 @@ fun tintTablayout(tabLayout: TabLayout) {
 fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
     floatActionButton.backgroundTintList = ColorStateList.valueOf(getLightThemeColor())
     floatActionButton.rippleColor = getThemeColor()
+}
+
+fun tintViewPager(view: ViewPager) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        try {
+            val leftEdgeFile = view.javaClass.getDeclaredField("mLeftEdge")
+            val rightEdgeFiled = view.javaClass.getDeclaredField("mRightEdge")
+            leftEdgeFile.isAccessible = true
+            rightEdgeFiled.isAccessible = true
+//            val left = leftEdgeFile.get(view) as EdgeEffect
+//            val right = rightEdgeFiled.get(view) as EdgeEffect
+//            left.color = getThemeColor()
+//            right.color = getThemeColor()
+            val left=EdgeEffect(view.context)
+            val right=EdgeEffect(view.context)
+            left.color= getThemeColor()
+            right.color= getThemeColor()
+            leftEdgeFile.set(view,left)
+            rightEdgeFiled.set(view,right)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

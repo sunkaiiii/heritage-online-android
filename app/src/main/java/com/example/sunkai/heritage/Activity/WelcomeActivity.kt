@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.core.content.edit
@@ -30,6 +31,7 @@ class WelcomeActivity : BaseGlideActivity() {
             getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
                 putInt(START_COUNT, NOT_FIRST_OPEN)
                 putBoolean(PUSH_SWITCH, false)
+                putInt(THEME_COLOR, Color.parseColor(THEME_REGULAR))
             }
             showDialog()
 

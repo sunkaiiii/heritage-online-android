@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
@@ -36,6 +38,10 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         glide = Glide.with(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setNeedChangeThemeColorWidget()
+    }
+
+    override fun onStart() {
+        super.onStart()
         changeWidgeTheme()
     }
 
@@ -55,6 +61,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
+                is ViewPager -> tintViewPager(view)
                 else -> view?.setBackgroundColor(color)
             }
         }

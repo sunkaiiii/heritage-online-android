@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
@@ -33,19 +34,12 @@ import com.example.sunkai.heritage.value.UNFOCUS
 class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, glide: RequestManager) : BaseRecyclerAdapter<SearchUserRecclerAdapter.Holder, SearchUserInfo>(context, datas, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
-        val userName: TextView
-        val userImage: ImageView
-        val focusBtn: TextView
-        val focusBtnLayout: LinearLayout
-        val focusBtnImg: ImageView
+        val userName: TextView = view.findViewById(R.id.user_name)
+        val userImage: ImageView = view.findViewById(R.id.user_head_image)
+        val focusBtn: TextView = view.findViewById(R.id.focus_btn)
+        val focusBtnLayout: LinearLayout = view.findViewById(R.id.ll_focus_btn)
+        val focusBtnImg: ImageView = view.findViewById(R.id.iv_focus_btn)
 
-        init {
-            userName = view.findViewById(R.id.user_name)
-            userImage = view.findViewById(R.id.user_head_image)
-            focusBtn = view.findViewById(R.id.focus_btn)
-            focusBtnLayout = view.findViewById(R.id.ll_focus_btn)
-            focusBtnImg = view.findViewById(R.id.iv_focus_btn)
-        }
     }
 
     private var onFocusChangeListener: OnFocusChangeListener? = null

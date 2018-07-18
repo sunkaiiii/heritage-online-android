@@ -76,7 +76,7 @@
         android:layout_height="match_parent"
         android:id="@+id/fragment_folk_swipe_refresh">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
             android:id="@+id/folk_show_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
