@@ -82,10 +82,6 @@ fun tintViewPager(view: ViewPager) {
             val rightEdgeFiled = view.javaClass.getDeclaredField("mRightEdge")
             leftEdgeFile.isAccessible = true
             rightEdgeFiled.isAccessible = true
-//            val left = leftEdgeFile.get(view) as EdgeEffect
-//            val right = rightEdgeFiled.get(view) as EdgeEffect
-//            left.color = getThemeColor()
-//            right.color = getThemeColor()
             val left=EdgeEffect(view.context)
             val right=EdgeEffect(view.context)
             left.color= getThemeColor()

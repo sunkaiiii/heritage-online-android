@@ -67,6 +67,10 @@ class MainActivity : BaseGlideActivity() {
         setIgnoreToolbar(true)
     }
 
+    override fun onStart() {
+        super.onStart()
+        changeStatusBarAndNavigationBar(activityMainViewpager?.currentItem?:return)
+    }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -179,22 +183,7 @@ class MainActivity : BaseGlideActivity() {
             bottomNavigationButton.itemIconTintList = colorStateList
             if (Build.VERSION.SDK_INT >= 21) {
                 window.navigationBarColor = themeColor
-                window.statusBarColor = when (position) {
-                    1 -> {
-                        //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
-                        val color = (viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
-                        window.navigationBarColor = color
-                        val folkColors = arrayOf(color, midGrey).toIntArray()
-                        val folkStates = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
-                        val folkColorStateList = ColorStateList(folkStates, folkColors)
-                        bottomNavigationButton.itemTextColor = folkColorStateList
-                        bottomNavigationButton.itemIconTintList = folkColorStateList
-                        color
-                    }
-                    else -> {
-                        getDarkThemeColor()
-                    }
-                }
+                changeStatusBarAndNavigationBar(position)
                 val adapter = activityMainViewpager.adapter
                 if (adapter is adapter) {
                     val fragment = adapter.getItem(position)
@@ -223,6 +212,28 @@ class MainActivity : BaseGlideActivity() {
             }
         }
 
+    }
+
+    private fun changeStatusBarAndNavigationBar(position: Int){
+        val midGrey = ContextCompat.getColor(this@MainActivity, R.color.midGrey)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = when (position) {
+                1 -> {
+                    //当从别的页面进入民间页的时候，转换状态栏和底栏的颜色
+                    val color = (viewList[position] as FolkFragment).getStatusBarShouldChangeColor()
+                    window.navigationBarColor = color
+                    val folkColors = arrayOf(color, midGrey).toIntArray()
+                    val folkStates = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
+                    val folkColorStateList = ColorStateList(folkStates, folkColors)
+                    bottomNavigationButton.itemTextColor = folkColorStateList
+                    bottomNavigationButton.itemIconTintList = folkColorStateList
+                    color
+                }
+                else -> {
+                    getDarkThemeColor()
+                }
+            }
+        }
     }
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         activityMainViewpager.currentItem = when (item.itemId) {
