@@ -1,21 +1,22 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
+import com.example.sunkai.heritage.Adapter.SettingListSelectThemeColorAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.value.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.Views.RoundedImageView
+import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.Views.GridLayoutManagerItemDecoration
+import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**
@@ -61,21 +62,11 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
     }
 
     private fun readThemeColorList(){
-        THEME_COLOR_ARRAYS.forEach {
-            val color= Color.parseColor(it)
-            val colorImageView=RoundedImageView(this)
-            val layputParames= ViewGroup.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            layputParames.height=80
-            layputParames.width=80
-            colorImageView.layoutParams=layputParames
-            colorImageView.setBackgroundColor(color)
-            colorImageView.setOnClickListener {
-                getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
-                    putInt(THEME_COLOR,color)
-                }
-            }
-            themeColorList.addView(colorImageView)
-        }
+        val adapter=SettingListSelectThemeColorAdapter(this, THEME_COLOR_ARRAYS.asList(),glide)
+        val spanCount=(Utils.getScreenWidth()/SettingListSelectThemeColorAdapter.IMAGE_VIEW_SIZE)-1
+        themeColorList.layoutManager=GridLayoutManager(this,spanCount)
+        themeColorList.addItemDecoration(GridLayoutManagerItemDecoration(spanCount, Utils.dip2px(8)))
+        themeColorList.adapter=adapter
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

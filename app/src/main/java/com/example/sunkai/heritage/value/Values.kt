@@ -10,6 +10,7 @@ import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateComme
 import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateFolkCollectionAdapter
 import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.*
 import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.Utils
 
 /**
  * 这个文件包含了项目用到的常量
@@ -32,7 +33,7 @@ const val ONLYFOCUS = 0
 const val ALL = 1
 const val ALL_COMMENT = 0
 const val MY_FOCUS_COMMENT = 1
-const val SAME_LOCATION=2
+const val SAME_LOCATION = 2
 const val MINI_REPLY = -1
 const val COMMENT_REPLY = 0
 const val SIGN_OUT = 11
@@ -48,10 +49,10 @@ const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
 const val TYPE_FIND = "发现"
-val COLLECT_TYPE_MAIN=CreateAllNewsCollectAdapter::class.java.name!!
-val COLLECT_TYPE_FOCUS_HERITAGE=CreateBottomNewsCollectAdapter::class.java.name!!
-val COLLECT_TYPE_FOLK=CreateFolkCollectionAdapter::class.java.name!!
-val COLLECT_TYPE_FIND=CreateCommentCollectaAdapter::class.java.name!!
+val COLLECT_TYPE_MAIN = CreateAllNewsCollectAdapter::class.java.name!!
+val COLLECT_TYPE_FOCUS_HERITAGE = CreateBottomNewsCollectAdapter::class.java.name!!
+val COLLECT_TYPE_FOLK = CreateFolkCollectionAdapter::class.java.name!!
+val COLLECT_TYPE_FIND = CreateCommentCollectaAdapter::class.java.name!!
 const val FIRST_OPEN = 0
 const val NOT_FIRST_OPEN = 1
 const val NOT_LOGIN = 0
@@ -77,38 +78,39 @@ const val TITLE = "title"
 const val IMAGE = "image"
 const val IS_INTO = "isInto"
 const val READ = "r"
-const val SEARCH_TYPE="searchType"
-const val THEME_COLOR="theme_color"
-val TYPE_NEWS=CreateSearchAllNewsSearchAdapter::class.java.name!!
-val TYPE_BOTTOM_NEWS=CreateBottomActivitySearchAdapter::class.java.name!!
-val TYPE_COMMENT=CreateSearchCommentAdapter::class.java.name!!
-val TYPE_FOLK_HERITAGE=CreateFolkInfoSearchAdapter::class.java.name!!
-val TYPE_USER=CreateSearchUserAdapter::class.java.name!!
-const val SEARCH_SHAREPREF_NAME="search_info"
-const val IMAGE_URL="image_url"
-typealias TransitionPair= Pair<View, String>
-const val THEME_REGULAR="#ac462e"
-const val THEME_COLOR_PUEPLE="#850091"
-const val THEME_COLOR_GREEN="#26a69a"
-const val THEME_COLOR_PINK="#b30062"
-const val THEME_SUNLIGHT_ORANGE="#ff7043"
-const val THEME_HIGHLEVEL_GREY="#9e9e9e"
-const val THEME_PEACE_BLUE_GREY="#607d8b"
-const val THEME_WATER_PINK="#f8bbd0"
-const val THEME_WATER_ORANGE="#ffab91"
-const val THEME_LIGHT_BLUE="#b3e5fc"
-const val THEME_ZHIHU_BLUE="#1565c0"
-const val THEME_METAL_BLACK="#263238"
-const val THEME_ROCK_BLACK="#212121"
-val THEME_COLOR_ARRAYS= arrayOf(THEME_REGULAR,THEME_COLOR_PUEPLE, THEME_COLOR_GREEN, THEME_COLOR_PINK,THEME_SUNLIGHT_ORANGE
-        ,THEME_HIGHLEVEL_GREY,THEME_PEACE_BLUE_GREY,THEME_WATER_PINK,THEME_WATER_ORANGE,THEME_LIGHT_BLUE,THEME_ZHIHU_BLUE
-        ,THEME_METAL_BLACK,THEME_ROCK_BLACK)
+const val SEARCH_TYPE = "searchType"
+const val THEME_COLOR = "theme_color"
+val TYPE_NEWS = CreateSearchAllNewsSearchAdapter::class.java.name!!
+val TYPE_BOTTOM_NEWS = CreateBottomActivitySearchAdapter::class.java.name!!
+val TYPE_COMMENT = CreateSearchCommentAdapter::class.java.name!!
+val TYPE_FOLK_HERITAGE = CreateFolkInfoSearchAdapter::class.java.name!!
+val TYPE_USER = CreateSearchUserAdapter::class.java.name!!
+const val SEARCH_SHAREPREF_NAME = "search_info"
+const val IMAGE_URL = "image_url"
+typealias TransitionPair = Pair<View, String>
+
+const val THEME_REGULAR = "#ac462e"
+const val THEME_COLOR_PUEPLE = "#850091"
+const val THEME_COLOR_GREEN = "#26a69a"
+const val THEME_COLOR_PINK = "#b30062"
+const val THEME_SUNLIGHT_ORANGE = "#ff7043"
+const val THEME_HIGHLEVEL_GREY = "#9e9e9e"
+const val THEME_PEACE_BLUE_GREY = "#607d8b"
+const val THEME_WATER_PINK = "#f8bbd0"
+const val THEME_WATER_ORANGE = "#ffab91"
+const val THEME_LIGHT_BLUE = "#b3e5fc"
+const val THEME_ZHIHU_BLUE = "#1565c0"
+const val THEME_METAL_BLACK = "#263238"
+const val THEME_ROCK_BLACK = "#212121"
+val THEME_COLOR_ARRAYS = arrayOf(THEME_REGULAR, THEME_COLOR_PUEPLE, THEME_COLOR_GREEN, THEME_COLOR_PINK, THEME_SUNLIGHT_ORANGE
+        , THEME_HIGHLEVEL_GREY, THEME_PEACE_BLUE_GREY, THEME_WATER_PINK, THEME_WATER_ORANGE, THEME_LIGHT_BLUE, THEME_ZHIHU_BLUE
+        , THEME_METAL_BLACK, THEME_ROCK_BLACK)
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误
-val GRID_LAYOUT_DESTINY = if (GlobalContext.instance.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
-    Math.round((GlobalContext.instance.resources.displayMetrics.widthPixels.toFloat() / GlobalContext.instance.resources.displayMetrics.densityDpi) - 1)
+val GRID_LAYOUT_DESTINY = if (Utils.isHorizontalScreenMode())
+    Math.round((Utils.getScreenWidth().toFloat() / Utils.getDpi()) - 1)
 else
-    Math.round((GlobalContext.instance.resources.displayMetrics.heightPixels.toFloat() / GlobalContext.instance.resources.displayMetrics.densityDpi) - 1)
+    Math.round((Utils.getScreenHeight().toFloat() / Utils.getDpi()) - 1)
 
 const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
@@ -129,7 +131,7 @@ val CATEGORIES = arrayOf("要闻", "中国特色", "传统村落", "特色小镇
 val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.focus_heritage), GlobalContext.instance.getString(R.string.all_news))
 val MAIN_PAGE_CATEGORY_NEWS_IMAGE = arrayOf("yao_wen.jpg"
         , "zhongguo_tese.jpg"
-        ,"chuantong_cuoluo.jpg"
+        , "chuantong_cuoluo.jpg"
         , "tese_xiaozhen.jpg"
         , "meili_china.jpg"
         , "feiyi_china.jpg"

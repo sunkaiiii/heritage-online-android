@@ -9,7 +9,7 @@ android {
         applicationId "com.datong.heritage_online"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 34
+        versionCode 35
         versionName "3.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "zh", "de", "en", "es", "ja", "ko", "ru", "th", "zh-rTW"

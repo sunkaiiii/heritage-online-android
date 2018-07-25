@@ -33,7 +33,6 @@ class WelcomeActivity : BaseGlideActivity() {
                 putInt(THEME_COLOR, Color.parseColor(THEME_REGULAR))
             }
             showDialog()
-
         } else {
             goToLogin()
         }
