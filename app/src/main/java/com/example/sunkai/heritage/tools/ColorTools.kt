@@ -52,6 +52,19 @@ fun getLighterColor(color: Int): Int {
     return Color.HSVToColor(hsvArray)
 }
 
+fun getSelectGradientDrawableColor(color: String): Int = getSelectGradientDrawableColor(Color.parseColor(color))
+
+//浅色变深，深色变浅
+fun getSelectGradientDrawableColor(color: Int): Int {
+    val hsvArray = FloatArray(3)
+    Color.colorToHSV(color, hsvArray)
+    if (hsvArray[2] > 0.5) {
+        hsvArray[2] -= 0.3f
+    } else {
+        hsvArray[2] += 0.3f
+    }
+    return Color.HSVToColor(hsvArray)
+}
 
 fun tintTextView(textView: TextView) {
     val drawalbeList = textView.compoundDrawables
@@ -82,12 +95,12 @@ fun tintViewPager(view: ViewPager) {
             val rightEdgeFiled = view.javaClass.getDeclaredField("mRightEdge")
             leftEdgeFile.isAccessible = true
             rightEdgeFiled.isAccessible = true
-            val left=EdgeEffect(view.context)
-            val right=EdgeEffect(view.context)
-            left.color= getThemeColor()
-            right.color= getThemeColor()
-            leftEdgeFile.set(view,left)
-            rightEdgeFiled.set(view,right)
+            val left = EdgeEffect(view.context)
+            val right = EdgeEffect(view.context)
+            left.color = getThemeColor()
+            right.color = getThemeColor()
+            leftEdgeFile.set(view, left)
+            rightEdgeFiled.set(view, right)
         } catch (e: Exception) {
             e.printStackTrace()
         }
