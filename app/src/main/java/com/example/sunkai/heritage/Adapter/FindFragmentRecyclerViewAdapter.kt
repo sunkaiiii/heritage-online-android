@@ -74,11 +74,6 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
             likeCount = view.findViewById(R.id.user_comment_like_number_textview)
             miniReplys = view.findViewById(R.id.user_comment_mini_replys)
             locatiomImageView = view.findViewById(R.id.user_comment_location_imageview)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                dislike.imageTintList = ColorStateList.valueOf(getThemeColor())
-                addfocusText.setTextColor(getThemeColor())
-                tintTextView(addfocusText)
-            }
         }
     }
 
@@ -118,6 +113,11 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.dislike.imageTintList = ColorStateList.valueOf(getThemeColor())
+            holder.addfocusText.setTextColor(getThemeColor())
+            tintTextView(holder.addfocusText)
+        }
         holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         holder.name_text.text = data.userName
         holder.sameLocation.text = if (!BaiduLocation.location.isEmpty() && data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""

@@ -8,7 +8,6 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +29,6 @@ import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
-import com.example.sunkai.heritage.value.TYPE_FOLK_HERITAGE
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
@@ -98,6 +96,7 @@ class MainActivity : BaseGlideActivity() {
 
     override fun setNeedChangeThemeColorWidget() {
         changeThemeWidge.add(R.id.activityMainViewpager)
+        changeThemeWidge.add(R.id.bottomNavigationButton)
     }
 
     private fun initViews() {

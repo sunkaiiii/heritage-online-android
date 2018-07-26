@@ -34,6 +34,12 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         readThemeColorList()
     }
 
+    override fun setNeedChangeThemeColorWidget() {
+        changeThemeWidge.add(R.id.permissionTextView)
+        changeThemeWidge.add(R.id.focusAndFansPermisstionTextView)
+        changeThemeWidge.add(R.id.pushSwitch)
+    }
+
     private fun initview() {
         permissionSpinner.isEnabled = false
         focusAndFansViewPermissionSpinner.isEnabled = false

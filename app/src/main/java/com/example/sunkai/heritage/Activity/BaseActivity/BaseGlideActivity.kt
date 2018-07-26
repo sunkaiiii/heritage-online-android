@@ -5,15 +5,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 
@@ -45,7 +47,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         changeWidgeTheme()
     }
 
-    protected fun changeWidgeTheme() {
+    fun changeWidgeTheme() {
         val color = getThemeColor()
         val darkColor= getDarkThemeColor()
         if (!ignoreToolbar) {
@@ -58,10 +60,12 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         changeThemeWidge.forEach {
             val view = findViewById<View>(it)
             when (view) {
+                is SwitchCompat ->tintSwitch(view)
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
                 is ViewPager -> tintViewPager(view)
+                is BottomNavigationView-> tintBottomNavigationView(view)
                 else -> view?.setBackgroundColor(color)
             }
         }

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.Activity.SettingListActivity">
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/pushSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +27,7 @@
         android:layout_margin="18dp">
 
         <TextView
+            android:id="@+id/permissionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -60,6 +61,7 @@
         android:layout_marginStart="18dp">
 
         <TextView
+            android:id="@+id/focusAndFansPermisstionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

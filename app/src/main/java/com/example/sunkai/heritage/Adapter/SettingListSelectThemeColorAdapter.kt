@@ -9,9 +9,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.tools.Utils
-import com.example.sunkai.heritage.tools.getSelectGradientDrawableColor
+import com.example.sunkai.heritage.Interface.OnItemClickListener
+import com.example.sunkai.heritage.tools.*
 
 class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, glide: RequestManager) : BaseRecyclerAdapter<SettingListSelectThemeColorAdapter.Holder, String>(context, datas, glide) {
 
@@ -19,13 +20,14 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
         val IMAGE_VIEW_SIZE = Utils.dip2px(48)
     }
 
-    private val tintGradientDrawableMap:Map<String,Int>
+    private val tintGradientDrawableMap: Map<String, Int>
+
     init {
-        val tempMap=HashMap<String,Int>()
+        val tempMap = HashMap<String, Int>()
         datas.forEach {
-            tempMap[it]= getSelectGradientDrawableColor(it)
+            tempMap[it] = getSelectGradientDrawableColor(it)
         }
-        tintGradientDrawableMap=HashMap(tempMap)
+        tintGradientDrawableMap = HashMap(tempMap)
     }
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -39,21 +41,34 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         super.onBindViewHolder(holder, position)
         val colorString = getItem(position)
-        initImageView(holder.colorImageView, colorString)
+        initImageView(holder.colorImageView as ImageView, colorString)
     }
 
-    private fun initImageView(view: View, colorString: String) {
+    private fun initImageView(view: ImageView, colorString: String) {
+        view.setImageDrawable(null)
         val color = Color.parseColor(colorString)
         val layputParames = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layputParames.height = IMAGE_VIEW_SIZE
         layputParames.width = IMAGE_VIEW_SIZE
         view.layoutParams = layputParames
         view.setBackgroundColor(color)
-        if(view is ImageView) {
-            val drawable=GradientDrawable()
-            drawable.setStroke(Utils.dip2px(4),tintGradientDrawableMap[colorString]?:return)
+        if (color == getThemeColor()) {
+            val drawable = GradientDrawable()
+            drawable.setStroke(Utils.dip2px(4), tintGradientDrawableMap[colorString] ?: return)
             view.setImageDrawable(drawable)
         }
     }
 
+    override fun setItemClick() {
+        setOnItemClickListen(object : OnItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                val color = Color.parseColor(getItem(position))
+                setThemeColor(color)
+                notifyDataSetChanged()
+                if(context is BaseGlideActivity){
+                    context.changeWidgeTheme()
+                }
+            }
+        })
+    }
 }

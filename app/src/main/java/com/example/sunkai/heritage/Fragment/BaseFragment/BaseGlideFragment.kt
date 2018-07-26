@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
@@ -30,8 +31,12 @@ abstract class BaseGlideFragment : Fragment() {
         setNeedChangeThemeColorWidget()
     }
 
-    override fun onAttachFragment(childFragment: Fragment?) {
-        super.onAttachFragment(childFragment)
+    override fun onStart() {
+        super.onStart()
+        changeWidgeTheme()
+    }
+
+    private fun changeWidgeTheme() {
         val color = getThemeColor()
         changeThemeWidge.forEach {
             val view = activity?.findViewById<View>(it)
@@ -40,6 +45,7 @@ abstract class BaseGlideFragment : Fragment() {
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
                 is ViewPager -> tintViewPager(view)
+                is RecyclerView->tintRecyclerView(view)
                 else -> view?.setBackgroundColor(color)
             }
         }
