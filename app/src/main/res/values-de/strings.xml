@@ -109,11 +109,7 @@
 	<string name="photoview_licence">copyright 2017 chris fluch</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>
-	<string name="roundedimageview_licence">copyright 2017 vincent mi</string>
-	<string name="luban_licence">copyright 2016 zheng zibin</string>
-	<string name="luban">luban</string>
-	<string name="glide">gleiten</string>
+    <string name="glide">gleiten</string>
 	<string name="licence">Open - source - Lizenz - aussage</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>

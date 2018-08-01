@@ -109,11 +109,7 @@
 	<string name="photoview_licence">Copyright 2012 Chris Banes</string>
 	<string name="okhttp">Okhttp</string>
 	<string name="photoview">Photoview</string>
-	<string name="roundedimageview_licence">Derechos de autor de 2017 Vicente mi</string>
-	<string name="luban_licence">Derechos de autor Zibin 2016 Zheng</string>
-	<string name="luban">Luban</string>
-	<string name="glide">Glide</string>
+    <string name="glide">Glide</string>
 	<string name="licence">La Declaración de licencias de código abierto</string>
-	<string name="roundedimageview">Roundedimageview</string>
 
 </resources>

@@ -12,6 +12,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.tintDrawable
 import com.example.sunkai.heritage.value.SEARCH_SHAREPREF_NAME
 
 //搜索历史的adapter
@@ -34,6 +35,7 @@ class SearchActivitySearchHistoryAdapter(context:Context,datas:List<SearchHistor
         holder.deleteHistoryImageView.setOnClickListener {
             deleteThisHistory(data)
         }
+        holder.deleteHistoryImageView.setImageDrawable(tintDrawable(R.drawable.ic_clear_black_24dp))
     }
 
     private fun deleteThisHistory(data: SearchHistoryData) {

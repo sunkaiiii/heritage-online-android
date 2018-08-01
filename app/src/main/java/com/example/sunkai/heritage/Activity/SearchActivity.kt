@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Activity
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,11 +26,8 @@ import com.example.sunkai.heritage.Data.SearchHistoryData
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.BaseOnTextChangeListner
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.CreateCorrespondingAdapterFactory
-import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.SoftInputTools
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
 import kotlin.collections.set
@@ -57,10 +55,13 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
             searchType = intent.getStringExtra(SEARCH_TYPE)
         }
         initView()
+
     }
 
     private fun initView() {
         setEditTextHint()
+        searchActivityTablayout.setSelectedTabIndicatorColor(getThemeColor())
+        searchActivityTablayout.tabRippleColor= ColorStateList.valueOf(getLightThemeColor())
         val searchHistoryList = getSearchHistoryList()
         val adapter = SearchActivitySearchHistoryAdapter(this, searchHistoryList, glide)
         setHistoryAdapterClick(adapter)

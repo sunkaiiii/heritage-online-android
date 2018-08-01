@@ -109,11 +109,7 @@
 	<string name="photoview_licence">ลิขสิทธิ์ 2017 คริส เบนส์</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>
-	<string name="roundedimageview_licence">ลิขสิทธิ์ 2017 วินเซนต์ มิ</string>
-	<string name="luban_licence">ลิขสิทธิ์ zibin 2016 เจิ้ง</string>
-	<string name="luban">Luban</string>
-	<string name="glide">ร่อน</string>
+    <string name="glide">ร่อน</string>
 	<string name="licence">ใบอนุญาตเปิดแหล่งที่มา</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>

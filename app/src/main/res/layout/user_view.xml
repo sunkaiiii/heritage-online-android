@@ -9,7 +9,6 @@
         android:id="@+id/userViewBackGround"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@drawable/person_background"
         android:contentDescription="@string/no_mean_content" />
 
     <androidx.appcompat.widget.Toolbar

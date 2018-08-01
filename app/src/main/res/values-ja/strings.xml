@@ -109,11 +109,7 @@
 	<string name="photoview_licence">著作権は2017年クリスバネス</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>
-	<string name="roundedimageview_licence">著作権は2017年のヴィンセントmi</string>
-	<string name="luban_licence">著作権は2016年の鄭zibin</string>
-	<string name="luban">ルバニ</string>
-	<string name="glide">グライド</string>
+    <string name="glide">グライド</string>
 	<string name="licence">オープンソースの許可ステートメント</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>

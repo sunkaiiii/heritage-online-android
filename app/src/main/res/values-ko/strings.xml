@@ -109,11 +109,7 @@
 	<string name="photoview_licence">저작권 2014 크리스 피해</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>
-	<string name="roundedimageview_licence">저작권 2014 빈센트 마일</string>
-	<string name="luban_licence">2016년 전망이다 저작권 정</string>
-	<string name="luban">내에</string>
-	<string name="glide">활공</string>
+    <string name="glide">활공</string>
 	<string name="licence">개원 허가 성명.</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>

@@ -109,11 +109,7 @@
 	<string name="photoview_licence">版權所有2017 Chris Banes</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">PhotoView</string>
-	<string name="roundedimageview_licence">版權所有2017 Vincent Mi</string>
-	<string name="luban_licence">版權所有2016鄭子斌</string>
-	<string name="luban">盧班</string>
-	<string name="glide">滑翔</string>
+    <string name="glide">滑翔</string>
 	<string name="licence">開源許可聲明</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>

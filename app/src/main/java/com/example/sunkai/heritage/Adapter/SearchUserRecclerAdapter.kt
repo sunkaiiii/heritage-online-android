@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
+import android.os.Build
 import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -19,10 +20,8 @@ import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.SearchUserInfo
 import com.example.sunkai.heritage.Interface.OnFocusChangeListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
-import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.UNFOCUS
@@ -63,8 +62,15 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
         holder.userName.text = data.userName
         holder.focusBtnImg.setImageResource(if (data.checked) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
         holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
-        holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (data.checked) R.color.midGrey else R.color.colorPrimary))
+        holder.focusBtn.setTextColor(if (data.checked) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
+        val userBackGroundDrawable = tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.userImage.background = userBackGroundDrawable
+        } else {
+            holder.userImage.setImageDrawable(userBackGroundDrawable)
+        }
+        tintWidge(holder, data)
     }
 
     private fun getUserImage(holder: Holder, data: SearchUserInfo, position: Int) {
@@ -124,11 +130,19 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
         holder.focusBtnImg.startAnimation(animation)
         holder.focusBtnImg.setImageResource(if (success) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
         holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
-        holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (data.checked) R.color.midGrey else R.color.colorPrimary))
+        holder.focusBtn.setTextColor(if (data.checked) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
         holder.focusBtn.text = if (success) IS_FOCUS else UNFOCUS
         val toastText = (if (success) IS_FOCUS else UNFOCUS) + "成功"
         toast(toastText)
         onFocusChangeListener?.onFocusChange()
+        tintWidge(holder, data)
+    }
+
+    private fun tintWidge(holder: Holder, data: SearchUserInfo) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !data.checked) {
+            holder.focusBtnImg.setImageDrawable(tintDrawable(R.drawable.ic_add_black_24dp))
+            holder.focusBtnLayout.background?.setTint(getThemeColor())
+        }
     }
 
     fun setOnFocusChangeListener(listner: OnFocusChangeListener) {

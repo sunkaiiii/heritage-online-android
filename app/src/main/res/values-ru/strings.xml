@@ -109,11 +109,7 @@
 	<string name="photoview_licence">Copyright 2017 года крис банес</string>
 	<string name="okhttp">okhttp</string>
 	<string name="photoview">photoview</string>
-	<string name="roundedimageview_licence">Copyright 2017 винсент ми</string>
-	<string name="luban_licence">чжэн zibin авторских прав в 2016 году</string>
-	<string name="luban">luban</string>
-	<string name="glide">скользите</string>
+    <string name="glide">скользите</string>
 	<string name="licence">Открытое лицензирование заявление</string>
-	<string name="roundedimageview">roundedimageview</string>
 
 </resources>
