@@ -24,6 +24,7 @@ import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
 import com.example.sunkai.heritage.Data.HandlePic
 import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
+import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -81,10 +82,10 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
 
     override fun changeWidgeTheme() {
         super.changeWidgeTheme()
-        val colorArray=IntArray(2)
-        colorArray[0]= getThemeColor()
-        colorArray[1]= getLightThemeColor()
-        val drawable=GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,colorArray)
+        val colorArray = IntArray(2)
+        colorArray[0] = getThemeColor()
+        colorArray[1] = getLightThemeColor()
+        val drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colorArray)
         userViewBackGround.setImageDrawable(drawable)
         sign_name_textview.setTextColor(getDarkThemeColor())
         person_follow.setTextColor(getDarkThemeColor())
@@ -268,16 +269,18 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     }
 
     private fun sign_out() {
-        val activity = activity
-        activity?.let {
-            AlertDialog.Builder(activity).setTitle("是否注销?").setPositiveButton("确定") { _, _ ->
-                activity.getSharedPreferences("data", Context.MODE_PRIVATE).edit().clear().apply()//清除自动登录的信息
-                LoginActivity.userID = 0
-                LoginActivity.userName = null
-                activity.finish()
-                checkLogin()
-            }.setNegativeButton("取消") { dialog, _ -> dialog.dismiss() }.show()
-        }
+        NormalWarningDialog().setTitle("是否注销?")
+                .setOnSubmitClickListener(object : NormalWarningDialog.onSubmitClickListener {
+                    override fun onSubmit(view: View, dialog: NormalWarningDialog) {
+                        activity?.getSharedPreferences("data", Context.MODE_PRIVATE)?.edit()?.clear()?.apply()//清除自动登录的信息
+                        LoginActivity.userID = 0
+                        LoginActivity.userName = null
+                        activity?.finish()
+                        checkLogin()
+                    }
+                })
+                .setSubmitText("退出")
+                .show(activity?.supportFragmentManager, "exitDialog")
     }
 
     private fun changePassword() {

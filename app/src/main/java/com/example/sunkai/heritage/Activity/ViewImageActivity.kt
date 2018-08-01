@@ -21,7 +21,6 @@ class ViewImageActivity : BaseGlideActivity() {
         setWindowAnimation()
         setPhotoViewClickAction()
         getImage()
-        setWindowFullScreen()
         window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
     }
 
@@ -29,6 +28,11 @@ class ViewImageActivity : BaseGlideActivity() {
     private fun getImage() {
         val imageUrl = intent.getStringExtra(IMAGE_URL)
         glide.load(BaseSetting.URL + imageUrl).into(activityViewImage)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setWindowFullScreen()
     }
 
     private fun setPhotoViewClickAction() {
