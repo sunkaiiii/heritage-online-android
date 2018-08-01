@@ -35,7 +35,7 @@
         android:visibility="gone"
         android:id="@+id/ll_activity_other_users_background"
         android:orientation="vertical"/>
-    <androidx.viewpager.widget.ViewPager
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/vp_activity_other_users"

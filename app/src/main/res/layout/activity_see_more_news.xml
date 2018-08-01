@@ -24,7 +24,7 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
         android:id="@+id/seeMoreNewsViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

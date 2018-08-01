@@ -8,12 +8,13 @@ import android.os.Bundle
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
 import androidx.recyclerview.widget.GridLayoutManager
 import android.text.TextUtils
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter

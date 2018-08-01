@@ -87,7 +87,7 @@
         android:background="@color/lightGrey"
         />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
         android:id="@+id/searchActivityViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

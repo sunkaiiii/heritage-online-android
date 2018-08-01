@@ -2,7 +2,9 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
@@ -11,8 +13,11 @@ import androidx.appcompat.view.menu.MenuBuilder
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.ActionMenuView
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.view.forEach
+import androidx.core.view.get
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -94,23 +99,13 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         activity?.let {
             if (activity is AppCompatActivity) {
                 fragment_person_toolbar.title = ""
+                fragment_person_toolbar.popupTheme
                 activity.setSupportActionBar(fragment_person_toolbar)
                 setHasOptionsMenu(true)
             }
         }
     }
 
-    private fun setThemeColor(viewGroup: ViewGroup,lightThemeColor:Int){
-        viewGroup.forEach {
-            if(it is ViewGroup){
-                setThemeColor(it,lightThemeColor)
-            }else{
-                if (it is TextView) {
-                    it.setTextColor(lightThemeColor)
-                }
-            }
-        }
-    }
     private fun setClick(viewGroup: ViewGroup) {
         viewGroup.forEach { if (it is ViewGroup) setClick(it) else it.setOnClickListener(this) }
     }
@@ -213,6 +208,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         inflater?.inflate(R.menu.person_fragment_menu, menu)
+
     }
 
     //通过反射来让弹出的菜单显示图标
@@ -230,6 +226,7 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         }
         super.onPrepareOptionsMenu(menu)
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {

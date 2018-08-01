@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
         android:id="@+id/myCollectViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

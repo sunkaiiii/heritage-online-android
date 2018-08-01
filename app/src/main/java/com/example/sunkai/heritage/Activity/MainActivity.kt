@@ -25,6 +25,7 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
@@ -48,6 +49,7 @@ class MainActivity : BaseGlideActivity() {
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
             return activity.bottomNavigationButton.selectedItemId
         }
+        var mainViewPagerRef:WeakReference<FollowThemeEdgeViewPager>?=null
     }
 
     private val viewList: ArrayList<Fragment> = ArrayList()
@@ -68,6 +70,7 @@ class MainActivity : BaseGlideActivity() {
     override fun onStart() {
         super.onStart()
         changeStatusBarAndNavigationBar(activityMainViewpager?.currentItem?:return)
+        mainViewPagerRef=WeakReference(activityMainViewpager)
     }
 
     override fun onAttachedToWindow() {
@@ -95,7 +98,6 @@ class MainActivity : BaseGlideActivity() {
     }
 
     override fun setNeedChangeThemeColorWidget() {
-        changeThemeWidge.add(R.id.activityMainViewpager)
         changeThemeWidge.add(R.id.bottomNavigationButton)
     }
 

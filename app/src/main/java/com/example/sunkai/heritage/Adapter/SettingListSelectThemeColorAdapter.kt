@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.Activity.MainActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.tools.*
@@ -65,10 +66,18 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
                 val color = Color.parseColor(getItem(position))
                 setThemeColor(color)
                 notifyDataSetChanged()
-                if(context is BaseGlideActivity){
+                if (context is BaseGlideActivity) {
                     context.changeWidgeTheme()
                 }
+                //因为viewpager使用的反射方式修改的阴影
+                //在主题颜色修改之后，需要重新设置阴影
+                resetMainActivityViewPager()
             }
         })
+    }
+
+    private fun resetMainActivityViewPager() {
+        val viewPager = MainActivity.mainViewPagerRef?.get() ?: return
+        viewPager.initEdge()
     }
 }

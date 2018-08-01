@@ -5,12 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
@@ -64,7 +62,6 @@ abstract class BaseGlideActivity : AppCompatActivity() {
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
-                is ViewPager -> tintViewPager(view)
                 is BottomNavigationView-> tintBottomNavigationView(view)
                 else -> view?.setBackgroundColor(color)
             }

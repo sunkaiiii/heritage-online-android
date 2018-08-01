@@ -1,4 +1,4 @@
-<resources >
+<resources>
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
@@ -7,15 +7,19 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppThemeNoBackGround" parent="AppTheme">
         <item name="android:windowBackground">@null</item>
     </style>
+
     <style name="AppThemeNoActionBar" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppThemeNoActionBarNoBackground" parent="AppThemeNoActionBar">
         <item name="android:windowBackground">@null</item>
     </style>
@@ -37,6 +41,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
@@ -46,26 +51,10 @@
         <item name="android:windowEnterAnimation">@anim/translate_dialog_in</item>
         <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
     </style>
-    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
-        <!-- 是否覆盖锚点，默认为true，即盖住Toolbar -->
-        <item name="overlapAnchor">true</item>
-        <!-- 弹出层背景颜色 -->
-        <item name="android:popupBackground">@color/midBrown</item>
-         弹出层垂直方向上的偏移，即在竖直方向上距离Toolbar的距离，值为负则会盖住Toolbar（貌似没用）
-        <!--<item name="android:dropDownVerticalOffset">8dp</item>-->
-         弹出层水平方向上的偏移，即距离屏幕左边的距离，负值会导致右边出现空隙（貌似没用）
-        <!--<item name="android:dropDownHorizontalOffset">-16dp</item>-->
-    </style>
-    <style name="Fragment_Person_Theme" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
-    </style>
 
-    <style name="PopupAnimation"
-        parent="android:Animation"
-        mce_bogus="1">
+    <style name="Fragment_Person_Theme" parent="Theme.AppCompat.NoActionBar" />
+
+    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/popup_enter</item>
         <item name="android:windowExitAnimation">@anim/popup_exit</item>
     </style>
