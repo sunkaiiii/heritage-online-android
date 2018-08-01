@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 
 object Utils {
     fun dip2px(dipValue: Int): Int {
-        val scale = GlobalContext.instance.resources.displayMetrics.density;
+        val scale = GlobalContext.instance.resources.displayMetrics.density
         return (dipValue * scale + 0.5).toInt()
     }
 

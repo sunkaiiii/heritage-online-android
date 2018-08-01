@@ -5,19 +5,19 @@
         android:id="@+id/change_password"
         android:icon="@drawable/ic_lock_open_white_24dp"
         android:title="@string/change_password"
-        app:showAsAction="never|withText"/>
+        app:showAsAction="never|withText" />
     <item
         android:id="@+id/log_out"
         android:icon="@drawable/ic_power_settings_new_white_24dp"
         android:title="@string/logout"
-        app:showAsAction="never|withText"/>
+        app:showAsAction="never|withText" />
     <item
         android:id="@+id/about_us"
         android:icon="@drawable/ic_info_outline_white_24dp"
         android:title="@string/about_us"
-        app:showAsAction="never|withText"/>
+        app:showAsAction="never|withText" />
     <item android:id="@+id/search_user"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

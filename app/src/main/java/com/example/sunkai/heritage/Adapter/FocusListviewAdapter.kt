@@ -1,7 +1,9 @@
 package com.example.sunkai.heritage.Adapter
 
 import android.content.Context
-import androidx.core.content.ContextCompat
+import android.content.res.ColorStateList
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +12,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandlePerson
@@ -21,6 +24,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
 import com.example.sunkai.heritage.value.IS_FOCUS
@@ -65,16 +69,22 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
         super.onBindViewHolder(holder, position)
         val data = getItem(position)
         setDatas(holder, data)
-        getUserImage(holder, data,position)
+        getUserImage(holder, data, position)
         setClick(holder, position, data)
     }
 
     private fun setDatas(holder: Holder, data: FollowInformation) {
         holder.userName.text = data.userName
         holder.focusBtnImg.setImageResource(if (data.checked) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
-        holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
+        val icon=DrawableCompat.wrap(ContextCompat.getDrawable(context,R.drawable.ic_assignment_ind_grey_500_24dp)!!)
+        DrawableCompat.setTint(icon, getThemeColor())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.userImage.background=icon
+        }else{
+            holder.userImage.setImageDrawable(icon)
+        }
         holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
-        holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (data.checked) R.color.midGrey else R.color.colorPrimary))
+        holder.focusBtn.setTextColor(if (data.checked) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
         if (data.followEachother) {
             holder.focusBtn.text = FOLLOW_EACHOTHER
         } else {
@@ -84,17 +94,21 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
                 holder.focusBtn.text = UNFOCUS
             }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !data.checked) {
+            holder.focusBtnImg.drawable.setTint(getThemeColor())
+            holder.focusBtnLayout.background.setTint(getThemeColor())
+        }
     }
 
-    private fun getUserImage(holder: Holder, data: FollowInformation,position: Int) {
+    private fun getUserImage(holder: Holder, data: FollowInformation, position: Int) {
         ThreadPool.execute {
             val id = data.focusFansID
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
                 url?.let {
                     runOnUiThread(Runnable {
-                        data.imageUrl=url
-                        datas[position]=data
+                        data.imageUrl = url
+                        datas[position] = data
                         glide.load(url).into(holder.userImage)
                     })
                 }
@@ -155,7 +169,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
             holder.focusBtnImg.setImageResource(if (check) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
             holder.focusBtnLayout.setBackgroundResource(if (check) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
             holder.focusBtnLayout.isEnabled = true
-            holder.focusBtn.setTextColor(ContextCompat.getColor(context, if (check) R.color.midGrey else R.color.colorPrimary))
+            holder.focusBtn.setTextColor(if (check) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
             holder.focusBtn.text = if (check) {
                 if (followEachOther) FOLLOW_EACHOTHER else IS_FOCUS
             } else UNFOCUS
@@ -171,6 +185,6 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
     }
 
     override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleFocusListviewItemClick(context,this)
+        HandleAdapterItemClickClickUtils.handleFocusListviewItemClick(context, this)
     }
 }

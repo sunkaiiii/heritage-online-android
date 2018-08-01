@@ -47,7 +47,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         changeWidgeTheme()
     }
 
-    fun changeWidgeTheme() {
+    open fun changeWidgeTheme() {
         val color = getThemeColor()
         val darkColor= getDarkThemeColor()
         if (!ignoreToolbar) {

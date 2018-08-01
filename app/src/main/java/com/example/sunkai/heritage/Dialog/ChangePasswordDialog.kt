@@ -43,6 +43,10 @@ class ChangePasswordDialog: BaseDialogFragment() {
         holder.userName.setText(username)
         holder.cancel.setOnClickListener { dialog.dismiss() }
         holder.submit.setOnClickListener{
+            if(username == "test"){
+                toast("测试账号不允许修改密码")
+                return@setOnClickListener
+            }
             if(checkInputIsIlligle(holder)){
                 holder.submit.isEnabled=false
                 changePassword(holder,username)

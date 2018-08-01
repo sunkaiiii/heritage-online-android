@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.Fragment
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,9 @@ import com.example.sunkai.heritage.Dialog.ChangePasswordDialog
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseTakePhotoLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.fragment_person.*
 import kotlinx.android.synthetic.main.user_view.*
@@ -62,12 +65,27 @@ class PersonFragment : BaseTakePhotoLazyLoadFragment(), View.OnClickListener {
         lazyLoad()
     }
 
+
     override fun setNeedChangeThemeColorWidget() {
         changeThemeWidge.add(R.id.fragment_person_my_tiezi)
         changeThemeWidge.add(R.id.fragment_person_my_like)
         changeThemeWidge.add(R.id.fragment_person_my_collect)
         changeThemeWidge.add(R.id.fragment_person_my_message)
         changeThemeWidge.add(R.id.person_fragment_setting)
+    }
+
+    override fun changeWidgeTheme() {
+        super.changeWidgeTheme()
+        val colorArray=IntArray(2)
+        colorArray[0]= getThemeColor()
+        colorArray[1]= getLightThemeColor()
+        val drawable=GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,colorArray)
+        userViewBackGround.setImageDrawable(drawable)
+        sign_name_textview.setTextColor(getDarkThemeColor())
+        person_follow.setTextColor(getDarkThemeColor())
+        person_fans.setTextColor(getDarkThemeColor())
+        person_fans_number.setTextColor(getDarkThemeColor())
+        person_follow_number.setTextColor(getDarkThemeColor())
     }
 
     private fun initview() {

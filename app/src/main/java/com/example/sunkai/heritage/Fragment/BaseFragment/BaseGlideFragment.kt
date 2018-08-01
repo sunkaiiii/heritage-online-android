@@ -36,7 +36,7 @@ abstract class BaseGlideFragment : Fragment() {
         changeWidgeTheme()
     }
 
-    private fun changeWidgeTheme() {
+    protected open fun changeWidgeTheme() {
         val color = getThemeColor()
         changeThemeWidge.forEach {
             val view = activity?.findViewById<View>(it)

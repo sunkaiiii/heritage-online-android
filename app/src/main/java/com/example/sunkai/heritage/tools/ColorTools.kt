@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -72,6 +73,14 @@ fun getLighterColor(color: Int): Int {
         hsvArray[1] = 0.08f
     }
     return Color.HSVToColor(hsvArray)
+}
+
+fun tintDrawable(drawableResID:Int,color: Int= getThemeColor()):Drawable= tintDrawable(ContextCompat.getDrawable(GlobalContext.instance,drawableResID)!!,color)
+
+fun tintDrawable(drawable: Drawable,color:Int= getThemeColor()):Drawable{
+    val tempDrawable=DrawableCompat.wrap(drawable)
+    DrawableCompat.setTint(tempDrawable,color)
+    return tempDrawable
 }
 
 fun getSelectGradientDrawableColor(color: String): Int = getSelectGradientDrawableColor(Color.parseColor(color))

@@ -7,8 +7,6 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
-import androidx.core.content.ContextCompat
-import com.google.android.material.card.MaterialCardView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +14,9 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
@@ -37,6 +35,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
+import com.google.android.material.card.MaterialCardView
 
 
 /**
@@ -118,7 +117,11 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
             holder.addfocusText.setTextColor(getThemeColor())
             tintTextView(holder.addfocusText)
         }
-        holder.userImage.setImageResource(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            holder.userImage.background= tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp)
+        }else{
+            holder.userImage.setImageDrawable(tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp))
+        }
         holder.name_text.text = data.userName
         holder.sameLocation.text = if (!BaiduLocation.location.isEmpty() && data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""
     }
@@ -317,11 +320,10 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
-        val requestOptions = RequestOptions().error(R.drawable.ic_assignment_ind_deep_orange_200_48dp).fallback(R.drawable.ic_assignment_ind_deep_orange_200_48dp)
         ThreadPool.execute {
             val userImageURL = HandlePerson.GetUserImageURL(data.userID)
             runOnUiThread {
-                glide.load(userImageURL).apply(requestOptions).into(holder.userImage)
+                glide.load(userImageURL).into(holder.userImage)
             }
         }
     }
