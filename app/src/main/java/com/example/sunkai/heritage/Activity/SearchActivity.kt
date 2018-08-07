@@ -61,7 +61,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
     private fun initView() {
         setEditTextHint()
         searchActivityTablayout.setSelectedTabIndicatorColor(getThemeColor())
-        searchActivityTablayout.tabRippleColor= ColorStateList.valueOf(getLightThemeColor())
+        searchActivityTablayout.tabRippleColor = ColorStateList.valueOf(getLightThemeColor())
         val searchHistoryList = getSearchHistoryList()
         val adapter = SearchActivitySearchHistoryAdapter(this, searchHistoryList, glide)
         setHistoryAdapterClick(adapter)
@@ -153,7 +153,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         override fun handleMessage(msg: Message?) {
             if (msg?.what == SEARCH_FLAG) {
                 val searchInfo = msg.data.getString(SEARCH_TEXT)
-                if (!searchInfo.isNullOrEmpty()) {
+                if (searchInfo != null && !searchInfo.isNullOrEmpty()) {
                     startSearchInfo(searchInfo)
                 }
             }
@@ -199,13 +199,13 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         }
     }
 
-    private fun getCorrespodingAdapter(searchInfo:String,searchType: String=this.searchType):BaseRecyclerAdapter<*,*>?{
-        return CreateCorrespondingAdapterFactory.create(this,glide,searchType,searchInfo)
+    private fun getCorrespodingAdapter(searchInfo: String, searchType: String = this.searchType): BaseRecyclerAdapter<*, *>? {
+        return CreateCorrespondingAdapterFactory.create(this, glide, searchType, searchInfo)
     }
 
     private fun writeSearchSharePrefrence(searchString: String, searchType: String) {
         val sharePref = getSharedPreferences(SEARCH_SHAREPREF_NAME, Context.MODE_PRIVATE)
-        val searchList = sharePref.getStringSet(searchType, mutableSetOf())
+        val searchList = sharePref.getStringSet(searchType, mutableSetOf()) ?: mutableSetOf()
         searchList.add(searchString)
         sharePref.edit {
             putStringSet(searchType, searchList)
@@ -217,7 +217,7 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
         val sharePref = getSharedPreferences(SEARCH_SHAREPREF_NAME, Context.MODE_PRIVATE)
         val searchList = sharePref.all
         searchList.keys.forEach {
-            val set = sharePref.getStringSet(it, setOf())
+            val set = sharePref.getStringSet(it, setOf()) ?: setOf()
             searchMap[it] = set
         }
         return searchMap

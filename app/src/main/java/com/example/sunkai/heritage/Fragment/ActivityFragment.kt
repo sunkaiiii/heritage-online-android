@@ -11,6 +11,7 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.runOnUiThread
+import com.example.sunkai.heritage.value.CLASIIFY_DIVIDE
 import kotlinx.android.synthetic.main.fragment_activity1.*
 
 /**
@@ -22,7 +23,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelName = arguments!!.getString(CHANNEL)
+        channelName = arguments?.getString(CHANNEL) ?: CLASIIFY_DIVIDE[0]
         index = arguments!!.getInt(INDEX)
     }
 
@@ -39,7 +40,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
         }
 
         //如果是第一页，直接加载内容
-        if (index==0){
+        if (index == 0) {
             lazyLoad()
         }
     }
@@ -59,7 +60,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
         requestHttp {
             val datas = HandleFolk.GetChannelInformation(channelName)
             runOnUiThread {
-                val adapter = ActivityRecyclerViewAdapter(activity, datas,glide)
+                val adapter = ActivityRecyclerViewAdapter(activity, datas, glide)
                 activityRecyclerView?.adapter = adapter
                 refreshRefreshViewColor()
                 onPostLoad()

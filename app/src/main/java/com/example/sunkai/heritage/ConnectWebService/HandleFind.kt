@@ -33,7 +33,7 @@ object HandleFind : BaseSetting() {
         return SUCCESS == result
     }
 
-    private fun handleCommentData(result:String):List<UserCommentData>{
+    private fun handleCommentData(result: String): List<UserCommentData> {
         if (result == ERROR) {
             return arrayListOf()
         } else {
@@ -237,15 +237,15 @@ object HandleFind : BaseSetting() {
         return arrayListOf()
     }
 
-    fun SearchUserCommentInfo(searchInfo:String,userID: Int=LoginActivity.userID):List<UserCommentData>{
-        val url="$URL/SearchUserCommentInfo?userID=$userID&searchInfo=$searchInfo"
-        val result=PutGet(url)
-        if(result== ERROR){
+    fun SearchUserCommentInfo(searchInfo: String, userID: Int = LoginActivity.userID): List<UserCommentData> {
+        val url = "$URL/SearchUserCommentInfo?userID=$userID&searchInfo=$searchInfo"
+        val result = PutGet(url)
+        if (result == ERROR) {
             return arrayListOf()
         }
-        try{
+        try {
             return handleCommentData(result)
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         return arrayListOf()

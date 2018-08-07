@@ -21,34 +21,27 @@ import java.io.InputStream
  */
 
 object HandlePic {
-    fun handlePic(context: Context, picID: Int, size: Int): Bitmap {
-        val `is` = context.resources.openRawResource(picID)
+
+    fun handlePic(`is`: InputStream, size: Int = 0): Bitmap {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = false
         options.inSampleSize = size
-        return BitmapFactory.decodeStream(`is`, null, options)
+        return BitmapFactory.decodeStream(`is`, null, options)!!
     }
 
-    fun handlePic(`is`: InputStream, size: Int=0): Bitmap {
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = false
-        options.inSampleSize = size
-        return BitmapFactory.decodeStream(`is`, null, options)
-    }
-
-    fun handlePic(imgByte: ByteArray):Bitmap{
-        val inputStrem=ByteArrayInputStream(imgByte)
+    fun handlePic(imgByte: ByteArray): Bitmap {
+        val inputStrem = ByteArrayInputStream(imgByte)
         return handlePic(inputStrem)
     }
 
-    fun bitmapToByteArray(bitmap: Bitmap):ByteArray{
-        val out=ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,out)
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val out = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
         return out.toByteArray()
     }
 
-    fun drawableToByteArray(drawable: Drawable):ByteArray?{
-        if(drawable is BitmapDrawable) {
+    fun drawableToByteArray(drawable: Drawable): ByteArray? {
+        if (drawable is BitmapDrawable) {
             return bitmapToByteArray(drawable.bitmap)
         }
         return null

@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Activity.LoginActivity.Implement
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.Interface.Logininteractor
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -52,8 +51,6 @@ class LoginInteractorImpl:Logininteractor {
     }
 
     override fun loadUserNamesFromSharePrefrece(): Set<String> {
-        val userNames= GlobalContext.instance.getSharedPreferences("userNames", Context.MODE_PRIVATE).getStringSet("userNames", mutableSetOf())
-        Log.d("userNames",userNames.toString())
-        return userNames
+        return GlobalContext.instance.getSharedPreferences("userNames", Context.MODE_PRIVATE).getStringSet("userNames", mutableSetOf())?: mutableSetOf()
     }
 }

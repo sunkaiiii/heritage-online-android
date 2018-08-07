@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.value
 
-import android.content.res.Configuration
 import android.util.Pair
 import android.view.View
 import com.example.sunkai.heritage.R
@@ -49,10 +48,10 @@ const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
 const val TYPE_FIND = "发现"
-val COLLECT_TYPE_MAIN = CreateAllNewsCollectAdapter::class.java.name!!
-val COLLECT_TYPE_FOCUS_HERITAGE = CreateBottomNewsCollectAdapter::class.java.name!!
-val COLLECT_TYPE_FOLK = CreateFolkCollectionAdapter::class.java.name!!
-val COLLECT_TYPE_FIND = CreateCommentCollectaAdapter::class.java.name!!
+val COLLECT_TYPE_MAIN: String = CreateAllNewsCollectAdapter::class.java.name
+val COLLECT_TYPE_FOCUS_HERITAGE: String = CreateBottomNewsCollectAdapter::class.java.name
+val COLLECT_TYPE_FOLK: String = CreateFolkCollectionAdapter::class.java.name
+val COLLECT_TYPE_FIND: String = CreateCommentCollectaAdapter::class.java.name
 const val FIRST_OPEN = 0
 const val NOT_FIRST_OPEN = 1
 const val NOT_LOGIN = 0
@@ -80,11 +79,11 @@ const val IS_INTO = "isInto"
 const val READ = "r"
 const val SEARCH_TYPE = "searchType"
 const val THEME_COLOR = "theme_color"
-val TYPE_NEWS = CreateSearchAllNewsSearchAdapter::class.java.name!!
-val TYPE_BOTTOM_NEWS = CreateBottomActivitySearchAdapter::class.java.name!!
-val TYPE_COMMENT = CreateSearchCommentAdapter::class.java.name!!
-val TYPE_FOLK_HERITAGE = CreateFolkInfoSearchAdapter::class.java.name!!
-val TYPE_USER = CreateSearchUserAdapter::class.java.name!!
+val TYPE_NEWS: String = CreateSearchAllNewsSearchAdapter::class.java.name
+val TYPE_BOTTOM_NEWS: String = CreateBottomActivitySearchAdapter::class.java.name
+val TYPE_COMMENT: String = CreateSearchCommentAdapter::class.java.name
+val TYPE_FOLK_HERITAGE: String = CreateFolkInfoSearchAdapter::class.java.name
+val TYPE_USER: String = CreateSearchUserAdapter::class.java.name
 const val SEARCH_SHAREPREF_NAME = "search_info"
 const val IMAGE_URL = "image_url"
 typealias TransitionPair = Pair<View, String>

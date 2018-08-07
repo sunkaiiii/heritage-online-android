@@ -22,17 +22,19 @@ fun HandleImage(uri: Uri?): Bitmap? {
     }
 }
 
-private fun compressImage(uri: Uri): Bitmap {
+private fun compressImage(uri: Uri): Bitmap? {
     val parcelFileDescrptor = GlobalContext.instance.contentResolver.openFileDescriptor(uri, READ)
+            ?: return null
     val fileDescriptor = parcelFileDescrptor.fileDescriptor
     val bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor) //用这个方法可以得到Bitmap
     //获取图片exif信息
-    val exifInterface = androidx.exifinterface.media.ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri)) //用这个方法可以得到流
+    val exifInterface = ExifInterface(GlobalContext.instance.contentResolver.openInputStream(uri)
+            ?: return null) //用这个方法可以得到流
     parcelFileDescrptor.close()
     return corpImage(bitmap, exifInterface)
 }
 
-private fun corpImage(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
+private fun corpImage(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap? {
     return if (isBitmapNeedCompress(bitmap)) {
         compressBitmap(bitmap, exifInterface)
     } else {
@@ -44,10 +46,11 @@ private fun isBitmapNeedCompress(bitmap: Bitmap): Boolean {
     return bitmap.toByteArray().size > (compressMinLimit shl 10)
 }
 
-private fun compressBitmap(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
+private fun compressBitmap(bitmap: Bitmap, exifInterface: ExifInterface): Bitmap? {
     val factoryOptions = BitmapFactory.Options()
     factoryOptions.inSampleSize = calculateSize(bitmap)
     val corpBitmap = BitmapFactory.decodeStream(ByteArrayInputStream(bitmap.toByteArray()), null, factoryOptions)
+            ?: return null
     bitmap.recycle()
     return rotatingImage(corpBitmap, exifInterface)
 }
@@ -65,7 +68,7 @@ private fun calculateSize(bitmap: Bitmap): Int {
             2
         } else if (longSide in 2200..5889) {
             4
-        }else if(longSide in 5889..20480){
+        } else if (longSide in 5889..20480) {
             8
         } else {
             if (longSide / 1280 == 0) 1 else longSide / 1280

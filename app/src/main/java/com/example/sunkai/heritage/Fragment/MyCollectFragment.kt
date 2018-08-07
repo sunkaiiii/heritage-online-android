@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.example.sunkai.heritage.Activity.MyCollectionActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
@@ -21,14 +22,14 @@ import kotlinx.android.synthetic.main.my_collect_item.*
 class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private var typeName: String? = null
-    private var className=""
+    private var className = ""
     private var index: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val argument = arguments ?: return
         typeName = argument.getString(TYPE_NAME)
-        className=argument.getString(ADAPTER_CLASSNAME)
+        className = argument.getString(ADAPTER_CLASSNAME) ?: return
         index = argument.getInt(INDEX)
     }
 
@@ -38,12 +39,12 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if(savedInstanceState==null) {
+        if (savedInstanceState == null) {
             initViews()
         }
     }
 
-    private fun initViews(){
+    private fun initViews() {
         my_colelct_refresh.setOnRefreshListener {
             startLoadInformation()
         }
@@ -62,10 +63,10 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
 
     private fun getCollectInformation(typeName: String) {
         requestHttp {
-            val adapter=getCorrespondingMyCollectAdapter(typeName,className)
-            activity?.runOnUiThread{
+            val adapter = getCorrespondingMyCollectAdapter(typeName, className)
+            activity?.runOnUiThread {
                 onPostLoad()
-                if(typeName== TYPE_FOCUS_HERITAGE){
+                if (typeName == TYPE_FOCUS_HERITAGE) {
                     my_collect_recyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                 }
                 my_collect_recyclerview.adapter = adapter
@@ -73,8 +74,9 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
         }
     }
 
-    private fun getCorrespondingMyCollectAdapter(typeName: String,className: String):BaseRecyclerAdapter<*,*>?{
-        return CreateMyCollectAdapterFactory.createCorrespondingAdapter(activity?:return null,glide,typeName,className)
+    private fun getCorrespondingMyCollectAdapter(typeName: String, className: String): BaseRecyclerAdapter<*, *>? {
+        return CreateMyCollectAdapterFactory.createCorrespondingAdapter(activity
+                ?: return null, glide, typeName, className)
     }
 
     override fun onPreLoad() {
@@ -89,14 +91,14 @@ class MyCollectFragment : BaseLazyLoadFragment(), OnPageLoaded {
     companion object {
         private const val TYPE_NAME = "channel"
         private const val INDEX = "index"
-        private const val ADAPTER_CLASSNAME="class_name"
+        private const val ADAPTER_CLASSNAME = "class_name"
 
         //创建一个此instance的实例，传同样需要传入TypeName
-        fun newInstance(index: Int,channelName: String,className:String): MyCollectFragment {
+        fun newInstance(index: Int, channelName: String, className: String): MyCollectFragment {
             val fragment = MyCollectFragment()
             val args = Bundle()
             args.putString(TYPE_NAME, channelName)
-            args.putString(ADAPTER_CLASSNAME,className)
+            args.putString(ADAPTER_CLASSNAME, className)
             args.putInt(INDEX, index)
             fragment.arguments = args
             return fragment
