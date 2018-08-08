@@ -15,7 +15,7 @@ class FollowThemeEdgeViewPager: ViewPager {
     constructor(context: Context, attrs: AttributeSet):super(context,attrs){
         initEdge()
     }
-    fun initEdge() {
+    fun initEdge(color:Int= getThemeColor()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
                 val leftEdgeFile = ViewPager::class.java.getDeclaredField("mLeftEdge")
@@ -24,8 +24,8 @@ class FollowThemeEdgeViewPager: ViewPager {
                 rightEdgeFiled.isAccessible = true
                 val left = EdgeEffect(this.context)
                 val right = EdgeEffect(this.context)
-                left.color = getThemeColor()
-                right.color = getThemeColor()
+                left.color = color
+                right.color = color
                 leftEdgeFile.set(this, left)
                 rightEdgeFiled.set(this, right)
             } catch (e: Exception) {

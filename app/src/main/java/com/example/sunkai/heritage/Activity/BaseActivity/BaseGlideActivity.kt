@@ -46,8 +46,10 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     }
 
     open fun changeWidgeTheme() {
-        val color = getThemeColor()
-        val darkColor= getDarkThemeColor()
+        changeWidgeTheme(getThemeColor(), getDarkThemeColor())
+    }
+
+    open fun changeWidgeTheme(color: Int, darkColor: Int) {
         if (!ignoreToolbar) {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
         }
@@ -58,11 +60,11 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         changeThemeWidge.forEach {
             val view = findViewById<View>(it)
             when (view) {
-                is SwitchCompat ->tintSwitch(view)
+                is SwitchCompat -> tintSwitch(view)
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
-                is BottomNavigationView-> tintBottomNavigationView(view)
+                is BottomNavigationView -> tintBottomNavigationView(view)
                 else -> view?.setBackgroundColor(color)
             }
         }
@@ -80,6 +82,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         isDestroy = true
         runnableList.forEach { ThreadPool.remove(it) }
         runnableList.clear()
+
     }
 
     protected fun requestHttp(runnable: () -> Unit) {

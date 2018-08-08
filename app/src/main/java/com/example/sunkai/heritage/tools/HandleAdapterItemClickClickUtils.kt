@@ -4,25 +4,26 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.view.GravityCompat
-import androidx.appcompat.app.AppCompatActivity
 import android.transition.Slide
-import android.util.Pair
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Adapter.*
 import com.example.sunkai.heritage.Fragment.FindFragment
 import com.example.sunkai.heritage.Interface.IHandleAdapterItemClick
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.value.*
+import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
+import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
+import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.FROM
 
 /**
  * 对adapter的item点击事件进行了统一的封装

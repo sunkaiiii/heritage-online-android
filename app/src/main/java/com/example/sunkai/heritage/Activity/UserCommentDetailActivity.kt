@@ -7,9 +7,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.EdgeEffect
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.transition.doOnEnd
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
@@ -28,6 +30,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
+import com.example.sunkai.heritage.tools.getDarkerColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
@@ -157,12 +160,9 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
                 usercommentInformationLinear.setBackgroundColor(color)
                 userCommentCollapsingToolbarLayout.setContentScrimColor(color)
                 userCommentAddReplyBtn.backgroundTintList = ColorStateList.valueOf(color)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.statusBarColor = color
-                    window.navigationBarColor = color
-                }
+                changeWidgeTheme(color, getDarkerColor(color))
+                userCommentReplyRecyclerView.edgeEffectFactory = EdgeEffectFactory(color)
             }
-
         }
         if (image != null) {
             glide.load(HandlePic.handlePic(image)).into(simpleTarget)
@@ -305,6 +305,17 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     override fun onPostLoad() {
         userCommentSwipeRefresh.isRefreshing = false
+    }
+
+    //重写RecyclerViewEdgeFactroy的createEdgeEffect方法，使其可以生产对应主题颜色的edge阴影效果
+    class EdgeEffectFactory(val color: Int) : RecyclerView.EdgeEffectFactory() {
+        override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
+            val edgeEffect = super.createEdgeEffect(view, direction)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                edgeEffect.color = color
+            }
+            return edgeEffect
+        }
     }
 
     companion object {
