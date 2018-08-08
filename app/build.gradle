@@ -7,10 +7,10 @@ android {
     buildToolsVersion '28.0.1'
     defaultConfig {
         applicationId "com.datong.heritage_online"
-        minSdkVersion 14
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 37
-        versionName "3.4"
+        versionCode 38
+        versionName "3.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resConfigs "zh", "de", "en", "es", "ja", "ko", "ru", "th", "zh-rTW"
     }
