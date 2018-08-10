@@ -5,15 +5,13 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
-import androidx.transition.Fade
-import androidx.transition.TransitionManager
-import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
-import androidx.recyclerview.widget.GridLayoutManager
 import android.text.TextUtils
+import android.transition.Fade
+import android.transition.TransitionManager
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
@@ -27,8 +25,11 @@ import com.example.sunkai.heritage.Data.UserInfo
 import com.example.sunkai.heritage.Interface.OnItemClickListener
 import com.example.sunkai.heritage.Interface.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.getDarkThemeColor
+import com.example.sunkai.heritage.tools.getLightThemeColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_other_users.*
@@ -62,10 +63,10 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
     override fun changeWidgeTheme() {
         super.changeWidgeTheme()
-        val colorArray=IntArray(2)
-        colorArray[0]= getThemeColor()
-        colorArray[1]= getLightThemeColor()
-        val drawable= GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,colorArray)
+        val colorArray = IntArray(2)
+        colorArray[0] = getThemeColor()
+        colorArray[1] = getLightThemeColor()
+        val drawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colorArray)
         userViewBackGround.setImageDrawable(drawable)
         sign_name_textview.setTextColor(getDarkThemeColor())
         person_follow.setTextColor(getDarkThemeColor())
@@ -75,9 +76,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     }
 
     private fun settupWindowAnimations() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.duration = 500
-        }
+        window.enterTransition.duration = 500
     }
 
     private fun setViewsOnClick() {

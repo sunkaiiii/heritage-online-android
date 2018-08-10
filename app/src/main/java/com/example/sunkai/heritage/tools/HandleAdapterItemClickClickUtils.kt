@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.transition.Slide
 import android.view.View
@@ -29,13 +28,13 @@ import com.example.sunkai.heritage.value.FROM
  * 对adapter的item点击事件进行了统一的封装
  */
 
-object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
+object HandleAdapterItemClickClickUtils : IHandleAdapterItemClick {
     override fun handleMyOwnCommentRecyclerViewItemClick(context: Context, adapter: MyOwnCommentRecyclerViewAdapter) {
         adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(context, UserCommentDetailActivity::class.java)
                 intent.putExtra(DATA, adapter.getItem(position))
-                if (Build.VERSION.SDK_INT >= 21 && context is Activity) {
+                if (context is Activity) {
                     val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
                     val title = view.findViewById<TextView>(R.id.mycomment_item_title)
                     val content = view.findViewById<TextView>(R.id.mycomment_item_content)
@@ -58,10 +57,10 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
                 val infoBackGround = view.findViewById<LinearLayout>(R.id.info_background)
                 val intent = Intent(context, UserCommentDetailActivity::class.java)
                 intent.putExtra(DATA, data)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && context is Activity) {
+                if (context is Activity) {
                     val pairs = arrayOf(CreateTransitionPair(imageview, R.string.find_share_view),
                             CreateTransitionPair(infoBackGround, R.string.find_share_background))
-                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context,*pairs).toBundle())
+                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *pairs).toBundle())
                 } else {
                     context.startActivity(intent)
                 }
@@ -74,8 +73,8 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(context, OtherUsersActivity::class.java)
                 val data = adapter.getItem(position)
-                intent.putExtra(DATA,data)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP&&context is Activity) {
+                intent.putExtra(DATA, data)
+                if (context is Activity) {
                     val userName = view.findViewById<TextView>(R.id.user_name)
                     val userImage = view.findViewById<ImageView>(R.id.user_head_image)
                     val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name)
@@ -90,7 +89,7 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
     }
 
     override fun handleActivityRecyclerViewItemClick(context: Context, adapter: ActivityRecyclerViewAdapter) {
-        adapter.setOnItemClickListen(object :OnItemClickListener{
+        adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val activitydata = adapter.getItem(position)
                 val intent = Intent(context, FolkInformationActivity::class.java)
@@ -99,7 +98,7 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
                 intent.putExtra("image", activitydata.img)
                 intent.putExtra("from", ACTIVITY_FRAGMENT)
                 intent.putExtras(bundle)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && context is Activity) {
+                if (context is Activity) {
                     val image = view.findViewById<ImageView>(R.id.activity_layout_img)
                     val title = view.findViewById<TextView>(R.id.activity_layout_title)
                     val time = view.findViewById<TextView>(R.id.activity_layout_time)
@@ -112,7 +111,7 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
                             CreateTransitionPair(time, R.string.share_folk_time),
                             CreateTransitionPair(number, R.string.share_folk_number),
                             CreateTransitionPair(location, R.string.share_folk_location),
-                            CreateTransitionPair(content,R.string.share_folk_content))
+                            CreateTransitionPair(content, R.string.share_folk_content))
                     val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
                     context.startActivity(intent, transitionOptions.toBundle())
                 } else {
@@ -130,14 +129,14 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
                 val intent = Intent(context, BottomNewsDetailActivity::class.java)
                 intent.putExtra("data", data)
                 intent.putExtra("title", context.getString(R.string.focus_heritage))
-                if (context is AppCompatActivity&&Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (context is AppCompatActivity) {
                     val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
-                    val timeView=view.findViewById<TextView>(R.id.bottom_view_time)
-                    val slide= Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
-                    slide.duration=300
-                    context.window.exitTransition=slide
-                    val paris= arrayOf(CreateTransitionPair(titleView,R.string.bottom_news_share_title)
-                            ,CreateTransitionPair(timeView,R.string.bottom_news_share_time))
+                    val timeView = view.findViewById<TextView>(R.id.bottom_view_time)
+                    val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
+                    slide.duration = 300
+                    context.window.exitTransition = slide
+                    val paris = arrayOf(CreateTransitionPair(titleView, R.string.bottom_news_share_title)
+                            , CreateTransitionPair(timeView, R.string.bottom_news_share_time))
                     context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *paris).toBundle())
                 } else {
                     context.startActivity(intent)
@@ -151,15 +150,15 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
             override fun onItemClick(view: View, position: Int) {
                 val data = adapter.getItem(position)
                 val intent = Intent(context, NewsDetailActivity::class.java)
-                val titleView=view.findViewById<TextView>(R.id.see_more_news_item_title)
+                val titleView = view.findViewById<TextView>(R.id.see_more_news_item_title)
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
-                if(context is AppCompatActivity && Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP) {
+                if (context is AppCompatActivity) {
                     val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
                     slide.duration = 500
-                    context.window?.exitTransition=slide
-                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context,titleView,context.getString(R.string.news_detail_share_title)).toBundle())
-                }else{
+                    context.window?.exitTransition = slide
+                    context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, titleView, context.getString(R.string.news_detail_share_title)).toBundle())
+                } else {
                     context.startActivity(intent)
                 }
             }
@@ -167,11 +166,11 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
     }
 
     override fun handleFolkHeritageAdapterItemCLick(context: Context, adapter: FolkRecyclerViewAdapter) {
-        adapter.setOnItemClickListen(object :OnItemClickListener{
+        adapter.setOnItemClickListen(object : OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                val data=adapter.getItem(position)
-                val intent= Intent(context, FolkInformationActivity::class.java)
-                intent.putExtra(DATA,data)
+                val data = adapter.getItem(position)
+                val intent = Intent(context, FolkInformationActivity::class.java)
+                intent.putExtra(DATA, data)
                 intent.putExtra(FROM, ALL_FOLK_INFO_ACTIVITY)
                 context.startActivity(intent)
             }
@@ -184,15 +183,14 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent(context, UserCommentDetailActivity::class.java)
                 intent.putExtra("data", adapter.getItem(position))
-                //如果手机是Android 5.0以上的话，使用新的Activity切换动画
-                if (context is AppCompatActivity&&Build.VERSION.SDK_INT >= 21) {
+                if (context is AppCompatActivity) {
                     val getview: View = view.findViewById(R.id.fragment_find_litview_img) ?: return
                     intent.putExtra("option", UserCommentDetailActivity.ANIMATION_SHOW)
-                    ActivityCompat.startActivityForResult(context,intent, FindFragment.FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(context, getview, context.getString(R.string.find_share_view)).toBundle())
+                    ActivityCompat.startActivityForResult(context, intent, FindFragment.FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(context, getview, context.getString(R.string.find_share_view)).toBundle())
                 } else {
-                    if(context is Activity) {
+                    if (context is Activity) {
                         context.startActivityForResult(intent, FindFragment.FROM_USER_COMMENT_DETAIL)
-                    }else{
+                    } else {
                         context.startActivity(intent)
                     }
                 }
@@ -206,7 +204,7 @@ object HandleAdapterItemClickClickUtils:IHandleAdapterItemClick {
                 val data = adapter.getItem(position)
                 val intent = Intent(context, OtherUsersActivity::class.java)
                 intent.putExtra(DATA, data)
-                if (context is AppCompatActivity&&Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (context is AppCompatActivity) {
                     val userImage = view.findViewById<ImageView>(R.id.user_head_image)
                     val userName = view.findViewById<TextView>(R.id.user_name)
                     val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name),

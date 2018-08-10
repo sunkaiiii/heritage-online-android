@@ -4,13 +4,12 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.ConnectWebService.BaseSetting
@@ -42,16 +41,14 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         title.text=data.content
         glide.load(BaseSetting.URL+data.img).into(image)
         container.addView(view)
-        view.setOnClickListener({
+        view.setOnClickListener {
             val intent=setViewClick(data)
             if(context is Activity) {
-                if(Build.VERSION.SDK_INT>=21) {
-                    context.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
-                    return@setOnClickListener
-                }
+                context.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
+                return@setOnClickListener
             }
             context.startActivity(intent)
-        })
+        }
         return view
     }
 

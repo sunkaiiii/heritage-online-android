@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Activity.LoginActivity
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -41,9 +42,7 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         setContentView(R.layout.activity_login)
         window.setBackgroundDrawable(null)
         initview()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFullScreen()
-        }
+        setWindowFullScreen()
         //如果是从欢迎页进入的，则显示跳过登录
         isIntoMainpage = intent.getIntExtra(IS_INTO, FROM_WELCOME)
         jumpSignIn.visibility = if (isIntoMainpage == FROM_WELCOME) View.VISIBLE else View.GONE
@@ -60,7 +59,6 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
     }
 
     //设置全屏沉浸窗口
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun setWindowFullScreen() {
         WindowHelper.setWindowFullScreen(this)
     }
@@ -85,30 +83,22 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     //点击登录按钮，显示登陆模块
     override fun showLoginWidge() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(Gravity.END,resources.configuration.layoutDirection)))
-        }
+        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(Gravity.END, resources.configuration.layoutDirection)))
         ll_activity_login_navagate.visibility = View.INVISIBLE
         include_login_view.visibility = View.VISIBLE
     }
 
     //在登录模块点击返回，显示第一页
     override fun showFirstPageWidge() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection)))
-        }
+        TransitionManager.beginDelayedTransition(login_constraintLayout, Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection)))
         include_login_view.visibility = View.INVISIBLE
         ll_activity_login_navagate.visibility = View.VISIBLE
     }
 
     private fun jumpToRegist() {
         val intent = Intent(this@LoginActivity, RegistActivity::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.exitTransition = android.transition.TransitionInflater.from(this).inflateTransition(android.R.transition.fade)
-            ActivityCompat.startActivityForResult(this, intent, FROM_REGIST, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle())
-        } else {
-            startActivityForResult(intent, FROM_REGIST)
-        }
+        window.exitTransition = android.transition.TransitionInflater.from(this).inflateTransition(android.R.transition.fade)
+        startActivityForResult( intent, FROM_REGIST, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
     private fun showFindPassWordDialog() {

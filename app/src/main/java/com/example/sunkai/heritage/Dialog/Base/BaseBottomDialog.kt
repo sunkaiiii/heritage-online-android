@@ -1,8 +1,8 @@
 package com.example.sunkai.heritage.Dialog.Base
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDialog
 import android.view.*
 import com.example.sunkai.heritage.R
 
@@ -10,7 +10,7 @@ import com.example.sunkai.heritage.R
  * 通用的底部dialog
  * Created by sunkai on 2018/2/24.
  */
-open class BaseBottomDialog(context: Context) : AppCompatDialog(context, R.style.BottomDialog), View.OnClickListener {
+open class BaseBottomDialog(context: Context) : Dialog(context, R.style.BottomDialog), View.OnClickListener {
     var height = -2
     var view: View? = null
     override fun setContentView(layoutResID: Int) {

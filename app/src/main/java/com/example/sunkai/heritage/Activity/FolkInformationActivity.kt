@@ -40,7 +40,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
                 setDatasToView(data)
                 id = data.id
             }
-        //从全部非遗的页面进入，使用lite的数据先初始化，然后获取非遗信息
+            //从全部非遗的页面进入，使用lite的数据先初始化，然后获取非遗信息
             ALL_FOLK_INFO_ACTIVITY -> {
                 val data = intent.getSerializableExtra(DATA) as FolkDataLite
                 //使用lite的数据初始化完整的数据，并展示，同时后台读取全部的数据
@@ -54,13 +54,11 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     private fun initView() {
         setSupportActionBar(activity_join_toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.enterTransition.duration = 300
-            window.sharedElementExitTransition.duration = 300
-            window.sharedElementEnterTransition.duration = 300
-            window.sharedElementReenterTransition.duration = 300
-            window.sharedElementReturnTransition.duration = 300
-        }
+        window.enterTransition.duration = 300
+        window.sharedElementExitTransition.duration = 300
+        window.sharedElementEnterTransition.duration = 300
+        window.sharedElementReenterTransition.duration = 300
+        window.sharedElementReturnTransition.duration = 300
     }
 
     //警报很烦，屏蔽掉
@@ -84,10 +82,8 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
             val color = drawable.generateDarkColor()
             activityJoinCollapsingToolbar.setContentScrimColor(color)
             activityInformaitonTextBackground.setBackgroundColor(color)
-            if (Build.VERSION.SDK_INT >= 21) {
-                window.statusBarColor = color
-                window.navigationBarColor = color
-            }
+            window.statusBarColor = color
+            window.navigationBarColor = color
             join_activity_img.setImageDrawable(drawable)
         }
     }

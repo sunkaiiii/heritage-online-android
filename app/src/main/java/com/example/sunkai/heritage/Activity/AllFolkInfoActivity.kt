@@ -3,8 +3,6 @@ package com.example.sunkai.heritage.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.GridLayoutManager
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher

@@ -2,22 +2,15 @@ package com.example.sunkai.heritage.Fragment
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.MenuBuilder
-import android.view.*
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.widget.ActionMenuView
-import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.core.view.forEach
-import androidx.core.view.get
 import com.bumptech.glide.request.RequestOptions
 import com.example.sunkai.heritage.Activity.*
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity

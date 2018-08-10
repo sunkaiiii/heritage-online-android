@@ -1,8 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
-import android.os.Build
 import android.os.Bundle
-import androidx.core.view.GravityCompat
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
@@ -19,7 +17,7 @@ import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
-class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
+class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     var id: Int? = null
 
@@ -41,18 +39,14 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
     }
 
     private fun initAnimationAndLoadData(data: BottomFolkNewsLite) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
-            val slide=Slide(GravityCompat.getAbsoluteGravity(Gravity.END,resources.configuration.layoutDirection))
-            val fade=Fade()
-            slide.duration=500
-            fade.duration=500
-            window.enterTransition=slide
-            window.exitTransition=fade
-            window.returnTransition=fade
-            window.enterTransition.doOnEnd {
-                GetNewsDetail(data.id)
-            }
-        }else {
+        val slide = Slide(Gravity.getAbsoluteGravity(Gravity.END, resources.configuration.layoutDirection))
+        val fade = Fade()
+        slide.duration = 500
+        fade.duration = 500
+        window.enterTransition = slide
+        window.exitTransition = fade
+        window.returnTransition = fade
+        window.enterTransition.doOnEnd {
             GetNewsDetail(data.id)
         }
     }
@@ -87,11 +81,11 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
     }
 
     override fun onPreLoad() {
-        bottomNewsDetailRefresh.isRefreshing=true
-        bottomNewsDetailRecyclerview.adapter=null
+        bottomNewsDetailRefresh.isRefreshing = true
+        bottomNewsDetailRecyclerview.adapter = null
     }
 
     override fun onPostLoad() {
-        bottomNewsDetailRefresh.isRefreshing=false
+        bottomNewsDetailRefresh.isRefreshing = false
     }
 }

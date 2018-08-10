@@ -4,7 +4,6 @@ import android.content.Context.MODE_PRIVATE
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -70,11 +69,11 @@ fun getLighterColor(color: Int): Int {
     return Color.HSVToColor(hsvArray)
 }
 
-fun tintDrawable(drawableResID:Int,color: Int= getThemeColor()):Drawable= tintDrawable(ContextCompat.getDrawable(GlobalContext.instance,drawableResID)!!,color)
+fun tintDrawable(drawableResID: Int, color: Int = getThemeColor()): Drawable = tintDrawable(ContextCompat.getDrawable(GlobalContext.instance, drawableResID)!!, color)
 
-fun tintDrawable(drawable: Drawable,color:Int= getThemeColor()):Drawable{
-    val tempDrawable=DrawableCompat.wrap(drawable)
-    DrawableCompat.setTint(tempDrawable,color)
+fun tintDrawable(drawable: Drawable, color: Int = getThemeColor()): Drawable {
+    val tempDrawable = DrawableCompat.wrap(drawable)
+    DrawableCompat.setTint(tempDrawable, color)
     return tempDrawable
 }
 
@@ -127,15 +126,13 @@ fun tintSwitch(view: SwitchCompat) {
 private fun tintCompoundDrawables(view: TextView) {
     val drawalbeList = view.compoundDrawables
     drawalbeList.forEach {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            it?.setTint(getThemeColor())
-        }
+        it?.setTint(getThemeColor())
     }
     if (drawalbeList.size >= 4) {
         view.setCompoundDrawables(drawalbeList[0], drawalbeList[1], drawalbeList[2], drawalbeList[3])
     }
 }
 
-fun tintRecyclerView(view:RecyclerView){
+fun tintRecyclerView(view: RecyclerView) {
     view.adapter?.notifyDataSetChanged()
 }

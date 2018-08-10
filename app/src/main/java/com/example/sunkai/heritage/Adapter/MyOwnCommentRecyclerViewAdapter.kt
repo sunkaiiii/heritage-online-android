@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
-import androidx.palette.graphics.Palette
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +12,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -83,7 +82,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun setMoreImageShowPopWindow(holder: ViewHolder, data: UserCommentData) {
-        holder.more_menu.setOnClickListener {
+        holder.more_menu.setOnClickListener { _ ->
             val popMenu = PopupMenu(context, holder.more_menu)
             popMenu.menuInflater.inflate(R.menu.my_own_tiezi_pop_menu, popMenu.menu)
             popMenu.setOnMenuItemClickListener {
@@ -112,7 +111,6 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
                 return@setOnMenuItemClickListener true
             }
             popMenu.show()
-
         }
     }
 

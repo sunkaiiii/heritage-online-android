@@ -18,7 +18,6 @@ import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.toByteArray
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.ERROR

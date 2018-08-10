@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Activity
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Base64
@@ -34,9 +33,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_find_comment)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            add_comment_image.imageTintList= ColorStateList.valueOf(getThemeColor())
-        }
+        add_comment_image.imageTintList= ColorStateList.valueOf(getThemeColor())
     }
 
     private fun submit() {

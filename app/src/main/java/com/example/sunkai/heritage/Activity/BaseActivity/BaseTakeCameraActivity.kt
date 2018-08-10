@@ -40,9 +40,11 @@ abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(),OnPageLoaded {
 
     abstract fun getNeedOpenChooseImageView():Array<View>
 
+
     private fun setNeedOpenChoseViewClickListner() {
         val views=getNeedOpenChooseImageView()
-        views.forEach { it.setOnClickListener {
+        views.forEach { view ->
+            view.setOnClickListener {
             choosePhoto()
         } }
     }

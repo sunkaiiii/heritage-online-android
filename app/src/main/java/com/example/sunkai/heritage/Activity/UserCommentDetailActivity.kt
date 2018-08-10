@@ -56,7 +56,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         //从发现页点进来的时候执行动画，其他页面点进来不执行动画
         //当动画完成后，再显示帖子标题栏
         //防止在动画行进的时候，标题栏遮挡图片的问题
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && intent.getIntExtra(FROM, DEFAULT_FROM) != FROM_COLLECTION) {
+        if (intent.getIntExtra(FROM, DEFAULT_FROM) != FROM_COLLECTION) {
             window.sharedElementEnterTransition.doOnEnd {
                 getReplysInfo(commentID)
                 showBackLinear()
@@ -311,9 +311,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     class EdgeEffectFactory(val color: Int) : RecyclerView.EdgeEffectFactory() {
         override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
             val edgeEffect = super.createEdgeEffect(view, direction)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                edgeEffect.color = color
-            }
+            edgeEffect.color = color
             return edgeEffect
         }
     }

@@ -46,11 +46,9 @@ class ViewImageActivity : BaseGlideActivity() {
     }
 
     private fun setWindowAnimation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val fade = Fade()
-            window.enterTransition = fade
-            window.exitTransition = fade
-        }
+        val fade = Fade()
+        window.enterTransition = fade
+        window.exitTransition = fade
     }
 
     private fun setWindowFullScreen() {

@@ -1,11 +1,11 @@
 package com.example.sunkai.heritage.Activity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
@@ -79,7 +79,7 @@ class UserOwnCommentActivity : BaseAutoLoginActivity(),OnPageLoaded {
                                     refreshList()
                                 }
                             }
-                        }.setNegativeButton("取消", { _, _ -> })
+                        }.setNegativeButton("取消") { _, _ -> }
                         .create().show()
             }
         })

@@ -44,7 +44,6 @@
                 android:id="@+id/imageview_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:background="?attr/selectableItemBackground"
@@ -59,7 +58,6 @@
                 android:id="@+id/fragment_find_like_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -87,11 +85,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:layout_marginLeft="13dp"
                 android:layout_marginStart="13dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_location_on_grey_700_24dp"
                 android:contentDescription="@string/comment_location"
+                android:src="@drawable/ic_location_on_grey_700_24dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageview_comment"
                 app:layout_constraintStart_toEndOf="@+id/imageview_comment"
                 app:layout_constraintTop_toBottomOf="@+id/fragment_find_litview_img" />
@@ -101,7 +98,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/same_location"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -114,7 +110,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
@@ -123,10 +118,8 @@
                     android:id="@+id/user_list_image"
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_margin="8dp"
-                    />
+                    android:layout_margin="8dp" />
 
                 <TextView
                     android:id="@+id/name_text"
@@ -138,7 +131,6 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_toEndOf="@id/user_list_image"
-                    android:layout_toRightOf="@id/user_list_image"
                     android:text=""
                     android:textColor="@color/black" />
 
@@ -147,11 +139,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="3sp"
                     android:layout_marginStart="3dp"
-                    android:drawableLeft="@drawable/ic_add_black_24dp"
                     android:drawableStart="@drawable/ic_add_black_24dp"
                     android:gravity="center"
                     android:text="@string/add_focus"
@@ -164,11 +153,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="3dp"
                     android:layout_marginStart="3dp"
-                    android:drawableLeft="@drawable/ic_remove_circle_grey_400_24dp"
                     android:drawablePadding="3dp"
                     android:drawableStart="@drawable/ic_remove_circle_grey_400_24dp"
                     android:gravity="center"
@@ -183,7 +169,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="19dp"
             android:layout_marginStart="19dp"
             android:layout_marginTop="8dp"
             android:orientation="vertical">

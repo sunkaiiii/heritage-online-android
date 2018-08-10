@@ -48,7 +48,6 @@
                         android:id="@+id/fragmentFolkSeeAllFolk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginStart="8dp"
                         android:background="?attr/selectableItemBackground"
                         android:contentDescription="@string/see_all_folk"

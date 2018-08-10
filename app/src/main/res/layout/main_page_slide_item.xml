@@ -26,7 +26,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start|center"
-            android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp"
             android:gravity="center|start"
             android:text="@string/news_title"

@@ -3,10 +3,8 @@ package com.example.sunkai.heritage.Activity
 import android.annotation.TargetApi
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -18,8 +16,10 @@ import androidx.core.view.children
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleUser
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.WindowHelper
+import com.example.sunkai.heritage.tools.encryptionPassWord
+import com.example.sunkai.heritage.tools.toByteArray
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.PASSWORD
 import com.example.sunkai.heritage.value.USER_NAME
@@ -48,9 +48,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setBackgroundDrawable(null)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            startAnimation()
-        }
+        startAnimation()
         setContentView(R.layout.activity_regist)
         initView()
     }
@@ -60,7 +58,6 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
         setWindowFullScreen()
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private fun startAnimation() {
         val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
         window.enterTransition = slideRight

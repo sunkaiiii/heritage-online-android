@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Fragment.MainFragment"
-    android:focusableInTouchMode="true">
+    tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
 
 
     <LinearLayout
@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/search"
+                android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true" />
 
@@ -32,10 +33,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_search_grey_400_24dp"
-                android:contentDescription="@string/search"/>
+                android:contentDescription="@string/search"
+                android:src="@drawable/ic_search_grey_400_24dp" />
         </RelativeLayout>
 
         <LinearLayout
@@ -47,8 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:text="@string/category"
-                android:layout_marginLeft="24dp" />
+                android:text="@string/category" />
 
             <Spinner
                 android:id="@+id/folk_heritages_spinner"
@@ -60,8 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:text="@string/location"
-                android:layout_marginLeft="24dp" />
+                android:text="@string/location" />
 
             <Spinner
                 android:id="@+id/folk_location_spinner"
@@ -72,9 +70,9 @@
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_folk_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_folk_swipe_refresh">
+        android:layout_height="match_parent">
 
         <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
             android:id="@+id/folk_show_recyclerview"

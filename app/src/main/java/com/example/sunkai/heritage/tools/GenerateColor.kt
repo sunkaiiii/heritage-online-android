@@ -2,10 +2,8 @@ package com.example.sunkai.heritage.tools
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import androidx.core.content.ContextCompat
-import androidx.palette.graphics.Palette
 import androidx.core.graphics.drawable.toBitmap
-import com.example.sunkai.heritage.R
+import androidx.palette.graphics.Palette
 
 /**
  * 判断图片颜色

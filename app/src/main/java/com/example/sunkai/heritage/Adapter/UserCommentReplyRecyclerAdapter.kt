@@ -1,17 +1,16 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Data.CommentReplyInformation
 import com.example.sunkai.heritage.R
+import java.lang.StringBuilder
 
 /**
  * 帖子详情页RecyclerView的adapter
@@ -35,9 +34,8 @@ class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReply
         setData(holder, data)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setData(holder: ViewHodler, data: CommentReplyInformation) {
-        holder.userName.text = data.userName + ":"
+        holder.userName.text = StringBuilder().append(data).append(":").toString()
         holder.replyContent.text = data.replyContent
     }
 

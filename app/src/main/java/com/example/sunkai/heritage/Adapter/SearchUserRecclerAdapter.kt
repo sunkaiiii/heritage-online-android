@@ -65,11 +65,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
         holder.focusBtn.setTextColor(if (data.checked) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
         holder.focusBtn.text = if (data.checked) IS_FOCUS else UNFOCUS
         val userBackGroundDrawable = tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.userImage.background = userBackGroundDrawable
-        } else {
-            holder.userImage.setImageDrawable(userBackGroundDrawable)
-        }
+        holder.userImage.background = userBackGroundDrawable
         tintWidge(holder, data)
     }
 
@@ -139,7 +135,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
     }
 
     private fun tintWidge(holder: Holder, data: SearchUserInfo) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !data.checked) {
+        if (!data.checked) {
             holder.focusBtnImg.setImageDrawable(tintDrawable(R.drawable.ic_add_black_24dp))
             holder.focusBtnLayout.background?.setTint(getThemeColor())
         }

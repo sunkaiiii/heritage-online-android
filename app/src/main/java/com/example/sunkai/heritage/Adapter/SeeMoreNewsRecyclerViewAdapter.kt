@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -50,7 +48,6 @@ class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>
         setDatas(holder, position)
     }
 
-    @SuppressLint("SetTextI18n")
     private fun setDatas(holder: ViewHolder, position: Int) {
         val data = datas[position]
         holder.title.text = data.title

@@ -9,7 +9,6 @@
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="8dp"
         android:contentDescription="@string/no_mean_content"
@@ -23,8 +22,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/imageView2"
-        android:layout_toLeftOf="@id/search_history_delete_history"
-        android:layout_toRightOf="@id/imageView2"
         android:layout_toStartOf="@id/search_history_delete_history"
         android:gravity="center|start"
         android:textColor="@color/black" />
@@ -34,7 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_margin="8dp"
         android:contentDescription="@string/delete_this_history"
         android:src="@drawable/ic_clear_black_24dp" />

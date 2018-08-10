@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.sunkai.heritage.Activity.MyCollectionActivity
 import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.Interface.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateMyCollectAdapterFactory
-import com.example.sunkai.heritage.value.*
+import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import kotlinx.android.synthetic.main.my_collect_item.*
 
 

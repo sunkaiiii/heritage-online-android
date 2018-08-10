@@ -9,7 +9,6 @@
         android:id="@+id/user_head_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_margin="12dp" />
 
@@ -18,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="8dp"
         android:background="@drawable/shape_button_unfocus"
@@ -29,7 +27,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:contentDescription="@string/add_focus"
@@ -42,8 +39,6 @@
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="4dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="4dp"
             android:layout_marginTop="4dp"
             android:text="@string/already_focus"
@@ -55,15 +50,12 @@
         android:layout_height="48sp"
         android:layout_alignBottom="@id/user_head_image"
         android:layout_toEndOf="@id/user_head_image"
-        android:layout_toLeftOf="@id/ll_focus_btn"
-        android:layout_toRightOf="@id/user_head_image"
         android:layout_toStartOf="@id/ll_focus_btn">
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:text="" />

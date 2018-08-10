@@ -24,97 +24,93 @@ import java.io.Serializable
 /**
  * 新闻详情页的Activity
  */
-class NewsDetailActivity : BaseHandleCollectActivity(),OnPageLoaded {
+class NewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     //用于处理收藏
-    var id:Int?=null
+    var id: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
-        val title=intent.getStringExtra(CATEGORY)
-        val data=intent.getSerializableExtra(DATA)
+        val title = intent.getStringExtra(CATEGORY)
+        val data = intent.getSerializableExtra(DATA)
         setupWindowAnimations(data)
         setDataToView(data)
-        supportActionBar?.title=title
+        supportActionBar?.title = title
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 
-    private fun setupWindowAnimations(data:Serializable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val slide= Slide(GravityCompat.getAbsoluteGravity(Gravity.END,resources.configuration.layoutDirection))
-            val fade=Fade()
-            slide.duration=500
-            fade.duration=300
-            window.enterTransition=slide
-            window.exitTransition=fade
-            window.returnTransition=fade
-            window.enterTransition.doOnEnd {
-                continueSetIntentData(data)
-            }
-        }else{
+    private fun setupWindowAnimations(data: Serializable) {
+        val slide = Slide(GravityCompat.getAbsoluteGravity(Gravity.END, resources.configuration.layoutDirection))
+        val fade = Fade()
+        slide.duration = 500
+        fade.duration = 300
+        window.enterTransition = slide
+        window.exitTransition = fade
+        window.returnTransition = fade
+        window.enterTransition.doOnEnd {
             continueSetIntentData(data)
         }
     }
 
-    private fun continueSetIntentData(data: Serializable){
-        if(data is FolkNewsLite){
+    private fun continueSetIntentData(data: Serializable) {
+        if (data is FolkNewsLite) {
             getNewsDetail(data.id)
-            id=data.id
-        }else if(data is MainPageSlideNews){
+            id = data.id
+        } else if (data is MainPageSlideNews) {
             generateDetail(data.detail)
         }
     }
 
-    private fun setDataToView(data:Serializable){
+    private fun setDataToView(data: Serializable) {
         news_detail_time.setTextColor(getThemeColor())
-        if(data is FolkNewsLite) {
+        if (data is FolkNewsLite) {
             news_detail_title.text = data.title
             news_detail_time.text = data.time
             newsDetailRefresh.setOnRefreshListener {
                 getNewsDetail(data.id)
             }
-        }else if (data is MainPageSlideNews){
-            news_detail_title.text=data.content
-            news_detail_time.text=""
+        } else if (data is MainPageSlideNews) {
+            news_detail_title.text = data.content
+            news_detail_time.text = ""
             newsDetailRefresh.setOnRefreshListener {
                 generateDetail(data.detail)
             }
         }
     }
 
-    private fun getNewsDetail(id:Int){
+    private fun getNewsDetail(id: Int) {
         onPreLoad()
-        requestHttp{
-            val datas=HandleMainFragment.GetFolkNewsInformation(id)
+        requestHttp {
+            val datas = HandleMainFragment.GetFolkNewsInformation(id)
             runOnUiThread {
                 onPostLoad()
-                val adapter=NewsDetailRecyclerAdapter(this,datas,glide)
-                newsDetailRecyclerView.adapter=adapter
+                val adapter = NewsDetailRecyclerAdapter(this, datas, glide)
+                newsDetailRecyclerView.adapter = adapter
             }
         }
     }
 
-    private fun generateDetail(detail:String){
+    private fun generateDetail(detail: String) {
         onPreLoad()
-        requestHttp{
-            val data=HandleMainFragment.GetMainPageSlideDetailInfo(detail)
+        requestHttp {
+            val data = HandleMainFragment.GetMainPageSlideDetailInfo(detail)
             runOnUiThread {
                 onPostLoad()
-                val adapter=NewsDetailRecyclerAdapter(this,data,glide)
-                newsDetailRecyclerView.adapter=adapter
+                val adapter = NewsDetailRecyclerAdapter(this, data, glide)
+                newsDetailRecyclerView.adapter = adapter
             }
         }
     }
 
     override fun onPreLoad() {
-        newsDetailRefresh.isRefreshing=true
-        newsDetailRecyclerView.adapter=null
+        newsDetailRefresh.isRefreshing = true
+        newsDetailRecyclerView.adapter = null
     }
 
     override fun onPostLoad() {
-        newsDetailRefresh.isRefreshing=false
+        newsDetailRefresh.isRefreshing = false
     }
 
     override fun getType(): String {

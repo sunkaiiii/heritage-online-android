@@ -31,9 +31,6 @@ abstract class BaseGlideActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.navigationBarColor = ContextCompat.getColor(this, R.color.colorPrimary)
-        }
         isDestroy = false
         glide = Glide.with(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -53,10 +50,8 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         if (!ignoreToolbar) {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.statusBarColor = darkColor
-            window.navigationBarColor = color
-        }
+        window.statusBarColor = darkColor
+        window.navigationBarColor = color
         changeThemeWidge.forEach {
             val view = findViewById<View>(it)
             when (view) {

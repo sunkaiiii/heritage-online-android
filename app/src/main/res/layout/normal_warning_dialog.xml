@@ -27,8 +27,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginLeft="32dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="16dp"
                 android:textColor="@color/colorPrimaryDark"
@@ -54,7 +52,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_margin="8dp"
             android:text="@string/submit"
             android:textColor="@color/colorPrimary" />
@@ -65,11 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_toLeftOf="@id/warning_submit"
             android:layout_toStartOf="@id/warning_submit"
             android:text="@string/cancel" />
     </RelativeLayout>

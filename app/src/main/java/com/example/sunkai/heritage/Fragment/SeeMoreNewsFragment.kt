@@ -95,7 +95,7 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
                 intent.putExtra("category", data.category)
                 intent.putExtra("data", data)
                 val activity = activity
-                if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (activity != null) {
                     val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
                     slide.duration = 500
                     activity.window?.exitTransition = slide

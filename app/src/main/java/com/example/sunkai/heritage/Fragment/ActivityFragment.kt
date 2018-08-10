@@ -69,11 +69,7 @@ class ActivityFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     private fun refreshRefreshViewColor() {
-        val color = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity?.window?.statusBarColor
-        } else {
-            null
-        }
+        val color = activity?.window?.statusBarColor
         color?.let { fragmentActivitySwipeRefresh.setColorSchemeColors(color) }
     }
 

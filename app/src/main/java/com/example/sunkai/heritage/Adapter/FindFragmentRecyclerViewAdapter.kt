@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.Adapter
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -112,16 +111,10 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun setHolderData(holder: ViewHolder, data: UserCommentData) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.dislike.imageTintList = ColorStateList.valueOf(getThemeColor())
-            holder.addfocusText.setTextColor(getThemeColor())
-            tintTextView(holder.addfocusText)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.userImage.background= tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp)
-        }else{
-            holder.userImage.setImageDrawable(tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp))
-        }
+        holder.dislike.imageTintList = ColorStateList.valueOf(getThemeColor())
+        holder.addfocusText.setTextColor(getThemeColor())
+        tintTextView(holder.addfocusText)
+        holder.userImage.background = tintDrawable(R.drawable.ic_assignment_ind_grey_500_24dp)
         holder.name_text.text = data.userName
         holder.sameLocation.text = if (!BaiduLocation.location.isEmpty() && data.location == BaiduLocation.location) context.getString(R.string.same_location) else ""
     }
@@ -294,9 +287,8 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         datas.filter { it.userID == userID }.forEach { it.isFollow = isFollow }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun SetLike(holder: ViewHolder, count: Int): Boolean {
-        holder.likeCount.text = "$count 次赞"
+        holder.likeCount.text = String.format("%d 次赞", count)
         val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
         holder.dislike.visibility = View.VISIBLE
         holder.like.visibility = View.GONE
@@ -304,9 +296,8 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         return true
     }
 
-    @SuppressLint("SetTextI18n")
     private fun CancelLike(holder: ViewHolder, count: Int): Boolean {
-        holder.likeCount.text = "$count 次赞"
+        holder.likeCount.text = String.format("%d 次赞", count)
         val imageAnimation: Animation = AnimationUtils.loadAnimation(context, R.anim.image_apear)
         holder.like.visibility = View.VISIBLE
         holder.dislike.visibility = View.GONE

@@ -14,7 +14,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
@@ -88,12 +87,12 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
 
     private fun setData(holder: Holder, position: Int) {
         val data = getItem(position)
-        holder.itemViews.withIndex().forEach {
-            if (it.index == data.size) {
+        holder.itemViews.withIndex().forEach { secondView ->
+            if (secondView.index == data.size) {
                 return
             }
-            val item = data[it.index]
-            val itemView = it.value
+            val item = data[secondView.index]
+            val itemView = secondView.value
             setItemClick(itemView, item)
             itemView.title.text = item.title
             if (item.img.isEmpty()) {
@@ -123,7 +122,7 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
             val intent = Intent(context, NewsDetailActivity::class.java)
             intent.putExtra("data", data)
             intent.putExtra("category", data.category)
-            if (context is Activity && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (context is Activity) {
                 context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, title, context.getString(R.string.news_detail_share_title)).toBundle())
             } else {
                 context.startActivity(intent)

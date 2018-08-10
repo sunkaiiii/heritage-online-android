@@ -78,11 +78,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
         holder.focusBtnImg.setImageResource(if (data.checked) R.drawable.ic_remove_circle_outline_grey_500_24dp else R.drawable.ic_add_black_24dp)
         val icon=DrawableCompat.wrap(ContextCompat.getDrawable(context,R.drawable.ic_assignment_ind_grey_500_24dp)!!)
         DrawableCompat.setTint(icon, getThemeColor())
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            holder.userImage.background=icon
-        }else{
-            holder.userImage.setImageDrawable(icon)
-        }
+        holder.userImage.background=icon
         holder.focusBtnLayout.setBackgroundResource(if (data.checked) R.drawable.shape_button_already_focus else R.drawable.shape_button_unfocus)
         holder.focusBtn.setTextColor(if (data.checked) ContextCompat.getColor(context, R.color.midGrey) else getThemeColor())
         if (data.followEachother) {
@@ -94,7 +90,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
                 holder.focusBtn.text = UNFOCUS
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && !data.checked) {
+        if (!data.checked) {
             holder.focusBtnImg.drawable.setTint(getThemeColor())
             holder.focusBtnLayout.background.setTint(getThemeColor())
         }

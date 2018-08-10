@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.ConnectWebService
 import android.util.Log
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request

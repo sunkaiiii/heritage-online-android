@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import android.util.Log
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
