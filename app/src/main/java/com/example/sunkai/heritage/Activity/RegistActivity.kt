@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.transition.Slide
 import android.transition.TransitionInflater
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -59,8 +61,7 @@ class RegistActivity : BaseTakeCameraActivity(), View.OnClickListener, TextWatch
     }
 
     private fun startAnimation() {
-        val slideRight = TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right)
-        window.enterTransition = slideRight
+        window.enterTransition = Slide(Gravity.END)
     }
 
     private fun setWindowFullScreen() {

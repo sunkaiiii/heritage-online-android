@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -29,11 +30,24 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     private var isHadImage = false//用户是否添加图片
     private var item: MenuItem? = null
     private var imageBitmap: Bitmap? = null
+    private var firstIn = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_find_comment)
-        add_comment_image.imageTintList= ColorStateList.valueOf(getThemeColor())
+        add_comment_image.imageTintList = ColorStateList.valueOf(getThemeColor())
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (firstIn) {
+            startChoosePhoto()
+            firstIn = false
+        }
+    }
+
+    private fun startChoosePhoto() {
+        add_comment_image.performClick()
     }
 
     private fun submit() {
@@ -76,7 +90,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         val addImageBitmap = imageBitmap ?: return
         val imageCode = Base64.encodeToString(addImageBitmap.toByteArray(), Base64.DEFAULT)
         val result = HandleFind.Add_User_Comment_Information(LoginActivity.userID, title, content, imageCode)
-        if(isDestroy) return
+        if (isDestroy) return
         runOnUiThread {
             setItemStates(false)
             isSavePicture = false
@@ -93,6 +107,7 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         imageBitmap = bitmap
         add_comment_image.setImageBitmap(bitmap)
         isHadImage = true
+        add_comment_image.imageTintList = null
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
