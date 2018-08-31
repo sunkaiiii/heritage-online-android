@@ -166,7 +166,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     private fun setAddReplyClick(holder: ViewHolder, data: UserCommentData) {
         holder.comment.setOnClickListener {
             if (context is Activity) {
-                val dialog = AddUserCommentBottomDialog(context, data.id, data)
+                val dialog = AddUserCommentBottomDialog(context, data.id, data, getThemeColor())
                 //设置当回复成功的时候，刷新显示的回复内容
                 dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
                     override fun onAddUserReplySuccess(data: CommentReplyInformation) {

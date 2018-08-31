@@ -31,6 +31,7 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.getDarkerColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_user_comment_detail.*
 
@@ -46,6 +47,8 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
 
     //用于收藏的id
     private var commentID: Int = 0
+
+    private var themeColor= getThemeColor()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,6 +158,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
         val simpleTarget = object : SimpleTarget<Drawable>() {
             override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {
                 val color = resource.generateDarkColor()
+                themeColor=color
                 userCommentDetailToolbar.setBackgroundColor(color)
                 userCommentImage.setImageDrawable(resource)
                 usercommentInformationLinear.setBackgroundColor(color)
@@ -256,7 +260,7 @@ class UserCommentDetailActivity : BaseHandleCollectActivity(), View.OnClickListe
     }
 
     private fun generateDialog(commentID: Int): AddUserCommentBottomDialog? {
-        val dialog = AddUserCommentBottomDialog(this, commentID, data ?: return null)
+        val dialog = AddUserCommentBottomDialog(this, commentID, data ?: return null,themeColor)
         dialog.setOnAddUserReplyListener(object : AddUserReplyDialog {
             override fun onAddUserReplySuccess(data: CommentReplyInformation) {
                 val adapter = userCommentReplyRecyclerView.adapter

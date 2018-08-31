@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.Activity
 
-import android.content.Intent
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,13 +10,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
+import com.example.sunkai.heritage.Dialog.NormalWarningDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.toBitmap
 import com.example.sunkai.heritage.tools.toByteArray
+import com.example.sunkai.heritage.value.ADD_COMMENT
+import com.example.sunkai.heritage.value.COMMENT_CONTENT
+import com.example.sunkai.heritage.value.COMMENT_IMAGE_URI
+import com.example.sunkai.heritage.value.COMMENT_TITLE
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
 
 /**
@@ -31,16 +39,18 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
     private var item: MenuItem? = null
     private var imageBitmap: Bitmap? = null
     private var firstIn = true
+    private var isRestoneData = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_find_comment)
         add_comment_image.imageTintList = ColorStateList.valueOf(getThemeColor())
+        restoneData()
     }
 
     override fun onStart() {
         super.onStart()
-        if (firstIn) {
+        if (firstIn && !isRestoneData) {
             startChoosePhoto()
             firstIn = false
         }
@@ -135,6 +145,62 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         super.onDestroy()
         //释放bitmap
         imageBitmap = null
+    }
+
+    override fun onBackPressed() {
+        if (isHadImage) {
+            NormalWarningDialog()
+                    .setTitle("保留此次编辑?")
+                    .setSubmitText("保留")
+                    .setCancelText("不保留")
+                    .setOnSubmitClickListener(object : NormalWarningDialog.onSubmitClickListener {
+                        override fun onSubmit(view: View, dialog: NormalWarningDialog) {
+                            saveInstance()
+                            isHadImage = false
+                            onBackPressed()
+                        }
+                    }).setOnCancelClickListener(object : NormalWarningDialog.onCancelClickListener {
+                        override fun onCanceled(view: View, dialog: NormalWarningDialog) {
+                            isHadImage = false
+                            getSharedPreferences(ADD_COMMENT, Context.MODE_PRIVATE).edit().clear().apply()
+                            onBackPressed()
+                        }
+                    }).show(supportFragmentManager, "提醒")
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun saveInstance() {
+        val title = add_comment_title.text.toString().trim()
+        val content = add_comment_content.text.toString().trim()
+        getSharedPreferences(ADD_COMMENT, Context.MODE_PRIVATE).edit {
+            putString(COMMENT_TITLE, title)
+            putString(COMMENT_CONTENT, content)
+            val bitmap = imageBitmap
+            bitmap?.let {
+                putString(COMMENT_IMAGE_URI, Base64.encodeToString(it.toByteArray(), Base64.DEFAULT))
+            }
+        }
+    }
+
+    private fun restoneData() {
+        val sharedPreferences = getSharedPreferences(ADD_COMMENT, Context.MODE_PRIVATE)
+        if (sharedPreferences.all.isEmpty()) {
+            return
+        }
+        add_comment_title.setText(sharedPreferences.getString(COMMENT_TITLE, ""))
+        add_comment_content.setText(sharedPreferences.getString(COMMENT_CONTENT, ""))
+        val uriString = sharedPreferences.getString(COMMENT_IMAGE_URI, "")
+        if (!uriString.isNullOrEmpty()) {
+            ThreadPool.execute {
+                val bitmap = Base64.decode(uriString, Base64.DEFAULT).toBitmap() ?: return@execute
+                runOnUiThread {
+                    setImageToImageView(bitmap)
+                }
+            }
+        }
+        isRestoneData = true
     }
 
     companion object {

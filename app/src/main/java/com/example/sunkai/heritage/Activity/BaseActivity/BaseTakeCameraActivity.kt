@@ -19,7 +19,7 @@ import com.example.sunkai.heritage.value.CHOOSE_PHOTO
  * 当某个页面需要打开或者拍摄图片时候所用的基类
  * Created by sunkai on 2018/1/4.
  */
-abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(),OnPageLoaded {
+abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(), OnPageLoaded {
 
     private lateinit var waitForCompressDialog: AlertDialog
 
@@ -38,15 +38,16 @@ abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(),OnPageLoaded {
     }
 
 
-    abstract fun getNeedOpenChooseImageView():Array<View>
+    abstract fun getNeedOpenChooseImageView(): Array<View>
 
 
     private fun setNeedOpenChoseViewClickListner() {
-        val views=getNeedOpenChooseImageView()
+        val views = getNeedOpenChooseImageView()
         views.forEach { view ->
             view.setOnClickListener {
-            choosePhoto()
-        } }
+                choosePhoto()
+            }
+        }
     }
 
     private fun choosePhoto() {
@@ -74,28 +75,31 @@ abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(),OnPageLoaded {
     }
 
     private fun handleUri(data: Uri?) {
-        data?:return
+        data ?: return
         onPreLoad()
         ThreadPool.execute {
-            val bitmap=HandleImage(data)
-            if(bitmap==null){
+            val bitmap = HandleImage(data)
+            if (bitmap == null) {
                 onPostLoad()
                 return@execute
             }
             runOnUiThread {
-                Log.d("test",bitmap.width.toString()+" "+bitmap.height)
+                Log.d("test", bitmap.width.toString() + " " + bitmap.height)
+                onHandleUriDataSuccess(data)
                 setImageToImageView(bitmap)
                 onPostLoad()
             }
         }
     }
 
+    open fun onHandleUriDataSuccess(data: Uri) {}
+
     override fun onPreLoad() {
         waitForCompressDialog.show()
     }
 
     override fun onPostLoad() {
-        if(waitForCompressDialog.isShowing)
+        if (waitForCompressDialog.isShowing)
             waitForCompressDialog.dismiss()
     }
 

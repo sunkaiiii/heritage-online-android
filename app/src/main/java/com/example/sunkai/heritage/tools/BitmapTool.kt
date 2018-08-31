@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.tools
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import java.io.ByteArrayOutputStream
 
 /**
@@ -12,4 +13,11 @@ fun Bitmap.toByteArray(quality:Int=60):ByteArray{
     val boas=ByteArrayOutputStream()
     this.compress(Bitmap.CompressFormat.JPEG,quality,boas)
     return boas.toByteArray()
+}
+
+fun ByteArray?.toBitmap():Bitmap?{
+    if(this==null){
+        return null
+    }
+    return BitmapFactory.decodeByteArray(this,0,this.size)
 }

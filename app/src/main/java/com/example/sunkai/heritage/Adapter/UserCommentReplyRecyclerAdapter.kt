@@ -16,7 +16,7 @@ import java.lang.StringBuilder
  * 帖子详情页RecyclerView的adapter
  * Created by sunkai on 2018/2/24.
  */
-class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReplyInformation>,glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(context,datas,glide) {
+class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReplyInformation>, glide: RequestManager) : BaseRecyclerAdapter<UserCommentReplyRecyclerAdapter.ViewHodler, CommentReplyInformation>(context, datas, glide) {
     class ViewHodler(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView = view.findViewById(R.id.reply_name)
         val replyContent: TextView = view.findViewById(R.id.reply_content)
@@ -35,12 +35,12 @@ class UserCommentReplyRecyclerAdapter(context: Context, datas: List<CommentReply
     }
 
     private fun setData(holder: ViewHodler, data: CommentReplyInformation) {
-        holder.userName.text = StringBuilder().append(data).append(":").toString()
+        holder.userName.text = StringBuilder().append(data.userName).append(":").toString()
         holder.replyContent.text = data.replyContent
     }
 
     fun reverseData() {
-        datas=datas.asReversed()
+        datas = datas.asReversed()
         notifyDataSetChanged()
     }
 

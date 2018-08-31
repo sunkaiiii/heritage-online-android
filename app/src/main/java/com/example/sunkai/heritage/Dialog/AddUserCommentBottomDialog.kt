@@ -1,12 +1,16 @@
 package com.example.sunkai.heritage.Dialog
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.core.content.edit
 import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
 import com.example.sunkai.heritage.ConnectWebService.HandleFind
 import com.example.sunkai.heritage.Data.CommentReplyInformation
@@ -16,68 +20,94 @@ import com.example.sunkai.heritage.Interface.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
+import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.value.ADD_COMMENT_REPLY
 import com.example.sunkai.heritage.value.ERROR
 
 /**
  * 回帖的dialog
  * Created by sunkai on 2018/2/25.
  */
-class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int,private val data:UserCommentData): BaseBottomDialog(context),AddUserReplyDialog {
+class AddUserCommentBottomDialog(val context: Activity, private val commentID: Int, private val data: UserCommentData,private val themeColor:Int) : BaseBottomDialog(context), AddUserReplyDialog {
+
+    private var onAddUserReplyListener: AddUserReplyDialog? = null
+    private var isSuccessUpload = false
+
     init {
         setContentView(R.layout.add_usercomment_reply_dialog)
         initViews()
-    }
-    private var onAddUserReplyListener:AddUserReplyDialog?=null
-    class Holder(view:View){
-        val replyContent:EditText
-        val btnSend:ImageButton
-        init {
-            replyContent=view.findViewById(R.id.add_reply_content)
-            btnSend=view.findViewById(R.id.add_comment_btn_send)
-        }
-    }
-    private fun initViews(){
-        val view=view
-        if(view!=null){
-            val holder= Holder(view)
-            holder.btnSend.setOnClickListener{
-                if(checkUserLogin() and checkTextIsLegal(holder)) {
-                    setViewState(holder,false)
-                    addReply(holder)
-                }
+        this.setOnCancelListener {
+            if (!isSuccessUpload) {
+                saveReplyContent()
             }
         }
     }
 
-    private fun setViewState(holder: Holder, state:Boolean){
-        holder.btnSend.isEnabled=state
-        holder.replyContent.isEnabled=state
+    class Holder(view: View) {
+        val replyContent: EditText = view.findViewById(R.id.add_reply_content)
+        val btnSend: ImageButton = view.findViewById(R.id.add_comment_btn_send)
     }
 
-    private fun checkTextIsLegal(holder: Holder):Boolean{
-        val text=holder.replyContent.text.toString()
-        if(TextUtils.isEmpty(text.trim())){
+    private fun initViews() {
+        val view = view
+        if (view != null) {
+            val holder = Holder(view)
+            val shape = OvalShape()
+            val shapeDrawable = ShapeDrawable(shape)
+            shapeDrawable.paint.color = themeColor
+            holder.btnSend.background = shapeDrawable
+            holder.btnSend.setOnClickListener {
+                if (checkUserLogin() and checkTextIsLegal(holder)) {
+                    setViewState(holder, false)
+                    addReply(holder)
+                }
+            }
+            holder.replyContent.setText(context.getSharedPreferences(ADD_COMMENT_REPLY, Context.MODE_PRIVATE).getString(ADD_COMMENT_REPLY, ""))
+            holder.replyContent.setSelection(holder.replyContent.text.length)
+        }
+    }
+
+    private fun setViewState(holder: Holder, state: Boolean) {
+        holder.btnSend.isEnabled = state
+        holder.replyContent.isEnabled = state
+    }
+
+    private fun checkTextIsLegal(holder: Holder): Boolean {
+        val text = holder.replyContent.text.toString()
+        if (TextUtils.isEmpty(text.trim())) {
             toast("回复内容不能为空")
             return false
         }
         return true
     }
-    private fun addReply(holder: Holder){
-        val replyContent=holder.replyContent.text.toString()
-        ThreadPool.execute{
-            val result=HandleFind.AddUserCommentReply(LoginActivity.userID,commentID,replyContent,data.userID,data.userName,data.commentContent)
+
+    private fun addReply(holder: Holder) {
+        val replyContent = holder.replyContent.text.toString()
+        ThreadPool.execute {
+            val result = HandleFind.AddUserCommentReply(LoginActivity.userID, commentID, replyContent, data.userID, data.userName, data.commentContent)
             context.runOnUiThread {
-                if(result!= ERROR){
-                    val replyID=result.toInt()
-                    val userName= LoginActivity.userName ?: ""
-                    val data=CommentReplyInformation(replyID,"",commentID, LoginActivity.userID,userName,replyContent)
+                if (result != ERROR) {
+                    val replyID = result.toInt()
+                    val userName = LoginActivity.userName ?: ""
+                    val data = CommentReplyInformation(replyID, "", commentID, LoginActivity.userID, userName, replyContent)
                     toast("回复成功")
+                    isSuccessUpload = true
                     cancel()
+                    context.getSharedPreferences(ADD_COMMENT_REPLY, Context.MODE_PRIVATE).edit().clear().apply()
                     onAddUserReplySuccess(data)
-                }else{
+                } else {
                     toast("出现错误")
                 }
-                setViewState(holder,true)
+                setViewState(holder, true)
+            }
+        }
+    }
+
+    private fun saveReplyContent() {
+        val replyContent = findViewById<EditText>(R.id.add_reply_content)
+        if (replyContent != null) {
+            context.getSharedPreferences(ADD_COMMENT_REPLY, Context.MODE_PRIVATE).edit {
+                putString(ADD_COMMENT_REPLY, replyContent.text.toString())
             }
         }
     }
@@ -86,8 +116,8 @@ class AddUserCommentBottomDialog(val context:Activity, private val commentID:Int
         onAddUserReplyListener?.onAddUserReplySuccess(data)
     }
 
-    fun setOnAddUserReplyListener(listner:AddUserReplyDialog){
-        this.onAddUserReplyListener=listner
+    fun setOnAddUserReplyListener(listner: AddUserReplyDialog) {
+        this.onAddUserReplyListener = listner
     }
 
     private fun checkUserLogin(): Boolean {
