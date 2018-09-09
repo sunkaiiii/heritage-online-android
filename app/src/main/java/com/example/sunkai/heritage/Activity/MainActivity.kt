@@ -8,6 +8,7 @@ import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +26,22 @@ import com.example.sunkai.heritage.Fragment.MainFragment
 import com.example.sunkai.heritage.Fragment.PersonFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.tools.BaiduLocation
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.iid.InstanceIdResult
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -93,8 +104,42 @@ class MainActivity : BaseGlideActivity() {
     }
 
     fun startPushService() {
-        if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
-            mShouldBind = true
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            FirebaseApp.initializeApp(this)?.addIdTokenListener {
+                FirebaseMessaging.getInstance().isAutoInitEnabled = true
+                toast("you google play")
+                FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener<InstanceIdResult> { p0 ->
+                    if (!p0.isSuccessful) {
+                        Log.w("MainActivity", "getinstanceId failed", p0.exception)
+                        return@OnCompleteListener
+                    }
+                    val token = p0.result.token
+
+                    Log.d("MainActivity", token)
+                })
+            }
+
+        } else if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+            requestHttp {
+                val locationResponse = BaiduLocation.GetLocateAdressInfo()?.address
+                if (locationResponse != null) {
+                    runOnUiThread {
+                        //使用的用户如果不在中国，则提醒让其更新Google Play服务a
+                        if (locationResponse.contains("CN")) {
+                            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+                        } else {
+                            if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
+                                mShouldBind = true
+                            }
+                        }
+                    }
+                }
+            }
+
+        } else {
+            if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
+                mShouldBind = true
+            }
         }
     }
 

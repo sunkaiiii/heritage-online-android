@@ -17,6 +17,10 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.Views.GridLayoutManagerItemDecoration
 import com.example.sunkai.heritage.value.*
+import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**
@@ -67,12 +71,12 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
 
     }
 
-    private fun readThemeColorList(){
-        val adapter=SettingListSelectThemeColorAdapter(this, THEME_COLOR_ARRAYS.asList(),glide)
-        val spanCount=(Utils.getScreenWidth()/SettingListSelectThemeColorAdapter.IMAGE_VIEW_SIZE)-1
-        themeColorList.layoutManager=GridLayoutManager(this,spanCount)
+    private fun readThemeColorList() {
+        val adapter = SettingListSelectThemeColorAdapter(this, THEME_COLOR_ARRAYS.asList(), glide)
+        val spanCount = (Utils.getScreenWidth() / SettingListSelectThemeColorAdapter.IMAGE_VIEW_SIZE) - 1
+        themeColorList.layoutManager = GridLayoutManager(this, spanCount)
         themeColorList.addItemDecoration(GridLayoutManagerItemDecoration(spanCount, Utils.dip2px(8)))
-        themeColorList.adapter=adapter
+        themeColorList.adapter = adapter
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
@@ -81,14 +85,18 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         }
     }
 
+    @Synchronized
     private fun setPushStatus(isChecked: Boolean) {
         getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
             putBoolean(PUSH_SWITCH, isChecked)
         }
-        if(isChecked){
+        if (isChecked) {
             MainActivity.activityRef?.get()?.startPushService()
-        }else{
+        } else {
             MainActivity.activityRef?.get()?.doUnbindService()
+            if (FirebaseApp.getInstance() != null) {
+                FirebaseApp.getInstance()?.delete()
+            }
         }
     }
 
@@ -114,7 +122,6 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
             }
         }
     }
-
 
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {

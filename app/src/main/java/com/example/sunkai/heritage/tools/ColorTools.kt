@@ -124,12 +124,12 @@ fun tintSwitch(view: SwitchCompat) {
 }
 
 private fun tintCompoundDrawables(view: TextView) {
-    val drawalbeList = view.compoundDrawables
+    val drawalbeList = view.compoundDrawablesRelative
     drawalbeList.forEach {
         it?.setTint(getThemeColor())
     }
     if (drawalbeList.size >= 4) {
-        view.setCompoundDrawables(drawalbeList[0], drawalbeList[1], drawalbeList[2], drawalbeList[3])
+        view.setCompoundDrawablesRelative(drawalbeList[0], drawalbeList[1], drawalbeList[2], drawalbeList[3])
     }
 }
 

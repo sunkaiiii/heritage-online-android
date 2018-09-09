@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.Activity.SearchActivity
 import com.example.sunkai.heritage.Adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.Adapter.MainPageViewPagerAdapter
@@ -22,7 +21,6 @@ import com.example.sunkai.heritage.Fragment.BaseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.SEARCH_TYPE
 import com.example.sunkai.heritage.value.TYPE_BOTTOM_NEWS

@@ -78,11 +78,6 @@
             android:name=".Activity.MyCollectionActivity"
             android:label="@string/my_collection" />
 
-        <service
-            android:name=".Service.PushService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name=".Activity.MyMessageActivity"
             android:label="@string/my_message" />
@@ -91,6 +86,20 @@
             android:theme="@style/AppThemeNoActionBarNoBackground" />
         <activity android:name=".Activity.ViewImageActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground"/>
+
+        <service
+            android:name=".Service.PushService"
+            android:enabled="true"
+            android:exported="false" />
+        <service android:name=".Service.FCMMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+            <meta-data
+                android:name="com.google.firebase.messaging.default_notification_channel_id"
+                android:value="@string/push_channel"/>
+        </service>
+
     </application>
 
 </manifest>

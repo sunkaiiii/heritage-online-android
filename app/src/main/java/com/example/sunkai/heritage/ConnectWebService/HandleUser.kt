@@ -61,4 +61,10 @@ object HandleUser : BaseSetting() {
         val result = PutPost("$URL/ChangePassword", form)
         return SUCCESS == result
     }
+
+    fun SendFCMToken(userName: String,token:String):Boolean{
+        val form=FormBody.Builder().add("userName",userName).add("token",token).build();
+        val result=PutPost("$URL/SendFCMToken",form)
+        return SUCCESS==result
+    }
 }

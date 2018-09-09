@@ -16,6 +16,7 @@ import com.example.sunkai.heritage.tools.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.FirebaseApp
 
 abstract class BaseGlideActivity : AppCompatActivity() {
     protected var isDestroy = true
@@ -31,6 +32,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         isDestroy = false
         glide = Glide.with(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
