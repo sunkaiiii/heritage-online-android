@@ -49,15 +49,12 @@ class MyMessageActivity : BaseGlideActivity(),OnPageLoaded {
     }
 
     private fun setAdapterClick(adapter: MyMessageRecyclerAdapter) {
-        adapter.setOnItemClickListen(object:OnItemClickListener{
-            override fun onItemClick(view: View, position: Int) {
-                val data=adapter.getItem(position)
-                val intent=Intent(this@MyMessageActivity,UserCommentDetailActivity::class.java)
-                intent.putExtra("id",data.replyCommentID)
-                startActivity(intent)
-            }
-
-        })
+        adapter.setOnItemClickListener { view, position ->
+            val data=adapter.getItem(position)
+            val intent=Intent(this@MyMessageActivity,UserCommentDetailActivity::class.java)
+            intent.putExtra("id",data.replyCommentID)
+            startActivity(intent)
+        }
     }
 
 

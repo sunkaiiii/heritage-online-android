@@ -21,7 +21,7 @@
     </style>
 
     <style name="AppThemeNoActionBarNoBackground" parent="AppThemeNoActionBar">
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowBackground">@mipmap/welcome_background</item>
     </style>
 
     <style name="LoginActivityTheme" parent="AppThemeNoActionBar">

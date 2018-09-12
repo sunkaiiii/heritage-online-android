@@ -3,7 +3,6 @@ package com.example.sunkai.heritage.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.transition.Fade
@@ -211,11 +210,9 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
 
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                openImageView(position, adapter)
-            }
-        })
+        adapter.setOnItemClickListener { _, position ->
+            openImageView(position, adapter)
+        }
     }
 
     private fun handleFloatBtn() {

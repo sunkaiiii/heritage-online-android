@@ -178,6 +178,11 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+
     companion object {
 
         /**

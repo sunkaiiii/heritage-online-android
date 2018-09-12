@@ -148,16 +148,13 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
             setSpinner()
             setWidgetEnable(true)
             folk_show_recyclerview.adapter=folkListviewAdapter
-            folkListviewAdapter.setOnItemClickListen(object :OnItemClickListener{
-                override fun onItemClick(view: View, position: Int) {
-                    val data=folkListviewAdapter.getItem(position)
-                    val intent= Intent(this@AllFolkInfoActivity,FolkInformationActivity::class.java)
-                    intent.putExtra(DATA,data)
-                    intent.putExtra(FROM, ALL_FOLK_INFO_ACTIVITY)
-                    startActivity(intent)
-                }
-
-            })
+            folkListviewAdapter.setOnItemClickListener { view, position ->
+                val data=folkListviewAdapter.getItem(position)
+                val intent= Intent(this@AllFolkInfoActivity,FolkInformationActivity::class.java)
+                intent.putExtra(DATA,data)
+                intent.putExtra(FROM, ALL_FOLK_INFO_ACTIVITY)
+                startActivity(intent)
+            }
         }
 
     }

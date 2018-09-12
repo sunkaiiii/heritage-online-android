@@ -36,15 +36,11 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
     private var searchType = TYPE_USER
     private var searchString = ""
     private val searchTypes = arrayOf(TYPE_BOTTOM_NEWS, TYPE_NEWS, TYPE_FOLK_HERITAGE, TYPE_COMMENT, TYPE_USER)
-    val divide: Array<String>
-
-    init {
-        divide = arrayOf(GlobalContext.instance.getString(R.string.focus_heritage),
-                GlobalContext.instance.getString(R.string.all_news),
-                GlobalContext.instance.getString(R.string.folk_page),
-                GlobalContext.instance.getString(R.string.user_comment),
-                GlobalContext.instance.getString(R.string.user))
-    }
+    val divide: Array<String> = arrayOf(GlobalContext.instance.getString(R.string.focus_heritage),
+            GlobalContext.instance.getString(R.string.all_news),
+            GlobalContext.instance.getString(R.string.folk_page),
+            GlobalContext.instance.getString(R.string.user_comment),
+            GlobalContext.instance.getString(R.string.user))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,16 +98,14 @@ class SearchActivity : BaseGlideActivity(), TextView.OnEditorActionListener {
     }
 
     private fun setHistoryAdapterClick(adapter: SearchActivitySearchHistoryAdapter) {
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val data = adapter.getItem(position)
-                searchType = data.searchType
-                searchString = data.searchString
-                searchActivitySearchEditText.setText(searchString)
-                handleKeyEvent()
-                setEditTextHint()
-            }
-        })
+        adapter.setOnItemClickListener { view, position ->
+            val data = adapter.getItem(position)
+            searchType = data.searchType
+            searchString = data.searchString
+            searchActivitySearchEditText.setText(searchString)
+            handleKeyEvent()
+            setEditTextHint()
+        }
     }
 
     private fun handleSearchText(editable: Editable) {

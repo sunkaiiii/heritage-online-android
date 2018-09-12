@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.Fragment
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import android.transition.Slide
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
 import com.example.sunkai.heritage.Activity.NewsDetailActivity
 import com.example.sunkai.heritage.Adapter.SeeMoreNewsRecyclerViewAdapter
 import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
@@ -87,24 +85,22 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     private fun setRecyclerClick(adapter: SeeMoreNewsRecyclerViewAdapter) {
-        adapter.setOnItemClickListen(object : OnItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val data = adapter.getItem(position)
-                val intent = Intent(activity, NewsDetailActivity::class.java)
-                val titleView = view.findViewById<TextView>(R.id.see_more_news_item_title)
-                intent.putExtra("category", data.category)
-                intent.putExtra("data", data)
-                val activity = activity
-                if (activity != null) {
-                    val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
-                    slide.duration = 500
-                    activity.window?.exitTransition = slide
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, titleView, getString(R.string.news_detail_share_title)).toBundle())
-                } else {
-                    startActivity(intent)
-                }
+        adapter.setOnItemClickListener { view, position ->
+            val data = adapter.getItem(position)
+            val intent = Intent(activity, NewsDetailActivity::class.java)
+            val titleView = view.findViewById<TextView>(R.id.see_more_news_item_title)
+            intent.putExtra("category", data.category)
+            intent.putExtra("data", data)
+            val activity = activity
+            if (activity != null) {
+                val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
+                slide.duration = 500
+                activity.window?.exitTransition = slide
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, titleView, getString(R.string.news_detail_share_title)).toBundle())
+            } else {
+                startActivity(intent)
             }
-        })
+        }
     }
 
     private fun setRecyclerScrollListener() {

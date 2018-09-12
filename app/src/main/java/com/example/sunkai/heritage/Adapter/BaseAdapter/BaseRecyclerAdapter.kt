@@ -13,21 +13,22 @@ import com.example.sunkai.heritage.Interface.OnPageLoaded
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter<T: RecyclerView.ViewHolder, W>(protected val context: Context, datas:List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(),View.OnClickListener,View.OnLongClickListener, OnPageLoaded {
+abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val context: Context, datas: List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(), View.OnClickListener, View.OnLongClickListener, OnPageLoaded {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
-    protected var mOnPagedListener:OnPageLoaded?=null
-    protected var datas:MutableList<W>
+    protected var mOnPagedListener: OnPageLoaded? = null
+    protected var datas: MutableList<W>
+
     init {
-        this.datas=datas.toMutableList()
+        this.datas = datas.toMutableList()
     }
 
     override fun onClick(v: View) {
-        mOnItemClickListener?.onItemClick(v,v.tag as Int)
+        mOnItemClickListener?.onItemClick(v, v.tag as Int)
     }
 
     override fun onLongClick(v: View): Boolean {
-        val longClickListner=this.mOnItemLongClickListener
+        val longClickListner = this.mOnItemLongClickListener
         longClickListner?.let {
             longClickListner.onItemlongClick(v, v.tag as Int)
             return true
@@ -40,9 +41,19 @@ abstract class BaseRecyclerAdapter<T: RecyclerView.ViewHolder, W>(protected val 
     }
 
 
-    fun setOnItemClickListen(listenr: OnItemClickListener) {
+    fun setOnItemClickListener(listenr: OnItemClickListener) {
         this.mOnItemClickListener = listenr
     }
+
+    fun setOnItemClickListener(listener: (view: View, position: Int) -> Unit) {
+        this.mOnItemClickListener = object : OnItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                listener.invoke(view, position)
+            }
+
+        }
+    }
+
     fun setOnItemLongClickListener(listener: OnItemLongClickListener) {
         this.mOnItemLongClickListener = listener
     }
@@ -61,12 +72,13 @@ abstract class BaseRecyclerAdapter<T: RecyclerView.ViewHolder, W>(protected val 
         mOnPagedListener?.onPostLoad()
     }
 
-    fun getItem(position: Int):W{
+    fun getItem(position: Int): W {
         return datas[position]
     }
 
-    fun getAdapterDatas():MutableList<W>{
+    fun getAdapterDatas(): MutableList<W> {
         return ArrayList(datas)
     }
-    protected open fun setItemClick(){}
+
+    protected open fun setItemClick() {}
 }
