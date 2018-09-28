@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.READ
+import com.example.sunkai.heritage.value.THEME_COLOR_ARRAYS
 import java.io.ByteArrayInputStream
 
 /**
@@ -78,6 +79,7 @@ private fun calculateSize(bitmap: Bitmap): Int {
     } else {
         Math.ceil(longSide / (1280.0 / scale)).toInt()
     }
+
 }
 
 private fun rotatingImage(bitmap: Bitmap, exifInterface: androidx.exifinterface.media.ExifInterface): Bitmap {
