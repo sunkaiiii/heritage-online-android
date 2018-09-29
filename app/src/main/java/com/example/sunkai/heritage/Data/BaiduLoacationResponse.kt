@@ -39,4 +39,8 @@ class BaiduLoacationResponse {
             var street_number: String? = null
         }
     }
+
+    fun isFromChina():Boolean{
+        return this.address?.contains("CN")?:true
+    }
 }

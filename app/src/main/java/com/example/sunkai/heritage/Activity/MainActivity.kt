@@ -104,6 +104,7 @@ class MainActivity : BaseGlideActivity() {
     }
 
     fun startPushService() {
+        //TODO 检查是否在中国
         if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
             FirebaseApp.initializeApp(this)?.addIdTokenListener {
                 FirebaseMessaging.getInstance().isAutoInitEnabled = true
@@ -121,11 +122,11 @@ class MainActivity : BaseGlideActivity() {
 
         } else if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
             requestHttp {
-                val locationResponse = BaiduLocation.GetLocateAdressInfo()?.address
+                val locationResponse = BaiduLocation.GetLocateAdressInfo()
                 if (locationResponse != null) {
                     runOnUiThread {
                         //使用的用户如果不在中国，则提醒让其更新Google Play服务a
-                        if (locationResponse.contains("CN")) {
+                        if (!locationResponse.isFromChina()) {
                             GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
                         } else {
                             if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
