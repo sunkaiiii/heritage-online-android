@@ -121,7 +121,7 @@ const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP4
 
 const val SUCCESS = "SUCCESS"
 const val ERROR = "ERROR"
-
+const val VERSION_CODE=1
 const val HOST = "https://sunkai.xyz:8081"
 const val HOST_IP = "sunkai.xyz"
 const val PUSH_PORT = 8088
