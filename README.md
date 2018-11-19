@@ -1,6 +1,8 @@
 
 # heritage-online-android
 
+English version README:[README_EN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_EN.md)
+
 E迹 非遗掌上信息化平台（毕设）
 #### v3.4 <br>
 
