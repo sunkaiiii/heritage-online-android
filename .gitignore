@@ -92,3 +92,4 @@ $RECYCLE.BIN/
 app/release/output.json
 app/google-services.json
 gradle.properties
+.idea/

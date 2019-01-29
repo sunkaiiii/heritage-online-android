@@ -43,7 +43,7 @@ object BaiduLocation {
         return ""
     }
 
-    fun GetLocateAdressInfo():BaiduLoacationResponse?{
+    fun getLocateAdressInfo():BaiduLoacationResponse?{
         val result= IPLocation()
         return try{
             BaseSetting.gsonInstance.fromJson<BaiduLoacationResponse>(result,BaiduLoacationResponse::class.java)

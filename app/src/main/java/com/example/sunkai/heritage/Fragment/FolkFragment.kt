@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.Activity.AllFolkInfoActivity
@@ -181,7 +180,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         fragment_main_collapsing_toolbar_layout.setBackgroundColor(color)
         tabayout.setBackgroundColor(color)
         if (Build.VERSION.SDK_INT >= 21) {
-            if (MainActivity.GetViewpagerSelectPosition() == R.id.folk_layout) {
+            if (MainActivity.getViewpagerSelectPosition() == R.id.folk_layout) {
                 activity?.window?.statusBarColor = color
             }
         }
