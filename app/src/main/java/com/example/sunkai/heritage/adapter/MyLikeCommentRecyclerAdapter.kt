@@ -23,12 +23,13 @@ import com.example.sunkai.heritage.entity.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.generateDarkColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.SUCCESS
 import com.example.sunkai.heritage.value.TYPE_FIND
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 个人中心我的赞的recyclerview的adapter
@@ -90,8 +91,8 @@ class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentDat
             }
         }
         glide.load(imageUrl).into(simpleTarget)
-        ThreadPool.execute {
-            val url = HandlePerson.GetUserImageURL(data.userID) ?: return@execute
+        GlobalScope.launch {
+            val url = HandlePerson.GetUserImageURL(data.userID) ?: return@launch
             runOnUiThread(Runnable {
                 glide.load(url).into(holder.userImage)
             })
@@ -113,7 +114,7 @@ class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentDat
     private fun handleCollecctBtnClick(holder: Holder, data: UserCommentData) {
         holder.collectButton.isEnabled = false
         setCollectBtnState(holder,data)
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = if (data.isCollect())
                 HandlePerson.CancelUserCollect(LoginActivity.userID, TYPE_FIND, data.id)
             else
@@ -139,7 +140,7 @@ class MyLikeCommentRecyclerAdapter(context: Activity, datas: List<UserCommentDat
     private fun handleLikeBtnClick(holder: Holder, data: UserCommentData) {
         holder.likeButton.isEnabled = false
         setLikeBtnState(holder, data)
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = if (data.isLike())
                 HandleFind.CancelUserLike(LoginActivity.userID, data.id)
             else

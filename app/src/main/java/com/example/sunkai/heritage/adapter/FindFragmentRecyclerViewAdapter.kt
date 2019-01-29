@@ -34,6 +34,8 @@ import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.MY_FOCUS_COMMENT
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 /**
@@ -188,7 +190,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
         holder.like.isEnabled = false
         holder.dislike.isEnabled = false
         val isLike = divide == LIKE
-        ThreadPool.execute {
+        GlobalScope.launch {
             val success = when (divide) {
                 LIKE -> HandleFind.SetUserLike(LoginActivity.userID, data.id)
                 DISLIKE -> HandleFind.CancelUserLike(LoginActivity.userID, data.id)
@@ -249,7 +251,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     private fun handleFocus(holder: ViewHolder, data: UserCommentData, divide: Int) {
         holder.addfocusText.isEnabled = false
         holder.cancelFocusText.isEnabled = false
-        ThreadPool.execute {
+        GlobalScope.launch {
             val isFocus = divide == ADD_FOCUS
             val success = when (divide) {
                 ADD_FOCUS -> HandlePerson.AddFocus(LoginActivity.userID, data.userID)
@@ -310,7 +312,7 @@ class FindFragmentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
     }
 
     private fun GetUserImage(holder: ViewHolder, data: UserCommentData) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val userImageURL = HandlePerson.GetUserImageURL(data.userID)
             runOnUiThread {
                 glide.load(userImageURL).into(holder.userImage)

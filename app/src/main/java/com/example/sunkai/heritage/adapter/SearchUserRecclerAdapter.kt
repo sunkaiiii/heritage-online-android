@@ -23,6 +23,8 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.UNFOCUS
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 搜索用户的RecyclerView的adapter
@@ -68,8 +70,8 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
     }
 
     private fun getUserImage(holder: Holder, data: SearchUserInfo, position: Int) {
-        ThreadPool.execute {
-            val url = HandlePerson.GetUserImageURL(data.id) ?: return@execute
+        GlobalScope.launch {
+            val url = HandlePerson.GetUserImageURL(data.id) ?: return@launch
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 runOnUiThread {
                     data.imageUrl = url
@@ -91,7 +93,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
     }
 
     private fun cancelFocus(holder: Holder, data: SearchUserInfo) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = HandlePerson.CancelFocus(LoginActivity.userID, data.id)
             runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true
@@ -105,7 +107,7 @@ class SearchUserRecclerAdapter(context: Context, datas: List<SearchUserInfo>, gl
     }
 
     private fun addFocus(holder: Holder, data: SearchUserInfo) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = HandlePerson.AddFocus(LoginActivity.userID, data.id)
             runOnUiThread {
                 holder.focusBtnLayout.isEnabled = true

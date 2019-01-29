@@ -6,9 +6,10 @@ import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.entity.CommentReplyInformation
 import com.example.sunkai.heritage.entity.UserCommentData
 import com.example.sunkai.heritage.tools.BaiduLocation
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.COMMENT_REPLY
 import com.example.sunkai.heritage.value.MINI_REPLY
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.FormBody
 import java.text.SimpleDateFormat
 import java.util.*
@@ -198,8 +199,8 @@ object HandleFind : BaseSetting() {
         val result = PutPost(postUrl, formBody)
         if (result != ERROR) {
             if (LoginActivity.userID != 0) {
-                ThreadPool.execute {
-                    val userName = LoginActivity.userName ?: return@execute
+                GlobalScope.launch {
+                    val userName = LoginActivity.userName ?: return@launch
                     val replyTime = Calendar.getInstance().time
                     val timeformat = SimpleDateFormat.getDateInstance().format(replyTime)
                     HandlePush.AddPushMessage(LoginActivity.userID, commentID, writterID, userName, reply, writterName, "20180202", originalReplyContent)

@@ -18,10 +18,11 @@ import com.example.sunkai.heritage.activity.UserCommentDetailActivity
 import com.example.sunkai.heritage.connectWebService.HandlePush
 import com.example.sunkai.heritage.entity.PushMessageData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.HOST_IP
 import com.example.sunkai.heritage.value.PUSH_PORT
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.BufferedInputStream
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -49,12 +50,12 @@ class PushService : Service() {
         }
         //第一次启动服务的时候，获取所有未读取的推送
         getPushMessage()
-        ThreadPool.execute {
+        GlobalScope.launch {
             try {
                 initSocket()
             } catch (e: ConnectException) {
                 e.printStackTrace()
-                return@execute
+                return@launch
             }
             handleSocketPushChannel(socketRef?.get())
         }
@@ -69,14 +70,14 @@ class PushService : Service() {
     private fun getPushMessage() {
         val userID = LoginActivity.userID
         if (userID == 0) return
-        ThreadPool.execute {
+        GlobalScope.launch {
             val resultList = HandlePush.GetPush(userID)
             if (resultList.isNotEmpty()) {
                 val notifiCationStringList = ArrayList<String>()
                 resultList.forEach {
                     notifiCationStringList.add(String.format("%s:%s\n", it.userName, it.replyContent))
                 }
-                val pendingIntent = PendingIntent.getActivity(this, 0, Intent(this, MyMessageActivity::class.java), 0)
+                val pendingIntent = PendingIntent.getActivity(this@PushService, 0, Intent(this@PushService, MyMessageActivity::class.java), 0)
                 Log.d("notification", notifiCationStringList.toString())
                 showNotification(notifiCationStringList.toTypedArray(), pendingIntent)
             }
@@ -172,7 +173,7 @@ class PushService : Service() {
                 socketRef?.get()?.close()
             }
             bufferInputStream?.close()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         bufferInputStream = null

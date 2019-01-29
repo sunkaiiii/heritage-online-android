@@ -10,8 +10,9 @@ import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.dialog.base.BaseDialogFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 修改密码的dialog(2018/3/5添加，根据阿里巴巴Android开发手册推荐，改为DialogFragment管理dialog）
@@ -68,11 +69,11 @@ class ChangePasswordDialog: BaseDialogFragment() {
 
 
     private fun changePassword(holder: Holder,userName:String){
-        ThreadPool.execute {
+        GlobalScope.launch {
             val encryPassword = infoToRSA(holder.password.text.toString())
             if(encryPassword==null){
                 holder.submit.isEnabled = true
-                return@execute
+                return@launch
             }
             val result = HandleUser.Change_Password(userName, encryPassword)
             activity?.runOnUiThread({

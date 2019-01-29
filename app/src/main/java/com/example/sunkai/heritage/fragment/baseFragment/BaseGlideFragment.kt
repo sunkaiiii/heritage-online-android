@@ -10,10 +10,13 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 abstract class BaseGlideFragment : Fragment() {
     protected lateinit var glide: RequestManager
-    private val runnableList: MutableList<Runnable>
+    private val runnableList: MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
 
@@ -42,7 +45,7 @@ abstract class BaseGlideFragment : Fragment() {
                 is TextView -> tintTextView(view)
                 is TabLayout -> tintTablayout(view)
                 is FloatingActionButton -> tintFloatActionButton(view)
-                is RecyclerView->tintRecyclerView(view)
+                is RecyclerView -> tintRecyclerView(view)
                 else -> view?.setBackgroundColor(color)
             }
         }
@@ -53,13 +56,13 @@ abstract class BaseGlideFragment : Fragment() {
     }
 
     protected fun requestHttp(runnable: Runnable) {
-        runnableList.add(runnable)
-        ThreadPool.execute(runnable)
+        val job = GlobalScope.launch { runnable.run() }
+        runnableList.add(job)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        runnableList.forEach { ThreadPool.remove(it) }
+        runnableList.forEach { it.cancel() }
         runnableList.clear()
     }
 

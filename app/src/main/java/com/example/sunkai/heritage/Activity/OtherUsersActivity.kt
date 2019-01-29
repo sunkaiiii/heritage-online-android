@@ -24,7 +24,6 @@ import com.example.sunkai.heritage.entity.UserInfo
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
@@ -32,6 +31,8 @@ import com.example.sunkai.heritage.value.*
 import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import kotlinx.android.synthetic.main.user_view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
@@ -122,9 +123,9 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         when (data.permission) {
             DENIALD -> setErrorMessage()
             ONLYFOCUS -> {
-                ThreadPool.execute {
+                GlobalScope.launch {
                     val result = judgeFocus(userID, LoginActivity.userID)
-                    if (isDestroy) return@execute
+                    if (isDestroy) return@launch
                     runOnUiThread {
                         if (result) {
                             setAdapter(userID)
@@ -143,9 +144,9 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         when (data.focusAndFansPermission) {
             DENIALD -> setViewsOnFonsAndFocusPermissionDenailClick()
             ONLYFOCUS -> {
-                ThreadPool.execute {
+                GlobalScope.launch {
                     val result = judgeFocus(userID, LoginActivity.userID)
-                    if (isDestroy) return@execute
+                    if (isDestroy) return@launch
                     runOnUiThread {
                         if (result) {
                             setViewsOnClick()
@@ -170,10 +171,10 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
 
 
     private fun getUserImage(userID: Int, photoView: ImageView) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val url = HandlePerson.GetUserImageURL(userID)
             url?.let {
-                if (isDestroy) return@execute
+                if (isDestroy) return@launch
                 runOnUiThread {
                     glide.load(url).into(photoView)
                 }
@@ -219,14 +220,14 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
         val data = this.data
         playFloatBtnAnimation()
         data?.let {
-            ThreadPool.execute {
+            GlobalScope.launch {
                 val result = if (data.checked) HandlePerson.CancelFocus(LoginActivity.userID, data.id) else HandlePerson.AddFocus(LoginActivity.userID, data.id)
-                if (isDestroy) return@execute
+                if (isDestroy) return@launch
                 runOnUiThread {
                     addFocsFloatBtn.isEnabled = true
                     if (result) {
                         data.checked = !data.checked
-                        this.data = data
+                        this@OtherUsersActivity.data = data
                         setFloatBtnState(data)
                         toast((if (data.checked) "关注" else "取消关注") + "成功")
                     } else {
@@ -342,11 +343,11 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     }
 
     internal fun getImage(position: Int, adapter: OtherUserActivityImageAdapter) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val id = adapter.datas[position]
             val url = HandleFind.GetUserCommentImageUrl(id)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
-                if (isDestroy) return@execute
+                if (isDestroy) return@launch
                 runOnUiThread {
                     val photoView = adapter.photoViewMap[position] ?: return@runOnUiThread
                     glide.load(url).into(photoView)

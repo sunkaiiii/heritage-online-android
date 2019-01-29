@@ -5,6 +5,8 @@ import com.example.sunkai.heritage.entity.BaiduLoacationResponse
 import com.example.sunkai.heritage.value.BaiduIPLocationUrl
 import com.example.sunkai.heritage.value.ERROR
 import com.google.gson.Gson
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.util.concurrent.TimeUnit
@@ -14,7 +16,7 @@ object BaiduLocation {
     var location: String = ""
 
     init {
-        ThreadPool.execute {
+        GlobalScope.launch {
             location = GetIPAddress()
         }
     }
@@ -43,11 +45,11 @@ object BaiduLocation {
         return ""
     }
 
-    fun getLocateAdressInfo():BaiduLoacationResponse?{
-        val result= IPLocation()
-        return try{
-            BaseSetting.gsonInstance.fromJson<BaiduLoacationResponse>(result,BaiduLoacationResponse::class.java)
-        }catch (e:Exception){
+    fun getLocateAdressInfo(): BaiduLoacationResponse? {
+        val result = IPLocation()
+        return try {
+            BaseSetting.gsonInstance.fromJson<BaiduLoacationResponse>(result, BaiduLoacationResponse::class.java)
+        } catch (e: Exception) {
             e.printStackTrace()
             null
         }

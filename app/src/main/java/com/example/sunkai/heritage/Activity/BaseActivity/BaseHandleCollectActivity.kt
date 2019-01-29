@@ -8,8 +8,9 @@ import com.example.sunkai.heritage.connectWebService.HandlePerson
 import com.example.sunkai.heritage.interfaces.HandleCollect
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.IS_INTO
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 可以收藏的Activity页面基类
@@ -48,7 +49,7 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
             return
         }
         item.isEnabled = false
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = checkIsCollect(LoginActivity.userID, getType(), id)
             runOnUiThread {
                 setItemState(item, true, result, false)
@@ -58,7 +59,7 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
 
     override fun handleCollect(item: MenuItem) {
         val id = getID() ?: return
-        ThreadPool.execute {
+        GlobalScope.launch {
             val isCollect = checkIsCollect(LoginActivity.userID, getType(), id)
             val result = if (isCollect) {
                 HandlePerson.CancelUserCollect(LoginActivity.userID, getType(), id)

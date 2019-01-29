@@ -20,13 +20,14 @@ import com.example.sunkai.heritage.interfaces.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.FOLLOW_EACHOTHER
 import com.example.sunkai.heritage.value.IS_FOCUS
 import com.example.sunkai.heritage.value.NO_USERID
 import com.example.sunkai.heritage.value.UNFOCUS
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Created by sunkai on 2018-3-1.
@@ -94,7 +95,7 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
     }
 
     private fun getUserImage(holder: Holder, data: FollowInformation, position: Int) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val id = data.focusFansID
             if (id != NO_USERID) {
                 val url = HandlePerson.GetUserImageURL(id)
@@ -112,21 +113,21 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
     private fun setClick(holder: Holder, position: Int, data: FollowInformation) {
 //        在点击关注、取关的时候，页面文字改变，提示用户正在响应，并禁止按钮点击以防止错误的发生
         holder.focusBtnLayout.setOnClickListener {
-            val handleFocus = handleFocus(data, position, holder)
+            val handleFocus = HandleFocus(data, position, holder)
             holder.focusBtn.text = "操作中"
             holder.focusBtnLayout.isEnabled = false
             if (data.checked) {
-                handleFocus.CancelFollow()
+                handleFocus.cancelFollow()
             } else {
-                handleFocus.AddFollow()
+                handleFocus.addFollow()
             }
         }
     }
 
 
-    internal inner class handleFocus(private var data: FollowInformation, private var position: Int, private var holder: Holder) {
-        fun AddFollow() {
-            ThreadPool.execute {
+    internal inner class HandleFocus(private var data: FollowInformation, private var position: Int, private var holder: Holder) {
+        fun addFollow() {
+            GlobalScope.launch {
                 val result = HandlePerson.AddFocus(data.focusFocusID, data.focusFansID)
                 //因为是关注用户，重新运行查看互关进程，判断是否为互相关注
                 val followEachOther = HandlePerson.CheckFollowEachother(data.focusFocusID, data.focusFansID)
@@ -142,8 +143,8 @@ class FocusListviewAdapter(context: Context, private var what: Int, datas: List<
             }
         }
 
-        fun CancelFollow() {
-            ThreadPool.execute {
+        fun cancelFollow() {
+            GlobalScope.launch {
                 val result = HandlePerson.CancelFocus(data.focusFocusID, data.focusFansID)
                 runOnUiThread(Runnable {
                     if (result) {

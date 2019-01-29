@@ -14,11 +14,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.FirebaseApp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 abstract class BaseGlideActivity : AppCompatActivity() {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
-    private val runnableList: MutableList<Runnable>
+    private val runnableList: MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
 
@@ -74,9 +77,10 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         isDestroy = true
-        runnableList.forEach { ThreadPool.remove(it) }
+        runnableList.forEach {
+            it.cancel()
+        }
         runnableList.clear()
-
     }
 
     protected fun requestHttp(runnable: () -> Unit) {
@@ -84,8 +88,10 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     }
 
     protected fun requestHttp(runnable: Runnable) {
-        runnableList.add(runnable)
-        ThreadPool.execute(runnable)
+        val job = GlobalScope.launch {
+            runnable.run()
+        }
+        runnableList.add(job)
     }
 
     protected fun setIgnoreToolbar(ignore: Boolean) {

@@ -8,8 +8,9 @@ import com.example.sunkai.heritage.activity.loginActivity.Interface.Logininterac
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 处理登录页数据的interactor
@@ -17,11 +18,11 @@ import com.example.sunkai.heritage.tools.infoToRSA
  */
 class LoginInteractorImpl:Logininteractor {
     override fun login(username: String, password: String, listner: Logininteractor.OnLoginFinishedListner) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val encryptedPassword= infoToRSA(password)
             if(encryptedPassword==null){
                 listner.onEncryError()
-                return@execute
+                return@launch
             }
             val result=HandleUser.Sign_In(username,encryptedPassword)
             Handler(Looper.getMainLooper()).post {

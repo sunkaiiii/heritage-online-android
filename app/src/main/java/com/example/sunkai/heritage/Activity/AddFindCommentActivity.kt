@@ -17,7 +17,6 @@ import com.example.sunkai.heritage.connectWebService.HandleFind
 import com.example.sunkai.heritage.dialog.NormalWarningDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.toBitmap
 import com.example.sunkai.heritage.tools.toByteArray
@@ -26,6 +25,9 @@ import com.example.sunkai.heritage.value.COMMENT_CONTENT
 import com.example.sunkai.heritage.value.COMMENT_IMAGE_URI
 import com.example.sunkai.heritage.value.COMMENT_TITLE
 import kotlinx.android.synthetic.main.activity_add_find_comment.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * 此类是处理发帖活动的类
@@ -193,11 +195,12 @@ class AddFindCommentActivity : BaseTakeCameraActivity(), View.OnClickListener {
         add_comment_content.setText(sharedPreferences.getString(COMMENT_CONTENT, ""))
         val uriString = sharedPreferences.getString(COMMENT_IMAGE_URI, "")
         if (!uriString.isNullOrEmpty()) {
-            ThreadPool.execute {
-                val bitmap = Base64.decode(uriString, Base64.DEFAULT).toBitmap() ?: return@execute
-                runOnUiThread {
-                    setImageToImageView(bitmap)
+            GlobalScope.launch {
+                val task = GlobalScope.async {
+                    Base64.decode(uriString, Base64.DEFAULT).toBitmap()
                 }
+                val result = task.await()
+                setImageToImageView(result ?: return@launch)
             }
         }
         isRestoneData = true

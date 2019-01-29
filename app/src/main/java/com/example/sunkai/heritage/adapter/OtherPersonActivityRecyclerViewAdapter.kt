@@ -13,11 +13,12 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleFind
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.RESULT_NULL
 import com.example.sunkai.heritage.value.RESULT_OK
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 /*
@@ -81,7 +82,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
 
 
     private fun getImage(imageID: Int, imageview: ImageView) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val url = HandleFind.GetUserCommentImageUrl(imageID)
             if (!TextUtils.isEmpty(url) && url != ERROR) {
                 runOnUiThread {

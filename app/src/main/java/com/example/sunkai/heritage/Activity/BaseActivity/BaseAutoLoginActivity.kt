@@ -4,10 +4,11 @@ import android.os.Bundle
 import com.example.sunkai.heritage.activity.RegistActivity
 import com.example.sunkai.heritage.dialog.NormalWarningDialog
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.backGroundLogin
 import com.example.sunkai.heritage.tools.checkLogin
 import com.example.sunkai.heritage.tools.gotoLogin
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 abstract class BaseAutoLoginActivity : BaseGlideActivity(), onAutoLogin {
     var dialog: NormalWarningDialog? = null
@@ -17,7 +18,7 @@ abstract class BaseAutoLoginActivity : BaseGlideActivity(), onAutoLogin {
         if(this is RegistActivity) return
         if (!checkLogin()) {
             showProcess()
-            ThreadPool.execute {
+            GlobalScope.launch {
                 val result=backGroundLogin()
                 runOnUiThread {
                     if (result) {

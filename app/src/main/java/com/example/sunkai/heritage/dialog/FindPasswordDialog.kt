@@ -9,9 +9,10 @@ import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.dialog.base.BaseDialogFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA
 import com.example.sunkai.heritage.value.NO_USER
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 找回密码的dialog
@@ -65,9 +66,9 @@ class FindPasswordDialog : BaseDialogFragment() {
     }
 
     private fun getFindPasswordQuestion(holder: Holder, userName: String) {
-        ThreadPool.execute {
-            val result = HandleUser.Find_Password_Question(userName) ?: return@execute
-            val activity = activity ?: return@execute
+        GlobalScope.launch {
+            val result = HandleUser.Find_Password_Question(userName) ?: return@launch
+            val activity = activity ?: return@launch
             activity.runOnUiThread {
                 if (result != NO_USER) {
                     showFindPasswordQuestion(holder, userName, result)
@@ -95,9 +96,9 @@ class FindPasswordDialog : BaseDialogFragment() {
     }
 
     private fun checkUserAnswer(holder: Holder) {
-        ThreadPool.execute {
-            val activity = activity ?: return@execute
-            val encrtAnswer = infoToRSA(holder.passwordAnswer.text.toString()) ?: return@execute
+        GlobalScope.launch {
+            val activity = activity ?: return@launch
+            val encrtAnswer = infoToRSA(holder.passwordAnswer.text.toString()) ?: return@launch
             val userName = holder.userName.text.toString()
             val result = HandleUser.Check_Question_Answer(userName, encrtAnswer)
             activity.runOnUiThread {

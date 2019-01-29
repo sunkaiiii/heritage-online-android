@@ -29,10 +29,11 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.MODIFY_USER_COMMENT
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 我的帖子的recyclerView的adapter
@@ -116,7 +117,7 @@ class MyOwnCommentRecyclerViewAdapter(context: Context, datas: List<UserCommentD
 
     private fun deleteComment(data: UserCommentData, view: View, dialog: NormalWarningDialog) {
         view.isEnabled = false
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = HandleFind.DeleteUserCommentByID(data.id)
             runOnUiThread(Runnable {
                 val toastText = if (result) "删除帖子成功" else "删除帖子失败"

@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/otherUsersFrameLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/otherUsersFrameLayout">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,43 +15,47 @@
         <include layout="@layout/user_view" />
 
         <TextView
+            android:id="@+id/tv_permission"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:id="@+id/tv_permission"
-            android:visibility="gone"
             android:gravity="center"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/rv_activity_other_users"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/ll_activity_other_users_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
-        android:visibility="gone"
-        android:id="@+id/ll_activity_other_users_background"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        android:visibility="gone" />
+
     <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
+        android:id="@+id/vp_activity_other_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/vp_activity_other_users"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/pv_activity_other_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:id="@+id/pv_activity_other_users"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addFocsFloatBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_white_24dp"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="48dp"
-        android:id="@+id/addFocsFloatBtn"
+        android:src="@drawable/ic_add_white_24dp"
         app:fabSize="mini" />
 </FrameLayout>

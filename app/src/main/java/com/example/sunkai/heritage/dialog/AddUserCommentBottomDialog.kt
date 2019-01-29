@@ -19,9 +19,10 @@ import com.example.sunkai.heritage.dialog.base.BaseBottomDialog
 import com.example.sunkai.heritage.interfaces.AddUserReplyDialog
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.ADD_COMMENT_REPLY
 import com.example.sunkai.heritage.value.ERROR
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 回帖的dialog
@@ -82,7 +83,7 @@ class AddUserCommentBottomDialog(val context: Activity, private val commentID: I
 
     private fun addReply(holder: Holder) {
         val replyContent = holder.replyContent.text.toString()
-        ThreadPool.execute {
+        GlobalScope.launch {
             val result = HandleFind.AddUserCommentReply(LoginActivity.userID, commentID, replyContent, data.userID, data.userName, data.commentContent)
             context.runOnUiThread {
                 if (result != ERROR) {

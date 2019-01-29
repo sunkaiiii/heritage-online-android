@@ -12,8 +12,9 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.tools.HandleImage
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CHOOSE_PHOTO
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * 当某个页面需要打开或者拍摄图片时候所用的基类
@@ -77,11 +78,11 @@ abstract class BaseTakeCameraActivity : BaseAutoLoginActivity(), OnPageLoaded {
     private fun handleUri(data: Uri?) {
         data ?: return
         onPreLoad()
-        ThreadPool.execute {
+        GlobalScope.launch {
             val bitmap = HandleImage(data)
             if (bitmap == null) {
                 onPostLoad()
-                return@execute
+                return@launch
             }
             runOnUiThread {
                 Log.d("test", bitmap.width.toString() + " " + bitmap.height)

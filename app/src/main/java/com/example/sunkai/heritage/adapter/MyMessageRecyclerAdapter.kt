@@ -12,9 +12,10 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandlePerson
 import com.example.sunkai.heritage.entity.PushMessageData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MyMessageRecyclerAdapter(context:Context,data:List<PushMessageData>,glide: RequestManager):BaseRecyclerAdapter<MyMessageRecyclerAdapter.Holder,PushMessageData>(context,data,glide) {
     class Holder(view:View): RecyclerView.ViewHolder(view){
@@ -51,7 +52,7 @@ class MyMessageRecyclerAdapter(context:Context,data:List<PushMessageData>,glide:
     }
 
     private fun getUserImage(holder: Holder,userID: Int) {
-        ThreadPool.execute {
+        GlobalScope.launch {
             val userImagUrl=HandlePerson.GetUserImageURL(userID)
             if(userImagUrl!= ERROR||!userImagUrl.isNullOrEmpty()){
                 runOnUiThread(Runnable {
