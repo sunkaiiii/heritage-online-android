@@ -7,11 +7,11 @@
         android:shortcutShortLabel="@string/add_comment">
         <intent
             android:action="com.ddmeng.hellonougat.action.MAIN"
-            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.MainActivity"
             android:targetPackage="com.datong.heritage_online" />
         <intent
             android:action="android.intent.action.STATIC_SHORTCUT_2"
-            android:targetClass="com.example.sunkai.heritage.Activity.AddFindCommentActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.AddFindCommentActivity"
             android:targetPackage="com.datong.heritage_online" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -23,11 +23,11 @@
         android:shortcutShortLabel="@string/my_comment">
         <intent
             android:action="com.ddmeng.hellonougat.action.MAIN"
-            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.MainActivity"
             android:targetPackage="com.datong.heritage_online" />
         <intent
             android:action="android.intent.action.STATIC_SHORTCUT_2"
-            android:targetClass="com.example.sunkai.heritage.Activity.UserOwnCommentActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.UserOwnCommentActivity"
             android:targetPackage="com.datong.heritage_online" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
@@ -39,11 +39,11 @@
         android:shortcutShortLabel="@string/my_collection">
         <intent
             android:action="com.ddmeng.hellonougat.action.MAIN"
-            android:targetClass="com.example.sunkai.heritage.Activity.MainActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.MainActivity"
             android:targetPackage="com.datong.heritage_online" />
         <intent
             android:action="android.intent.action.STATIC_SHORTCUT_2"
-            android:targetClass="com.example.sunkai.heritage.Activity.MyCollectionActivity"
+            android:targetClass="com.example.sunkai.heritage.activity.MyCollectionActivity"
             android:targetPackage="com.datong.heritage_online" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>

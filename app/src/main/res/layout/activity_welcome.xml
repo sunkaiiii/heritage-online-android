@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.WelcomeActivity"
+    tools:context=".activity.WelcomeActivity"
     android:background="@mipmap/welcome_background"
     android:id="@+id/ll_activity_welcome"
     android:orientation="vertical" />

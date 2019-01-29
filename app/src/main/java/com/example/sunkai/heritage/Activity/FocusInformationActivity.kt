@@ -1,13 +1,13 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
 import android.view.View
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.FocusListviewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.FollowInformation
-import com.example.sunkai.heritage.Interface.OnFocusChangeListener
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.FocusListviewAdapter
+import com.example.sunkai.heritage.connectWebService.HandlePerson
+import com.example.sunkai.heritage.entity.FollowInformation
+import com.example.sunkai.heritage.interfaces.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_focus_information.*

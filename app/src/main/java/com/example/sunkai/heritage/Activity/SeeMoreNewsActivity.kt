@@ -1,18 +1,17 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Adapter.SeeMoreNewsViewpagerAdapter
-import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Fragment.SeeMoreNewsFragment
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.adapter.SeeMoreNewsViewpagerAdapter
+import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.SeeMoreNewsFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.CATEGORY
-import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_see_more_news.*
 
 /**

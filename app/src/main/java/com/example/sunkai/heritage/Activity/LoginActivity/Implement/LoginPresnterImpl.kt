@@ -1,9 +1,9 @@
-package com.example.sunkai.heritage.Activity.LoginActivity.Implement
+package com.example.sunkai.heritage.activity.loginActivity.Implement
 
 import android.text.TextUtils
-import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginPresenter
-import com.example.sunkai.heritage.Activity.LoginActivity.Interface.LoginView
-import com.example.sunkai.heritage.Activity.LoginActivity.Interface.Logininteractor
+import com.example.sunkai.heritage.activity.loginActivity.Interface.LoginPresenter
+import com.example.sunkai.heritage.activity.loginActivity.Interface.LoginView
+import com.example.sunkai.heritage.activity.loginActivity.Interface.Logininteractor
 import com.example.sunkai.heritage.tools.MakeToast.toast
 
 /**

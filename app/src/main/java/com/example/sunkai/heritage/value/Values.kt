@@ -3,11 +3,11 @@ package com.example.sunkai.heritage.value
 import android.util.Pair
 import android.view.View
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateAllNewsCollectAdapter
-import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateBottomNewsCollectAdapter
-import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateCommentCollectaAdapter
-import com.example.sunkai.heritage.tools.CreateMyCollectAdapterUtils.CreateFolkCollectionAdapter
-import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.*
+import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateAllNewsCollectAdapter
+import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateBottomNewsCollectAdapter
+import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateCommentCollectaAdapter
+import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateFolkCollectionAdapter
+import com.example.sunkai.heritage.tools.createSearchActivityAdapterUtils.*
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.Utils
 

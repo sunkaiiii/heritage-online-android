@@ -1,12 +1,11 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.transition.Fade
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.ConnectWebService.BaseSetting
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.value.IMAGE_URL

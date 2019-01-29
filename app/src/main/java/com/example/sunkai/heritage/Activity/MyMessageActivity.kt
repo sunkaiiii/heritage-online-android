@@ -1,16 +1,14 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.MyMessageRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePush
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.MyMessageRecyclerAdapter
+import com.example.sunkai.heritage.connectWebService.HandlePush
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_my_message.*
 

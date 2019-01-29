@@ -2,8 +2,8 @@ package com.example.sunkai.heritage.tools
 
 import android.content.Context
 import android.content.Intent
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleUser
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.connectWebService.HandleUser
 
 fun attempToLogin(userName: String?, userPassword: String?): Boolean {
     val name = userName ?: return false

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Activity.UserCommentDetailActivity">
+    tools:context="com.example.sunkai.heritage.activity.UserCommentDetailActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 app:layout_collapseMode="parallax">
 
-                <com.example.sunkai.heritage.tools.Views.RectangleImageView
+                <com.example.sunkai.heritage.tools.views.RectangleImageView
                     android:id="@+id/userCommentImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:visibility="gone"
                 tools:targetApi="lollipop">
 
-                <com.example.sunkai.heritage.tools.Views.RoundedImageView
+                <com.example.sunkai.heritage.tools.views.RoundedImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </androidx.appcompat.widget.Toolbar>
@@ -146,7 +146,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/userCommentReplyRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

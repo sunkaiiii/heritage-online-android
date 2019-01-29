@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:id="@+id/userOwnTieziRefresh">
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/userOwnList" />

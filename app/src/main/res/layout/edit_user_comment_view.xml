@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.AddFindCommentActivity">
+    tools:context="com.example.sunkai.heritage.activity.AddFindCommentActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"

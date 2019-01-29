@@ -1,13 +1,12 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.graphics.Color
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
 import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
-import com.example.sunkai.heritage.Adapter.MyCollectionViewpagerAdpater
-import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Fragment.MyCollectFragment
+import com.example.sunkai.heritage.activity.baseActivity.BaseAutoLoginActivity
+import com.example.sunkai.heritage.adapter.MyCollectionViewpagerAdpater
+import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.MyCollectFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.value.*

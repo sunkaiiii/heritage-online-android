@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.example.sunkai.heritage.tools.Views.RoundedImageView
+        <com.example.sunkai.heritage.tools.views.RoundedImageView
             android:id="@+id/my_message_user_image"
             android:layout_width="36dp"
             android:layout_height="36dp"

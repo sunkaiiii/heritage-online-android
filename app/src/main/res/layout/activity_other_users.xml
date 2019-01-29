@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.example.sunkai.heritage.Activity.OtherUsersActivity">
+        tools:context="com.example.sunkai.heritage.activity.OtherUsersActivity">
 
         <include layout="@layout/user_view" />
 
@@ -23,7 +23,7 @@
             android:gravity="center"
             android:textSize="14sp"/>
 
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/rv_activity_other_users"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -35,7 +35,7 @@
         android:visibility="gone"
         android:id="@+id/ll_activity_other_users_background"
         android:orientation="vertical"/>
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/vp_activity_other_users"

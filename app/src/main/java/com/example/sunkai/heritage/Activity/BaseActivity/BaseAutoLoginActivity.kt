@@ -1,8 +1,8 @@
-package com.example.sunkai.heritage.Activity.BaseActivity
+package com.example.sunkai.heritage.activity.baseActivity
 
 import android.os.Bundle
-import com.example.sunkai.heritage.Activity.RegistActivity
-import com.example.sunkai.heritage.Dialog.NormalWarningDialog
+import com.example.sunkai.heritage.activity.RegistActivity
+import com.example.sunkai.heritage.dialog.NormalWarningDialog
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.backGroundLogin

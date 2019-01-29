@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.sunkai.heritage.Activity.FolkInformationActivity">
+    tools:context="com.example.sunkai.heritage.activity.FolkInformationActivity">
     <!--fitsSystemWindows可以让图片深入透明之后的状态栏-->
 
     <com.google.android.material.appbar.AppBarLayout

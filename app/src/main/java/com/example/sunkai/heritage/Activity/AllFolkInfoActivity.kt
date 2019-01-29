@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Context
 import android.content.Intent
@@ -11,12 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Adapter.FolkRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-import com.example.sunkai.heritage.Data.FolkDataLite
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.adapter.FolkRecyclerViewAdapter
+import com.example.sunkai.heritage.connectWebService.HandleFolk
+import com.example.sunkai.heritage.entity.FolkDataLite
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -35,7 +36,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
 
     private lateinit var folkListviewAdapter: FolkRecyclerViewAdapter
     private lateinit var folk_search_btn: ImageView
-    private lateinit var refreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    private lateinit var refreshLayout: SwipeRefreshLayout
     internal var getDatas: MutableList<FolkDataLite> = ArrayList()//用于处理搜索的List，各种搜索的结果都会操作这个list
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
         folk_location_spinner.onItemSelectedListener = this
         folk_heritages_spinner.onItemSelectedListener = this
         folkListviewAdapter = FolkRecyclerViewAdapter(this, arrayListOf(),glide)
-        folk_show_recyclerview.layoutManager = androidx.recyclerview.widget.GridLayoutManager(this, 2)
+        folk_show_recyclerview.layoutManager = GridLayoutManager(this, 2)
         folk_show_recyclerview.setHasFixedSize(true)
         startLoadInformation()
     }
@@ -148,7 +149,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
             setSpinner()
             setWidgetEnable(true)
             folk_show_recyclerview.adapter=folkListviewAdapter
-            folkListviewAdapter.setOnItemClickListener { view, position ->
+            folkListviewAdapter.setOnItemClickListener { _, position ->
                 val data=folkListviewAdapter.getItem(position)
                 val intent= Intent(this@AllFolkInfoActivity,FolkInformationActivity::class.java)
                 intent.putExtra(DATA,data)
@@ -175,7 +176,7 @@ class AllFolkInfoActivity : BaseGlideActivity(), View.OnClickListener, AdapterVi
         }
         hideKeyboard()
         setWidgetEnable(false)
-        AllFolkInfoActivity.HandleSearch(edit, this).execute()
+        HandleSearch(edit, this).execute()
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}

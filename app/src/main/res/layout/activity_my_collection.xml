@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.MyCollectionActivity">
+    tools:context="com.example.sunkai.heritage.activity.MyCollectionActivity">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/myCollectTabLayout"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary" />
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:id="@+id/myCollectViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

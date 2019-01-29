@@ -1,18 +1,17 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
-import android.os.Build
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
 import androidx.core.transition.doOnEnd
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
-import com.example.sunkai.heritage.Adapter.NewsDetailRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleMainFragment
-import com.example.sunkai.heritage.Data.FolkNewsLite
-import com.example.sunkai.heritage.Data.MainPageSlideNews
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.activity.baseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.adapter.NewsDetailRecyclerAdapter
+import com.example.sunkai.heritage.connectWebService.HandleMainFragment
+import com.example.sunkai.heritage.entity.FolkNewsLite
+import com.example.sunkai.heritage.entity.MainPageSlideNews
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CATEGORY

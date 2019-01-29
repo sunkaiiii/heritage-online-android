@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Activity.BottomNewsDetailActivity">
+    tools:context="com.example.sunkai.heritage.activity.BottomNewsDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bottom_news_detail_appbar"
@@ -52,7 +52,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/bottomNewsDetailRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

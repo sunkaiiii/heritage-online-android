@@ -1,11 +1,11 @@
-package com.example.sunkai.heritage.Activity.BaseActivity
+package com.example.sunkai.heritage.activity.baseActivity
 
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Interface.HandleCollect
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.connectWebService.HandlePerson
+import com.example.sunkai.heritage.interfaces.HandleCollect
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool

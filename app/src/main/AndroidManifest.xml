@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="InnerclassSeparator">
         <activity
-            android:name=".Activity.WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,70 +28,70 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".Activity.LoginActivity.LoginActivity"
+            android:name=".activity.loginActivity.LoginActivity"
             android:label="登录"
             android:theme="@style/LoginActivityTheme" />
         <activity
-            android:name=".Activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:theme="@style/AppThemeNoActionBar" />
         <activity
-            android:name=".Activity.RegistActivity"
+            android:name=".activity.RegistActivity"
             android:label="注册"
             android:theme="@style/LoginActivityTheme" />
         <activity
-            android:name=".Activity.FolkInformationActivity"
+            android:name=".activity.FolkInformationActivity"
             android:theme="@style/JoinActivityTheme" />
         <activity
-            android:name=".Activity.UserCommentDetailActivity"
+            android:name=".activity.UserCommentDetailActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Activity.FocusInformationActivity" />
+        <activity android:name=".activity.FocusInformationActivity" />
         <activity
-            android:name=".Activity.AddFindCommentActivity"
+            android:name=".activity.AddFindCommentActivity"
             android:label="发帖"
             android:theme="@style/AppThemeNoBackGround" />
         <activity
-            android:name=".Activity.UserOwnCommentActivity"
+            android:name=".activity.UserOwnCommentActivity"
             android:label="我的帖子" />
-        <activity android:name=".Activity.AboutUSActivity" />
+        <activity android:name=".activity.AboutUSActivity" />
         <activity
-            android:name=".Activity.SettingListActivity"
+            android:name=".activity.SettingListActivity"
             android:label="@string/setting" />
         <activity
-            android:name=".Activity.OtherUsersActivity"
+            android:name=".activity.OtherUsersActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".Activity.ModifyUsercommentActivity" />
+        <activity android:name=".activity.ModifyUsercommentActivity" />
         <activity
-            android:name=".Activity.AllFolkInfoActivity"
+            android:name=".activity.AllFolkInfoActivity"
             android:theme="@style/AppThemeNoActionBar" />
         <activity
-            android:name=".Activity.SeeMoreNewsActivity"
+            android:name=".activity.SeeMoreNewsActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".Activity.NewsDetailActivity" />
-        <activity android:name=".Activity.BottomNewsDetailActivity" />
+        <activity android:name=".activity.NewsDetailActivity" />
+        <activity android:name=".activity.BottomNewsDetailActivity" />
         <activity
-            android:name=".Activity.UserLikeCommentActivity"
+            android:name=".activity.UserLikeCommentActivity"
             android:label="@string/my_like" />
         <activity
-            android:name=".Activity.MyCollectionActivity"
+            android:name=".activity.MyCollectionActivity"
             android:label="@string/my_collection" />
 
         <activity
-            android:name=".Activity.MyMessageActivity"
+            android:name=".activity.MyMessageActivity"
             android:label="@string/my_message" />
         <activity
-            android:name=".Activity.SearchActivity"
+            android:name=".activity.SearchActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground" />
-        <activity android:name=".Activity.ViewImageActivity"
+        <activity android:name=".activity.ViewImageActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground"/>
 
         <service
-            android:name=".Service.PushService"
+            android:name=".service.PushService"
             android:enabled="true"
             android:exported="false" />
-        <service android:name=".Service.FCMMessageService">
+        <service android:name=".service.FCMMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

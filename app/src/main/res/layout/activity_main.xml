@@ -12,7 +12,7 @@
         android:background="@color/white"
         app:menu="@menu/bottom_navigation_menu" />
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:id="@+id/activityMainViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

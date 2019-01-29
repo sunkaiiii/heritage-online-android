@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.ComponentName
 import android.content.Context
@@ -17,18 +17,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Dialog.NormalWarningDialog
-import com.example.sunkai.heritage.Fragment.BaseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.Fragment.FindFragment
-import com.example.sunkai.heritage.Fragment.FolkFragment
-import com.example.sunkai.heritage.Fragment.MainFragment
-import com.example.sunkai.heritage.Fragment.PersonFragment
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.dialog.NormalWarningDialog
+import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.FindFragment
+import com.example.sunkai.heritage.fragment.FolkFragment
+import com.example.sunkai.heritage.fragment.MainFragment
+import com.example.sunkai.heritage.fragment.PersonFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.Service.PushService
+import com.example.sunkai.heritage.service.PushService
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+import com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.PUSH_SWITCH
@@ -36,7 +36,6 @@ import com.example.sunkai.heritage.value.SETTING
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
 import com.google.firebase.iid.FirebaseInstanceId
@@ -55,7 +54,7 @@ class MainActivity : BaseGlideActivity() {
     companion object {
         var activityRef: WeakReference<MainActivity>? = null
         var bottomNavigationRef: WeakReference<BottomNavigationView>? = null
-        fun GetViewpagerSelectPosition(): Int {
+        fun getViewpagerSelectPosition(): Int {
             val activity = activityRef?.get() ?: return 0
             //防止找不到view的容错，加了个？ 但看了转换的Java代码，似乎没用？
             return activity.bottomNavigationButton.selectedItemId
@@ -114,7 +113,7 @@ class MainActivity : BaseGlideActivity() {
                         Log.w("MainActivity", "getinstanceId failed", p0.exception)
                         return@OnCompleteListener
                     }
-                    val token = p0.result.token
+                    val token = p0.result?.token
 
                     Log.d("MainActivity", token)
                 })
@@ -122,7 +121,7 @@ class MainActivity : BaseGlideActivity() {
 
         } else if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
             requestHttp {
-                val locationResponse = BaiduLocation.GetLocateAdressInfo()
+                val locationResponse = BaiduLocation.getLocateAdressInfo()
                 if (locationResponse != null) {
                     runOnUiThread {
                         //使用的用户如果不在中国，则提醒让其更新Google Play服务a

@@ -61,7 +61,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:id="@+id/mainTabContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -75,5 +75,5 @@
             app:tabSelectedTextColor="@color/white"
             app:tabTextAppearance="@style/MainFragmentTabLayoutSize"
             app:tabTextColor="@color/normalGrey" />
-    </com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager>
+    </com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

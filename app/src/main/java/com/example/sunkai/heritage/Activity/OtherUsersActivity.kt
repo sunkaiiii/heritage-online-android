@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -12,17 +12,16 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.OtherPersonActivityRecyclerViewAdapter
-import com.example.sunkai.heritage.Adapter.OtherUserActivityImageAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
-import com.example.sunkai.heritage.Data.FollowInformation
-import com.example.sunkai.heritage.Data.SearchUserInfo
-import com.example.sunkai.heritage.Data.UserInfo
-import com.example.sunkai.heritage.Interface.OnItemClickListener
-import com.example.sunkai.heritage.Interface.onPhotoViewImageClick
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.OtherPersonActivityRecyclerViewAdapter
+import com.example.sunkai.heritage.adapter.OtherUserActivityImageAdapter
+import com.example.sunkai.heritage.connectWebService.HandleFind
+import com.example.sunkai.heritage.connectWebService.HandlePerson
+import com.example.sunkai.heritage.entity.FollowInformation
+import com.example.sunkai.heritage.entity.SearchUserInfo
+import com.example.sunkai.heritage.entity.UserInfo
+import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ThreadPool

@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity.BaseActivity
+package com.example.sunkai.heritage.activity.baseActivity
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle

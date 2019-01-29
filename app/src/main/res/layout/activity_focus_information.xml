@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.FocusInformationActivity">
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+    tools:context="com.example.sunkai.heritage.activity.FocusInformationActivity">
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/focus_information_recyclerview"

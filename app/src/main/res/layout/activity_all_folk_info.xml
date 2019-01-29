@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Fragment.MainFragment">
+    tools:context="com.example.sunkai.heritage.fragment.MainFragment">
 
 
     <LinearLayout
@@ -74,7 +74,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/folk_show_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

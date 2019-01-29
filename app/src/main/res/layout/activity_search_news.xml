@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/superLightGrey"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.SearchActivity">
+    tools:context="com.example.sunkai.heritage.activity.SearchActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -59,14 +59,14 @@
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
         android:id="@+id/searchActivitySearchHistoryRecyckerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
         android:id="@+id/searchActivityRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -81,7 +81,7 @@
         android:background="@color/lightGrey"
         />
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:id="@+id/searchActivityViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.Activity.MyMessageActivity">
+    tools:context="com.example.sunkai.heritage.activity.MyMessageActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/myMessageSwipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:id="@+id/myMessageRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -1,12 +1,12 @@
-package com.example.sunkai.heritage.Activity.LoginActivity.Implement
+package com.example.sunkai.heritage.activity.loginActivity.Implement
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.edit
-import com.example.sunkai.heritage.Activity.LoginActivity.Interface.Logininteractor
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleUser
+import com.example.sunkai.heritage.activity.loginActivity.Interface.Logininteractor
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.tools.infoToRSA

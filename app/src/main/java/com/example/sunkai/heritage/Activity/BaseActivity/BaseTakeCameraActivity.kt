@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity.BaseActivity
+package com.example.sunkai.heritage.activity.baseActivity
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.tools.HandleImage
 import com.example.sunkai.heritage.tools.ThreadPool
 import com.example.sunkai.heritage.value.CHOOSE_PHOTO

@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.tools
 
-import com.example.sunkai.heritage.ConnectWebService.BaseSetting
-import com.example.sunkai.heritage.Data.BaiduLoacationResponse
+import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.entity.BaiduLoacationResponse
 import com.example.sunkai.heritage.value.BaiduIPLocationUrl
 import com.example.sunkai.heritage.value.ERROR
 import com.google.gson.Gson

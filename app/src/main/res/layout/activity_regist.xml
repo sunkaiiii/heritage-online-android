@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@mipmap/day_background"
     android:fitsSystemWindows="true"
-    tools:context="com.example.sunkai.heritage.Activity.RegistActivity">
+    tools:context="com.example.sunkai.heritage.activity.RegistActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
                     android:contentDescription="@string/cancel_regist"
                     android:src="@drawable/ic_arrow_back_white_24dp" />
 
-                <com.example.sunkai.heritage.tools.Views.RoundedImageView
+                <com.example.sunkai.heritage.tools.views.RoundedImageView
                     android:id="@+id/registUserImage"
                     android:layout_width="86dp"
                     android:layout_height="86dp"

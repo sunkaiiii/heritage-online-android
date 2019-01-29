@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseAutoLoginActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.MyOwnCommentRecyclerViewAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Interface.OnItemLongClickListener
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.activity.baseActivity.BaseAutoLoginActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.MyOwnCommentRecyclerViewAdapter
+import com.example.sunkai.heritage.connectWebService.HandleFind
+import com.example.sunkai.heritage.interfaces.OnItemLongClickListener
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY

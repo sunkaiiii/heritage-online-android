@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -12,10 +12,10 @@ import android.widget.ProgressBar
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
-import com.example.sunkai.heritage.ConnectWebService.BaseSetting
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Data.UserCommentData
+import com.example.sunkai.heritage.activity.baseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.connectWebService.HandleFind
+import com.example.sunkai.heritage.entity.UserCommentData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.toByteArray

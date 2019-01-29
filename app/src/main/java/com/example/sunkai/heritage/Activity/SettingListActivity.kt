@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Context
 import android.os.Bundle
@@ -8,19 +8,16 @@ import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.SettingListSelectThemeColorAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandlePerson
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.SettingListSelectThemeColorAdapter
+import com.example.sunkai.heritage.connectWebService.HandlePerson
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.Utils
-import com.example.sunkai.heritage.tools.Views.GridLayoutManagerItemDecoration
+import com.example.sunkai.heritage.tools.views.GridLayoutManagerItemDecoration
 import com.example.sunkai.heritage.value.*
 import com.google.firebase.FirebaseApp
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.FirebaseMessagingService
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**

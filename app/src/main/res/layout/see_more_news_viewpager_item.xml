@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.Activity.SeeMoreNewsActivity">
+    tools:context="com.example.sunkai.heritage.activity.SeeMoreNewsActivity">
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/seeMoreNewsRefresh">
-        <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/seeMoreNewsRecyclerView"

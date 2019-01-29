@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity">
+    tools:context="com.example.sunkai.heritage.activity.loginActivity.LoginActivity">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="0dp"

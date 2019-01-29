@@ -1,22 +1,19 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
-import android.annotation.TargetApi
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.transition.Slide
-import android.transition.TransitionInflater
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.view.children
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseTakeCameraActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleUser
+import com.example.sunkai.heritage.activity.baseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.WindowHelper

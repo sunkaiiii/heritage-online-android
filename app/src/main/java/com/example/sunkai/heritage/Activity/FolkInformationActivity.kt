@@ -1,16 +1,15 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseHandleCollectActivity
-import com.example.sunkai.heritage.ConnectWebService.HandleFolk
-import com.example.sunkai.heritage.Data.ClassifyDivideData
-import com.example.sunkai.heritage.Data.FolkDataLite
+import com.example.sunkai.heritage.activity.baseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.connectWebService.HandleFolk
+import com.example.sunkai.heritage.entity.ClassifyDivideData
+import com.example.sunkai.heritage.entity.FolkDataLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ViewImageUtils

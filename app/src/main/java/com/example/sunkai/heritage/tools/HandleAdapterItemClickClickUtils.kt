@@ -13,10 +13,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import com.example.sunkai.heritage.Activity.*
-import com.example.sunkai.heritage.Adapter.*
-import com.example.sunkai.heritage.Fragment.FindFragment
-import com.example.sunkai.heritage.Interface.IHandleAdapterItemClick
+import com.example.sunkai.heritage.activity.*
+import com.example.sunkai.heritage.adapter.*
+import com.example.sunkai.heritage.fragment.FindFragment
+import com.example.sunkai.heritage.interfaces.IHandleAdapterItemClick
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY

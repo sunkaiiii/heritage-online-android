@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -15,17 +15,16 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Adapter.BaseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.Adapter.SearchActivitySearchHistoryAdapter
-import com.example.sunkai.heritage.Adapter.SearchActivityViewpagerAdapter
-import com.example.sunkai.heritage.Adapter.SearchUserRecclerAdapter
-import com.example.sunkai.heritage.Data.SearchHistoryData
-import com.example.sunkai.heritage.Interface.OnFocusChangeListener
-import com.example.sunkai.heritage.Interface.OnItemClickListener
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
+import com.example.sunkai.heritage.adapter.SearchActivitySearchHistoryAdapter
+import com.example.sunkai.heritage.adapter.SearchActivityViewpagerAdapter
+import com.example.sunkai.heritage.adapter.SearchUserRecclerAdapter
+import com.example.sunkai.heritage.entity.SearchHistoryData
+import com.example.sunkai.heritage.interfaces.OnFocusChangeListener
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.*
-import com.example.sunkai.heritage.tools.CreateSeachActivityAdapterUtils.CreateCorrespondingAdapterFactory
+import com.example.sunkai.heritage.tools.createSearchActivityAdapterUtils.CreateCorrespondingAdapterFactory
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_search_news.*
 import kotlin.collections.set

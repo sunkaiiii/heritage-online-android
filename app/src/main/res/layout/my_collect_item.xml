@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.sunkai.heritage.tools.Views.FollowThemeEdgeRecyclerView
+    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
         android:id="@+id/my_collect_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

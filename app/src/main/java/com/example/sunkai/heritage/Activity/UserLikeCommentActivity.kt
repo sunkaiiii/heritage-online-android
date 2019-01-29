@@ -1,12 +1,12 @@
-package com.example.sunkai.heritage.Activity
+package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
 import android.util.Log
-import com.example.sunkai.heritage.Activity.BaseActivity.BaseGlideActivity
-import com.example.sunkai.heritage.Activity.LoginActivity.LoginActivity
-import com.example.sunkai.heritage.Adapter.MyLikeCommentRecyclerAdapter
-import com.example.sunkai.heritage.ConnectWebService.HandleFind
-import com.example.sunkai.heritage.Interface.OnPageLoaded
+import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
+import com.example.sunkai.heritage.adapter.MyLikeCommentRecyclerAdapter
+import com.example.sunkai.heritage.connectWebService.HandleFind
+import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.GRID_LAYOUT_DESTINY
 import kotlinx.android.synthetic.main.activity_user_like_comment.*
