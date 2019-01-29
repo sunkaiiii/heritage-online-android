@@ -1,110 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-	<string name="app_name">chinese heritage</string>
-	<string name="verson_code">v3.2.1</string>
-	<string name="no_mean_content">null</string>
-	<string name="action_sign_in_short">Land</string>
-	<string name="error_incorrect_password">Incorrect password</string>
-	<string name="push_warning">Do you open message push? \n this may slightly increase the memory footprint and power consumption of the program. \n</string>
-	<string name="program_git_url">https: / / github.com / sunkaiiii / heritage online - android</string>
-	<string name="setting">Set up</string>
-	<string name="handing">In the process of processing...</string>
-	<string name="delete_comment">Delete a post</string>
-	<string name="delete_success">Delete success</string>
-	<string name="has_problem">Problems</string>
-	<string name="reverse_look">Is the reverse view</string>
-	<string name="non_reverse_look">Positive sequence view</string>
-	<string name="edit_comment">Modify the post</string>
-	<string name="add_comment_title">Title</string>
-	<string name="add_comment_content">text</string>
-	<string name="add_comment_image">picture</string>
-	<string name="save">Preservation</string>
-	<string name="update_success">Update success</string>
-	<string name="update_fail">Update failed</string>
-	<string name="permission_denaild_information">The user hides its personal information</string>
-	<string name="push_message">Message push</string>
-	<string name="had_error">There is a problem. Please try again later.</string>
-	<string name="fans_and_view_permission_denail">Because of the setting of the other, you can\'t check his information</string>
-	<string name="apply_time">Declaration time:</string>
-	<string name="category">Category:</string>
-	<string name="number">No.:</string>
-	<string name="location">Region:</string>
-	<string name="user_name">User name</string>
-	<string name="password">Password</string>
-	<string name="insure_password">Please confirm the password</string>
-	<string name="find_password_question">Retrieve the problem of password</string>
-	<string name="find_password_answer">Retrieve the password answer</string>
-	<string name="regist">register</string>
-	<string name="cancel">cancel</string>
-	<string name="please_choice">Please choose</string>
-	<string name="news_title">News headlines</string>
-	<string name="more">More</string>
-	<string name="focus_heritage">The focus of intangible cultural heritage</string>
+    <string name="app_name">chinese heritage</string>
+    <string name="verson_code">v3.2.1</string>
+    <string name="no_mean_content">null</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="push_warning">Do you open message push? \n this may slightly increase the memory footprint and power consumption of the program. \n</string>
+    <string name="program_git_url">https: / / github.com / sunkaiiii / heritage online - android</string>
+    <string name="setting">Setting</string>
+    <string name="handing">Processing…</string>
+    <string name="delete_comment">Delete this post</string>
+    <string name="delete_success">success!</string>
+    <string name="has_problem">A Problem happened</string>
+    <string name="reverse_look">Viewing in reverse order</string>
+    <string name="non_reverse_look">Viewing in sequence order</string>
+    <string name="edit_comment">Modify the post</string>
+    <string name="add_comment_title">Title</string>
+    <string name="add_comment_content">Text</string>
+    <string name="add_comment_image">Picture</string>
+    <string name="save">Preservation</string>
+    <string name="update_success">Update success</string>
+    <string name="update_fail">Update failed</string>
+    <string name="permission_denaild_information">The user hides its personal information</string>
+    <string name="push_message">Message push</string>
+    <string name="had_error">There is a problem. Please try again later.</string>
+    <string name="fans_and_view_permission_denail">Because of the setting of the user, you can\'t check his/her information</string>
+    <string name="apply_time">Declaration time:</string>
+    <string name="category">Category:</string>
+    <string name="number">No.:</string>
+    <string name="location">Region:</string>
+    <string name="user_name">User name</string>
+    <string name="password">Password</string>
+    <string name="insure_password">Please confirm the password</string>
+    <string name="find_password_question">Retrieve the problem of password</string>
+    <string name="find_password_answer">Retrieve the password answer</string>
+    <string name="regist">register</string>
+    <string name="cancel">Cancel</string>
+    <string name="please_choice">Please choose</string>
+    <string name="news_title">News headlines</string>
+    <string name="more">More</string>
+    <string name="focus_heritage">Focus on the heritage</string>
+    <string name="all_news">all_news</string>
+    <string name="news_detail_share_title">news_detail_share_title</string>
+    <string name="bottom_news_share_title">bottom_news_share_title</string>
+    <string name="bottom_news_share_time">bottom_news_share_time</string>
+    <string name="user">user</string>
 
-
-	<string name="add_focus">Plus interest</string>
-	<string name="already_focus">Already paid attention to</string>
-	<string name="search">search</string>
-	<string name="set_like">Give the thumbs-up</string>
-	<string name="add_comment_reply">Replies</string>
-	<string name="cancel_like">Cancel the point of praise</string>
-	<string name="comment">comment</string>
-	<string name="zero">Zero</string>
-	<string name="see_more_reply">Look at more comments</string>
-	<string name="focus">follow</string>
-	<string name="fans">Fans</string>
-	<string name="my_collection">My collection</string>
-	<string name="my_message">My news</string>
-	<string name="my_comment">My post</string>
-	<string name="logout">Logon logon</string>
-	<string name="change_password">Modify the password</string>
-	<string name="submit">Determine</string>
-	<string name="about_us">About us</string>
-	<string name="cancel_regist">Cancel the registration</string>
-	<string name="forget_password">Forgot your password?</string>
-	<string name="jump_login">Skip Login</string>
-	<string name="login">Land</string>
-	<string name="user_image">User Avatar</string>
-	<string name="open">open</string>
-	<string name="close">Close</string>
-	<string name="open_or_close_push">Push open?</string>
-	<string name="my_like">My praise</string>
-	<string name="title">Title</string>
-	<string name="share_user_name">share_user_name</string>
-	<string name="share_user_image">share_user_image</string>
-	<string name="share_folk_title">share_folk_title</string>
-	<string name="share_folk_time">share_folk_time</string>
-	<string name="share_folk_number">share_folk_number</string>
-	<string name="share_folk_location">share_folk_location</string>
-	<string name="share_folk_content">the _ folk _.</string>
-	<string name="find_share_view">find_share_view</string>
-	<string name="find_share_background">find_share_background</string>
-	<string name="find_share_title">find_share_title</string>
-	<string name="find_share_content">find _ share _.</string>
-	<string name="collect">Collection</string>
-	<string name="delete_comment_title">Delete a post</string>
-	<string name="delete_comment_content">Do you delete a post?</string>
-	<string name="logo">logo</string>
+    <string name="add_focus">Add interest</string>
+    <string name="already_focus">Already focus on this user</string>
+    <string name="search">Search</string>
+    <string name="set_like">Like it!</string>
+    <string name="add_comment_reply">Add comment</string>
+    <string name="cancel_like">Don\'t like</string>
+    <string name="comment">Comment</string>
+    <string name="zero">Zero</string>
+    <string name="see_more_reply">See more comments</string>
+    <string name="focus">Follow</string>
+    <string name="fans">Fans</string>
+    <string name="my_collection">My collection</string>
+    <string name="my_message">My messages</string>
+    <string name="my_comment">My comments</string>
+    <string name="logout">Log out</string>
+    <string name="change_password">Modify the password</string>
+    <string name="submit">Submit</string>
+    <string name="about_us">About us</string>
+    <string name="cancel_regist">Cancel the registration</string>
+    <string name="forget_password">Forgot your password?</string>
+    <string name="jump_login">Skip Login</string>
+    <string name="login">Login</string>
+    <string name="user_image">Profile picture</string>
+    <string name="open">open</string>
+    <string name="close">Close</string>
+    <string name="open_or_close_push">Push open?</string>
+    <string name="my_like">My praise</string>
+    <string name="title">Title</string>
+    <string name="share_user_name">share_user_name</string>
+    <string name="share_user_image">share_user_image</string>
+    <string name="share_folk_title">share_folk_title</string>
+    <string name="share_folk_time">share_folk_time</string>
+    <string name="share_folk_number">share_folk_number</string>
+    <string name="share_folk_location">share_folk_location</string>
+    <string name="share_folk_content">share_folk_content</string>
+    <string name="share_view_image">share_view_image</string>
+    <string name="find_share_view">find_share_view</string>
+    <string name="find_share_background">find_share_background</string>
+    <string name="find_share_title">find_share_title</string>
+    <string name="find_share_content">find _ share _.</string>
+    <string name="collect">Collection</string>
+    <string name="delete_comment_title">Delete a post</string>
+    <string name="delete_comment_content">Do you want to delete this post?</string>
+    <string name="logo">logo</string>
     <string name="time">Time:</string>
-	<string name="main_page_permission">Home page permissions</string>
-	<string name="see_fans_and_focus">Look at fans and concerns</string>
-	<string name="main_page">home page</string>
-	<string name="folk_page">nongovernmental</string>
-	<string name="find_page">find</string>
-	<string name="person_center">Personal Center</string>
-	<string name="please_input_username">enter one user name</string>
-	<string name="please_wait">Please wait a moment</string>
-	<string name="one">One</string>
-	<string name="three">Three</string>
-	<string name="add_comment_reply_here">Enter a reply here</string>
-	<string name="content">content</string>
-	<string name="new_reply">New reply</string>
-	<string name="push_channel">push_channel</string>
-	<string name="push_channel_name">Post reply</string>
-	<string name="add_comment">Post</string>
-	<string name="original_content">The original post:</string>
-	<string name="reply">Reply：</string>
+    <string name="main_page_permission">User profile permissions</string>
+    <string name="see_fans_and_focus">View your fans and concerns</string>
+    <string name="main_page">home page</string>
+    <string name="folk_page">nongovernmental</string>
+    <string name="find_page">Find</string>
+    <string name="person_center">Personal Center</string>
+    <string name="please_input_username">please input an user name</string>
+    <string name="please_wait">Please wait a moment</string>
+    <string name="one">One</string>
+    <string name="three">Three</string>
+    <string name="add_comment_reply_here">Input a reply here</string>
+    <string name="content">Content</string>
+    <string name="new_reply">New reply</string>
+    <string name="push_channel">push_channel</string>
+    <string name="push_channel_name">Post reply</string>
+    <string name="add_comment">Post</string>
+    <string name="original_content">The original post:</string>
+    <string name="reply">Reply：</string>
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -116,7 +121,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
-	<string name="photoview_licence">Copyright 2017 Chris Banes
+    <string name="photoview_licence">Copyright 2017 Chris Banes
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -129,9 +134,30 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
-	<string name="okhttp">okhttp</string>
-	<string name="photoview">photoview</string>
+    <string name="okhttp">okhttp</string>
+    <string name="photoview">photoview</string>
     <string name="glide">glide</string>
-	<string name="licence">Open source license statement</string>
+    <string name="licence">Open source license statement</string>
+    <string name="gson_liccence">Copyright 2008 Google Inc.
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</string>
+    <string name="gson">gson</string>
+    <string name="same_location">Same location</string>
+    <string name="comment_location">Comment location</string>
+    <string name="please_input_search">Search content</string>
+    <string name="exit">Exit</string>
+    <string name="clear_content">Wipe content</string>
+    <string name="see_all_folk">See all content</string>
+    <string name="delete_this_history">Clear search trace</string>
+    <string name="no_location_info">There is no location information</string>
 </resources>
