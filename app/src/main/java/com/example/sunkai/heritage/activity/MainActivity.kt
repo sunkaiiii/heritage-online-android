@@ -104,7 +104,7 @@ class MainActivity : BaseGlideActivity() {
 
     fun startPushService() {
         //TODO 检查是否在中国
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+        if (BaiduLocation.isFromChina() || GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
             FirebaseApp.initializeApp(this)?.addIdTokenListener {
                 FirebaseMessaging.getInstance().isAutoInitEnabled = true
                 toast("you google play")

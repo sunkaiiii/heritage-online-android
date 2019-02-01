@@ -14,12 +14,15 @@ import java.util.concurrent.TimeUnit
 
 object BaiduLocation {
     var location: String = ""
+    var contentBean: BaiduLoacationResponse.ContentBean? = null
 
     init {
         GlobalScope.launch {
-            location = GetIPAddress()
+            getInfos()
         }
     }
+
+    fun isFromChina(): Boolean = contentBean?.address?.contains("CN") == true
 
     fun IPLocation(): String {
         val request = Request.Builder()
@@ -29,6 +32,19 @@ object BaiduLocation {
         val client = OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS).build()
         val response = client.newCall(request).execute()
         return if (response.isSuccessful) response.body()?.string()!! else return ERROR
+    }
+
+    private fun getInfos() {
+        val result = IPLocation()
+        try {
+            val locationData = Gson().fromJson<BaiduLoacationResponse>(result, BaiduLoacationResponse::class.java)
+            if (locationData.status != 0) {
+                return
+            }
+            contentBean = locationData.content
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun GetIPAddress(): String {
