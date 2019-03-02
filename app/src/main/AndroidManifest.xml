@@ -15,7 +15,7 @@
         tools:ignore="InnerclassSeparator">
         <activity
             android:name=".activity.WelcomeActivity"
-            android:theme="@style/AppThemeNoActionBarNoBackground">
+            android:theme="@style/WelcomeActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -85,7 +85,7 @@
             android:name=".activity.SearchActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground" />
         <activity android:name=".activity.ViewImageActivity"
-            android:theme="@style/AppThemeNoActionBarNoBackground"/>
+            android:theme="@style/Theme.AppCompat.Translucent"/>
 
         <service
             android:name=".service.PushService"

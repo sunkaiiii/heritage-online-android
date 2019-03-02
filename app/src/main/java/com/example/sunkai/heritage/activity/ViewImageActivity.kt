@@ -4,9 +4,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.transition.Fade
+import android.util.Log
+import android.view.ViewGroup
 import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.Views.SwipePhotoView
 import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.value.IMAGE_URL
 import kotlinx.android.synthetic.main.activity_view_image.*
@@ -18,11 +21,9 @@ class ViewImageActivity : BaseGlideActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_image)
         setWindowAnimation()
-        setPhotoViewClickAction()
+        setPhotoViewAction()
         getImage()
-        window.setBackgroundDrawable(ColorDrawable(Color.BLACK))
     }
-
 
     private fun getImage() {
         val imageUrl = intent.getStringExtra(IMAGE_URL)
@@ -34,7 +35,7 @@ class ViewImageActivity : BaseGlideActivity() {
         setWindowFullScreen()
     }
 
-    private fun setPhotoViewClickAction() {
+    private fun setPhotoViewAction() {
         activityViewImage.setOnClickListener {
             if (activityViewImage.scale == 1.0f) {
                 onBackPressed()
@@ -42,6 +43,26 @@ class ViewImageActivity : BaseGlideActivity() {
                 activityViewImage.setScale(1.0f, true)
             }
         }
+
+        activityViewImage.setOnDragListner(object : SwipePhotoView.OnDragListner {
+            var height = -1
+            var width = -1
+            override fun onDrag(dx: Int, dy: Int) {
+                Log.d("ViewImageActivity", String.format("dy:%d,alpha:%d", dy, (rootView.height / 2) - dy))
+                rootView.background.alpha = (255 - Math.pow(255 * Math.abs(dy) / rootView.height / 2.0, 1.2)).toInt()
+                val scale = (1.0 - Math.pow(1.0 * Math.abs(dy) / rootView.height / 2.0, 0.8)).toFloat()
+                if (height == -1 || width == -1) {
+                    height = activityViewImage.height
+                    width = activityViewImage.width
+                }
+                if (height != -1 && width != -1) {
+                    val layoutParams = activityViewImage.layoutParams
+                    layoutParams.height = (height * scale).toInt()
+                    layoutParams.width = (width * scale).toInt()
+                    activityViewImage.layoutParams = layoutParams
+                }
+            }
+        })
     }
 
     private fun setWindowAnimation() {
