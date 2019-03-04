@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import android.view.ViewGroup
 import com.github.chrisbanes.photoview.PhotoView
 
 class SwipePhotoView @JvmOverloads constructor(
@@ -13,6 +14,8 @@ class SwipePhotoView @JvmOverloads constructor(
     var firstY = Integer.MIN_VALUE
     var offsetX = Integer.MIN_VALUE
     var offsetY = Integer.MIN_VALUE
+    private var rawHeight = -1
+    private var rawWidth = -1
     private var onDragListner: OnDragListner? = null
 
     init {
@@ -41,8 +44,31 @@ class SwipePhotoView @JvmOverloads constructor(
                 return@setOnTouchListener true
             } else if (event?.action == MotionEvent.ACTION_UP) {
                 if (firstX != Integer.MIN_VALUE || firstY != Integer.MIN_VALUE) {
-                    firstX = Integer.MIN_VALUE
-                    firstY = Integer.MIN_VALUE
+                    if (Math.abs(offsetY) >= rawHeight / 4) {
+                        onDragListner?.onDragClose()
+                        return@setOnTouchListener true
+                    } else {
+                        firstX = Integer.MIN_VALUE
+                        firstY = Integer.MIN_VALUE
+                        val scaledHeight = height
+                        val scaledWidth = width
+                        animate().translationX(0f).translationY(0f).setUpdateListener {
+                            if (it.currentPlayTime != it.duration) {
+                                val currentHeight = scaledHeight + (rawHeight - scaledHeight) * it.currentPlayTime / it.duration
+                                val currentWidth = scaledWidth + (rawWidth - scaledWidth) * it.currentPlayTime / it.duration
+                                val layoutParams = layoutParams
+                                layoutParams.height = currentHeight.toInt()
+                                layoutParams.width = currentWidth.toInt()
+                                setLayoutParams(layoutParams)
+                            } else {
+                                val layoutParams = layoutParams
+                                layoutParams.height = rawHeight
+                                layoutParams.width = rawWidth
+                                setLayoutParams(layoutParams)
+                            }
+                        }.start()
+                        return@setOnTouchListener true
+                    }
                 }
             }
             return@setOnTouchListener attacher.onTouch(v, event)
@@ -50,11 +76,26 @@ class SwipePhotoView @JvmOverloads constructor(
 
     }
 
+    override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
+        if (rawHeight <= 0) {
+            rawHeight = height
+        }
+        if (rawWidth <= 0) {
+            rawWidth = width
+        }
+        super.setLayoutParams(params)
+    }
+
     fun setOnDragListner(listener: OnDragListner) {
         this.onDragListner = listener
     }
 
+    fun getRawHeight() = rawHeight
+
+    fun getRawWidth() = rawWidth
+
     interface OnDragListner {
-        fun onDrag(dx: Int, dy: Int);
+        fun onDrag(dx: Int, dy: Int)
+        fun onDragClose()
     }
 }

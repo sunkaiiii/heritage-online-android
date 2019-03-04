@@ -15,7 +15,7 @@ import com.example.sunkai.heritage.value.IMAGE_URL
 import kotlinx.android.synthetic.main.activity_view_image.*
 
 //用于浏览图片的Activity
-class ViewImageActivity : BaseGlideActivity() {
+class ViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDragListner {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,27 +44,26 @@ class ViewImageActivity : BaseGlideActivity() {
             }
         }
 
-        activityViewImage.setOnDragListner(object : SwipePhotoView.OnDragListner {
-            var height = -1
-            var width = -1
-            override fun onDrag(dx: Int, dy: Int) {
-                Log.d("ViewImageActivity", String.format("dy:%d,alpha:%d", dy, (rootView.height / 2) - dy))
-                rootView.background.alpha = (255 - Math.pow(255 * Math.abs(dy) / rootView.height / 2.0, 1.2)).toInt()
-                val scale = (1.0 - Math.pow(1.0 * Math.abs(dy) / rootView.height / 2.0, 0.8)).toFloat()
-                if (height == -1 || width == -1) {
-                    height = activityViewImage.height
-                    width = activityViewImage.width
-                }
-                if (height != -1 && width != -1) {
-                    val layoutParams = activityViewImage.layoutParams
-                    layoutParams.height = (height * scale).toInt()
-                    layoutParams.width = (width * scale).toInt()
-                    activityViewImage.layoutParams = layoutParams
-                }
-            }
-        })
+        activityViewImage.setOnDragListner(this)
     }
 
+    override fun onDrag(dx: Int, dy: Int) {
+        Log.d("ViewImageActivity", String.format("dy:%d,alpha:%d", dy, (255 - Math.pow(255 * Math.abs(dy) / rootView.height / 2.0, 1.2)).toInt()))
+        rootView.background.alpha = (255 - Math.pow(255 * Math.abs(dy) / rootView.height / 2.0, 1.2)).toInt()
+        val scale = (1.0 - Math.pow(1.0 * Math.abs(dy) / rootView.height / 2.0, 0.8)).toFloat()
+        val height = activityViewImage.getRawHeight()
+        val width = activityViewImage.getRawWidth()
+        if (height != -1 && width != -1) {
+            val layoutParams = activityViewImage.layoutParams
+            layoutParams.height = (height * scale).toInt()
+            layoutParams.width = (width * scale).toInt()
+            Log.d("ViewImageActivity",String.format("rawHeight:%d,rawWidth:%d,height:%d,width:%d",height,width,layoutParams.height,layoutParams.width))
+            activityViewImage.layoutParams = layoutParams
+        }
+    }
+    override fun onDragClose() {
+        onBackPressed()
+    }
     private fun setWindowAnimation() {
         val fade = Fade()
         window.enterTransition = fade

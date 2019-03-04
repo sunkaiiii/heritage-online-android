@@ -245,15 +245,6 @@ class MainActivity : BaseGlideActivity() {
                     3 -> R.id.person_layout
                     else -> R.id.main_layout
                 }
-                when (position) {
-                    0 -> {
-                        window.setBackgroundDrawableResource(R.color.white)
-                    }
-                    else -> {
-                        window.setBackgroundDrawable(null)
-                        window.exitTransition = null
-                    }
-                }
             }
         }
 
