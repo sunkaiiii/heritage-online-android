@@ -11,14 +11,12 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.IMAGE_URL
 
 object ViewImageUtils {
-    fun setViewImageClick(context:Context,imageView: ImageView, url:String){
-        val intent= Intent(context, ViewImageActivity::class.java)
-        intent.putExtra(IMAGE_URL,url)
-        if(context is Activity){
-            val fade= Fade()
-            context.window.exitTransition=fade
-            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context,imageView,context.getString(R.string.share_view_image)).toBundle())
-        }else{
+    fun setViewImageClick(context: Context, imageView: ImageView, url: String) {
+        val intent = Intent(context, ViewImageActivity::class.java)
+        intent.putExtra(IMAGE_URL, url)
+        if (context is Activity) {
+            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, imageView, context.getString(R.string.share_view_image)).toBundle())
+        } else {
             context.startActivity(intent)
         }
     }
