@@ -5,8 +5,9 @@ import android.transition.Fade
 import android.view.View
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
-import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.adapter.ViewImageGalleryAdapter
 import com.example.sunkai.heritage.tools.WindowHelper
+import com.example.sunkai.heritage.value.IMAGE_POSITION
 import com.example.sunkai.heritage.value.IMAGE_URL
 import kotlinx.android.synthetic.main.activity_view_image.*
 
@@ -17,13 +18,17 @@ class ViewImageActivity : BaseViewImageActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_image)
         setWindowAnimation()
-        setPhotoViewAction()
         getImage()
     }
 
     private fun getImage() {
-        val imageUrl = intent.getStringExtra(IMAGE_URL)
-        glide.load(BaseSetting.URL + imageUrl).into(activityViewImage)
+        val imageUrl = intent.getStringArrayExtra(IMAGE_URL)
+        val position = intent.getIntExtra(IMAGE_POSITION, 0)
+        val adapter = ViewImageGalleryAdapter(this, imageUrl, glide)
+        adapter.setOnDragListener(this)
+        adapter.setOnPhotoViewImageClickListener(this)
+        activityViewImageGallery.adapter = adapter
+        activityViewImageGallery.currentItem = position
     }
 
     override fun onStart() {
@@ -31,22 +36,8 @@ class ViewImageActivity : BaseViewImageActivity() {
         setWindowFullScreen()
     }
 
-    private fun setPhotoViewAction() {
-        activityViewImage.setOnClickListener {
-            if (activityViewImage.scale == 1.0f) {
-                onBackPressed()
-            } else {
-                activityViewImage.setScale(1.0f, true)
-            }
-        }
-    }
-
     override fun getRootView(): View {
         return rootView
-    }
-
-    override fun setImageViewListener() {
-        activityViewImage.setOnDragListner(this)
     }
 
     private fun setWindowAnimation() {

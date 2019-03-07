@@ -6,21 +6,21 @@ import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.Views.SwipePhotoView
+import com.example.sunkai.heritage.views.SwipePhotoView
+import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.github.chrisbanes.photoview.PhotoView
-import java.util.*
 
 /**
  * 其他用户照片墙的adapter
  * Created by sunkai on 2018/3/7.
  */
-class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): PagerAdapter() {
-    val photoViewMap: WeakHashMap<Int, PhotoView> = WeakHashMap()
-    private var photoViewImageClickListener:onPhotoViewImageClick?=null
-    private var swipePhotoViewListener:SwipePhotoView.OnDragListner?=null
+class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, val glide: RequestManager) : PagerAdapter() {
+    private var photoViewImageClickListener: onPhotoViewImageClick? = null
+    private var swipePhotoViewListener: SwipePhotoView.OnDragListner? = null
     override fun getCount(): Int {
         return datas.size
     }
@@ -37,26 +37,31 @@ class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): Pa
         photoView.setImageDrawable(ContextCompat.getDrawable(GlobalContext.instance, R.drawable.backgound_grey))
         photoView.setIsInViewPager(true)
         photoView.setOnDragListner(swipePhotoViewListener)
-        setClick(position,photoView)
-        photoViewMap[position] = photoView
+        setClick(position, photoView)
+        val url=if(datas[position%count].contains(BaseSetting.URL)){
+            datas[position%count]
+        }else{
+            BaseSetting.URL + datas[position % count]
+        }
+        glide.load(url).into(photoView)
         return photoView
     }
 
-    private fun setClick(position: Int,photoView: PhotoView){
+    private fun setClick(position: Int, photoView: PhotoView) {
         photoView.setOnClickListener {
-            photoViewImageClickListener?.onImageClick(position,photoView)
+            photoViewImageClickListener?.onImageClick(position, photoView)
         }
     }
 
-    fun setOnPhotoViewImageClickListener(listner:onPhotoViewImageClick){
-        this.photoViewImageClickListener=listner
+    fun setOnPhotoViewImageClickListener(listner: onPhotoViewImageClick) {
+        this.photoViewImageClickListener = listner
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, view: Any) {
         container.removeView(view as View)
     }
 
-    fun setOnDragListener(listener:SwipePhotoView.OnDragListner){
-        this.swipePhotoViewListener=listener
+    fun setOnDragListener(listener: SwipePhotoView.OnDragListner) {
+        this.swipePhotoViewListener = listener
     }
 }

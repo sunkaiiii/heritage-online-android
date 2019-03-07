@@ -19,16 +19,23 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNewsDetail>,glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(context,datas,glide) {
+class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNewsDetail>, glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(context, datas, glide) {
+
+    private val images: Array<String>
+
+    init {
+        val images = arrayListOf<String>()
+        datas.forEach {
+            if (!isTextLine(it)) {
+                images.add(it.info)
+            }
+        }
+        this.images = images.toTypedArray()
+    }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: TextView
-        val imageView: ImageView
-
-        init {
-            textView = view.findViewById(R.id.bottom_news_detail_item_text)
-            imageView = view.findViewById(R.id.bottom_news_detail_item_img)
-        }
+        val textView: TextView = view.findViewById(R.id.bottom_news_detail_item_text)
+        val imageView: ImageView = view.findViewById(R.id.bottom_news_detail_item_img)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,12 +45,15 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNe
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = getItem(position)
-        if (data.type == TYPE_TEXT) {
+        if (isTextLine(data)) {
             setData(holder, data)
         } else {
             setData(holder, data, false)
         }
     }
+
+    private fun isTextLine(data: BottomNewsDetail) =
+            data.type == TYPE_TEXT
 
     private fun setData(holder: ViewHolder, data: BottomNewsDetail, isInfoText: Boolean = true) {
         if (isInfoText) {
@@ -55,7 +65,7 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNe
             holder.imageView.visibility = View.VISIBLE
             glide.load(BaseSetting.URL + data.info).into(holder.imageView)
             holder.imageView.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context,holder.imageView,data.info)
+                ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.info))
             }
         }
     }

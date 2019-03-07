@@ -16,11 +16,7 @@ abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener: OnPageLoaded? = null
-    protected var datas: MutableList<W>
-
-    init {
-        this.datas = datas.toMutableList()
-    }
+    protected var datas: MutableList<W> = datas.toMutableList()
 
     override fun onClick(v: View) {
         mOnItemClickListener?.onItemClick(v, v.tag as Int)

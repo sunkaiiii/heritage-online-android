@@ -46,6 +46,7 @@ dependencies {
     implementation "androidx.palette:palette:$androidx_version"
     implementation "androidx.exifinterface:exifinterface:$androidx_version"
     implementation "androidx.core:core-ktx:$androidx_version"
+    implementation "androidx.appcompat:appcompat:$androidx_version"
     implementation "com.google.android.material:material:$androidx_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'

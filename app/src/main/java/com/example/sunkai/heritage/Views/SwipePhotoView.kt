@@ -1,10 +1,9 @@
-package com.example.sunkai.heritage.Views
+package com.example.sunkai.heritage.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.view.ViewGroup
 import com.github.chrisbanes.photoview.PhotoView
 import java.util.*

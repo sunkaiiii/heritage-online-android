@@ -19,6 +19,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
@@ -77,15 +78,15 @@
         <activity
             android:name=".activity.MyCollectionActivity"
             android:label="@string/my_collection" />
-
         <activity
             android:name=".activity.MyMessageActivity"
             android:label="@string/my_message" />
         <activity
             android:name=".activity.SearchActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground" />
-        <activity android:name=".activity.ViewImageActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"/>
+        <activity
+            android:name=".activity.ViewImageActivity"
+            android:theme="@style/Theme.AppCompat.Translucent" />
 
         <service
             android:name=".service.PushService"
@@ -93,13 +94,13 @@
             android:exported="false" />
         <service android:name=".service.FCMMessageService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+
             <meta-data
                 android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="@string/push_channel"/>
+                android:value="@string/push_channel" />
         </service>
-
     </application>
 
 </manifest>

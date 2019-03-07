@@ -41,11 +41,8 @@ class NewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
 
     private fun setupWindowAnimations(data: Serializable) {
-        val slide = Slide(GravityCompat.getAbsoluteGravity(Gravity.END, resources.configuration.layoutDirection))
         val fade = Fade()
-        slide.duration = 500
         fade.duration = 300
-        window.enterTransition = slide
         window.exitTransition = fade
         window.returnTransition = fade
         window.enterTransition.doOnEnd {

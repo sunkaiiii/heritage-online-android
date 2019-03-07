@@ -92,9 +92,6 @@ class SeeMoreNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             intent.putExtra("data", data)
             val activity = activity
             if (activity != null) {
-                val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, resources.configuration.layoutDirection))
-                slide.duration = 500
-                activity.window?.exitTransition = slide
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity, titleView, getString(R.string.news_detail_share_title)).toBundle())
             } else {
                 startActivity(intent)

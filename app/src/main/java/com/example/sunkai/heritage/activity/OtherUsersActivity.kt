@@ -1,35 +1,30 @@
 package com.example.sunkai.heritage.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.text.TextUtils
 import android.transition.Fade
 import android.transition.TransitionManager
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.activity.base.BaseGlideActivity
+import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.adapter.OtherPersonActivityRecyclerViewAdapter
-import com.example.sunkai.heritage.adapter.OtherUserActivityImageAdapter
-import com.example.sunkai.heritage.connectWebService.HandleFind
 import com.example.sunkai.heritage.connectWebService.HandlePerson
 import com.example.sunkai.heritage.entity.FollowInformation
 import com.example.sunkai.heritage.entity.SearchUserInfo
 import com.example.sunkai.heritage.entity.UserInfo
-import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
-import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
 import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.*
-import com.github.chrisbanes.photoview.PhotoView
 import kotlinx.android.synthetic.main.activity_other_users.*
 import kotlinx.android.synthetic.main.user_view.*
 import kotlinx.coroutines.GlobalScope
@@ -187,6 +182,7 @@ class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
         return HandlePerson.IsUserFollow(otherUserID, userID)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun setViews(data: UserInfo) {
         addFocsFloatBtn.visibility = if (data.id == LoginActivity.userID) View.GONE else View.VISIBLE
         sign_name_textview.text = data.userName
@@ -211,8 +207,8 @@ class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
         rv_activity_other_users.layoutManager = layoutManager
         rv_activity_other_users.adapter = adapter
 
-        adapter.setOnItemClickListener { _, position ->
-            openImageView(position, adapter)
+        adapter.setOnItemClickListener { view, position ->
+            openImageView(position, view, adapter)
         }
     }
 
@@ -288,41 +284,17 @@ class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-    private fun openImageView(position: Int, adapter: OtherPersonActivityRecyclerViewAdapter) {
-        TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
-        val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.getAdapterDatas())
-        viewPagerAdapter.setOnDragListener(this)
-        viewPagerAdapter.setOnPhotoViewImageClickListener(object : onPhotoViewImageClick {
-            override fun onImageClick(position: Int, photoView: PhotoView) {
-                if (photoView.scale == 1.0f) {
-                    closeImageView()
-                } else {
-                    photoView.setScale(1.0f, true)
-                }
-            }
-
-        })
-        vp_activity_other_users.adapter = viewPagerAdapter
-        vp_activity_other_users.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageSelected(position: Int) {
-                getImage(position, viewPagerAdapter)
-            }
-
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageScrollStateChanged(state: Int) {}
-
-        })
-        vp_activity_other_users.currentItem = position
-        //如果点击的是第一个图片，则要指定载入图片，其他情况因为会触发OnPageChangeListener,则无需管理
-        if (position == 0) {
-            getImage(position, viewPagerAdapter)
+    @SuppressLint("RestrictedApi")
+    private fun openImageView(position: Int, view: View, adapter: OtherPersonActivityRecyclerViewAdapter) {
+        val data = adapter.getAdapterDatas()
+        val imageDatas = arrayListOf<String>()
+        data.forEach {
+            imageDatas.add(it.imageUrl)
         }
-        addFocsFloatBtn.visibility = View.GONE
-        ll_activity_other_users_background.visibility = View.VISIBLE
-        vp_activity_other_users.visibility = View.VISIBLE
+        ViewImageUtils.setViewImageClick(this, view, imageDatas.toTypedArray(), position)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun showUserImage() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.VISIBLE
@@ -331,6 +303,7 @@ class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
         pv_activity_other_users.setImageDrawable(sign_in_icon.drawable)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun closeImageView() {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         ll_activity_other_users_background.visibility = View.GONE
@@ -344,21 +317,6 @@ class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
         }
     }
 
-    internal fun getImage(position: Int, adapter: OtherUserActivityImageAdapter) {
-        GlobalScope.launch {
-            val id = adapter.datas[position]
-            val url = HandleFind.GetUserCommentImageUrl(id)
-            if (!TextUtils.isEmpty(url) && url != ERROR) {
-                if (isDestroy) return@launch
-                runOnUiThread {
-                    val photoView = adapter.photoViewMap[position] ?: return@runOnUiThread
-                    glide.load(url).into(photoView)
-                }
-            }
-        }
-    }
-
-    override fun setImageViewListener() {}
 
     override fun getRootView(): View {
         return ll_activity_other_users_background

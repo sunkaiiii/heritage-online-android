@@ -2,13 +2,15 @@ package com.example.sunkai.heritage.activity.base
 
 import android.util.Log
 import android.view.View
-import com.example.sunkai.heritage.Views.SwipePhotoView
+import com.example.sunkai.heritage.views.SwipePhotoView
+import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
+import com.github.chrisbanes.photoview.PhotoView
 
-abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDragListner {
+abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDragListner, onPhotoViewImageClick {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        setImageViewListener()
+        getRootView().background.alpha = 255
     }
 
     override fun onDrag(imageView: SwipePhotoView, dx: Int, dy: Int) {
@@ -28,7 +30,6 @@ abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDra
 
     override fun onDragClose() {
         onBackPressed()
-        getRootView().background.alpha=255
     }
 
     override fun onImageBack(originalAlpha: Int, currentTime: Long, duration: Long) {
@@ -40,7 +41,14 @@ abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDra
         getRootView().background.alpha = alpha.toInt()
     }
 
+    override fun onImageClick(position: Int, photoView: PhotoView) {
+        if (photoView.scale == 1.0f) {
+            onBackPressed()
+        } else {
+            photoView.setScale(1.0f, true)
+        }
+    }
+
     override fun getRootViewAlphaWhenImageBack(): Int = getRootView().background.alpha
     abstract fun getRootView(): View
-    abstract fun setImageViewListener()
 }

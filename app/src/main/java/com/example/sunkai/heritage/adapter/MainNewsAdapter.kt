@@ -99,7 +99,7 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
             } else {
                 glide.load(BaseSetting.URL + item.img).into(ItemsimpleTarget(itemView))
                 itemView.image.setOnClickListener {
-                    ViewImageUtils.setViewImageClick(context, it as ImageView, item.img)
+                    ViewImageUtils.setViewImageClick(context, it, item.img)
                 }
             }
         }

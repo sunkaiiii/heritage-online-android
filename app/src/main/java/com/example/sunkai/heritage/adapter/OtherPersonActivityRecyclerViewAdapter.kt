@@ -2,29 +2,26 @@ package com.example.sunkai.heritage.adapter
 
 import android.content.Context
 import android.os.AsyncTask
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleFind
-import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.entity.UserCommentImages
 import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.runOnUiThread
 import com.example.sunkai.heritage.value.ERROR
 import com.example.sunkai.heritage.value.RESULT_NULL
 import com.example.sunkai.heritage.value.RESULT_OK
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 /*
  * Created by sunkai on 2018/1/2.
  */
-class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, datas: List<Int>, glide: RequestManager) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, Int>(context, datas, glide) {
+class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, datas: List<UserCommentImages>, glide: RequestManager) : BaseRecyclerAdapter<OtherPersonActivityRecyclerViewAdapter.ViewHolder, UserCommentImages>(context, datas, glide) {
 
 
     init {
@@ -58,8 +55,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
         override fun doInBackground(vararg params: Void?): Int {
             val adapter = weakRefrece.get()
             adapter?.let {
-                val getDatas = HandleFind.GetUserCommentIdByUser(userID)
-                adapter.datas = getDatas.toMutableList()
+                adapter.datas = HandleFind.GetUserCommentIdByUser(userID).toMutableList()
                 return RESULT_OK
             }
             return RESULT_NULL
@@ -74,15 +70,11 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
     }
 
 
-    private fun getImage(imageID: Int, imageview: ImageView) {
-        GlobalScope.launch {
-            val url = HandleFind.GetUserCommentImageUrl(imageID)
-            if (!TextUtils.isEmpty(url) && url != ERROR) {
-                runOnUiThread {
-                    glide.load(url).into(imageview)
-                }
-            }
+    private fun getImage(imageInfo: UserCommentImages, imageview: ImageView) {
+        if (imageInfo.imageUrl == null || imageInfo.imageUrl == ERROR) {
+            return
         }
+        glide.load(imageInfo.imageUrl).into(imageview)
     }
 
 

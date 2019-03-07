@@ -87,7 +87,7 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
                     for ((position, imageview) in holder.imageViews.withIndex()) {
                         glide.load(BaseSetting.URL + imgArray[position]).into(imageview)
                         imageview.setOnClickListener {
-                            ViewImageUtils.setViewImageClick(context, imageview, imgArray[position])
+                            ViewImageUtils.setViewImageClick(context, imageview, imgArray,position)
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import android.util.Base64
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.entity.CommentReplyInformation
 import com.example.sunkai.heritage.entity.UserCommentData
+import com.example.sunkai.heritage.entity.UserCommentImages
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.value.COMMENT_REPLY
 import com.example.sunkai.heritage.value.MINI_REPLY
@@ -84,13 +85,18 @@ object HandleFind : BaseSetting() {
         return handleCommentData(result)
     }
 
-    fun GetUserCommentIdByUser(userID: Int): IntArray {
+    fun GetUserCommentIdByUser(userID: Int): List<UserCommentImages> {
         val getUrl = "$URL/GetUserCommentIdByUser?userID=$userID"
         val result = PutGet(getUrl)
         return if (ERROR == result) {
-            IntArray(0)
+            arrayListOf()
         } else {
-            gsonInstance.fromJson(result, IntArray::class.java)
+            val idArray = gsonInstance.fromJson(result, IntArray::class.java)
+            val resultList = arrayListOf<UserCommentImages>()
+            idArray.forEach {
+                resultList.add(UserCommentImages(it, HandleFind.GetUserCommentImageUrl(it)))
+            }
+            resultList
         }
     }
 
