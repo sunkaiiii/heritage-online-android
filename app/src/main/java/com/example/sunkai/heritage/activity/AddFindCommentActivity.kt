@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import androidx.core.content.edit
-import com.example.sunkai.heritage.activity.baseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.activity.base.BaseTakeCameraActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.connectWebService.HandleFind
 import com.example.sunkai.heritage.dialog.NormalWarningDialog

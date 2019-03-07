@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import android.view.MenuItem
 import androidx.core.net.toUri
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.dialog.LicenceDialog
 import com.example.sunkai.heritage.R
 import kotlinx.android.synthetic.main.activity_about_us.*

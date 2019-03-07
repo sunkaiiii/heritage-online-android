@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.activity.baseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.connectWebService.HandleFolk
 import com.example.sunkai.heritage.entity.ClassifyDivideData
 import com.example.sunkai.heritage.entity.FolkDataLite

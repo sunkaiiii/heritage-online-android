@@ -9,6 +9,7 @@ import android.widget.ImageView
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.Views.SwipePhotoView
 import com.github.chrisbanes.photoview.PhotoView
 import java.util.*
 
@@ -19,6 +20,7 @@ import java.util.*
 class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): PagerAdapter() {
     val photoViewMap: WeakHashMap<Int, PhotoView> = WeakHashMap()
     private var photoViewImageClickListener:onPhotoViewImageClick?=null
+    private var swipePhotoViewListener:SwipePhotoView.OnDragListner?=null
     override fun getCount(): Int {
         return datas.size
     }
@@ -29,10 +31,12 @@ class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): Pa
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val photoView = PhotoView(GlobalContext.instance)
+        val photoView = SwipePhotoView(GlobalContext.instance)
         photoView.scaleType = ImageView.ScaleType.FIT_CENTER
         container.addView(photoView)
         photoView.setImageDrawable(ContextCompat.getDrawable(GlobalContext.instance, R.drawable.backgound_grey))
+        photoView.setIsInViewPager(true)
+        photoView.setOnDragListner(swipePhotoViewListener)
         setClick(position,photoView)
         photoViewMap[position] = photoView
         return photoView
@@ -50,5 +54,9 @@ class OtherUserActivityImageAdapter(val context:Context,val datas:List<Int>): Pa
 
     override fun destroyItem(container: ViewGroup, position: Int, view: Any) {
         container.removeView(view as View)
+    }
+
+    fun setOnDragListener(listener:SwipePhotoView.OnDragListner){
+        this.swipePhotoViewListener=listener
     }
 }

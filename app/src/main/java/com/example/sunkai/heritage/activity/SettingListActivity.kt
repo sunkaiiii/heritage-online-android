@@ -8,7 +8,7 @@ import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.core.content.edit
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.adapter.SettingListSelectThemeColorAdapter
 import com.example.sunkai.heritage.connectWebService.HandlePerson

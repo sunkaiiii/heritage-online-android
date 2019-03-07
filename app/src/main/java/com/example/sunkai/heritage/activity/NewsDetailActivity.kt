@@ -6,7 +6,7 @@ import android.transition.Fade
 import android.transition.Slide
 import android.view.Gravity
 import androidx.core.transition.doOnEnd
-import com.example.sunkai.heritage.activity.baseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
 import com.example.sunkai.heritage.entity.FolkNewsLite

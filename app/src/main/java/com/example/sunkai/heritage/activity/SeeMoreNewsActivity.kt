@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.SeeMoreNewsViewpagerAdapter
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.fragment.SeeMoreNewsFragment

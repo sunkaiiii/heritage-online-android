@@ -32,11 +32,8 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
     }
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ImageView
+        val imageView: ImageView = view.findViewById(R.id.iv_other_person_view)
 
-        init {
-            imageView = view.findViewById(R.id.iv_other_person_view)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -56,11 +53,7 @@ class OtherPersonActivityRecyclerViewAdapter(context: Context, val userID: Int, 
     }
 
     internal class GetUserInfoTask(val userID: Int, adapter: OtherPersonActivityRecyclerViewAdapter) : AsyncTask<Void, Void, Int>() {
-        private val weakRefrece: WeakReference<OtherPersonActivityRecyclerViewAdapter>
-
-        init {
-            weakRefrece = WeakReference(adapter)
-        }
+        private val weakRefrece: WeakReference<OtherPersonActivityRecyclerViewAdapter> = WeakReference(adapter)
 
         override fun doInBackground(vararg params: Void?): Int {
             val adapter = weakRefrece.get()

@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
 import android.util.Log
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.adapter.MyLikeCommentRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleFind

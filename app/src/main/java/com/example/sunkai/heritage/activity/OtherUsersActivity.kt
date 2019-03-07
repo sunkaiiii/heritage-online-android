@@ -12,7 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.adapter.OtherPersonActivityRecyclerViewAdapter
 import com.example.sunkai.heritage.adapter.OtherUserActivityImageAdapter
@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.entity.SearchUserInfo
 import com.example.sunkai.heritage.entity.UserInfo
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
@@ -34,7 +35,7 @@ import kotlinx.android.synthetic.main.user_view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
+class OtherUsersActivity : BaseViewImageActivity(), View.OnClickListener {
 
     private var userID: Int = NO_USERID
 
@@ -290,6 +291,7 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
     private fun openImageView(position: Int, adapter: OtherPersonActivityRecyclerViewAdapter) {
         TransitionManager.beginDelayedTransition(otherUsersFrameLayout, Fade().setDuration(200))
         val viewPagerAdapter = OtherUserActivityImageAdapter(this, adapter.getAdapterDatas())
+        viewPagerAdapter.setOnDragListener(this)
         viewPagerAdapter.setOnPhotoViewImageClickListener(object : onPhotoViewImageClick {
             override fun onImageClick(position: Int, photoView: PhotoView) {
                 if (photoView.scale == 1.0f) {
@@ -354,6 +356,12 @@ class OtherUsersActivity : BaseGlideActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    override fun setImageViewListener() {}
+
+    override fun getRootView(): View {
+        return ll_activity_other_users_background
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.activity.baseActivity
+package com.example.sunkai.heritage.activity.base
 
 import android.os.Bundle
 import com.example.sunkai.heritage.activity.RegistActivity

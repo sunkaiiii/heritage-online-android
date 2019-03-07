@@ -13,7 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.sunkai.heritage.activity.baseActivity.BaseGlideActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.FolkRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.HandleFolk
 import com.example.sunkai.heritage.entity.FolkDataLite

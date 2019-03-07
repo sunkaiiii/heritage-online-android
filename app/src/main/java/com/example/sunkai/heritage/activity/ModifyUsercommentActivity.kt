@@ -12,7 +12,7 @@ import android.widget.ProgressBar
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.activity.baseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.activity.base.BaseTakeCameraActivity
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.connectWebService.HandleFind
 import com.example.sunkai.heritage.entity.UserCommentData

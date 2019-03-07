@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import com.example.sunkai.heritage.activity.baseActivity.BaseAutoLoginActivity
+import com.example.sunkai.heritage.activity.base.BaseAutoLoginActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.adapter.MyOwnCommentRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.HandleFind

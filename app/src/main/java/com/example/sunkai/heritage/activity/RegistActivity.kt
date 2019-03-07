@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.view.children
-import com.example.sunkai.heritage.activity.baseActivity.BaseTakeCameraActivity
+import com.example.sunkai.heritage.activity.base.BaseTakeCameraActivity
 import com.example.sunkai.heritage.connectWebService.HandleUser
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast

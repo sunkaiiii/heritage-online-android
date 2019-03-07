@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.activity.baseActivity
+package com.example.sunkai.heritage.activity.base
 
 import android.content.Intent
 import android.view.Menu

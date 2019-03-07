@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.activity
 import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-import com.example.sunkai.heritage.activity.baseActivity.BaseAutoLoginActivity
+import com.example.sunkai.heritage.activity.base.BaseAutoLoginActivity
 import com.example.sunkai.heritage.adapter.MyCollectionViewpagerAdpater
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.fragment.MyCollectFragment

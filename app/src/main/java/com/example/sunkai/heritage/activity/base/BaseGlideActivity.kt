@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.activity.baseActivity
+package com.example.sunkai.heritage.activity.base
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -24,6 +24,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
     private val runnableList: MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
+    protected val TAG=javaClass.name
 
     init {
         runnableList = arrayListOf()

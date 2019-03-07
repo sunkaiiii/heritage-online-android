@@ -13,7 +13,7 @@ import androidx.core.transition.doOnEnd
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.sunkai.heritage.activity.baseActivity.BaseHandleCollectActivity
+import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
 import com.example.sunkai.heritage.activity.loginActivity.LoginActivity.Companion.userID
 import com.example.sunkai.heritage.adapter.UserCommentReplyRecyclerAdapter
