@@ -22,7 +22,7 @@ object BaiduLocation {
         }
     }
 
-    fun isFromChina(): Boolean = contentBean?.address?.contains("CN") == true
+    fun isNotFromChina(): Boolean = contentBean?.address?.equals("CN") == false
 
     fun IPLocation(): String {
         val request = Request.Builder()
@@ -30,8 +30,13 @@ object BaiduLocation {
                 .build()
         //设置1秒超时，防止因为百度api出现问题而造成无法上传帖子等问题
         val client = OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS).build()
-        val response = client.newCall(request).execute()
-        return if (response.isSuccessful) response.body()?.string()!! else return ERROR
+        try {
+            val response = client.newCall(request).execute()
+            return if (response.isSuccessful) response.body()?.string()
+                    ?: return ERROR else return ERROR
+        } catch (e: java.lang.Exception) {
+            return ERROR
+        }
     }
 
     private fun getInfos() {

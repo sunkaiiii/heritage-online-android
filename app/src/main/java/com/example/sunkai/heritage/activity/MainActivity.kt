@@ -25,6 +25,7 @@ import com.example.sunkai.heritage.fragment.FolkFragment
 import com.example.sunkai.heritage.fragment.MainFragment
 import com.example.sunkai.heritage.fragment.PersonFragment
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.service.FCMMessageService
 import com.example.sunkai.heritage.service.PushService
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -35,11 +36,8 @@ import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.FirebaseApp
 import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.iid.InstanceIdResult
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
@@ -92,6 +90,7 @@ class MainActivity : BaseGlideActivity() {
 
     private var mBoundService: PushService? = null
     private var mShouldBind = false
+    private var mIsRegistFCM = false
     private val mConnection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
             mBoundService = null
@@ -103,39 +102,17 @@ class MainActivity : BaseGlideActivity() {
     }
 
     fun startPushService() {
-        //TODO 检查是否在中国
-        if (BaiduLocation.isFromChina() || GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
-            FirebaseApp.initializeApp(this)?.addIdTokenListener {
-                FirebaseMessaging.getInstance().isAutoInitEnabled = true
-                toast("you google play")
-                FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener(OnCompleteListener<InstanceIdResult> { p0 ->
-                    if (!p0.isSuccessful) {
-                        Log.w("MainActivity", "getinstanceId failed", p0.exception)
-                        return@OnCompleteListener
-                    }
-                    val token = p0.result?.token
-
-                    Log.d("MainActivity", token)
-                })
-            }
-
-        } else if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
-            requestHttp {
-                val locationResponse = BaiduLocation.getLocateAdressInfo()
-                if (locationResponse != null) {
-                    runOnUiThread {
-                        //使用的用户如果不在中国，则提醒让其更新Google Play服务a
-                        if (!locationResponse.isFromChina()) {
-                            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
-                        } else {
-                            if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
-                                mShouldBind = true
-                            }
-                        }
-                    }
+        if (BaiduLocation.isNotFromChina() || GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
+            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.w(TAG, "getInstanceId failed", task.exception)
                 }
+                val token = task.result?.token
+                Log.d(TAG, token)
+                toast(token.toString())
             }
-
+            FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            mIsRegistFCM = true
         } else {
             if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
                 mShouldBind = true
@@ -187,15 +164,21 @@ class MainActivity : BaseGlideActivity() {
     }
 
     override fun onDestroy() {
-        doUnbindService()
+        doUnbindPushService()
         stopService(Intent(this, PushService::class.java))
         super.onDestroy()
     }
 
-    fun doUnbindService() {
+    fun doUnbindPushService(falseStop: Boolean = false) {
         if (mShouldBind) {
             unbindService(mConnection)
             mShouldBind = false
+        }
+        if (!FirebaseMessaging.getInstance().isAutoInitEnabled || falseStop) {
+            if (mIsRegistFCM) {
+                requestHttp { FirebaseInstanceId.getInstance().deleteInstanceId() }
+                mIsRegistFCM = false
+            }
         }
     }
 

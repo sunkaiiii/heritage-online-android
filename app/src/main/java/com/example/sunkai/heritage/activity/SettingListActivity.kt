@@ -17,7 +17,7 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.views.GridLayoutManagerItemDecoration
 import com.example.sunkai.heritage.value.*
-import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_setting_list.*
 
 /**
@@ -47,7 +47,6 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         pushSwitch.setOnCheckedChangeListener(this)
         val sharedPreferences = getSharedPreferences(SETTING, Context.MODE_PRIVATE) ?: return
         pushSwitch.isChecked = sharedPreferences.getBoolean(PUSH_SWITCH, false)
-
     }
 
     private fun checkUserPermission() {
@@ -90,10 +89,7 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
         if (isChecked) {
             MainActivity.activityRef?.get()?.startPushService()
         } else {
-            MainActivity.activityRef?.get()?.doUnbindService()
-            if (FirebaseApp.getInstance() != null) {
-                FirebaseApp.getInstance()?.delete()
-            }
+            MainActivity.activityRef?.get()?.doUnbindPushService(true)
         }
     }
 
