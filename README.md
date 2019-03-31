@@ -1,6 +1,8 @@
 
 # heritage-online-android
 
+English version README:[README_EN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_EN.md)
+[![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) 
 E迹 非遗掌上信息化平台（毕设）
 #### v3.4 <br>
 
