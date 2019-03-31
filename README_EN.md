@@ -2,7 +2,9 @@
 # heritage-online-android
 
 heritage_online_android —— An information mobile platform about China intangible cultural heritage. (My graduation design)
+
 [![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) 
+
 #### v3.4 <br>
 
 1、Fully adapt Android P.
