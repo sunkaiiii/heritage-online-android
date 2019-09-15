@@ -140,13 +140,13 @@ class MainFragment : BaseGlideFragment() {
         return fragments
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.seach_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.seach_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.search_menu -> {
                 val intent = Intent(activity, SearchActivity::class.java)
                 intent.putExtra(SEARCH_TYPE, if (mainPageTabLayout.selectedTabPosition == 0) TYPE_BOTTOM_NEWS else TYPE_NEWS)

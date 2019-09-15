@@ -108,7 +108,7 @@ class FindPasswordDialog : BaseDialogFragment() {
                     val args = Bundle()
                     args.putString("username", userName)
                     changePasswordDialog.arguments = args
-                    changePasswordDialog.show(fragmentManager, "修改密码")
+                    changePasswordDialog.show(fragmentManager!!, "修改密码")
                 } else {
                     toast("找回密码答案有误")
                 }

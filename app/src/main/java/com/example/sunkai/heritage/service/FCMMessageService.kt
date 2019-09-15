@@ -12,12 +12,12 @@ class FCMMessageService : FirebaseMessagingService() {
         const val TAG = "FCM_MessageService"
     }
 
-    override fun onNewToken(token: String?) {
-        Log.d(TAG, "Refreshed token:$token")
+    override fun onNewToken(p0: String) {
+        Log.d(TAG, "Refreshed token:$p0")
         val userName = LoginActivity.userName ?: return
-        token ?: return
+        p0 ?: return
         GlobalScope.launch {
-            val result = HandleUser.SendFCMToken(userName, token)
+            val result = HandleUser.SendFCMToken(userName, p0)
         }
     }
 }

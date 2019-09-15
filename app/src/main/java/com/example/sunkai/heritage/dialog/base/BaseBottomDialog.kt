@@ -26,7 +26,7 @@ open class BaseBottomDialog(context: Context) : Dialog(context, R.style.BottomDi
         super.setContentView(view)
     }
 
-    override fun setContentView(view: View, params: ViewGroup.LayoutParams) {
+    override fun setContentView(view: View, params: ViewGroup.LayoutParams?) {
         this.view = view
         height = view.height
         super.setContentView(view, params)

@@ -23,9 +23,7 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.fragment.FindFragment
 import com.example.sunkai.heritage.fragment.FolkFragment
 import com.example.sunkai.heritage.fragment.MainFragment
-import com.example.sunkai.heritage.fragment.PersonFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.service.FCMMessageService
 import com.example.sunkai.heritage.service.PushService
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
@@ -136,7 +134,6 @@ class MainActivity : BaseGlideActivity() {
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
         viewList.add(FindFragment())
-        viewList.add(PersonFragment())
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
@@ -225,7 +222,6 @@ class MainActivity : BaseGlideActivity() {
                     0 -> R.id.main_layout
                     1 -> R.id.folk_layout
                     2 -> R.id.find_layout
-                    3 -> R.id.person_layout
                     else -> R.id.main_layout
                 }
             }
@@ -258,7 +254,6 @@ class MainActivity : BaseGlideActivity() {
             R.id.main_layout -> 0
             R.id.folk_layout -> 1
             R.id.find_layout -> 2
-            R.id.person_layout -> 3
             else -> 0
         }
         true

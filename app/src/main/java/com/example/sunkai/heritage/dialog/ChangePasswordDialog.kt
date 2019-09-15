@@ -42,7 +42,7 @@ class ChangePasswordDialog: BaseDialogFragment() {
         val holder=Holder(view)
         val username=arguments?.getString("username")?: LoginActivity.userName?:return
         holder.userName.setText(username)
-        holder.cancel.setOnClickListener { dialog.dismiss() }
+        holder.cancel.setOnClickListener { dialog?.dismiss() }
         holder.submit.setOnClickListener{
             if(username == "test"){
                 toast("测试账号不允许修改密码")
@@ -76,17 +76,17 @@ class ChangePasswordDialog: BaseDialogFragment() {
                 return@launch
             }
             val result = HandleUser.Change_Password(userName, encryPassword)
-            activity?.runOnUiThread({
+            activity?.runOnUiThread {
                 if (result) {
                     toast("修改成功")
-                    if (dialog.isShowing) {
-                        dialog.dismiss()
+                    if (dialog?.isShowing == true) {
+                        dialog?.dismiss()
                     } else {
                         toast("修改失败，请稍后再试")
                         holder.submit.isEnabled = true
                     }
                 }
-            })
+            }
         }
     }
 }

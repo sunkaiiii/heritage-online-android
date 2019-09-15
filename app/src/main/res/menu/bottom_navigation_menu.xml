@@ -12,8 +12,4 @@
         android:id="@+id/find_layout"
         android:icon="@drawable/ic_search_grey_400_24dp"
         android:title="@string/find_page"/>
-    <item
-        android:id="@+id/person_layout"
-        android:icon="@drawable/ic_assignment_ind_grey_500_24dp"
-        android:title="@string/person_center"/>
 </menu>
