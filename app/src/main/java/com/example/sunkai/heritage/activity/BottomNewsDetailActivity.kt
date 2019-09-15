@@ -2,15 +2,13 @@ package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
 import android.transition.Fade
-import android.transition.Slide
-import android.view.Gravity
 import androidx.core.transition.doOnEnd
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
 import com.example.sunkai.heritage.entity.BottomFolkNewsLite
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
@@ -28,24 +26,16 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         val data = intent.getSerializableExtra(DATA)
         if (data is BottomFolkNewsLite) {
             this.link = data.link
-            initAnimationAndLoadData(data)
             setDataToView(data)
             supportActionBar?.title = title
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            GetNewsDetail(data.link)
             bottomNewsDetailRefresh.setOnRefreshListener {
                 GetNewsDetail(data.link)
             }
         }
     }
 
-    private fun initAnimationAndLoadData(data: BottomFolkNewsLite) {
-        val fade = Fade()
-        fade.duration = 500
-        window.returnTransition = fade
-        window.enterTransition.doOnEnd {
-            GetNewsDetail(data.link)
-        }
-    }
 
     override fun getType(): String {
         return TYPE_FOCUS_HERITAGE
@@ -65,16 +55,15 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     private fun GetNewsDetail(link: String) {
         onPreLoad()
         requestHttp {
-            //TODO 详情页网络请求
-            //val data = HandleMainFragment.GetBottomNewsInformationByID(id)
-//            data?.let {
-//                val contentInfos = HandleMainFragment.GetBottomNewsDetailInfo(data.content)
-//                runOnUiThread {
-//                    onPostLoad()
-//                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, contentInfos, glide)
-//                    bottomNewsDetailRecyclerview.adapter = adapter
-//                }
-//            }
+            val data = HandleMainFragment.GetBottomNewsInformationByLink(link)
+            data?.let {
+                runOnUiThread {
+                    onPostLoad()
+                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
+                    bottomNewsDetailRecyclerview.adapter = adapter
+                }
+
+            }
         }
     }
 

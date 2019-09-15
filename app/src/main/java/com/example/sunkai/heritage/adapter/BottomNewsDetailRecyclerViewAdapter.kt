@@ -12,6 +12,8 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.BottomNewsDetail
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.entity.BottomFolkNews
+import com.example.sunkai.heritage.entity.BottomFolkNewsContent
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.value.TYPE_TEXT
 
@@ -19,7 +21,7 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNewsDetail>, glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomNewsDetail>(context, datas, glide) {
+class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNewsContent>, glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomFolkNewsContent>(context, datas, glide) {
 
     private val images: Array<String>
 
@@ -27,7 +29,7 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNe
         val images = arrayListOf<String>()
         datas.forEach {
             if (!isTextLine(it)) {
-                images.add(it.info)
+                images.add(it.content)
             }
         }
         this.images = images.toTypedArray()
@@ -52,20 +54,20 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomNe
         }
     }
 
-    private fun isTextLine(data: BottomNewsDetail) =
+    private fun isTextLine(data: BottomFolkNewsContent)=
             data.type == TYPE_TEXT
 
-    private fun setData(holder: ViewHolder, data: BottomNewsDetail, isInfoText: Boolean = true) {
+    private fun setData(holder: ViewHolder, data: BottomFolkNewsContent, isInfoText: Boolean = true) {
         if (isInfoText) {
             holder.textView.visibility = View.VISIBLE
             holder.imageView.visibility = View.GONE
-            holder.textView.text = data.info
+            holder.textView.text = data.content
         } else {
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.load(BaseSetting.URL + data.info).into(holder.imageView)
+            glide.load(BaseSetting.URL + data.content).into(holder.imageView)
             holder.imageView.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.info))
+                ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.content))
             }
         }
     }

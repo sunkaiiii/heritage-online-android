@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -55,6 +57,8 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private val viewList: ArrayList<Fragment> = ArrayList()
+    private val handler=Handler(Looper.getMainLooper())
+    private val PROCESS_EXIT=-23123;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,27 +121,15 @@ class MainActivity : BaseGlideActivity() {
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
     }
 
-    //重写onKeyDown方法，监听返回键
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            showExitDialog()
-            return true
+    override fun onBackPressed() {
+        if(handler.hasMessages(PROCESS_EXIT))
+        {
+            return super.onBackPressed()
         }
-        return super.onKeyDown(keyCode, event)
+        handler.sendEmptyMessageDelayed(PROCESS_EXIT,1000)
+        toast(R.string.exit_info)
+        return
     }
-
-    private fun showExitDialog() {
-        NormalWarningDialog().setTitle("退出?")
-                .setOnSubmitClickListener(object : NormalWarningDialog.onSubmitClickListener {
-                    override fun onSubmit(view: View, dialog: NormalWarningDialog) {
-                        dialog.dismiss()
-                        finish()
-                    }
-                })
-                .setSubmitText("退出")
-                .show(supportFragmentManager, "exitDialog")
-    }
-
 
     private class adapter(val viewList: ArrayList<Fragment>, manager: FragmentManager) : FragmentPagerAdapter(manager) {
         override fun getItem(position: Int): Fragment {

@@ -62,9 +62,9 @@ object HandleMainFragment : BaseSetting() {
         return arrayListOf()
     }
 
-    fun GetBottomNewsInformationByID(id:Int):BottomFolkNews?{
-        val url="$URL/GetBottomNewsInformationByID?id=$id"
-        val result=PutGet(url)
+    fun GetBottomNewsInformationByLink(link:String):BottomFolkNews?{
+        val url="/api/NewsDetail?link=$link"
+        val result=PutNewGet(url)
         if(ERROR==result){
             return null
         }
@@ -76,15 +76,6 @@ object HandleMainFragment : BaseSetting() {
         return null
     }
 
-    fun GetBottomNewsDetailInfo(content:String):List<BottomNewsDetail>{
-        try{
-            return gsonInstance.fromJson<List<BottomNewsDetail>>(content,object:TypeToken<List<BottomNewsDetail>>(){}.type)
-            //return fromJsonToList(content, Array<BottomNewsDetail>::class.java)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-        return arrayListOf()
-    }
 
     //会返回null,针对空值和非空值做不同的反应
     fun GetMainPageSlideNewsInfo():List<MainPageSlideNews>?{

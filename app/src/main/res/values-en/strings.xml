@@ -160,4 +160,5 @@ limitations under the License.</string>
     <string name="see_all_folk">See all content</string>
     <string name="delete_this_history">Clear search trace</string>
     <string name="no_location_info">There is no location information</string>
+    <string name="exit_info">double press back button will exit the application</string>
 </resources>

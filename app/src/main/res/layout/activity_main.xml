@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:menu="@menu/bottom_navigation_menu"
+        app:itemTextAppearanceActive="@style/navigationBarTheme"
+        app:itemTextAppearanceInactive="@style/navigationBarTheme"/>
 
     <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
         android:id="@+id/activityMainViewpager"

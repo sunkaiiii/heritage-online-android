@@ -59,7 +59,7 @@ class HandleMainFragmentTest : BaseTestClass() {
 
     private fun getBottomNewsInformationByID(id: Int) {
         println(id)
-        val result = HandleMainFragment.GetBottomNewsInformationByID(id)
+        val result = HandleMainFragment.GetBottomNewsInformationByLink(id)
         assertNotNull(result)
         getBottomNewsDetailInfo(result!!.content)
     }

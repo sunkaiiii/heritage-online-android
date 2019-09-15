@@ -117,17 +117,7 @@ object HandleAdapterItemClickClickUtils : IHandleAdapterItemClick {
             val data = adapter.getItem(position)
             val intent = Intent(context, BottomNewsDetailActivity::class.java)
             intent.putExtra("data", data)
-            intent.putExtra("title", context.getString(R.string.focus_heritage))
-            if (context is AppCompatActivity) {
-                val titleView = view.findViewById<TextView>(R.id.bottom_view_title)
-                val timeView = view.findViewById<TextView>(R.id.bottom_view_time)
-                val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
-                val paris = arrayOf(CreateTransitionPair(titleView, R.string.bottom_news_share_title)
-                        , CreateTransitionPair(timeView, R.string.bottom_news_share_time))
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *paris).toBundle())
-            } else {
-                context.startActivity(intent)
-            }
+            context.startActivity(intent)
         }
     }
 

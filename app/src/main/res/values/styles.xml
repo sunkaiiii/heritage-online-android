@@ -67,4 +67,7 @@
         <item name="android:windowEnterAnimation">@anim/popup_enter</item>
         <item name="android:windowExitAnimation">@anim/popup_exit</item>
     </style>
+    <style name="navigationBarTheme">
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

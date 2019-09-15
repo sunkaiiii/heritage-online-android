@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/WelcomeActivityTheme"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:background="?attr/selectableItemBackground"
-    android:foreground="?attr/selectableItemBackground"
-    tools:ignore="Overdraw">
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/bottom_view_image"
@@ -17,7 +14,8 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:contentDescription="@string/no_mean_content"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:src="@mipmap/login_background"/>
 
     <LinearLayout
         android:id="@+id/news_layout_linear"
@@ -31,20 +29,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="标题标题标题标题标题标题标题标题标题标题"/>
 
         <TextView
             android:id="@+id/bottom_view_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/midGrey"
+            tools:text="12：00：00"/>
 
         <TextView
             android:id="@+id/bottom_view_briefly"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:textSize="16sp" />
+            android:maxLines="3"
+            android:textColor="@color/deepGrey"
+            android:textSize="16sp"
+            tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容"/>
     </LinearLayout>
 </RelativeLayout>

@@ -40,7 +40,6 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
             activity?.let {
                 activity.runOnUiThread {
                     val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
-                    //fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter = adapter
                     onPostLoad()
                 }
