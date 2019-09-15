@@ -14,11 +14,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="InnerclassSeparator">
         <activity
-            android:name=".activity.WelcomeActivity"
-            android:theme="@style/WelcomeActivityTheme">
-
-        </activity>
-        <activity
             android:name=".activity.loginActivity.LoginActivity"
             android:label="登录"
             android:theme="@style/LoginActivityTheme" />
@@ -79,19 +74,11 @@
             android:name=".activity.MyCollectionActivity"
             android:label="@string/my_collection" />
         <activity
-            android:name=".activity.MyMessageActivity"
-            android:label="@string/my_message" />
-        <activity
             android:name=".activity.SearchActivity"
             android:theme="@style/AppThemeNoActionBarNoBackground" />
         <activity
             android:name=".activity.ViewImageActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />
-
-        <service
-            android:name=".service.PushService"
-            android:enabled="true"
-            android:exported="false" />
         <service android:name=".service.FCMMessageService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

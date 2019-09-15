@@ -28,22 +28,11 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         val time: TextView
         val briefly: TextView
         val image: ImageView
-        val bottomLinear: LinearLayout
-        private val bottomImage1: ImageView
-        private val bottomImage2: ImageView
-        private val bottomImage3: ImageView
-        val imageViews: Array<ImageView>
-
         init {
             title = view.findViewById(R.id.bottom_view_title)
             time = view.findViewById(R.id.bottom_view_time)
             briefly = view.findViewById(R.id.bottom_view_briefly)
             image = view.findViewById(R.id.bottom_view_image)
-            bottomLinear = view.findViewById(R.id.bottom_view_bottom_images_linear)
-            bottomImage1 = view.findViewById(R.id.bottom_view_bottom_image1)
-            bottomImage2 = view.findViewById(R.id.bottom_view_bottom_image2)
-            bottomImage3 = view.findViewById(R.id.bottom_view_bottom_image3)
-            imageViews = arrayOf(bottomImage1, bottomImage2, bottomImage3)
         }
     }
 
@@ -59,42 +48,18 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
     }
 
     private fun setData(holder: Holder, data: BottomFolkNewsLite) {
+        holder.image.visibility=View.GONE
+        holder.image.setImageDrawable(null)
         holder.title.text = data.title
-        holder.time.text = data.time
-        holder.briefly.text = data.briefly
-        try {
-            val imgArray = Gson().fromJson(data.img, Array<String>::class.java)
-            //判断有几张图片，根据图片的数目不同item展示不同的样式
-            when {
-                imgArray.isEmpty() -> {
-                    holder.image.visibility = View.GONE
-                    holder.bottomLinear.visibility = View.GONE
-                    holder.briefly.visibility = View.VISIBLE
-                }
-                imgArray.size < 3 -> {
-                    holder.image.visibility = View.VISIBLE
-                    glide.load(BaseSetting.URL + imgArray[0]).into(holder.image)
-                    holder.image.setOnClickListener {
-                        ViewImageUtils.setViewImageClick(context, holder.image, imgArray[0])
-                    }
-                    holder.bottomLinear.visibility = View.GONE
-                    holder.briefly.visibility = View.GONE
-                }
-                else -> {
-                    holder.image.visibility = View.GONE
-                    holder.bottomLinear.visibility = View.VISIBLE
-                    holder.briefly.visibility = View.VISIBLE
-                    for ((position, imageview) in holder.imageViews.withIndex()) {
-                        glide.load(BaseSetting.URL + imgArray[position]).into(imageview)
-                        imageview.setOnClickListener {
-                            ViewImageUtils.setViewImageClick(context, imageview, imgArray,position)
-                        }
-                    }
-                }
+        holder.time.text = data.date
+        holder.briefly.text = data.content
+        if(!data.image.isNullOrEmpty())
+        {
+            holder.image.visibility
+            glide.load(BaseSetting.URL + data.image).into(holder.image)
+            holder.image.setOnClickListener {
+                ViewImageUtils.setViewImageClick(context, holder.image, data.image)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return
         }
     }
 

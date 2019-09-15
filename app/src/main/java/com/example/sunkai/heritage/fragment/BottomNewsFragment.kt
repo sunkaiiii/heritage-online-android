@@ -35,12 +35,12 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
     private fun loadBottomNews() {
         onPreLoad()
         requestHttp {
-            val datas = HandleMainFragment.GetBottomNewsLiteInformation()
+            val datas = HandleMainFragment.GetBottomNewsLiteInformation(1)
             val activity = activity
             activity?.let {
                 activity.runOnUiThread {
                     val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
-                    fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+                    //fragmentMainRecyclerview.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
                     fragmentMainRecyclerview.adapter = adapter
                     onPostLoad()
                 }
@@ -67,7 +67,8 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
                 activity?.let {
                     val adapter = recyclerView.adapter
                     if (adapter is BottomFolkNewsRecyclerviewAdapter) {
-                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation(adapter.itemCount)
+                        //TODO 服务器返回页码
+                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation((adapter.itemCount/20)+1)
                         activity.runOnUiThread {
                             adapter.addNewData(moreData)
                             this.setPageLoaded()

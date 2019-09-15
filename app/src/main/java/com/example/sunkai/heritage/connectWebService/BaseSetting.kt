@@ -17,9 +17,8 @@ abstract class BaseSetting {
         const val SUCCESS = "SUCCESS"
         const val ERROR = "ERROR"
         private const val VERSION_UNKNOW = "unknow"
-        //        const val URL = "http://btbudinner.win:8080"
         const val URL = HOST
-        //const val URL = "http://10.0.2.2:8080"
+        const val NEW_HOST = "https://sunkai.xyz:5001"
         val gsonInstance = Gson()
         private val client = OkHttpClient()
     }
@@ -47,6 +46,10 @@ abstract class BaseSetting {
             e.printStackTrace()
         }
         return ERROR
+    }
+
+    fun PutNewGet(url:String):String{
+        return PutGet(NEW_HOST+url)
     }
 
     fun PutPost(url: String, form: FormBody): String {

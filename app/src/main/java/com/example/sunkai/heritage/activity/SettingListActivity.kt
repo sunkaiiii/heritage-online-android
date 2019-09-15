@@ -77,21 +77,11 @@ class SettingListActivity : BaseGlideActivity(), CompoundButton.OnCheckedChangeL
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         when (buttonView?.id) {
-            R.id.pushSwitch -> setPushStatus(isChecked)
+            //TODO FCM推送
+            //R.id.pushSwitch -> setPushStatus(isChecked)
         }
     }
 
-    @Synchronized
-    private fun setPushStatus(isChecked: Boolean) {
-        getSharedPreferences(SETTING, Context.MODE_PRIVATE).edit {
-            putBoolean(PUSH_SWITCH, isChecked)
-        }
-        if (isChecked) {
-            MainActivity.activityRef?.get()?.startPushService()
-        } else {
-            MainActivity.activityRef?.get()?.doUnbindPushService(true)
-        }
-    }
 
     private fun setPermission(id: Int, position: Int) {
         val spinner = findViewById<Spinner>(id)

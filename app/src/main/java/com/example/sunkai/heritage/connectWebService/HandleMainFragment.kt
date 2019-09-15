@@ -48,9 +48,9 @@ object HandleMainFragment : BaseSetting() {
         return arrayListOf()
     }
 
-    fun GetBottomNewsLiteInformation(start: Int=0,end: Int=20):List<BottomFolkNewsLite>{
-        val url="$URL/GetBottomNewsLiteInformation?start=$start&end=$end"
-        val result=PutGet(url)
+    fun GetBottomNewsLiteInformation(page:Int):List<BottomFolkNewsLite>{
+        val url="/api/NewsList/$page"
+        val result=PutNewGet(url)
         if(ERROR==result){
             return arrayListOf()
         }

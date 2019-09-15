@@ -1,13 +1,9 @@
 package com.example.sunkai.heritage.activity
 
-import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -17,19 +13,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.dialog.NormalWarningDialog
-import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.fragment.FindFragment
 import com.example.sunkai.heritage.fragment.FolkFragment
 import com.example.sunkai.heritage.fragment.MainFragment
-import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.service.PushService
+import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import com.google.android.gms.common.ConnectionResult
@@ -86,18 +81,6 @@ class MainActivity : BaseGlideActivity() {
         bottomNavigationRef = WeakReference(bottomNavigationButton)
     }
 
-    private var mBoundService: PushService? = null
-    private var mShouldBind = false
-    private var mIsRegistFCM = false
-    private val mConnection = object : ServiceConnection {
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            mBoundService = null
-        }
-
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            mBoundService = (p1 as PushService.LocalBinder).service
-        }
-    }
 
     fun startPushService() {
         if (BaiduLocation.isNotFromChina() || GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
@@ -106,15 +89,10 @@ class MainActivity : BaseGlideActivity() {
                     Log.w(TAG, "getInstanceId failed", task.exception)
                 }
                 val token = task.result?.token
-                Log.d(TAG, token)
+                Log.d(TAG, token?:"")
                 toast(token.toString())
             }
             FirebaseMessaging.getInstance().isAutoInitEnabled = true
-            mIsRegistFCM = true
-        } else {
-            if (bindService(Intent(this, PushService::class.java), mConnection, Context.BIND_AUTO_CREATE)) {
-                mShouldBind = true
-            }
         }
     }
 
@@ -160,24 +138,6 @@ class MainActivity : BaseGlideActivity() {
                 .show(supportFragmentManager, "exitDialog")
     }
 
-    override fun onDestroy() {
-        doUnbindPushService()
-        stopService(Intent(this, PushService::class.java))
-        super.onDestroy()
-    }
-
-    fun doUnbindPushService(falseStop: Boolean = false) {
-        if (mShouldBind) {
-            unbindService(mConnection)
-            mShouldBind = false
-        }
-        if (!FirebaseMessaging.getInstance().isAutoInitEnabled || falseStop) {
-            if (mIsRegistFCM) {
-                requestHttp { FirebaseInstanceId.getInstance().deleteInstanceId() }
-                mIsRegistFCM = false
-            }
-        }
-    }
 
     private class adapter(val viewList: ArrayList<Fragment>, manager: FragmentManager) : FragmentPagerAdapter(manager) {
         override fun getItem(position: Int): Fragment {

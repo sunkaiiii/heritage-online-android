@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
 class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
-    var id: Int? = null
+    var link: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +27,13 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
         if (data is BottomFolkNewsLite) {
-            this.id = data.id
+            this.link = data.link
             initAnimationAndLoadData(data)
             setDataToView(data)
             supportActionBar?.title = title
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             bottomNewsDetailRefresh.setOnRefreshListener {
-                GetNewsDetail(data.id)
+                GetNewsDetail(data.link)
             }
         }
     }
@@ -43,7 +43,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         fade.duration = 500
         window.returnTransition = fade
         window.enterTransition.doOnEnd {
-            GetNewsDetail(data.id)
+            GetNewsDetail(data.link)
         }
     }
 
@@ -52,27 +52,29 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     }
 
     override fun getID(): Int? {
-        return id
+        //TODO 我的收藏
+        return null
     }
 
     private fun setDataToView(data: BottomFolkNewsLite) {
         bottomNewsDetailTime.setTextColor(getThemeColor())
         bottomNewsDetailTitle.text = data.title
-        bottomNewsDetailTime.text = data.time
+        bottomNewsDetailTime.text = data.date
     }
 
-    private fun GetNewsDetail(id: Int) {
+    private fun GetNewsDetail(link: String) {
         onPreLoad()
         requestHttp {
-            val data = HandleMainFragment.GetBottomNewsInformationByID(id)
-            data?.let {
-                val contentInfos = HandleMainFragment.GetBottomNewsDetailInfo(data.content)
-                runOnUiThread {
-                    onPostLoad()
-                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, contentInfos, glide)
-                    bottomNewsDetailRecyclerview.adapter = adapter
-                }
-            }
+            //TODO 详情页网络请求
+            //val data = HandleMainFragment.GetBottomNewsInformationByID(id)
+//            data?.let {
+//                val contentInfos = HandleMainFragment.GetBottomNewsDetailInfo(data.content)
+//                runOnUiThread {
+//                    onPostLoad()
+//                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, contentInfos, glide)
+//                    bottomNewsDetailRecyclerview.adapter = adapter
+//                }
+//            }
         }
     }
 
