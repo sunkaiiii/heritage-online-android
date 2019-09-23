@@ -56,18 +56,7 @@ class HandleMainFragmentTest : BaseTestClass() {
     fun SearchAllNewsInfoTest(){
         assertData(HandleMainFragment.SearchAllNewsInfo("非遗"))
     }
-
-    private fun getBottomNewsInformationByID(id: Int) {
-        println(id)
-        val result = HandleMainFragment.GetBottomNewsInformationByLink(id)
-        assertNotNull(result)
-        getBottomNewsDetailInfo(result!!.content)
-    }
-
-    private fun getBottomNewsDetailInfo(content: String) {
-        println(content)
-        assertData(HandleMainFragment.GetBottomNewsDetailInfo(content))
-    }
+    
 
     private fun getFolkNewsInformation(id: Int) {
         println(id)

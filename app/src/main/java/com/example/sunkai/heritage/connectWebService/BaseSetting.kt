@@ -1,6 +1,9 @@
 package com.example.sunkai.heritage.connectWebService
 
 import android.util.Log
+import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.entity.request.BaseRequest
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
 import okhttp3.FormBody
@@ -20,7 +23,10 @@ abstract class BaseSetting {
         const val URL = HOST
         const val NEW_HOST = "https://sunkai.xyz:5001"
         val gsonInstance = Gson()
-        private val client = OkHttpClient()
+        private val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
+                .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
+                .addParamsObj(BaseRequest()).build()
+        private val client = OkHttpClient.Builder().build()
     }
 
     //定义泛型方法，简单化Gson的使用
@@ -36,6 +42,10 @@ abstract class BaseSetting {
 
     fun PutGet(url: String): String {
         val formatUrl = formatUrlWithVersionCode(url)
+        val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
+                .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
+                .addParamsObj(BaseRequest()).build()
+        val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).build()
         val request = Request.Builder().url(formatUrlWithVersionCode(url)).build()
         try {
             val response = client.newCall(request).execute()
