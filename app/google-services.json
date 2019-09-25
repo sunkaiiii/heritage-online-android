@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "798462887954",
+    "firebase_url": "https://test-86f01.firebaseio.com",
+    "project_id": "test-86f01",
+    "storage_bucket": "test-86f01.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798462887954:android:26c9bbb7899bdccf",
+        "android_client_info": {
+          "package_name": "com.datong.heritage_online"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798462887954-c6pi87mm9p9n3soprv2ip95g04i44npb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.datong.heritage_online",
+            "certificate_hash": "70ffefad2e8602b16cd861188764622ab29d0482"
+          }
+        },
+        {
+          "client_id": "798462887954-rc01847tsvt2e8pjnp0gt98rv262a0v4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzqfvfRBwfQkqXPcnQs2ScNdfzI0qr8X0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798462887954-rc01847tsvt2e8pjnp0gt98rv262a0v4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
