@@ -9,7 +9,7 @@ import kotlin.collections.HashMap
 class BaseRequest : Serializable,NetWorkRequest {
 
 
-    val gsonInstance = Gson()
+    //TODO 静态成员
     val androidVersion = android.os.Build.VERSION.RELEASE
     val language = Locale.getDefault().language
     val modelName = android.os.Build.MODEL
@@ -17,7 +17,7 @@ class BaseRequest : Serializable,NetWorkRequest {
 
 
     override fun toJson(): String {
-        return gsonInstance.toJson(this)
+        return Gson().toJson(this)
     }
 
     override fun toMap(): Map<String, String> {

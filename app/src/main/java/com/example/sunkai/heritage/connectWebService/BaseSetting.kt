@@ -10,6 +10,8 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSession
 
 /*
  * Created by sunkai on 2018/1/30.
@@ -21,7 +23,7 @@ abstract class BaseSetting {
         const val ERROR = "ERROR"
         private const val VERSION_UNKNOW = "unknow"
         const val URL = HOST
-        const val NEW_HOST = "https://sunkai.xyz:5001"
+        const val NEW_HOST = "http://118.138.80.153:5000"
         val gsonInstance = Gson()
         private val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
                 .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
@@ -44,10 +46,12 @@ abstract class BaseSetting {
         val formatUrl = formatUrlWithVersionCode(url)
         val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
                 .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
+                .addQueryParamsMap(BaseRequest().toMap())
                 .addParamsObj(BaseRequest()).build()
-        val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).build()
+        val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).hostnameVerifier { _, _ -> true }.build()
         val request = Request.Builder().url(formatUrlWithVersionCode(url)).build()
         try {
+            Log.e("PutGet",request.toString())
             val response = client.newCall(request).execute()
             val result = response.body()?.string() ?: ERROR
             Log.e("PutGet", formatUrl + "\n" + result)
@@ -68,7 +72,7 @@ abstract class BaseSetting {
         try {
             val response = client.newCall(request).execute()
             val result = response.body()?.string() ?: ERROR
-            Log.e("PutGet", formatUrl + "\n" + result)
+            Log.e("PutPost", formatUrl + "\n" + result)
             return result
         } catch (e: IOException) {
             e.printStackTrace()

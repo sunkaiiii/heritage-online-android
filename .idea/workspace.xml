@@ -6,6 +6,7 @@
     </shared>
   </component>
   <component name="AndroidLogFilters">
+    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="P" />
     <option name="TOOL_WINDOW_LOG_LEVEL" value="verbose" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
@@ -67,19 +68,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseSetting.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+            <state relative-caret-position="171">
+              <caret line="48" column="52" lean-forward="true" selection-start-line="48" selection-start-column="52" selection-end-line="48" selection-end-column="52" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="24" selection-start-line="24" selection-end-line="24" />
+            <state relative-caret-position="127">
+              <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
               <folding>
                 <element signature="e#52#201#0" expanded="true" />
               </folding>
@@ -88,45 +89,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainFragment.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="213">
-              <caret line="92" selection-start-line="92" selection-end-line="92" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseSetting.kt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
-              <folding>
-                <element signature="e#55#254#0" expanded="true" />
-                <element signature="e#881#935#1" expanded="true" />
-                <element signature="e#1612#1666#1" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="2" column="29" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseParamsInterceptor.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="103" column="27" selection-start-line="103" selection-start-column="27" selection-end-line="103" selection-end-column="27" />
-              <folding>
-                <element signature="e#55#128#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="76">
+              <caret line="22" column="27" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -152,9 +118,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>srcExif</find>
-      <find>need</find>
-      <find>getNeedOpenChooseImageView</find>
       <find>onviewc</find>
       <find>getne</find>
       <find>onde</find>
@@ -182,6 +145,9 @@
       <find>ba</find>
       <find>OnKey</find>
       <find>onBackP</find>
+      <find>request</find>
+      <find>basere</find>
+      <find>headerParamsMap</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -230,7 +196,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/tools/GlideHelper.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/Activity/LoginActivity/LoginActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/dialog/ChangePasswordDialog.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/dialog/base/BaseBottomDialog.kt" />
@@ -261,16 +226,17 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt" />
         <option value="$PROJECT_DIR$/app/src/test/java/com/example/sunkai/heritage/connectWebService/HandleMainFragmentTest.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.java" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseParamsInterceptor.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseSetting.kt" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.kt" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="y" value="-1080" />
-    <option name="width" value="1920" />
-    <option name="height" value="1080" />
+  <component name="ProjectFrameBounds">
+    <option name="y" value="23" />
+    <option name="width" value="1680" />
+    <option name="height" value="948" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -304,25 +270,7 @@
             </path>
             <path>
               <item name="heritage-online-android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="heritage-online-android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res" type="d4f16f75:AndroidResFolderNode" />
-              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
-            </path>
-            <path>
-              <item name="heritage-online-android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res (generated)" type="d4f16f75:AndroidResFolderNode" />
-            </path>
-            <path>
-              <item name="heritage-online-android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="app" type="feadf853:AndroidModuleNode" />
-              <item name="res (generated)" type="d4f16f75:AndroidResFolderNode" />
-              <item name="values" type="ddeffd01:AndroidResFolderTypeNode" />
+              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
             </path>
           </expand>
           <select />
@@ -334,11 +282,11 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="DEBUGGABLE_DEVICE" value="Pixel_3_XL_API_28 [emulator-5554]" />
+    <property name="DEBUGGABLE_DEVICE" value="emulator-5554" />
     <property name="DEBUGGABLE_PROCESS" value="com.datong.heritage_online" />
     <property name="DEBUGGER_ID" value="Auto" />
     <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="Pixel_3_XL_API_28" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-09-23T01:36:34.774Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-09-26T03:45:42.203Z" />
     <property name="ExportApk.ApkPath" value="$PROJECT_DIR$/app" />
     <property name="ExportApk.BuildType" value="release" />
     <property name="ExportApk.Flavors" value="" />
@@ -1077,10 +1025,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="-1080" width="1920" height="1080" extended-state="0" />
-    <editor active="true" />
+    <frame x="0" y="23" width="1680" height="948" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24866879" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2851038" />
       <window_info id="Structure" order="1" weight="0.24969475" />
       <window_info id="Designer" order="2" />
       <window_info id="Build Variants" order="3" side_tool="true" />
@@ -1092,14 +1039,14 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32959184" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.47079438" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Build" order="7" weight="0.32673267" />
+      <window_info anchor="bottom" id="Build" order="7" weight="0.38551402" />
       <window_info anchor="bottom" id="Android Profiler" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Logcat" order="10" weight="0.32871288" />
+      <window_info anchor="bottom" id="Logcat" order="10" weight="0.32827103" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.32959184" />
       <window_info anchor="bottom" id="Messages" order="13" sideWeight="0.4936034" weight="0.29682702" />
@@ -1200,17 +1147,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainNewsFragment.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="17" column="55" lean-forward="true" selection-start-line="17" selection-start-column="55" selection-end-line="17" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main_news_fragment_layout.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-      <provider editor-type-id="android-designer2" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/service/PushService.kt" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MyMessageActivity.kt" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_my_message.xml" />
@@ -1274,12 +1210,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider editor-type-id="android-manifest" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-454">
           <caret line="22" column="41" selection-start-line="22" selection-start-column="41" selection-end-line="22" selection-end-column="41" />
         </state>
       </provider>
-      <provider editor-type-id="android-manifest" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/tools/HandleAdapterItemClickClickUtils.kt">
       <provider selected="true" editor-type-id="text-editor">
@@ -1359,13 +1295,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="8" column="6" selection-start-line="8" selection-start-column="6" selection-end-line="8" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/HandleMainFragment.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="65" column="18" selection-start-line="65" selection-start-column="18" selection-end-line="65" selection-end-column="18" />
         </state>
       </provider>
     </entry>
@@ -1482,20 +1411,41 @@
       <provider editor-type-id="android-designer2" />
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.java" />
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseParamsInterceptor.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="103" column="27" selection-start-line="103" selection-start-column="27" selection-end-line="103" selection-end-column="27" />
-          <folding>
-            <element signature="e#55#128#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-29/android.jar!/java/lang/reflect/Field.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="806">
           <caret line="64" column="35" selection-start-line="64" selection-start-column="35" selection-end-line="64" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="91" column="15" selection-start-line="91" selection-start-column="8" selection-end-line="91" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/HandleMainFragment.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="80" column="8" selection-start-line="80" selection-start-column="8" selection-end-line="80" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/build.gradle">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="9" column="27" selection-start-line="9" selection-start-column="27" selection-end-line="9" selection-end-column="27" />
         </state>
       </provider>
     </entry>
@@ -1506,38 +1456,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainFragment.kt">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseParamsInterceptor.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="92" selection-start-line="92" selection-end-line="92" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-          <folding>
-            <element signature="e#52#201#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="76">
+          <caret line="22" column="27" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="27" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/connectWebService/BaseSetting.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="171">
+          <caret line="48" column="52" lean-forward="true" selection-start-line="48" selection-start-column="52" selection-end-line="48" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/request/BaseRequest.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="127">
+          <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
           <folding>
-            <element signature="e#55#254#0" expanded="true" />
-            <element signature="e#881#935#1" expanded="true" />
-            <element signature="e#1612#1666#1" expanded="true" />
+            <element signature="e#52#201#0" expanded="true" />
           </folding>
         </state>
       </provider>
