@@ -149,6 +149,12 @@ class BaseParamsInterceptor : Interceptor {
             return this
         }
 
+        fun addQueryParamsObj(requestObj:NetWorkRequest):Builder
+        {
+            addQueryParamsMap(requestObj.toMap())
+            return this
+        }
+
         fun build(): BaseParamsInterceptor {
             return interceptor
         }

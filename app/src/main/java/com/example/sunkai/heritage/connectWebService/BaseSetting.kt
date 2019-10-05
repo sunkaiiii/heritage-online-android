@@ -23,7 +23,7 @@ abstract class BaseSetting {
         const val ERROR = "ERROR"
         private const val VERSION_UNKNOW = "unknow"
         const val URL = HOST
-        const val NEW_HOST = "http://118.138.80.153:5000"
+        const val NEW_HOST = "http://118.138.48.2:5000"
         val gsonInstance = Gson()
         private val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
                 .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
@@ -44,10 +44,7 @@ abstract class BaseSetting {
 
     fun PutGet(url: String): String {
         val formatUrl = formatUrlWithVersionCode(url)
-        val baseParaMeter=BaseParamsInterceptor.Builder().addParam("from","android")
-                .addQueryParam("version",GlobalContext.instance.getString(R.string.verson_code))
-                .addQueryParamsMap(BaseRequest().toMap())
-                .addParamsObj(BaseRequest()).build()
+        val baseParaMeter=BaseParamsInterceptor.Builder().addQueryParamsObj(BaseRequest()).build()
         val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).hostnameVerifier { _, _ -> true }.build()
         val request = Request.Builder().url(formatUrlWithVersionCode(url)).build()
         try {
