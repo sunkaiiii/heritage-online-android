@@ -6,9 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
-import android.view.KeyEvent
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -17,23 +14,16 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
-import com.example.sunkai.heritage.dialog.NormalWarningDialog
-import com.example.sunkai.heritage.fragment.FindFragment
 import com.example.sunkai.heritage.fragment.FolkFragment
 import com.example.sunkai.heritage.fragment.MainFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -68,7 +58,7 @@ class MainActivity : BaseGlideActivity() {
         //如果用户打开了推送开关，则开启推送服务
         val sharePrefrence = getSharedPreferences(SETTING, Context.MODE_PRIVATE)
         if (sharePrefrence.getBoolean(PUSH_SWITCH, false)) {
-            startPushService()
+            //TODO 是否保留推送 未知
         }
         setIgnoreToolbar(true)
     }
@@ -83,21 +73,6 @@ class MainActivity : BaseGlideActivity() {
         super.onAttachedToWindow()
         //当window建立起来之后，初始化里面的view
         bottomNavigationRef = WeakReference(bottomNavigationButton)
-    }
-
-
-    fun startPushService() {
-        if (BaiduLocation.isNotFromChina() || GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS) {
-            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.w(TAG, "getInstanceId failed", task.exception)
-                }
-                val token = task.result?.token
-                Log.d(TAG, token?:"")
-                toast(token.toString())
-            }
-            FirebaseMessaging.getInstance().isAutoInitEnabled = true
-        }
     }
 
     override fun setNeedChangeThemeColorWidget() {
@@ -115,7 +90,6 @@ class MainActivity : BaseGlideActivity() {
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
-        viewList.add(FindFragment())
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
@@ -173,7 +147,6 @@ class MainActivity : BaseGlideActivity() {
                 bottomNavigationButton.selectedItemId = when (position) {
                     0 -> R.id.main_layout
                     1 -> R.id.folk_layout
-                    2 -> R.id.find_layout
                     else -> R.id.main_layout
                 }
             }
@@ -205,7 +178,6 @@ class MainActivity : BaseGlideActivity() {
         activityMainViewpager.currentItem = when (item.itemId) {
             R.id.main_layout -> 0
             R.id.folk_layout -> 1
-            R.id.find_layout -> 2
             else -> 0
         }
         true

@@ -1,16 +1,10 @@
 package com.example.sunkai.heritage.activity.base
 
-import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import com.example.sunkai.heritage.activity.loginActivity.LoginActivity
-import com.example.sunkai.heritage.connectWebService.HandlePerson
-import com.example.sunkai.heritage.interfaces.HandleCollect
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.interfaces.HandleCollect
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.value.IS_INTO
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 /**
  * 可以收藏的Activity页面基类
@@ -34,9 +28,6 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
             }
             R.id.user_collect -> {
                 val findItem = menuItem?.findItem(R.id.user_collect) ?: return true
-                if (checkIsLogin()) {
-                    handleCollect(findItem)
-                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -45,36 +36,15 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
     private fun getCollectInfo() {
         val item = menuItem?.findItem(R.id.user_collect) ?: return
         val id = getID() ?: return
-        if (LoginActivity.userID == 0) {
-            return
-        }
-        item.isEnabled = false
-        GlobalScope.launch {
-            val result = checkIsCollect(LoginActivity.userID, getType(), id)
-            runOnUiThread {
-                setItemState(item, true, result, false)
-            }
-        }
     }
 
+    //TODO 重做收藏，改为本地
     override fun handleCollect(item: MenuItem) {
-        val id = getID() ?: return
-        GlobalScope.launch {
-            val isCollect = checkIsCollect(LoginActivity.userID, getType(), id)
-            val result = if (isCollect) {
-                HandlePerson.CancelUserCollect(LoginActivity.userID, getType(), id)
-            } else {
-                HandlePerson.AddUserCollection(LoginActivity.userID, getType(), id)
-            }
-            runOnUiThread {
-                setItemState(item, result, !isCollect)
-            }
-        }
+
     }
 
     override fun checkIsCollect(userID: Int, typeName: String, typeID: Int): Boolean {
-        val id = getID() ?: return false
-        return HandlePerson.CheckIsCollection(LoginActivity.userID, getType(), id)
+        return false
     }
 
     override fun setItemState(item: MenuItem, success: Boolean, checked: Boolean, showToast: Boolean) {
@@ -90,16 +60,6 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
         }
     }
 
-    private fun checkIsLogin(): Boolean {
-        if (LoginActivity.userID == 0) {
-            toast("没有登录")
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra(IS_INTO, 1)
-            startActivityForResult(intent, 1)
-            return false
-        }
-        return true
-    }
 
     abstract fun getType(): String
     abstract fun getID(): Int?

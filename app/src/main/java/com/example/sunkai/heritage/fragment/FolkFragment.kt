@@ -20,7 +20,6 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.activity.AllFolkInfoActivity
 import com.example.sunkai.heritage.activity.MainActivity
-import com.example.sunkai.heritage.activity.SearchActivity
 import com.example.sunkai.heritage.connectWebService.HandleFolk
 import com.example.sunkai.heritage.entity.ActivityData
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
@@ -110,11 +109,6 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
         when(v?.id){
             R.id.fragmentFolkSeeAllFolk->{
                 val intent = Intent(activity, AllFolkInfoActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.fragmentFolkSearch->{
-                val intent =Intent(activity,SearchActivity::class.java)
-                intent.putExtra(SEARCH_TYPE, TYPE_FOLK_HERITAGE)
                 startActivity(intent)
             }
         }

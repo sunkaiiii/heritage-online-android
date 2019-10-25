@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.fragment
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -12,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.activity.SearchActivity
 import com.example.sunkai.heritage.adapter.MainPageSlideAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
@@ -22,9 +20,6 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.runOnUiThread
-import com.example.sunkai.heritage.value.SEARCH_TYPE
-import com.example.sunkai.heritage.value.TYPE_BOTTOM_NEWS
-import com.example.sunkai.heritage.value.TYPE_NEWS
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -145,16 +140,6 @@ class MainFragment : BaseGlideFragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.search_menu -> {
-                val intent = Intent(activity, SearchActivity::class.java)
-                intent.putExtra(SEARCH_TYPE, if (mainPageTabLayout.selectedTabPosition == 0) TYPE_BOTTOM_NEWS else TYPE_NEWS)
-                startActivity(intent)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun onResume() {
         super.onResume()

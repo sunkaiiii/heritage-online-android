@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.tools
 
 import android.app.Application
-import android.util.Log
-import com.google.firebase.FirebaseApp
-import com.google.firebase.iid.FirebaseInstanceId
 
 
 /**

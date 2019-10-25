@@ -56,7 +56,7 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         if(!data.image.isNullOrEmpty())
         {
             holder.image.visibility
-            glide.load(BaseSetting.URL + data.image).into(holder.image)
+            glide.load(BaseSetting.NEW_HOST + data.image).into(holder.image)
             holder.image.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.image, data.image)
             }

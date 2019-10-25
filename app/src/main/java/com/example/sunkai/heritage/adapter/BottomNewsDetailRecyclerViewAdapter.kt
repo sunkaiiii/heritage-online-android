@@ -65,7 +65,7 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFo
         } else {
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.load(BaseSetting.URL + data.content).into(holder.imageView)
+            glide.load(BaseSetting.NEW_HOST + data.content).into(holder.imageView)
             holder.imageView.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.content))
             }

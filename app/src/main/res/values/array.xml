@@ -16,9 +16,4 @@
         <item>西南</item>
         <item>东北</item>
     </string-array>
-    <string-array name="find_select">
-        <item>全部内容</item>
-        <item>我的关注</item>
-        <item>同城</item>
-    </string-array>
 </resources>

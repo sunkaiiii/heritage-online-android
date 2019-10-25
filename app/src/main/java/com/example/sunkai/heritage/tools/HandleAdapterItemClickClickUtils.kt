@@ -6,16 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.transition.Slide
-import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import com.example.sunkai.heritage.activity.*
 import com.example.sunkai.heritage.adapter.*
-import com.example.sunkai.heritage.fragment.FindFragment
 import com.example.sunkai.heritage.interfaces.IHandleAdapterItemClick
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
@@ -28,58 +24,7 @@ import com.example.sunkai.heritage.value.FROM
  */
 
 object HandleAdapterItemClickClickUtils : IHandleAdapterItemClick {
-    override fun handleMyOwnCommentRecyclerViewItemClick(context: Context, adapter: MyOwnCommentRecyclerViewAdapter) {
-        adapter.setOnItemClickListener { view, position ->
-            val intent = Intent(context, UserCommentDetailActivity::class.java)
-            intent.putExtra(DATA, adapter.getItem(position))
-            if (context is Activity) {
-                val imageView = view.findViewById<ImageView>(R.id.mycomment_item_image)
-                val title = view.findViewById<TextView>(R.id.mycomment_item_title)
-                val content = view.findViewById<TextView>(R.id.mycomment_item_content)
-                val pairs = arrayOf(CreateTransitionPair(imageView, R.string.find_share_view),
-                        CreateTransitionPair(title, R.string.find_share_title),
-                        CreateTransitionPair(content, R.string.find_share_content))
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *pairs).toBundle())
-            } else {
-                context.startActivity(intent)
-            }
-        }
-    }
 
-    override fun handleMyLikeCommentRecyclerviewItemClick(context: Context, adapter: MyLikeCommentRecyclerAdapter) {
-        adapter.setOnItemClickListener { view, position ->
-            val data = adapter.getItem(position)
-            val imageview = view.findViewById<ImageView>(R.id.coment_image)
-            val infoBackGround = view.findViewById<LinearLayout>(R.id.info_background)
-            val intent = Intent(context, UserCommentDetailActivity::class.java)
-            intent.putExtra(DATA, data)
-            if (context is Activity) {
-                val pairs = arrayOf(CreateTransitionPair(imageview, R.string.find_share_view),
-                        CreateTransitionPair(infoBackGround, R.string.find_share_background))
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, *pairs).toBundle())
-            } else {
-                context.startActivity(intent)
-            }
-        }
-    }
-
-    override fun handleFocusListviewItemClick(context: Context, adapter: FocusListviewAdapter) {
-        adapter.setOnItemClickListener { view, position ->
-            val intent = Intent(context, OtherUsersActivity::class.java)
-            val data = adapter.getItem(position)
-            intent.putExtra(DATA, data)
-            if (context is Activity) {
-                val userName = view.findViewById<TextView>(R.id.user_name)
-                val userImage = view.findViewById<ImageView>(R.id.user_head_image)
-                val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name)
-                        , CreateTransitionPair(userImage, R.string.share_user_image))
-                val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
-                context.startActivity(intent, transitionOptions.toBundle())
-            } else {
-                context.startActivity(intent)
-            }
-        }
-    }
 
     override fun handleActivityRecyclerViewItemClick(context: Context, adapter: ActivityRecyclerViewAdapter) {
         adapter.setOnItemClickListener { view, position ->
@@ -147,39 +92,5 @@ object HandleAdapterItemClickClickUtils : IHandleAdapterItemClick {
         }
     }
 
-    override fun handleFindUserCommentAdapterItemClick(context: Context, adapter: FindFragmentRecyclerViewAdapter) {
-        adapter.setOnItemClickListener { view, position ->
-            val intent = Intent(context, UserCommentDetailActivity::class.java)
-            intent.putExtra("data", adapter.getItem(position))
-            if (context is AppCompatActivity) {
-                val getview: View = view.findViewById(R.id.fragment_find_litview_img) ?: return@setOnItemClickListener
-                intent.putExtra("option", UserCommentDetailActivity.ANIMATION_SHOW)
-                ActivityCompat.startActivityForResult(context, intent, FindFragment.FROM_USER_COMMENT_DETAIL, ActivityOptions.makeSceneTransitionAnimation(context, getview, context.getString(R.string.find_share_view)).toBundle())
-            } else {
-                if (context is Activity) {
-                    context.startActivityForResult(intent, FindFragment.FROM_USER_COMMENT_DETAIL)
-                } else {
-                    context.startActivity(intent)
-                }
-            }
-        }
-    }
 
-    override fun handlePersonAdapterItemClick(context: Context, adapter: SearchUserRecclerAdapter) {
-        adapter.setOnItemClickListener { view, position ->
-            val data = adapter.getItem(position)
-            val intent = Intent(context, OtherUsersActivity::class.java)
-            intent.putExtra(DATA, data)
-            if (context is AppCompatActivity) {
-                val userImage = view.findViewById<ImageView>(R.id.user_head_image)
-                val userName = view.findViewById<TextView>(R.id.user_name)
-                val pairs = arrayOf(CreateTransitionPair(userName, R.string.share_user_name),
-                        CreateTransitionPair(userImage, R.string.share_user_image))
-                val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
-                context.startActivity(intent, transitionOptions.toBundle())
-            } else {
-                context.startActivity(intent)
-            }
-        }
-    }
 }

@@ -3,92 +3,27 @@ package com.example.sunkai.heritage.value
 import android.util.Pair
 import android.view.View
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateAllNewsCollectAdapter
-import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateBottomNewsCollectAdapter
-import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateCommentCollectaAdapter
-import com.example.sunkai.heritage.tools.createMyCollectAdapterUtils.CreateFolkCollectionAdapter
-import com.example.sunkai.heritage.tools.createSearchActivityAdapterUtils.*
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.Utils
 
-/**
- * 这个文件包含了项目用到的常量
- * Created by 70472 on 2018/1/1.
- */
-
-const val NO_USER = "noUser"
-const val NO_USERID = -1
 const val RESULT_OK = 800
 const val RESULT_NULL = -1
-const val FOLLOW = 1
-const val FANS = 2
-const val OTHER_FOLLOW = 3
-const val OTHER_FANS = 4
-const val UPDATE_USER_COMMENT = 12
-const val UPDATE_SUCCESS = 4
 const val CHOOSE_PHOTO = 2
-const val DENIALD = -1
-const val ONLYFOCUS = 0
-const val ALL = 1
-const val ALL_COMMENT = 0
-const val MY_FOCUS_COMMENT = 1
-const val SAME_LOCATION = 2
 const val MINI_REPLY = -1
 const val COMMENT_REPLY = 0
-const val SIGN_OUT = 11
 const val TYPE_TEXT = "text"
 const val CATEGORY = "category"
-const val STATE_CHANGE = 1
-const val LOG_OUT = 2
-const val IS_FOCUS = "已关注"
-const val UNFOCUS = "加关注"
-const val FOLLOW_EACHOTHER = "互相关注"
-const val MODIFY_USER_COMMENT = 1
 const val TYPE_MAIN = "首页新闻"
 const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
-const val TYPE_FIND = "发现"
-val COLLECT_TYPE_MAIN: String = CreateAllNewsCollectAdapter::class.java.name
-val COLLECT_TYPE_FOCUS_HERITAGE: String = CreateBottomNewsCollectAdapter::class.java.name
-val COLLECT_TYPE_FOLK: String = CreateFolkCollectionAdapter::class.java.name
-val COLLECT_TYPE_FIND: String = CreateCommentCollectaAdapter::class.java.name
-const val FIRST_OPEN = 0
-const val NOT_FIRST_OPEN = 1
-const val NOT_LOGIN = 0
-const val FROM_WELCOME = 0
-const val FROM_REGIST = 0
-const val INFORMATION = "information"
-const val FROM_FANS = "fans"
-const val FROM_FOCUS = "focus"
-const val USER_ID = "userID"
 const val FROM = "from"
 const val DATA = "data"
 const val ACTIVITY = "activity"
-const val USER_NAME = "userName"
-const val PASSWORD = "passWord"
 const val PUSH_SWITCH = "pushSwitch"
-const val ID = "id"
-const val OPTION = "option"
 const val SETTING = "setting"
-const val ADD_COMMENT="addComment"
-const val COMMENT_TITLE="commentTitle"
-const val COMMENT_CONTENT="commentContent"
-const val COMMENT_IMAGE_URI="commentImageUri"
-const val ADD_COMMENT_REPLY="addCommentReply"
-const val START_COUNT = "startCount"
-const val SHARE_PREFRENCE_USERNAME = "user_name"
-const val SHARE_PREFRENCE_PASSWORD = "user_password"
 const val TITLE = "title"
-const val IMAGE = "image"
-const val IS_INTO = "isInto"
 const val READ = "r"
-const val SEARCH_TYPE = "searchType"
 const val THEME_COLOR = "theme_color"
-val TYPE_NEWS: String = CreateSearchAllNewsSearchAdapter::class.java.name
-val TYPE_BOTTOM_NEWS: String = CreateBottomActivitySearchAdapter::class.java.name
-val TYPE_COMMENT: String = CreateSearchCommentAdapter::class.java.name
-val TYPE_FOLK_HERITAGE: String = CreateFolkInfoSearchAdapter::class.java.name
-val TYPE_USER: String = CreateSearchUserAdapter::class.java.name
 const val SEARCH_SHAREPREF_NAME = "search_info"
 const val IMAGE_URL = "image_url"
 const val IMAGE_POSITION="image_position"
@@ -120,16 +55,13 @@ else
 
 const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
-const val SUCCESS = "SUCCESS"
 const val ERROR = "ERROR"
-const val VERSION_CODE=1
 const val HOST = "https://sunkai.xyz:8081"
 const val HOST_IP = "sunkai.xyz"
 const val PUSH_PORT = 8088
 
 const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"
 const val ACTIVITY_FRAGMENT = "ActivityFragment"
-const val SETTING_ACTIVITY = 100
 
 val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
 val CLASSIFY_DIVIDE_TABVIEWSHOW = arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")

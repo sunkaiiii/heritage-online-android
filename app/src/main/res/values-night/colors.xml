@@ -6,7 +6,6 @@
     <color name="superLightGrey">#EAEAEA</color>
     <color name="lightGrey">#e6e6e6</color>
     <color name="normalGrey">#c3c3c3</color>
-    <color name="themeRed">#ac462e</color>
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="deepGrey">#2f2f2f</color>
@@ -14,5 +13,4 @@
     <color name="transparent">#50000000</color>
     <color name="transparent_dark">#80000000</color>
     <color name="transparent_full">#00000000</color>
-    <color name="transparent_light">#dfffffff</color>
 </resources>

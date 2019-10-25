@@ -15,7 +15,7 @@
         android:layout_gravity="center"
         android:contentDescription="@string/no_mean_content"
         android:scaleType="centerCrop"
-        tools:src="@mipmap/login_background"/>
+        />
 
     <LinearLayout
         android:id="@+id/news_layout_linear"

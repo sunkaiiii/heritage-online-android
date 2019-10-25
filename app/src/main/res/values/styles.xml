@@ -10,31 +10,18 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppThemeNoBackGround" parent="AppTheme">
-        <item name="android:windowBackground">@null</item>
-    </style>
-
     <style name="AppThemeNoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="WelcomeActivityTheme" parent="AppThemeNoActionBar">
-        <item name="android:windowBackground">@mipmap/welcome_background</item>
-    </style>
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
-    </style>
-    <style name="AppThemeNoActionBarNoBackground" parent="AppThemeNoActionBar" >
-        <item name="android:windowBackground">@null</item>
-    </style>
-    <style name="LoginActivityTheme" parent="AppThemeNoActionBar">
-        <item name="android:windowBackground">@null</item>
     </style>
 
     <style name="ExpandedAppBarSize" parent="@android:style/TextAppearance">
@@ -61,12 +48,6 @@
         <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
     </style>
 
-    <style name="Fragment_Person_Theme" parent="Theme.AppCompat.NoActionBar" />
-
-    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/popup_exit</item>
-    </style>
     <style name="navigationBarTheme">
         <item name="android:textStyle">bold</item>
     </style>

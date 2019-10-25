@@ -3,77 +3,19 @@
     <string name="verson_code">v3.4.2</string>
     <string name="no_mean_content">null</string>
 
-    <string name="action_sign_in_short">登陆</string>
-    <string name="error_incorrect_password">密码不正确</string>
-    <string name="push_warning">是否开启消息推送？\n这可能会稍微增加程序的内存占用以及耗电。\n</string>
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
-    <string name="setting">设置</string>
-    <string name="handing">处理中…</string>
-    <string name="delete_comment">删除帖子</string>
-    <string name="delete_success">删除成功</string>
-    <string name="has_problem">出现问题</string>
-    <string name="reverse_look">正在倒序查看</string>
-    <string name="non_reverse_look">正序查看</string>
-    <string name="edit_comment">修改帖子</string>
-    <string name="add_comment_title">标题</string>
-    <string name="add_comment_content">正文</string>
-    <string name="add_comment_image">图片</string>
-    <string name="save">保存</string>
-    <string name="update_success">更新成功</string>
-    <string name="update_fail">更新失败</string>
-    <string name="permission_denaild_information">该用户隐藏了它的个人信息</string>
-    <string name="push_message">消息推送</string>
-    <string-array name="permissions">
-        <item>所有人不可见</item>
-        <item>仅我关注的人可见</item>
-        <item>开放</item>
-    </string-array>
-    <string name="had_error">出现问题，请稍后再试</string>
-    <string name="fans_and_view_permission_denail">由于对方的设置，您无法查看他的信息</string>
     <string name="apply_time">申报时间:</string>
     <string name="category">类别:</string>
     <string name="number">编号:</string>
     <string name="location">地区:</string>
-    <string name="user_name">用户名</string>
-    <string name="password">密码</string>
-    <string name="insure_password">请确认密码</string>
-    <string name="find_password_question">找回密码问题</string>
-    <string name="find_password_answer">找回密码答案</string>
-    <string name="regist">注册</string>
     <string name="cancel">取消</string>
     <string name="please_choice">请选择</string>
     <string name="news_title">新闻标题</string>
     <string name="more">更多</string>
     <string name="focus_heritage">聚焦非遗</string>
-    <string name="add_focus">加关注</string>
-    <string name="already_focus">已关注</string>
     <string name="search">搜索</string>
-    <string name="set_like">点赞</string>
-    <string name="add_comment_reply">回帖</string>
-    <string name="cancel_like">取消点赞</string>
-    <string name="comment">评论</string>
-    <string name="zero">0</string>
-    <string name="see_more_reply">查看更多评论</string>
-    <string name="focus">关注</string>
-    <string name="fans">粉丝</string>
-    <string name="my_collection">我的收藏</string>
-    <string name="my_message">我的消息</string>
-    <string name="my_comment">我的帖子</string>
-    <string name="logout">注销登录</string>
-    <string name="change_password">修改密码</string>
     <string name="submit">确定</string>
-    <string name="about_us">关于我们</string>
-    <string name="cancel_regist">取消注册</string>
-    <string name="forget_password">忘记密码?</string>
-    <string name="jump_login">跳过登录</string>
-    <string name="login">登陆</string>
-    <string name="user_image">用户头像</string>
-    <string name="open">开启</string>
-    <string name="close">关闭</string>
-    <string name="open_or_close_push">开启推送？</string>
-    <string name="my_like">我的赞</string>
     <string name="title">标题</string>
-    <string name="user_comment">帖子</string>
 
     <string name="share_user_name">share_user_name</string>
     <string name="share_user_image">share_user_image</string>
@@ -84,38 +26,15 @@
     <string name="share_folk_content">share_folk_content</string>
     <string name="share_view_image">share_view_image</string>
 
-    <string name="find_share_view">find_share_view</string>
-    <string name="find_share_background">find_share_background</string>
-    <string name="find_share_title">find_share_title</string>
-    <string name="find_share_content">find_share_content</string>
     <string name="collect">收藏</string>
-    <string name="delete_comment_title">删除帖子</string>
-    <string name="delete_comment_content">是否删除帖子？</string>
     <string name="logo">logo</string>
     <string name="time">时间:</string>
-    <string name="main_page_permission">主页权限</string>
-    <string name="see_fans_and_focus">查看粉丝和关注</string>
     <string name="main_page">首页</string>
     <string name="folk_page">民间</string>
-    <string name="find_page">发现</string>
-    <string name="person_center">个人中心</string>
-    <string name="please_input_username">请输入用户名</string>
-    <string name="please_wait">请稍候</string>
-    <string name="one">1</string>
-    <string name="three">3</string>
-    <string name="add_comment_reply_here">在这里输入回复</string>
-    <string name="content">内容</string>
-    <string name="new_reply">新的回复</string>
-    <string name="push_channel">push_channel</string>
-    <string name="push_channel_name">帖子回复</string>
-    <string name="add_comment">发帖</string>
-    <string name="original_content">原帖：</string>
-    <string name="reply">回复：</string>
     <string name="all_news">全部新闻</string>
     <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
-    <string name="user">用户</string>
 
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,13 +79,6 @@ limitations under the License.</string>
     <string name="glide">glide</string>
     <string name="gson">gson</string>
     <string name="licence">开源许可声明</string>
-    <string name="same_location">同城</string>
-    <string name="comment_location">帖子位置</string>
-    <string name="please_input_search">请在这里输入搜索的内容</string>
-    <string name="exit">退出</string>
-    <string name="clear_content">清除内容</string>
     <string name="see_all_folk">查看所有非遗</string>
-    <string name="delete_this_history">清除此历史</string>
-    <string name="no_location_info">地点信息消失在银河系里了~</string>
     <string name="exit_info">再次按下返回键退出程序</string>
 </resources>
