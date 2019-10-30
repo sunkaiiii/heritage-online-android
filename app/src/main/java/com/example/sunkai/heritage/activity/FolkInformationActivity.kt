@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.generateDarkColor
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.*
 import kotlinx.android.synthetic.main.activity_folk_info.*
 
@@ -63,7 +64,7 @@ class FolkInformationActivity : BaseHandleCollectActivity(), View.OnClickListene
     //警报很烦，屏蔽掉
     @SuppressLint("SetTextI18n")
     private fun setDatasToView(data: ClassifyDivideData) {
-        glide.load(HOST + data.img).into(target)
+        glide.loadImageFromServer(data.img).into(target)
         join_activity_img.setOnClickListener {
             ViewImageUtils.setViewImageClick(this, join_activity_img, data.img)
         }

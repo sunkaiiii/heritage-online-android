@@ -15,6 +15,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.entity.BottomFolkNews
 import com.example.sunkai.heritage.entity.BottomFolkNewsContent
 import com.example.sunkai.heritage.tools.ViewImageUtils
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.TYPE_TEXT
 
 /**
@@ -65,7 +66,7 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFo
         } else {
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.load(BaseSetting.NEW_HOST + data.content).into(holder.imageView)
+            glide.loadImageFromServer(data.content).into(holder.imageView)
             holder.imageView.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.content))
             }

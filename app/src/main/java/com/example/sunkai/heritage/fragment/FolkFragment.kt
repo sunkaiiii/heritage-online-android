@@ -24,10 +24,7 @@ import com.example.sunkai.heritage.connectWebService.HandleFolk
 import com.example.sunkai.heritage.entity.ActivityData
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.generateColor
-import com.example.sunkai.heritage.tools.generateTextColor
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_folk.*
@@ -139,7 +136,7 @@ class FolkFragment : BaseLazyLoadFragment(),View.OnClickListener {
     private fun getDivideImage(index: Int) {
         urls?.let {
             val url = urls!![index].url
-            glide.load(HOST + url).into(simpleTarget)
+            glide.loadImageFromServer(url).into(simpleTarget)
         }
     }
 

@@ -5,17 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.ViewImageUtils
-import com.google.gson.Gson
+import com.example.sunkai.heritage.tools.loadImageFromServer
 
 /**
  * 首页底部聚焦非遗的adapter
@@ -53,12 +51,12 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         holder.title.text = data.title
         holder.time.text = data.date
         holder.briefly.text = data.content
-        if(!data.image.isNullOrEmpty())
+        if(!data.img.isNullOrEmpty())
         {
-            holder.image.visibility
-            glide.load(BaseSetting.NEW_HOST + data.image).into(holder.image)
+            holder.image.visibility=View.VISIBLE
+            glide.loadImageFromServer(data.img).into(holder.image)
             holder.image.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.image, data.image)
+                ViewImageUtils.setViewImageClick(context, holder.image, data.img)
             }
         }
     }

@@ -12,6 +12,7 @@ import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.NewsDetail
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.ViewImageUtils
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.TYPE_TEXT
 
 /**
@@ -57,7 +58,7 @@ class NewsDetailRecyclerAdapter(val context: Context, val datas: List<NewsDetail
         } else {
             holder.textview.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.load(BaseSetting.URL + data.info).into(holder.imageView)
+            glide.loadImageFromServer(data.info).into(holder.imageView)
             holder.imageView.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.info))
             }

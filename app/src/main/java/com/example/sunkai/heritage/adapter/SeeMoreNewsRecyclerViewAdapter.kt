@@ -18,6 +18,7 @@ import com.example.sunkai.heritage.entity.FolkNewsLite
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.ViewImageUtils
+import com.example.sunkai.heritage.tools.loadImageFromServer
 
 /**
  * 点击更多之后，展示全部内容的adapter
@@ -66,7 +67,7 @@ class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>
                     holder.imageview.visibility = View.GONE
                 }
             }
-            glide.load(BaseSetting.URL + data.img).into(simpleTarget)
+            glide.loadImageFromServer(data.img).into(simpleTarget)
             holder.imageview.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context,holder.imageview,data.img)
             }

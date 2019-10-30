@@ -12,6 +12,7 @@ import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.views.SwipePhotoView
 import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.github.chrisbanes.photoview.PhotoView
 
 /**
@@ -38,12 +39,12 @@ class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, va
         photoView.setIsInViewPager(true)
         photoView.setOnDragListner(swipePhotoViewListener)
         setClick(position, photoView)
-        val url=if(datas[position%count].contains(BaseSetting.URL)){
+        val url=if(datas[position%count].contains(BaseSetting.IMAGE_HOST)){
             datas[position%count]
         }else{
-            BaseSetting.URL + datas[position % count]
+            BaseSetting.IMAGE_HOST + datas[position % count]
         }
-        glide.load(url).into(photoView)
+        glide.loadImageFromServer(url).into(photoView)
         return photoView
     }
 

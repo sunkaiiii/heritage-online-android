@@ -16,6 +16,7 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.entity.ClassifyDivideData
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.HOST
 
 /*
@@ -64,7 +65,7 @@ class ActivityRecyclerViewAdapter(context: Context,datas:List<ClassifyDivideData
         holder.number.text = "编号:" + data.number
         holder.content.text = data.content
         holder.img.setImageResource(R.drawable.empty_background)
-        glide.load(HOST + data.img).into(holder.img)
+        glide.loadImageFromServer(data.img).into(holder.img)
     }
 
     override fun setItemClick() {

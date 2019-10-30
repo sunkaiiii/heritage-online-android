@@ -32,7 +32,7 @@ object HandleAdapterItemClickClickUtils : IHandleAdapterItemClick {
             val intent = Intent(context, FolkInformationActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("activity", activitydata)
-            intent.putExtra("image", activitydata.img)
+            intent.putExtra("img", activitydata.img)
             intent.putExtra("from", ACTIVITY_FRAGMENT)
             intent.putExtras(bundle)
             if (context is Activity) {

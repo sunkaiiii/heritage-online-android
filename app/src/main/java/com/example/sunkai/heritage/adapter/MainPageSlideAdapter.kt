@@ -15,6 +15,7 @@ import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.MainPageSlideNews
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.loadImageFromServer
 
 /**
  * 显示更多新闻顶部滑动条的adapter
@@ -39,7 +40,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         val title=view.findViewById<TextView>(R.id.main_page_slide_title)
         val data=datas[position%datas.size]
         title.text=data.content
-        glide.load(BaseSetting.URL+data.img).into(image)
+        glide.loadImageFromServer(data.img).into(image)
         container.addView(view)
         view.setOnClickListener {
             val intent=setViewClick(data)

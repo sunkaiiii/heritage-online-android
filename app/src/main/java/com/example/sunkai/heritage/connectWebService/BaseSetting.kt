@@ -23,7 +23,9 @@ abstract class BaseSetting {
         const val ERROR = "ERROR"
         private const val VERSION_UNKNOW = "unknow"
         const val URL = HOST
+        const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
         const val NEW_HOST = "https://sunkai.xyz:5001"
+
         val gsonInstance = Gson()
         private val baseParaMeter=BaseParamsInterceptor.Builder().addQueryParamsObj(BaseRequest()).build()
         private val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).build()

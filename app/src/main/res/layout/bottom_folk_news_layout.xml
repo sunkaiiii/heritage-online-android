@@ -1,54 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:background="?attr/selectableItemBackground">
-
-    <ImageView
-        android:id="@+id/bottom_view_image"
-        android:layout_width="112dp"
-        android:layout_height="73dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:contentDescription="@string/no_mean_content"
-        android:scaleType="centerCrop"
-        />
+    android:layout_margin="8dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
-        android:id="@+id/news_layout_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toStartOf="@id/bottom_view_image"
+        android:layout_marginBottom="4dp"
+        android:background="@color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/bottom_view_title"
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/bottom_view_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="标题标题标题标题标题标题标题标题标题标题"/>
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            app:riv_corner_radius_top_left="4dp"
+            app:riv_corner_radius_top_right="4dp"
+            android:contentDescription="@string/no_mean_content"
+            android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/bottom_view_time"
+        <LinearLayout
+            android:id="@+id/news_layout_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/midGrey"
-            tools:text="12：00：00"/>
+            android:layout_margin="12dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/bottom_view_briefly"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:textColor="@color/deepGrey"
-            android:textSize="16sp"
-            tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容"/>
+            <TextView
+                android:id="@+id/bottom_view_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="标题标题标题标题标题标题标题标题标题标题" />
+
+            <TextView
+                android:id="@+id/bottom_view_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/midGrey"
+                android:textSize="14sp"
+                tools:text="12：00：00" />
+
+            <TextView
+                android:id="@+id/bottom_view_briefly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textColor="@color/deepGrey"
+                android:textSize="16sp"
+                tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容" />
+        </LinearLayout>
     </LinearLayout>
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

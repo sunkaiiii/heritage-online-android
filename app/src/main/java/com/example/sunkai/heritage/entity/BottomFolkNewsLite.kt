@@ -10,4 +10,4 @@ class BottomFolkNewsLite(val link:String,
                          val title:String,
                          val date:String,
                          val content:String,
-                         val image:String?):Serializable
+                         val img:String?):Serializable

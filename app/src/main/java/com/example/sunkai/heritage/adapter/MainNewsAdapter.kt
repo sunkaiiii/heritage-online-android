@@ -22,10 +22,7 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.FolkNewsLite
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.tools.ViewImageUtils
-import com.example.sunkai.heritage.tools.getThemeColor
-import com.example.sunkai.heritage.tools.tintTextView
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.CATEGORIES
 import com.example.sunkai.heritage.value.HOST
 import com.example.sunkai.heritage.value.MAIN_PAGE_CATEGORY_NEWS_IMAGE
@@ -74,7 +71,7 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
     }
 
     private fun getCategoryImage(position: Int, imageView: ImageView) {
-        glide.load(HOST + "/img/main_news_divide_img/" + MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(CategoryImageSimpleTarget(imageView))
+        glide.loadImageFromServer(MAIN_PAGE_CATEGORY_NEWS_IMAGE[position]).into(CategoryImageSimpleTarget(imageView))
     }
 
     private fun setThemeColor(holder: Holder) {
@@ -97,7 +94,7 @@ class MainNewsAdapter(context: Context, datas: List<List<FolkNewsLite>>, glide: 
             if (item.img.isEmpty()) {
                 itemView.image.visibility = View.INVISIBLE
             } else {
-                glide.load(BaseSetting.URL + item.img).into(ItemsimpleTarget(itemView))
+                glide.loadImageFromServer(BaseSetting.URL + item.img).into(ItemsimpleTarget(itemView))
                 itemView.image.setOnClickListener {
                     ViewImageUtils.setViewImageClick(context, it, item.img)
                 }

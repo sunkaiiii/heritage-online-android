@@ -15,6 +15,7 @@ import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.BaseAsyncTask
 import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.HOST
 
 /**
@@ -61,7 +62,7 @@ class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide:
         holder.listTitle.text = data.title
         holder.listDivide.text = data.divide
         holder.listLocation.text = data.category
-        glide.load(HOST + data.img).into(holder.listImage)
+        glide.loadImageFromServer(data.img).into(holder.listImage)
     }
 
     fun startGetInformation() {
