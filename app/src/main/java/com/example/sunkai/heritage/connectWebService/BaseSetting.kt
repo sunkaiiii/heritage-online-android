@@ -3,6 +3,8 @@ package com.example.sunkai.heritage.connectWebService
 import android.util.Log
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.entity.request.BaseRequest
+import com.example.sunkai.heritage.interfaces.MyEHeritageApi
+import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
@@ -10,6 +12,7 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import java.lang.IllegalArgumentException
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLSession
 
@@ -53,6 +56,30 @@ abstract class BaseSetting {
 
     fun PutNewGet(url:String):String{
         return PutGet(NEW_HOST+url)
+    }
+
+    fun requestNetwork(api:MyEHeritageApi,action:RequestAction)
+    {
+
+        val request=when(api.getRequestType())
+        {
+            RequestType.GET,RequestType.POST,RequestType.PUT->Request.Builder().url(api.getUrl()).build()
+        }
+        Log.e("Network Request",api.getRequestName())
+        try {
+            val response= client.newCall(request).execute()
+            Log.e("Network Requst",api.getRequestName()+": "+response)
+            val result=response.body()?.string()
+            if(result==null)
+            {
+                action.onRequestError(api,action,IOException("new result returned"))
+                return
+            }
+            action.onTaskReturned(api,action,result)
+        }catch (e:IOException)
+        {
+            action.onRequestError(api,action,e)
+        }
     }
 
     fun PutPost(url: String, form: FormBody): String {

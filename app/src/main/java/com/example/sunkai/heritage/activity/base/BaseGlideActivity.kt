@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.entity.request.BaseRequestBean
+import com.example.sunkai.heritage.interfaces.MyEHeritageApi
+import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -91,6 +94,11 @@ abstract class BaseGlideActivity : AppCompatActivity() {
             runnable.run()
         }
         runnableList.add(job)
+    }
+
+    protected fun requestHttp(bean:BaseRequestBean,api:MyEHeritageApi,action:RequestAction)
+    {
+
     }
 
     protected fun setIgnoreToolbar(ignore: Boolean) {

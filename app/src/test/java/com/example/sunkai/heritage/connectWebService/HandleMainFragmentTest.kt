@@ -27,14 +27,6 @@ class HandleMainFragmentTest : BaseTestClass() {
         }
     }
 
-    @Test
-    fun getBottomNewsLiteInformation() {
-        val result = HandleMainFragment.GetBottomNewsLiteInformation()
-        assertData(result)
-        result.forEach {
-            getBottomNewsInformationByID(it.id)
-        }
-    }
 
 
     @Test

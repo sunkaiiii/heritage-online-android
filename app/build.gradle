@@ -53,8 +53,8 @@ dependencies {
     //    network
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.github.bumptech.glide:glide:4.8.0'
-    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     //    glide Support 暂时没用到
     //    implementation 'jp.wasabeef:glide-transformations:3.0.1'
     //    implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
