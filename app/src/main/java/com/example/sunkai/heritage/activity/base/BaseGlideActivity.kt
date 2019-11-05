@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.request.BaseRequestBean
 import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 import com.example.sunkai.heritage.interfaces.RequestAction
@@ -19,8 +20,9 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
-abstract class BaseGlideActivity : AppCompatActivity() {
+abstract class BaseGlideActivity : AppCompatActivity(),RequestAction {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
     private val runnableList: MutableList<Job>
@@ -96,9 +98,18 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         runnableList.add(job)
     }
 
-    protected fun requestHttp(bean:BaseRequestBean,api:MyEHeritageApi,action:RequestAction)
+    protected fun requestHttp(bean:BaseRequestBean,api:MyEHeritageApi)
     {
 
+    }
+
+
+    override fun onTaskReturned(api: MyEHeritageApi, action: RequestAction, response: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onRequestError(api: MyEHeritageApi, action: RequestAction, ex: Exception) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     protected fun setIgnoreToolbar(ignore: Boolean) {

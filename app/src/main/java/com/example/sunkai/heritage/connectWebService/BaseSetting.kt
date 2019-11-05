@@ -20,19 +20,18 @@ import javax.net.ssl.SSLSession
  * Created by sunkai on 2018/1/30.
  */
 
-abstract class BaseSetting {
-    companion object {
-        const val SUCCESS = "SUCCESS"
-        const val ERROR = "ERROR"
-        private const val VERSION_UNKNOW = "unknow"
-        const val URL = HOST
-        const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
-        const val NEW_HOST = "https://sunkai.xyz:5001"
+open class BaseSetting {
 
-        val gsonInstance = Gson()
-        private val baseParaMeter=BaseParamsInterceptor.Builder().addQueryParamsObj(BaseRequest()).build()
-        private val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).build()
-    }
+    val SUCCESS = "SUCCESS"
+    val ERROR = "ERROR"
+    private val VERSION_UNKNOW = "unknow"
+    val URL = HOST
+    val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
+    val NEW_HOST = "https://sunkai.xyz:5001"
+
+    val gsonInstance = Gson()
+    private val baseParaMeter=BaseParamsInterceptor.Builder().addQueryParamsObj(BaseRequest()).build()
+    private val client = OkHttpClient.Builder().addInterceptor(baseParaMeter).build()
 
     //定义泛型方法，简单化Gson的使用
     fun <T> fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
