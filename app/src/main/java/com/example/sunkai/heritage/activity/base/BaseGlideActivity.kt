@@ -31,6 +31,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     protected val TAG = javaClass.name
+    private val handler=Handler(Looper.getMainLooper())
 
     init {
         runnableList = arrayListOf()
@@ -100,21 +101,29 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         runnableList.add(job)
     }
 
-    override fun <T> getUIThread(): Handler {
-        return Handler(Looper.getMainLooper())
+    override fun getUIThread(): Handler {
+        return handler
     }
 
-    protected fun <T> requestHttp(bean: BaseRequest, api: EHeritageApi, responseType: Class<T>) {
-        val requestHelper = RequestHelper(api, responseType)
+    protected fun requestHttp(bean: BaseRequest, api: EHeritageApi) {
+        val requestHelper = RequestHelper(api)
         BaseSetting.requestNetwork(requestHelper, bean, this)
     }
 
 
-    override fun <T> onTaskReturned(api: RequestHelper<T>, action: RequestAction, response: String) {
+    override fun  onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T> onRequestError(api: RequestHelper<T>, action: RequestAction, ex: Exception) {
+    override fun  onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun beforeReuqestStart(request: RequestHelper) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onRequestEnd(request: RequestHelper) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

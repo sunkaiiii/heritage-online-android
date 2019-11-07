@@ -1,13 +1,8 @@
 package com.example.sunkai.heritage.connectWebService
 
 import android.util.Log
-import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.entity.request.BaseRequest
-import com.example.sunkai.heritage.entity.request.BaseRequestBean
-import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
 import okhttp3.FormBody
@@ -15,9 +10,6 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
-import java.lang.IllegalArgumentException
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLSession
 
 /*
  * Created by sunkai on 2018/1/30.
@@ -35,33 +27,35 @@ open class BaseSetting {
         val gsonInstance = Gson()
         private val client = OkHttpClient.Builder().build()
 
-        fun <T> requestNetwork(api: RequestHelper<T>, requestBean: NetworkRequest, action: RequestAction) {
+        fun requestNetwork(request: RequestHelper, requestBean: NetworkRequest, action: RequestAction) {
+            action.getUIThread().post { action.beforeReuqestStart(request) }
             val httpQueryUrl = HttpUrl.Builder().scheme("https").host("sunkai.xyz").port(5001)
-            api.getRequestApi()._url.split("/").forEach {
+            request.getRequestApi()._url.split("/").forEach {
                 httpQueryUrl.addPathSegment(it)
             }
             httpQueryUrl.addQueryParameter(requestBean.getName(), requestBean.toJson())
-            val request = when (api.getRequestApi().getRequestType()) {
+            val r = when (request.getRequestApi().getRequestType()) {
                 RequestType.GET, RequestType.POST, RequestType.PUT -> Request.Builder().url(httpQueryUrl.build()).build()
             }
-            Log.e("Network Request", api.getRequestApi().getRequestName())
+            Log.e("Network Request", request.getRequestApi().getRequestName())
             try {
-                val response = client.newCall(request).execute()
-                Log.e("Network Requst", api.getRequestApi().getRequestName() + ": " + response)
+                val response = client.newCall(r).execute()
+                Log.e("Network Requst", request.getRequestApi().getRequestName() + ": " + response)
                 val result = response.body()?.string()
-                action.getUIThread<T>().post {
+                action.getUIThread().post {
                     if (result == null) {
 
-                        action.onRequestError(api, action, IOException("new result returned"))
+                        action.onRequestError(request, action, IOException("new result returned"))
                         return@post
                     }
-                    action.onTaskReturned(api, action, result)
+                    action.onTaskReturned(request, action, result)
                 }
             } catch (e: IOException) {
-                action.getUIThread<T>().post {
-                    action.onRequestError(api, action, e)
+                action.getUIThread().post {
+                    action.onRequestError(request, action, e)
                 }
-
+            } finally {
+                action.getUIThread().post { action.onRequestEnd(request) }
             }
         }
     }

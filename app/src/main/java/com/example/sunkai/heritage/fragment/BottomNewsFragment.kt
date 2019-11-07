@@ -38,22 +38,10 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
 
     private fun loadBottomNews() {
         onPreLoad()
-        requestHttp(BaseRequest(),EHeritageApi.GetNewsList,String.javaClass)
-//        requestHttp {
-//            val datas = HandleMainFragment.GetBottomNewsLiteInformation(1)
-//            val activity = activity
-//            activity?.let {
-//                activity.runOnUiThread {
-//                    val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
-//                    fragmentMainRecyclerview.adapter = adapter
-//                    onPostLoad()
-//                }
-//
-//            }
-//        }
+        requestHttp(BaseRequest(),EHeritageApi.GetNewsList)
     }
 
-    override fun <T> onTaskReturned(api: RequestHelper<T>, action: RequestAction, response: String) {
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         when (api.getRequestApi()) {
             EHeritageApi.GetNewsList -> {
                 val data = fromJsonToList(response, BottomFolkNewsLite::class.java)

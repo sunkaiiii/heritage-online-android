@@ -21,11 +21,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-abstract class BaseGlideFragment : Fragment(),RequestAction {
+abstract class BaseGlideFragment : Fragment(), RequestAction {
     protected lateinit var glide: RequestManager
     private val runnableList: MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
+    private val handler: Handler = Handler(Looper.getMainLooper())
 
     init {
         runnableList = arrayListOf()
@@ -67,25 +68,30 @@ abstract class BaseGlideFragment : Fragment(),RequestAction {
         runnableList.add(job)
     }
 
-    protected fun <T> requestHttp(bean: BaseRequest, api: EHeritageApi,responseType:Class<T>)
-    {
-        val job=GlobalScope.launch {
-            val helper=RequestHelper(api,responseType)
-            BaseSetting.requestNetwork(helper,bean,this@BaseGlideFragment)
+    protected fun requestHttp(bean: BaseRequest, api: EHeritageApi) {
+        val helper = RequestHelper(api)
+        val job = GlobalScope.launch {
+            BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
         }
-
+        runnableList.add(job)
     }
 
-    override fun <T> getUIThread(): Handler {
-        return Handler(Looper.getMainLooper())
+    override fun getUIThread(): Handler {
+        return handler
     }
 
-    override fun <T> onTaskReturned(api: RequestHelper<T>, action: RequestAction, response: String) {
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun <T> onRequestError(api: RequestHelper<T>, action: RequestAction, ex: Exception) {
+    override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun beforeReuqestStart(request: RequestHelper) {
+    }
+
+    override fun onRequestEnd(request: RequestHelper) {
     }
 
     //定义泛型方法，简单化Gson的使用

@@ -4,7 +4,9 @@ import android.os.Handler
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 
 interface RequestAction {
-    fun <T> onRequestError(api: RequestHelper<T>, action:RequestAction, ex:Exception)
-    fun <T> onTaskReturned(api:RequestHelper<T>,action: RequestAction,response:String)
-    fun <T> getUIThread(): Handler
+    fun  beforeReuqestStart(request: RequestHelper)
+    fun  onRequestError(api: RequestHelper, action:RequestAction, ex:Exception)
+    fun  onTaskReturned(api:RequestHelper,action: RequestAction,response:String)
+    fun  getUIThread(): Handler
+    fun  onRequestEnd(request: RequestHelper)
 }
