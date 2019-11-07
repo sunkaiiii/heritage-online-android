@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.adapter.BottomFolkNewsRecyclerviewAdapter
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
+import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.entity.BottomFolkNewsLite
+import com.example.sunkai.heritage.entity.request.BaseRequest
+import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.bottom_news_framgent.*
 
@@ -34,16 +38,29 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
 
     private fun loadBottomNews() {
         onPreLoad()
-        requestHttp {
-            val datas = HandleMainFragment.GetBottomNewsLiteInformation(1)
-            val activity = activity
-            activity?.let {
-                activity.runOnUiThread {
-                    val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
-                    fragmentMainRecyclerview.adapter = adapter
-                    onPostLoad()
-                }
+        requestHttp(BaseRequest(),EHeritageApi.GetNewsList,String.javaClass)
+//        requestHttp {
+//            val datas = HandleMainFragment.GetBottomNewsLiteInformation(1)
+//            val activity = activity
+//            activity?.let {
+//                activity.runOnUiThread {
+//                    val adapter = BottomFolkNewsRecyclerviewAdapter(activity, datas, glide)
+//                    fragmentMainRecyclerview.adapter = adapter
+//                    onPostLoad()
+//                }
+//
+//            }
+//        }
+    }
 
+    override fun <T> onTaskReturned(api: RequestHelper<T>, action: RequestAction, response: String) {
+        when (api.getRequestApi()) {
+            EHeritageApi.GetNewsList -> {
+                val data = fromJsonToList(response, BottomFolkNewsLite::class.java)
+                val activity=activity?:return
+                val adapter = BottomFolkNewsRecyclerviewAdapter(activity, data, glide)
+                fragmentMainRecyclerview.adapter = adapter
+                onPostLoad()
             }
         }
     }
@@ -67,7 +84,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
                     val adapter = recyclerView.adapter
                     if (adapter is BottomFolkNewsRecyclerviewAdapter) {
                         //TODO 服务器返回页码
-                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation((adapter.itemCount/20)+1)
+                        val moreData = HandleMainFragment.GetBottomNewsLiteInformation((adapter.itemCount / 20) + 1)
                         activity.runOnUiThread {
                             adapter.addNewData(moreData)
                             this.setPageLoaded()

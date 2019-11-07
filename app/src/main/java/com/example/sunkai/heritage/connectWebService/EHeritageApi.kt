@@ -9,7 +9,7 @@ import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 //}
 
 enum class EHeritageApi constructor(val _name : String,val _url:String,val _type:RequestType):MyEHeritageApi {
-    GetNewsList("newsList",BaseSetting.NEW_HOST+"/api/NewsList",RequestType.GET) {
+    GetNewsList("newsList","api/NewsList",RequestType.GET) {
         override fun getRequestName(): String {
             return _name
         }

@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.connectWebService
 
 import android.text.TextUtils
-import com.example.sunkai.heritage.entity.request.NetWorkRequest
 import okhttp3.*
 import java.io.IOException
 
@@ -98,9 +97,7 @@ class BaseParamsInterceptor : Interceptor {
             return this
         }
 
-        fun addParamsObj(request: NetWorkRequest):Builder{
-             return addParamsMap(request.toMap())
-        }
+
         // 添加公共参数到 post 消息体
         fun addParamsMap(paramsMap: Map<String, String>): Builder {
             interceptor.paramsMap.putAll(paramsMap)
@@ -149,11 +146,7 @@ class BaseParamsInterceptor : Interceptor {
             return this
         }
 
-        fun addQueryParamsObj(requestObj:NetWorkRequest):Builder
-        {
-            addQueryParamsMap(requestObj.toMap())
-            return this
-        }
+
 
         fun build(): BaseParamsInterceptor {
             return interceptor

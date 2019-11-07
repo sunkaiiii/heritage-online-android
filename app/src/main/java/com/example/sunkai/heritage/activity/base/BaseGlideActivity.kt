@@ -2,6 +2,8 @@ package com.example.sunkai.heritage.activity.base
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -10,8 +12,9 @@ import androidx.appcompat.widget.SwitchCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
-import com.example.sunkai.heritage.entity.request.BaseRequestBean
-import com.example.sunkai.heritage.interfaces.MyEHeritageApi
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
+import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.entity.request.BaseRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,15 +23,14 @@ import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.lang.Exception
 
-abstract class BaseGlideActivity : AppCompatActivity(),RequestAction {
+abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
     private val runnableList: MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
-    protected val TAG=javaClass.name
+    protected val TAG = javaClass.name
 
     init {
         runnableList = arrayListOf()
@@ -98,17 +100,21 @@ abstract class BaseGlideActivity : AppCompatActivity(),RequestAction {
         runnableList.add(job)
     }
 
-    protected fun requestHttp(bean:BaseRequestBean,api:MyEHeritageApi)
-    {
+    override fun <T> getUIThread(): Handler {
+        return Handler(Looper.getMainLooper())
+    }
 
+    protected fun <T> requestHttp(bean: BaseRequest, api: EHeritageApi, responseType: Class<T>) {
+        val requestHelper = RequestHelper(api, responseType)
+        BaseSetting.requestNetwork(requestHelper, bean, this)
     }
 
 
-    override fun onTaskReturned(api: MyEHeritageApi, action: RequestAction, response: String) {
+    override fun <T> onTaskReturned(api: RequestHelper<T>, action: RequestAction, response: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onRequestError(api: MyEHeritageApi, action: RequestAction, ex: Exception) {
+    override fun <T> onRequestError(api: RequestHelper<T>, action: RequestAction, ex: Exception) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
