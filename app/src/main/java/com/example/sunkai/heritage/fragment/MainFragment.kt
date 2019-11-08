@@ -11,15 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
-import com.example.sunkai.heritage.adapter.MainPageSlideAdapter
+import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
-import com.example.sunkai.heritage.connectWebService.HandleMainFragment
-import com.example.sunkai.heritage.entity.MainPageSlideNews
+import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
+import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_main.*
 
 
@@ -84,20 +85,25 @@ class MainFragment : BaseGlideFragment() {
     }
 
     private fun initMainPageSlide() {
-        requestHttp {
-            val datas = HandleMainFragment.GetMainPageSlideNewsInfo()
-            if (datas != null) {
-                runOnUiThread {
-                    setMainPageSlideAdapter(datas)
-                }
-            }
-        }
+        requestHttp(EHeritageApi.GetBanner)
 
     }
 
-    private fun setMainPageSlideAdapter(datas: List<MainPageSlideNews>) {
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+        super.onTaskReturned(api, action, response)
+        when(api.getRequestApi())
+        {
+            EHeritageApi.GetBanner->
+            {
+                val data=fromJsonToList(response,MainPageBanner::class.java)
+                setMainPageSlideAdapter(data)
+            }
+        }
+    }
+
+    private fun setMainPageSlideAdapter(data: List<MainPageBanner>) {
         val activity = activity ?: return
-        val adapter = MainPageSlideAdapter(activity, datas, glide)
+        val adapter = MainPageBannerAdapter(activity, data, glide)
         MainPageSlideViewpager.adapter = adapter
         //让他在初始的时候在中间的位置，且保证是第一个页面，可以做到左翻页
         val middleItem = 0 + 4 * 200

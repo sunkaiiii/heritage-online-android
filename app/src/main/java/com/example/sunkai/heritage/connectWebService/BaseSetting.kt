@@ -43,7 +43,7 @@ open class BaseSetting {
                 Log.e("Network Requst", request.getRequestApi().getRequestName() + ": " + response)
                 val result = response.body()?.string()
                 action.getUIThread().post {
-                    if (result == null) {
+                    if (result.isNullOrEmpty()) {
 
                         action.onRequestError(request, action, IOException("new result returned"))
                         return@post

@@ -68,7 +68,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         runnableList.add(job)
     }
 
-    protected fun requestHttp(bean: BaseRequest, api: EHeritageApi) {
+    protected fun requestHttp(api: EHeritageApi,bean: BaseRequest = BaseRequest()) {
         val helper = RequestHelper(api)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
@@ -80,12 +80,11 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         return handler
     }
 
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {}
 
+    //TODO 提示弹框
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {

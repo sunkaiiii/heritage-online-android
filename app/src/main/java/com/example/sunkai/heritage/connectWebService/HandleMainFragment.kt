@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.connectWebService
 
 import com.example.sunkai.heritage.entity.*
 import com.example.sunkai.heritage.value.CATEGORIES
-import com.google.gson.reflect.TypeToken
 
 
 /**
@@ -78,14 +77,14 @@ object HandleMainFragment : BaseSetting() {
 
 
     //会返回null,针对空值和非空值做不同的反应
-    fun GetMainPageSlideNewsInfo():List<MainPageSlideNews>?{
+    fun GetMainPageSlideNewsInfo():List<MainPageBanner>?{
         val url="$URL/GetMainPageSlideNewsInformation"
         val result=PutGet(url)
         if(result== ERROR){
             return null
         }
         try{
-            return fromJsonToList(result, Array<MainPageSlideNews>::class.java)
+            return fromJsonToList(result, Array<MainPageBanner>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

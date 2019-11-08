@@ -12,8 +12,7 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.activity.NewsDetailActivity
-import com.example.sunkai.heritage.connectWebService.BaseSetting
-import com.example.sunkai.heritage.entity.MainPageSlideNews
+import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.loadImageFromServer
 
@@ -21,7 +20,7 @@ import com.example.sunkai.heritage.tools.loadImageFromServer
  * 显示更多新闻顶部滑动条的adapter
  * Created by sunkai on 2018/2/18.
  */
-class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>,val glide: RequestManager): PagerAdapter() {
+class MainPageBannerAdapter(val context:Context, val data:List<MainPageBanner>, val glide: RequestManager): PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view==`object`
     }
@@ -37,9 +36,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view=LayoutInflater.from(context).inflate(R.layout.main_page_slide_item,container,false)
         val image=view.findViewById<ImageView>(R.id.main_page_slide_image)
-        val title=view.findViewById<TextView>(R.id.main_page_slide_title)
-        val data=datas[position%datas.size]
-        title.text=data.content
+        val data=data[position%data.size]
         glide.loadImageFromServer(data.img).into(image)
         container.addView(view)
         view.setOnClickListener {
@@ -53,7 +50,7 @@ class MainPageSlideAdapter(val context:Context,val datas:List<MainPageSlideNews>
         return view
     }
 
-    private fun setViewClick(data:MainPageSlideNews):Intent{
+    private fun setViewClick(data:MainPageBanner):Intent{
         val intent= Intent(context,NewsDetailActivity::class.java)
         intent.putExtra("category","要闻")
         intent.putExtra("data",data)

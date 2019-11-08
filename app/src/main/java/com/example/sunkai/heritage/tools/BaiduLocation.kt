@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.tools
 
+import android.util.Log
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.BaiduLoacationResponse
 import com.example.sunkai.heritage.value.BaiduIPLocationUrl
@@ -35,12 +36,14 @@ object BaiduLocation {
             return if (response.isSuccessful) response.body()?.string()
                     ?: return ERROR else return ERROR
         } catch (e: java.lang.Exception) {
+            println(e)
             return ERROR
         }
     }
 
     private fun getInfos() {
         val result = IPLocation()
+        Log.d("baidulocation",result)
         try {
             val locationData = Gson().fromJson<BaiduLoacationResponse>(result, BaiduLoacationResponse::class.java)
             if (locationData.status != 0) {

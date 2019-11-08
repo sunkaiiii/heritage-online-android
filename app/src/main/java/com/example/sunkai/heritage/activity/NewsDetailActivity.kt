@@ -1,16 +1,13 @@
 package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
-import androidx.core.view.GravityCompat
 import android.transition.Fade
-import android.transition.Slide
-import android.view.Gravity
 import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
 import com.example.sunkai.heritage.entity.FolkNewsLite
-import com.example.sunkai.heritage.entity.MainPageSlideNews
+import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.getThemeColor
@@ -54,8 +51,8 @@ class NewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         if (data is FolkNewsLite) {
             getNewsDetail(data.id)
             id = data.id
-        } else if (data is MainPageSlideNews) {
-            generateDetail(data.detail)
+        } else if (data is MainPageBanner) {
+            //generateDetail(data.detail)
         }
     }
 
@@ -67,12 +64,13 @@ class NewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
             newsDetailRefresh.setOnRefreshListener {
                 getNewsDetail(data.id)
             }
-        } else if (data is MainPageSlideNews) {
-            news_detail_title.text = data.content
-            news_detail_time.text = ""
-            newsDetailRefresh.setOnRefreshListener {
-                generateDetail(data.detail)
-            }
+//        } else if (data is MainPageBanner) {
+//            news_detail_title.text = data.content
+//            news_detail_time.text = ""
+//            newsDetailRefresh.setOnRefreshListener {
+//                generateDetail(data.detail)
+//            }
+            //TODO Banner跳转的新闻
         }
     }
 

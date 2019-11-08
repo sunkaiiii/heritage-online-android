@@ -8,18 +8,20 @@ import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 //    private val random = Random(System.currentTimeMillis())
 //}
 
-enum class EHeritageApi constructor(val _name : String,val _url:String,val _type:RequestType):MyEHeritageApi {
-    GetNewsList("newsList","api/NewsList",RequestType.GET) {
-        override fun getRequestName(): String {
-            return _name
-        }
+enum class EHeritageApi constructor(val _name: String, val _url: String, val _type: RequestType) : MyEHeritageApi {
+    GetNewsList("newsList", "api/NewsList", RequestType.GET),
+    GetBanner("banner", "api/banner", RequestType.GET);
 
-        override fun getUrl(): String {
-            return _url
-        }
-
-        override fun getRequestType(): RequestType {
-            return _type
-        }
+    override fun getRequestName(): String {
+        return _name
     }
+
+    override fun getUrl(): String {
+        return _url
+    }
+
+    override fun getRequestType(): RequestType {
+        return _type
+    }
+
 }
