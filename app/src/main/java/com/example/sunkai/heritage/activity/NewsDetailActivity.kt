@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
 import android.transition.Fade
+import android.view.View
 import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerAdapter

@@ -10,7 +10,8 @@ import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 
 enum class EHeritageApi constructor(val _name: String, val _url: String, val _type: RequestType) : MyEHeritageApi {
     GetNewsList("newsList", "api/NewsList", RequestType.GET),
-    GetBanner("banner", "api/banner", RequestType.GET);
+    GetBanner("banner", "api/banner", RequestType.GET),
+    GetNewsDetail("newsDetail","api/NewsDetail",RequestType.GET);
 
     override fun getRequestName(): String {
         return _name

@@ -25,7 +25,7 @@ open class BaseRequest : Serializable, NetworkRequest {
         return result
     }
 
-    override fun getName(): String = this.javaClass.simpleName
+    override fun getName(): String = "request"
 
     class BaseInfo {
         val androidVersion = android.os.Build.VERSION.RELEASE

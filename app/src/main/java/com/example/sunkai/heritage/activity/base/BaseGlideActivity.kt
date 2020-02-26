@@ -107,30 +107,41 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
 
     protected fun requestHttp(bean: BaseRequest, api: EHeritageApi) {
         val requestHelper = RequestHelper(api)
-        BaseSetting.requestNetwork(requestHelper, bean, this)
+        val job = GlobalScope.launch {
+            BaseSetting.requestNetwork(requestHelper, bean, this@BaseGlideActivity)
+        }
+        runnableList.add(job)
     }
 
 
-    override fun  onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+
     }
 
-    override fun  onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
+
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     override fun onRequestEnd(request: RequestHelper) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     protected fun setIgnoreToolbar(ignore: Boolean) {
         this.ignoreToolbar = ignore
     }
 
+    //定义泛型方法，简单化Gson的使用
+    fun <T> fromJsonToList(s: String, clazz: Class<T>): List<T> {
+        return BaseSetting.gsonInstance.fromJson(s, ParameterizedTypeImpl(clazz))
+    }
+
+    fun <T> fromJsonToObject(s:String,clazz:Class<T>):T{
+        return BaseSetting.gsonInstance.fromJson(s,clazz)
+    }
     open fun setNeedChangeThemeColorWidget() {}
 
 }

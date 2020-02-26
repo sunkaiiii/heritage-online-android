@@ -49,12 +49,35 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-
-        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
-            android:id="@+id/newsDetailRecyclerView"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+                    android:id="@+id/newsDetailRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/newsDetailRelativeLoadingProgress"/>
+                <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:id="@+id/newsDetailRelativeNewsRecyclerView"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

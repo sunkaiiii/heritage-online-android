@@ -2,6 +2,7 @@
     <string name="app_name">E迹</string>
     <string name="verson_code">v3.4.2</string>
     <string name="no_mean_content">null</string>
+    <string name="network_error">网络错误，请稍后再试</string>
 
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
     <string name="apply_time">申报时间:</string>
@@ -16,6 +17,7 @@
     <string name="search">搜索</string>
     <string name="submit">确定</string>
     <string name="title">标题</string>
+
 
     <string name="share_user_name">share_user_name</string>
     <string name="share_user_image">share_user_image</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="network_error">Sorry… Network error</string>
     <string name="app_name">chinese heritage</string>
     <string name="verson_code">v3.2.1</string>
     <string name="no_mean_content">null</string>

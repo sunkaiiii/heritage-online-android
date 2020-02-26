@@ -6,9 +6,15 @@ import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.BottomNewsDetailRecyclerViewAdapter
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.HandleMainFragment
+import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.entity.BottomFolkNews
 import com.example.sunkai.heritage.entity.BottomFolkNewsLite
+import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
+import com.example.sunkai.heritage.interfaces.RequestAction
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
@@ -54,18 +60,45 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     private fun GetNewsDetail(link: String) {
         onPreLoad()
-        requestHttp {
-            val data = HandleMainFragment.GetBottomNewsInformationByLink(link)
-            data?.let {
-                runOnUiThread {
-                    onPostLoad()
-                    val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
-                    bottomNewsDetailRecyclerview.adapter = adapter
-                }
+        val request = BottomNewsDetailRequest();
+        request.link=link
+        requestHttp(request,EHeritageApi.GetNewsDetail)
+    }
 
+    override fun beforeReuqestStart(request: RequestHelper) {
+        super.beforeReuqestStart(request)
+        when(request.getRequestApi())
+        {
+            EHeritageApi.GetNewsDetail->onPreLoad()
+        }
+    }
+
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+        super.onTaskReturned(api, action, response)
+        when(api.getRequestApi())
+        {
+            EHeritageApi.GetNewsDetail->
+            {
+                val data=fromJsonToObject(response, BottomFolkNews::class.java)
+                val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
+                bottomNewsDetailRecyclerview.adapter = adapter
             }
         }
     }
+
+    override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
+        super.onRequestError(api, action, ex)
+        toast(getString(R.string.network_error))
+    }
+
+    //TODO 可以整合到基类里
+    override fun onRequestEnd(request: RequestHelper) {
+        when(request.getRequestApi())
+        {
+            EHeritageApi.GetNewsDetail->onPostLoad()
+        }
+    }
+
 
     override fun onPreLoad() {
         bottomNewsDetailRefresh.isRefreshing = true

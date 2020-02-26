@@ -44,7 +44,6 @@ open class BaseSetting {
                 val result = response.body()?.string()
                 action.getUIThread().post {
                     if (result.isNullOrEmpty()) {
-
                         action.onRequestError(request, action, IOException("new result returned"))
                         return@post
                     }

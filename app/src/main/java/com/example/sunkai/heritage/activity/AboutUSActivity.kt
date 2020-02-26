@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.ActionBar
 import android.view.MenuItem
@@ -24,7 +25,7 @@ class AboutUSActivity:BaseGlideActivity() {
             LicenceDialog().show(supportFragmentManager,"licence")
         }
         base_git_url.setOnClickListener {
-            val intent=Intent(Intent.ACTION_VIEW).setData(base_git_url.text.toString().toUri())
+            val intent=Intent(Intent.ACTION_VIEW).setData(Uri.parse(base_git_url.text.toString()))
             startActivity(intent)
 //            base_git_url.pivotX=0f
 //            base_git_url.pivotY=base_git_url.height.toFloat()
