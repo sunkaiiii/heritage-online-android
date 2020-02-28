@@ -1,7 +1,8 @@
 package com.example.sunkai.heritage.interfaces
 
 interface NetworkRequest {
-    fun toJson(): String
+    fun getJsonParameter(): String
+    fun getNormalParameter():Map<String,String>
     fun toMap(): Map<String, String>
     fun getName(): String
 }

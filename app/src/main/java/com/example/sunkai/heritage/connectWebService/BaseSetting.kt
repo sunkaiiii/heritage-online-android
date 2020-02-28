@@ -5,10 +5,7 @@ import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
-import okhttp3.FormBody
-import okhttp3.HttpUrl
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import java.io.IOException
 
 /*
@@ -21,9 +18,9 @@ open class BaseSetting {
         val SUCCESS = "SUCCESS"
         val ERROR = "ERROR"
         private val VERSION_UNKNOW = "unknow"
-        val URL = HOST
-        val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
-        val NEW_HOST = "https://sunkai.xyz:5001"
+        const val URL = HOST
+        const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
+        const val NEW_HOST = "https://sunkai.xyz:5001"
         val gsonInstance = Gson()
         private val client = OkHttpClient.Builder().build()
 
@@ -33,9 +30,12 @@ open class BaseSetting {
             request.getRequestApi()._url.split("/").forEach {
                 httpQueryUrl.addPathSegment(it)
             }
-            httpQueryUrl.addQueryParameter(requestBean.getName(), requestBean.toJson())
+            val parameters=requestBean.getNormalParameter();
+            parameters.forEach {
+                httpQueryUrl.addQueryParameter(it.key,it.value)
+            }
             val r = when (request.getRequestApi().getRequestType()) {
-                RequestType.GET, RequestType.POST, RequestType.PUT -> Request.Builder().url(httpQueryUrl.build()).build()
+                RequestType.GET, RequestType.POST, RequestType.PUT -> Request.Builder().url(httpQueryUrl.build()).addHeader(requestBean.getName(),requestBean.getJsonParameter()).build()
             }
             Log.e("Network Request", request.getRequestApi().getRequestName())
             try {
