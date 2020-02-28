@@ -16,6 +16,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.fragment.FolkFragment
 import com.example.sunkai.heritage.fragment.MainFragment
+import com.example.sunkai.heritage.fragment.ProjectFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getDarkThemeColor
@@ -90,6 +91,7 @@ class MainActivity : BaseGlideActivity() {
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
         viewList.add(MainFragment())
         viewList.add(FolkFragment())
+        viewList.add(ProjectFragment())
         val adapter = adapter(viewList, supportFragmentManager)
         activityMainViewpager.adapter = adapter
         activityMainViewpager.addOnPageChangeListener(onPageChangeListener)
@@ -147,6 +149,7 @@ class MainActivity : BaseGlideActivity() {
                 bottomNavigationButton.selectedItemId = when (position) {
                     0 -> R.id.main_layout
                     1 -> R.id.folk_layout
+                    2->R.id.project_layout
                     else -> R.id.main_layout
                 }
             }
@@ -178,6 +181,7 @@ class MainActivity : BaseGlideActivity() {
         activityMainViewpager.currentItem = when (item.itemId) {
             R.id.main_layout -> 0
             R.id.folk_layout -> 1
+            R.id.project_layout->2
             else -> 0
         }
         true

@@ -63,12 +63,12 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         requestHttp(Runnable(runnable))
     }
 
-    protected fun requestHttp(runnable: Runnable) {
+    private fun requestHttp(runnable: Runnable) {
         val job = GlobalScope.launch { runnable.run() }
         runnableList.add(job)
     }
 
-    protected fun requestHttp(api: EHeritageApi,bean: BaseRequest = BaseRequest()) {
+    protected  fun requestHttp(api: EHeritageApi,bean: BaseRequest = BaseRequest()) {
         val helper = RequestHelper(api)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
@@ -96,6 +96,10 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     //定义泛型方法，简单化Gson的使用
     fun <T> fromJsonToList(s: String, clazz: Class<T>): List<T> {
         return BaseSetting.gsonInstance.fromJson(s, ParameterizedTypeImpl(clazz))
+    }
+
+    fun <T> fromJsonToObject(s:String,clazz:Class<T>):T{
+        return BaseSetting.gsonInstance.fromJson(s,clazz)
     }
 
     override fun onDestroyView() {

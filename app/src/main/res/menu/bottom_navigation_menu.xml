@@ -8,4 +8,8 @@
         android:id="@+id/folk_layout"
         android:icon="@drawable/ic_people_grey_500_24dp"
         android:title="@string/folk_page"/>
+    <item
+        android:id="@+id/project_layout"
+        android:icon="@drawable/project_page_icon"
+        android:title="@string/project_page"/>
 </menu>

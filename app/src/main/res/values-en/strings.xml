@@ -36,6 +36,7 @@
     <string name="time">Time:</string>
     <string name="main_page">home page</string>
     <string name="folk_page">nongovernmental</string>
+    <string name="project_page">projects</string>
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
