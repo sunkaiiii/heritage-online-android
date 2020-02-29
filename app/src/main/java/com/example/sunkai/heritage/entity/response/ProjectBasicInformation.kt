@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.entity.rsponse
+package com.example.sunkai.heritage.entity.response
 
 class ProjectBasicInformation(val title:String,
                               val content:String,

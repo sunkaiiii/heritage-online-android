@@ -5,4 +5,5 @@ interface NetworkRequest {
     fun getNormalParameter():Map<String,String>
     fun toMap(): Map<String, String>
     fun getName(): String
+    fun getPathParamerater():List<String>
 }

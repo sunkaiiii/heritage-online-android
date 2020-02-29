@@ -9,11 +9,10 @@ import com.google.gson.Gson
 import java.io.Serializable
 import java.lang.Exception
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-open class BaseRequest : Serializable, NetworkRequest {
-
+abstract class BaseRequest: Serializable, NetworkRequest
+{
     val baseinfo = BaseInfo()
     override fun getJsonParameter(): String {
         return Gson().toJson(baseinfo)
@@ -25,7 +24,7 @@ open class BaseRequest : Serializable, NetworkRequest {
             try {
                 it.isAccessible=true
                 result[it.name]=it.get(this)!!.toString()
-            }catch (e:Exception)
+            }catch (e: Exception)
             {
                 e.printStackTrace()
             }
@@ -49,8 +48,6 @@ open class BaseRequest : Serializable, NetworkRequest {
         val brandName = android.os.Build.BRAND
         val version = GlobalContext.instance.getString(R.string.verson_code)
         val from = "android"
-        val locationInfo=BaiduLocation.contentBean
+        val locationInfo= BaiduLocation.contentBean
     }
-
 }
-

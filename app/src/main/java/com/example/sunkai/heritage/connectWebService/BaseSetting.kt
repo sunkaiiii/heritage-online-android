@@ -30,6 +30,10 @@ open class BaseSetting {
             request.getRequestApi()._url.split("/").forEach {
                 httpQueryUrl.addPathSegment(it)
             }
+            val pathParameter = requestBean.getPathParamerater()
+            pathParameter.forEach {
+                httpQueryUrl.addPathSegment(it)
+            }
             val parameters=requestBean.getNormalParameter();
             parameters.forEach {
                 httpQueryUrl.addQueryParameter(it.key,it.value)

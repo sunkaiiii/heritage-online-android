@@ -14,7 +14,8 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.request.BaseRequest
+import com.example.sunkai.heritage.entity.request.BaseQueryRequest
+import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -105,7 +106,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         return handler
     }
 
-    protected fun requestHttp(bean: BaseRequest, api: EHeritageApi) {
+    protected fun requestHttp(bean: NetworkRequest, api: EHeritageApi) {
         val requestHelper = RequestHelper(api)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(requestHelper, bean, this@BaseGlideActivity)

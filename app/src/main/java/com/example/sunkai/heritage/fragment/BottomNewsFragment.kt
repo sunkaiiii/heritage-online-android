@@ -13,7 +13,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.entity.BottomFolkNewsLite
-import com.example.sunkai.heritage.entity.request.BaseRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.bottom_news_framgent.*

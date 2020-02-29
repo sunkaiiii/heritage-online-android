@@ -12,7 +12,8 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.request.BaseRequest
+import com.example.sunkai.heritage.entity.request.BaseQueryRequest
+import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,7 +69,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         runnableList.add(job)
     }
 
-    protected  fun requestHttp(api: EHeritageApi,bean: BaseRequest = BaseRequest()) {
+    protected  fun requestHttp(api: EHeritageApi,bean: NetworkRequest = BaseQueryRequest()) {
         val helper = RequestHelper(api)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
