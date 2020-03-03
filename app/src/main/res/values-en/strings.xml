@@ -81,4 +81,10 @@ limitations under the License.</string>
     <string name="gson">gson</string>
     <string name="see_all_folk">See all content</string>
     <string name="exit_info">double press back button will exit the application</string>
+    <string name="fragment_project_name">project name: </string>
+    <string name="fragment_project_category">project category: </string>
+    <string name="fragment_project_location">Declaration location: </string>
+    <string name="fragment_project_time">Declaration time: </string>
+    <string name="fragment_project_number">project number: </string>
+    <string name="fragment_project_type">project type: </string>
 </resources>
