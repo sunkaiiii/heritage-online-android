@@ -2,7 +2,11 @@ package com.example.sunkai.heritage.adapter
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +19,10 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.entity.ClassifyDivideData
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.activity.FolkInformationActivity
+import com.example.sunkai.heritage.tools.CreateTransitionPair
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.value.HOST
+import com.example.sunkai.heritage.value.ACTIVITY_FRAGMENT
 
 /*
  * Created by sunkai on 2017/12/22.
@@ -68,8 +73,32 @@ class ActivityRecyclerViewAdapter(context: Context,datas:List<ClassifyDivideData
         glide.loadImageFromServer(data.img).into(holder.img)
     }
 
-    override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleActivityRecyclerViewItemClick(context,this)
+    override fun setItemClick(itemView: View, item: ClassifyDivideData) {
+        val intent = Intent(context, FolkInformationActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("activity", item)
+        intent.putExtra("img", item.img)
+        intent.putExtra("from", ACTIVITY_FRAGMENT)
+        intent.putExtras(bundle)
+        if (context is Activity) {
+            val image = itemView.findViewById<ImageView>(R.id.activity_layout_img)
+            val title = itemView.findViewById<TextView>(R.id.activity_layout_title)
+            val time = itemView.findViewById<TextView>(R.id.activity_layout_time)
+            val number = itemView.findViewById<TextView>(R.id.activity_layout_number)
+            val location = itemView.findViewById<TextView>(R.id.activity_layout_location)
+            val content = itemView.findViewById<TextView>(R.id.activity_layout_content)
+            val pairs = arrayOf(
+                    CreateTransitionPair(image, R.string.share_user_image),
+                    CreateTransitionPair(title, R.string.share_folk_title),
+                    CreateTransitionPair(time, R.string.share_folk_time),
+                    CreateTransitionPair(number, R.string.share_folk_number),
+                    CreateTransitionPair(location, R.string.share_folk_location),
+                    CreateTransitionPair(content, R.string.share_folk_content))
+            val transitionOptions = ActivityOptions.makeSceneTransitionAnimation(context, *pairs)
+            context.startActivity(intent, transitionOptions.toBundle())
+        } else {
+            context.startActivity(intent)
+        }
     }
 
 }

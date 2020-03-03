@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.entity.BottomFolkNewsLite
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer
 
@@ -69,7 +70,10 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         notifyDataSetChanged()
     }
 
-    override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleBottomNewsAdapterItemClick(context,this)
+    override fun setItemClick(itemView: View, item: BottomFolkNewsLite) {
+        val intent = Intent(context, BottomNewsDetailActivity::class.java)
+        intent.putExtra("data", item)
+        context.startActivity(intent)
     }
+
 }

@@ -59,7 +59,7 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
         }
     }
 
-    override fun setItemClick() {
+    override fun setItemClick(itemView: View, item: String) {
         setOnItemClickListener { view, position ->
             val color = Color.parseColor(getItem(position))
             setThemeColor(color)

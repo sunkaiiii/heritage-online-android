@@ -54,9 +54,11 @@ abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val
     }
 
     override fun onBindViewHolder(holder: T, position: Int) {
-        holder.itemView.setOnClickListener(this)
         holder.itemView.tag = position
-        setItemClick()
+        holder.itemView.setOnClickListener {
+            setItemClick(holder.itemView,getItem(position))
+        }
+
     }
 
     override fun onPreLoad() {
@@ -75,5 +77,5 @@ abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val
         return ArrayList(datas)
     }
 
-    protected open fun setItemClick() {}
+    protected open fun setItemClick(itemView: View, item: W) {}
 }

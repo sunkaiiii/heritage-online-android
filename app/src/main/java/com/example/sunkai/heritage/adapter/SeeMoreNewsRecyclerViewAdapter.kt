@@ -1,22 +1,27 @@
 package com.example.sunkai.heritage.adapter
 
+import android.app.ActivityOptions
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
+import android.transition.Slide
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.entity.FolkNewsLite
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
+import com.example.sunkai.heritage.activity.NewsDetailActivity
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer
 
@@ -83,8 +88,17 @@ class SeeMoreNewsRecyclerViewAdapter(context: Context, datas: List<FolkNewsLite>
         }
     }
 
-    override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleAllFolkNewsAdapterItemClick(context,this)
+    override fun setItemClick(itemView: View, item: FolkNewsLite) {
+        val intent = Intent(context, NewsDetailActivity::class.java)
+        val titleView = itemView.findViewById<TextView>(R.id.see_more_news_item_title)
+        intent.putExtra("category", item.category)
+        intent.putExtra("data", item)
+        if (context is AppCompatActivity) {
+            val slide = Slide(GravityCompat.getAbsoluteGravity(GravityCompat.START, GlobalContext.instance.resources.configuration.layoutDirection))
+            context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context, titleView, context.getString(R.string.news_detail_share_title)).toBundle())
+        } else {
+            context.startActivity(intent)
+        }
     }
 
 }

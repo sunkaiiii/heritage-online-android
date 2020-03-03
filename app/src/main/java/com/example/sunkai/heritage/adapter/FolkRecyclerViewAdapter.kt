@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,12 @@ import com.example.sunkai.heritage.connectWebService.HandleFolk
 import com.example.sunkai.heritage.entity.FolkDataLite
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.FolkInformationActivity
 import com.example.sunkai.heritage.tools.BaseAsyncTask
-import com.example.sunkai.heritage.tools.HandleAdapterItemClickClickUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.value.HOST
+import com.example.sunkai.heritage.value.ALL_FOLK_INFO_ACTIVITY
+import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.FROM
 
 /**
  * 民间页recyclerview的adapter
@@ -102,7 +105,10 @@ class FolkRecyclerViewAdapter(context: Context, datas: List<FolkDataLite>,glide:
         }
     }
 
-    override fun setItemClick() {
-        HandleAdapterItemClickClickUtils.handleFolkHeritageAdapterItemCLick(context,this)
+    override fun setItemClick(itemView: View, item: FolkDataLite) {
+        val intent = Intent(context, FolkInformationActivity::class.java)
+        intent.putExtra(DATA, item)
+        intent.putExtra(FROM, ALL_FOLK_INFO_ACTIVITY)
+        context.startActivity(intent)
     }
 }
