@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="InnerclassSeparator">
-        <activity android:name=".activity.ProjectDetailActivity"></activity>
+
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
@@ -43,6 +43,8 @@
             android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activity.NewsDetailActivity" />
         <activity android:name=".activity.BottomNewsDetailActivity" />
+        <activity android:name=".activity.ProjectDetailActivity"
+            android:theme="@style/AppThemeNoActionBar"/>
         <activity
             android:name=".activity.ViewImageActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />

@@ -87,4 +87,8 @@ limitations under the License.</string>
     <string name="fragment_project_time">Declaration time: </string>
     <string name="fragment_project_number">project number: </string>
     <string name="fragment_project_type">project type: </string>
+    <string name="fragment_project_id">project id: </string>
+    <string name="fragment_project_declaration">declaration location or company: </string>
+    <string name="fragment_project_protection">company of protecting the project</string>
+
 </resources>

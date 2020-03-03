@@ -90,4 +90,7 @@ limitations under the License.</string>
     <string name="fragment_project_time">申报时间：</string>
     <string name="fragment_project_number">非遗编号：</string>
     <string name="fragment_project_type">项目类型：</string>
+    <string name="fragment_project_id">项目编号：</string>
+    <string name="fragment_project_declaration">申报地区或单位：</string>
+    <string name="fragment_project_protection">保护单位：</string>
 </resources>
