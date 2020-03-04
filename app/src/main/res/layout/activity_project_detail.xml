@@ -32,10 +32,17 @@
                     android:textStyle="bold"
                     tools:text="非遗标题" />
             </FrameLayout>
+            <include layout="@layout/activity_project_detail_top_layout"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/projectDesc"/>
+            <include layout="@layout/activity_project_detail_inheritate_layout"
+                android:id="@+id/activityProjectDetailInheritateLayout"
+                android:visibility="gone" />
+            <include layout="@layout/activity_project_detail_relative_project_layout"
+                android:id="@+id/activityProjectDetailRalevantProject"
+                android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
 
