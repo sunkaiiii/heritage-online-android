@@ -125,8 +125,8 @@ class MainFragment : BaseGlideFragment() {
     }
 
     private val viewpagerRecyclerScrollHandler = object : Handler(Looper.getMainLooper()) {
-        override fun handleMessage(msg: Message?) {
-            if (msg?.what == SCROLL) {
+        override fun handleMessage(msg: Message) {
+            if (msg.what == SCROLL) {
                 MainPageSlideViewpager.currentItem = MainPageSlideViewpager.currentItem + 1
                 startRecyclerScroll()
             }

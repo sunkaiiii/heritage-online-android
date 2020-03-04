@@ -3,11 +3,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 android {
-    compileSdkVersion 29
+    compileSdkVersion 'android-R'
     defaultConfig {
         applicationId "com.datong.heritage_online"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 'R'
         versionCode 40
         versionName "3.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -57,8 +57,8 @@ dependencies {
     //    network
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     //    glide Support 暂时没用到
     //    implementation 'jp.wasabeef:glide-transformations:3.0.1'
     //    implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'

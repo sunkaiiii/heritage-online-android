@@ -20,7 +20,7 @@ abstract class BaseHandleCollectActivity : BaseGlideActivity(), HandleCollect {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
                 onBackPressed()

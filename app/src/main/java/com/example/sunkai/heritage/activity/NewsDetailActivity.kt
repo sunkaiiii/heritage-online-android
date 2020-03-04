@@ -29,8 +29,8 @@ class NewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
-        val title = intent.getStringExtra(CATEGORY)
-        val data = intent.getSerializableExtra(DATA)
+        val title = intent.getStringExtra(CATEGORY)!!
+        val data = intent.getSerializableExtra(DATA)!!
         setupWindowAnimations(data)
         setDataToView(data)
         supportActionBar?.title = title

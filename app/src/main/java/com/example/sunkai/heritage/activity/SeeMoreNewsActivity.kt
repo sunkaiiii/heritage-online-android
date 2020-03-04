@@ -23,7 +23,7 @@ class SeeMoreNewsActivity : BaseGlideActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_see_more_news)
         initView()
-        val category = intent.getStringExtra(CATEGORY)
+        val category = intent.getStringExtra(CATEGORY)!!
         //如果没有取到category，则默认低1个分类
         if (!TextUtils.isEmpty(category)) {
             setPositionToSelectCategory(category)

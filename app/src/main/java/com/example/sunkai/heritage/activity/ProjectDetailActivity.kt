@@ -3,6 +3,7 @@ package com.example.sunkai.heritage.activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Transformation
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -65,7 +66,7 @@ class ProjectDetailActivity : BaseGlideActivity() {
                 val contentView = LayoutInflater.from(this).inflate(R.layout.activity_project_detail_inheritate_content, projectDetailRelativeInheritate, false)
                 val contentLayout: LinearLayout = contentView.findViewById(R.id.inheritateMainContentLayout)
                 contentView.findViewById<ImageView>(R.id.inheritateShowMore).setOnClickListener {
-                    TransitionManager.beginDelayedTransition(projectDetailRelativeInheritate, ChangeBounds())
+                    TransitionManager.beginDelayedTransition(window.decorView as ViewGroup, ChangeBounds())
                     contentLayout.visibility = if (contentLayout.visibility == View.GONE) View.VISIBLE else View.GONE
                 }
                 val name: TextView = contentView.findViewById(R.id.inheritateName)

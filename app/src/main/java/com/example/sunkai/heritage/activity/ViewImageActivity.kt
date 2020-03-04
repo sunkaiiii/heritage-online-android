@@ -22,7 +22,7 @@ class ViewImageActivity : BaseViewImageActivity() {
     }
 
     private fun getImage() {
-        val imageUrl = intent.getStringArrayExtra(IMAGE_URL)
+        val imageUrl = intent.getStringArrayExtra(IMAGE_URL)!!
         val position = intent.getIntExtra(IMAGE_POSITION, 0)
         val adapter = ViewImageGalleryAdapter(this, imageUrl, glide)
         adapter.setOnDragListener(this)
