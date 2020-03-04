@@ -12,6 +12,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.ProjectDetailActivity
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
+import com.example.sunkai.heritage.value.DATA
 
 class ProjectInformationAdapter(context: Context, data: List<ProjectListInformation>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<ProjectInformationAdapter.Holder, ProjectListInformation>(context, data, glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -48,7 +49,7 @@ class ProjectInformationAdapter(context: Context, data: List<ProjectListInformat
 
     override fun setItemClick(itemView: View, item: ProjectListInformation) {
         val intent=Intent(context,ProjectDetailActivity::class.java)
-        intent.putExtra("data",item)
+        intent.putExtra(DATA,item.link)
         context.startActivity(intent)
     }
 }

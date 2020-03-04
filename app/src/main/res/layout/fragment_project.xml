@@ -2,10 +2,10 @@
 
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.core.widget.ContentLoadingProgressBar
         android:id="@+id/ProjectDescLoading"
@@ -14,54 +14,80 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll">
+
+                <LinearLayout
+                    android:id="@+id/ProjectPageLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/ProjectPageTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:gravity="center_horizontal"
+                        android:textSize="18sp"
+                        tools:text="国家级非物质文化遗产代表名录" />
+
+                    <TextView
+                        android:id="@+id/ProjectPageContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="3" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ProjectShowContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_search_grey_400_24dp" />
+
+
+                </LinearLayout>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
-            android:id="@+id/ProjectPageLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <TextView
-                android:id="@+id/ProjectPageTitle"
-                android:layout_width="match_parent"
-                android:textSize="18sp"
-                android:layout_margin="12dp"
-                tools:text="国家级非物质文化遗产代表名录"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/ProjectPageContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:ellipsize="end"
-                android:maxLines="3"/>
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ProjectShowContent"
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_search_grey_400_24dp"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
+                android:padding="8dp"
                 android:id="@+id/ProjectDescLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary"/>
+
             <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+                android:id="@+id/ProjectInformationList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:id="@+id/ProjectInformationList"/>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </FrameLayout>
 
 
