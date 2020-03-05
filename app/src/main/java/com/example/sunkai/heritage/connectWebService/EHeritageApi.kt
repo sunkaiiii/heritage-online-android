@@ -14,7 +14,8 @@ enum class EHeritageApi constructor(val _name: String, val _url: String, val _ty
     GetNewsDetail("newsDetail","api/NewsDetail",RequestType.GET),
     GetProjectBasicInformation("projectInformaton","api/HeritageProject/GetMainPage",RequestType.GET),
     GetHeritageProjectList("GetHeritageProjectList","/api/HeritageProject/GetHeritageProjectList",RequestType.GET),
-    GetProjectDetail("GetProjectDetail","/api/HeritageProject/GetHeritageDetail",RequestType.GET);
+    GetProjectDetail("GetProjectDetail","/api/HeritageProject/GetHeritageDetail",RequestType.GET),
+    GetInheritateDetail("GetInheritateDetail","/api/HeritageProject/GetInheritatePeople",RequestType.GET);
 
     override fun getRequestName(): String {
         return _name

@@ -92,5 +92,6 @@ limitations under the License.</string>
     <string name="fragment_project_protection">company of protecting the project</string>
     <string name="activity_project_detail_relative_inheritate">relative inheritate</string>
     <string name="activity_project_detail_relative_project">relative projects</string>
+    <string name="inheritors">inheritors</string>
 
 </resources>

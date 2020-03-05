@@ -53,12 +53,8 @@ class ProjectDetailActivity : BaseGlideActivity() {
         setContentView(R.layout.activity_project_detail)
         projectDetailTitle.text = projectDetail.title
         projectDesc.text = projectDetail.text
-        projectDetail.desc.forEach {
-            val textView = TextView(this)
-            textView.text = it
-            projectDetailGridlayout.addView(textView)
-        }
-        if (projectDetail.inheritate.isNotEmpty()) {
+        projectDetailTopGridView.setData(projectDetail.desc)
+        if (!projectDetail.inheritate.isNullOrEmpty()) {
             activityProjectDetailInheritateLayout.visibility = View.VISIBLE
             activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
         }

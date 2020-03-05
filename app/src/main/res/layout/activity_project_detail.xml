@@ -33,7 +33,10 @@
                     tools:text="非遗标题" />
             </FrameLayout>
 
-            <include layout="@layout/activity_project_detail_top_layout" />
+            <com.example.sunkai.heritage.Views.ProjectDetailTopGridView
+                android:layout_width="match_parent"
+                android:id="@+id/projectDetailTopGridView"
+                android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/projectDesc"
