@@ -60,45 +60,12 @@ class ProjectDetailActivity : BaseGlideActivity() {
         }
         if (projectDetail.inheritate.isNotEmpty()) {
             activityProjectDetailInheritateLayout.visibility = View.VISIBLE
-            var i = 0
-            while (i < projectDetail.inheritate.size) {
-                val content = projectDetail.inheritate[i]
-                val contentView = LayoutInflater.from(this).inflate(R.layout.activity_project_detail_inheritate_content, projectDetailRelativeInheritate, false)
-                val contentLayout: LinearLayout = contentView.findViewById(R.id.inheritateMainContentLayout)
-                contentView.findViewById<ImageView>(R.id.inheritateShowMore).setOnClickListener {
-                    TransitionManager.beginDelayedTransition(window.decorView as ViewGroup, ChangeBounds())
-                    contentLayout.visibility = if (contentLayout.visibility == View.GONE) View.VISIBLE else View.GONE
-                }
-                val name: TextView = contentView.findViewById(R.id.inheritateName)
-                name.text = String.format("%d.%s", i + 1, content.content.first { it.key.contains("姓名") }.value)
-                content.content.filter { (!it.key.contains("姓名")).and(it.value.isNotBlank()) }.forEach {
-                    val textView = TextView(this)
-                    textView.text = String.format("%s:%s", it.key, it.value)
-                    contentLayout.addView(textView)
-                }
-                projectDetailRelativeInheritate.addView(contentView)
-                i++
-            }
+            activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
+        }
 
-            if (!projectDetail.ralevant.isNullOrEmpty()) {
-                activityProjectDetailRalevantProject.visibility = View.VISIBLE
-                val contentView: LinearLayout = activityProjectDetailRalevantProject.findViewById(R.id.projectDetailRelativeInheritate)
-                val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                layoutParams.setMargins(Utils.dip2px(8))
-                projectDetail.ralevant.forEach { it ->
-                    try {
-                        val textView = TextView(this)
-                        textView.layoutParams = layoutParams
-                        textView.setTextColor(resources.getColor(R.color.black))
-                        textView.text = String.format("%s(%s)", it.content.first { it.key.contains("名称") }.value, it.content.first { it.key.contains("地区") }.value)
-                        contentView.addView(textView)
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            }
+        if (!projectDetail.ralevant.isNullOrEmpty()) {
+            activityProjectDetailRalevantProject.visibility = View.VISIBLE
+            activityProjectDetailRalevantProject.setData(projectDetail.ralevant)
         }
     }
-
-
 }

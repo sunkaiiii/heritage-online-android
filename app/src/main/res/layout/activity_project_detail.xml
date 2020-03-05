@@ -32,26 +32,36 @@
                     android:textStyle="bold"
                     tools:text="非遗标题" />
             </FrameLayout>
-            <include layout="@layout/activity_project_detail_top_layout"/>
+
+            <include layout="@layout/activity_project_detail_top_layout" />
+
             <TextView
+                android:id="@+id/projectDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.example.sunkai.heritage.Views.ProjectDetailInheritateView
+                android:id="@+id/activityProjectDetailInheritateLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/projectDesc"/>
-            <include layout="@layout/activity_project_detail_inheritate_layout"
-                android:id="@+id/activityProjectDetailInheritateLayout"
-                android:visibility="gone" />
-            <include layout="@layout/activity_project_detail_relative_project_layout"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.example.sunkai.heritage.Views.ProjectDetailRalevantView
                 android:id="@+id/activityProjectDetailRalevantProject"
-                android:visibility="gone"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
     </ScrollView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:elevation="16dp"
-        app:cardBackgroundColor="@color/colorPrimary"
         android:layout_height="wrap_content"
         android:alpha="0"
+        android:elevation="16dp"
+        app:cardBackgroundColor="@color/colorPrimary"
         tools:alpha="100">
 
         <FrameLayout
@@ -72,11 +82,11 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
-        android:layout_margin="12dp"
         android:id="@+id/projectDetailBackArrow"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_margin="12dp"
+        android:contentDescription="@string/no_mean_content"
         android:elevation="20dp"
-        android:src="@drawable/project_name"
-        android:contentDescription="@string/no_mean_content" />
+        android:src="@drawable/project_name" />
 </FrameLayout>
