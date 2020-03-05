@@ -15,11 +15,13 @@
         android:layout_gravity="center" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/fragmentProjectCoordicatorlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/fragmentProjectAppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -61,33 +63,44 @@
                         android:layout_marginEnd="8dp"
                         android:src="@drawable/ic_search_grey_400_24dp" />
 
-
+                    <LinearLayout
+                        android:id="@+id/ProjectDescLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:orientation="horizontal"
+                        android:padding="8dp" />
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+            android:id="@+id/ProjectInformationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <LinearLayout
-                android:padding="8dp"
-                android:id="@+id/ProjectDescLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@color/colorPrimary"/>
-
-            <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
-                android:id="@+id/ProjectInformationList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-        </LinearLayout>
+            android:layout_alignParentTop="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fragmentProjectSearchCard"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="top"
+        android:layout_margin="24dp"
+        android:visibility="gone"
+        app:cardCornerRadius="4dp"
+        tools:visibility="visible">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:hint="@string/fragment_project_search_project" />
+    </androidx.cardview.widget.CardView>
+
 </FrameLayout>
 
 

@@ -96,4 +96,5 @@ limitations under the License.</string>
     <string name="activity_project_detail_relative_inheritate">相关传承人</string>
     <string name="activity_project_detail_relative_project">相关项目</string>
     <string name="inheritors">传承人</string>
+    <string name="fragment_project_search_project">搜索项目</string>
 </resources>
