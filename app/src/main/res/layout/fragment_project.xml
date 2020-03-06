@@ -38,30 +38,35 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <TextView
-                        android:id="@+id/ProjectPageTitle"
+                    <androidx.appcompat.widget.Toolbar
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        app:menu="@menu/seach_menu" />
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="12dp"
-                        android:gravity="center_horizontal"
-                        android:textSize="18sp"
-                        tools:text="国家级非物质文化遗产代表名录" />
+                        android:padding="12dp">
 
-                    <TextView
-                        android:id="@+id/ProjectPageContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:ellipsize="end"
-                        android:maxLines="3" />
+                        <TextView
+                            android:id="@+id/ProjectPageTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:textSize="18sp"
+                            tools:text="国家级非物质文化遗产代表名录" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ProjectShowContent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginEnd="8dp"
-                        android:src="@drawable/ic_search_grey_400_24dp" />
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/projectFragmentShowContent"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_toEndOf="@id/ProjectPageTitle"
+                            android:src="@drawable/fragment_project_show_content_icon"
+                            android:layout_marginBottom="-12dp"
+                            android:alpha="0.6"/>
+
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/ProjectDescLayout"
@@ -92,7 +97,7 @@
         android:layout_margin="24dp"
         android:visibility="gone"
         app:cardCornerRadius="4dp"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <EditText
             android:layout_width="match_parent"

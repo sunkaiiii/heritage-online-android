@@ -1,24 +1,26 @@
 package com.example.sunkai.heritage.fragment
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
+import com.example.sunkai.heritage.tools.Utils
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_project.*
 
@@ -92,12 +94,11 @@ class ProjectFragment : BaseLazyLoadFragment() {
         ProjectDescLoading.visibility = View.GONE
         ProjectPageLayout.visibility = View.VISIBLE
         ProjectPageTitle.text = projectInformation.title
-        ProjectPageContent.text = projectInformation.content
-        ProjectShowContent.setOnClickListener {
-            val animation = ChangeBounds()
-            animation.duration = 300
-            TransitionManager.beginDelayedTransition(ProjectPageLayout, animation)
-            ProjectPageContent.maxLines = if (ProjectPageContent.maxLines == 999) 3 else 999
+        projectFragmentShowContent.setOnClickListener {
+            val dialog = FragmentProjectContentDialog(context
+                    ?: return@setOnClickListener, projectInformation)
+            dialog.show()
+            dialog.window?.setLayout(Utils.getScreenWidth(), (Utils.getScreenHeight() * 0.7).toInt())
         }
         projectInformation.numItem.forEach {
             val itemLayout = LayoutInflater.from(context).inflate(R.layout.fragment_project_item_layout, ProjectDescLayout, false)
