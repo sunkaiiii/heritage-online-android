@@ -4,15 +4,29 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 'android-R'
-    defaultConfig {
-        applicationId "com.datong.heritage_online"
-        minSdkVersion 21
-        targetSdkVersion 'R'
-        versionCode 100
-        versionName "4.0.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resConfigs "zh", "en"
+    def value = 0
+    def versionPropsFile = file('version.properties')
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        def code = versionProps['VERSION_CODE'].toInteger() + 1
+        versionProps['VERSION_CODE']=code.toString()
+        def runTasks = gradle.startParameter.taskNames
+        versionProps.store(versionPropsFile.newWriter(), null)
+        defaultConfig {
+            applicationId "com.datong.heritage_online"
+            minSdkVersion 21
+            targetSdkVersion 'R'
+            versionCode code
+            versionName "4.0.0"
+            testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+            resConfigs "zh", "en"
+        }
     }
+    else {
+        throw new GradleException("Could not read version.properties!")
+    }
+
     buildTypes {
         release {
             minifyEnabled true
