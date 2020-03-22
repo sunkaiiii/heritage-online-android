@@ -13,14 +13,17 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.entity.NewsListResponse
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer
+import com.example.sunkai.heritage.value.API
+import com.example.sunkai.heritage.value.DATA
 
 /**
  * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context,data, glide) {
+class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi:EHeritageApi) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context,data, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -72,7 +75,8 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListRes
 
     override fun setItemClick(itemView: View, item: NewsListResponse) {
         val intent = Intent(context, BottomNewsDetailActivity::class.java)
-        intent.putExtra("data", item)
+        intent.putExtra(DATA, item)
+        intent.putExtra(API,requestDetailApi)
         context.startActivity(intent)
     }
 

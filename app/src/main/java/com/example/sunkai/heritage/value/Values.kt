@@ -27,6 +27,7 @@ const val THEME_COLOR = "theme_color"
 const val SEARCH_SHAREPREF_NAME = "search_info"
 const val IMAGE_URL = "image_url"
 const val IMAGE_POSITION="image_position"
+const val API="api"
 typealias TransitionPair = Pair<View, String>
 
 const val THEME_REGULAR = "#ac462e"

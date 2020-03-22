@@ -31,10 +31,10 @@ import java.io.Serializable
 class MainFragment : BaseGlideFragment() {
 
     private val PAGES= arrayOf(NewsPages.NewsPage,NewsPages.ForumsPage,NewsPages.SpecialTopicPage)
-    enum class NewsPages constructor(val _name:String, val reqeustApi:EHeritageApi):Serializable{
-        NewsPage("newsPage",EHeritageApi.GetNewsList),
-        ForumsPage("forumsPage",EHeritageApi.GetForumsList),
-        SpecialTopicPage("specialTopicPage",EHeritageApi.GetSpecialTopic),
+    enum class NewsPages constructor(val _name:String, val reqeustApi:EHeritageApi,val detailApi: EHeritageApi):Serializable{
+        NewsPage("newsPage",EHeritageApi.GetNewsList,EHeritageApi.GetNewsDetail),
+        ForumsPage("forumsPage",EHeritageApi.GetForumsList,EHeritageApi.GetForumsDetail),
+        SpecialTopicPage("specialTopicPage",EHeritageApi.GetSpecialTopic,EHeritageApi.GetSpecialTopicDetail),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

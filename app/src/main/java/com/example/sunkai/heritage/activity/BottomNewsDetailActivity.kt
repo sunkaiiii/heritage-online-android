@@ -13,6 +13,7 @@ import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
@@ -21,12 +22,14 @@ import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     var link: String? = null
+    var requestApi:EHeritageApi?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_news_detail)
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
+        requestApi=intent.getSerializableExtra(API) as EHeritageApi
         if (data is NewsListResponse) {
             this.link = data.link
             setDataToView(data)
@@ -59,7 +62,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         onPreLoad()
         val request = BottomNewsDetailRequest();
         request.link=link
-        requestHttp(request,EHeritageApi.GetNewsDetail)
+        requestHttp(request,requestApi?:return)
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {
@@ -74,7 +77,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         super.onTaskReturned(api, action, response)
         when(api.getRequestApi())
         {
-            EHeritageApi.GetNewsDetail->
+            requestApi->
             {
                 val data=fromJsonToObject(response, BottomFolkNews::class.java)
                 val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
@@ -92,7 +95,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     override fun onRequestEnd(request: RequestHelper) {
         when(request.getRequestApi())
         {
-            EHeritageApi.GetNewsDetail->onPostLoad()
+            requestApi->onPostLoad()
         }
     }
 

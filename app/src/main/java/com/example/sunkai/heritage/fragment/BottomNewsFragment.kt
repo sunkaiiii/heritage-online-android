@@ -54,7 +54,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
         when (api.getRequestApi()) {
             reqeustArgument?.reqeustApi -> {
                 val data = fromJsonToList(response, NewsListResponse::class.java)
-                val adapter = BottomFolkNewsRecyclerviewAdapter(activity ?: return, data, glide)
+                val adapter = BottomFolkNewsRecyclerviewAdapter(activity ?: return, data, glide,reqeustArgument?.detailApi?:return)
                 fragmentMainRecyclerview.adapter = adapter
                 onPostLoad()
             }
