@@ -22,12 +22,20 @@ import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import kotlinx.android.synthetic.main.fragment_main.*
+import java.io.Serializable
 
 
 /**
  * 首页
  */
 class MainFragment : BaseGlideFragment() {
+
+    private val PAGES= arrayOf(NewsPages.NewsPage,NewsPages.ForumsPage,NewsPages.SpecialTopicPage)
+    enum class NewsPages constructor(val _name:String, val reqeustApi:EHeritageApi):Serializable{
+        NewsPage("newsPage",EHeritageApi.GetNewsList),
+        ForumsPage("forumsPage",EHeritageApi.GetForumsList),
+        SpecialTopicPage("specialTopicPage",EHeritageApi.GetSpecialTopic),
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -67,6 +75,7 @@ class MainFragment : BaseGlideFragment() {
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
         setViewPagerListener(mainPageViewPager)
+        mainPageViewPager.offscreenPageLimit=fragments.size
         mainPageViewPager.adapter = adapter
     }
 
@@ -134,10 +143,14 @@ class MainFragment : BaseGlideFragment() {
     }
 
     private fun createFragments(): List<Fragment> {
-        val bottomNewsFragment = BottomNewsFragment()
         val fragments = arrayListOf<Fragment>()
-        fragments.add(bottomNewsFragment)
-        fragments.add(MainNewsFragment())
+        PAGES.forEach {
+            val fragment=BottomNewsFragment()
+            val bundle=Bundle()
+            bundle.putSerializable(PAGE,it)
+            fragment.arguments=bundle
+            fragments.add(fragment)
+        }
         return fragments
     }
 
@@ -162,5 +175,6 @@ class MainFragment : BaseGlideFragment() {
     companion object {
         const val SCROLL = 1
         const val DELAY = 3000L
+        const val PAGE="page"
     }
 }

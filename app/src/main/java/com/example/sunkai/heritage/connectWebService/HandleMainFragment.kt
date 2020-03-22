@@ -47,14 +47,14 @@ object HandleMainFragment : BaseSetting() {
         return arrayListOf()
     }
 
-    fun GetBottomNewsLiteInformation(page:Int):List<BottomFolkNewsLite>{
+    fun GetBottomNewsLiteInformation(page:Int):List<NewsListResponse>{
         val url="/api/NewsList/$page"
         val result=PutNewGet(url)
         if(ERROR==result){
             return arrayListOf()
         }
         try{
-            return fromJsonToList(result, Array<BottomFolkNewsLite>::class.java)
+            return fromJsonToList(result, Array<NewsListResponse>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -100,14 +100,14 @@ object HandleMainFragment : BaseSetting() {
         return arrayListOf()
     }
 
-    fun SearchBottomNewsInfo(searchInfo:String):List<BottomFolkNewsLite>{
+    fun SearchBottomNewsInfo(searchInfo:String):List<NewsListResponse>{
         val url="$URL/SearchBottomNewsInformation?searchInfo=$searchInfo"
         val result=PutGet(url)
         if(result== ERROR){
             return arrayListOf()
         }
         try{
-            return fromJsonToList(result,Array<BottomFolkNewsLite>::class.java)
+            return fromJsonToList(result,Array<NewsListResponse>::class.java)
         }catch (e:Exception){
             e.printStackTrace()
         }

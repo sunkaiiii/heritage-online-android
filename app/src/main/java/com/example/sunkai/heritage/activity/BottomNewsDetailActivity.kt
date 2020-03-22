@@ -1,16 +1,13 @@
 package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
-import android.transition.Fade
-import androidx.core.transition.doOnEnd
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
 import com.example.sunkai.heritage.adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.HandleMainFragment
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.entity.BottomFolkNews
-import com.example.sunkai.heritage.entity.BottomFolkNewsLite
+import com.example.sunkai.heritage.entity.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
@@ -30,7 +27,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         setContentView(R.layout.activity_bottom_news_detail)
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
-        if (data is BottomFolkNewsLite) {
+        if (data is NewsListResponse) {
             this.link = data.link
             setDataToView(data)
             supportActionBar?.title = title
@@ -52,7 +49,7 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         return null
     }
 
-    private fun setDataToView(data: BottomFolkNewsLite) {
+    private fun setDataToView(data: NewsListResponse) {
         bottomNewsDetailTime.setTextColor(getThemeColor())
         bottomNewsDetailTitle.text = data.title
         bottomNewsDetailTime.text = data.date

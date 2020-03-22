@@ -13,7 +13,7 @@
     <string name="please_choice">请选择</string>
     <string name="news_title">新闻标题</string>
     <string name="more">更多</string>
-    <string name="focus_heritage">聚焦非遗</string>
+    <string name="news_feed">新闻动态</string>
     <string name="search">搜索</string>
     <string name="submit">确定</string>
     <string name="title">标题</string>
@@ -34,7 +34,7 @@
     <string name="time">时间:</string>
     <string name="main_page">首页</string>
     <string name="folk_page">民间</string>
-    <string name="all_news">全部新闻</string>
+    <string name="forums">论坛</string>
     <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
@@ -97,4 +97,5 @@ limitations under the License.</string>
     <string name="activity_project_detail_relative_project">相关项目</string>
     <string name="inheritors">传承人</string>
     <string name="fragment_project_search_project">搜索项目</string>
+    <string name="special_topic" >专题报道</string>
 </resources>

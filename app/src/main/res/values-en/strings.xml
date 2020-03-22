@@ -14,8 +14,8 @@
     <string name="please_choice">Please choose</string>
     <string name="news_title">News headlines</string>
     <string name="more">More</string>
-    <string name="focus_heritage">Focus on the heritage</string>
-    <string name="all_news">all_news</string>
+    <string name="news_feed">News</string>
+    <string name="forums">Forums</string>
     <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
@@ -94,5 +94,6 @@ limitations under the License.</string>
     <string name="activity_project_detail_relative_project">relative projects</string>
     <string name="inheritors">inheritors</string>
     <string name="fragment_project_search_project">search project</string>
+    <string name="special_topic" >Special topic</string>
 
 </resources>

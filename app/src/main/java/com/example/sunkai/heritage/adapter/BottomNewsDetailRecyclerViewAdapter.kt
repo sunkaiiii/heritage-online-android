@@ -8,11 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.connectWebService.BaseSetting
-import com.example.sunkai.heritage.entity.BottomNewsDetail
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.entity.BottomFolkNews
+import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.entity.BottomFolkNewsContent
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer

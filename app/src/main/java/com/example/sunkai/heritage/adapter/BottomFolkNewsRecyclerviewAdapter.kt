@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.entity.BottomFolkNewsLite
+import com.example.sunkai.heritage.entity.NewsListResponse
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.tools.ViewImageUtils
@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.tools.loadImageFromServer
  * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolkNewsLite>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, BottomFolkNewsLite>(context,datas, glide) {
+class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context,data, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -46,7 +46,7 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
         setData(holder, data)
     }
 
-    private fun setData(holder: Holder, data: BottomFolkNewsLite) {
+    private fun setData(holder: Holder, data: NewsListResponse) {
         holder.image.visibility=View.GONE
         holder.image.setImageDrawable(null)
         holder.title.text = data.title
@@ -63,14 +63,14 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, datas: List<BottomFolk
     }
 
 
-    override fun addNewData(datas: List<BottomFolkNewsLite>) {
+    override fun addNewData(data: List<NewsListResponse>) {
         val extendData = this.datas.toMutableList()
-        extendData.addAll(datas)
+        extendData.addAll(data)
         this.datas = extendData
         notifyDataSetChanged()
     }
 
-    override fun setItemClick(itemView: View, item: BottomFolkNewsLite) {
+    override fun setItemClick(itemView: View, item: NewsListResponse) {
         val intent = Intent(context, BottomNewsDetailActivity::class.java)
         intent.putExtra("data", item)
         context.startActivity(intent)

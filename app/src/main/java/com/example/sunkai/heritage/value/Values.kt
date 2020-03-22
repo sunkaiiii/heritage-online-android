@@ -66,7 +66,7 @@ const val ACTIVITY_FRAGMENT = "ActivityFragment"
 val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
 val CLASSIFY_DIVIDE_TABVIEWSHOW = arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
 val CATEGORIES = arrayOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
-val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.focus_heritage), GlobalContext.instance.getString(R.string.all_news))
+val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums),GlobalContext.instance.getString(R.string.special_topic))
 val MAIN_PAGE_CATEGORY_NEWS_IMAGE = arrayOf("yao_wen.jpg"
         , "zhongguo_tese.jpg"
         , "chuantong_cuoluo.jpg"
