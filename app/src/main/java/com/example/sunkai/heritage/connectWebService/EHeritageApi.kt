@@ -21,6 +21,7 @@ enum class EHeritageApi constructor(val _name: String, val _url: String, val _ty
     GetForumsDetail("forumsDetail","/api/Forums/GetForumsDetail",RequestType.GET),
     GetSpecialTopic("specialTopic","/api/SpecialTopic/GetSpecialTopicList",RequestType.GET),
     GetSpecialTopicDetail("specialTopicDetail","/api/SpecialTopic/GetSpecialTopicDetail",RequestType.GET),
+    GetPeopleMainPage("getPeopleMainPage","/api/People/GetPeopleMainPage",RequestType.GET),
     GetPeopleList("peopleList","/api/People/PeopleList",RequestType.GET),
     GetPeopleDetail("peopleDetail","/api/People/GetPeopleDetail",RequestType.GET);
     override fun getRequestName(): String {

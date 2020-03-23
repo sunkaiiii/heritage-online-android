@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.sunkai.heritage.tools.views.RectangleImageView
+        android:id="@+id/bannerImageView"
+        tools:src="@drawable/project_detail_top_background"
+        tools:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/bannerIamgeDescTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/bannerImageView"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="#AAFFFFFF"
+        android:elevation="12dp"
+        android:textColor="@color/black"
+        tools:text="硕大的撒多撒撒群无" />
+</RelativeLayout>

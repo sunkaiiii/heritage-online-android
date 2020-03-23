@@ -22,23 +22,27 @@ import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     var link: String? = null
-    var requestApi:EHeritageApi?=null
+    var requestApi: EHeritageApi? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_news_detail)
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
-        requestApi=intent.getSerializableExtra(API) as EHeritageApi
+        requestApi = intent.getSerializableExtra(API) as EHeritageApi
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (data is NewsListResponse) {
             this.link = data.link
             setDataToView(data)
             supportActionBar?.title = title
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            GetNewsDetail(data.link)
-            bottomNewsDetailRefresh.setOnRefreshListener {
-                GetNewsDetail(data.link)
-            }
+
+        } else if (data is String) {
+            this.link = data
+        }
+        val link = this.link ?: return
+        GetNewsDetail(link)
+        bottomNewsDetailRefresh.setOnRefreshListener {
+            GetNewsDetail(link)
         }
     }
 
@@ -61,25 +65,22 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     private fun GetNewsDetail(link: String) {
         onPreLoad()
         val request = BottomNewsDetailRequest();
-        request.link=link
-        requestHttp(request,requestApi?:return)
+        request.link = link
+        requestHttp(request, requestApi ?: return)
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {
         super.beforeReuqestStart(request)
-        when(request.getRequestApi())
-        {
-            EHeritageApi.GetNewsDetail->onPreLoad()
+        when (request.getRequestApi()) {
+            EHeritageApi.GetNewsDetail -> onPreLoad()
         }
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         super.onTaskReturned(api, action, response)
-        when(api.getRequestApi())
-        {
-            requestApi->
-            {
-                val data=fromJsonToObject(response, BottomFolkNews::class.java)
+        when (api.getRequestApi()) {
+            requestApi -> {
+                val data = fromJsonToObject(response, BottomFolkNews::class.java)
                 val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
                 bottomNewsDetailRecyclerview.adapter = adapter
             }
@@ -93,9 +94,8 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
 
     //TODO 可以整合到基类里
     override fun onRequestEnd(request: RequestHelper) {
-        when(request.getRequestApi())
-        {
-            requestApi->onPostLoad()
+        when (request.getRequestApi()) {
+            requestApi -> onPostLoad()
         }
     }
 

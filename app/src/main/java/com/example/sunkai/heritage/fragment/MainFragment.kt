@@ -119,8 +119,7 @@ class MainFragment : BaseGlideFragment() {
         MainPageSlideViewpager.setCurrentItem(middleItem, false)
         MainPageSlideViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                viewpagerRecyclerScrollHandler.removeMessages(SCROLL)
-                viewpagerRecyclerScrollHandler.sendEmptyMessageDelayed(SCROLL, DELAY)
+               startRecyclerScroll()
             }
 
         })
