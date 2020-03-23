@@ -23,13 +23,14 @@ import com.example.sunkai.heritage.value.DATA
  * 首页底部聚焦非遗的adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi:EHeritageApi) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context,data, glide) {
+class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi: EHeritageApi) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context, data, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
         val time: TextView
         val briefly: TextView
         val image: ImageView
+
         init {
             title = view.findViewById(R.id.bottom_view_title)
             time = view.findViewById(R.id.bottom_view_time)
@@ -50,15 +51,14 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListRes
     }
 
     private fun setData(holder: Holder, data: NewsListResponse) {
-        holder.image.visibility=View.GONE
+        holder.image.visibility = View.GONE
         holder.image.setImageDrawable(null)
         holder.title.text = data.title
         holder.time.text = data.date
         holder.briefly.text = data.content
-        if(!data.img.isNullOrEmpty())
-        {
-            holder.image.visibility=View.VISIBLE
-            glide.loadImageFromServer(data.img).into(holder.image)
+        if (!data.img.isNullOrEmpty()) {
+            holder.image.visibility = View.VISIBLE
+            glide.loadImageFromServer(data.compressImg ?: data.img).into(holder.image)
             holder.image.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.image, data.img)
             }
@@ -76,7 +76,7 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListRes
     override fun setItemClick(itemView: View, item: NewsListResponse) {
         val intent = Intent(context, BottomNewsDetailActivity::class.java)
         intent.putExtra(DATA, item)
-        intent.putExtra(API,requestDetailApi)
+        intent.putExtra(API, requestDetailApi)
         context.startActivity(intent)
     }
 

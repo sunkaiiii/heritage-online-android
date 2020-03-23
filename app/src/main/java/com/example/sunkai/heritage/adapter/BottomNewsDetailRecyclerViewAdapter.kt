@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,24 +48,32 @@ class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFo
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = getItem(position)
         if (isTextLine(data)) {
-            setData(holder, data)
+            val isLastImage = position-1>=0 && !isTextLine(getItem(position-1))
+            setData(holder, data,isLastOneImage = isLastImage)
         } else {
             setData(holder, data, false)
         }
     }
 
-    private fun isTextLine(data: BottomFolkNewsContent)=
+    private fun isTextLine(data: BottomFolkNewsContent) =
             data.type == TYPE_TEXT
 
-    private fun setData(holder: ViewHolder, data: BottomFolkNewsContent, isInfoText: Boolean = true) {
+    private fun setData(holder: ViewHolder, data: BottomFolkNewsContent, isInfoText: Boolean = true, isLastOneImage:Boolean = false) {
         if (isInfoText) {
+            if (isLastOneImage) {
+                holder.textView.typeface = Typeface.DEFAULT_BOLD
+                holder.textView.setTextColor(Color.BLACK)
+            } else {
+                holder.textView.typeface = Typeface.DEFAULT
+                holder.textView.setTextColor(Color.GRAY)
+            }
             holder.textView.visibility = View.VISIBLE
             holder.imageView.visibility = View.GONE
-            holder.textView.text = data.content
+            holder.textView.text = data.content.replace("\r", "").replace("\n", "").replace("\t", "")
         } else {
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.loadImageFromServer(data.content).into(holder.imageView)
+            glide.loadImageFromServer(data.compressImg ?: data.content).into(holder.imageView)
             holder.imageView.setOnClickListener {
                 ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.content))
             }

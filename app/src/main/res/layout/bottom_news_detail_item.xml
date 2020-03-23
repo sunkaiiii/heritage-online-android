@@ -8,18 +8,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginEnd="18dp"
-        android:layout_marginTop="8dp"
-        android:lineSpacingExtra="3dp"
-        android:lineSpacingMultiplier="1.3"
+        android:lineSpacingExtra="2dp"
+        android:lineSpacingMultiplier="1.1"
         android:textSize="16sp"
+        android:layout_marginTop="4dp"
         android:id="@+id/bottom_news_detail_item_text"/>
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginEnd="18dp"
         android:layout_marginTop="8dp"
-        android:scaleType="centerCrop"
         android:id="@+id/bottom_news_detail_item_img"
         android:contentDescription="@string/no_mean_content"/>
 

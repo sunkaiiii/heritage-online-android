@@ -20,9 +20,9 @@ import com.example.sunkai.heritage.tools.loadImageFromServer
  * 显示更多新闻顶部滑动条的adapter
  * Created by sunkai on 2018/2/18.
  */
-class MainPageBannerAdapter(val context:Context, val data:List<MainPageBanner>, val glide: RequestManager): PagerAdapter() {
+class MainPageBannerAdapter(val context: Context, val data: List<MainPageBanner>, val glide: RequestManager) : PagerAdapter() {
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view==`object`
+        return view == `object`
     }
 
     override fun getCount(): Int {
@@ -34,15 +34,15 @@ class MainPageBannerAdapter(val context:Context, val data:List<MainPageBanner>, 
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view=LayoutInflater.from(context).inflate(R.layout.main_page_slide_item,container,false)
-        val image=view.findViewById<ImageView>(R.id.main_page_slide_image)
-        val data=data[position%data.size]
-        glide.loadImageFromServer(data.img).into(image)
+        val view = LayoutInflater.from(context).inflate(R.layout.main_page_slide_item, container, false)
+        val image = view.findViewById<ImageView>(R.id.main_page_slide_image)
+        val data = data[position % data.size]
+        glide.loadImageFromServer(data.compressImg ?: data.img).into(image)
         container.addView(view)
         view.setOnClickListener {
-            val intent=setViewClick(data)
-            if(context is Activity) {
-                context.startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
+            val intent = setViewClick(data)
+            if (context is Activity) {
+                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
                 return@setOnClickListener
             }
             context.startActivity(intent)
@@ -50,10 +50,10 @@ class MainPageBannerAdapter(val context:Context, val data:List<MainPageBanner>, 
         return view
     }
 
-    private fun setViewClick(data:MainPageBanner):Intent{
-        val intent= Intent(context,NewsDetailActivity::class.java)
-        intent.putExtra("category","要闻")
-        intent.putExtra("data",data)
+    private fun setViewClick(data: MainPageBanner): Intent {
+        val intent = Intent(context, NewsDetailActivity::class.java)
+        intent.putExtra("category", "要闻")
+        intent.putExtra("data", data)
         return intent
     }
 }
