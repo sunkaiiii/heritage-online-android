@@ -47,16 +47,22 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
     private fun loadInformation() {
         onPreLoad()
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
-        requestHttp(reqeustArgument?.reqeustApi ?: return,requestBean)
+        requestHttp(reqeustArgument?.reqeustApi ?: return, requestBean)
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         when (api.getRequestApi()) {
             reqeustArgument?.reqeustApi -> {
                 val data = fromJsonToList(response, NewsListResponse::class.java)
-                val adapter = BottomFolkNewsRecyclerviewAdapter(activity ?: return, data, glide,reqeustArgument?.detailApi?:return)
-                fragmentMainRecyclerview.adapter = adapter
-                onPostLoad()
+                if (fragmentMainRecyclerview.adapter == null) {
+                    val adapter = BottomFolkNewsRecyclerviewAdapter(activity
+                            ?: return, data, glide, reqeustArgument?.detailApi ?: return)
+                    fragmentMainRecyclerview.adapter = adapter
+                    onPostLoad()
+                } else {
+                    val adapter = fragmentMainRecyclerview.adapter as BottomFolkNewsRecyclerviewAdapter
+                    adapter.addNewData(data)
+                }
             }
         }
     }
@@ -74,7 +80,7 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
 
     private val onScroller = object : OnSrollHelper() {
         override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp(reqeustArgument?.reqeustApi?:return,requestBean)
+            requestHttp(reqeustArgument?.reqeustApi ?: return, requestBean)
         }
 
     }

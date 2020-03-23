@@ -8,15 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
+import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
+import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.entity.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.fragment_people.*
 
 class PeopleFragment : BaseLazyLoadFragment() {
@@ -27,6 +32,13 @@ class PeopleFragment : BaseLazyLoadFragment() {
             return listOf(pageNumber++.toString())
         }
     }
+    private val scrollHelper = object : OnSrollHelper() {
+        override fun loadMoreData(recyclerView: RecyclerView) {
+            requestHttp(EHeritageApi.GetPeopleList, pathRequest)
+        }
+
+    }
+
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
@@ -41,20 +53,18 @@ class PeopleFragment : BaseLazyLoadFragment() {
         return inflater.inflate(R.layout.fragment_people, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initviews()
-    }
 
     private fun initviews() {
-        view?.viewTreeObserver?.addOnGlobalLayoutListener(object:ViewTreeObserver.OnGlobalLayoutListener{
+        view?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                val layoutparams=fragmentPeopleCollapsingToolbarLayout.layoutParams
-                layoutparams.height=fragmentPeopleCollapsingToolbarLayout.width
-                fragmentPeopleCollapsingToolbarLayout.layoutParams=layoutparams
+                val layoutparams = fragmentPeopleCollapsingToolbarLayout.layoutParams
+                layoutparams.height = fragmentPeopleCollapsingToolbarLayout.width
+                fragmentPeopleCollapsingToolbarLayout.layoutParams = layoutparams
             }
         })
+        peopleLoadingProgressBar.visibility = View.GONE
+        peopleMainPage.visibility = View.VISIBLE
     }
 
 
@@ -67,6 +77,7 @@ class PeopleFragment : BaseLazyLoadFragment() {
         super.onTaskReturned(api, action, response)
         when (api.getRequestApi()) {
             EHeritageApi.GetPeopleMainPage -> {
+                initviews()
                 val data = fromJsonToObject(response, PeopleMainPageResponse::class.java)
                 val adapter = FragmentPeopleBannerAdapter(context ?: return, data.table, glide)
                 val middleItem = data.table.size * 2000
@@ -79,7 +90,26 @@ class PeopleFragment : BaseLazyLoadFragment() {
                 fragmentPeopleViewpager.currentItem = middleItem
             }
             EHeritageApi.GetPeopleList -> {
+                val data = fromJsonToList(response, NewsListResponse::class.java)
+                if (peopleFragmentRecyclerView.adapter == null) {
+                    val adapter = PeopleFragmentListAdapter(context ?: return, data, glide)
+                    peopleFragmentRecyclerView.adapter = adapter
+                    peopleFragmentRecyclerView.addOnScrollListener(scrollHelper)
+                } else {
+                    val adapter = peopleFragmentRecyclerView.adapter as PeopleFragmentListAdapter
+                    adapter.addNewData(data)
+                }
 
+            }
+        }
+    }
+
+    override fun beforeReuqestStart(request: RequestHelper) {
+        super.beforeReuqestStart(request)
+        when (request.getRequestApi()) {
+            EHeritageApi.GetPeopleMainPage -> {
+                peopleLoadingProgressBar.visibility = View.VISIBLE
+                peopleMainPage.visibility = View.GONE
             }
         }
     }
@@ -93,6 +123,11 @@ class PeopleFragment : BaseLazyLoadFragment() {
         initviews()
         pageNumber = 1
         startLoadInformation()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewPageScrollHandler.removeMessages(SCROLL)
     }
 
     companion object {
