@@ -15,7 +15,7 @@
         android:id="@+id/FragmentProjectItemContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/midGrey"
+        android:textColor="@color/white"
         android:layout_gravity="center"
         tools:text="35"/>
 </LinearLayout>

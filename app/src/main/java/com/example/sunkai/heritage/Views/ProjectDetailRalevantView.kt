@@ -21,20 +21,19 @@ class ProjectDetailRalevantView(context: Context, attr: AttributeSet?) : FrameLa
 
     fun setData(datas: List<RelevantProject>) {
         val contentView: LinearLayout = findViewById(R.id.projectDetailRelativeInheritate)
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        layoutParams.setMargins(Utils.dip2px(8))
         datas.forEach { project ->
             try {
-                val textView = TextView(context)
-                textView.layoutParams = layoutParams
-                textView.setTextColor(resources.getColor(R.color.black))
-                textView.text = String.format("%s(%s)", project.content.first { it.key.contains("名称") }.value, project.content.first { it.key.contains("地区") }.value)
-                textView.setOnClickListener {
+                val itemView = LayoutInflater.from(context).inflate(R.layout.activity_project_detail_inheritate_layout_item, contentView, false)
+                val name: TextView = itemView.findViewById(R.id.relevant_name)
+                val province: TextView = itemView.findViewById(R.id.relevant_provance)
+                name.text = project.content.first { it.key.contains("名称") }.value
+                province.text = project.content.first { it.key.contains("地区") }.value
+                itemView.setOnClickListener {
                     val intent = Intent(context, ProjectDetailActivity::class.java)
                     intent.putExtra(DATA, project.link)
                     context.startActivity(intent)
                 }
-                contentView.addView(textView)
+                contentView.addView(itemView)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

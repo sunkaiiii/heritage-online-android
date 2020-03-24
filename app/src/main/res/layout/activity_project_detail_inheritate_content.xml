@@ -3,30 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:orientation="vertical">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/midGrey"
         android:orientation="horizontal"
-        android:padding="8dp">
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/inheritate_content_layout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/inheritate_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/inheritate_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/inheritate_nation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/inheritateShowMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_access_time_grey_900_24dp" />
-
-        <TextView
-            android:id="@+id/inheritateName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/inheritateShowMore"
-            android:textColor="@color/black"
-            tools:text="张张张" />
+            android:src="@drawable/ic_access_time_grey_900_24dp" />
 
     </RelativeLayout>
 

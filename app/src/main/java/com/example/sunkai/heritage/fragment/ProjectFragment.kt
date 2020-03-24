@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -73,12 +74,18 @@ class ProjectFragment : BaseLazyLoadFragment() {
 
     private val onScrollDirectionHelper = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val visibility = if (recyclerView.y == 0f) View.VISIBLE else View.GONE
+            if (fragmentProjectSearchCard.visibility != visibility) {
+                when (visibility) {
+                    View.VISIBLE -> {
+                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context,R.anim.popup_enter))
+                    }
+                    View.GONE -> {
+                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context,R.anim.popup_exit))
+                    }
+                }
+            }
             fragmentProjectSearchCard.visibility = if (recyclerView.y == 0f) View.VISIBLE else View.GONE
-//            if (dy < 0 && fragmentProjectSearchCard.y <= Utils.dip2px(32)) {
-//                fragmentProjectSearchCard.y = fragmentProjectSearchCard.y - dy
-//            } else if (dy > 0 && fragmentProjectSearchCard.y + fragmentProjectSearchCard.height >= 0) {
-//                fragmentProjectSearchCard.y = fragmentProjectSearchCard.y - dy
-//            }
         }
     }
 

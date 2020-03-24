@@ -17,6 +17,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.InheritateDetailActivity
 import com.example.sunkai.heritage.entity.response.nestedData.InheritatePeople
 import com.example.sunkai.heritage.value.DATA
+import org.w3c.dom.Text
 
 class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) : FrameLayout(context, attr) {
     init {
@@ -39,12 +40,15 @@ class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) 
                 if (context is AppCompatActivity) {
                     TransitionManager.beginDelayedTransition((context as AppCompatActivity).window.decorView as ViewGroup, ChangeBounds())
                 }
-
                 contentLayout.visibility = if (contentLayout.visibility == View.GONE) View.VISIBLE else View.GONE
             }
-            val name: TextView = contentView.findViewById(R.id.inheritateName)
-            name.text = String.format("%d.%s", i + 1, content.content.first { it.key.contains("姓名") }.value)
-            content.content.filter { (!it.key.contains("姓名")).and(it.value.isNotBlank()) }.forEach {
+            val name: TextView = contentView.findViewById(R.id.inheritate_name)
+            val type:TextView=contentView.findViewById(R.id.inheritate_type)
+            val nation:TextView=contentView.findViewById(R.id.inheritate_nation)
+            name.text = content.content.first { it.key.contains("姓名") }.value
+            type.text=content.content.first { it.key.contains("类别") }.value
+            nation.text=content.content.first { it.key.contains("民族") }.value
+            content.content.filter { !(it.key.contains("姓名").or(it.key.contains("类别")).or(it.key.contains("民族"))).and(it.value.isNotBlank()) }.forEach {
                 val textView = TextView(context)
                 textView.text = String.format("%s:%s", it.key, it.value)
                 contentLayout.addView(textView)
