@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.SearchProjectActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
@@ -33,9 +35,29 @@ class ProjectFragment : BaseLazyLoadFragment() {
 
     override fun startLoadInformation() {
         requestHttp(EHeritageApi.GetProjectBasicInformation)
+        initview()
     }
 
-    override fun onRestoreFragmentLoadInformation() {}
+    private fun initview() {
+        fragmentProjectSearchCard.setOnClickListener {
+            navigateToSearchPage()
+        }
+        fragmentProjectToolbar.setOnMenuItemClickListener {
+            navigateToSearchPage()
+            true
+        }
+    }
+
+    private fun navigateToSearchPage() {
+        val intent = Intent(context, SearchProjectActivity::class.java)
+        startActivity(intent)
+    }
+
+
+    override fun onRestoreFragmentLoadInformation() {
+        startLoadInformation()
+    }
+
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         when (api.getRequestApi()) {
@@ -78,10 +100,10 @@ class ProjectFragment : BaseLazyLoadFragment() {
             if (fragmentProjectSearchCard.visibility != visibility) {
                 when (visibility) {
                     View.VISIBLE -> {
-                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context,R.anim.popup_enter))
+                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_enter))
                     }
                     View.GONE -> {
-                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context,R.anim.popup_exit))
+                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_exit))
                     }
                 }
             }
