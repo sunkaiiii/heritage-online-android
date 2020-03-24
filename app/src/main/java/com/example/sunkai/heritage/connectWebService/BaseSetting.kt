@@ -45,7 +45,7 @@ open class BaseSetting {
             try {
                 val response = client.newCall(r).execute()
                 Log.e("Network Requst", request.getRequestApi().getRequestName() + ": " + response)
-                val result = response.body()?.string()
+                val result = response.body?.string()
                 action.getUIThread().post {
                     if (result.isNullOrEmpty()) {
                         action.onRequestError(request, action, IOException("new result returned"))
@@ -75,7 +75,7 @@ open class BaseSetting {
         try {
             Log.e("PutGet", request.toString())
             val response = client.newCall(request).execute()
-            val result = response.body()?.string() ?: ERROR
+            val result = response.body?.string() ?: ERROR
             Log.e("PutGet", url + "\n" + result)
             return result
         } catch (e: IOException) {
@@ -93,7 +93,7 @@ open class BaseSetting {
         val request = Request.Builder().url(url).post(form).build()
         try {
             val response = client.newCall(request).execute()
-            val result = response.body()?.string() ?: ERROR
+            val result = response.body?.string() ?: ERROR
             Log.e("PutPost", url + "\n" + result)
             return result
         } catch (e: IOException) {

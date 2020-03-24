@@ -33,7 +33,7 @@ object BaiduLocation {
         val client = OkHttpClient.Builder().connectTimeout(1, TimeUnit.SECONDS).build()
         try {
             val response = client.newCall(request).execute()
-            return if (response.isSuccessful) response.body()?.string()
+            return if (response.isSuccessful) response.body?.string()
                     ?: return ERROR else return ERROR
         } catch (e: java.lang.Exception) {
             println(e)
