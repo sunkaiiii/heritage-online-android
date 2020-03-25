@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.toBlurBitmap
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_project.*
 
@@ -140,5 +142,8 @@ class ProjectFragment : BaseLazyLoadFragment() {
             }
             ProjectDescLayout.addView(itemLayout)
         }
+
+        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.fragment_project_top_background_image)
+        fragmentProjectTopImage.setImageBitmap(bitmap.toBlurBitmap(context ?: return))
     }
 }

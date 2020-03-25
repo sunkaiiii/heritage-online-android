@@ -21,6 +21,8 @@ android {
             versionName "4.0.0"
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             resConfigs "zh", "en"
+            renderscriptTargetApi 29
+            renderscriptSupportModeEnabled true
         }
     }
     else {
