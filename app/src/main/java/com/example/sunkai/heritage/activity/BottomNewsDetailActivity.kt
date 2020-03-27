@@ -1,8 +1,11 @@
 package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.base.BaseHandleCollectActivity
+import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.BottomNewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
@@ -16,10 +19,9 @@ import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
-import com.example.sunkai.heritage.value.TYPE_FOCUS_HERITAGE
 import kotlinx.android.synthetic.main.activity_bottom_news_detail.*
 
-class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
+class BottomNewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
 
     var link: String? = null
     var requestApi: EHeritageApi? = null
@@ -47,19 +49,8 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
     }
 
 
-    override fun getType(): String {
-        return TYPE_FOCUS_HERITAGE
-    }
-
-    override fun getID(): Int? {
-        //TODO 我的收藏
-        return null
-    }
-
     private fun setDataToView(data: NewsListResponse) {
-        bottomNewsDetailTime.setTextColor(getThemeColor())
         bottomNewsDetailTitle.text = data.title
-        bottomNewsDetailTime.text = data.date
     }
 
     private fun GetNewsDetail(link: String) {
@@ -81,10 +72,25 @@ class BottomNewsDetailActivity : BaseHandleCollectActivity(), OnPageLoaded {
         when (api.getRequestApi()) {
             requestApi -> {
                 val data = fromJsonToObject(response, BottomFolkNews::class.java)
+                initTitleAndSubtitle(data)
                 val adapter = BottomNewsDetailRecyclerViewAdapter(this, data.content, glide)
                 bottomNewsDetailRecyclerview.adapter = adapter
             }
         }
+    }
+
+    private fun initTitleAndSubtitle(data: BottomFolkNews) {
+        bottomNewsDetailTitle.text = data.title.replace("\r", "").replace("\n", "").replace("\t", "")
+        data.subtitle?.let { list ->
+            list.forEach {
+                val textView = TextView(this)
+                textView.text = it
+                val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                layoutParams.weight = 1f
+                newsDetailSubtitleLayout.addView(textView)
+            }
+        }
+        bottomNewsDetailAuther.text = data.author
     }
 
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {

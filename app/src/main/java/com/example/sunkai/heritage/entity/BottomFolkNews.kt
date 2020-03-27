@@ -6,8 +6,9 @@ package com.example.sunkai.heritage.entity
  */
 class BottomFolkNews(val link: String,
                      val title: String,
-                     val subTitle:List<String>,
+                     val subtitle:List<String>?,
                      val time: String,
+                     val author:String,
                      var content:List<BottomFolkNewsContent>,
                      var relativeNews:List<BottomFolkNewsRelativeNews>)
 class BottomFolkNewsContent(val type:String,val content:String,val compressImg:String?)

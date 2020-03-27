@@ -1,20 +1,20 @@
 package com.example.sunkai.heritage.adapter
 
-import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.WebViewActivity
 import com.example.sunkai.heritage.tools.loadImageFromServer
+import com.example.sunkai.heritage.value.IHCHINA
+import com.example.sunkai.heritage.value.URL
 
 /**
  * 显示更多新闻顶部滑动条的adapter
@@ -40,20 +40,15 @@ class MainPageBannerAdapter(val context: Context, val data: List<MainPageBanner>
         glide.loadImageFromServer(data.compressImg ?: data.img).into(image)
         container.addView(view)
         view.setOnClickListener {
-            val intent = setViewClick(data)
-            if (context is Activity) {
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(context).toBundle())
-                return@setOnClickListener
-            }
+            val intent = getIntent(data)
             context.startActivity(intent)
         }
         return view
     }
 
-    private fun setViewClick(data: MainPageBanner): Intent {
-        val intent = Intent(context, NewsDetailActivity::class.java)
-        intent.putExtra("category", "要闻")
-        intent.putExtra("data", data)
+    private fun getIntent(data: MainPageBanner): Intent {
+        val intent = Intent(context, WebViewActivity::class.java)
+        intent.putExtra(URL, IHCHINA + data.link)
         return intent
     }
 }

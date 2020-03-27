@@ -6,15 +6,10 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.Utils
 
-const val RESULT_OK = 800
-const val RESULT_NULL = -1
-const val CHOOSE_PHOTO = 2
-const val MINI_REPLY = -1
-const val COMMENT_REPLY = 0
+const val URL="url"
 const val TYPE_TEXT = "text"
 const val CATEGORY = "category"
 const val TYPE_MAIN = "首页新闻"
-const val TYPE_FOCUS_HERITAGE = "聚焦非遗"
 const val TYPE_FOLK = "民间"
 const val FROM = "from"
 const val DATA = "data"
@@ -59,6 +54,7 @@ const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP4
 const val ERROR = "ERROR"
 const val HOST = "https://sunkai.xyz:8081"
 const val HOST_IP = "sunkai.xyz"
+const val IHCHINA="http://www.ihchina.cn"
 const val PUSH_PORT = 8088
 
 const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"

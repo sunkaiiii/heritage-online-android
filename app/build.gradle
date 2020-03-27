@@ -10,7 +10,7 @@ android {
         Properties versionProps = new Properties()
         versionProps.load(new FileInputStream(versionPropsFile))
         def code = versionProps['VERSION_CODE'].toInteger() + 1
-        versionProps['VERSION_CODE']=code.toString()
+        versionProps['VERSION_CODE'] = code.toString()
         def runTasks = gradle.startParameter.taskNames
         versionProps.store(versionPropsFile.newWriter(), null)
         defaultConfig {
@@ -24,8 +24,7 @@ android {
             renderscriptTargetApi 29
             renderscriptSupportModeEnabled true
         }
-    }
-    else {
+    } else {
         throw new GradleException("Could not read version.properties!")
     }
 
