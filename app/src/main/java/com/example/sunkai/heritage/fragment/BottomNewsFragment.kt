@@ -14,11 +14,12 @@ import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.entity.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BasePathRequest
+import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.bottom_news_framgent.*
 
-class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
+class BottomNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
     var pageNumber = 1
     val requestBean = object : BasePathRequest() {
@@ -31,16 +32,27 @@ class BottomNewsFragment : BaseGlideFragment(), OnPageLoaded {
         return inflater.inflate(R.layout.bottom_news_framgent, container, false)
     }
 
+
+    override fun startLoadInformation() {
+        loadInformation()
+    }
+
+    override fun onRestoreFragmentLoadInformation() {
+        loadInformation()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initview()
-        loadInformation()
-        bottomNewsRefreshLayout.setOnRefreshListener { loadInformation() }
     }
 
 
     private fun initview() {
         fragmentMainRecyclerview.addOnScrollListener(onScroller)
+        bottomNewsRefreshLayout.setOnRefreshListener {
+            pageNumber = 1
+            loadInformation()
+        }
     }
 
 

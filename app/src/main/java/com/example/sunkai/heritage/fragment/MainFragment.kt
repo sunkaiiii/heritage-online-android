@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.io.Serializable
 
@@ -77,6 +78,8 @@ class MainFragment : BaseGlideFragment() {
         setViewPagerListener(mainPageViewPager)
         mainPageViewPager.offscreenPageLimit=fragments.size
         mainPageViewPager.adapter = adapter
+        mainPageTabLayout.setupWithViewPager(mainPageViewPager)
+        runOnUiThread { (adapter.getItem(0) as BaseLazyLoadFragment).lazyLoad() }
     }
 
     private fun setViewPagerListener(mainPageViewPager: ViewPager) {
