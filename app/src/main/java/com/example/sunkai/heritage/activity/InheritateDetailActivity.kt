@@ -22,7 +22,7 @@ class InheritateDetailActivity : BaseGlideActivity() {
     }
 
     private fun init() {
-        supportActionBar?.title=getString(R.string.inheritors)
+        supportActionBar?.title = getString(R.string.inheritors)
         val link = intent.getStringExtra(DATA) ?: return
         requestHttp(InheritateDetailRequest(link), EHeritageApi.GetInheritateDetail)
     }
@@ -42,10 +42,13 @@ class InheritateDetailActivity : BaseGlideActivity() {
         inheritateTitle.text = inheritateData.title
         inheritateDetailDesc.text = inheritateData.text
         inheritateDetailTopGridLayout.setData(inheritateData.desc)
-        if (inheritateData.inheritate.isNotEmpty()) {
-            inheritateOthersView.visibility = View.VISIBLE
-            inheritateOthersView.setData(inheritateData.inheritate)
+        inheritateData.inheritate?.let {
+            if (it.isNotEmpty()) {
+                inheritateOthersView.visibility = View.VISIBLE
+                inheritateOthersView.setData(it)
+            }
         }
+
     }
 
 }

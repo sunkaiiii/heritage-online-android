@@ -3,7 +3,33 @@
 
 heritage_online_android —— An information mobile platform about China intangible cultural heritage. (My graduation design)
 
-[![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) 
+[![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+
+#### v4.0.0 <br>
+
+1. The information feed of the main page has been replaced.
+
+2. Added a new style of the information feed of the main page.
+
+3.Added forums and special topic pages.
+
+4.Deleted login and register pages.
+
+5. Deleted the folk page.
+
+6. Added the people page.
+
+7. Deleted the page of finding information.
+
+8. Deleted all the functions relevant to the account system including my collections, my thumbs and my posts.
+
+9. Deleted the setting page.
+
+10. Added the heritage project page.
+
+11.Refactored the code in network request
+
+12.Deleted all unnecessary code
 
 #### v3.4 <br>
 

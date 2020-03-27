@@ -33,9 +33,9 @@
     <string name="collect">Collection</string>
     <string name="logo">logo</string>
     <string name="time">Time:</string>
-    <string name="main_page">home page</string>
-    <string name="folk_page">nongovernmental</string>
-    <string name="project_page">projects</string>
+    <string name="main_page">Home page</string>
+    <string name="people_page">People</string>
+    <string name="project_page">Projects</string>
     <string name="about_us">About Us</string>
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
