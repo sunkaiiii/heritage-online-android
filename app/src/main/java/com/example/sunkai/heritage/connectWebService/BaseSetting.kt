@@ -3,9 +3,10 @@ package com.example.sunkai.heritage.connectWebService
 import android.util.Log
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.value.HOST
 import com.google.gson.Gson
-import okhttp3.*
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import java.io.IOException
 
 /*
@@ -15,12 +16,7 @@ import java.io.IOException
 open class BaseSetting {
 
     companion object {
-        val SUCCESS = "SUCCESS"
-        val ERROR = "ERROR"
-        private val VERSION_UNKNOW = "unknow"
-        const val URL = HOST
         const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
-        const val NEW_HOST = "https://sunkai.xyz:5001"
         val gsonInstance = Gson()
         private val client = OkHttpClient.Builder().build()
 
@@ -64,41 +60,4 @@ open class BaseSetting {
     }
 
 
-    //定义泛型方法，简单化Gson的使用
-    fun <T> fromJsonToList(s: String, clazz: Class<Array<T>>): List<T> {
-        val arr = gsonInstance.fromJson(s, clazz)
-        return arr.toList()
-    }
-
-    fun PutGet(url: String): String {
-        val request = Request.Builder().url(url).build()
-        try {
-            Log.e("PutGet", request.toString())
-            val response = client.newCall(request).execute()
-            val result = response.body?.string() ?: ERROR
-            Log.e("PutGet", url + "\n" + result)
-            return result
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return ERROR
-    }
-
-    fun PutNewGet(url: String): String {
-        return PutGet(NEW_HOST + url)
-    }
-
-
-    fun PutPost(url: String, form: FormBody): String {
-        val request = Request.Builder().url(url).post(form).build()
-        try {
-            val response = client.newCall(request).execute()
-            val result = response.body?.string() ?: ERROR
-            Log.e("PutPost", url + "\n" + result)
-            return result
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return ERROR
-    }
 }

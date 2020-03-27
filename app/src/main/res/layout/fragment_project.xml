@@ -37,8 +37,8 @@
                     tools:visibility="visible">
 
                     <com.example.sunkai.heritage.tools.views.RectangleImageView
-                        android:layout_width="match_parent"
                         android:id="@+id/fragmentProjectTopImage"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:src="@drawable/fragment_project_top_background_image"
                         app:riv_corner_radius_bottom_left="8dp"
@@ -51,10 +51,11 @@
 
                         <androidx.appcompat.widget.Toolbar
                             android:id="@+id/fragmentProjectToolbar"
+                            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
                             android:layout_alignParentTop="true"
-                            app:menu="@menu/seach_menu" />
+                            app:menu="@menu/framgent_project_menu" />
 
                         <RelativeLayout
                             android:layout_width="match_parent"

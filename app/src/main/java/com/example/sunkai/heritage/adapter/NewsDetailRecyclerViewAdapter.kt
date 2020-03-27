@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class BottomNewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNewsContent>, glide: RequestManager) : BaseRecyclerAdapter<BottomNewsDetailRecyclerViewAdapter.ViewHolder, BottomFolkNewsContent>(context, datas, glide) {
+class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNewsContent>, glide: RequestManager) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, BottomFolkNewsContent>(context, datas, glide) {
 
     private val images: Array<String>
 

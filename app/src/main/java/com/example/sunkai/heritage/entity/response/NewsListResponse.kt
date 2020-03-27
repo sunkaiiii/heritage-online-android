@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.entity
+package com.example.sunkai.heritage.entity.response
 
 import java.io.Serializable
 

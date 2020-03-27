@@ -40,7 +40,7 @@
                 android:orientation="vertical"
                 android:padding="12dp">
 
-                <com.example.sunkai.heritage.Views.ProjectDetailTopGridView
+                <com.example.sunkai.heritage.views.ProjectDetailTopGridView
                     android:id="@+id/projectDetailTopGridView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -50,14 +50,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <com.example.sunkai.heritage.Views.ProjectDetailInheritateView
+                <com.example.sunkai.heritage.views.ProjectDetailInheritateView
                     android:id="@+id/activityProjectDetailInheritateLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     tools:visibility="visible" />
 
-                <com.example.sunkai.heritage.Views.ProjectDetailRalevantView
+                <com.example.sunkai.heritage.views.ProjectDetailRalevantView
                     android:id="@+id/activityProjectDetailRalevantProject"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

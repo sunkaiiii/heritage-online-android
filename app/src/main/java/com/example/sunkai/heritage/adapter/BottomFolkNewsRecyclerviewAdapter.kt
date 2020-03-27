@@ -10,9 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.entity.NewsListResponse
+import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
+import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServer
@@ -74,7 +74,7 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListRes
     }
 
     override fun setItemClick(itemView: View, item: NewsListResponse) {
-        val intent = Intent(context, BottomNewsDetailActivity::class.java)
+        val intent = Intent(context, NewsDetailActivity::class.java)
         intent.putExtra(DATA, item)
         intent.putExtra(API, requestDetailApi)
         context.startActivity(intent)

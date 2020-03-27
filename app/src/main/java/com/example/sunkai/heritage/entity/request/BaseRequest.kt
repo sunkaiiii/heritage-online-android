@@ -5,27 +5,26 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.tools.BaiduLocation
 import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.value.VERSION_NAME
 import com.google.gson.Gson
 import java.io.Serializable
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap
 
-abstract class BaseRequest: Serializable, NetworkRequest
-{
+abstract class BaseRequest : Serializable, NetworkRequest {
     val baseinfo = BaseInfo()
     override fun getJsonParameter(): String {
         return Gson().toJson(baseinfo)
     }
 
     override fun getNormalParameter(): Map<String, String> {
-        val result = HashMap<String,String>()
+        val result = HashMap<String, String>()
         this.javaClass.declaredFields.forEach {
             try {
-                it.isAccessible=true
-                result[it.name]=it.get(this)!!.toString()
-            }catch (e: Exception)
-            {
+                it.isAccessible = true
+                result[it.name] = it.get(this)!!.toString()
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
@@ -46,8 +45,8 @@ abstract class BaseRequest: Serializable, NetworkRequest
         val language = Locale.getDefault().language
         val modelName = android.os.Build.MODEL
         val brandName = android.os.Build.BRAND
-        val version = GlobalContext.instance.getString(R.string.verson_code)
+        val version = VERSION_NAME()
         val from = "android"
-        val locationInfo= BaiduLocation.contentBean
+        val locationInfo = BaiduLocation.contentBean
     }
 }

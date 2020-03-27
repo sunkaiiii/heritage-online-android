@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
+import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
@@ -38,7 +38,7 @@ class FragmentPeopleBannerAdapter(private val context: Context, private val data
         glide.loadImageFromServer(data.img).into(imageView)
         textView.text=data.desc
         layout.setOnClickListener {
-            val intent=Intent(context, BottomNewsDetailActivity::class.java)
+            val intent=Intent(context, NewsDetailActivity::class.java)
             intent.putExtra(DATA,data.link)
             intent.putExtra(API,EHeritageApi.GetPeopleDetail)
             context.startActivity(intent)

@@ -36,18 +36,8 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity
-            android:name=".activity.FolkInformationActivity"
-            android:theme="@style/JoinActivityTheme" />
         <activity android:name=".activity.AboutUSActivity" />
-        <activity
-            android:name=".activity.AllFolkInfoActivity"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity
-            android:name=".activity.SeeMoreNewsActivity"
-            android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activity.NewsDetailActivity" />
-        <activity android:name=".activity.BottomNewsDetailActivity" />
         <activity
             android:name=".activity.ProjectDetailActivity"
             android:theme="@style/AppThemeNoActionBar" />

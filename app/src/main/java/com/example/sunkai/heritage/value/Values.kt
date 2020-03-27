@@ -6,24 +6,24 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.Utils
 
-const val URL="url"
+const val URL = "url"
 const val TYPE_TEXT = "text"
-const val CATEGORY = "category"
-const val TYPE_MAIN = "首页新闻"
-const val TYPE_FOLK = "民间"
-const val FROM = "from"
 const val DATA = "data"
-const val ACTIVITY = "activity"
 const val PUSH_SWITCH = "pushSwitch"
 const val SETTING = "setting"
 const val TITLE = "title"
-const val READ = "r"
 const val THEME_COLOR = "theme_color"
 const val SEARCH_SHAREPREF_NAME = "search_info"
 const val IMAGE_URL = "image_url"
-const val IMAGE_POSITION="image_position"
-const val API="api"
+const val IMAGE_POSITION = "image_position"
+const val API = "api"
 typealias TransitionPair = Pair<View, String>
+
+val VERSION_NAME = {
+    val pm = GlobalContext.instance.packageManager
+    val pi = pm.getPackageInfo(GlobalContext.instance.packageName, 0)
+    pi.versionName
+}
 
 const val THEME_REGULAR = "#ac462e"
 const val THEME_COLOR_PUEPLE = "#850091"
@@ -54,26 +54,11 @@ const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP4
 const val ERROR = "ERROR"
 const val HOST = "https://sunkai.xyz:8081"
 const val HOST_IP = "sunkai.xyz"
-const val IHCHINA="http://www.ihchina.cn"
+const val IHCHINA = "http://www.ihchina.cn"
 const val PUSH_PORT = 8088
 
-const val ALL_FOLK_INFO_ACTIVITY = "AllFolkInfoActivity"
-const val ACTIVITY_FRAGMENT = "ActivityFragment"
+val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums), GlobalContext.instance.getString(R.string.special_topic))
 
-val CLASIIFY_DIVIDE = arrayOf("表演艺术", "杂技与竞技", "文学与美术", "传统民俗")
-val CLASSIFY_DIVIDE_TABVIEWSHOW = arrayOf("表演艺术", "杂技竞技", "文学美术", "传统民俗")
-val CATEGORIES = arrayOf("要闻", "中国特色", "传统村落", "特色小镇", "魅力中国", "非遗中国", "时代影像", "发现之旅", "一带一路", "民风民俗")
-val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums),GlobalContext.instance.getString(R.string.special_topic))
-val MAIN_PAGE_CATEGORY_NEWS_IMAGE = arrayOf("yao_wen.jpg"
-        , "zhongguo_tese.jpg"
-        , "chuantong_cuoluo.jpg"
-        , "tese_xiaozhen.jpg"
-        , "meili_china.jpg"
-        , "feiyi_china.jpg"
-        , "shidai_yingxiang.jpg"
-        , "faxian_zhilv.jpg"
-        , "yidai_yilu.jpg"
-        , "min_feng.jpg")
 const val GLIDE_LICENCE = "License for everything not in third_party and not otherwise marked:\n" +
         "\n" +
         "Copyright 2014 Google, Inc. All rights reserved.\n" +

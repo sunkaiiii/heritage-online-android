@@ -3,9 +3,8 @@
 
     <string name="network_error">Sorry… Network error</string>
     <string name="app_name">chinese heritage</string>
-    <string name="verson_code">v3.2.1</string>
     <string name="no_mean_content">null</string>
-    <string name="program_git_url">https: / / github.com / sunkaiiii / heritage online - android</string>
+    <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
     <string name="apply_time">Declaration time:</string>
     <string name="category">Category:</string>
     <string name="number">No.:</string>
@@ -37,6 +36,7 @@
     <string name="main_page">home page</string>
     <string name="folk_page">nongovernmental</string>
     <string name="project_page">projects</string>
+    <string name="about_us">About Us</string>
     <string name="okhttp_licence">Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at

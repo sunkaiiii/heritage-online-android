@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">E迹</string>
-    <string name="verson_code">v3.4.2</string>
     <string name="no_mean_content">null</string>
     <string name="network_error">网络错误，请稍后再试</string>
 
@@ -35,6 +34,7 @@
     <string name="main_page">首页</string>
     <string name="folk_page">民间</string>
     <string name="forums">论坛</string>
+    <string name="about_us">关于我们</string>
     <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>

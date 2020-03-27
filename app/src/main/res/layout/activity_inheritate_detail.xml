@@ -17,7 +17,7 @@
         android:textStyle="bold"
         tools:text="张全蛋" />
 
-    <com.example.sunkai.heritage.Views.ProjectDetailTopGridView
+    <com.example.sunkai.heritage.views.ProjectDetailTopGridView
         android:id="@+id/inheritateDetailTopGridLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.example.sunkai.heritage.Views.ProjectDetailInheritateView
+    <com.example.sunkai.heritage.views.ProjectDetailInheritateView
         android:id="@+id/inheritateOthersView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

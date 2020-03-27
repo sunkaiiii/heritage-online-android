@@ -3,16 +3,15 @@ package com.example.sunkai.heritage.fragment
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.AboutUSActivity
 import com.example.sunkai.heritage.activity.SearchProjectActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
@@ -45,9 +44,22 @@ class ProjectFragment : BaseLazyLoadFragment() {
             navigateToSearchPage()
         }
         fragmentProjectToolbar.setOnMenuItemClickListener {
-            navigateToSearchPage()
+            when (it.itemId) {
+                R.id.search_menu -> {
+                    navigateToSearchPage()
+                }
+                R.id.about_us_menu -> {
+                    navigateToAboutUsPage()
+                }
+            }
+
             true
         }
+    }
+
+    private fun navigateToAboutUsPage() {
+        val intent = Intent(context, AboutUSActivity::class.java)
+        startActivity(intent)
     }
 
     private fun navigateToSearchPage() {

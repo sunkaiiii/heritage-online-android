@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Views
+package com.example.sunkai.heritage.views
 
 import android.content.Context
 import android.content.Intent
@@ -17,7 +17,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.InheritateDetailActivity
 import com.example.sunkai.heritage.entity.response.nestedData.InheritatePeople
 import com.example.sunkai.heritage.value.DATA
-import org.w3c.dom.Text
 
 class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) : FrameLayout(context, attr) {
     init {

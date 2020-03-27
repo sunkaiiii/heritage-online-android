@@ -51,18 +51,9 @@ class MainFragment : BaseGlideFragment() {
         super.onViewCreated(view, savedInstanceState)
         val manager = activity?.supportFragmentManager ?: return
         initMainPageSlide()
-        setToolbar()
         setViewPager(manager)
     }
 
-    private fun setToolbar() {
-        fragmentMainToolbar.title = ""
-        val activity = activity ?: return
-        if (activity is AppCompatActivity) {
-            activity.setSupportActionBar(fragmentMainToolbar)
-            setHasOptionsMenu(true)
-        }
-    }
 
     override fun onStart() {
         super.onStart()
@@ -154,11 +145,6 @@ class MainFragment : BaseGlideFragment() {
             fragments.add(fragment)
         }
         return fragments
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.seach_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
 

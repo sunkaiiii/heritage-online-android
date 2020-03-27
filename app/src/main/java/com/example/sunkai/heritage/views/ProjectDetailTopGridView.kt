@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Views
+package com.example.sunkai.heritage.views
 
 import android.content.Context
 import android.util.AttributeSet

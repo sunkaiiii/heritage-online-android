@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.Views
+package com.example.sunkai.heritage.views
 
 import android.content.Context
 import android.content.Intent
@@ -7,11 +7,9 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.setMargins
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.ProjectDetailActivity
 import com.example.sunkai.heritage.entity.response.nestedData.RelevantProject
-import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.value.DATA
 
 class ProjectDetailRalevantView(context: Context, attr: AttributeSet?) : FrameLayout(context, attr) {

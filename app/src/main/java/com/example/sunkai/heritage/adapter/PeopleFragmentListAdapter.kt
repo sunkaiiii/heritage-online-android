@@ -9,16 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.BottomNewsDetailActivity
 import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.entity.NewsListResponse
+import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.tools.views.RectangleImageView
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
-import kotlinx.android.synthetic.main.fragment_people_list_item.view.*
 
 class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<PeopleFragmentListAdapter.Holder, NewsListResponse>(context, data, glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
@@ -69,7 +67,7 @@ class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, 
     }
 
     override fun setItemClick(itemView: View, item: NewsListResponse) {
-        val intent = Intent(context, BottomNewsDetailActivity::class.java)
+        val intent = Intent(context, NewsDetailActivity::class.java)
         intent.putExtra(DATA, item.link)
         intent.putExtra(API, EHeritageApi.GetPeopleDetail)
         context.startActivity(intent)
