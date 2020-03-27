@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,15 +10,18 @@
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        tools:visibility="gone" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/peopleMainPage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/fragmentPeopleAppBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar">
@@ -42,12 +46,32 @@
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/people"
-                android:textSize="22sp" />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/fragmentPeopleTopTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="12dp"
+                    android:gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:text="@string/people"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <View
+                    android:id="@+id/fragmentPeopleTopTitleBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/fragmentPeopleTopTitle"
+                    android:layout_alignBottom="@id/fragmentPeopleTopTitle"
+                    android:alpha="0"
+                    android:background="@color/normalGrey"
+                    tools:alpha="1" />
+            </RelativeLayout>
+
 
             <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
                 android:id="@+id/peopleFragmentRecyclerView"

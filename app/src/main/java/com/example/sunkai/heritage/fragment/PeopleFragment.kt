@@ -1,9 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +20,9 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.OnSrollHelper
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_people.*
+import kotlin.math.abs
 
 class PeopleFragment : BaseLazyLoadFragment() {
 
@@ -53,7 +53,6 @@ class PeopleFragment : BaseLazyLoadFragment() {
         return inflater.inflate(R.layout.fragment_people, container, false)
     }
 
-
     private fun initviews() {
         view?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -65,6 +64,12 @@ class PeopleFragment : BaseLazyLoadFragment() {
         })
         peopleLoadingProgressBar.visibility = View.GONE
         peopleMainPage.visibility = View.VISIBLE
+
+        fragmentPeopleAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            val scrollRange = fragmentPeopleAppBarLayout.totalScrollRange
+            val alpha = abs(verticalOffset.toFloat() / scrollRange)
+            fragmentPeopleTopTitleBackground.alpha = alpha * alpha * alpha
+        })
     }
 
 

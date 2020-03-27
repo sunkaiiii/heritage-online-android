@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="InnerclassSeparator">
-        <activity android:name=".activity.SearchProjectActivity"
-            android:theme="@style/AppThemeNoActionBar"/>
+        <activity
+            android:name=".activity.SearchProjectActivity"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity android:name=".activity.InheritateDetailActivity" />
         <activity
             android:name=".activity.MainActivity"

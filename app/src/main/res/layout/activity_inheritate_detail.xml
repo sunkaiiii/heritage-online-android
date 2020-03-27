@@ -5,15 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context="com.example.sunkai.heritage.activity.InheritateDetailActivity">
 
     <TextView
+        android:id="@+id/inheritateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:id="@+id/inheritateTitle"
         tools:text="张全蛋" />
 
     <com.example.sunkai.heritage.Views.ProjectDetailTopGridView

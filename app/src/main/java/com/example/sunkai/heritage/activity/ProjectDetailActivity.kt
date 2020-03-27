@@ -1,17 +1,10 @@
 package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.Transformation
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.view.setMargins
-import androidx.transition.AutoTransition
-import androidx.transition.ChangeBounds
-import androidx.transition.TransitionManager
+import android.view.animation.AnimationUtils
+import androidx.core.widget.NestedScrollView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
@@ -19,12 +12,8 @@ import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.entity.request.ProjectDetailRequest
 import com.example.sunkai.heritage.entity.response.ProjectDetailResponse
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.value.DATA
 import kotlinx.android.synthetic.main.activity_project_detail.*
-import kotlinx.android.synthetic.main.activity_project_detail_inheritate_layout.*
-import kotlinx.android.synthetic.main.activity_project_detail_top_layout.*
-import java.lang.Exception
 
 class ProjectDetailActivity : BaseGlideActivity() {
 
@@ -32,6 +21,35 @@ class ProjectDetailActivity : BaseGlideActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loading_layout)
         loadPageDetail()
+    }
+
+    var projectDetailToolbarLocationArray = IntArray(2)
+    var projectDetailTitleLocationArray = IntArray(2)
+    private fun initView(projectDetail: ProjectDetailResponse) {
+        projectDetailToolbarBackArrow.setOnClickListener { finish() }
+        projectDetailToolbarTitle.text = projectDetail.title
+        projectDetailToolbarTitle.alpha = 0f
+        projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
+            projectDetailTitle.getLocationInWindow(projectDetailTitleLocationArray)
+            projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
+            val scrollDy = scrollY - oldScrollY
+            //设置toolbar title的透明度
+            var crossY = projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1];
+            if (crossY < 0) {
+                crossY = 0
+            }
+            val alpha = crossY.toFloat() / projectDetailToolbar.height
+            projectDetailToolbarTitle.alpha = alpha
+            //设置toolbar的位置
+            if (projectDetailTitleLocationArray[1] < projectDetailToolbarLocationArray[1] && projectDetailToolbar.translationY + projectDetailToolbar.height >= 0 && scrollDy > 0) {
+                projectDetailToolbar.translationY = projectDetailToolbar.translationY - scrollDy
+            } else if (scrollDy < 0 && projectDetailToolbar.translationY < 0) {
+                projectDetailToolbar.translationY = projectDetailToolbar.translationY - scrollDy
+                if (projectDetailToolbar.translationY > 0) {
+                    projectDetailToolbar.translationY = 0f
+                }
+            }
+        }
     }
 
     private fun loadPageDetail() {
@@ -51,6 +69,7 @@ class ProjectDetailActivity : BaseGlideActivity() {
 
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         setContentView(R.layout.activity_project_detail)
+        initView(projectDetail)
         projectDetailTitle.text = projectDetail.title
         projectDesc.text = projectDetail.text
         projectDetailTopGridView.setData(projectDetail.desc)
