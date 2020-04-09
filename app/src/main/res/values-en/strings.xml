@@ -96,5 +96,5 @@ limitations under the License.</string>
     <string name="fragment_project_search_project">search project</string>
     <string name="special_topic" >Special topic</string>
     <string name="people">People</string>
-
+    <string name="theme_color">theme color</string>
 </resources>

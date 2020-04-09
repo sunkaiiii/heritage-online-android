@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_about_us"
+        android:icon="@drawable/fragment_project_show_content_icon"
+        android:title="@string/about_us" />
+
+</menu>

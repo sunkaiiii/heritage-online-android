@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.view.setMargins
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
-import com.example.sunkai.heritage.activity.MainActivity
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.getSelectGradientDrawableColor
+import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.setThemeColor
 
 class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, glide: RequestManager) : BaseRecyclerAdapter<SettingListSelectThemeColorAdapter.Holder, String>(context, datas, glide) {
 
@@ -50,6 +53,7 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
         val layputParames = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layputParames.height = IMAGE_VIEW_SIZE
         layputParames.width = IMAGE_VIEW_SIZE
+        layputParames.setMargins(8)
         view.layoutParams = layputParames
         view.setBackgroundColor(color)
         if (color == getThemeColor()) {
@@ -60,21 +64,19 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
     }
 
     override fun setItemClick(itemView: View, item: String) {
-        setOnItemClickListener { view, position ->
-            val color = Color.parseColor(getItem(position))
-            setThemeColor(color)
-            notifyDataSetChanged()
-            if (context is BaseGlideActivity) {
-                context.changeWidgeTheme()
-            }
-            //因为viewpager使用的反射方式修改的阴影
-            //在主题颜色修改之后，需要重新设置阴影
-            resetMainActivityViewPager()
+        val color = Color.parseColor(item)
+        setThemeColor(color)
+        notifyDataSetChanged()
+        if (context is BaseGlideActivity) {
+            context.changeWidgeTheme()
         }
+        //因为viewpager使用的反射方式修改的阴影
+        //在主题颜色修改之后，需要重新设置阴影
+        //resetMainActivityViewPager()
     }
 
-    private fun resetMainActivityViewPager() {
-        val viewPager = MainActivity.mainViewPagerRef?.get() ?: return
-        viewPager.initEdge()
-    }
+//    private fun resetMainActivityViewPager() {
+//        val viewPager = MainActivity.mainViewPagerRef?.get() ?: return
+//        viewPager.initEdge()
+//    }
 }

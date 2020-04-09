@@ -48,19 +48,13 @@ class ProjectFragment : BaseLazyLoadFragment() {
                 R.id.search_menu -> {
                     navigateToSearchPage()
                 }
-                R.id.about_us_menu -> {
-                    navigateToAboutUsPage()
-                }
             }
 
             true
         }
     }
 
-    private fun navigateToAboutUsPage() {
-        val intent = Intent(context, AboutUSActivity::class.java)
-        startActivity(intent)
-    }
+
 
     private fun navigateToSearchPage() {
         val intent = Intent(context, SearchProjectActivity::class.java)
