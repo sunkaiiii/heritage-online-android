@@ -14,7 +14,7 @@ import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapt
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.tools.views.RectangleImageView
+import com.example.sunkai.heritage.views.tools.RectangleImageView
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 
@@ -56,7 +56,7 @@ class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, 
             val imgUrl = data.compressImg ?: data.img
             holder.peopleContent.visibility = View.GONE
             holder.peopleImageLayout.visibility = View.VISIBLE
-            glide.loadImageFromServer(imgUrl).into(holder.peopleImage)
+            glide.loadImageFromServer(imgUrl!!).into(holder.peopleImage)
             holder.peopleTitleTextInsideImage.text = data.title
         } else {
             holder.peopleContent.visibility = View.VISIBLE

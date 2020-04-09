@@ -13,7 +13,7 @@ import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.tools.views.RectangleImageView
+import com.example.sunkai.heritage.views.tools.RectangleImageView
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 

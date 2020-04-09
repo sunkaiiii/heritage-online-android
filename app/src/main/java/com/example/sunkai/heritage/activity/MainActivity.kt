@@ -20,7 +20,7 @@ import com.example.sunkai.heritage.fragment.ProjectFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getThemeColor
-import com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
+import com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
 import com.example.sunkai.heritage.value.PUSH_SWITCH
 import com.example.sunkai.heritage.value.SETTING
 import com.google.android.material.bottomnavigation.BottomNavigationView

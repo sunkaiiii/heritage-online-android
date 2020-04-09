@@ -56,7 +56,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
             android:id="@+id/bottomNewsDetailRecyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

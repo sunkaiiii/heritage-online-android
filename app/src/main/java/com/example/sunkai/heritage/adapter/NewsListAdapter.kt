@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.R
@@ -20,10 +25,10 @@ import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 
 /**
- * 首页底部聚焦非遗的adapter
+ * 首页新闻的RecyclerView的Adapter
  * Created by sunkai on 2018/2/12.
  */
-class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi: EHeritageApi) : BaseLoadMoreRecyclerAdapter<BottomFolkNewsRecyclerviewAdapter.Holder, NewsListResponse>(context, data, glide) {
+class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi: EHeritageApi) : BaseLoadMoreRecyclerAdapter<NewsListAdapter.Holder, NewsListResponse>(context, data, glide) {
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -58,9 +63,21 @@ class BottomFolkNewsRecyclerviewAdapter(context: Context, data: List<NewsListRes
         holder.briefly.text = data.content
         if (!data.img.isNullOrEmpty()) {
             holder.image.visibility = View.VISIBLE
-            glide.loadImageFromServer(data.compressImg ?: data.img).into(holder.image)
+            glide.loadImageFromServer(data.compressImg ?: data.img?:"").listener(object:RequestListener<Drawable>{
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    holder.image.visibility=View.GONE
+                    data.compressImg=null
+                    data.img=null
+                    return false
+                }
+
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    return false
+                }
+
+            }).into(holder.image)
             holder.image.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.image, data.img)
+                ViewImageUtils.setViewImageClick(context, holder.image, data.img!!,data.compressImg?:data.img)
             }
         }
     }

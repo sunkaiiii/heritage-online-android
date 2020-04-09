@@ -10,5 +10,5 @@ class NewsListResponse(val link:String,
                        val title:String,
                        val date:String,
                        val content:String,
-                       val img:String?,
-                       val compressImg:String?):Serializable
+                       var img:String?,
+                       var compressImg:String?):Serializable

@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.example.sunkai.heritage.tools.views.RectangleImageView
+            <com.example.sunkai.heritage.views.tools.RectangleImageView
                 android:id="@+id/peopleImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -36,7 +36,7 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <com.example.sunkai.heritage.tools.views.RectangleImageView
+                    <com.example.sunkai.heritage.views.tools.RectangleImageView
                         android:id="@+id/fragmentProjectTopImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+        <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
             android:id="@+id/ProjectInformationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

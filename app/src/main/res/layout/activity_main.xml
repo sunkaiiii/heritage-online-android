@@ -14,7 +14,7 @@
         app:itemTextAppearanceActive="@style/navigationBarTheme"
         app:itemTextAppearanceInactive="@style/navigationBarTheme"/>
 
-    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
         android:id="@+id/activityMainViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

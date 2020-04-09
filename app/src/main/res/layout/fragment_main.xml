@@ -20,7 +20,7 @@
             app:expandedTitleMarginStart="48dp"
             app:layout_scrollFlags="scroll">
 
-            <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
+            <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
                 android:id="@+id/MainPageSlideViewpager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -31,7 +31,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager
+    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
         android:id="@+id/mainPageViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,5 +45,5 @@
             android:background="@color/midGrey"
             app:tabSelectedTextColor="@color/white"
             app:tabTextColor="@color/normalGrey" />
-    </com.example.sunkai.heritage.tools.views.FollowThemeEdgeViewPager>
+    </com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

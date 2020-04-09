@@ -33,7 +33,7 @@
             android:maxLines="1" />
     </LinearLayout>
 
-    <com.example.sunkai.heritage.tools.views.FollowThemeEdgeRecyclerView
+    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
         android:id="@+id/searchRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

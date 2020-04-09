@@ -7,6 +7,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
 import com.example.sunkai.heritage.adapter.ViewImageGalleryAdapter
 import com.example.sunkai.heritage.tools.WindowHelper
+import com.example.sunkai.heritage.value.IMAGE_COMPRESS_URL
 import com.example.sunkai.heritage.value.IMAGE_POSITION
 import com.example.sunkai.heritage.value.IMAGE_URL
 import kotlinx.android.synthetic.main.activity_view_image.*
@@ -22,9 +23,15 @@ class ViewImageActivity : BaseViewImageActivity() {
     }
 
     private fun getImage() {
-        val imageUrl = intent.getStringArrayExtra(IMAGE_URL)!!
+        val imageUrl = intent.getStringArrayExtra(IMAGE_URL)
+        val compressedUrls=intent.getStringArrayExtra(IMAGE_COMPRESS_URL)
+        if(imageUrl==null)
+        {
+            finish()
+            return
+        }
         val position = intent.getIntExtra(IMAGE_POSITION, 0)
-        val adapter = ViewImageGalleryAdapter(this, imageUrl, glide)
+        val adapter = ViewImageGalleryAdapter(this, imageUrl,compressedUrls, glide)
         adapter.setOnDragListener(this)
         adapter.setOnPhotoViewImageClickListener(this)
         activityViewImageGallery.adapter = adapter

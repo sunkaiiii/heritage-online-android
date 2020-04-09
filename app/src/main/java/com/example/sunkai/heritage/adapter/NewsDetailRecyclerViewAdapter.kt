@@ -14,7 +14,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.entity.BottomFolkNewsContent
 import com.example.sunkai.heritage.tools.ViewImageUtils
-import com.example.sunkai.heritage.tools.loadImageFromServer
+import com.example.sunkai.heritage.tools.loadImageFromServerToList
 import com.example.sunkai.heritage.value.TYPE_TEXT
 
 /**
@@ -24,15 +24,19 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
 class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNewsContent>, glide: RequestManager) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, BottomFolkNewsContent>(context, datas, glide) {
 
     private val images: Array<String>
+    private val compressImages:Array<String?>
 
     init {
         val images = arrayListOf<String>()
+        val compressImages= arrayListOf<String?>()
         datas.forEach {
             if (!isTextLine(it)) {
                 images.add(it.content)
+                compressImages.add(it.compressImg)
             }
         }
         this.images = images.toTypedArray()
+        this.compressImages=compressImages.toTypedArray()
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -73,9 +77,9 @@ class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNews
         } else {
             holder.textView.visibility = View.GONE
             holder.imageView.visibility = View.VISIBLE
-            glide.loadImageFromServer(data.compressImg ?: data.content).into(holder.imageView)
+            glide.loadImageFromServerToList(data.compressImg ?: data.content,holder.imageView)
             holder.imageView.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.imageView, images, images.indexOf(data.content))
+                ViewImageUtils.setViewImageClick(context, holder.imageView, images,compressImages, images.indexOf(data.content))
             }
         }
     }

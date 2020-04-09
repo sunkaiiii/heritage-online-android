@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.adapter.BottomFolkNewsRecyclerviewAdapter
+import com.example.sunkai.heritage.adapter.NewsListAdapter
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.connectWebService.RequestHelper
@@ -64,12 +64,12 @@ class BottomNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
             reqeustArgument?.reqeustApi -> {
                 val data = fromJsonToList(response, NewsListResponse::class.java)
                 if (fragmentMainRecyclerview.adapter == null) {
-                    val adapter = BottomFolkNewsRecyclerviewAdapter(activity
+                    val adapter = NewsListAdapter(activity
                             ?: return, data, glide, reqeustArgument?.detailApi ?: return)
                     fragmentMainRecyclerview.adapter = adapter
                     onPostLoad()
                 } else {
-                    val adapter = fragmentMainRecyclerview.adapter as BottomFolkNewsRecyclerviewAdapter
+                    val adapter = fragmentMainRecyclerview.adapter as NewsListAdapter
                     adapter.addNewData(data)
                 }
             }

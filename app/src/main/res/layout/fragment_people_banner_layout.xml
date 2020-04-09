@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.sunkai.heritage.tools.views.RectangleImageView
+    <com.example.sunkai.heritage.views.tools.RectangleImageView
         android:id="@+id/bannerImageView"
         tools:src="@drawable/project_detail_top_background"
         tools:scaleType="centerCrop"
