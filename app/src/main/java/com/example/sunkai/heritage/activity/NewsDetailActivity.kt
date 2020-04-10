@@ -80,6 +80,7 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
 
     private fun initTitleAndSubtitle(data: BottomFolkNews) {
         bottomNewsDetailTitle.text = data.title.replace("\r", "").replace("\n", "").replace("\t", "")
+        newsDetailSubtitleLayout.removeAllViews()
         data.subtitle?.let { list ->
             list.forEach {
                 val textView = TextView(this)
