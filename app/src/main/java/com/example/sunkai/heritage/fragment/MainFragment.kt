@@ -138,7 +138,7 @@ class MainFragment : BaseGlideFragment() {
     private fun createFragments(): List<Fragment> {
         val fragments = arrayListOf<Fragment>()
         PAGES.forEach {
-            val fragment=BottomNewsFragment()
+            val fragment=NewsListFragment()
             val bundle=Bundle()
             bundle.putSerializable(PAGE,it)
             fragment.arguments=bundle

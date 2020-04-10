@@ -3,10 +3,9 @@ package com.example.sunkai.heritage.tools
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.EdgeEffect
@@ -18,8 +17,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
+import androidx.core.widget.NestedScrollView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.CHANGE_THEME
@@ -34,24 +33,45 @@ import com.google.android.material.tabs.TabLayout
  * 2018/7/17
  * 用于处理主题切换的工具类
  */
-
 private var themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
 private var darkThemeColor = getDarkerColor(getThemeColor())
 private var lightThemeColor = getLighterColor(getThemeColor())
+private var darkmode = false
+fun reloadThemeColor() {
+    reloadThemeColor(GlobalContext.instance.resources.configuration)
+}
+
+fun reloadThemeColor(newConfig: Configuration) {
+    when (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_NO -> {
+            darkmode = false
+            themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+        } // Night mode is not active, we're using the light theme
+        Configuration.UI_MODE_NIGHT_YES -> {
+            darkmode = true
+            themeColor = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
+        } // Night mode is active, we're using dark theme
+    }
+    darkThemeColor = getDarkerColor(getThemeColor())
+    lightThemeColor = getLighterColor(getThemeColor())
+    LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(Intent(CHANGE_THEME))
+}
 
 fun setThemeColor(color: Int) {
-    themeColor = color
-    darkThemeColor = getDarkerColor(themeColor)
-    lightThemeColor = getLighterColor(color)
     GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
         putInt(THEME_COLOR, color)
     }
-    val intent=Intent(CHANGE_THEME)
-    LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(intent)
+    if (!darkmode) {
+        themeColor = color
+        darkThemeColor = getDarkerColor(themeColor)
+        lightThemeColor = getLighterColor(color)
+        val intent = Intent(CHANGE_THEME)
+        LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(intent)
+    }
 }
 
-fun getThemeColor(): Int {
-    return themeColor
+fun getThemeColor(specialDarkmodeColor: Boolean = false): Int {
+    return if (specialDarkmodeColor) ContextCompat.getColor(GlobalContext.instance, R.color.deepGrey) else themeColor
 }
 
 fun getDarkThemeColor(): Int {
@@ -62,14 +82,14 @@ fun getLightThemeColor(): Int {
     return lightThemeColor
 }
 
-fun getTransparentColor(color:Int,a:Int=119):Int{
-    return Color.argb(a,Color.red(color),Color.green(color),Color.blue(color))
+fun getTransparentColor(color: Int, a: Int = 119): Int {
+    return Color.argb(a, Color.red(color), Color.green(color), Color.blue(color))
 }
 
 fun getDarkerColor(color: Int): Int {
     val hsvArray = FloatArray(3)
     Color.colorToHSV(color, hsvArray)
-    hsvArray[1] += 0.25f
+    hsvArray[0] += 0.25f
     hsvArray[2] -= 0.25f
     return Color.HSVToColor(hsvArray)
 }
@@ -77,13 +97,13 @@ fun getDarkerColor(color: Int): Int {
 fun getLighterColor(color: Int): Int {
     val hsvArray = FloatArray(3)
     Color.colorToHSV(color, hsvArray)
-    hsvArray[1] -= 0.25f
+    hsvArray[0] -= 0.25f
     hsvArray[2] += 0.25f
     if (hsvArray[2] >= 1) {
         hsvArray[2] = 0.92f
     }
-    if (hsvArray[1] <= 0) {
-        hsvArray[1] = 0.08f
+    if (hsvArray[0] <= 0) {
+        hsvArray[0] = 0.08f
     }
     return Color.HSVToColor(hsvArray)
 }
@@ -117,7 +137,7 @@ fun tintTextView(textView: TextView) {
 
 fun tintTablayout(tabLayout: TabLayout) {
     tabLayout.setBackgroundColor(getThemeColor())
-    tabLayout.setSelectedTabIndicatorColor(getDarkThemeColor())
+    tabLayout.setSelectedTabIndicatorColor(if (darkmode) getLightThemeColor() else getDarkThemeColor())
 }
 
 fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
@@ -126,8 +146,10 @@ fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
 }
 
 fun tintBottomNavigationView(navigationView: BottomNavigationView) {
+    if (darkmode)
+        return
     val midGrey = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
-    val colors = arrayOf(themeColor, midGrey).toIntArray()
+    val colors = arrayOf(getThemeColor(), midGrey).toIntArray()
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
     val colorStateList = ColorStateList(states, colors)
     navigationView.itemTextColor = colorStateList
@@ -153,9 +175,9 @@ private fun tintCompoundDrawables(view: TextView) {
     }
 }
 
-fun tintViewPager(view:ViewPager){
+fun tintViewPager(view: ViewPager) {
     try {
-        val color= getThemeColor()
+        val color = getThemeColor()
         val leftEdgeFile = ViewPager::class.java.getDeclaredField("mLeftEdge")
         val rightEdgeFiled = ViewPager::class.java.getDeclaredField("mRightEdge")
         leftEdgeFile.isAccessible = true
@@ -171,11 +193,29 @@ fun tintViewPager(view:ViewPager){
     }
 }
 
-fun tintProgressBar(view:ProgressBar?){
-    view?.indeterminateDrawable?.setColorFilter(getThemeColor(),PorterDuff.Mode.MULTIPLY)
+
+fun tintNestedScrollView(view: NestedScrollView) {
+    try {
+        val topEdgeEffectField = NestedScrollView::class.java.getDeclaredField("mEdgeGlowTop")
+        val bottomEdgeEffectField =NestedScrollView::class.java.getDeclaredField("mEdgeGlowBottom")
+        topEdgeEffectField.isAccessible = true
+        bottomEdgeEffectField.isAccessible = true
+        val topEdgeEffect =  EdgeEffect(view.context)
+        val bottomEdgeEffect =  EdgeEffect(view.context)
+        topEdgeEffect.color = themeColor
+        bottomEdgeEffect.color = themeColor
+        topEdgeEffectField.set(view,topEdgeEffect)
+        bottomEdgeEffectField.set(view,bottomEdgeEffect)
+    }catch (e:Exception){
+        e.printStackTrace()
+    }
 }
 
-fun tintToolbar(view:Toolbar){
+fun tintProgressBar(view: ProgressBar?) {
+    view?.indeterminateDrawable?.setColorFilter(getThemeColor(), PorterDuff.Mode.MULTIPLY)
+}
+
+fun tintToolbar(view: Toolbar) {
     view.setBackgroundColor(getThemeColor())
 }
 
@@ -185,7 +225,7 @@ fun forEachAndTintViews(view: ViewGroup) {
         if (it is ViewGroup) {
             forEachAndTintViews(it)
         }
-        if( it.tag==GlobalContext.instance.getString(R.string.change_theme_view)){
+        if (it.tag == GlobalContext.instance.getString(R.string.change_theme_view)) {
             it.setBackgroundColor(getThemeColor())
         }
         if (it is FollowThemeView) {

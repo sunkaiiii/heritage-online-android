@@ -14,9 +14,9 @@ import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
-import kotlinx.android.synthetic.main.bottom_news_framgent.*
+import kotlinx.android.synthetic.main.news_list_framgent.*
 
-class BottomNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
+class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
     var pageNumber = 1
     val requestBean = object : BasePathRequest() {
@@ -26,7 +26,7 @@ class BottomNewsFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bottom_news_framgent, container, false)
+        return inflater.inflate(R.layout.news_list_framgent, container, false)
     }
 
 

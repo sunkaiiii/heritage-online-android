@@ -9,7 +9,7 @@ import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 
 class FragmentProjectContentDialog(context: Context, private val data: ProjectBasicInformation) : BaseBottomDialog(context) {
     init {
-        setContentView(R.layout.fragment_project_content_layout)
+        setContentView(R.layout.fragment_project_content_dialog_layout)
         initView()
     }
 

@@ -69,7 +69,7 @@
                     android:layout_alignBottom="@id/fragmentPeopleTopTitle"
                     android:alpha="0"
                     android:tag="@string/change_theme_view"
-                    android:background="@color/normalGrey"
+                    android:background="@color/superLightGrey"
                     tools:alpha="1" />
             </RelativeLayout>
 
@@ -78,6 +78,7 @@
                 android:id="@+id/peopleFragmentRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/lightGrey"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </LinearLayout>
 

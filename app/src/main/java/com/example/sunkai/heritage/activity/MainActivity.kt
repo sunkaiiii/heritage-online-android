@@ -2,8 +2,7 @@ package com.example.sunkai.heritage.activity
 
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
@@ -11,9 +10,9 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -32,6 +31,7 @@ import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.reloadThemeColor
 import com.example.sunkai.heritage.value.THEME_COLOR_ARRAYS
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -165,5 +165,11 @@ class MainActivity : BaseGlideActivity() {
     private fun navigateToAboutUsPage() {
         val intent = Intent(this, AboutUSActivity::class.java)
         startActivity(intent)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        reloadThemeColor(newConfig)
+        recreate()
     }
 }

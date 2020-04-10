@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/peopleImage"
-                android:background="#AAFFFFFF"
+                android:background="@color/peopleTitleTextInsideImageColor"
                 android:padding="12dp"
                 android:textColor="@color/black"
                 android:textSize="18sp"

@@ -23,7 +23,7 @@
         android:textSize="19sp"
         android:textStyle="bold"
         android:gravity="center_horizontal"
-        android:background="#AAFFFFFF"
+        android:background="@color/peopleTitleTextInsideImageColor"
         android:elevation="12dp"
         android:textColor="@color/black"
         tools:text="硕大的撒多撒撒群无" />

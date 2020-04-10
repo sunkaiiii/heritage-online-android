@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.forEachAndTintViews
 
 /**
  * 通用的底部dialog
@@ -38,6 +39,10 @@ open class BaseBottomDialog(context: Context) : Dialog(context, R.style.BottomDi
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         window.setGravity(Gravity.BOTTOM)
         window.setWindowAnimations(R.style.BottomDialog_Animation)
+        val decorview=window.decorView
+        if(decorview is ViewGroup){
+            forEachAndTintViews(decorview)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

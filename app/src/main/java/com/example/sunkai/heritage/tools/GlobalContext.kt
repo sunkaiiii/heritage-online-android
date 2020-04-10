@@ -15,6 +15,7 @@ class GlobalContext : Application() {
         super.onCreate()
         instance = this
         MakeToast.initToast(this)
+        reloadThemeColor()
     }
 
     companion object {

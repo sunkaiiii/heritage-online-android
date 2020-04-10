@@ -3,14 +3,16 @@
     <color name="colorPrimary">#ac462e</color>
     <color name="colorPrimaryDark">#771605</color>
     <color name="colorAccent">#e37558</color>
-    <color name="superLightGrey">#EAEAEA</color>
-    <color name="lightGrey">#e6e6e6</color>
-    <color name="normalGrey">#c3c3c3</color>
-    <color name="black">#000000</color>
-    <color name="white">#ffffff</color>
-    <color name="deepGrey">#2f2f2f</color>
-    <color name="midGrey">#9E9E9E</color>
+    <color name="superLightGrey">#2f2f2f</color>
+    <color name="lightGrey">#9E9E9E</color>
+    <color name="normalGrey">#9E9E9E</color>
+    <color name="midGrey">#7E7E7E</color>
+    <color name="deepGrey">#EAEAEA</color>
+
+    <color name="black">#ffffff</color>
+    <color name="white">#000000</color>
     <color name="transparent">#50000000</color>
     <color name="transparent_dark">#80000000</color>
     <color name="transparent_full">#00000000</color>
+    <color name="peopleTitleTextInsideImageColor">#AA000000</color>
 </resources>
