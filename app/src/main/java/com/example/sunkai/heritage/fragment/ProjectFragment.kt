@@ -1,7 +1,10 @@
 package com.example.sunkai.heritage.fragment
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,9 +25,7 @@ import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.OnSrollHelper
-import com.example.sunkai.heritage.tools.Utils
-import com.example.sunkai.heritage.tools.toBlurBitmap
+import com.example.sunkai.heritage.tools.*
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_project.*
 
@@ -37,6 +38,15 @@ class ProjectFragment : BaseLazyLoadFragment() {
     override fun startLoadInformation() {
         requestHttp(EHeritageApi.GetProjectBasicInformation)
         initview()
+    }
+
+    override fun changeSpecificViewTheme() {
+        val background = fragmentProjectTopBackgroundRelativeLayout.background
+        if (background is GradientDrawable) {
+            background.setColor(getTransparentColor(getThemeColor()))
+        }
+
+        projectOverViewCardview.setCardBackgroundColor(getDarkThemeColor())
     }
 
     private fun initview() {
@@ -53,7 +63,6 @@ class ProjectFragment : BaseLazyLoadFragment() {
             true
         }
     }
-
 
 
     private fun navigateToSearchPage() {

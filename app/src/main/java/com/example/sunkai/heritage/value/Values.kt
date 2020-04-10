@@ -19,7 +19,7 @@ const val IMAGE_POSITION = "image_position"
 const val IMAGE_COMPRESS_URL = "image_compressed_url"
 const val API = "api"
 typealias TransitionPair = Pair<View, String>
-
+const val CHANGE_THEME="change_theme"
 val VERSION_NAME = {
     val pm = GlobalContext.instance.packageManager
     val pi = pm.getPackageInfo(GlobalContext.instance.packageName, 0)

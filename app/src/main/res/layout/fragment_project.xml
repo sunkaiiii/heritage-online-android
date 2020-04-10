@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.ContentLoadingProgressBar
+    <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/ProjectDescLoading"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
@@ -45,6 +45,7 @@
                         app:riv_corner_radius_bottom_right="8dp" />
 
                     <RelativeLayout
+                        android:id="@+id/fragmentProjectTopBackgroundRelativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/fragment_project_top_background">
@@ -87,6 +88,7 @@
                         </RelativeLayout>
 
                         <androidx.cardview.widget.CardView
+                            android:id="@+id/projectOverViewCardview"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentBottom="true"

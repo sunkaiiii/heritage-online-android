@@ -97,4 +97,5 @@ limitations under the License.</string>
     <string name="special_topic" >Special topic</string>
     <string name="people">People</string>
     <string name="theme_color">theme color</string>
+    <string name="change_theme_view">change_theme_view</string>
 </resources>

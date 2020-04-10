@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.ContentLoadingProgressBar
+    <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/peopleLoadingProgressBar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
+                <com.example.sunkai.heritage.views.tools.FollowThemeTextView
                     android:id="@+id/fragmentPeopleTopTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -68,6 +68,7 @@
                     android:layout_alignTop="@+id/fragmentPeopleTopTitle"
                     android:layout_alignBottom="@id/fragmentPeopleTopTitle"
                     android:alpha="0"
+                    android:tag="@string/change_theme_view"
                     android:background="@color/normalGrey"
                     tools:alpha="1" />
             </RelativeLayout>

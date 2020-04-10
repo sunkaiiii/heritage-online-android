@@ -11,22 +11,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
 
         <LinearLayout
+            android:id="@+id/inheritate_content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/inheritate_content_layout"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/inheritate_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
                 android:textColor="@color/black"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -46,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_access_time_grey_900_24dp" />
+            android:src="@drawable/baseline_expand_more_24" />
 
     </RelativeLayout>
 

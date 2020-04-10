@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/navigationViewTopHeaderLayout"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:background="@color/colorPrimary">
@@ -23,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:drawableStart="@drawable/baseline_color_lens_black_24"
-        android:drawablePadding="8dp"
+        android:drawablePadding="24dp"
         android:drawableTint="@color/deepGrey"
         android:gravity="center"
         android:text="@string/theme_color"
@@ -37,4 +38,9 @@
         android:layout_margin="8dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/lightGrey" />
 </LinearLayout>

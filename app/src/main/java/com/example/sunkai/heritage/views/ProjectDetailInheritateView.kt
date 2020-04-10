@@ -40,6 +40,7 @@ class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) 
                     TransitionManager.beginDelayedTransition((context as AppCompatActivity).window.decorView as ViewGroup, ChangeBounds())
                 }
                 contentLayout.visibility = if (contentLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+                (it as ImageView).setImageResource(if (contentLayout.visibility == View.GONE) R.drawable.baseline_expand_more_24 else R.drawable.baseline_expand_less_24)
             }
             val name: TextView = contentView.findViewById(R.id.inheritate_name)
             val type:TextView=contentView.findViewById(R.id.inheritate_type)

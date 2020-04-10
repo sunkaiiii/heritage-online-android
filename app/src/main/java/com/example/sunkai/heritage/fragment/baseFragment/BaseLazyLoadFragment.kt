@@ -22,6 +22,7 @@ abstract class BaseLazyLoadFragment:BaseGlideFragment(),LazyLoad{
         }
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         this.isDetachhed=true

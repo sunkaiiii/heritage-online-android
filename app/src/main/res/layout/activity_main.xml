@@ -10,7 +10,7 @@
         android:fitsSystemWindows="true"
         android:layout_height="match_parent">
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
+        <com.example.sunkai.heritage.views.tools.FollowThemeBottomNavigationView
             android:id="@+id/bottomNavigationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

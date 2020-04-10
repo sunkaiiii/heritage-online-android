@@ -23,8 +23,8 @@ class ProjectDetailActivity : BaseGlideActivity() {
         loadPageDetail()
     }
 
-    var projectDetailToolbarLocationArray = IntArray(2)
-    var projectDetailTitleLocationArray = IntArray(2)
+    private var projectDetailToolbarLocationArray = IntArray(2)
+    private var projectDetailTitleLocationArray = IntArray(2)
     private fun initView(projectDetail: ProjectDetailResponse) {
         projectDetailToolbarBackArrow.setOnClickListener { finish() }
         projectDetailToolbarTitle.text = projectDetail.title
@@ -69,6 +69,7 @@ class ProjectDetailActivity : BaseGlideActivity() {
 
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         setContentView(R.layout.activity_project_detail)
+        changeWidgeTheme()
         initView(projectDetail)
         projectDetailTitle.text = projectDetail.title
         projectDesc.text = projectDetail.text

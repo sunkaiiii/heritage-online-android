@@ -100,4 +100,5 @@ limitations under the License.</string>
     <string name="special_topic">专题报道</string>
     <string name="people">人物</string>
     <string name="theme_color">主题颜色</string>
+    <string name="change_theme_view">change_theme_view</string>
 </resources>

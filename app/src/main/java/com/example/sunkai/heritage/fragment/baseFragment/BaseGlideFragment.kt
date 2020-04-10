@@ -1,11 +1,17 @@
 package com.example.sunkai.heritage.fragment.baseFragment
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -16,6 +22,7 @@ import com.example.sunkai.heritage.entity.request.BaseQueryRequest
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.value.CHANGE_THEME
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +35,12 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     private val handler: Handler = Handler(Looper.getMainLooper())
+    private val broadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            changeWidgeTheme()
+        }
+
+    }
 
     init {
         runnableList = arrayListOf()
@@ -36,10 +49,13 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //glide不认androidx下的fragment，但是似乎编译能过
+        val context = context
+        LocalBroadcastManager.getInstance(context
+                ?: return).registerReceiver(broadReceiver, IntentFilter(CHANGE_THEME))
         glide = Glide.with(this)
         setNeedChangeThemeColorWidget()
     }
+
 
     override fun onStart() {
         super.onStart()
@@ -47,17 +63,15 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     }
 
     protected open fun changeWidgeTheme() {
-        val color = getThemeColor()
-        changeThemeWidge.forEach {
-            val view = activity?.findViewById<View>(it)
-            when (view) {
-                is TextView -> tintTextView(view)
-                is TabLayout -> tintTablayout(view)
-                is FloatingActionButton -> tintFloatActionButton(view)
-                is RecyclerView -> tintRecyclerView(view)
-                else -> view?.setBackgroundColor(color)
-            }
+        val view = view
+        if (view is ViewGroup) {
+            forEachAndTintViews(view)
         }
+        changeSpecificViewTheme()
+    }
+
+
+    open fun changeSpecificViewTheme() {
     }
 
     protected fun requestHttp(runnable: () -> Unit) {
@@ -69,7 +83,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         runnableList.add(job)
     }
 
-    protected  fun requestHttp(api: EHeritageApi,bean: NetworkRequest = BaseQueryRequest()) {
+    protected fun requestHttp(api: EHeritageApi, bean: NetworkRequest = BaseQueryRequest()) {
         val helper = RequestHelper(api)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
@@ -99,8 +113,13 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
         return BaseSetting.gsonInstance.fromJson(s, ParameterizedTypeImpl(clazz))
     }
 
-    fun <T> fromJsonToObject(s:String,clazz:Class<T>):T{
-        return BaseSetting.gsonInstance.fromJson(s,clazz)
+    fun <T> fromJsonToObject(s: String, clazz: Class<T>): T {
+        return BaseSetting.gsonInstance.fromJson(s, clazz)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LocalBroadcastManager.getInstance(context?:return).unregisterReceiver(broadReceiver)
     }
 
     override fun onDestroyView() {

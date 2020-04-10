@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ProgressBar
+    <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/webviewProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"

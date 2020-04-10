@@ -1,18 +1,31 @@
 package com.example.sunkai.heritage.tools
 
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.view.ViewGroup
+import android.widget.EdgeEffect
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.children
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.value.CHANGE_THEME
 import com.example.sunkai.heritage.value.SETTING
 import com.example.sunkai.heritage.value.THEME_COLOR
+import com.example.sunkai.heritage.views.tools.FollowThemeView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -33,6 +46,8 @@ fun setThemeColor(color: Int) {
     GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
         putInt(THEME_COLOR, color)
     }
+    val intent=Intent(CHANGE_THEME)
+    LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(intent)
 }
 
 fun getThemeColor(): Int {
@@ -45,6 +60,10 @@ fun getDarkThemeColor(): Int {
 
 fun getLightThemeColor(): Int {
     return lightThemeColor
+}
+
+fun getTransparentColor(color:Int,a:Int=119):Int{
+    return Color.argb(a,Color.red(color),Color.green(color),Color.blue(color))
 }
 
 fun getDarkerColor(color: Int): Int {
@@ -92,6 +111,7 @@ fun getSelectGradientDrawableColor(color: Int): Int {
 }
 
 fun tintTextView(textView: TextView) {
+    textView.setTextColor(getDarkThemeColor())
     tintCompoundDrawables(textView)
 }
 
@@ -133,6 +153,43 @@ private fun tintCompoundDrawables(view: TextView) {
     }
 }
 
-fun tintRecyclerView(view: RecyclerView) {
-    view.adapter?.notifyDataSetChanged()
+fun tintViewPager(view:ViewPager){
+    try {
+        val color= getThemeColor()
+        val leftEdgeFile = ViewPager::class.java.getDeclaredField("mLeftEdge")
+        val rightEdgeFiled = ViewPager::class.java.getDeclaredField("mRightEdge")
+        leftEdgeFile.isAccessible = true
+        rightEdgeFiled.isAccessible = true
+        val left = EdgeEffect(view.context)
+        val right = EdgeEffect(view.context)
+        left.color = color
+        right.color = color
+        leftEdgeFile.set(view, left)
+        rightEdgeFiled.set(view, right)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
+fun tintProgressBar(view:ProgressBar?){
+    view?.indeterminateDrawable?.setColorFilter(getThemeColor(),PorterDuff.Mode.MULTIPLY)
+}
+
+fun tintToolbar(view:Toolbar){
+    view.setBackgroundColor(getThemeColor())
+}
+
+
+fun forEachAndTintViews(view: ViewGroup) {
+    view.children.forEach {
+        if (it is ViewGroup) {
+            forEachAndTintViews(it)
+        }
+        if( it.tag==GlobalContext.instance.getString(R.string.change_theme_view)){
+            it.setBackgroundColor(getThemeColor())
+        }
+        if (it is FollowThemeView) {
+            it.setThemeColor()
+        }
+    }
 }

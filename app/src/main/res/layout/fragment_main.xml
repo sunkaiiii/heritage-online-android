@@ -37,7 +37,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.google.android.material.tabs.TabLayout
+        <com.example.sunkai.heritage.views.tools.FollowThemeTabLayout
             android:id="@+id/mainPageTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

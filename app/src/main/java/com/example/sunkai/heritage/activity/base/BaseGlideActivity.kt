@@ -1,14 +1,20 @@
 package com.example.sunkai.heritage.activity.base
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
@@ -18,6 +24,7 @@ import com.example.sunkai.heritage.entity.request.BaseQueryRequest
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.value.CHANGE_THEME
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -32,7 +39,13 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     protected val TAG = javaClass.name
-    private val handler=Handler(Looper.getMainLooper())
+    private val handler = Handler(Looper.getMainLooper())
+    private val broadReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            changeWidgeTheme()
+        }
+
+    }
 
     init {
         runnableList = arrayListOf()
@@ -41,10 +54,10 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadReceiver, IntentFilter(CHANGE_THEME))
         isDestroy = false
         glide = Glide.with(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        setNeedChangeThemeColorWidget()
     }
 
     override fun onStart() {
@@ -62,17 +75,14 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         }
         window.statusBarColor = darkColor
         window.navigationBarColor = color
-        changeThemeWidge.forEach {
-            val view = findViewById<View>(it)
-            when (view) {
-                is SwitchCompat -> tintSwitch(view)
-                is TextView -> tintTextView(view)
-                is TabLayout -> tintTablayout(view)
-                is FloatingActionButton -> tintFloatActionButton(view)
-                is BottomNavigationView -> tintBottomNavigationView(view)
-                else -> view?.setBackgroundColor(color)
-            }
+        val decorview = window.decorView
+        if (decorview is ViewGroup) {
+            forEachAndTintViews(decorview)
         }
+        changeSpecificViewTheme()
+    }
+
+    open fun changeSpecificViewTheme() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -84,6 +94,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
 
     override fun onDestroy() {
         super.onDestroy()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadReceiver)
         isDestroy = true
         runnableList.forEach {
             it.cancel()
@@ -140,9 +151,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         return BaseSetting.gsonInstance.fromJson(s, ParameterizedTypeImpl(clazz))
     }
 
-    fun <T> fromJsonToObject(s:String,clazz:Class<T>):T{
-        return BaseSetting.gsonInstance.fromJson(s,clazz)
+    fun <T> fromJsonToObject(s: String, clazz: Class<T>): T {
+        return BaseSetting.gsonInstance.fromJson(s, clazz)
     }
-    open fun setNeedChangeThemeColorWidget() {}
-
 }

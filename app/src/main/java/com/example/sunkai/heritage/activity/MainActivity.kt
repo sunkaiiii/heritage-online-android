@@ -1,16 +1,19 @@
 package com.example.sunkai.heritage.activity
 
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -26,16 +29,12 @@ import com.example.sunkai.heritage.fragment.PeopleFragment
 import com.example.sunkai.heritage.fragment.ProjectFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.getDarkThemeColor
+import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
-import com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
-import com.example.sunkai.heritage.value.PUSH_SWITCH
-import com.example.sunkai.heritage.value.SETTING
 import com.example.sunkai.heritage.value.THEME_COLOR_ARRAYS
-import com.example.sunkai.heritage.views.tools.GridLayoutManagerItemDecoration
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.ref.WeakReference
 
 /**
  * 此类用于处理登陆
@@ -51,16 +50,12 @@ class MainActivity : BaseGlideActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViews()
-        //如果用户打开了推送开关，则开启推送服务
-        val sharePrefrence = getSharedPreferences(SETTING, Context.MODE_PRIVATE)
-        if (sharePrefrence.getBoolean(PUSH_SWITCH, false)) {
-            //TODO 是否保留推送 未知
-        }
         setIgnoreToolbar(true)
     }
 
-    override fun setNeedChangeThemeColorWidget() {
-        changeThemeWidge.add(R.id.bottomNavigationButton)
+    override fun changeSpecificViewTheme() {
+        val drawable=GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,arrayOf(getDarkThemeColor(), getThemeColor(), getLightThemeColor()).toIntArray())
+        activityMainNavigationView.getHeaderView(0).findViewById<View>(R.id.navigationViewTopHeaderLayout).background=drawable
     }
 
     private fun initViews() {
