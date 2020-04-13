@@ -37,23 +37,8 @@ private var themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MO
 private var darkThemeColor = getDarkerColor(getThemeColor())
 private var lightThemeColor = getLighterColor(getThemeColor())
 private var darkmode = false
-fun reloadThemeColor() {
-    reloadThemeColor(GlobalContext.instance.resources.configuration)
-}
 
-fun reloadThemeColor(newConfig: Configuration) {
-    when (newConfig.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-        Configuration.UI_MODE_NIGHT_NO -> {
-            darkmode = false
-            themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
-        } // Night mode is not active, we're using the light theme
-        Configuration.UI_MODE_NIGHT_YES -> {
-            darkmode = true
-            themeColor = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
-        } // Night mode is active, we're using dark theme
-    }
-    darkThemeColor = getDarkerColor(getThemeColor())
-    lightThemeColor = getLighterColor(getThemeColor())
+fun reloadThemeColor() {
     LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(Intent(CHANGE_THEME))
 }
 
@@ -219,8 +204,24 @@ fun tintToolbar(view: Toolbar) {
     view.setBackgroundColor(getThemeColor())
 }
 
+fun loadThemeColor(){
+    val config=GlobalContext.instance.resources.configuration
+    when (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_NO -> {
+            darkmode = false
+            themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+        } // Night mode is not active, we're using the light theme
+        Configuration.UI_MODE_NIGHT_YES -> {
+            darkmode = true
+            themeColor = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
+        } // Night mode is active, we're using dark theme
+    }
+    darkThemeColor = getDarkerColor(getThemeColor())
+    lightThemeColor = getLighterColor(getThemeColor())
+}
 
 fun forEachAndTintViews(view: ViewGroup) {
+    loadThemeColor()
     view.children.forEach {
         if (it is ViewGroup) {
             forEachAndTintViews(it)

@@ -169,7 +169,7 @@ class MainActivity : BaseGlideActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        reloadThemeColor(newConfig)
+        reloadThemeColor()
         recreate()
     }
 }

@@ -66,20 +66,16 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     open fun changeWidgeTheme() {
-        changeWidgeTheme(getThemeColor(), getDarkThemeColor())
-    }
-
-    open fun changeWidgeTheme(color: Int, darkColor: Int) {
-        if (!ignoreToolbar) {
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(color))
-        }
-        window.statusBarColor = darkColor
-        window.navigationBarColor = color
         val decorview = window.decorView
         if (decorview is ViewGroup) {
             forEachAndTintViews(decorview)
         }
         changeSpecificViewTheme()
+        if (!ignoreToolbar) {
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(getThemeColor()))
+        }
+        window.statusBarColor = getDarkThemeColor()
+        window.navigationBarColor = getThemeColor()
     }
 
     open fun changeSpecificViewTheme() {
