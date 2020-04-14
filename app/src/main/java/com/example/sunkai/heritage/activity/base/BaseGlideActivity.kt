@@ -9,25 +9,18 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.request.BaseQueryRequest
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.CHANGE_THEME
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -35,7 +28,7 @@ import kotlinx.coroutines.launch
 abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
-    private val runnableList: MutableList<Job>
+    private val runnableList: MutableMap<NetworkRequest, Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     protected val TAG = javaClass.name
@@ -48,7 +41,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     init {
-        runnableList = arrayListOf()
+        runnableList = HashMap()
         changeThemeWidge = arrayListOf()
     }
 
@@ -93,37 +86,32 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadReceiver)
         isDestroy = true
         runnableList.forEach {
-            it.cancel()
+            it.value.cancel()
         }
         runnableList.clear()
     }
 
-    protected fun requestHttp(runnable: () -> Unit) {
-        requestHttp(Runnable(runnable))
-    }
-
-    protected fun requestHttp(runnable: Runnable) {
-        val job = GlobalScope.launch {
-            runnable.run()
-        }
-        runnableList.add(job)
-    }
 
     override fun getUIThread(): Handler {
         return handler
     }
 
+    override fun getRunningMap(): Map<NetworkRequest, Job> {
+        return runnableList
+    }
+
     protected fun requestHttp(bean: NetworkRequest, api: EHeritageApi) {
-        val requestHelper = RequestHelper(api)
+        val requestHelper = RequestHelper(api, bean)
         val job = GlobalScope.launch {
-            BaseSetting.requestNetwork(requestHelper, bean, this@BaseGlideActivity)
+            BaseSetting.requestNetwork(requestHelper, this@BaseGlideActivity, this)
         }
-        runnableList.add(job)
+        runnableList[bean] = job
     }
 
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-
+        if (isDestroy && runnableList[api.getRequestBean()] == null && runnableList[api.getRequestBean()]?.isCancelled == true)
+            return
     }
 
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
@@ -150,4 +138,5 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     fun <T> fromJsonToObject(s: String, clazz: Class<T>): T {
         return BaseSetting.gsonInstance.fromJson(s, clazz)
     }
+
 }

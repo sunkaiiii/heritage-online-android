@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
-import com.example.sunkai.heritage.entity.BottomFolkNewsContent
+import com.example.sunkai.heritage.entity.response.NewsDetailContent
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.loadImageFromServerToList
 import com.example.sunkai.heritage.value.TYPE_TEXT
@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNewsContent>, glide: RequestManager) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, BottomFolkNewsContent>(context, datas, glide) {
+class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailContent>, glide: RequestManager) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, NewsDetailContent>(context, data, glide) {
 
     private val images: Array<String>
     private val compressImages:Array<String?>
@@ -29,7 +29,7 @@ class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNews
     init {
         val images = arrayListOf<String>()
         val compressImages= arrayListOf<String?>()
-        datas.forEach {
+        data.forEach {
             if (!isTextLine(it)) {
                 images.add(it.content)
                 compressImages.add(it.compressImg)
@@ -59,10 +59,10 @@ class NewsDetailRecyclerViewAdapter(context: Context, datas: List<BottomFolkNews
         }
     }
 
-    private fun isTextLine(data: BottomFolkNewsContent) =
+    private fun isTextLine(data: NewsDetailContent) =
             data.type == TYPE_TEXT
 
-    private fun setData(holder: ViewHolder, data: BottomFolkNewsContent, isInfoText: Boolean = true, isLastOneImage:Boolean = false) {
+    private fun setData(holder: ViewHolder, data: NewsDetailContent, isInfoText: Boolean = true, isLastOneImage:Boolean = false) {
         if (isInfoText) {
             if (isLastOneImage) {
                 holder.textView.typeface = Typeface.DEFAULT_BOLD

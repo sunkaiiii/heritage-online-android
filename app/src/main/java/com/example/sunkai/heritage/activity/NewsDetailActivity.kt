@@ -9,7 +9,7 @@ import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.BottomFolkNews
+import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
@@ -70,7 +70,7 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
         super.onTaskReturned(api, action, response)
         when (api.getRequestApi()) {
             requestApi -> {
-                val data = fromJsonToObject(response, BottomFolkNews::class.java)
+                val data = fromJsonToObject(response, NewsDetail::class.java)
                 initTitleAndSubtitle(data)
                 val adapter = NewsDetailRecyclerViewAdapter(this, data.content, glide)
                 bottomNewsDetailRecyclerview.adapter = adapter
@@ -78,7 +78,7 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
         }
     }
 
-    private fun initTitleAndSubtitle(data: BottomFolkNews) {
+    private fun initTitleAndSubtitle(data: NewsDetail) {
         bottomNewsDetailTitle.text = data.title.replace("\r", "").replace("\n", "").replace("\t", "")
         newsDetailSubtitleLayout.removeAllViews()
         data.subtitle?.let { list ->

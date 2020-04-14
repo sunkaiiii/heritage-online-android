@@ -15,6 +15,7 @@ import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.OnSrollHelper
@@ -25,14 +26,10 @@ import kotlin.math.abs
 class PeopleFragment : BaseLazyLoadFragment() {
 
     private var pageNumber = 1
-    private val pathRequest = object : BasePathRequest() {
-        override fun getPathParamerater(): List<String> {
-            return listOf(pageNumber++.toString())
-        }
-    }
+
     private val scrollHelper = object : OnSrollHelper() {
         override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp(EHeritageApi.GetPeopleList, pathRequest)
+            requestHttp(EHeritageApi.GetPeopleList, createRequestBean())
         }
 
     }
@@ -46,6 +43,13 @@ class PeopleFragment : BaseLazyLoadFragment() {
         }
     }
 
+    private fun createRequestBean(): NetworkRequest {
+        return object : BasePathRequest() {
+            override fun getPathParamerater(): List<String> {
+                return listOf(pageNumber++.toString())
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_people, container, false)
@@ -73,7 +77,7 @@ class PeopleFragment : BaseLazyLoadFragment() {
 
     override fun startLoadInformation() {
         requestHttp(EHeritageApi.GetPeopleMainPage)
-        requestHttp(EHeritageApi.GetPeopleList, pathRequest)
+        requestHttp(EHeritageApi.GetPeopleList, createRequestBean())
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {

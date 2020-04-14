@@ -60,6 +60,9 @@ const val PUSH_PORT = 8088
 
 val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums), GlobalContext.instance.getString(R.string.special_topic))
 
+const val NEWS_DETAIL_DATABASE="NewsDetail"
+
+
 const val GLIDE_LICENCE = "License for everything not in third_party and not otherwise marked:\n" +
         "\n" +
         "Copyright 2014 Google, Inc. All rights reserved.\n" +

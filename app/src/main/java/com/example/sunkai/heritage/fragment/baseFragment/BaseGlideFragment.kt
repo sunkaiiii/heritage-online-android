@@ -7,12 +7,11 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.connectWebService.BaseSetting
@@ -23,18 +22,18 @@ import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.CHANGE_THEME
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 abstract class BaseGlideFragment : Fragment(), RequestAction {
     protected lateinit var glide: RequestManager
-    private val runnableList: MutableList<Job>
+    private var isDestroyView = false
+    private val runnableList: MutableMap<NetworkRequest, Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     private val handler: Handler = Handler(Looper.getMainLooper())
+    private val TAG=this.javaClass.simpleName
     private val broadReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             changeWidgeTheme()
@@ -43,7 +42,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     }
 
     init {
-        runnableList = arrayListOf()
+        runnableList = HashMap()
         changeThemeWidge = arrayListOf()
     }
 
@@ -54,6 +53,11 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
                 ?: return).registerReceiver(broadReceiver, IntentFilter(CHANGE_THEME))
         glide = Glide.with(this)
         setNeedChangeThemeColorWidget()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        isDestroyView = false
     }
 
 
@@ -74,28 +78,24 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     open fun changeSpecificViewTheme() {
     }
 
-    protected fun requestHttp(runnable: () -> Unit) {
-        requestHttp(Runnable(runnable))
-    }
-
-    private fun requestHttp(runnable: Runnable) {
-        val job = GlobalScope.launch { runnable.run() }
-        runnableList.add(job)
-    }
-
     protected fun requestHttp(api: EHeritageApi, bean: NetworkRequest = BaseQueryRequest()) {
-        val helper = RequestHelper(api)
+        val helper = RequestHelper(api, bean)
         val job = GlobalScope.launch {
-            BaseSetting.requestNetwork(helper, bean, this@BaseGlideFragment)
+            BaseSetting.requestNetwork(helper, this@BaseGlideFragment, this)
         }
-        runnableList.add(job)
+        runnableList[bean] = job
     }
 
     override fun getUIThread(): Handler {
         return handler
     }
 
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {}
+    override fun getRunningMap(): Map<NetworkRequest, Job> {
+        return runnableList
+    }
+
+    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+    }
 
     //TODO 提示弹框
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
@@ -119,12 +119,13 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
 
     override fun onDestroy() {
         super.onDestroy()
-        LocalBroadcastManager.getInstance(context?:return).unregisterReceiver(broadReceiver)
+        LocalBroadcastManager.getInstance(context ?: return).unregisterReceiver(broadReceiver)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        runnableList.forEach { it.cancel() }
+        isDestroyView = true
+        runnableList.forEach { it.value.cancel() }
         runnableList.clear()
     }
 

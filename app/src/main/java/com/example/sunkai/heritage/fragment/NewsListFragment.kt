@@ -12,6 +12,7 @@ import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.news_list_framgent.*
@@ -19,9 +20,12 @@ import kotlinx.android.synthetic.main.news_list_framgent.*
 class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
     var pageNumber = 1
-    val requestBean = object : BasePathRequest() {
-        override fun getPathParamerater(): List<String> {
-            return listOf(pageNumber++.toString())
+
+    private fun createRequestBean():NetworkRequest{
+        return object : BasePathRequest() {
+            override fun getPathParamerater(): List<String> {
+                return listOf(pageNumber++.toString())
+            }
         }
     }
 
@@ -56,10 +60,11 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private fun loadInformation() {
         onPreLoad()
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
-        requestHttp(reqeustArgument?.reqeustApi ?: return, requestBean)
+        requestHttp(reqeustArgument?.reqeustApi ?: return, createRequestBean())
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+        super.onTaskReturned(api, action, response)
         when (api.getRequestApi()) {
             reqeustArgument?.reqeustApi -> {
                 val data = fromJsonToList(response, NewsListResponse::class.java)
@@ -85,11 +90,12 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     override fun onPostLoad() {
         bottomNewsRefreshLayout.isRefreshing = false
         //顶部卡片加载完成后，显示顶部卡片的背景图片
+
     }
 
     private val onScroller = object : OnSrollHelper() {
         override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp(reqeustArgument?.reqeustApi ?: return, requestBean)
+            requestHttp(reqeustArgument?.reqeustApi ?: return, createRequestBean())
         }
 
     }

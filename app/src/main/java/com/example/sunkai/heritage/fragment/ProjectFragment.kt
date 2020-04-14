@@ -77,6 +77,7 @@ class ProjectFragment : BaseLazyLoadFragment() {
 
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+        super.onTaskReturned(api, action, response)
         when (api.getRequestApi()) {
             EHeritageApi.GetProjectBasicInformation -> {
                 val projectInformation = fromJsonToObject(response, ProjectBasicInformation::class.java)

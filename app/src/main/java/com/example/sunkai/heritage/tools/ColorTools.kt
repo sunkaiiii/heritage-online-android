@@ -131,8 +131,6 @@ fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
 }
 
 fun tintBottomNavigationView(navigationView: BottomNavigationView) {
-    if (darkmode)
-        return
     val midGrey = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
     val colors = arrayOf(getThemeColor(), midGrey).toIntArray()
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
