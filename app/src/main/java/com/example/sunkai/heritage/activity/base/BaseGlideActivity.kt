@@ -28,7 +28,8 @@ import kotlinx.coroutines.launch
 abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected var isDestroy = true
     protected lateinit var glide: RequestManager
-    private val runnableList: MutableMap<NetworkRequest, Job>
+    private val requestMap: MutableMap<NetworkRequest, Job>
+    private val runnableList:MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     protected val TAG = javaClass.name
@@ -41,8 +42,9 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     init {
-        runnableList = HashMap()
+        requestMap = HashMap()
         changeThemeWidge = arrayListOf()
+        runnableList= arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,9 +87,13 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         super.onDestroy()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadReceiver)
         isDestroy = true
-        runnableList.forEach {
+        requestMap.forEach {
             it.value.cancel()
         }
+        runnableList.forEach {
+            it.cancel()
+        }
+        requestMap.clear()
         runnableList.clear()
     }
 
@@ -97,7 +103,14 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     override fun getRunningMap(): Map<NetworkRequest, Job> {
-        return runnableList
+        return requestMap
+    }
+
+    protected fun runOnBackGround(runnable: ()->Unit){
+        val job = GlobalScope.launch {
+            Runnable(runnable).run()
+        }
+        runnableList.add(job)
     }
 
     protected fun requestHttp(bean: NetworkRequest, api: EHeritageApi) {
@@ -105,12 +118,12 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(requestHelper, this@BaseGlideActivity, this)
         }
-        runnableList[bean] = job
+        requestMap[bean] = job
     }
 
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        if (isDestroy && runnableList[api.getRequestBean()] == null && runnableList[api.getRequestBean()]?.isCancelled == true)
+        if (isDestroy && requestMap[api.getRequestBean()] == null && requestMap[api.getRequestBean()]?.isCancelled == true)
             return
     }
 

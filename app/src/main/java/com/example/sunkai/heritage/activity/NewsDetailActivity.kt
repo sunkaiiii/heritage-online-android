@@ -9,11 +9,13 @@ import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.database.entities.NewsDetailContent
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
@@ -54,9 +56,20 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
 
     private fun GetNewsDetail(link: String) {
         onPreLoad()
-        val request = BottomNewsDetailRequest();
-        request.link = link
-        requestHttp(request, requestApi ?: return)
+        runOnBackGround {
+            val databaseData = tryToGetDataInDatabase(link)
+            runOnUiThread {
+                if (databaseData != null) {
+                    setDataToView(databaseData)
+                    onPostLoad()
+                    return@runOnUiThread
+                }
+                val request = BottomNewsDetailRequest()
+                request.link = link
+                requestHttp(request, requestApi ?: return@runOnUiThread)
+            }
+        }
+
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {
@@ -71,14 +84,40 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
         when (api.getRequestApi()) {
             requestApi -> {
                 val data = fromJsonToObject(response, NewsDetail::class.java)
-                initTitleAndSubtitle(data)
-                val adapter = NewsDetailRecyclerViewAdapter(this, data.content, glide)
-                bottomNewsDetailRecyclerview.adapter = adapter
+                setDataToView(data)
+                saveIntoDatabase(data)
+
             }
         }
     }
 
-    private fun initTitleAndSubtitle(data: NewsDetail) {
+    private fun tryToGetDataInDatabase(link: String): NewsDetail? {
+        val databaseData = GlobalContext.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+                ?: return null
+        return NewsDetail(databaseData)
+    }
+
+    private fun saveIntoDatabase(data: NewsDetail) {
+        runOnBackGround {
+            val database = GlobalContext.newsDetailDatabase
+            val newsDetailContentList= arrayListOf<NewsDetailContent>()
+            data.content.forEach {
+                newsDetailContentList.add(
+                        NewsDetailContent(null,
+                        it.type,
+                        it.content,
+                        it.compressImg,
+                        data.link)
+                )
+            }
+            val dao = database.newsDetailDao()
+            val contentdao=database.newsDetailContentDao()
+            dao.insert(com.example.sunkai.heritage.database.entities.NewsDetail(data))
+            contentdao.insertAll(newsDetailContentList)
+        }
+    }
+
+    private fun setDataToView(data: NewsDetail) {
         bottomNewsDetailTitle.text = data.title.replace("\r", "").replace("\n", "").replace("\t", "")
         newsDetailSubtitleLayout.removeAllViews()
         data.subtitle?.let { list ->
@@ -91,6 +130,8 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
             }
         }
         bottomNewsDetailAuther.text = data.author
+        val adapter = NewsDetailRecyclerViewAdapter(this, data.content, glide)
+        bottomNewsDetailRecyclerview.adapter = adapter
     }
 
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {

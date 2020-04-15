@@ -1,6 +1,10 @@
 package com.example.sunkai.heritage.tools
 
 import android.app.Application
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.sunkai.heritage.database.NewsDatabase
+import com.example.sunkai.heritage.value.NEWS_DETAIL_DATABASE
 
 
 /**
@@ -16,10 +20,16 @@ class GlobalContext : Application() {
         instance = this
         MakeToast.initToast(this)
         reloadThemeColor()
+        newsDetailDatabase=Room.databaseBuilder(
+                this,
+                NewsDatabase::class.java,NEWS_DETAIL_DATABASE
+        ).build()
     }
+
 
     companion object {
         lateinit var instance: GlobalContext
             private set
+        lateinit var newsDetailDatabase:NewsDatabase
     }
 }
