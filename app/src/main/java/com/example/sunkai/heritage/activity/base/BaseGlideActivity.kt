@@ -14,12 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.CHANGE_THEME
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -128,7 +130,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
-
+        toast(R.string.network_error)
     }
 
     override fun beforeReuqestStart(request: RequestHelper) {

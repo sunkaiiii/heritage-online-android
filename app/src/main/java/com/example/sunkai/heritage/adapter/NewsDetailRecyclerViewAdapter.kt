@@ -3,11 +3,13 @@ package com.example.sunkai.heritage.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
@@ -63,14 +65,18 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
             data.type == TYPE_TEXT
 
     private fun setData(holder: ViewHolder, data: NewsDetailContent, isInfoText: Boolean = true, isLastOneImage:Boolean = false) {
+        val typedValue=TypedValue()
+        val theme=context.theme
         if (isInfoText) {
             if (isLastOneImage) {
                 holder.textView.typeface = Typeface.DEFAULT_BOLD
-                holder.textView.setTextColor(Color.BLACK)
+                theme.resolveAttribute(android.R.attr.textColorPrimary,typedValue,true)
             } else {
+                theme.resolveAttribute(android.R.attr.textColorSecondary,typedValue,true)
                 holder.textView.typeface = Typeface.DEFAULT
-                holder.textView.setTextColor(Color.GRAY)
             }
+            val colorRes: Int = if (typedValue.resourceId != 0) typedValue.resourceId else typedValue.data
+            holder.textView.setTextColor(ContextCompat.getColor(context,colorRes))
             holder.textView.visibility = View.VISIBLE
             holder.imageView.visibility = View.GONE
             holder.textView.text = data.content.replace("\r", "").replace("\n", "").replace("\t", "")
