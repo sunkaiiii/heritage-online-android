@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -29,7 +28,8 @@ import kotlinx.coroutines.launch
 abstract class BaseGlideFragment : Fragment(), RequestAction {
     protected lateinit var glide: RequestManager
     private var isDestroyView = false
-    private val runnableList: MutableMap<NetworkRequest, Job>
+    private val requestMap: MutableMap<NetworkRequest, Job>
+    private val runnableList:MutableList<Job>
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
     private val handler: Handler = Handler(Looper.getMainLooper())
@@ -42,8 +42,9 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     }
 
     init {
-        runnableList = HashMap()
+        requestMap = HashMap()
         changeThemeWidge = arrayListOf()
+        runnableList= arrayListOf()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,12 +79,19 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     open fun changeSpecificViewTheme() {
     }
 
+    protected fun runOnBackGround(runnable:()->Unit){
+        val job=GlobalScope.launch {
+            Runnable(runnable).run()
+        }
+        runnableList.add(job)
+    }
+
     protected fun requestHttp(api: EHeritageApi, bean: NetworkRequest = BaseQueryRequest()) {
         val helper = RequestHelper(api, bean)
         val job = GlobalScope.launch {
             BaseSetting.requestNetwork(helper, this@BaseGlideFragment, this)
         }
-        runnableList[bean] = job
+        requestMap[bean] = job
     }
 
     override fun getUIThread(): Handler {
@@ -91,7 +99,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     }
 
     override fun getRunningMap(): Map<NetworkRequest, Job> {
-        return runnableList
+        return requestMap
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
@@ -125,8 +133,9 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     override fun onDestroyView() {
         super.onDestroyView()
         isDestroyView = true
-        runnableList.forEach { it.value.cancel() }
-        runnableList.clear()
+        requestMap.forEach { it.value.cancel() }
+        requestMap.clear()
+        runnableList.forEach { it.cancel() }
     }
 
     open fun setNeedChangeThemeColorWidget() {}

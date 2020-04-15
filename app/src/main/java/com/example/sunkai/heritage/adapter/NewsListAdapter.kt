@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.tools.ViewImageUtils
+import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
@@ -35,12 +37,14 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
         val time: TextView
         val briefly: TextView
         val image: ImageView
+        val readMark: View
 
         init {
             title = view.findViewById(R.id.bottom_view_title)
             time = view.findViewById(R.id.bottom_view_time)
             briefly = view.findViewById(R.id.bottom_view_briefly)
             image = view.findViewById(R.id.bottom_view_image)
+            readMark = view.findViewById(R.id.isReadMark)
         }
     }
 
@@ -61,13 +65,16 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
         holder.title.text = data.title
         holder.time.text = data.date
         holder.briefly.text = data.content
+        holder.readMark.setBackgroundColor(getThemeColor())
+        holder.readMark.visibility = if (data.isRead) View.VISIBLE else View.GONE
         if (!data.img.isNullOrEmpty()) {
             holder.image.visibility = View.VISIBLE
-            glide.loadImageFromServer(data.compressImg ?: data.img?:"").listener(object:RequestListener<Drawable>{
+            glide.loadImageFromServer(data.compressImg ?: data.img
+            ?: "").listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    holder.image.visibility=View.GONE
-                    data.compressImg=null
-                    data.img=null
+                    holder.image.visibility = View.GONE
+                    data.compressImg = null
+                    data.img = null
                     return false
                 }
 
@@ -77,7 +84,8 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
 
             }).into(holder.image)
             holder.image.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.image, data.img!!,data.compressImg?:data.img)
+                ViewImageUtils.setViewImageClick(context, holder.image, data.img!!, data.compressImg
+                        ?: data.img)
             }
         }
     }
@@ -91,6 +99,8 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
     }
 
     override fun setItemClick(itemView: View, item: NewsListResponse) {
+        item.isRead = true
+        itemView.findViewById<View>(R.id.isReadMark).visibility=View.VISIBLE
         val intent = Intent(context, NewsDetailActivity::class.java)
         intent.putExtra(DATA, item)
         intent.putExtra(API, requestDetailApi)

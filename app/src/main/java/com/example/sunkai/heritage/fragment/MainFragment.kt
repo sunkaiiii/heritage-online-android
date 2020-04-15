@@ -6,19 +6,22 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
+import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
-import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.tools.runOnUiThread
@@ -31,11 +34,12 @@ import java.io.Serializable
  */
 class MainFragment : BaseGlideFragment() {
 
-    private val PAGES= arrayOf(NewsPages.NewsPage,NewsPages.ForumsPage,NewsPages.SpecialTopicPage)
-    enum class NewsPages constructor(val _name:String, val reqeustApi:EHeritageApi,val detailApi: EHeritageApi):Serializable{
-        NewsPage("newsPage",EHeritageApi.GetNewsList,EHeritageApi.GetNewsDetail),
-        ForumsPage("forumsPage",EHeritageApi.GetForumsList,EHeritageApi.GetForumsDetail),
-        SpecialTopicPage("specialTopicPage",EHeritageApi.GetSpecialTopic,EHeritageApi.GetSpecialTopicDetail),
+    private val PAGES = arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
+
+    enum class NewsPages constructor(val _name: String, val reqeustApi: EHeritageApi, val detailApi: EHeritageApi, val newsListDaoName: NewsDatabase.NewsListDaoName) : Serializable {
+        NewsPage("newsPage", EHeritageApi.GetNewsList, EHeritageApi.GetNewsDetail, NewsDatabase.NewsListDaoName.NEWS_LIST),
+        ForumsPage("forumsPage", EHeritageApi.GetForumsList, EHeritageApi.GetForumsDetail, NewsDatabase.NewsListDaoName.FORUMS_LIST),
+        SpecialTopicPage("specialTopicPage", EHeritageApi.GetSpecialTopic, EHeritageApi.GetSpecialTopicDetail, NewsDatabase.NewsListDaoName.SPECIAL_TOPIC_LIST),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +61,8 @@ class MainFragment : BaseGlideFragment() {
 
     override fun onStart() {
         super.onStart()
-        val activity=activity?:return
-        if(activity is AppCompatActivity){
+        val activity = activity ?: return
+        if (activity is AppCompatActivity) {
             activity.supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
     }
@@ -67,7 +71,7 @@ class MainFragment : BaseGlideFragment() {
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
         setViewPagerListener(mainPageViewPager)
-        mainPageViewPager.offscreenPageLimit=fragments.size
+        mainPageViewPager.offscreenPageLimit = fragments.size
         mainPageViewPager.adapter = adapter
         mainPageTabLayout.setupWithViewPager(mainPageViewPager)
         runOnUiThread { (adapter.getItem(0) as BaseLazyLoadFragment).lazyLoad() }
@@ -94,11 +98,9 @@ class MainFragment : BaseGlideFragment() {
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         super.onTaskReturned(api, action, response)
-        when(api.getRequestApi())
-        {
-            EHeritageApi.GetBanner->
-            {
-                val data=fromJsonToList(response,MainPageBanner::class.java)
+        when (api.getRequestApi()) {
+            EHeritageApi.GetBanner -> {
+                val data = fromJsonToList(response, MainPageBanner::class.java)
                 setMainPageSlideAdapter(data)
             }
         }
@@ -113,7 +115,7 @@ class MainFragment : BaseGlideFragment() {
         MainPageSlideViewpager.setCurrentItem(middleItem, false)
         MainPageSlideViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-               startRecyclerScroll()
+                startRecyclerScroll()
             }
 
         })
@@ -138,10 +140,10 @@ class MainFragment : BaseGlideFragment() {
     private fun createFragments(): List<Fragment> {
         val fragments = arrayListOf<Fragment>()
         PAGES.forEach {
-            val fragment=NewsListFragment()
-            val bundle=Bundle()
-            bundle.putSerializable(PAGE,it)
-            fragment.arguments=bundle
+            val fragment = NewsListFragment()
+            val bundle = Bundle()
+            bundle.putSerializable(PAGE, it)
+            fragment.arguments = bundle
             fragments.add(fragment)
         }
         return fragments
@@ -163,6 +165,6 @@ class MainFragment : BaseGlideFragment() {
     companion object {
         const val SCROLL = 1
         const val DELAY = 3000L
-        const val PAGE="page"
+        const val PAGE = "page"
     }
 }

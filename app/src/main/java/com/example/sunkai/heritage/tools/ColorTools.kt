@@ -34,6 +34,7 @@ import com.google.android.material.tabs.TabLayout
  * 用于处理主题切换的工具类
  */
 private var themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+private var userChoiceThemeColor=GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
 private var darkThemeColor = getDarkerColor(getThemeColor())
 private var lightThemeColor = getLighterColor(getThemeColor())
 private var darkmode = false
@@ -54,6 +55,8 @@ fun setThemeColor(color: Int) {
         LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(intent)
     }
 }
+
+fun getUserChoiceThemeColor():Int= userChoiceThemeColor
 
 fun getThemeColor(specialDarkmodeColor: Boolean = false): Int {
     return if (specialDarkmodeColor) ContextCompat.getColor(GlobalContext.instance, R.color.deepGrey) else themeColor
@@ -132,7 +135,7 @@ fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
 
 fun tintBottomNavigationView(navigationView: BottomNavigationView) {
     val midGrey = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
-    val colors = arrayOf(getThemeColor(), midGrey).toIntArray()
+    val colors = arrayOf(getUserChoiceThemeColor(), midGrey).toIntArray()
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
     val colorStateList = ColorStateList(states, colors)
     navigationView.itemTextColor = colorStateList
@@ -214,6 +217,7 @@ fun loadThemeColor(){
             themeColor = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
         } // Night mode is active, we're using dark theme
     }
+    userChoiceThemeColor=GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
     darkThemeColor = getDarkerColor(getThemeColor())
     lightThemeColor = getLighterColor(getThemeColor())
 }

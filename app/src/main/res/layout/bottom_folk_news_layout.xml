@@ -9,55 +9,69 @@
     android:orientation="vertical"
     app:cardCornerRadius="4dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/bottom_view_image"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            app:riv_corner_radius_top_left="4dp"
-            app:riv_corner_radius_top_right="4dp"
-            android:contentDescription="@string/no_mean_content"
-            android:scaleType="centerCrop" />
 
         <LinearLayout
-            android:id="@+id/news_layout_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/bottom_view_title"
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/bottom_view_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="标题标题标题标题标题标题标题标题标题标题" />
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/no_mean_content"
+                android:scaleType="centerCrop"
+                app:riv_corner_radius_top_left="4dp"
+                app:riv_corner_radius_top_right="4dp" />
 
-            <TextView
-                android:id="@+id/bottom_view_time"
+            <LinearLayout
+                android:id="@+id/news_layout_linear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/midGrey"
-                android:textSize="14sp"
-                tools:text="12：00：00" />
+                android:layout_margin="12dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/bottom_view_briefly"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:textColor="@color/deepGrey"
-                android:textSize="16sp"
-                tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容" />
+                <TextView
+                    android:id="@+id/bottom_view_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="标题标题标题标题标题标题标题标题标题标题" />
+
+                <TextView
+                    android:id="@+id/bottom_view_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/midGrey"
+                    android:textSize="14sp"
+                    tools:text="12：00：00" />
+
+                <TextView
+                    android:id="@+id/bottom_view_briefly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textColor="@color/deepGrey"
+                    android:textSize="16sp"
+                    tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+
+        <View
+            android:id="@+id/isReadMark"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="end|top"
+            android:tag="@string/change_theme_view" />
+    </FrameLayout>
+
 </androidx.cardview.widget.CardView>
