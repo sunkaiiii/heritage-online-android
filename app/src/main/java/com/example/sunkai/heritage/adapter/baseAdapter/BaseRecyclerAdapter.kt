@@ -13,13 +13,18 @@ import com.example.sunkai.heritage.interfaces.OnPageLoaded
  * 给RecyclerAdapter封装了一些点击的操作
  */
 abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val context: Context, datas: List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(), View.OnClickListener, View.OnLongClickListener, OnPageLoaded {
-    private var mOnItemClickListener: OnItemClickListener? = null
+    private var mOnItemClickListener: OnItemClickListener = object : OnItemClickListener {
+        override fun onItemClick(view: View, position: Int) {
+            setItemClick(view, getItem(position))
+        }
+
+    }
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     protected var mOnPagedListener: OnPageLoaded? = null
     protected var datas: MutableList<W> = datas.toMutableList()
 
     override fun onClick(v: View) {
-        mOnItemClickListener?.onItemClick(v, v.tag as Int)
+        mOnItemClickListener.onItemClick(v, v.tag as Int)
     }
 
     override fun onLongClick(v: View): Boolean {
@@ -56,7 +61,7 @@ abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val
     override fun onBindViewHolder(holder: T, position: Int) {
         holder.itemView.tag = position
         holder.itemView.setOnClickListener {
-            setItemClick(holder.itemView,getItem(position))
+            mOnItemClickListener.onItemClick(holder.itemView, position)
         }
 
     }

@@ -1,56 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.activity.SearchProjectActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <com.example.sunkai.heritage.views.tools.FollowThemeImageView
-            android:id="@+id/searchButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/back_arrow" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp">
-
-            <EditText
-                android:id="@+id/searchEditext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:hint="@string/fragment_project_search_project"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:maxLines="1" />
-
-            <com.example.sunkai.heritage.views.tools.FollowThemeImageView
-                android:id="@+id/searchClearText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|center_vertical"
-                android:src="@drawable/baseline_clear_24"
-                android:visibility="gone" />
-        </FrameLayout>
-
-
-    </LinearLayout>
-
-    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
-        android:id="@+id/searchRecyclerview"
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-</LinearLayout>
+        android:orientation="vertical"
+        tools:context="com.example.sunkai.heritage.activity.SearchProjectActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <com.example.sunkai.heritage.views.tools.FollowThemeImageView
+                android:id="@+id/searchButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/back_arrow" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp">
+
+                <com.example.sunkai.heritage.views.tools.FollowThemeEditText
+                    android:id="@+id/searchEditext"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:hint="@string/fragment_project_search_project"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:maxLines="1" />
+
+                <com.example.sunkai.heritage.views.tools.FollowThemeImageView
+                    android:id="@+id/searchClearText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:src="@drawable/baseline_clear_24"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
+            android:id="@+id/searchRecyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </LinearLayout>
+
+    <com.example.sunkai.heritage.views.tools.FollowThemeFloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="48dp"
+        android:src="@drawable/baseline_list_24"
+        app:fabSize="auto" />
+</FrameLayout>

@@ -12,14 +12,16 @@ import java.lang.reflect.Type
 
 @Database(entities = [NewsDetail::class,
     NewsDetailContent::class,
-    NewsList::class],
+    NewsList::class,
+    SearchHistory::class],
         version = 2)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDetailDao(): NewsDetailDao
     abstract fun newsDetailContentDao(): NewsDetailContentDao
     abstract fun newsListaDao(): NewsListDao
+    abstract fun searchHistoryDao(): SearchHistoryDao
 
-    enum class NewsListDaoName(val typeName:String):Serializable{
+    enum class NewsListDaoName(val typeName: String) : Serializable {
         NEWS_LIST("newsList"),
         FORUMS_LIST("forumsList"),
         SPECIAL_TOPIC_LIST("specialTopic")
