@@ -1,12 +1,22 @@
 package com.example.sunkai.heritage.views
 
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
+import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
+import android.view.ContextMenu
+import android.view.MenuInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.github.chrisbanes.photoview.PhotoView
+import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 class SwipePhotoView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -69,13 +79,13 @@ class SwipePhotoView @JvmOverloads constructor(
     }
 
     private fun isHorizonScroll(event: MotionEvent): Boolean? {
-        val offsetX = Math.abs(firstX - event.rawX)
-        val offsetY = Math.abs(firstY - event.rawY)
+        val offsetX = abs(firstX - event.rawX)
+        val offsetY = abs(firstY - event.rawY)
         Log.d(TAG, String.format("offsetX:%f,offsetY:%f", offsetX, offsetY))
         if (offsetX == offsetY && offsetX == 0F) {
             return null
         }
-        return Math.abs(offsetX) > Math.abs(offsetY)
+        return abs(offsetX) > abs(offsetY)
     }
 
     private fun resetTranslate() {
@@ -119,7 +129,7 @@ class SwipePhotoView @JvmOverloads constructor(
         horizonScroll = null
     }
 
-    private fun dragOutBound() = Math.abs(offsetY) >= getRawHeight() / 4
+    private fun dragOutBound() = abs(offsetY) >= getRawHeight() / 4
 
     private fun handleViewMove(event: MotionEvent) {
         offsetX = event.rawX.toInt() - firstX
@@ -127,7 +137,7 @@ class SwipePhotoView @JvmOverloads constructor(
         Log.d(TAG, String.format("onDrag firstX:%d,firstY:%d,offsetX:%d,offsetY:%d", firstX, firstY, offsetX, offsetY))
         translationX = offsetX.toFloat()
         translationY = offsetY.toFloat()
-        onDragListner?.onDrag(this,offsetX, offsetY)
+        onDragListner?.onDrag(this, offsetX, offsetY)
     }
 
     private fun shouldHandleEvent() = scale == 1.0f && !multiTouch && ((isInViewPager && horizonScroll == false) || !isInViewPager)
@@ -155,6 +165,27 @@ class SwipePhotoView @JvmOverloads constructor(
     fun setIsInViewPager(inViewpager: Boolean) {
         this.isInViewPager = inViewpager
     }
+
+    fun isMoved() = offsetX !=Int.MIN_VALUE || offsetY!= Int.MIN_VALUE
+
+    override fun onCreateContextMenu(menu: ContextMenu?) {
+        super.onCreateContextMenu(menu)
+        MenuInflater(context).inflate(R.menu.view_image_menu, menu)
+        menu?.getItem(0)?.setOnMenuItemClickListener {
+            val drawable = drawable
+            if (drawable is BitmapDrawable) {
+                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+                val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                File.createTempFile(
+                        "JPEG_${timeStamp}_",
+                        ".jpg",
+                        storageDir
+                )
+            }
+            return@setOnMenuItemClickListener true
+        }
+    }
+
 
     interface OnDragListner {
         fun onDrag(imageView: SwipePhotoView, dx: Int, dy: Int)

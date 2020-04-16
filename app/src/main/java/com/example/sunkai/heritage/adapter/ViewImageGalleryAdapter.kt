@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
+import android.view.ContextMenu
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import android.view.View
@@ -20,7 +21,7 @@ import com.github.chrisbanes.photoview.PhotoView
  * 其他用户照片墙的adapter
  * Created by sunkai on 2018/3/7.
  */
-class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>,val compressedUrls:Array<String?>?, val glide: RequestManager) : PagerAdapter() {
+class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, val compressedUrls: Array<String?>?, val glide: RequestManager) : PagerAdapter() {
     private var photoViewImageClickListener: onPhotoViewImageClick? = null
     private var swipePhotoViewListener: SwipePhotoView.OnDragListner? = null
     override fun getCount(): Int {
@@ -40,19 +41,24 @@ class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>,val
         photoView.setIsInViewPager(true)
         photoView.setOnDragListner(swipePhotoViewListener)
         setClick(position, photoView)
-        val url=if(datas[position%count].contains(BaseSetting.IMAGE_HOST)){
-            datas[position%count]
-        }else{
+        val url = if (datas[position % count].contains(BaseSetting.IMAGE_HOST)) {
+            datas[position % count]
+        } else {
             BaseSetting.IMAGE_HOST + datas[position % count]
         }
-        val compressUrl=compressedUrls?.get(position%count)?:url
+        val compressUrl = compressedUrls?.get(position % count) ?: url
         glide.loadImageFromServerWithoutBackground(url).thumbnail(glide.loadImageFromServerWithoutBackground(compressUrl)).into(photoView)
         return photoView
     }
 
-    private fun setClick(position: Int, photoView: PhotoView) {
+    private fun setClick(position: Int, photoView: SwipePhotoView) {
         photoView.setOnClickListener {
             photoViewImageClickListener?.onImageClick(position, photoView)
+        }
+
+        photoView.setOnLongClickListener {
+            photoViewImageClickListener?.onImageLongCick(position, photoView)
+            return@setOnLongClickListener true
         }
     }
 

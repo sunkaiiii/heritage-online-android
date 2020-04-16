@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootView"
-    android:background="@color/black">
+    android:background="#000000">
 
     <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
         android:id="@+id/activityViewImageGallery"

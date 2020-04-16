@@ -13,7 +13,7 @@
         android:orientation="horizontal"
         android:padding="16dp">
 
-        <ImageView
+        <com.example.sunkai.heritage.views.tools.FollowThemeImageView
             android:id="@+id/searchButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -21,16 +21,31 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/back_arrow" />
 
-        <EditText
-            android:id="@+id/searchEditext"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:focusable="true"
-            android:hint="@string/fragment_project_search_project"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:maxLines="1" />
+            android:layout_marginStart="4dp">
+
+            <EditText
+                android:id="@+id/searchEditext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:hint="@string/fragment_project_search_project"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1" />
+
+            <com.example.sunkai.heritage.views.tools.FollowThemeImageView
+                android:id="@+id/searchClearText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/baseline_clear_24"
+                android:visibility="gone" />
+        </FrameLayout>
+
+
     </LinearLayout>
 
     <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView

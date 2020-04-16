@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.View
 import com.example.sunkai.heritage.views.SwipePhotoView
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
-import com.github.chrisbanes.photoview.PhotoView
 
 abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDragListner, onPhotoViewImageClick {
 
@@ -41,12 +40,19 @@ abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDra
         getRootView().background.alpha = alpha.toInt()
     }
 
-    override fun onImageClick(position: Int, photoView: PhotoView) {
-        if (photoView.scale == 1.0f) {
+    override fun onImageClick(position: Int, swipePhotoView: SwipePhotoView) {
+        if (swipePhotoView.scale == 1.0f) {
             onBackPressed()
         } else {
-            photoView.setScale(1.0f, true)
+            swipePhotoView.setScale(1.0f, true)
         }
+    }
+
+    override fun onImageLongCick(position: Int, swipePhotoView: SwipePhotoView) {
+        if(swipePhotoView.isMoved()){
+            return
+        }
+        swipePhotoView.showContextMenu()
     }
 
     override fun getRootViewAlphaWhenImageBack(): Int = getRootView().background.alpha
