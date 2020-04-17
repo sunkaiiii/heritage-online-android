@@ -14,6 +14,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.github.chrisbanes.photoview.PhotoView
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
@@ -167,24 +168,6 @@ class SwipePhotoView @JvmOverloads constructor(
     }
 
     fun isMoved() = offsetX !=Int.MIN_VALUE || offsetY!= Int.MIN_VALUE
-
-    override fun onCreateContextMenu(menu: ContextMenu?) {
-        super.onCreateContextMenu(menu)
-        MenuInflater(context).inflate(R.menu.view_image_menu, menu)
-        menu?.getItem(0)?.setOnMenuItemClickListener {
-            val drawable = drawable
-            if (drawable is BitmapDrawable) {
-                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                File.createTempFile(
-                        "JPEG_${timeStamp}_",
-                        ".jpg",
-                        storageDir
-                )
-            }
-            return@setOnMenuItemClickListener true
-        }
-    }
 
 
     interface OnDragListner {
