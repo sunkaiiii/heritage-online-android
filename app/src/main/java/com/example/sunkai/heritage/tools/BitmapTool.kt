@@ -16,7 +16,7 @@ import java.lang.Exception
  */
 
 
-fun Bitmap.toBlurBitmap(context: Context, radius: Float = 16.0f): Bitmap {
+fun Bitmap.toBlurBitmap(context: Context, radius: Float = 25.0f): Bitmap {
     try{
         val inputBmp = this
         val renderScript = RenderScript.create(context)
