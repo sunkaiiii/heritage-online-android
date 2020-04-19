@@ -102,4 +102,7 @@ limitations under the License.</string>
     <string name="theme_color">主题颜色</string>
     <string name="change_theme_view">change_theme_view</string>
     <string name="save_picture">保存图片</string>
+    <string name="save_success" >保存成功</string>
+    <string name="save_failed" >保存失败</string>
+    <string name="relevant_news">相关新闻</string>
 </resources>

@@ -4,10 +4,15 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class NewsWithNewsDetailContent(
-        @Embedded val newsDetail:NewsDetail,
+        @Embedded val newsDetail: NewsDetail,
         @Relation(
                 parentColumn = "link",
                 entityColumn = "newsLink"
         )
-        val newsContent:List<NewsDetailContent>
+        val newsContent: List<NewsDetailContent>,
+        @Relation(
+                parentColumn = "link",
+                entityColumn = "newsLink"
+        )
+        val relevantNews: List<NewsDetailRelevantContent>
 )

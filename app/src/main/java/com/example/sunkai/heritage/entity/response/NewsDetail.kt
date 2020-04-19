@@ -8,11 +8,11 @@ import com.example.sunkai.heritage.database.entities.NewsWithNewsDetailContent
  */
 class NewsDetail(val link: String,
                  val title: String,
-                 val subtitle:List<String>?,
+                 val subtitle: List<String>?,
                  val time: String?,
-                 val author:String,
-                 var content:List<NewsDetailContent>,
-                 var relativeNews:List<NewsDetailRelativeNews>) {
+                 val author: String,
+                 var content: List<NewsDetailContent>,
+                 var relativeNews: List<NewsDetailRelativeNews>) {
     constructor(databaseData: NewsWithNewsDetailContent) : this(
             databaseData.newsDetail.link,
             databaseData.newsDetail.title,
@@ -21,16 +21,22 @@ class NewsDetail(val link: String,
             databaseData.newsDetail.author,
             arrayListOf(),
             arrayListOf()
-    ){
+    ) {
         val databaseNewsContent = databaseData.newsContent
+        val relevantNews = databaseData.relevantNews
         val list = mutableListOf<NewsDetailContent>()
+        val relevantNewsList = mutableListOf<NewsDetailRelativeNews>()
         databaseNewsContent.forEach {
-            val newsDetailContent=NewsDetailContent(it.type,it.content,it.compressImg)
+            val newsDetailContent = NewsDetailContent(it.type, it.content, it.compressImg)
             list.add(newsDetailContent)
         }
-        this.content=list
+        relevantNews.forEach {
+            relevantNewsList.add(NewsDetailRelativeNews(it.link, it.date, it.title))
+        }
+        this.content = list
+        this.relativeNews = relevantNewsList
     }
 }
 
-class NewsDetailContent(val type:String, val content:String, val compressImg:String?)
-class NewsDetailRelativeNews(val link:String, val date:String, val title:String)
+class NewsDetailContent(val type: String, val content: String, val compressImg: String?)
+class NewsDetailRelativeNews(val link: String, val date: String, val title: String)

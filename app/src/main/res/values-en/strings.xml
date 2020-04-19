@@ -99,4 +99,7 @@ limitations under the License.</string>
     <string name="theme_color">theme color</string>
     <string name="change_theme_view">change_theme_view</string>
     <string name="save_picture">save picture</string>
+    <string name="save_success" >successfully saved</string>
+    <string name="save_failed" >saved failed</string>
+    <string name="relevant_news">relevant news</string>
 </resources>

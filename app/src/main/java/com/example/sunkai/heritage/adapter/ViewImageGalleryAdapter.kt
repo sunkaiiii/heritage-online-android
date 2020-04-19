@@ -1,7 +1,9 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
+import android.os.Environment
 import android.view.ContextMenu
+import android.view.MenuInflater
 import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import android.view.View
@@ -15,7 +17,11 @@ import com.example.sunkai.heritage.views.SwipePhotoView
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.tools.loadImageFromServerWithoutBackground
+import com.example.sunkai.heritage.tools.saveImage
 import com.github.chrisbanes.photoview.PhotoView
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 其他用户照片墙的adapter
@@ -48,6 +54,13 @@ class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, va
         }
         val compressUrl = compressedUrls?.get(position % count) ?: url
         glide.loadImageFromServerWithoutBackground(url).thumbnail(glide.loadImageFromServerWithoutBackground(compressUrl)).into(photoView)
+        photoView.setOnCreateContextMenuListener { contextMenu, view, contextMenuInfo ->
+            MenuInflater(context).inflate(R.menu.view_image_menu, contextMenu)
+            contextMenu.getItem(0).setOnMenuItemClickListener {
+                glide.saveImage(url)
+                return@setOnMenuItemClickListener true
+            }
+        }
         return photoView
     }
 
