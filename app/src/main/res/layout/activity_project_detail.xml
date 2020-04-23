@@ -89,7 +89,7 @@
         android:elevation="12dp"
         app:title="">
 
-        <com.example.sunkai.heritage.views.tools.RoundedImageView
+        <com.example.sunkai.heritage.views.tools.RoundedShadowImageView
             android:id="@+id/projectDetailToolbarBackArrow"
             android:layout_width="24dp"
             android:layout_height="24dp"

@@ -134,12 +134,14 @@ fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
 }
 
 fun tintBottomNavigationView(navigationView: BottomNavigationView) {
+
     val midGrey = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
     val colors = arrayOf(getUserChoiceThemeColor(), midGrey).toIntArray()
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
     val colorStateList = ColorStateList(states, colors)
     navigationView.itemTextColor = colorStateList
     navigationView.itemIconTintList = colorStateList
+    navigationView.itemRippleColor= ColorStateList.valueOf(getTransparentColor(getLightThemeColor(),30))
 }
 
 fun tintSwitch(view: SwitchCompat) {

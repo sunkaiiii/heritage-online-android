@@ -55,6 +55,7 @@ class MainActivity : BaseGlideActivity() {
 
     override fun changeSpecificViewTheme() {
         val drawable=GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT,arrayOf(getDarkThemeColor(), getThemeColor(), getLightThemeColor()).toIntArray())
+        drawable.orientation=GradientDrawable.Orientation.BL_TR
         activityMainNavigationView.getHeaderView(0).findViewById<View>(R.id.navigationViewTopHeaderLayout).background=drawable
     }
 

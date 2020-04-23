@@ -11,11 +11,12 @@
         android:layout_height="180dp"
         android:background="@color/colorPrimary">
 
-        <com.example.sunkai.heritage.views.tools.RoundedImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+        <com.example.sunkai.heritage.views.tools.RoundedShadowImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
+            app:elevation="6dp"
             android:src="@mipmap/ic_launcher" />
     </FrameLayout>
 

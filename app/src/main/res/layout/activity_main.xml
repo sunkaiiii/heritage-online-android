@@ -17,6 +17,7 @@
             android:layout_alignParentBottom="true"
             app:itemTextAppearanceActive="@style/navigationBarTheme"
             app:itemTextAppearanceInactive="@style/navigationBarTheme"
+            app:labelVisibilityMode="selected"
             app:menu="@menu/bottom_navigation_menu" />
 
         <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
