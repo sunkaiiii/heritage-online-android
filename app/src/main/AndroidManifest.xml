@@ -4,7 +4,9 @@
     package="com.example.sunkai.heritage">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:name=".tools.GlobalContext"
@@ -15,7 +17,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="InnerclassSeparator">
-        <activity android:name=".activity.WebViewActivity"/>
+        <activity android:name=".activity.WebViewActivity" />
         <activity
             android:name=".activity.SearchProjectActivity"
             android:theme="@style/AppThemeNoActionBar" />

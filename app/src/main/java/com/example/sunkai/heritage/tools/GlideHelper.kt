@@ -1,7 +1,9 @@
 package com.example.sunkai.heritage.tools
 
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Environment
 import android.widget.ImageView
 import com.bumptech.glide.RequestBuilder
@@ -18,6 +20,7 @@ import com.example.sunkai.heritage.connectWebService.BaseSetting.Companion.IMAGE
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,17 +48,10 @@ fun RequestManager.saveImage(url: String) {
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
             try {
                 val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                val storageDir =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                val savefile = File.createTempFile(
-                        "JPEG_${timeStamp}_",
-                        ".jpg",
-                        storageDir
-                )
-                val fOut = FileOutputStream(savefile)
-                resource.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
-                fOut.close()
+                ImageSaver.saveBitmap(GlobalContext.instance, resource, Bitmap.CompressFormat.JPEG, "image/jpg", "IMG_${timeStamp}.jpg")
                 toast(R.string.save_success)
-            } catch (e: Exception) {
+            } catch (e: IOException) {
+                toast(R.string.save_failed)
                 e.printStackTrace()
             }
         }
