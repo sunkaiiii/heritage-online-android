@@ -5,34 +5,17 @@
     <string name="app_name">chinese heritage</string>
     <string name="no_mean_content">null</string>
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
-    <string name="apply_time">Declaration time:</string>
-    <string name="category">Category:</string>
-    <string name="number">No.:</string>
-    <string name="location">Region:</string>
     <string name="cancel">Cancel</string>
-    <string name="please_choice">Please choose</string>
-    <string name="news_title">News headlines</string>
-    <string name="more">More</string>
     <string name="news_feed">News</string>
     <string name="forums">Forums</string>
-    <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
 
     <string name="search">Search</string>
     <string name="submit">Submit</string>
-    <string name="title">Title</string>
-    <string name="share_user_name">share_user_name</string>
-    <string name="share_user_image">share_user_image</string>
-    <string name="share_folk_title">share_folk_title</string>
-    <string name="share_folk_time">share_folk_time</string>
-    <string name="share_folk_number">share_folk_number</string>
-    <string name="share_folk_location">share_folk_location</string>
-    <string name="share_folk_content">share_folk_content</string>
     <string name="share_view_image">share_view_image</string>
     <string name="collect">Collection</string>
     <string name="logo">logo</string>
-    <string name="time">Time:</string>
     <string name="main_page">Home page</string>
     <string name="people_page">People</string>
     <string name="project_page">Projects</string>
@@ -79,7 +62,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
     <string name="gson">gson</string>
-    <string name="see_all_folk">See all content</string>
     <string name="exit_info">double press back button will exit the application</string>
     <string name="fragment_project_name">project name: </string>
     <string name="fragment_project_category">project category: </string>
@@ -87,9 +69,6 @@ limitations under the License.</string>
     <string name="fragment_project_time">Declaration time: </string>
     <string name="fragment_project_number">project number: </string>
     <string name="fragment_project_type">project type: </string>
-    <string name="fragment_project_id">project id: </string>
-    <string name="fragment_project_declaration">declaration location or company: </string>
-    <string name="fragment_project_protection">company of protecting the project</string>
     <string name="activity_project_detail_relative_inheritate">relative inheritate</string>
     <string name="activity_project_detail_relative_project">relative projects</string>
     <string name="inheritors">inheritors</string>

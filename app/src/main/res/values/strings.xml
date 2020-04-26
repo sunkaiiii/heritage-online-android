@@ -4,38 +4,21 @@
     <string name="network_error">网络错误，请稍后再试</string>
 
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
-    <string name="apply_time">申报时间:</string>
-    <string name="category">类别:</string>
-    <string name="number">编号:</string>
-    <string name="location">地区:</string>
     <string name="cancel">取消</string>
-    <string name="please_choice">请选择</string>
-    <string name="news_title">新闻标题</string>
-    <string name="more">更多</string>
     <string name="news_feed">新闻动态</string>
     <string name="search">搜索</string>
     <string name="submit">确定</string>
-    <string name="title">标题</string>
     <string name="project_page">清单</string>
 
 
-    <string name="share_user_name">share_user_name</string>
-    <string name="share_user_image">share_user_image</string>
-    <string name="share_folk_title">share_folk_title</string>
-    <string name="share_folk_time">share_folk_time</string>
-    <string name="share_folk_number">share_folk_number</string>
-    <string name="share_folk_location">share_folk_location</string>
-    <string name="share_folk_content">share_folk_content</string>
     <string name="share_view_image">share_view_image</string>
 
     <string name="collect">收藏</string>
     <string name="logo">logo</string>
-    <string name="time">时间:</string>
     <string name="main_page">首页</string>
     <string name="people_page">人物</string>
     <string name="forums">论坛</string>
     <string name="about_us">关于我们</string>
-    <string name="news_detail_share_title">news_detail_share_title</string>
     <string name="bottom_news_share_title">bottom_news_share_title</string>
     <string name="bottom_news_share_time">bottom_news_share_time</string>
 
@@ -82,7 +65,6 @@ limitations under the License.</string>
     <string name="glide">glide</string>
     <string name="gson">gson</string>
     <string name="licence">开源许可声明</string>
-    <string name="see_all_folk">查看所有非遗</string>
     <string name="exit_info">再次按下返回键退出程序</string>
     <string name="fragment_project_name">项目名称：</string>
     <string name="fragment_project_category">项目类别：</string>
@@ -90,9 +72,6 @@ limitations under the License.</string>
     <string name="fragment_project_time">申报时间：</string>
     <string name="fragment_project_number">非遗编号：</string>
     <string name="fragment_project_type">项目类型：</string>
-    <string name="fragment_project_id">项目编号：</string>
-    <string name="fragment_project_declaration">申报地区或单位：</string>
-    <string name="fragment_project_protection">保护单位：</string>
     <string name="activity_project_detail_relative_inheritate">相关传承人</string>
     <string name="activity_project_detail_relative_project">相关项目</string>
     <string name="inheritors">传承人</string>

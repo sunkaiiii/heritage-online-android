@@ -11,7 +11,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.graphics.drawable.toBitmap
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.Utils
 import kotlin.math.abs
 
 class RoundedShadowImageView : androidx.appcompat.widget.AppCompatImageView {
@@ -29,7 +28,7 @@ class RoundedShadowImageView : androidx.appcompat.widget.AppCompatImageView {
     private var mShader: BitmapShader? = null
     private var mCurrentBitmap: Bitmap? = null
     private val mMatrix = Matrix()
-    var shadowDimention = 0f
+    private var shadowDimention = 0f
     private val mPaintBitmap = Paint(Paint.ANTI_ALIAS_FLAG)
 
     private fun initAttrs(attrs: AttributeSet) {

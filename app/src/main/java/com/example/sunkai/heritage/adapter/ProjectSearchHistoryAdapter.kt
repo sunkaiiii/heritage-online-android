@@ -12,7 +12,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.tools.GlobalContext
-import kotlinx.android.synthetic.main.activity_search_history_item_layout.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

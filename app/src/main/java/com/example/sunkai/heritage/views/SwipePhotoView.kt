@@ -1,21 +1,11 @@
 package com.example.sunkai.heritage.views
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
-import android.os.Environment
 import android.util.AttributeSet
 import android.util.Log
-import android.view.ContextMenu
-import android.view.MenuInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.github.chrisbanes.photoview.PhotoView
-import java.io.File
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 

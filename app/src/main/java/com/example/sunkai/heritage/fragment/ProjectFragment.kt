@@ -1,10 +1,8 @@
 package com.example.sunkai.heritage.fragment
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +12,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.AboutUSActivity
 import com.example.sunkai.heritage.activity.SearchProjectActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi

@@ -5,7 +5,6 @@ import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.View
-import android.widget.ImageView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.ViewImageActivity
 import com.example.sunkai.heritage.value.IMAGE_COMPRESS_URL

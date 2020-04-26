@@ -15,9 +15,9 @@ import java.io.OutputStream
 
 object ImageSaver {
     @Throws(IOException::class)
-    public fun saveBitmap(context: Context, bitmap: Bitmap,
-                          format: CompressFormat, mimeType: String,
-                          displayName: String) {
+    fun saveBitmap(context: Context, bitmap: Bitmap,
+                   format: CompressFormat, mimeType: String,
+                   displayName: String) {
         val relativeLocation: String = Environment.DIRECTORY_PICTURES
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, displayName)

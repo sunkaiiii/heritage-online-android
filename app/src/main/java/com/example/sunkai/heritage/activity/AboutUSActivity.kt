@@ -1,15 +1,13 @@
 package com.example.sunkai.heritage.activity
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.appcompat.app.ActionBar
 import android.view.MenuItem
-import androidx.core.net.toUri
+import androidx.appcompat.app.ActionBar
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.dialog.LicenceDialog
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.value.VERSION_NAME
 import kotlinx.android.synthetic.main.activity_about_us.*
 

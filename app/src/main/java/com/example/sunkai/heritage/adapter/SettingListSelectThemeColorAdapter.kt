@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.getSelectGradientDrawableColor

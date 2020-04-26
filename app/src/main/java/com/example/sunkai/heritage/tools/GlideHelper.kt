@@ -1,27 +1,17 @@
 package com.example.sunkai.heritage.tools
 
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
-import android.os.Environment
 import android.widget.ImageView
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.connectWebService.BaseSetting.Companion.IMAGE_HOST
 import com.example.sunkai.heritage.tools.MakeToast.toast
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 

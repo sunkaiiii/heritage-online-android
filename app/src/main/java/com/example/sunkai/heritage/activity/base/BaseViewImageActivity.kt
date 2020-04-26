@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.View
 import com.example.sunkai.heritage.views.SwipePhotoView
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
+import kotlin.math.abs
+import kotlin.math.pow
 
 abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDragListner, onPhotoViewImageClick {
 
@@ -13,9 +15,9 @@ abstract class BaseViewImageActivity : BaseGlideActivity(), SwipePhotoView.OnDra
     }
 
     override fun onDrag(imageView: SwipePhotoView, dx: Int, dy: Int) {
-        Log.d("ViewImageActivity", String.format("dy:%d,alpha:%d", dy, (255 - Math.pow(255 * Math.abs(dy) / getRootView().height / 2.0, 1.2)).toInt()))
-        getRootView().background.alpha = (255 - Math.pow(255 * Math.abs(dy) / getRootView().height / 2.0, 1.2)).toInt()
-        val scale = (1.0 - Math.pow(1.0 * Math.abs(dy) / getRootView().height / 2.0, 0.8)).toFloat()
+        Log.d("ViewImageActivity", String.format("dy:%d,alpha:%d", dy, (255 - (255 * abs(dy) / getRootView().height / 2.0).pow(1.2)).toInt()))
+        getRootView().background.alpha = (255 - (255 * abs(dy) / getRootView().height / 2.0).pow(1.2)).toInt()
+        val scale = (1.0 - (1.0 * abs(dy) / getRootView().height / 2.0).pow(0.8)).toFloat()
         val height = imageView.getRawHeight()
         val width = imageView.getRawWidth()
         if (height != -1 && width != -1) {

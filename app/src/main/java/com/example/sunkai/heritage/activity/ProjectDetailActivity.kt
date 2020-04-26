@@ -1,9 +1,7 @@
 package com.example.sunkai.heritage.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.core.widget.NestedScrollView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
@@ -34,7 +32,7 @@ class ProjectDetailActivity : BaseGlideActivity() {
             projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
             val scrollDy = scrollY - oldScrollY
             //设置toolbar title的透明度
-            var crossY = projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1];
+            var crossY = projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1]
             if (crossY < 0) {
                 crossY = 0
             }

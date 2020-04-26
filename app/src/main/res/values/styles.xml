@@ -3,7 +3,6 @@
     <!-- Base application theme. -->
 
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.NoActionBar">
@@ -14,23 +13,9 @@
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
-    <style name="ExpandedAppBarSize" parent="@android:style/TextAppearance">
-        <item name="android:textSize">24sp</item>
-    </style>
-
-    <style name="MainFragmentTabLayoutSize" parent="@android:style/TextAppearance">
-        <item name="android:textSize">14sp</item>
-    </style>
-
-
-
 
     <style name="navigationBarTheme">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
-        <item name="android:windowExitAnimation">@anim/popup_exit</item>
-    </style>
 </resources>

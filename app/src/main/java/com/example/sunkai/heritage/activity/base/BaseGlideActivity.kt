@@ -32,9 +32,8 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected lateinit var glide: RequestManager
     private val requestMap: MutableMap<NetworkRequest, Job>
     private val runnableList:MutableList<Job>
-    protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
-    protected val TAG = javaClass.name
+    protected val TAG: String = javaClass.name
     private val handler = Handler(Looper.getMainLooper())
     private val broadReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
@@ -45,7 +44,6 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
 
     init {
         requestMap = HashMap()
-        changeThemeWidge = arrayListOf()
         runnableList= arrayListOf()
     }
 
@@ -79,7 +77,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item?.itemId) {
+        when (item.itemId) {
             android.R.id.home -> onBackPressed()
         }
         return super.onOptionsItemSelected(item)

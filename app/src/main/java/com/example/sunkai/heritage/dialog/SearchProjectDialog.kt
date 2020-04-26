@@ -14,7 +14,7 @@ import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.google.android.material.button.MaterialButton
 import java.lang.Exception
 
-class SearchProjectDialog(private val searchCategoryResponse: SearchCategoryResponse) : BaseDialogFragment() {
+class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : BaseDialogFragment() {
     private val searchKeyList = searchCategoryResponse.searchCategories.keys.toMutableSet()
     private val spinnerData: MutableList<Spinner>
     private var onSearchButtonListener: OnSearchButtonClickListener? = null
@@ -39,7 +39,6 @@ class SearchProjectDialog(private val searchCategoryResponse: SearchCategoryResp
             }
             val removeButton = itemView.findViewById<View>(R.id.removeButton)
             val spinner: Spinner = itemView.findViewById(R.id.searchSpinner)
-            val editext: EditText = itemView.findViewById(R.id.searchText)
             spinner.adapter = ArrayAdapter(context
                     ?: return@setOnClickListener, android.R.layout.simple_spinner_dropdown_item, searchKeyList.toList())
             var currentSelect = spinner.selectedItem.toString()
@@ -108,7 +107,7 @@ class SearchProjectDialog(private val searchCategoryResponse: SearchCategoryResp
             val spinner = it
             val list = searchKeyList.toMutableList()
             list.add(0, spinner.selectedItem.toString())
-            val adapter = ArrayAdapter<String>(context
+            val adapter = ArrayAdapter(context
                     ?: return@forEach, android.R.layout.simple_spinner_dropdown_item, list)
             spinner.adapter = adapter
         }

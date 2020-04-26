@@ -2,16 +2,15 @@ package com.example.sunkai.heritage.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.WebViewActivity
+import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.IHCHINA
 import com.example.sunkai.heritage.value.URL

@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -44,7 +43,7 @@ class MainActivity : BaseGlideActivity() {
 
     private val viewList: ArrayList<Fragment> = ArrayList()
     private val handler = Handler(Looper.getMainLooper())
-    private val PROCESS_EXIT = -23123;
+    private val PROCESS_EXIT = -23123
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

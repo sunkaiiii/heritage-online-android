@@ -5,15 +5,14 @@ import android.view.View
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.Utils
+import kotlin.math.roundToInt
 
 const val URL = "url"
 const val TYPE_TEXT = "text"
 const val DATA = "data"
-const val PUSH_SWITCH = "pushSwitch"
 const val SETTING = "setting"
 const val TITLE = "title"
 const val THEME_COLOR = "theme_color"
-const val SEARCH_SHAREPREF_NAME = "search_info"
 const val IMAGE_URL = "image_url"
 const val IMAGE_POSITION = "image_position"
 const val IMAGE_COMPRESS_URL = "image_compressed_url"
@@ -46,17 +45,14 @@ val THEME_COLOR_ARRAYS = arrayOf(THEME_MARSALA, THEME_CLASSIC_BLUE, THEME_LIVING
 //根据屏幕大小不同，Recycler的网格视图显示的效果不一样
 //判断初始横竖屏，防止初始化值错误
 val GRID_LAYOUT_DESTINY = if (Utils.isHorizontalScreenMode())
-    Math.round((Utils.getScreenWidth().toFloat() / Utils.getDpi()) - 1)
+    ((Utils.getScreenWidth().toFloat() / Utils.getDpi()) - 1).roundToInt()
 else
-    Math.round((Utils.getScreenHeight().toFloat() / Utils.getDpi()) - 1)
+    ((Utils.getScreenHeight().toFloat() / Utils.getDpi()) - 1).roundToInt()
 
 const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP49PFjpWTdqwFEYmtxpzVsHHNwW&coor=bd09ll"
 
 const val ERROR = "ERROR"
-const val HOST = "https://sunkai.xyz:8081"
-const val HOST_IP = "sunkai.xyz"
 const val IHCHINA = "http://www.ihchina.cn"
-const val PUSH_PORT = 8088
 
 val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums), GlobalContext.instance.getString(R.string.special_topic))
 

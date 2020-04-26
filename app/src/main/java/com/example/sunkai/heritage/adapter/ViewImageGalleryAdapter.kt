@@ -1,36 +1,26 @@
 package com.example.sunkai.heritage.adapter
 
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
-import android.os.Environment
-import android.view.ContextMenu
 import android.view.MenuInflater
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.tools.GlobalContext
-import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.views.SwipePhotoView
 import com.example.sunkai.heritage.connectWebService.BaseSetting
-import com.example.sunkai.heritage.tools.loadImageFromServer
+import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
+import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.loadImageFromServerWithoutBackground
 import com.example.sunkai.heritage.tools.saveImage
-import com.github.chrisbanes.photoview.PhotoView
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.sunkai.heritage.views.SwipePhotoView
 
 /**
  * 其他用户照片墙的adapter
  * Created by sunkai on 2018/3/7.
  */
-class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, val compressedUrls: Array<String?>?, val glide: RequestManager) : PagerAdapter() {
+class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, private val compressedUrls: Array<String?>?, val glide: RequestManager) : PagerAdapter() {
     private var photoViewImageClickListener: onPhotoViewImageClick? = null
     private var swipePhotoViewListener: SwipePhotoView.OnDragListner? = null
     override fun getCount(): Int {

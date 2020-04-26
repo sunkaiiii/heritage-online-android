@@ -2,14 +2,9 @@ package com.example.sunkai.heritage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.sunkai.heritage.database.dao.*
 import com.example.sunkai.heritage.database.entities.*
-import com.google.gson.JsonSyntaxException
 import java.io.Serializable
-import java.io.StringReader
-import java.lang.reflect.Type
 
 
 @Database(entities = [NewsDetail::class,

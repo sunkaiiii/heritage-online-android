@@ -26,7 +26,7 @@ class SearchProjectActivity : BaseGlideActivity() {
     private var page = 1
     private var historyData: MutableList<SearchHistory>? = null
     private var searchRequest: SearchRequest? = null
-    private var searchCategory:SearchCategoryResponse?=null
+    private var searchCategory: SearchCategoryResponse? = null
     private val searchHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SEARCH) {
@@ -66,7 +66,7 @@ class SearchProjectActivity : BaseGlideActivity() {
             searchClearText.visibility = View.VISIBLE
             searchHandler.sendEmptyMessageDelayed(SEARCH, SEARCH_DELAY)
         }
-        searchEditext.setOnEditorActionListener { v, actionId, event ->
+        searchEditext.setOnEditorActionListener { v, actionId, _ ->
             searchHandler.removeMessages(SEARCH)
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 if (v.text.isEmpty())
@@ -88,10 +88,10 @@ class SearchProjectActivity : BaseGlideActivity() {
         }
 
         activitySearchAdvanceButton.setOnClickListener {
-            if(searchCategory==null){
+            if (searchCategory == null) {
                 loadingBackground.visibility = View.VISIBLE
                 requestHttp(BaseQueryRequest(), EHeritageApi.GetSearchCategory)
-            }else{
+            } else {
                 showSearchDialog()
             }
 
@@ -101,7 +101,7 @@ class SearchProjectActivity : BaseGlideActivity() {
     private fun setHistoryDataToRecyclerView() {
         val historyData = historyData ?: return
         val adapter = ProjectSearchHistoryAdapter(this, historyData, glide)
-        adapter.setOnItemClickListener { view, position ->
+        adapter.setOnItemClickListener { _, position ->
             searchEditext.setText(adapter.getItem(position).title ?: "")
             searchHandler.sendEmptyMessage(HISTORY)
         }
@@ -145,8 +145,10 @@ class SearchProjectActivity : BaseGlideActivity() {
             EHeritageApi.GetSearchCategory -> {
                 loadingBackground.visibility = View.GONE
                 val searchCategoryResponse = fromJsonToObject(response, SearchCategoryResponse::class.java)
-                searchCategory=searchCategoryResponse
+                searchCategory = searchCategoryResponse
                 showSearchDialog()
+            }
+            else -> {
             }
         }
     }

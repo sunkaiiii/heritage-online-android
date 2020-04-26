@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.example.sunkai.heritage.R

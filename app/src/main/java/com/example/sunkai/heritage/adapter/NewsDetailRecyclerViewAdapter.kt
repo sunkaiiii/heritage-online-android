@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.app.NavUtils
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
@@ -29,7 +28,7 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
 
     private val images: Array<String>
     private val compressImages: Array<String?>
-    var initFooter = false
+    private var initFooter = false
     private var onRelevantNewsClickListner: onRelevantNewsClick? = null
 
     init {

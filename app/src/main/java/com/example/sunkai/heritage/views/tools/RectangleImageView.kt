@@ -2,7 +2,6 @@ package com.example.sunkai.heritage.views.tools
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.ImageView
 import com.makeramen.roundedimageview.RoundedImageView
 
 

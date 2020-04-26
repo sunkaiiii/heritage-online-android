@@ -106,7 +106,7 @@ class BaseParamsInterceptor : Interceptor {
 
         // 添加公共参数到消息头
         fun addHeaderParam(key: String, value: String): Builder {
-            interceptor.headerParamsMap.put(key, value)
+            interceptor.headerParamsMap[key] = value
             return this
         }
 

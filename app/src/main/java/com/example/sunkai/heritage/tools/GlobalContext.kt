@@ -2,9 +2,6 @@ package com.example.sunkai.heritage.tools
 
 import android.app.Application
 import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.value.NEWS_DETAIL_DATABASE
 

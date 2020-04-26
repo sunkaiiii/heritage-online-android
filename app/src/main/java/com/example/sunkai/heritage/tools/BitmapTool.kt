@@ -2,13 +2,10 @@ package com.example.sunkai.heritage.tools
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.renderscript.Allocation
 import androidx.renderscript.Element
 import androidx.renderscript.RenderScript
 import androidx.renderscript.ScriptIntrinsicBlur
-import java.io.ByteArrayOutputStream
-import java.lang.Exception
 
 /**
  * Bitmap相关的辅助类
