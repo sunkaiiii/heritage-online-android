@@ -19,7 +19,7 @@
         android:layout_centerInParent="true"
         android:layout_marginBottom="12sp"
         android:contentDescription="@string/logo"
-        android:src="@mipmap/app_logo_image" />
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/base_version"

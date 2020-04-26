@@ -16,7 +16,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="12dp"
-            app:elevation="6dp"
+            app:elevation="4dp"
             android:src="@mipmap/ic_launcher" />
     </FrameLayout>
 

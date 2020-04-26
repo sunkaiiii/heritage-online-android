@@ -67,8 +67,11 @@ class RoundedShadowImageView : androidx.appcompat.widget.AppCompatImageView {
             val radius = dstWidth / 2.0f
             val centreX = viewWidth / 2f
             val centreY = viewHeight / 2f
-            canvas?.drawCircle(centreX, centreY, radius, paint)
+            if (shadowDimention > 0) {
+                canvas?.drawCircle(centreX, centreY, radius, paint)
+            }
             canvas?.drawCircle(centreX, centreY, radius, mPaintBitmap)
+
         }
     }
 
