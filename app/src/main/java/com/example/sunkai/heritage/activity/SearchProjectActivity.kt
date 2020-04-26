@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.activity
 
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
@@ -15,8 +12,11 @@ import com.example.sunkai.heritage.adapter.ProjectSearchHistoryAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.database.entities.SearchHistory
+import com.example.sunkai.heritage.dialog.SearchProjectDialog
+import com.example.sunkai.heritage.entity.request.BaseQueryRequest
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
+import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.OnSrollHelper
@@ -25,6 +25,8 @@ import kotlinx.android.synthetic.main.activity_search_project.*
 class SearchProjectActivity : BaseGlideActivity() {
     private var page = 1
     private var historyData: MutableList<SearchHistory>? = null
+    private var searchRequest: SearchRequest? = null
+    private var searchCategory:SearchCategoryResponse?=null
     private val searchHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SEARCH) {
@@ -33,8 +35,7 @@ class SearchProjectActivity : BaseGlideActivity() {
             if (msg.what == HISTORY) {
                 this.removeMessages(SEARCH)
             }
-            searchRecyclerview.adapter = null
-            page = 1
+            refreshSearchRequest()
             requestSearch()
         }
     }
@@ -44,7 +45,6 @@ class SearchProjectActivity : BaseGlideActivity() {
         override fun loadMoreData(recyclerView: RecyclerView) {
             requestSearch()
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +52,7 @@ class SearchProjectActivity : BaseGlideActivity() {
         setContentView(R.layout.activity_search_project)
         initViews()
     }
+
 
     private fun initViews() {
         searchButton.setOnClickListener { finish() }
@@ -70,8 +71,7 @@ class SearchProjectActivity : BaseGlideActivity() {
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 if (v.text.isEmpty())
                     return@setOnEditorActionListener false
-                page = 1
-                searchRecyclerview.adapter = null
+                refreshSearchRequest()
                 requestSearch()
             }
             false
@@ -86,6 +86,16 @@ class SearchProjectActivity : BaseGlideActivity() {
                 setHistoryDataToRecyclerView()
             }
         }
+
+        activitySearchAdvanceButton.setOnClickListener {
+            if(searchCategory==null){
+                loadingBackground.visibility = View.VISIBLE
+                requestHttp(BaseQueryRequest(), EHeritageApi.GetSearchCategory)
+            }else{
+                showSearchDialog()
+            }
+
+        }
     }
 
     private fun setHistoryDataToRecyclerView() {
@@ -98,10 +108,19 @@ class SearchProjectActivity : BaseGlideActivity() {
         searchRecyclerview.adapter = adapter
     }
 
+    private fun refreshSearchRequest() {
+        searchRequest = SearchRequest()
+        searchRequest?.title = searchEditext.text.toString()
+        searchRecyclerview.adapter = null
+        page = 1
+    }
+
     private fun requestSearch() {
-        val request = SearchRequest()
-        request.title = searchEditext.text.toString()
-        request.page = page++
+        if (searchRecyclerview.adapter == null) {
+            loadingBackground.visibility = View.VISIBLE
+        }
+        val request = searchRequest ?: return
+        searchRequest?.page = request.page++
         requestHttp(request, EHeritageApi.SearchProject)
     }
 
@@ -112,6 +131,7 @@ class SearchProjectActivity : BaseGlideActivity() {
                 val searchResult = fromJsonToList(response, ProjectListInformation::class.java)
                 var adapter = searchRecyclerview.adapter
                 if (adapter == null) {
+                    loadingBackground.visibility = View.GONE
                     adapter = ProjectInformationAdapter(this, searchResult, glide)
                     searchRecyclerview.adapter = adapter
                     searchRecyclerview.addOnScrollListener(onScrollHelper)
@@ -122,7 +142,27 @@ class SearchProjectActivity : BaseGlideActivity() {
                     }
                 }
             }
+            EHeritageApi.GetSearchCategory -> {
+                loadingBackground.visibility = View.GONE
+                val searchCategoryResponse = fromJsonToObject(response, SearchCategoryResponse::class.java)
+                searchCategory=searchCategoryResponse
+                showSearchDialog()
+            }
         }
+    }
+
+    private fun showSearchDialog() {
+        val seachCategory = searchCategory ?: return
+        val dialog = SearchProjectDialog(seachCategory)
+        dialog.setOnSearchButtonClickListener(object : SearchProjectDialog.OnSearchButtonClickListener {
+            override fun onButtonClick(searchReqeust: SearchRequest) {
+                refreshSearchRequest()
+                this@SearchProjectActivity.searchRequest = searchReqeust
+                requestSearch()
+            }
+
+        })
+        dialog.show(supportFragmentManager, null)
     }
 
 

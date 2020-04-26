@@ -102,4 +102,6 @@ limitations under the License.</string>
     <string name="save_success" >successfully saved</string>
     <string name="save_failed" >saved failed</string>
     <string name="relevant_news">relevant news</string>
+    <string name="advance_search">advanced search</string>
+    <string name="add_item">add_condition</string>
 </resources>

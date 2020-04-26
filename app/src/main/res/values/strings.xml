@@ -105,4 +105,6 @@ limitations under the License.</string>
     <string name="save_success" >保存成功</string>
     <string name="save_failed" >保存失败</string>
     <string name="relevant_news">相关新闻</string>
+    <string name="advance_search">更多查询</string>
+    <string name="add_item">添加搜索条件</string>
 </resources>

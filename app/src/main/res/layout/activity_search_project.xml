@@ -59,11 +59,28 @@
     </LinearLayout>
 
     <com.example.sunkai.heritage.views.tools.FollowThemeFloatingActionButton
+        android:id="@+id/activitySearchAdvanceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="48dp"
+        android:contentDescription="@string/advance_search"
         android:src="@drawable/baseline_list_24"
         app:fabSize="auto" />
+
+    <FrameLayout
+        android:id="@+id/loadingBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_dark"
+        android:elevation="44dp"
+        android:visibility="gone">
+
+        <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
 </FrameLayout>
