@@ -15,12 +15,18 @@ import com.google.android.material.button.MaterialButton
 import java.lang.Exception
 
 class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : BaseDialogFragment() {
-    private val searchKeyList = searchCategoryResponse.searchCategories.keys.toMutableSet()
+    private val searchKeyList = searchCategoryResponse.searchCategories.values.toMutableSet()
+    private val spinenrKeyToClassFiledMap:Map<String,String>
     private val spinnerData: MutableList<Spinner>
     private var onSearchButtonListener: OnSearchButtonClickListener? = null
 
     init {
         spinnerData = mutableListOf()
+        val map= mutableMapOf<String,String>()
+        searchCategoryResponse.searchCategories.forEach {
+            map[it.value]=it.key
+        }
+        spinenrKeyToClassFiledMap=map
     }
 
     override fun getLayoutID(): Int {
@@ -77,7 +83,7 @@ class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : Base
                     val edittext = it.findViewById<EditText>(R.id.searchText)
                     if (edittext.text.toString().isNotEmpty()) {
                         hasData = true
-                        val filed = searchRequest::class.java.getDeclaredField(spinner.selectedItem.toString())
+                        val filed = searchRequest::class.java.getDeclaredField(spinenrKeyToClassFiledMap[spinner.selectedItem.toString()] ?: error("not null"))
                         filed.isAccessible = true
                         filed.set(searchRequest, edittext.text.toString())
                     }
