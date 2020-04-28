@@ -7,6 +7,25 @@ English version README:[README_EN](https://github.com/sunkaiiii/heritage-online-
 
 E迹 非遗掌上信息化平台（毕设）
 
+#### v4.1.0 <br>
+
+1.UI调整
+
+2.支持主题颜色切换
+
+3.支持暗色模式
+
+4.已读新闻标记和缓存
+
+5.新闻列表底部相关新闻
+
+6.全新的应用图标
+
+7.图片查看页保存图片
+
+8.搜搜页支持复合搜索
+
+
 #### v4.0.0 <br>
 
 1.首页信息流更换
