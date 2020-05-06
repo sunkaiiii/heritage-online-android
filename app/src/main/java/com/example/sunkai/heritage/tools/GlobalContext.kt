@@ -22,7 +22,7 @@ class GlobalContext : Application() {
         newsDetailDatabase=Room.databaseBuilder(
                 this,
                 NewsDatabase::class.java,NEWS_DETAIL_DATABASE
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
 
