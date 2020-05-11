@@ -45,7 +45,7 @@ object BaiduLocation {
         val result = IPLocation()
         Log.d("baidulocation",result)
         try {
-            val locationData = Gson().fromJson<BaiduLoacationResponse>(result, BaiduLoacationResponse::class.java)
+            val locationData = Gson().fromJson(result, BaiduLoacationResponse::class.java)
             if (locationData.status != 0) {
                 return
             }
@@ -58,7 +58,7 @@ object BaiduLocation {
     fun GetIPAddress(): String {
         val result = IPLocation()
         try {
-            val locationData = Gson().fromJson<BaiduLoacationResponse>(result, BaiduLoacationResponse::class.java)
+            val locationData = Gson().fromJson(result, BaiduLoacationResponse::class.java)
             if (locationData.status != 0) {
                 return ""
             }

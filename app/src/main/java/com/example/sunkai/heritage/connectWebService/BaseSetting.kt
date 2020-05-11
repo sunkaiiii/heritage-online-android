@@ -20,7 +20,7 @@ open class BaseSetting {
         val gsonInstance = Gson()
         private val client = OkHttpClient.Builder().build()
 
-        fun requestNetwork(request: RequestHelper, action: RequestAction, coroutineScope: CoroutineScope) {
+        fun requestNetwork(request: RequestHelper, action: RequestAction) {
             action.getUIThread().post { action.beforeReuqestStart(request) }
             val httpQueryUrl = HttpUrl.Builder().scheme("https").host("sunkai.xyz").port(5001)
             request.getRequestApi()._url.split("/").forEach {
