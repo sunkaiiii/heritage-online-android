@@ -116,7 +116,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
     protected fun requestHttp(bean: NetworkRequest, api: EHeritageApi) {
         val requestHelper = RequestHelper(api, bean)
         val job = GlobalScope.launch {
-            BaseSetting.requestNetwork(requestHelper, this@BaseGlideActivity, this)
+            BaseSetting.requestNetwork(requestHelper, this@BaseGlideActivity)
         }
         requestMap[bean] = job
     }

@@ -89,7 +89,7 @@ abstract class BaseGlideFragment : Fragment(), RequestAction {
     protected fun requestHttp(api: EHeritageApi, bean: NetworkRequest = BaseQueryRequest()) {
         val helper = RequestHelper(api, bean)
         val job = GlobalScope.launch {
-            BaseSetting.requestNetwork(helper, this@BaseGlideFragment, this)
+            BaseSetting.requestNetwork(helper, this@BaseGlideFragment)
         }
         requestMap[bean] = job
     }
