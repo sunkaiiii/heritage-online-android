@@ -2,7 +2,7 @@ package com.example.sunkai.heritage.entity.response
 
 import java.io.Serializable
 
-class ProjectListInformation(val auto_id:String,
+data class ProjectListInformation(val auto_id:String,
                              val id:String,
                              val num:String,
                              val title:String,

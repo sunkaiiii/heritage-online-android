@@ -17,17 +17,22 @@
   <component name="ChangeListManager">
     <list default="true" id="c0ca8010-58be-4092-8a22-3eca358ce963" name="Default" comment="代码结构调整&#10;&#10;1、添加部分注释&#10;2、调整部分代码结构&#10;3、消除Activity包下的魔法数">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/response/ProjectListInformation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/response/ProjectListInformation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/version.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_30" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="K5J0220312001668" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -86,8 +91,8 @@
     <property name="DEBUGGABLE_DEVICE" value="oneplus-gm1910-402d946e" />
     <property name="DEBUGGABLE_PROCESS" value="com.datong.heritage_online" />
     <property name="DEBUGGER_ID" value="Auto" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="402d946e" />
-    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2019-11-08T08:09:45.213Z" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="K5J0220312001668" />
+    <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-09-16T10:51:54.836Z" />
     <property name="ExportApk.ApkPath" value="C:\Users\sunkai\Documents\GitHub\heritage-online-android\app" />
     <property name="ExportApk.BuildType" value="release" />
     <property name="ExportApk.BuildVariants" value="release" />
@@ -105,7 +110,7 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="device.picker.selection" value="Nexus_5X_API_28" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/test/java/com/example/sunkai/heritage/ConnectWebService" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../OneDrive/heirtage" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../MyMovieMemoir" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -871,20 +876,33 @@
     <option name="LAST_COMMIT_MESSAGE" value="微调&#10;&#10;1、修复发现页界面显示问题&#10;2、调整了图像压缩的参数" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="648" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1599112579122">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="-3213" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1600245300339">
+      <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
     <state x="648" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1080/1920.0.2048.1152@0.0.1920.1080" timestamp="1599112579122" />
     <state x="648" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1591924067721" />
-    <state x="461" y="179" key="SettingsEditor" timestamp="1599112092329">
-      <screen x="0" y="0" width="1920" height="1080" />
+    <state x="-3213" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245300339" />
+    <state x="-3130" y="295" key="FileChooserDialogImpl" timestamp="1600245583612">
+      <screen x="-3840" y="0" width="1858" height="1080" />
+    </state>
+    <state x="-3130" y="295" key="FileChooserDialogImpl/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245583612" />
+    <state x="-3394" y="179" key="SettingsEditor" timestamp="1600245549250">
+      <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
     <state x="461" y="179" key="SettingsEditor/0.0.1920.1080/1920.0.2048.1152@0.0.1920.1080" timestamp="1599112092329" />
-    <state x="461" y="179" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1591058227547" />
+    <state x="-3394" y="179" key="SettingsEditor/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245549250" />
+    <state x="-3095" y="318" key="chooseDestDirectoryDialog" timestamp="1600245784325">
+      <screen x="-3840" y="0" width="1858" height="1080" />
+    </state>
+    <state x="-3095" y="318" key="chooseDestDirectoryDialog/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245784325" />
     <state x="392" y="191" width="1104" height="752" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1599112319486">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="392" y="191" width="1104" height="752" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1920.1080/1920.0.2048.1152@0.0.1920.1080" timestamp="1599112319486" />
+    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog" timestamp="1600245286788">
+      <screen x="-3840" y="0" width="1858" height="1080" />
+    </state>
+    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245286788" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
