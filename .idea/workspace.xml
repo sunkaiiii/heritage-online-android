@@ -18,13 +18,14 @@
     <list default="true" id="c0ca8010-58be-4092-8a22-3eca358ce963" name="Default" comment="代码结构调整&#10;&#10;1、添加部分注释&#10;2、调整部分代码结构&#10;3、消除Activity包下的魔法数">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/response/ProjectListInformation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/entity/response/ProjectListInformation.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_about_us.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/NewsDetailActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/NewsDetailActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/base/BaseGlideActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/activity/base/BaseGlideActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/sunkai/heritage/fragment/MainFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_news_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_news_detail.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_web_view.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_web_view.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values-en/strings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/version.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/version.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +33,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="K5J0220312001668" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_30" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -113,7 +114,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../MyMovieMemoir" />
     <property name="not.eligible.for.single.variant.sync" value="true" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
     <property name="show.do.not.copy.http.proxy.settings.to.gradle" value="false" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -876,6 +877,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="微调&#10;&#10;1、修复发现页界面显示问题&#10;2、调整了图像压缩的参数" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="-3120" y="256" key="#com.intellij.ide.util.MemberChooser" timestamp="1600303486167">
+      <screen x="-3840" y="0" width="1858" height="1080" />
+    </state>
+    <state x="-3120" y="256" key="#com.intellij.ide.util.MemberChooser/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600303486167" />
     <state x="-3213" y="275" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1600245300339">
       <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
@@ -886,11 +891,11 @@
       <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
     <state x="-3130" y="295" key="FileChooserDialogImpl/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245583612" />
-    <state x="-3394" y="179" key="SettingsEditor" timestamp="1600245549250">
+    <state x="-3394" y="179" key="SettingsEditor" timestamp="1600302561779">
       <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
     <state x="461" y="179" key="SettingsEditor/0.0.1920.1080/1920.0.2048.1152@0.0.1920.1080" timestamp="1599112092329" />
-    <state x="-3394" y="179" key="SettingsEditor/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245549250" />
+    <state x="-3394" y="179" key="SettingsEditor/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600302561779" />
     <state x="-3095" y="318" key="chooseDestDirectoryDialog" timestamp="1600245784325">
       <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
@@ -899,10 +904,10 @@
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="392" y="191" width="1104" height="752" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1920.1080/1920.0.2048.1152@0.0.1920.1080" timestamp="1599112319486" />
-    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog" timestamp="1600245286788">
+    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog" timestamp="1600302539956">
       <screen x="-3840" y="0" width="1858" height="1080" />
     </state>
-    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600245286788" />
+    <state x="-3197" y="329" key="com.intellij.ide.util.TipDialog/66.0.1982.1152/-3840.0.1858.1080@-3840.0.1858.1080" timestamp="1600302539956" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

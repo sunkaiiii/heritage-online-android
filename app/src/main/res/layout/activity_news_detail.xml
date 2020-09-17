@@ -21,31 +21,41 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/bottomNewsDetailTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:transitionName="@string/bottom_news_share_title" />
-
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize" />
                 <LinearLayout
-                    android:id="@+id/newsDetailSubtitleLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/bottomNewsDetailAuther"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:transitionName="@string/bottom_news_share_time"
-                    tools:targetApi="lollipop" />
+                    <TextView
+                        android:id="@+id/bottomNewsDetailTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:transitionName="@string/bottom_news_share_title" />
+
+                    <LinearLayout
+                        android:id="@+id/newsDetailSubtitleLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:id="@+id/bottomNewsDetailAuther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:transitionName="@string/bottom_news_share_time"
+                        tools:targetApi="lollipop" />
+                </LinearLayout>
             </LinearLayout>
+
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

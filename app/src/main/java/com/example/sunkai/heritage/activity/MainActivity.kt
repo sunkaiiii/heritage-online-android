@@ -67,7 +67,14 @@ class MainActivity : BaseGlideActivity() {
         bottomNavigationButton.itemTextColor = colorStateList
         bottomNavigationButton.itemIconTintList = colorStateList
         bottomNavigationButton.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        viewList.add(MainFragment())
+        val mainFragment = MainFragment()
+        mainFragment.setOnMenuButtonClicked(object: MainFragment.MenuToggleClickListener {
+            override fun onClick(view: View) {
+                activityMainDrawerLayout.openDrawer(GravityCompat.START)
+            }
+
+        })
+        viewList.add(mainFragment)
         viewList.add(PeopleFragment())
         viewList.add(ProjectFragment())
         val adapter = adapter(viewList, supportFragmentManager)

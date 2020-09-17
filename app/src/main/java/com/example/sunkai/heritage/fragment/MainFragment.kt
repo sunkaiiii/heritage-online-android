@@ -35,6 +35,7 @@ import java.io.Serializable
 class MainFragment : BaseGlideFragment() {
 
     private val PAGES = arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
+    private var onMenuToggleClicked:MenuToggleClickListener? = null
 
     enum class NewsPages constructor(val _name: String, val reqeustApi: EHeritageApi, val detailApi: EHeritageApi, val newsListDaoName: NewsDatabase.NewsListDaoName) : Serializable {
         NewsPage("newsPage", EHeritageApi.GetNewsList, EHeritageApi.GetNewsDetail, NewsDatabase.NewsListDaoName.NEWS_LIST),
@@ -56,6 +57,9 @@ class MainFragment : BaseGlideFragment() {
         val manager = activity?.supportFragmentManager ?: return
         initMainPageSlide()
         setViewPager(manager)
+        menuImage.setOnClickListener {
+            onMenuToggleClicked?.onClick(it)
+        }
     }
 
 
@@ -149,6 +153,9 @@ class MainFragment : BaseGlideFragment() {
         return fragments
     }
 
+    fun setOnMenuButtonClicked(listner:MenuToggleClickListener){
+        this.onMenuToggleClicked = listner
+    }
 
     override fun onResume() {
         super.onResume()
@@ -167,4 +174,9 @@ class MainFragment : BaseGlideFragment() {
         const val DELAY = 3000L
         const val PAGE = "page"
     }
+
+    interface MenuToggleClickListener {
+        fun onClick(view: View)
+    }
 }
+

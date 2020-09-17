@@ -2,7 +2,7 @@
 <resources>
 
     <string name="network_error">Sorry… Network error</string>
-    <string name="app_name">chinese heritage</string>
+    <string name="app_name">Chinese Heritage</string>
     <string name="no_mean_content">null</string>
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
     <string name="cancel">Cancel</string>
@@ -62,25 +62,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.</string>
     <string name="gson">gson</string>
-    <string name="exit_info">double press back button will exit the application</string>
-    <string name="fragment_project_name">project name: </string>
-    <string name="fragment_project_category">project category: </string>
+    <string name="exit_info">Double press back button will exit the application</string>
+    <string name="fragment_project_name">Project name: </string>
+    <string name="fragment_project_category">Project category: </string>
     <string name="fragment_project_location">Declaration location: </string>
     <string name="fragment_project_time">Declaration time: </string>
-    <string name="fragment_project_number">project number: </string>
-    <string name="fragment_project_type">project type: </string>
-    <string name="activity_project_detail_relative_inheritate">relative inheritate</string>
-    <string name="activity_project_detail_relative_project">relative projects</string>
-    <string name="inheritors">inheritors</string>
-    <string name="fragment_project_search_project">search project</string>
+    <string name="fragment_project_number">Project number: </string>
+    <string name="fragment_project_type">Project type: </string>
+    <string name="activity_project_detail_relative_inheritate">Relative inheritate</string>
+    <string name="activity_project_detail_relative_project">Relative projects</string>
+    <string name="inheritors">Inheritors</string>
+    <string name="fragment_project_search_project">Search project</string>
     <string name="special_topic" >Special topic</string>
     <string name="people">People</string>
-    <string name="theme_color">theme color</string>
+    <string name="theme_color">Theme Color</string>
     <string name="change_theme_view">change_theme_view</string>
-    <string name="save_picture">save picture</string>
-    <string name="save_success" >successfully saved</string>
-    <string name="save_failed" >saved failed</string>
-    <string name="relevant_news">relevant news</string>
-    <string name="advance_search">advanced search</string>
-    <string name="add_item">add_condition</string>
+    <string name="save_picture">Save picture</string>
+    <string name="save_success" >Successfully saved</string>
+    <string name="save_failed" >Saved failed</string>
+    <string name="relevant_news">Relevant news</string>
+    <string name="advance_search">Advanced search</string>
+    <string name="add_item">Add_condition</string>
 </resources>

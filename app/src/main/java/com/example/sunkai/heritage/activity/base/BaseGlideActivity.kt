@@ -23,6 +23,7 @@ import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.CHANGE_THEME
+import kotlinx.android.synthetic.main.activity_web_view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -52,6 +53,7 @@ abstract class BaseGlideActivity : AppCompatActivity(), RequestAction {
         LocalBroadcastManager.getInstance(this).registerReceiver(broadReceiver, IntentFilter(CHANGE_THEME))
         isDestroy = false
         glide = Glide.with(this)
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 

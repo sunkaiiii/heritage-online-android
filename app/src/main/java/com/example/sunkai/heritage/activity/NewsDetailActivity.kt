@@ -36,6 +36,7 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
         requestApi = intent.getSerializableExtra(API) as EHeritageApi
+        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         if (data is NewsListResponse) {
             this.link = data.link
