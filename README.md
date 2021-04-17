@@ -3,7 +3,7 @@
 
 heritage_online_android —— An information mobile platform about China intangible cultural heritage. (My graduation design)
 
-中文版E:[README_CN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_CN.md)
+中文版:[README_CN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_CN.md)
 
 [![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
