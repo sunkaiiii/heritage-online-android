@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 android {
-    compileSdkVersion "android-S"
+    compileSdkVersion 30
     def value = 0
     def versionPropsFile = file('version.properties')
     if (versionPropsFile.canRead()) {
@@ -16,7 +16,7 @@ android {
         defaultConfig {
             applicationId "com.datong.heritage_online"
             minSdkVersion 21
-            targetSdkVersion "S"
+            targetSdkVersion 30
             versionCode code
             versionName "4.1.1"
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

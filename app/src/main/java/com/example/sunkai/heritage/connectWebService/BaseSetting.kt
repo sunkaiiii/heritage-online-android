@@ -8,6 +8,7 @@ import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import java.lang.Exception
 
 /*
  * Created by sunkai on 2018/1/30.
@@ -47,6 +48,12 @@ open class BaseSetting {
 
                 if (runnableMap[requestBean] == null || runnableMap[requestBean]?.isCancelled == true)
                     return
+                if(response.code!=200){
+                    action.getUIThread().post {
+                        action.onRequestError(request,action,NetworkErrorException(response.code))
+                    }
+                    return
+                }
                 action.getUIThread().post {
                     if (result.isNullOrEmpty()) {
                         action.onRequestError(request, action, IOException("new result returned"))
@@ -67,4 +74,9 @@ open class BaseSetting {
     }
 
 
+}
+
+class NetworkErrorException(val code:Int):Exception(){
+    override val message: String?
+        get() = "Request remote server error"
 }
