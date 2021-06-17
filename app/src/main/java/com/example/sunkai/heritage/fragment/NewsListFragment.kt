@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.NewsListAdapter
+import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
 import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.connectWebService.await
 import com.example.sunkai.heritage.database.entities.NewsList
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.NewsListResponse
@@ -19,6 +21,9 @@ import com.example.sunkai.heritage.tools.GlobalContext
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.news_list_framgent.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
@@ -64,6 +69,12 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     private fun loadInformation() {
         onPreLoad()
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
+        if (reqeustArgument==MainFragment.NewsPages.NewsPage){
+            GlobalScope.launch {
+                getNewsListAsync()
+            }
+            return
+        }
         runOnBackGround {
             databaseList = fetchDataFromDatabase()
             runOnUiThread {
@@ -78,8 +89,15 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
                         ?: return@runOnUiThread, createRequestBean())
             }
         }
+    }
 
-
+    private suspend fun getNewsListAsync(){
+        val newsList = EHeritageApiRetrofitServiceCreator.EhritageService.getNewsList(pageNumber++).await()
+        val adapter = NewsListAdapter(requireActivity(), newsList, glide, reqeustArgument?.detailApi ?: return)
+        runOnUiThread {
+            onPostLoad()
+            fragmentMainRecyclerview.adapter = adapter
+        }
     }
 
     private fun fetchDataFromDatabase(): List<NewsListResponse>? {
