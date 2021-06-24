@@ -17,4 +17,10 @@ object Repository {
         }
         emit(result)
     }
+
+    fun getNewsDetail(link:String)=liveData(Dispatchers.IO){
+        val newsDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getNewsDetail(link).await()
+        Result.success(newsDetail)
+        emit(newsDetail)
+    }
 }

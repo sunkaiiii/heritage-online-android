@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
@@ -12,6 +13,7 @@ import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.database.entities.NewsDetailContent
 import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
+import com.example.sunkai.heritage.entity.NewsDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
@@ -29,10 +31,12 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
 
     var link: String? = null
     var requestApi: EHeritageApi? = null
+    private lateinit var newsDetailViewModel:NewsDetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
+        newsDetailViewModel = ViewModelProvider(this).get(NewsDetailViewModel::class.java)
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
         requestApi = intent.getSerializableExtra(API) as EHeritageApi
@@ -47,10 +51,16 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
             this.link = data
         }
         val link = this.link ?: return
-        GetNewsDetail(link)
-        bottomNewsDetailRefresh.setOnRefreshListener {
-            GetNewsDetail(link)
+        if(requestApi == EHeritageApi.GetNewsDetail){
+            newsDetailViewModel.newsDetail.observe(this,{newsDetail->
+                setDataToView(newsDetail)
+            })
+            newsDetailViewModel.loadNewsDetail(link)
         }
+//        GetNewsDetail(link)
+//        bottomNewsDetailRefresh.setOnRefreshListener {
+//            GetNewsDetail(link)
+//        }
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.connectWebService
 
+import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import okhttp3.HttpUrl
 import retrofit2.Call
@@ -9,11 +10,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 const val NewsListUrl = "/api/NewsList/{page}"
+const val NewsDetail = "/api/NewsDetail"
 
 object EHeritageApiRetrofitServiceCreator {
     private const val HOST = "sunkai.xyz"
@@ -35,6 +38,9 @@ object EHeritageApiRetrofitServiceCreator {
 interface EHeritageApiRetrofit{
     @GET(NewsListUrl)
     fun getNewsList(@Path("page") page:Int):Call<List<NewsListResponse>>
+
+    @GET(NewsDetail)
+    fun getNewsDetail(@Query("link")link:String):Call<NewsDetail>
 }
 
 suspend fun <T> Call<T>.await():T{
