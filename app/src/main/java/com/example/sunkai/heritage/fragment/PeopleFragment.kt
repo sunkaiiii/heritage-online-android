@@ -1,6 +1,9 @@
 package com.example.sunkai.heritage.fragment
 
-import android.os.*
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +14,10 @@ import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.request.BasePathRequest
+import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
@@ -23,7 +26,7 @@ import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_people.*
 import kotlin.math.abs
 
-class PeopleFragment : BaseLazyLoadFragment() {
+class PeopleFragment : BaseGlideFragment() {
 
     private var pageNumber = 1
 
@@ -74,8 +77,13 @@ class PeopleFragment : BaseLazyLoadFragment() {
         })
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        startLoadInformation()
+    }
 
-    override fun startLoadInformation() {
+
+    fun startLoadInformation() {
         requestHttp(EHeritageApi.GetPeopleMainPage)
         requestHttp(EHeritageApi.GetPeopleList, createRequestBean())
     }
@@ -126,11 +134,6 @@ class PeopleFragment : BaseLazyLoadFragment() {
         viewPageScrollHandler.sendEmptyMessageDelayed(SCROLL, DELAY)
     }
 
-    override fun onRestoreFragmentLoadInformation() {
-        initviews()
-        pageNumber = 1
-        startLoadInformation()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
@@ -21,10 +20,8 @@ import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.io.Serializable
 
@@ -74,26 +71,11 @@ class MainFragment : BaseGlideFragment() {
     private fun setViewPager(manager: FragmentManager) {
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
-        setViewPagerListener(mainPageViewPager)
         mainPageViewPager.offscreenPageLimit = fragments.size
         mainPageViewPager.adapter = adapter
         mainPageTabLayout.setupWithViewPager(mainPageViewPager)
-        runOnUiThread { (adapter.getItem(0) as BaseLazyLoadFragment).lazyLoad() }
     }
 
-    private fun setViewPagerListener(mainPageViewPager: ViewPager) {
-        mainPageViewPager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                val adapter = mainPageViewPager.adapter ?: return
-                if (adapter is MainPageViewPagerAdapter) {
-                    val item = adapter.getItem(position)
-                    if (item is BaseLazyLoadFragment) {
-                        item.lazyLoad()
-                    }
-                }
-            }
-        })
-    }
 
     private fun initMainPageSlide() {
         requestHttp(EHeritageApi.GetBanner)
@@ -121,7 +103,6 @@ class MainFragment : BaseGlideFragment() {
             override fun onPageSelected(position: Int) {
                 startRecyclerScroll()
             }
-
         })
         startRecyclerScroll()
     }

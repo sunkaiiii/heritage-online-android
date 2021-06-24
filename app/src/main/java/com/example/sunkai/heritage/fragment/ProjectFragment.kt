@@ -20,19 +20,22 @@ import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
-import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.appbar.AppBarLayout
 import kotlinx.android.synthetic.main.fragment_project.*
 
-class ProjectFragment : BaseLazyLoadFragment() {
+class ProjectFragment : BaseGlideFragment() {
     private var pageNumber = 1
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_project, container, false)
     }
 
-    override fun startLoadInformation() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        startLoadInformation()
+    }
+    private fun startLoadInformation() {
         requestHttp(EHeritageApi.GetProjectBasicInformation)
         initview()
     }
@@ -68,10 +71,6 @@ class ProjectFragment : BaseLazyLoadFragment() {
     }
 
 
-    override fun onRestoreFragmentLoadInformation() {
-        startLoadInformation()
-    }
-
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         super.onTaskReturned(api, action, response)
@@ -85,7 +84,7 @@ class ProjectFragment : BaseLazyLoadFragment() {
                 val projectListData = fromJsonToList(response, ProjectListInformation::class.java)
                 var adapter = ProjectInformationList.adapter
                 if (adapter == null) {
-                    adapter = ProjectInformationAdapter(context!!, projectListData, glide)
+                    adapter = ProjectInformationAdapter(requireContext(), projectListData, glide)
                     ProjectInformationList.adapter = adapter
                     fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
                         fragmentProjectSearchCard.visibility = if (ProjectInformationList.y == 0f) View.VISIBLE else View.GONE

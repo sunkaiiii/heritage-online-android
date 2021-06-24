@@ -13,7 +13,7 @@ import com.example.sunkai.heritage.connectWebService.await
 import com.example.sunkai.heritage.database.entities.NewsList
 import com.example.sunkai.heritage.entity.request.BasePathRequest
 import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseLazyLoadFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
@@ -22,10 +22,9 @@ import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.news_list_framgent.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
+class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
     var pageNumber = 1
     private var databaseList: List<NewsListResponse>? = null
@@ -43,14 +42,6 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
     }
 
 
-    override fun startLoadInformation() {
-        loadInformation()
-    }
-
-    override fun onRestoreFragmentLoadInformation() {
-        loadInformation()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initview()
@@ -63,6 +54,7 @@ class NewsListFragment : BaseLazyLoadFragment(), OnPageLoaded {
             pageNumber = 1
             loadInformation()
         }
+        loadInformation()
     }
 
 

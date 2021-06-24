@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/people"
+    app:startDestination="@id/peopleFragment">
+
+    <fragment
+        android:id="@+id/peopleFragment"
+        android:name="com.example.sunkai.heritage.fragment.PeopleFragment"
+        android:label="PeopleFragment"
+        tools:layout="@layout/fragment_people"/>
+</navigation>
