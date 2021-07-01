@@ -11,7 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.connectWebService.BaseSetting
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.loadImageFromServerWithoutBackground
 import com.example.sunkai.heritage.tools.saveImage
 import com.example.sunkai.heritage.views.SwipePhotoView
@@ -33,10 +33,10 @@ class ViewImageGalleryAdapter(val context: Context, val datas: Array<String>, pr
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val photoView = SwipePhotoView(GlobalContext.instance)
+        val photoView = SwipePhotoView(EHeritageApplication.instance)
         photoView.scaleType = ImageView.ScaleType.FIT_CENTER
         container.addView(photoView)
-        photoView.setImageDrawable(ContextCompat.getDrawable(GlobalContext.instance, R.drawable.backgound_grey))
+        photoView.setImageDrawable(ContextCompat.getDrawable(EHeritageApplication.instance, R.drawable.backgound_grey))
         photoView.setIsInViewPager(true)
         photoView.setOnDragListner(swipePhotoViewListener)
         setClick(position, photoView)

@@ -6,7 +6,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.sunkai.heritage.dialog.base.BaseDialogFragment
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 
@@ -18,8 +18,8 @@ class NormalWarningDialog : BaseDialogFragment() {
     private var title = ""
     private var content = ""
     //在dialog创建的时候，还不会取得上下文，所以需要用全局context来获取string value
-    private var submitText=GlobalContext.instance.getString(R.string.submit)
-    private var cancelText=GlobalContext.instance.getString(R.string.cancel)
+    private var submitText=EHeritageApplication.instance.getString(R.string.submit)
+    private var cancelText=EHeritageApplication.instance.getString(R.string.cancel)
     private var progressVisibility=false
     private var submitVisibility=true
     private var cancelVIsibility=true

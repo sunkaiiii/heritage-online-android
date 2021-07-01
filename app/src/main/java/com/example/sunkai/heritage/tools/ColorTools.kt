@@ -33,18 +33,18 @@ import com.google.android.material.tabs.TabLayout
  * 2018/7/17
  * 用于处理主题切换的工具类
  */
-private var themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
-private var userChoiceThemeColor=GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+private var themeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
+private var userChoiceThemeColor=EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
 private var darkThemeColor = getDarkerColor(getThemeColor())
 private var lightThemeColor = getLighterColor(getThemeColor())
 private var darkmode = false
 
 fun reloadThemeColor() {
-    LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(Intent(CHANGE_THEME))
+    LocalBroadcastManager.getInstance(EHeritageApplication.instance).sendBroadcast(Intent(CHANGE_THEME))
 }
 
 fun setThemeColor(color: Int) {
-    GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
+    EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
         putInt(THEME_COLOR, color)
     }
     if (!darkmode) {
@@ -52,14 +52,14 @@ fun setThemeColor(color: Int) {
         darkThemeColor = getDarkerColor(themeColor)
         lightThemeColor = getLighterColor(color)
         val intent = Intent(CHANGE_THEME)
-        LocalBroadcastManager.getInstance(GlobalContext.instance).sendBroadcast(intent)
+        LocalBroadcastManager.getInstance(EHeritageApplication.instance).sendBroadcast(intent)
     }
 }
 
 fun getUserChoiceThemeColor():Int= userChoiceThemeColor
 
 fun getThemeColor(specialDarkmodeColor: Boolean = false): Int {
-    return if (specialDarkmodeColor) ContextCompat.getColor(GlobalContext.instance, R.color.deepGrey) else themeColor
+    return if (specialDarkmodeColor) ContextCompat.getColor(EHeritageApplication.instance, R.color.deepGrey) else themeColor
 }
 
 fun getDarkThemeColor(): Int {
@@ -96,7 +96,7 @@ fun getLighterColor(color: Int): Int {
     return Color.HSVToColor(hsvArray)
 }
 
-fun tintDrawable(drawableResID: Int, color: Int = getThemeColor()): Drawable = tintDrawable(ContextCompat.getDrawable(GlobalContext.instance, drawableResID)!!, color)
+fun tintDrawable(drawableResID: Int, color: Int = getThemeColor()): Drawable = tintDrawable(ContextCompat.getDrawable(EHeritageApplication.instance, drawableResID)!!, color)
 
 fun tintDrawable(drawable: Drawable, color: Int = getThemeColor()): Drawable {
     val tempDrawable = DrawableCompat.wrap(drawable)
@@ -135,7 +135,7 @@ fun tintFloatActionButton(floatActionButton: FloatingActionButton) {
 
 fun tintBottomNavigationView(navigationView: BottomNavigationView) {
 
-    val midGrey = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
+    val midGrey = ContextCompat.getColor(EHeritageApplication.instance, R.color.midGrey)
     val colors = arrayOf(getUserChoiceThemeColor(), midGrey).toIntArray()
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
     val colorStateList = ColorStateList(states, colors)
@@ -147,8 +147,8 @@ fun tintBottomNavigationView(navigationView: BottomNavigationView) {
 fun tintSwitch(view: SwitchCompat) {
     tintCompoundDrawables(view)
     val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
-    val colors = arrayOf(getThemeColor(), ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)).toIntArray()
-    val trackColors = arrayOf(getLightThemeColor(), ContextCompat.getColor(GlobalContext.instance, R.color.lightGrey)).toIntArray()
+    val colors = arrayOf(getThemeColor(), ContextCompat.getColor(EHeritageApplication.instance, R.color.midGrey)).toIntArray()
+    val trackColors = arrayOf(getLightThemeColor(), ContextCompat.getColor(EHeritageApplication.instance, R.color.lightGrey)).toIntArray()
     view.thumbTintList = ColorStateList(states, colors)
     view.trackTintList = ColorStateList(states, trackColors)
 }
@@ -208,18 +208,18 @@ fun tintToolbar(view: Toolbar) {
 }
 
 fun loadThemeColor(){
-    val config=GlobalContext.instance.resources.configuration
+    val config=EHeritageApplication.instance.resources.configuration
     when (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
         Configuration.UI_MODE_NIGHT_NO -> {
             darkmode = false
-            themeColor = GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+            themeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
         } // Night mode is not active, we're using the light theme
         Configuration.UI_MODE_NIGHT_YES -> {
             darkmode = true
-            themeColor = ContextCompat.getColor(GlobalContext.instance, R.color.midGrey)
+            themeColor = ContextCompat.getColor(EHeritageApplication.instance, R.color.midGrey)
         } // Night mode is active, we're using dark theme
     }
-    userChoiceThemeColor=GlobalContext.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(GlobalContext.instance, R.color.colorPrimary))
+    userChoiceThemeColor=EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
     darkThemeColor = getDarkerColor(getThemeColor())
     lightThemeColor = getLighterColor(getThemeColor())
 }
@@ -230,7 +230,7 @@ fun forEachAndTintViews(view: ViewGroup) {
         if (it is ViewGroup) {
             forEachAndTintViews(it)
         }
-        if (it.tag == GlobalContext.instance.getString(R.string.change_theme_view)) {
+        if (it.tag == EHeritageApplication.instance.getString(R.string.change_theme_view)) {
             it.setBackgroundColor(getThemeColor())
         }
         if (it is FollowThemeView) {

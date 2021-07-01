@@ -20,23 +20,24 @@ import com.example.sunkai.heritage.entity.request.BottomNewsDetailRequest
 import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_news_detail.*
 
+@AndroidEntryPoint
 class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
 
     var link: String? = null
     var requestApi: EHeritageApi? = null
-    private lateinit var newsDetailViewModel:NewsDetailViewModel
+    private val newsDetailViewModel by lazy { ViewModelProvider(this).get(NewsDetailViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_news_detail)
-        newsDetailViewModel = ViewModelProvider(this).get(NewsDetailViewModel::class.java)
         val title = intent.getStringExtra(TITLE)
         val data = intent.getSerializableExtra(DATA)
         requestApi = intent.getSerializableExtra(API) as EHeritageApi
@@ -105,14 +106,14 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
     }
 
     private fun tryToGetDataInDatabase(link: String): NewsDetail? {
-        val databaseData = GlobalContext.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+        val databaseData = EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
                 ?: return null
         return NewsDetail(databaseData)
     }
 
     private fun saveIntoDatabase(data: NewsDetail) {
         runOnBackGround {
-            val database = GlobalContext.newsDetailDatabase
+            val database = EHeritageApplication.newsDetailDatabase
             val newsDetailContentList = arrayListOf<NewsDetailContent>()
             val newsRelevantNews = arrayListOf<NewsDetailRelevantContent>()
             data.content.forEach {

@@ -3,7 +3,7 @@ package com.example.sunkai.heritage.value
 import android.util.Pair
 import android.view.View
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.Utils
 import kotlin.math.roundToInt
 
@@ -20,8 +20,8 @@ const val API = "api"
 typealias TransitionPair = Pair<View, String>
 const val CHANGE_THEME="change_theme"
 val VERSION_NAME = {
-    val pm = GlobalContext.instance.packageManager
-    val pi = pm.getPackageInfo(GlobalContext.instance.packageName, 0)
+    val pm = EHeritageApplication.instance.packageManager
+    val pi = pm.getPackageInfo(EHeritageApplication.instance.packageName, 0)
     pi.versionName
 }
 
@@ -54,7 +54,7 @@ const val BaiduIPLocationUrl = "https://api.map.baidu.com/location/ip?ak=aXgRqP4
 const val ERROR = "ERROR"
 const val IHCHINA = "http://www.ihchina.cn"
 
-val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(GlobalContext.instance.getString(R.string.news_feed), GlobalContext.instance.getString(R.string.forums), GlobalContext.instance.getString(R.string.special_topic))
+val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(EHeritageApplication.instance.getString(R.string.news_feed), EHeritageApplication.instance.getString(R.string.forums), EHeritageApplication.instance.getString(R.string.special_topic))
 
 const val NEWS_DETAIL_DATABASE="NewsDetail"
 

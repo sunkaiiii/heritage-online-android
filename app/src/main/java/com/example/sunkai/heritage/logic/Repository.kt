@@ -6,8 +6,11 @@ import com.example.sunkai.heritage.connectWebService.await
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import kotlinx.coroutines.Dispatchers
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object Repository {
+@Singleton
+class Repository @Inject constructor() {
     fun getNewsList(page:Int) = liveData(Dispatchers.IO){
         val result = try{
             val newsList = EHeritageApiRetrofitServiceCreator.EhritageService.getNewsList(page).await()

@@ -6,7 +6,7 @@ import com.example.sunkai.heritage.value.TransitionPair
 
 fun CreateTransitionPair(view:View,stringID: Int):TransitionPair{
     return if(stringID>0) {
-        Pair.create(view, GlobalContext.instance.getString(stringID))
+        Pair.create(view, EHeritageApplication.instance.getString(stringID))
     }else{
         Pair.create(view,"")
     }

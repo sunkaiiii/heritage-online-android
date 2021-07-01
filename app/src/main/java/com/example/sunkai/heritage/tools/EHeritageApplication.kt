@@ -4,13 +4,15 @@ import android.app.Application
 import androidx.room.Room
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.value.NEWS_DETAIL_DATABASE
+import dagger.hilt.android.HiltAndroidApp
 
 
 /**
  * 全局GlobalContext
  * Created by sunkai on 2017/12/13.
  */
-class GlobalContext : Application() {
+@HiltAndroidApp
+class EHeritageApplication : Application() {
 
     private val TAG = "GlobalContext"
 
@@ -27,7 +29,7 @@ class GlobalContext : Application() {
 
 
     companion object {
-        lateinit var instance: GlobalContext
+        lateinit var instance: EHeritageApplication
             private set
         lateinit var newsDetailDatabase:NewsDatabase
     }

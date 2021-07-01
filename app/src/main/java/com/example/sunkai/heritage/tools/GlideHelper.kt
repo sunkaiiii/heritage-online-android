@@ -38,7 +38,7 @@ fun RequestManager.saveImage(url: String) {
         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
             try {
                 val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-                ImageSaver.saveBitmap(GlobalContext.instance, resource, Bitmap.CompressFormat.JPEG, "image/jpg", "IMG_${timeStamp}.jpg")
+                ImageSaver.saveBitmap(EHeritageApplication.instance, resource, Bitmap.CompressFormat.JPEG, "image/jpg", "IMG_${timeStamp}.jpg")
                 toast(R.string.save_success)
             } catch (e: IOException) {
                 toast(R.string.save_failed)

@@ -18,7 +18,7 @@ import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import kotlinx.android.synthetic.main.activity_search_project.*
 
@@ -81,7 +81,7 @@ class SearchProjectActivity : BaseGlideActivity() {
         }
 
         runOnBackGround {
-            historyData = GlobalContext.newsDetailDatabase.searchHistoryDao().getAllSearchHistory().toMutableList()
+            historyData = EHeritageApplication.newsDetailDatabase.searchHistoryDao().getAllSearchHistory().toMutableList()
             runOnUiThread {
                 setHistoryDataToRecyclerView()
             }
@@ -172,7 +172,7 @@ class SearchProjectActivity : BaseGlideActivity() {
         val searchHistory = SearchHistory()
         searchHistory.title = searchEditext.text.toString()
         runOnBackGround {
-            GlobalContext.newsDetailDatabase.searchHistoryDao().insert(searchHistory)
+            EHeritageApplication.newsDetailDatabase.searchHistoryDao().insert(searchHistory)
         }
         historyData?.add(0, searchHistory)
     }

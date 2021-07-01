@@ -11,7 +11,7 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.database.entities.SearchHistory
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -36,7 +36,7 @@ class ProjectSearchHistoryAdapter(context: Context, data: List<SearchHistory>, g
         holder.searchHistoryTextView.text = data.title
         holder.clearIcon.setOnClickListener {
             GlobalScope.launch {
-                GlobalContext.newsDetailDatabase.searchHistoryDao().delete(data)
+                EHeritageApplication.newsDetailDatabase.searchHistoryDao().delete(data)
             }
             datas.remove(data)
             notifyDataSetChanged()

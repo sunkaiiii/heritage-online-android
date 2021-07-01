@@ -48,7 +48,7 @@ private fun encryptByPublicKey(data: ByteArray, publicKey: ByteArray): ByteArray
 
 private fun readPublicKeyFromFile(data:String):ByteArray?{
 //读取公钥文件
-    val input = GlobalContext.instance.resources.assets.open("public.pem")
+    val input = EHeritageApplication.instance.resources.assets.open("public.pem")
     val bufferSize = 1024
     val buffer = CharArray(bufferSize)
     val out = StringBuilder()

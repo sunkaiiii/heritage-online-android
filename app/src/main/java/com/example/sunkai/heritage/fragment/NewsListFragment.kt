@@ -17,7 +17,7 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.GlobalContext
+import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.example.sunkai.heritage.tools.runOnUiThread
 import kotlinx.android.synthetic.main.news_list_framgent.*
@@ -95,7 +95,7 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
     private fun fetchDataFromDatabase(): List<NewsListResponse>? {
         val data = arrayListOf<NewsListResponse>()
         val typeName = reqeustArgument?.newsListDaoName ?: return null
-        val dao = GlobalContext.newsDetailDatabase.newsListaDao()
+        val dao = EHeritageApplication.newsDetailDatabase.newsListaDao()
         dao.getAllByType(typeName.typeName).forEach {
             data.add(NewsListResponse(it))
         }
@@ -155,7 +155,7 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
             runOnBackGround {
                 for (i in 0 until datacount) {
                     val data = adapter.getItem(i)
-                    val dao = GlobalContext.newsDetailDatabase.newsListaDao()
+                    val dao = EHeritageApplication.newsDetailDatabase.newsListaDao()
                     if (data.idFromDataBase != null || dao.getCountNumberByLink(data.link) > 0) {
                         dao.update(NewsList(data))
                     } else {
