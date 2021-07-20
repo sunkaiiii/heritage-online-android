@@ -4,6 +4,7 @@ import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
 import com.example.sunkai.heritage.connectWebService.await
 import com.example.sunkai.heritage.entity.response.NewsListResponse
@@ -41,5 +42,11 @@ class Repository @Inject constructor() {
         val newsDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getNewsDetail(link).await()
         Result.success(newsDetail)
         emit(newsDetail)
+    }
+
+    fun getBanner()=liveData(Dispatchers.IO){
+        val banner = EHeritageApiRetrofitServiceCreator.EhritageService.getBanner().await()
+        Result.success(banner)
+        emit(banner)
     }
 }

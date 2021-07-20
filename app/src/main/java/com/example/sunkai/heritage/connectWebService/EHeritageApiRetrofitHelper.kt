@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.connectWebService
 
+import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import okhttp3.HttpUrl
@@ -16,6 +17,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
+const val Banner = "/api/banner"
 const val NewsListUrl = "/api/NewsList/{page}"
 const val NewsDetail = "/api/NewsDetail"
 const val ForumsList = "/api/Forums/ForumsList/{page}"
@@ -42,6 +44,9 @@ object EHeritageApiRetrofitServiceCreator {
 }
 
 interface EHeritageApiRetrofit{
+    @GET(Banner)
+    fun getBanner():Call<List<MainPageBanner>>
+
     @GET(NewsListUrl)
     fun getNewsList(@Path("page") page:Int):Call<List<NewsListResponse>>
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
@@ -20,6 +21,7 @@ import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitService
 import com.example.sunkai.heritage.connectWebService.RequestHelper
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.entity.MainPageBanner
+import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
@@ -40,6 +42,7 @@ class MainFragment : BaseGlideFragment() {
 
     private val PAGES = arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
     private var onMenuToggleClicked:MenuToggleClickListener? = null
+    private val viewModel by lazy { ViewModelProvider(this).get(MainPageViewModel::class.java) }
 
     enum class NewsPages(val _name: String, val reqeustApi: KFunction1<Int, Call<List<NewsListResponse>>>, val detailApi: KFunction1<String, Call<NewsDetail>>, val newsListDaoName: NewsDatabase.NewsListDaoName) : Serializable {
         NewsPage("newsPage", EHeritageApiRetrofitServiceCreator.EhritageService::getNewsList, EHeritageApiRetrofitServiceCreator.EhritageService::getNewsDetail,  NewsDatabase.NewsListDaoName.NEWS_LIST),
@@ -59,7 +62,9 @@ class MainFragment : BaseGlideFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val manager = activity?.supportFragmentManager ?: return
-        initMainPageSlide()
+        viewModel.banner.observe(viewLifecycleOwner,{
+            setMainPageSlideAdapter(it)
+        })
         setViewPager(manager)
         menuImage.setOnClickListener {
             onMenuToggleClicked?.onClick(it)
@@ -84,20 +89,6 @@ class MainFragment : BaseGlideFragment() {
     }
 
 
-    private fun initMainPageSlide() {
-        requestHttp(EHeritageApi.GetBanner)
-
-    }
-
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        super.onTaskReturned(api, action, response)
-        when (api.getRequestApi()) {
-            EHeritageApi.GetBanner -> {
-                val data = fromJsonToList(response, MainPageBanner::class.java)
-                setMainPageSlideAdapter(data)
-            }
-        }
-    }
 
     private fun setMainPageSlideAdapter(data: List<MainPageBanner>) {
         val activity = activity ?: return
