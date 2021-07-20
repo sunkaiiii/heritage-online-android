@@ -27,12 +27,14 @@ import com.example.sunkai.heritage.tools.getLightThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.reloadThemeColor
 import com.example.sunkai.heritage.value.THEME_COLOR_ARRAYS
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
  * 此类用于处理登陆
  */
 
+@AndroidEntryPoint
 class MainActivity : BaseGlideActivity() {
 
     private val viewList: ArrayList<Fragment> = ArrayList()

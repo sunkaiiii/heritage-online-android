@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
@@ -17,8 +19,8 @@ import com.bumptech.glide.request.target.Target
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.entity.response.NewsListResponse
+import com.example.sunkai.heritage.fragment.MainFragment
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.loadImageFromServer
@@ -29,7 +31,20 @@ import com.example.sunkai.heritage.value.DATA
  * 首页新闻的RecyclerView的Adapter
  * Created by sunkai on 2018/2/12.
  */
-class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager, private val requestDetailApi: EHeritageApi) : BaseLoadMoreRecyclerAdapter<NewsListAdapter.Holder, NewsListResponse>(context, data, glide) {
+class NewsListAdapter(private val glide: RequestManager, private val requestDetailApi: MainFragment.NewsPages) : PagingDataAdapter<NewsListResponse,NewsListAdapter.Holder>(
+    COMPARATOR) {
+    companion object{
+        private val COMPARATOR = object : DiffUtil.ItemCallback<NewsListResponse>() {
+            override fun areItemsTheSame(oldItem: NewsListResponse, newItem: NewsListResponse): Boolean {
+                return oldItem.link == newItem.link
+            }
+
+            override fun areContentsTheSame(oldItem: NewsListResponse, newItem: NewsListResponse): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val title: TextView
@@ -48,13 +63,12 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottom_folk_news_layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_folk_news_layout, parent, false)
         return Holder(view)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        super.onBindViewHolder(holder, position)
-        val data = getItem(position)
+        val data = getItem(position) ?:return
         setData(holder, data)
     }
 
@@ -83,27 +97,20 @@ class NewsListAdapter(context: Context, data: List<NewsListResponse>, glide: Req
 
             }).into(holder.image)
             holder.image.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.image, data.img!!, data.compressImg
+                ViewImageUtils.setViewImageClick(holder.itemView.context, holder.image, data.img!!, data.compressImg
                         ?: data.img)
             }
         }
     }
 
 
-    override fun addNewData(data: List<NewsListResponse>) {
-        val extendData = this.datas.toMutableList()
-        extendData.addAll(data)
-        this.datas = extendData
-        notifyDataSetChanged()
-    }
-
-    override fun setItemClick(itemView: View, item: NewsListResponse) {
+    private fun setItemClick(itemView: View, item: NewsListResponse) {
         item.isRead = true
         itemView.findViewById<View>(R.id.isReadMark).visibility=View.VISIBLE
-        val intent = Intent(context, NewsDetailActivity::class.java)
+        val intent = Intent(itemView.context, NewsDetailActivity::class.java)
         intent.putExtra(DATA, item)
         intent.putExtra(API, requestDetailApi)
-        context.startActivity(intent)
+        itemView.context.startActivity(intent)
     }
 
 }

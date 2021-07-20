@@ -52,12 +52,11 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
             this.link = data
         }
         val link = this.link ?: return
-        if(requestApi == EHeritageApi.GetNewsDetail){
-            newsDetailViewModel.newsDetail.observe(this,{newsDetail->
-                setDataToView(newsDetail)
-            })
-            newsDetailViewModel.loadNewsDetail(link)
-        }
+
+        newsDetailViewModel.newsDetail.observe(this,{newsDetail->
+            setDataToView(newsDetail)
+        })
+        newsDetailViewModel.loadNewsDetail(link)
 //        GetNewsDetail(link)
 //        bottomNewsDetailRefresh.setOnRefreshListener {
 //            GetNewsDetail(link)
@@ -85,13 +84,6 @@ class NewsDetailActivity : BaseGlideActivity(), OnPageLoaded {
             }
         }
 
-    }
-
-    override fun beforeReuqestStart(request: RequestHelper) {
-        super.beforeReuqestStart(request)
-        when (request.getRequestApi()) {
-            EHeritageApi.GetNewsDetail -> onPreLoad()
-        }
     }
 
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {

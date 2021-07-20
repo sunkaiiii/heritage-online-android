@@ -4,38 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.NewsListAdapter
-import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.connectWebService.await
-import com.example.sunkai.heritage.database.entities.NewsList
-import com.example.sunkai.heritage.entity.request.BasePathRequest
+import com.example.sunkai.heritage.entity.NewsListViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
-import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.EHeritageApplication
-import com.example.sunkai.heritage.tools.OnSrollHelper
-import com.example.sunkai.heritage.tools.runOnUiThread
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.news_list_framgent.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
     var reqeustArgument: MainFragment.NewsPages? = null
-    var pageNumber = 1
     private var databaseList: List<NewsListResponse>? = null
-
-    private fun createRequestBean(): NetworkRequest {
-        return object : BasePathRequest() {
-            override fun getPathParamerater(): List<String> {
-                return listOf(pageNumber++.toString())
-            }
-        }
-    }
+    private val viewModel by lazy{ViewModelProvider(this).get(NewsListViewModel::class.java)}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.news_list_framgent, container, false)
@@ -49,9 +36,7 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
 
 
     private fun initview() {
-        fragmentMainRecyclerview.addOnScrollListener(onScroller)
         bottomNewsRefreshLayout.setOnRefreshListener {
-            pageNumber = 1
             loadInformation()
         }
         loadInformation()
@@ -61,36 +46,27 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
     private fun loadInformation() {
         onPreLoad()
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
-        if (reqeustArgument==MainFragment.NewsPages.NewsPage){
-            GlobalScope.launch {
-                getNewsListAsync()
-            }
-            return
-        }
-        runOnBackGround {
-            databaseList = fetchDataFromDatabase()
-            runOnUiThread {
-                if (!databaseList.isNullOrEmpty()) {
-                    val adapter = NewsListAdapter(activity
-                            ?: return@runOnUiThread, databaseList!!, glide, reqeustArgument?.detailApi
-                            ?: return@runOnUiThread)
-                    fragmentMainRecyclerview.adapter = adapter
-
-                }
-                requestHttp(reqeustArgument?.reqeustApi
-                        ?: return@runOnUiThread, createRequestBean())
+        val adapter = NewsListAdapter(glide, reqeustArgument ?: return)
+        fragmentMainRecyclerview.adapter = adapter
+        lifecycleScope.launch {
+            viewModel.getNewsListPagingData(reqeustArgument?.reqeustApi?:return@launch).collect {
+                adapter.submitData(it)
             }
         }
+//        runOnBackGround {
+//            databaseList = fetchDataFromDatabase()
+//            runOnUiThread {
+//                if (!databaseList.isNullOrEmpty()) {
+//                    val adapter = NewsListAdapter(activity
+//                            ?: return@runOnUiThread, databaseList!!, glide, reqeustArgument
+//                            ?: return@runOnUiThread)
+//                    fragmentMainRecyclerview.adapter = adapter
+//
+//                }
+//            }
+//        }
     }
 
-    private suspend fun getNewsListAsync(){
-        val newsList = EHeritageApiRetrofitServiceCreator.EhritageService.getNewsList(pageNumber++).await()
-        val adapter = NewsListAdapter(requireActivity(), newsList, glide, reqeustArgument?.detailApi ?: return)
-        runOnUiThread {
-            onPostLoad()
-            fragmentMainRecyclerview.adapter = adapter
-        }
-    }
 
     private fun fetchDataFromDatabase(): List<NewsListResponse>? {
         val data = arrayListOf<NewsListResponse>()
@@ -102,23 +78,23 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
         return data
     }
 
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        super.onTaskReturned(api, action, response)
-        when (api.getRequestApi()) {
-            reqeustArgument?.reqeustApi -> {
-                val data = convertAndProcessData(response)
-                if (fragmentMainRecyclerview.adapter == null || api.getRequestBean().getPathParamerater()[0] == "2") {
-                    val adapter = NewsListAdapter(activity
-                            ?: return, data, glide, reqeustArgument?.detailApi ?: return)
-                    fragmentMainRecyclerview.adapter = adapter
-                    onPostLoad()
-                } else {
-                    val adapter = fragmentMainRecyclerview.adapter as NewsListAdapter
-                    adapter.addNewData(data)
-                }
-            }
-        }
-    }
+//    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
+//        super.onTaskReturned(api, action, response)
+//        when (api.getRequestApi()) {
+//            reqeustArgument?.reqeustApi -> {
+//                val data = convertAndProcessData(response)
+//                if (fragmentMainRecyclerview.adapter == null || api.getRequestBean().getPathParamerater()[0] == "2") {
+//                    val adapter = NewsListAdapter(activity
+//                            ?: return, data, glide, reqeustArgument?.detailApi ?: return)
+//                    fragmentMainRecyclerview.adapter = adapter
+//                    onPostLoad()
+//                } else {
+//                    val adapter = fragmentMainRecyclerview.adapter as NewsListAdapter
+//                    adapter.addNewData(data)
+//                }
+//            }
+//        }
+//    }
 
     private fun convertAndProcessData(response: String): List<NewsListResponse> {
         val data = fromJsonToList(response, NewsListResponse::class.java)
@@ -147,32 +123,6 @@ class NewsListFragment : BaseGlideFragment(), OnPageLoaded {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        val adapter = fragmentMainRecyclerview.adapter
-        if (adapter is NewsListAdapter) {
-            val datacount = adapter.itemCount
-            runOnBackGround {
-                for (i in 0 until datacount) {
-                    val data = adapter.getItem(i)
-                    val dao = EHeritageApplication.newsDetailDatabase.newsListaDao()
-                    if (data.idFromDataBase != null || dao.getCountNumberByLink(data.link) > 0) {
-                        dao.update(NewsList(data))
-                    } else {
-                        val typeanme = reqeustArgument?.newsListDaoName?.typeName ?: continue
-                        dao.insert(NewsList(data, typeanme))
-                    }
-                }
-            }
 
-        }
-    }
-
-    private val onScroller = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp(reqeustArgument?.reqeustApi ?: return, createRequestBean())
-        }
-
-    }
 
 }

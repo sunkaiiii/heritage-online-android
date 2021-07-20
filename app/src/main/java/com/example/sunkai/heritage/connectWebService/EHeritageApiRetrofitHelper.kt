@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 import kotlin.coroutines.resume
@@ -17,6 +18,11 @@ import kotlin.coroutines.suspendCoroutine
 
 const val NewsListUrl = "/api/NewsList/{page}"
 const val NewsDetail = "/api/NewsDetail"
+const val ForumsList = "/api/Forums/ForumsList/{page}"
+const val ForumsDetail = "/api/Forums/GetForumsDetail"
+const val SpecialTopic = "/api/SpecialTopic/GetSpecialTopicList/{page}"
+const val SpecialTopicDetail = "/api/SpecialTopic/GetSpecialTopicDetail"
+
 
 object EHeritageApiRetrofitServiceCreator {
     private const val HOST = "sunkai.xyz"
@@ -41,6 +47,18 @@ interface EHeritageApiRetrofit{
 
     @GET(NewsDetail)
     fun getNewsDetail(@Query("link")link:String):Call<NewsDetail>
+
+    @GET(ForumsList)
+    fun getForumsList(@Path("page") page:Int):Call<List<NewsListResponse>>
+
+    @GET(ForumsDetail)
+    fun getForumsDetail(@Query("link") link:String):Call<NewsDetail>
+
+    @GET(SpecialTopic)
+    fun getSpecialTopicList(@Path("page") page:Int):Call<List<NewsListResponse>>
+
+    @GET(SpecialTopicDetail)
+    fun getSpecialTopicDetail(@Query("link")link:String):Call<NewsDetail>
 }
 
 suspend fun <T> Call<T>.await():T{
