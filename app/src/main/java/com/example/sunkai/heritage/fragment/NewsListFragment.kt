@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.NewsListAdapter
 import com.example.sunkai.heritage.entity.NewsListViewModel
@@ -20,32 +21,22 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NewsListFragment : BaseGlideFragment(){
+    lateinit var recycletView:RecyclerView
     var reqeustArgument: MainFragment.NewsPages? = null
     private val viewModel by lazy{ViewModelProvider(this).get(NewsListViewModel::class.java)}
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.news_list_framgent, container, false)
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        loadInformation()
-    }
-
-
-
-
-    private fun loadInformation() {
+        val view = inflater.inflate(R.layout.news_list_framgent, container, false)
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
-        val adapter = NewsListAdapter(glide, reqeustArgument ?: return)
-        fragmentMainRecyclerview.adapter = adapter
+        recycletView = view.findViewById(R.id.fragmentMainRecyclerview)
+        val adapter = NewsListAdapter(glide, reqeustArgument ?: return null)
+        recycletView.adapter = adapter
         lifecycleScope.launch {
-            viewModel.getNewsListPagingData(reqeustArgument?.reqeustApi?:return@launch).collect {
+            viewModel.getNewsListPagingData(reqeustArgument?.reqeustApi ?: return@launch).collect {
                 adapter.submitData(it)
             }
         }
+        return view
     }
-
-
 }

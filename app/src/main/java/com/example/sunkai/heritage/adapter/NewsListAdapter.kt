@@ -68,6 +68,9 @@ class NewsListAdapter(private val glide: RequestManager, private val requestDeta
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val data = getItem(position) ?:return
         setData(holder, data)
+        holder.itemView.setOnClickListener {
+            onItemClick(holder.itemView,data)
+        }
     }
 
     private fun setData(holder: Holder, data: NewsListResponse) {
@@ -102,7 +105,7 @@ class NewsListAdapter(private val glide: RequestManager, private val requestDeta
     }
 
 
-    private fun setItemClick(itemView: View, item: NewsListResponse) {
+    private fun onItemClick(itemView: View, item: NewsListResponse) {
         item.isRead = true
         itemView.findViewById<View>(R.id.isReadMark).visibility=View.VISIBLE
         val intent = Intent(itemView.context, NewsDetailActivity::class.java)
