@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
-        android:id="@+id/ProjectDescLoading"
+        android:id="@+id/projectDescLoading"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 app:layout_scrollFlags="scroll">
 
                 <FrameLayout
-                    android:id="@+id/ProjectPageLayout"
+                    android:id="@+id/projectPageLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:visibility="gone"
@@ -65,7 +65,7 @@
                             android:padding="12dp">
 
                             <TextView
-                                android:id="@+id/ProjectPageTitle"
+                                android:id="@+id/projectPageTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerHorizontal="true"
@@ -80,7 +80,7 @@
                                 android:layout_height="16dp"
                                 android:layout_marginEnd="4dp"
                                 android:layout_marginBottom="-12dp"
-                                android:layout_toEndOf="@id/ProjectPageTitle"
+                                android:layout_toEndOf="@id/projectPageTitle"
                                 android:alpha="0.6"
                                 android:src="@drawable/fragment_project_show_content_icon"
                                 android:tint="#ffffff" />
@@ -114,7 +114,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
-            android:id="@+id/ProjectInformationList"
+            android:id="@+id/projectInformationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentTop="true"

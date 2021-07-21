@@ -1,10 +1,7 @@
 package com.example.sunkai.heritage.network
 
 import com.example.sunkai.heritage.entity.MainPageBanner
-import com.example.sunkai.heritage.entity.response.NewsDetail
-import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
-import com.example.sunkai.heritage.entity.response.ProjectListInformation
+import com.example.sunkai.heritage.entity.response.*
 import okhttp3.HttpUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,6 +25,7 @@ const val SpecialTopicDetail = "/api/SpecialTopic/GetSpecialTopicDetail"
 const val PeopleMainPage = "/api/People/GetPeopleMainPage"
 const val PeopleList = "/api/People/PeopleList/{page}"
 const val ProjectList = "/api/HeritageProject/GetHeritageProjectList/{page}"
+const val ProjectBasicInformation = "/api/HeritageProject/GetMainPage"
 
 
 object EHeritageApiRetrofitServiceCreator {
@@ -77,6 +75,9 @@ interface EHeritageApiRetrofit{
 
     @GET(ProjectList)
     fun getProjecrList(@Path("page")page:Int):Call<List<ProjectListInformation>>
+
+    @GET(ProjectBasicInformation)
+    fun getProjectBasicInformation():Call<ProjectBasicInformation>
 }
 
 suspend fun <T> Call<T>.await():T{

@@ -10,35 +10,67 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.SearchProjectActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
-import com.example.sunkai.heritage.network.EHeritageApi
-import com.example.sunkai.heritage.network.RequestHelper
 import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
-import com.example.sunkai.heritage.entity.request.BasePathRequest
+import com.example.sunkai.heritage.entity.ProjectPageViewModel
 import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
-import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.*
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_project.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ProjectFragment : BaseGlideFragment() {
-    private var pageNumber = 1
+
+    private lateinit var fragmentProjectSearchCard:View
+    private lateinit var fragmentProjectAppBarLayout:AppBarLayout
+    private lateinit var projectInformationList:RecyclerView
+    private lateinit var projectDescLoading:View
+    private lateinit var projectPageLayout:View
+    private lateinit var projectPageTitle:TextView
+    private lateinit var projectFragmentShowContent:View
+    private lateinit var fragmentProjectToolbar: Toolbar
+
+    private val projectViewModel by lazy { ViewModelProvider(this).get(ProjectPageViewModel::class.java) }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_project, container, false)
+        val view = inflater.inflate(R.layout.fragment_project, container, false)
+        fragmentProjectSearchCard = view.findViewById(R.id.fragmentProjectSearchCard)
+        fragmentProjectAppBarLayout = view.findViewById(R.id.fragmentProjectAppBarLayout)
+        projectInformationList = view.findViewById(R.id.projectInformationList)
+        projectDescLoading = view.findViewById(R.id.projectDescLoading)
+        projectPageLayout = view.findViewById(R.id.projectPageLayout)
+        projectPageTitle = view.findViewById(R.id.projectPageTitle)
+        projectFragmentShowContent = view.findViewById(R.id.projectFragmentShowContent)
+        fragmentProjectToolbar = view.findViewById(R.id.fragmentProjectToolbar)
+        initview()
+        projectViewModel.projectBasicInformation().observe(viewLifecycleOwner,{
+            fillProjectBasicDataIntoView(it)
+        })
+        val adapter = ProjectInformationAdapter()
+        projectInformationList.adapter=adapter
+        projectInformationList.addOnScrollListener(onScrollDirectionHelper)
+        fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
+            fragmentProjectSearchCard.visibility = if (projectInformationList.y == 0f) View.VISIBLE else View.GONE
+        })
+        lifecycleScope.launch {
+            projectViewModel.projectList().collect {
+                adapter.submitData(it)
+            }
+        }
+
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        startLoadInformation()
-    }
-    private fun startLoadInformation() {
-        requestHttp(EHeritageApi.GetProjectBasicInformation)
-        initview()
-    }
 
     override fun changeSpecificViewTheme() {
         val background = fragmentProjectTopBackgroundRelativeLayout.background
@@ -71,43 +103,6 @@ class ProjectFragment : BaseGlideFragment() {
     }
 
 
-
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        super.onTaskReturned(api, action, response)
-        when (api.getRequestApi()) {
-            EHeritageApi.GetProjectBasicInformation -> {
-                val projectInformation = fromJsonToObject(response, ProjectBasicInformation::class.java)
-                FillProjectBasicDataIntoView(projectInformation)
-                loadProjectList()
-            }
-            EHeritageApi.GetHeritageProjectList -> {
-                val projectListData = fromJsonToList(response, ProjectListInformation::class.java)
-                var adapter = ProjectInformationList.adapter
-                if (adapter == null) {
-                    adapter = ProjectInformationAdapter(requireContext(), projectListData, glide)
-                    ProjectInformationList.adapter = adapter
-                    fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
-                        fragmentProjectSearchCard.visibility = if (ProjectInformationList.y == 0f) View.VISIBLE else View.GONE
-                    })
-                    ProjectInformationList.addOnScrollListener(onScrollDirectionHelper)
-                    ProjectInformationList.addOnScrollListener(onScrollHelper)
-                } else {
-                    if (adapter is ProjectInformationAdapter) {
-                        adapter.addNewData(projectListData)
-                        onScrollHelper.setPageLoaded()
-                    }
-                }
-
-            }
-        }
-    }
-
-    private val onScrollHelper = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: RecyclerView) {
-            loadProjectList()
-        }
-    }
-
     private val onScrollDirectionHelper = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val visibility = if (recyclerView.y == 0f) View.VISIBLE else View.GONE
@@ -125,18 +120,11 @@ class ProjectFragment : BaseGlideFragment() {
         }
     }
 
-    private fun loadProjectList() {
-        requestHttp(EHeritageApi.GetHeritageProjectList, object : BasePathRequest() {
-            override fun getPathParamerater(): List<String> {
-                return listOf(pageNumber++.toString())
-            }
-        })
-    }
 
-    private fun FillProjectBasicDataIntoView(projectInformation: ProjectBasicInformation) {
-        ProjectDescLoading.visibility = View.GONE
-        ProjectPageLayout.visibility = View.VISIBLE
-        ProjectPageTitle.text = projectInformation.title
+    private fun fillProjectBasicDataIntoView(projectInformation: ProjectBasicInformation) {
+        projectDescLoading.visibility = View.GONE
+        projectPageLayout.visibility = View.VISIBLE
+        projectPageTitle.text = projectInformation.title
         projectFragmentShowContent.setOnClickListener {
             val dialog = FragmentProjectContentDialog(context
                     ?: return@setOnClickListener, projectInformation)

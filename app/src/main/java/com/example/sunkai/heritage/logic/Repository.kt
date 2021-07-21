@@ -60,4 +60,10 @@ class Repository @Inject constructor() {
         Result.success(peopleTopBanner)
         emit(peopleTopBanner)
     }
+
+    fun getProjectBasicInformation()=liveData(Dispatchers.IO){
+        val projectInformation = EHeritageApiRetrofitServiceCreator.EhritageService.getProjectBasicInformation().await()
+        Result.success(projectInformation)
+        emit(projectInformation)
+    }
 }

@@ -127,21 +127,21 @@ class SearchProjectActivity : BaseGlideActivity() {
     override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
         super.onTaskReturned(api, action, response)
         when (api.getRequestApi()) {
-            EHeritageApi.SearchProject -> {
-                val searchResult = fromJsonToList(response, ProjectListInformation::class.java)
-                var adapter = searchRecyclerview.adapter
-                if (adapter == null) {
-                    loadingBackground.visibility = View.GONE
-                    adapter = ProjectInformationAdapter(this, searchResult, glide)
-                    searchRecyclerview.adapter = adapter
-                    searchRecyclerview.addOnScrollListener(onScrollHelper)
-                } else {
-                    if (adapter is ProjectInformationAdapter) {
-                        adapter.addNewData(searchResult)
-                        onScrollHelper.setPageLoaded()
-                    }
-                }
-            }
+//            EHeritageApi.SearchProject -> {
+//                val searchResult = fromJsonToList(response, ProjectListInformation::class.java)
+//                var adapter = searchRecyclerview.adapter
+//                if (adapter == null) {
+//                    loadingBackground.visibility = View.GONE
+//                    adapter = ProjectInformationAdapter(this, searchResult, glide)
+//                    searchRecyclerview.adapter = adapter
+//                    searchRecyclerview.addOnScrollListener(onScrollHelper)
+//                } else {
+//                    if (adapter is ProjectInformationAdapter) {
+//                        adapter.addNewData(searchResult)
+//                        onScrollHelper.setPageLoaded()
+//                    }
+//                }
+//            }
             EHeritageApi.GetSearchCategory -> {
                 loadingBackground.visibility = View.GONE
                 val searchCategoryResponse = fromJsonToObject(response, SearchCategoryResponse::class.java)

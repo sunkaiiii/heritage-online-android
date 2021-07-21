@@ -1,20 +1,38 @@
 package com.example.sunkai.heritage.adapter
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.ProjectDetailActivity
-import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.value.DATA
 
-class ProjectInformationAdapter(context: Context, data: List<ProjectListInformation>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<ProjectInformationAdapter.Holder, ProjectListInformation>(context, data, glide) {
+class ProjectInformationAdapter : PagingDataAdapter<ProjectListInformation,ProjectInformationAdapter.Holder>(
+    COMARATOR) {
+    companion object{
+        private val COMARATOR = object: DiffUtil.ItemCallback<ProjectListInformation>(){
+            override fun areItemsTheSame(
+                oldItem: ProjectListInformation,
+                newItem: ProjectListInformation
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: ProjectListInformation,
+                newItem: ProjectListInformation
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
+    }
+
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val number:TextView=view.findViewById(R.id.project_number)
         val title: TextView = view.findViewById(R.id.project_title)
@@ -24,16 +42,12 @@ class ProjectInformationAdapter(context: Context, data: List<ProjectListInformat
         val time:TextView=view.findViewById(R.id.project_time)
     }
 
-    override fun addNewData(datas: List<ProjectListInformation>) {
-        val extendedData = this.datas.toMutableList()
-        extendedData.addAll(datas)
-        this.datas = extendedData
-        notifyDataSetChanged()
-    }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        super.onBindViewHolder(holder, position)
-        val data=getItem(position)
+        val data=getItem(position) ?:return
+        holder.itemView.setOnClickListener {
+            onItemClick(it,data)
+        }
         holder.number.text=data.project_num
         holder.title.text=data.title
         holder.category.text=data.cate
@@ -43,13 +57,13 @@ class ProjectInformationAdapter(context: Context, data: List<ProjectListInformat
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_project_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_project_list_item, parent, false)
         return Holder(view)
     }
 
-    override fun setItemClick(itemView: View, item: ProjectListInformation) {
-        val intent=Intent(context,ProjectDetailActivity::class.java)
+    private fun onItemClick(itemView: View, item: ProjectListInformation) {
+        val intent=Intent(itemView.context,ProjectDetailActivity::class.java)
         intent.putExtra(DATA,item.link)
-        context.startActivity(intent)
+        itemView.context.startActivity(intent)
     }
 }
