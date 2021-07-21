@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.NewsDetail
@@ -12,7 +12,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
 import kotlin.coroutines.resume

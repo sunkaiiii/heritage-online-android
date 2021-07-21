@@ -10,7 +10,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.NewsDetailActivity
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
+import com.example.sunkai.heritage.network.EHeritageApi
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.views.tools.RectangleImageView

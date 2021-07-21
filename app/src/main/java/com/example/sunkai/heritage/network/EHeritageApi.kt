@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 import java.io.Serializable

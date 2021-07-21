@@ -1,8 +1,7 @@
 package com.example.sunkai.heritage.logic
 
 import androidx.paging.*
-import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.connectWebService.await
+import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import retrofit2.Call
 import java.lang.Exception

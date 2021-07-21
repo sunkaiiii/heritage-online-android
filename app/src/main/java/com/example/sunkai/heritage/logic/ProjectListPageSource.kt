@@ -2,8 +2,7 @@ package com.example.sunkai.heritage.logic
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.sunkai.heritage.connectWebService.await
-import com.example.sunkai.heritage.entity.response.NewsListResponse
+import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import retrofit2.Call
 import java.lang.Exception

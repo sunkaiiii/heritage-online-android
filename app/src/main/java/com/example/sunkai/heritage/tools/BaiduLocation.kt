@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.tools
 
 import android.util.Log
-import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.network.BaseSetting
 import com.example.sunkai.heritage.entity.BaiduLoacationResponse
 import com.example.sunkai.heritage.value.BaiduIPLocationUrl
 import com.example.sunkai.heritage.value.ERROR

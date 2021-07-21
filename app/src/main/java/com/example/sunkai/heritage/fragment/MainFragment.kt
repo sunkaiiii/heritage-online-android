@@ -16,16 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_main.*

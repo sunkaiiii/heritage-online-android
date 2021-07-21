@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 import android.text.TextUtils
 import okhttp3.*

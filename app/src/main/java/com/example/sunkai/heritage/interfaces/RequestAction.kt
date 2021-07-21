@@ -1,7 +1,7 @@
 package com.example.sunkai.heritage.interfaces
 
 import android.os.Handler
-import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.network.RequestHelper
 import kotlinx.coroutines.Job
 
 interface RequestAction {

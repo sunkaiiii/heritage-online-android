@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 enum class RequestType {
     GET,

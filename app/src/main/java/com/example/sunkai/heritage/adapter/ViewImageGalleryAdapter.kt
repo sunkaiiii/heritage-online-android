@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.connectWebService.BaseSetting
+import com.example.sunkai.heritage.network.BaseSetting
 import com.example.sunkai.heritage.interfaces.onPhotoViewImageClick
 import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.tools.loadImageFromServerWithoutBackground

@@ -13,9 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.connectWebService.BaseSetting
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.network.BaseSetting
+import com.example.sunkai.heritage.network.EHeritageApi
+import com.example.sunkai.heritage.network.RequestHelper
 import com.example.sunkai.heritage.entity.request.BaseQueryRequest
 import com.example.sunkai.heritage.interfaces.NetworkRequest
 import com.example.sunkai.heritage.interfaces.RequestAction

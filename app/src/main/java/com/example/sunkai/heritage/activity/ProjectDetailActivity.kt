@@ -5,8 +5,8 @@ import android.view.View
 import androidx.core.widget.NestedScrollView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.network.EHeritageApi
+import com.example.sunkai.heritage.network.RequestHelper
 import com.example.sunkai.heritage.entity.request.ProjectDetailRequest
 import com.example.sunkai.heritage.entity.response.ProjectDetailResponse
 import com.example.sunkai.heritage.interfaces.RequestAction

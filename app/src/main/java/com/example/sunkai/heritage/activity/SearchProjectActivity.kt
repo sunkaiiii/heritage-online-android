@@ -9,8 +9,8 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.adapter.ProjectSearchHistoryAdapter
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.RequestHelper
+import com.example.sunkai.heritage.network.EHeritageApi
+import com.example.sunkai.heritage.network.RequestHelper
 import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.dialog.SearchProjectDialog
 import com.example.sunkai.heritage.entity.request.BaseQueryRequest

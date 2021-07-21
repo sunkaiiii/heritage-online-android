@@ -1,9 +1,8 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 import android.util.Log
 import com.example.sunkai.heritage.interfaces.RequestAction
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request

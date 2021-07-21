@@ -1,4 +1,4 @@
-package com.example.sunkai.heritage.connectWebService
+package com.example.sunkai.heritage.network
 
 import com.example.sunkai.heritage.interfaces.IRequest
 import com.example.sunkai.heritage.interfaces.NetworkRequest

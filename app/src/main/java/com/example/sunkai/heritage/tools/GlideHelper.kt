@@ -9,7 +9,7 @@ import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.connectWebService.BaseSetting.Companion.IMAGE_HOST
+import com.example.sunkai.heritage.network.BaseSetting.Companion.IMAGE_HOST
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import java.io.IOException
 import java.text.SimpleDateFormat

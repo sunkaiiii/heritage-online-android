@@ -4,8 +4,8 @@ import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.example.sunkai.heritage.connectWebService.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.connectWebService.await
+import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
+import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import kotlinx.coroutines.Dispatchers
