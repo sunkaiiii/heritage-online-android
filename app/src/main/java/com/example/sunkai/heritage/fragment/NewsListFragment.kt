@@ -32,10 +32,13 @@ class NewsListFragment : BaseGlideFragment(){
         recycletView = view.findViewById(R.id.fragmentMainRecyclerview)
         val adapter = NewsListAdapter(glide, reqeustArgument ?: return null)
         recycletView.adapter = adapter
-        lifecycleScope.launch {
-            viewModel.getNewsListPagingData(reqeustArgument?.reqeustApi ?: return@launch).collect {
-                adapter.submitData(it)
+        viewModel.newsListPagingData.observe(viewLifecycleOwner,{data->
+            lifecycleScope.launch {
+                adapter.submitData(data)
             }
+        })
+        reqeustArgument?.let {
+            viewModel.setListCaller(it.reqeustApi)
         }
         return view
     }

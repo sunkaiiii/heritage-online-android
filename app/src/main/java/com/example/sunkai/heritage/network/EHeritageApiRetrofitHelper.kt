@@ -26,6 +26,8 @@ const val PeopleMainPage = "/api/People/GetPeopleMainPage"
 const val PeopleList = "/api/People/PeopleList/{page}"
 const val ProjectList = "/api/HeritageProject/GetHeritageProjectList/{page}"
 const val ProjectBasicInformation = "/api/HeritageProject/GetMainPage"
+const val ProjectDetail = "/api/HeritageProject/GetHeritageDetail"
+const val InheritanceDetail = "/api/HeritageProject/GetInheritatePeople"
 
 
 object EHeritageApiRetrofitServiceCreator {
@@ -78,6 +80,12 @@ interface EHeritageApiRetrofit{
 
     @GET(ProjectBasicInformation)
     fun getProjectBasicInformation():Call<ProjectBasicInformation>
+
+    @GET(ProjectDetail)
+    fun getProjectDetail(@Query("link")link:String):Call<ProjectDetailResponse>
+
+    @GET(InheritanceDetail)
+    fun getInheritanceDetail(@Query("link")link:String):Call<InheritateDetailResponse>
 }
 
 suspend fun <T> Call<T>.await():T{
