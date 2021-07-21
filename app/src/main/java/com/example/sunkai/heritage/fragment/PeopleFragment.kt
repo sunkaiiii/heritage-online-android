@@ -8,34 +8,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
-import com.example.sunkai.heritage.connectWebService.EHeritageApi
-import com.example.sunkai.heritage.connectWebService.RequestHelper
-import com.example.sunkai.heritage.entity.request.BasePathRequest
-import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
+import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.interfaces.NetworkRequest
-import com.example.sunkai.heritage.interfaces.RequestAction
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
-import com.example.sunkai.heritage.tools.OnSrollHelper
 import com.google.android.material.appbar.AppBarLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_people.*
+import kotlinx.android.synthetic.main.news_list_framgent.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
+@AndroidEntryPoint
 class PeopleFragment : BaseGlideFragment() {
 
-    private var pageNumber = 1
-
-    private val scrollHelper = object : OnSrollHelper() {
-        override fun loadMoreData(recyclerView: RecyclerView) {
-            requestHttp(EHeritageApi.GetPeopleList, createRequestBean())
-        }
-
-    }
+    private val peopleViewModel by lazy { ViewModelProvider(this).get(PeoplePageViewModel::class.java) }
 
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -46,13 +38,6 @@ class PeopleFragment : BaseGlideFragment() {
         }
     }
 
-    private fun createRequestBean(): NetworkRequest {
-        return object : BasePathRequest() {
-            override fun getPathParamerater(): List<String> {
-                return listOf(pageNumber++.toString())
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_people, container, false)
@@ -67,8 +52,6 @@ class PeopleFragment : BaseGlideFragment() {
                 fragmentPeopleCollapsingToolbarLayout.layoutParams = layoutparams
             }
         })
-        peopleLoadingProgressBar.visibility = View.GONE
-        peopleMainPage.visibility = View.VISIBLE
 
         fragmentPeopleAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             val scrollRange = fragmentPeopleAppBarLayout.totalScrollRange
@@ -79,55 +62,33 @@ class PeopleFragment : BaseGlideFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        startLoadInformation()
-    }
-
-
-    fun startLoadInformation() {
-        requestHttp(EHeritageApi.GetPeopleMainPage)
-        requestHttp(EHeritageApi.GetPeopleList, createRequestBean())
-    }
-
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        super.onTaskReturned(api, action, response)
-        when (api.getRequestApi()) {
-            EHeritageApi.GetPeopleMainPage -> {
-                initviews()
-                val data = fromJsonToObject(response, PeopleMainPageResponse::class.java)
-                val adapter = FragmentPeopleBannerAdapter(context ?: return, data.table, glide)
-                val middleItem = data.table.size * 2000
-                fragmentPeopleViewpager.adapter = adapter
-                fragmentPeopleViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
-                    override fun onPageSelected(position: Int) {
-                        startViewpagerScrollDelay()
-                    }
-                })
-                fragmentPeopleViewpager.currentItem = middleItem
-            }
-            EHeritageApi.GetPeopleList -> {
-                val data = fromJsonToList(response, NewsListResponse::class.java)
-                if (peopleFragmentRecyclerView.adapter == null) {
-                    val adapter = PeopleFragmentListAdapter(context ?: return, data, glide)
-                    peopleFragmentRecyclerView.adapter = adapter
-                    peopleFragmentRecyclerView.addOnScrollListener(scrollHelper)
-                } else {
-                    val adapter = peopleFragmentRecyclerView.adapter as PeopleFragmentListAdapter
-                    adapter.addNewData(data)
+        peopleViewModel.peopleTopBanner().observe(viewLifecycleOwner,{data->
+            initviews()
+            val adapter = FragmentPeopleBannerAdapter(context ?: return@observe, data.table, glide)
+            val middleItem = data.table.size * 2000
+            fragmentPeopleViewpager.adapter = adapter
+            fragmentPeopleViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    startViewpagerScrollDelay()
                 }
-
+            })
+            fragmentPeopleViewpager.currentItem = middleItem
+        })
+        val adapter = PeopleFragmentListAdapter(glide)
+        peopleFragmentRecyclerView.adapter = adapter
+        lifecycleScope.launch {
+            peopleViewModel.peopleList().collect {
+                peopleLoadingProgressBar.visibility = View.GONE
+                peopleMainPage.visibility = View.VISIBLE
+                adapter.submitData(it)
             }
         }
     }
 
-    override fun beforeReuqestStart(request: RequestHelper) {
-        super.beforeReuqestStart(request)
-        when (request.getRequestApi()) {
-            EHeritageApi.GetPeopleMainPage -> {
-                peopleLoadingProgressBar.visibility = View.VISIBLE
-                peopleMainPage.visibility = View.GONE
-            }
-        }
-    }
+
+
+
+
 
     private fun startViewpagerScrollDelay() {
         viewPageScrollHandler.removeMessages(SCROLL)

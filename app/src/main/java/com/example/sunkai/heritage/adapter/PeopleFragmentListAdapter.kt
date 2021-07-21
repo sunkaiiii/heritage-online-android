@@ -1,24 +1,37 @@
 package com.example.sunkai.heritage.adapter
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.NewsDetailActivity
-import com.example.sunkai.heritage.adapter.baseAdapter.BaseLoadMoreRecyclerAdapter
 import com.example.sunkai.heritage.connectWebService.EHeritageApi
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.views.tools.RectangleImageView
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.views.tools.RectangleImageView
 
-class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, glide: RequestManager) : BaseLoadMoreRecyclerAdapter<PeopleFragmentListAdapter.Holder, NewsListResponse>(context, data, glide) {
+class PeopleFragmentListAdapter(private val glide: RequestManager) : PagingDataAdapter<NewsListResponse,PeopleFragmentListAdapter.Holder>(
+    COMPARATOR) {
+    companion object{
+        private val COMPARATOR = object : DiffUtil.ItemCallback<NewsListResponse>() {
+            override fun areItemsTheSame(oldItem: NewsListResponse, newItem: NewsListResponse): Boolean {
+                return oldItem.link == newItem.link
+            }
+
+            override fun areContentsTheSame(oldItem: NewsListResponse, newItem: NewsListResponse): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val peopleContent: View
         val peopleImageLayout: View
@@ -37,21 +50,17 @@ class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, 
         }
     }
 
-    override fun addNewData(datas: List<NewsListResponse>) {
-        val extendData = this.datas.toMutableList()
-        extendData.addAll(datas)
-        this.datas = extendData
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_people_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_people_list_item, parent, false)
         return Holder(view)
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        super.onBindViewHolder(holder, position)
-        val data = datas[position]
+        val data = getItem(position) ?:return
+        holder.itemView.setOnClickListener {
+            onItemClick(it,data)
+        }
         if (data.img != null) {
             val imgUrl = data.compressImg ?: data.img
             holder.peopleContent.visibility = View.GONE
@@ -66,10 +75,10 @@ class PeopleFragmentListAdapter(context: Context, data: List<NewsListResponse>, 
         }
     }
 
-    override fun setItemClick(itemView: View, item: NewsListResponse) {
-        val intent = Intent(context, NewsDetailActivity::class.java)
+    fun onItemClick(itemView: View, item: NewsListResponse) {
+        val intent = Intent(itemView.context, NewsDetailActivity::class.java)
         intent.putExtra(DATA, item.link)
         intent.putExtra(API, EHeritageApi.GetPeopleDetail)
-        context.startActivity(intent)
+        itemView.context.startActivity(intent)
     }
 }

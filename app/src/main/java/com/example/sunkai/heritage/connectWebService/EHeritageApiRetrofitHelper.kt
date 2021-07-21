@@ -3,6 +3,8 @@ package com.example.sunkai.heritage.connectWebService
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
+import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
+import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import okhttp3.HttpUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,6 +26,9 @@ const val ForumsList = "/api/Forums/ForumsList/{page}"
 const val ForumsDetail = "/api/Forums/GetForumsDetail"
 const val SpecialTopic = "/api/SpecialTopic/GetSpecialTopicList/{page}"
 const val SpecialTopicDetail = "/api/SpecialTopic/GetSpecialTopicDetail"
+const val PeopleMainPage = "/api/People/GetPeopleMainPage"
+const val PeopleList = "/api/People/PeopleList/{page}"
+const val ProjectList = "/api/HeritageProject/GetHeritageProjectList/{page}"
 
 
 object EHeritageApiRetrofitServiceCreator {
@@ -64,6 +69,15 @@ interface EHeritageApiRetrofit{
 
     @GET(SpecialTopicDetail)
     fun getSpecialTopicDetail(@Query("link")link:String):Call<NewsDetail>
+
+    @GET(PeopleMainPage)
+    fun getPeopleTopBanner():Call<PeopleMainPageResponse>
+
+    @GET(PeopleList)
+    fun getPeopleList(@Path("page")page:Int):Call<List<NewsListResponse>>
+
+    @GET(ProjectList)
+    fun getProjecrList(@Path("page")page:Int):Call<List<ProjectListInformation>>
 }
 
 suspend fun <T> Call<T>.await():T{
