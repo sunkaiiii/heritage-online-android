@@ -16,11 +16,7 @@ import kotlin.reflect.KFunction1
 class NewsListViewModel @Inject constructor(val repository: Repository) : ViewModel() {
     private val listCaller=MutableLiveData<KFunction1<Int, Call<List<NewsListResponse>>>>()
     val newsListPagingData = Transformations.switchMap(listCaller){listCaller->
-        liveData{
-            val news = repository.fetchNewsListPageData(listCaller).cachedIn(viewModelScope).asLiveData(Dispatchers.Main)
-            emitSource(news)
-        }
-
+        repository.fetchNewsListPageData(listCaller).cachedIn(viewModelScope).asLiveData(Dispatchers.Main)
     }
    fun setListCaller(listCaller:KFunction1<Int, Call<List<NewsListResponse>>>){
        this.listCaller.value=listCaller

@@ -77,10 +77,10 @@ class PeopleFragment : BaseGlideFragment() {
         })
         val adapter = PeopleFragmentListAdapter(glide)
         peopleFragmentRecyclerView.adapter = adapter
-        lifecycleScope.launch {
-            peopleViewModel.peopleList().collect {
-                peopleLoadingProgressBar.visibility = View.GONE
-                peopleMainPage.visibility = View.VISIBLE
+        peopleViewModel.peopleList.observe(viewLifecycleOwner) {
+            peopleLoadingProgressBar.visibility = View.GONE
+            peopleMainPage.visibility = View.VISIBLE
+            lifecycleScope.launch {
                 adapter.submitData(it)
             }
         }

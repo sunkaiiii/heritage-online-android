@@ -49,6 +49,9 @@ class MainFragment : BaseGlideFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        viewModel.banner.observe(viewLifecycleOwner,{
+            setMainPageSlideAdapter(it)
+        })
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -59,9 +62,6 @@ class MainFragment : BaseGlideFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val manager = activity?.supportFragmentManager ?: return
-        viewModel.banner.observe(viewLifecycleOwner,{
-            setMainPageSlideAdapter(it)
-        })
         setViewPager(manager)
         menuImage.setOnClickListener {
             onMenuToggleClicked?.onClick(it)

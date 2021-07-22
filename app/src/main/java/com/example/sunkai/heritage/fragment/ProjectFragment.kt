@@ -62,11 +62,11 @@ class ProjectFragment : BaseGlideFragment() {
         fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
             fragmentProjectSearchCard.visibility = if (projectInformationList.y == 0f) View.VISIBLE else View.GONE
         })
-        lifecycleScope.launch {
-            projectViewModel.projectList().collect {
+        projectViewModel.projectList.observe(viewLifecycleOwner,{
+            lifecycleScope.launch {
                 adapter.submitData(it)
             }
-        }
+        })
 
         return view
     }

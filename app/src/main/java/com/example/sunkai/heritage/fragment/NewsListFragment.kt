@@ -38,7 +38,10 @@ class NewsListFragment : BaseGlideFragment(){
             }
         })
         reqeustArgument?.let {
-            viewModel.setListCaller(it.reqeustApi)
+            view.post {
+                viewModel.setListCaller(it.reqeustApi)
+            }
+
         }
         return view
     }

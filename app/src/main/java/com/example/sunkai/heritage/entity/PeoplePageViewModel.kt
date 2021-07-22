@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PeoplePageViewModel @Inject constructor(val repository: Repository) : ViewModel() {
-    fun peopleList() = repository.fetchPeopleListPageData().cachedIn(viewModelScope)
+    val peopleList = repository.fetchPeopleListPageData().cachedIn(viewModelScope).asLiveData(Dispatchers.Main)
 
     val peopleTopBanner = repository.getPeopleTopBanner()
 }
