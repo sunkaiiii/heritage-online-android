@@ -3,6 +3,8 @@ package com.example.sunkai.heritage.network
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.*
 import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,9 +36,12 @@ object EHeritageApiRetrofitServiceCreator {
     private const val HOST = "sunkai.xyz"
     private const val SCHEME = "https"
     private const val PORT = 5001
+    private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+    private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
     private val httpUrl = HttpUrl.Builder().scheme(SCHEME).host(HOST).port(PORT).build()
     private val retrofit = Retrofit.Builder()
         .baseUrl(httpUrl)
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
