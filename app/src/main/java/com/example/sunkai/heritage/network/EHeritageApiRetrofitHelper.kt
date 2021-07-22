@@ -26,6 +26,7 @@ const val SpecialTopic = "/api/SpecialTopic/GetSpecialTopicList/{page}"
 const val SpecialTopicDetail = "/api/SpecialTopic/GetSpecialTopicDetail"
 const val PeopleMainPage = "/api/People/GetPeopleMainPage"
 const val PeopleList = "/api/People/PeopleList/{page}"
+const val PeopleDetail = "/api/People/GetPeopleDetail"
 const val ProjectList = "/api/HeritageProject/GetHeritageProjectList/{page}"
 const val ProjectBasicInformation = "/api/HeritageProject/GetMainPage"
 const val ProjectDetail = "/api/HeritageProject/GetHeritageDetail"
@@ -80,6 +81,9 @@ interface EHeritageApiRetrofit{
     @GET(PeopleList)
     fun getPeopleList(@Path("page")page:Int):Call<List<NewsListResponse>>
 
+    @GET(PeopleDetail)
+    fun getPeopleDetail(@Query("link")link:String):Call<NewsDetail>
+
     @GET(ProjectList)
     fun getProjecrList(@Path("page")page:Int):Call<List<ProjectListInformation>>
 
@@ -100,8 +104,6 @@ suspend fun <T> Call<T>.await():T{
                 val body = response.body()
                 if(body!=null){
                     continuation.resume(body)
-                }else{
-                    continuation.resumeWithException(RuntimeException("response body is null"))
                 }
             }
 

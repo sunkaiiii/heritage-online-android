@@ -9,5 +9,19 @@
         android:id="@+id/peopleFragment"
         android:name="com.example.sunkai.heritage.fragment.PeopleFragment"
         android:label="PeopleFragment"
-        tools:layout="@layout/fragment_people"/>
+        tools:layout="@layout/fragment_people">
+        <action
+            android:id="@+id/action_people_list_to_detail"
+            app:destination="@+id/peopleDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/peopleDetail"
+        android:name="com.example.sunkai.heritage.fragment.PeopleDetailFragment"
+        android:label="PeopleDetail"
+        tools:layout="@layout/activity_news_detail">
+        <argument
+            android:name="data"
+            app:argType="string" />
+    </fragment>
 </navigation>

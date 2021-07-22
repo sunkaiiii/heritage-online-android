@@ -37,9 +37,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 @AndroidEntryPoint
 class MainActivity : BaseGlideActivity() {
 
-    private val viewList: ArrayList<Fragment> = ArrayList()
-    private val handler = Handler(Looper.getMainLooper())
-    private val PROCESS_EXIT = -23123
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -94,73 +91,8 @@ class MainActivity : BaseGlideActivity() {
             activityMainDrawerLayout.closeDrawer(GravityCompat.START)
             return
         }
-        if (handler.hasMessages(PROCESS_EXIT)) {
-            return super.onBackPressed()
-        }
-        handler.sendEmptyMessageDelayed(PROCESS_EXIT, 1000)
-        toast(R.string.exit_info)
-        return
+        super.onBackPressed()
     }
-
-//    private class adapter(val viewList: ArrayList<Fragment>, manager: FragmentManager) : FragmentPagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-//        override fun getItem(position: Int): Fragment {
-//            return viewList[position]
-//        }
-//
-//        override fun getCount(): Int {
-//            return viewList.size
-//        }
-//
-//        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-//
-//        }
-//    }
-
-//    private val onPageChangeListener = object : ViewPager.OnPageChangeListener {
-//        override fun onPageScrollStateChanged(state: Int) {
-//        }
-//
-//        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-//        }
-//
-//        override fun onPageSelected(position: Int) {
-//            val themeColor = getThemeColor()
-//            val midGrey = ContextCompat.getColor(this@MainActivity, R.color.midGrey)
-//            val colors = arrayOf(themeColor, midGrey).toIntArray()
-//            val states = arrayOf(arrayOf(android.R.attr.state_checked).toIntArray(), arrayOf(-android.R.attr.state_checked).toIntArray())
-//            val colorStateList = ColorStateList(states, colors)
-//            bottomNavigationButton.itemTextColor = colorStateList
-//            bottomNavigationButton.itemIconTintList = colorStateList
-//            if (Build.VERSION.SDK_INT >= 21) {
-//                window.navigationBarColor = themeColor
-//                val adapter = activityMainViewpager.adapter
-//                if (adapter is adapter) {
-//                    val fragment = adapter.getItem(position)
-//                    if (fragment is BaseLazyLoadFragment) {
-//                        fragment.lazyLoad()
-//                    }
-//                }
-//                bottomNavigationButton.selectedItemId = when (position) {
-//                    0 -> R.id.main_layout
-//                    1 -> R.id.folk_layout
-//                    2 -> R.id.project_layout
-//                    else -> R.id.main_layout
-//                }
-//            }
-//        }
-//
-//    }
-
-
-//    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-//        activityMainViewpager.currentItem = when (item.itemId) {
-//            R.id.main_layout -> 0
-//            R.id.folk_layout -> 1
-//            R.id.project_layout -> 2
-//            else -> 0
-//        }
-//        true
-//    }
 
     private fun navigateToAboutUsPage() {
         val intent = Intent(this, AboutUSActivity::class.java)

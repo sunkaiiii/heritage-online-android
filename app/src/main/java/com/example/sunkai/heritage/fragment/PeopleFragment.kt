@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,16 +10,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ProgressBar
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
+import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.network.EHeritageApi
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
+import com.example.sunkai.heritage.value.API
+import com.example.sunkai.heritage.value.DATA
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,6 +92,13 @@ class PeopleFragment : BaseGlideFragment() {
                 adapter.submitData(it)
             }
         }
+        adapter.setOnItemClickListener(object : PeopleFragmentListAdapter.PeopleClickListner {
+            override fun onItemClick(itemView: View, item: NewsListResponse) {
+                val bundle = bundleOf(DATA to item.link)
+                findNavController().navigate(R.id.action_people_list_to_detail,bundle)
+            }
+
+        })
         return view
     }
 
