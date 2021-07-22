@@ -5,12 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.sunkai.heritage.activity.ProjectDetailActivity">
+    tools:context="com.example.sunkai.heritage.fragment.ProjectDetailFragment">
+    <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
+        android:id="@+id/projectDetailProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_gravity="center" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/projectDetailScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:scrollbars="none">
 
         <LinearLayout

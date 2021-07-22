@@ -42,9 +42,6 @@
         <activity android:name=".activity.AboutUSActivity" />
         <activity android:name=".activity.NewsDetailActivity"  />
         <activity
-            android:name=".activity.ProjectDetailActivity"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity
             android:name=".activity.ViewImageActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />
     </application>

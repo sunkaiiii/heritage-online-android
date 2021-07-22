@@ -1,30 +1,48 @@
-package com.example.sunkai.heritage.activity
+package com.example.sunkai.heritage.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.base.BaseGlideActivity
-import com.example.sunkai.heritage.network.EHeritageApi
-import com.example.sunkai.heritage.network.RequestHelper
-import com.example.sunkai.heritage.entity.request.ProjectDetailRequest
+import com.example.sunkai.heritage.entity.ProjectDetailViewModel
 import com.example.sunkai.heritage.entity.response.ProjectDetailResponse
-import com.example.sunkai.heritage.interfaces.RequestAction
+import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.value.DATA
-import kotlinx.android.synthetic.main.activity_project_detail.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.fragment_project_detail.*
 
-class ProjectDetailActivity : BaseGlideActivity() {
+@AndroidEntryPoint
+class ProjectDetailFragment : BaseGlideFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.loading_layout)
-        loadPageDetail()
+    private val viewModel by lazy { ViewModelProvider(this).get(ProjectDetailViewModel::class.java) }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_project_detail, container, false)
+        viewModel.projectDetail.observe(viewLifecycleOwner, {
+            setDatatoView(it)
+        })
+        arguments?.getString(DATA)?.let { link ->
+            view.post {
+                projectDetailProgressBar.visibility = View.GONE
+                projectDetailScrollView.visibility = View.VISIBLE
+                viewModel.loadProjectDetail(link)
+            }
+        }
+        return view
     }
 
     private var projectDetailToolbarLocationArray = IntArray(2)
     private var projectDetailTitleLocationArray = IntArray(2)
     private fun initView(projectDetail: ProjectDetailResponse) {
-        projectDetailToolbarBackArrow.setOnClickListener { finish() }
+        projectDetailToolbarBackArrow.setOnClickListener { findNavController().popBackStack() }
         projectDetailToolbarTitle.text = projectDetail.title
         projectDetailToolbarTitle.alpha = 0f
         projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
@@ -32,7 +50,8 @@ class ProjectDetailActivity : BaseGlideActivity() {
             projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
             val scrollDy = scrollY - oldScrollY
             //设置toolbar title的透明度
-            var crossY = projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1]
+            var crossY =
+                projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1]
             if (crossY < 0) {
                 crossY = 0
             }
@@ -50,23 +69,8 @@ class ProjectDetailActivity : BaseGlideActivity() {
         }
     }
 
-    private fun loadPageDetail() {
-        val link = intent.getStringExtra(DATA) ?: return
-        requestHttp(ProjectDetailRequest(link), EHeritageApi.GetProjectDetail)
-    }
-
-    override fun onTaskReturned(api: RequestHelper, action: RequestAction, response: String) {
-        super.onTaskReturned(api, action, response)
-        when (api.getRequestApi()) {
-            EHeritageApi.GetProjectDetail -> {
-                val projectDetail = fromJsonToObject(response, ProjectDetailResponse::class.java)
-                setDatatoView(projectDetail)
-            }
-        }
-    }
 
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
-        setContentView(R.layout.activity_project_detail)
         changeWidgeTheme()
         initView(projectDetail)
         projectDetailTitle.text = projectDetail.title

@@ -74,13 +74,13 @@ class Repository @Inject constructor() {
     }
 
     fun getProjectDetail(link:String)=liveData(Dispatchers.IO){
-        val projectDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getProjectDetail(link)
+        val projectDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getProjectDetail(link).await()
         Result.success(projectDetail)
         emit(projectDetail)
     }
 
     fun getInheritanceDetail(link:String) = liveData(Dispatchers.IO){
-        val detail = EHeritageApiRetrofitServiceCreator.EhritageService.getInheritanceDetail(link)
+        val detail = EHeritageApiRetrofitServiceCreator.EhritageService.getInheritanceDetail(link).await()
         Result.success(detail)
         emit(detail)
     }

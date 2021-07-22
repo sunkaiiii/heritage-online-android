@@ -17,6 +17,9 @@ class ProjectDetailViewModel @Inject constructor(val repository: Repository):Vie
     }
 
     fun loadProjectDetail(link:String){
+        if(projectDetailLink.value == link){
+            return
+        }
         projectDetailLink.value = link
     }
 }

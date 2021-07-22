@@ -9,5 +9,22 @@
         android:id="@+id/projectFragment"
         android:name="com.example.sunkai.heritage.fragment.ProjectFragment"
         android:label="ProjectFragment"
-        tools:layout="@layout/fragment_project"/>
+        tools:layout="@layout/fragment_project">
+        <action
+            android:id="@+id/project_list_to_project_detail"
+            app:destination="@+id/projectDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/projectDetail"
+        android:name="com.example.sunkai.heritage.fragment.ProjectDetailFragment"
+        android:label="ProjectDetail"
+        tools:layout="@layout/fragment_project_detail">
+        <argument
+            android:name="data"
+            app:argType="string" />
+        <action
+            android:id="@+id/project_detail_to_project_detail"
+            app:destination="@id/projectDetail"/>
+    </fragment>
 </navigation>

@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.adapter
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +8,9 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.ProjectDetailActivity
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
-import com.example.sunkai.heritage.value.DATA
 
-class ProjectInformationAdapter : PagingDataAdapter<ProjectListInformation,ProjectInformationAdapter.Holder>(
+class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null) : PagingDataAdapter<ProjectListInformation,ProjectInformationAdapter.Holder>(
     COMARATOR) {
     companion object{
         private val COMARATOR = object: DiffUtil.ItemCallback<ProjectListInformation>(){
@@ -46,7 +43,7 @@ class ProjectInformationAdapter : PagingDataAdapter<ProjectListInformation,Proje
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val data=getItem(position) ?:return
         holder.itemView.setOnClickListener {
-            onItemClick(it,data)
+            this.listener?.onItemClick(holder.itemView,data)
         }
         holder.number.text=data.project_num
         holder.title.text=data.title
@@ -61,9 +58,21 @@ class ProjectInformationAdapter : PagingDataAdapter<ProjectListInformation,Proje
         return Holder(view)
     }
 
-    private fun onItemClick(itemView: View, item: ProjectListInformation) {
-        val intent=Intent(itemView.context,ProjectDetailActivity::class.java)
-        intent.putExtra(DATA,item.link)
-        itemView.context.startActivity(intent)
+
+    fun setProjectItemClickListener(action:((View,ProjectListInformation)->Unit)){
+        setProjectItemClickListener(object:ProjectListItemClick{
+            override fun onItemClick(itemView: View, item: ProjectListInformation) {
+                action(itemView,item)
+            }
+
+        })
+    }
+
+    fun setProjectItemClickListener(listener:ProjectListItemClick){
+        this.listener = listener
+    }
+
+    interface ProjectListItemClick{
+        fun onItemClick(itemView: View,item:ProjectListInformation)
     }
 }

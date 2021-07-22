@@ -11,8 +11,10 @@ import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.SearchProjectActivity
@@ -22,6 +24,7 @@ import com.example.sunkai.heritage.entity.ProjectPageViewModel
 import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.*
+import com.example.sunkai.heritage.value.DATA
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_project.*
@@ -31,18 +34,22 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ProjectFragment : BaseGlideFragment() {
 
-    private lateinit var fragmentProjectSearchCard:View
-    private lateinit var fragmentProjectAppBarLayout:AppBarLayout
-    private lateinit var projectInformationList:RecyclerView
-    private lateinit var projectDescLoading:View
-    private lateinit var projectPageLayout:View
-    private lateinit var projectPageTitle:TextView
-    private lateinit var projectFragmentShowContent:View
+    private lateinit var fragmentProjectSearchCard: View
+    private lateinit var fragmentProjectAppBarLayout: AppBarLayout
+    private lateinit var projectInformationList: RecyclerView
+    private lateinit var projectDescLoading: View
+    private lateinit var projectPageLayout: View
+    private lateinit var projectPageTitle: TextView
+    private lateinit var projectFragmentShowContent: View
     private lateinit var fragmentProjectToolbar: Toolbar
 
     private val projectViewModel by lazy { ViewModelProvider(this).get(ProjectPageViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_project, container, false)
         fragmentProjectSearchCard = view.findViewById(R.id.fragmentProjectSearchCard)
         fragmentProjectAppBarLayout = view.findViewById(R.id.fragmentProjectAppBarLayout)
@@ -53,16 +60,23 @@ class ProjectFragment : BaseGlideFragment() {
         projectFragmentShowContent = view.findViewById(R.id.projectFragmentShowContent)
         fragmentProjectToolbar = view.findViewById(R.id.fragmentProjectToolbar)
         initview()
-        projectViewModel.projectBasicInformation.observe(viewLifecycleOwner,{
+        projectViewModel.projectBasicInformation.observe(viewLifecycleOwner, {
             fillProjectBasicDataIntoView(it)
         })
         val adapter = ProjectInformationAdapter()
-        projectInformationList.adapter=adapter
+        adapter.setProjectItemClickListener { _, projectListInformation ->
+            findNavController().navigate(
+                R.id.project_list_to_project_detail,
+                bundleOf(DATA to projectListInformation.link)
+            )
+        }
+        projectInformationList.adapter = adapter
         projectInformationList.addOnScrollListener(onScrollDirectionHelper)
         fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
-            fragmentProjectSearchCard.visibility = if (projectInformationList.y == 0f) View.VISIBLE else View.GONE
+            fragmentProjectSearchCard.visibility =
+                if (projectInformationList.y == 0f) View.VISIBLE else View.GONE
         })
-        projectViewModel.projectList.observe(viewLifecycleOwner,{
+        projectViewModel.projectList.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
@@ -109,14 +123,25 @@ class ProjectFragment : BaseGlideFragment() {
             if (fragmentProjectSearchCard.visibility != visibility) {
                 when (visibility) {
                     View.VISIBLE -> {
-                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_enter))
+                        fragmentProjectSearchCard.startAnimation(
+                            AnimationUtils.loadAnimation(
+                                context,
+                                R.anim.popup_enter
+                            )
+                        )
                     }
                     View.GONE -> {
-                        fragmentProjectSearchCard.startAnimation(AnimationUtils.loadAnimation(context, R.anim.popup_exit))
+                        fragmentProjectSearchCard.startAnimation(
+                            AnimationUtils.loadAnimation(
+                                context,
+                                R.anim.popup_exit
+                            )
+                        )
                     }
                 }
             }
-            fragmentProjectSearchCard.visibility = if (recyclerView.y == 0f) View.VISIBLE else View.GONE
+            fragmentProjectSearchCard.visibility =
+                if (recyclerView.y == 0f) View.VISIBLE else View.GONE
         }
     }
 
@@ -126,13 +151,19 @@ class ProjectFragment : BaseGlideFragment() {
         projectPageLayout.visibility = View.VISIBLE
         projectPageTitle.text = projectInformation.title
         projectFragmentShowContent.setOnClickListener {
-            val dialog = FragmentProjectContentDialog(context
-                    ?: return@setOnClickListener, projectInformation)
+            val dialog = FragmentProjectContentDialog(
+                context
+                    ?: return@setOnClickListener, projectInformation
+            )
             dialog.show()
-            dialog.window?.setLayout(Utils.getScreenWidth(), (Utils.getScreenHeight() * 0.7).toInt())
+            dialog.window?.setLayout(
+                Utils.getScreenWidth(),
+                (Utils.getScreenHeight() * 0.7).toInt()
+            )
         }
         projectInformation.numItem.forEach {
-            val itemLayout = LayoutInflater.from(context).inflate(R.layout.fragment_project_item_layout, ProjectDescLayout, false)
+            val itemLayout = LayoutInflater.from(context)
+                .inflate(R.layout.fragment_project_item_layout, ProjectDescLayout, false)
             itemLayout.findViewById<TextView>(R.id.FragmentProjectItemTitle).text = it.desc
             itemLayout.findViewById<TextView>(R.id.FragmentProjectItemContent).text = it.num
             val layoutParams = itemLayout.layoutParams
@@ -143,7 +174,10 @@ class ProjectFragment : BaseGlideFragment() {
             ProjectDescLayout.addView(itemLayout)
         }
 
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.fragment_project_top_background_image)
+        val bitmap = BitmapFactory.decodeResource(
+            resources,
+            R.drawable.fragment_project_top_background_image
+        )
         fragmentProjectTopImage.setImageBitmap(bitmap.toBlurBitmap(context ?: return))
     }
 }

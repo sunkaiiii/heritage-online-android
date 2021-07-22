@@ -1,14 +1,14 @@
 package com.example.sunkai.heritage.views
 
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.ProjectDetailActivity
 import com.example.sunkai.heritage.entity.response.nestedData.RelevantProject
 import com.example.sunkai.heritage.value.DATA
 
@@ -27,9 +27,7 @@ class ProjectDetailRalevantView(context: Context, attr: AttributeSet?) : FrameLa
                 name.text = project.content.first { it.key.contains("名称") }.value
                 province.text = project.content.first { it.key.contains("地区") }.value
                 itemView.setOnClickListener {
-                    val intent = Intent(context, ProjectDetailActivity::class.java)
-                    intent.putExtra(DATA, project.link)
-                    context.startActivity(intent)
+                    findNavController().navigate(R.id.project_detail_to_project_detail, bundleOf(DATA to project.link))
                 }
                 contentView.addView(itemView)
             } catch (e: Exception) {
