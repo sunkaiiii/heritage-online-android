@@ -33,12 +33,12 @@ class PeopleFragment : BaseGlideFragment() {
 
     private val peopleViewModel by lazy { ViewModelProvider(this).get(PeoplePageViewModel::class.java) }
 
-    private lateinit var fragmentPeopleAppBarLayout:AppBarLayout
-    private lateinit var peopleFragmentRecyclerView:RecyclerView
-    private lateinit var fragmentPeopleViewpager:ViewPager
-    private lateinit var fragmentPeopleCollapsingToolbarLayout:CollapsingToolbarLayout
-    private lateinit var peopleLoadingProgressBar:ProgressBar
-    private lateinit var peopleMainPage:View
+    private lateinit var fragmentPeopleAppBarLayout: AppBarLayout
+    private lateinit var peopleFragmentRecyclerView: RecyclerView
+    private lateinit var fragmentPeopleViewpager: ViewPager
+    private lateinit var fragmentPeopleCollapsingToolbarLayout: CollapsingToolbarLayout
+    private lateinit var peopleLoadingProgressBar: ProgressBar
+    private lateinit var peopleMainPage: View
 
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -50,16 +50,21 @@ class PeopleFragment : BaseGlideFragment() {
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_people, container, false)
         fragmentPeopleAppBarLayout = view.findViewById(R.id.fragmentPeopleAppBarLayout)
         peopleFragmentRecyclerView = view.findViewById(R.id.peopleFragmentRecyclerView)
         fragmentPeopleViewpager = view.findViewById(R.id.fragmentPeopleViewpager)
         peopleLoadingProgressBar = view.findViewById(R.id.peopleLoadingProgressBar)
-        fragmentPeopleCollapsingToolbarLayout = view.findViewById(R.id.fragmentPeopleCollapsingToolbarLayout)
+        fragmentPeopleCollapsingToolbarLayout =
+            view.findViewById(R.id.fragmentPeopleCollapsingToolbarLayout)
         peopleMainPage = view.findViewById(R.id.peopleMainPage)
         initviews(view)
-        peopleViewModel.peopleTopBanner().observe(viewLifecycleOwner,{data->
+        peopleViewModel.peopleTopBanner.observe(viewLifecycleOwner, { data ->
             val adapter = FragmentPeopleBannerAdapter(context ?: return@observe, data.table, glide)
             val middleItem = data.table.size * 2000
             fragmentPeopleViewpager.adapter = adapter
@@ -82,8 +87,9 @@ class PeopleFragment : BaseGlideFragment() {
         return view
     }
 
-    private fun initviews(view:View) {
-        view.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+    private fun initviews(view: View) {
+        view.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 view.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 val layoutparams = fragmentPeopleCollapsingToolbarLayout.layoutParams

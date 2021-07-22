@@ -53,7 +53,7 @@ class ProjectFragment : BaseGlideFragment() {
         projectFragmentShowContent = view.findViewById(R.id.projectFragmentShowContent)
         fragmentProjectToolbar = view.findViewById(R.id.fragmentProjectToolbar)
         initview()
-        projectViewModel.projectBasicInformation().observe(viewLifecycleOwner,{
+        projectViewModel.projectBasicInformation.observe(viewLifecycleOwner,{
             fillProjectBasicDataIntoView(it)
         })
         val adapter = ProjectInformationAdapter()
