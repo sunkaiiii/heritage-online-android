@@ -57,6 +57,18 @@ class Repository @Inject constructor() {
         emit(newsDetail)
     }
 
+    fun getForumsDetail(link:String) = liveData {
+        val forumsDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getForumsDetail(link).await()
+        Result.success(forumsDetail)
+        emit(forumsDetail)
+    }
+
+    fun getSpecialTopicDetail(link:String) = liveData{
+        val specialTopic = EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link)
+        Result.success(specialTopic)
+        emit(specialTopic)
+    }
+
     fun getBanner() = liveData(Dispatchers.IO) {
         val banner = EHeritageApiRetrofitServiceCreator.EhritageService.getBanner().await()
         Result.success(banner)

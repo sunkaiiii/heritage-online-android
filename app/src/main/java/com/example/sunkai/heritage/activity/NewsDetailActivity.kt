@@ -13,6 +13,8 @@ import com.example.sunkai.heritage.entity.NewsDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
 import com.example.sunkai.heritage.entity.response.NewsListResponse
+import com.example.sunkai.heritage.fragment.MainFragment
+import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,11 +43,16 @@ class NewsDetailActivity : BaseGlideActivity() {
             this.link = data
         }
         val link = this.link ?: return
+        val api = intent.getSerializableExtra(API) as MainFragment.NewsPages?
+        if(api == null){
+            finish()
+            return
+        }
 
         newsDetailViewModel.newsDetail.observe(this,{newsDetail->
             setDataToView(newsDetail)
         })
-        newsDetailViewModel.loadNewsDetail(link)
+        newsDetailViewModel.loadNewsDetail(link,api)
     }
 
 
