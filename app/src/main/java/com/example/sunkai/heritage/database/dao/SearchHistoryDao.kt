@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,7 +10,7 @@ import com.example.sunkai.heritage.database.entities.SearchHistory
 @Dao
 interface SearchHistoryDao {
     @Query("SELECT * FROM SearchHistory ORDER BY id DESC LIMIT 200 ")
-    fun getAllSearchHistory():List<SearchHistory>
+    fun getAllSearchHistory():LiveData<List<SearchHistory>>
 
     @Insert
     fun insert(history: SearchHistory)

@@ -1,3 +1,5 @@
 package com.example.sunkai.heritage.entity.response
 
-data class SearchCategoryResponse(val searchCategories:Map<String,String>)
+import java.io.Serializable
+
+data class SearchCategoryResponse(val searchCategories:Map<String,String>):Serializable

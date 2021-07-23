@@ -30,7 +30,7 @@ class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : Base
     }
 
     override fun getLayoutID(): Int {
-        return R.layout.activity_search_advanced_search_dialog_view
+        return R.layout.fragment_search_advanced_search_dialog_view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,14 +39,14 @@ class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : Base
         val searhItemLayout = view.findViewById<LinearLayout>(R.id.advanced_search_item_layout)
         val searchButton = view.findViewById<MaterialButton>(R.id.searchButton)
         addSearchConditionButton.setOnClickListener {
-            val itemView = LayoutInflater.from(context).inflate(R.layout.activity_search_advanced_search_dialog_item, searhItemLayout, false)
+            val itemView = LayoutInflater.from(context).inflate(R.layout.fragment_search_advanced_search_dialog_item, searhItemLayout, false)
             if (itemView is ViewGroup) {
                 forEachAndTintViews(itemView)
             }
             val removeButton = itemView.findViewById<View>(R.id.removeButton)
             val spinner: Spinner = itemView.findViewById(R.id.searchSpinner)
             spinner.adapter = ArrayAdapter(context
-                    ?: return@setOnClickListener, android.R.layout.simple_spinner_dropdown_item, searchKeyList.toList())
+                ?: return@setOnClickListener, android.R.layout.simple_spinner_dropdown_item, searchKeyList.toList())
             var currentSelect = spinner.selectedItem.toString()
             searchKeyList.remove(currentSelect)
             if (searchKeyList.isEmpty()) {
@@ -108,13 +108,22 @@ class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : Base
         this.onSearchButtonListener = listener
     }
 
+    fun setOnSearchButtonClickListener(action:((SearchRequest)->Unit)){
+        setOnSearchButtonClickListener(object:OnSearchButtonClickListener{
+            override fun onButtonClick(searchReqeust: SearchRequest) {
+                action(searchReqeust)
+            }
+
+        })
+    }
+
     private fun loadSpinnerAdapter() {
         spinnerData.forEach {
             val spinner = it
             val list = searchKeyList.toMutableList()
             list.add(0, spinner.selectedItem.toString())
             val adapter = ArrayAdapter(context
-                    ?: return@forEach, android.R.layout.simple_spinner_dropdown_item, list)
+                ?: return@forEach, android.R.layout.simple_spinner_dropdown_item, list)
             spinner.adapter = adapter
         }
     }

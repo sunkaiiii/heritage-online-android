@@ -18,9 +18,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.WebViewActivity" />
         <activity
-            android:name=".activity.SearchProjectActivity"
-            android:theme="@style/AppThemeNoActionBar" />
-        <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|uiMode"
             android:launchMode="singleTask"

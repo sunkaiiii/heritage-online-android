@@ -12,7 +12,7 @@ import com.example.sunkai.heritage.entity.response.InheritateDetailResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_inheritate_detail.*
+import kotlinx.android.synthetic.main.fragment_inheritate_detail.*
 
 @AndroidEntryPoint
 class InheritateDetailFragment : BaseGlideFragment() {

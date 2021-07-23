@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.fragment
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -17,7 +16,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.SearchProjectActivity
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
 import com.example.sunkai.heritage.entity.ProjectPageViewModel
@@ -28,7 +26,6 @@ import com.example.sunkai.heritage.value.DATA
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_project.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -112,8 +109,7 @@ class ProjectFragment : BaseGlideFragment() {
 
 
     private fun navigateToSearchPage() {
-        val intent = Intent(context, SearchProjectActivity::class.java)
-        startActivity(intent)
+        findNavController().navigate(R.id.project_list_to_search_fragment)
     }
 
 

@@ -13,7 +13,29 @@
         <action
             android:id="@+id/project_list_to_project_detail"
             app:destination="@+id/projectDetail" />
+        <action
+            android:id="@+id/project_list_to_search_fragment"
+            app:destination="@id/searchFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.sunkai.heritage.fragment.SearchProjectFragment"
+        android:label="SearchProject"
+        tools:layout="@layout/fragment_search_project">
+        <action
+            android:id="@+id/search_fragment_to_dialog"
+            app:destination="@id/filterSearchQuery" />
+        <action
+            android:id="@+id/searchFragment_to_projectDetail"
+            app:destination="@id/projectDetail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/filterSearchQuery"
+        android:name="com.example.sunkai.heritage.dialog.SearchProjectDialog"
+        android:label="FilterSearch"
+        tools:layout="@layout/fragment_project_content_dialog_layout" />
 
     <fragment
         android:id="@+id/projectDetail"
@@ -25,10 +47,10 @@
             app:argType="string" />
         <action
             android:id="@+id/project_detail_to_project_detail"
-            app:destination="@id/projectDetail"/>
+            app:destination="@id/projectDetail" />
         <action
             android:id="@+id/project_detail_to_inheritate_detail"
-            app:destination="@id/inheritateDetail"/>
+            app:destination="@id/inheritateDetail" />
     </fragment>
 
     <fragment
@@ -38,6 +60,6 @@
         tools:layout="@layout/fragment_inheritate_detail">
         <argument
             android:name="data"
-            app:argType="string"/>
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -11,11 +11,13 @@ import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.baseAdapter.BaseRecyclerAdapter
 import com.example.sunkai.heritage.database.entities.SearchHistory
-import com.example.sunkai.heritage.tools.EHeritageApplication
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
-class ProjectSearchHistoryAdapter(context: Context, data: List<SearchHistory>, glide: RequestManager) : BaseRecyclerAdapter<ProjectSearchHistoryAdapter.Holder, SearchHistory>(context, data, glide) {
+class ProjectSearchHistoryAdapter(
+    context: Context,
+    data: List<SearchHistory>,
+    glide: RequestManager,
+    private var projectSearchItemClickListener: OnProjectSearchItemClickListener? = null
+) : BaseRecyclerAdapter<ProjectSearchHistoryAdapter.Holder, SearchHistory>(context, data, glide) {
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val clearIcon: ImageView
         val searchHistoryTextView: TextView
@@ -27,7 +29,10 @@ class ProjectSearchHistoryAdapter(context: Context, data: List<SearchHistory>, g
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(context).inflate(R.layout.activity_search_history_item_layout, parent, false))
+        return Holder(
+            LayoutInflater.from(context)
+                .inflate(R.layout.fragment_search_history_item_layout, parent, false)
+        )
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
@@ -35,12 +40,21 @@ class ProjectSearchHistoryAdapter(context: Context, data: List<SearchHistory>, g
         val data = getItem(position)
         holder.searchHistoryTextView.text = data.title
         holder.clearIcon.setOnClickListener {
-            GlobalScope.launch {
-                EHeritageApplication.newsDetailDatabase.searchHistoryDao().delete(data)
-            }
-            datas.remove(data)
-            notifyDataSetChanged()
+            projectSearchItemClickListener?.onDelete(it, data)
         }
+    }
+
+    fun setOnProjectSearchItemClickListener(action: ((View, SearchHistory) -> Unit)) {
+        this.projectSearchItemClickListener = object : OnProjectSearchItemClickListener {
+            override fun onDelete(itemView: View, searchHistory: SearchHistory) {
+                action(itemView, searchHistory)
+            }
+
+        }
+    }
+
+    interface OnProjectSearchItemClickListener {
+        fun onDelete(itemView: View, searchHistory: SearchHistory)
     }
 
 }
