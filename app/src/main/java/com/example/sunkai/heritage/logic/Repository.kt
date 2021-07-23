@@ -1,17 +1,19 @@
 package com.example.sunkai.heritage.logic
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.sunkai.heritage.database.entities.NewsDetailContent
+import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
 import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.entity.request.SearchRequest
-import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.network.await
+import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
+import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
+import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.tools.EHeritageApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -51,22 +53,86 @@ class Repository @Inject constructor() {
 
 
     fun getNewsDetail(link: String) = liveData(Dispatchers.IO) {
-        val newsDetail =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getNewsDetail(link).await()
-        Result.success(newsDetail)
-        emit(newsDetail)
+        val content =
+            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+        val detail = if (content != null) {
+            NewsDetail(content)
+        } else {
+            val newsDetail =
+                EHeritageApiRetrofitServiceCreator.EhritageService.getNewsDetail(link).await()
+            saveIntoDatabase(newsDetail)
+            newsDetail
+        }
+        Result.success(detail)
+        emit(detail)
     }
 
-    fun getForumsDetail(link:String) = liveData {
-        val forumsDetail = EHeritageApiRetrofitServiceCreator.EhritageService.getForumsDetail(link).await()
-        Result.success(forumsDetail)
-        emit(forumsDetail)
+    private fun saveIntoDatabase(data: NewsDetail) {
+        GlobalScope.launch {
+            val database = EHeritageApplication.newsDetailDatabase
+            val newsDetailContentList = arrayListOf<NewsDetailContent>()
+            val newsRelevantNews = arrayListOf<NewsDetailRelevantContent>()
+            data.content.forEach {
+                newsDetailContentList.add(
+                    NewsDetailContent(
+                        null,
+                        it.type,
+                        it.content,
+                        it.compressImg,
+                        data.link
+                    )
+                )
+            }
+            data.relativeNews.forEach {
+                newsRelevantNews.add(
+                    NewsDetailRelevantContent(
+                        null,
+                        it.link,
+                        it.title,
+                        it.date,
+                        data.link
+                    )
+                )
+            }
+            val dao = database.newsDetailDao()
+            val contentdao = database.newsDetailContentDao()
+            val relevantNewsDat = database.newsDetailRelevantNewsDao()
+            dao.insert(com.example.sunkai.heritage.database.entities.NewsDetail(data))
+            contentdao.insertAll(newsDetailContentList)
+            relevantNewsDat.insertAll(newsRelevantNews)
+        }
     }
 
-    fun getSpecialTopicDetail(link:String) = liveData{
-        val specialTopic = EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link).await()
-        Result.success(specialTopic)
-        emit(specialTopic)
+    fun getForumsDetail(link: String) = liveData(Dispatchers.IO) {
+        val content =
+            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+        val detail = if (content != null) {
+            NewsDetail(content)
+        } else {
+            val forumsDetail =
+                EHeritageApiRetrofitServiceCreator.EhritageService.getForumsDetail(link).await()
+            saveIntoDatabase(forumsDetail)
+            forumsDetail
+        }
+
+        Result.success(detail)
+        emit(detail)
+    }
+
+    fun getSpecialTopicDetail(link: String) = liveData(Dispatchers.IO) {
+        val content =
+            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+        val detail = if (content != null) {
+            NewsDetail(content)
+        } else {
+            val specialTopic =
+                EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link)
+                    .await()
+            saveIntoDatabase(specialTopic)
+            specialTopic
+        }
+        Result.success(detail)
+        emit(detail)
     }
 
     fun getBanner() = liveData(Dispatchers.IO) {
@@ -111,13 +177,10 @@ class Repository @Inject constructor() {
     }
 
     fun getSearchCategory() = liveData(Dispatchers.IO) {
-//        val category = EHeritageApiRetrofitServiceCreator.EhritageService.getSearchCategory().await()
-//        Result.success(category)
-//        emit(category)
-        Thread.sleep(800)
-        val response = SearchCategoryResponse(mapOf(Pair("1","1"),Pair("2","2")))
-        Result.success(response)
-        emit(response)
+        val category =
+            EHeritageApiRetrofitServiceCreator.EhritageService.getSearchCategory().await()
+        Result.success(category)
+        emit(category)
     }
 
     fun getSearchResult(request: SearchRequest): Flow<PagingData<ProjectListInformation>> {
@@ -127,15 +190,16 @@ class Repository @Inject constructor() {
         ).flow
     }
 
-    fun getSearchHistory() = EHeritageApplication.newsDetailDatabase.searchHistoryDao().getAllSearchHistory()
+    fun getSearchHistory() =
+        EHeritageApplication.newsDetailDatabase.searchHistoryDao().getAllSearchHistory()
 
-    fun addSearchHistory(searchHistory: SearchHistory){
+    fun addSearchHistory(searchHistory: SearchHistory) {
         GlobalScope.launch {
             EHeritageApplication.newsDetailDatabase.searchHistoryDao().insert(searchHistory)
         }
     }
 
-    fun removeSearchHistory(searchHistory: SearchHistory){
+    fun removeSearchHistory(searchHistory: SearchHistory) {
         GlobalScope.launch {
             EHeritageApplication.newsDetailDatabase.searchHistoryDao().delete(searchHistory)
         }
