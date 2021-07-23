@@ -33,7 +33,7 @@ const val ProjectDetail = "/api/HeritageProject/GetHeritageDetail"
 const val InheritanceDetail = "/api/HeritageProject/GetInheritatePeople"
 const val SearchCategory = "/api/HeritageProject/GetSearchCategories"
 const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
-
+const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
 
 object EHeritageApiRetrofitServiceCreator {
     private const val HOST = "sunkai.xyz"

@@ -1,7 +1,6 @@
 package com.example.sunkai.heritage.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +8,9 @@ import android.widget.TextView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.NewsDetailActivity
-import com.example.sunkai.heritage.network.EHeritageApi
 import com.example.sunkai.heritage.entity.response.PeopleMainPageResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.views.tools.RectangleImageView
-import com.example.sunkai.heritage.value.API
-import com.example.sunkai.heritage.value.DATA
 
 class FragmentPeopleBannerAdapter(
     private val context: Context,

@@ -1,6 +1,6 @@
 package com.example.sunkai.heritage.entity.request
 
-class SearchRequest(var title: String? = null) : BaseQueryRequest() {
+data class SearchRequest(var title: String? = null){
     var num: String? = null
 
     var type: String? = null

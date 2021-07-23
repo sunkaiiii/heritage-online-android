@@ -29,7 +29,7 @@ import com.example.sunkai.heritage.value.DATA
  * 首页新闻的RecyclerView的Adapter
  * Created by sunkai on 2018/2/12.
  */
-class NewsListAdapter(private val glide: RequestManager, private val requestDetailApi: MainFragment.NewsPages) : PagingDataAdapter<NewsListResponse,NewsListAdapter.Holder>(
+class NewsListAdapter(private val glide: RequestManager,private var listner:OnNewsListItemClickListener?=null) : PagingDataAdapter<NewsListResponse,NewsListAdapter.Holder>(
     COMPARATOR) {
     companion object{
         private val COMPARATOR = object : DiffUtil.ItemCallback<NewsListResponse>() {
@@ -108,10 +108,20 @@ class NewsListAdapter(private val glide: RequestManager, private val requestDeta
     private fun onItemClick(itemView: View, item: NewsListResponse) {
         item.isRead = true
         itemView.findViewById<View>(R.id.isReadMark).visibility=View.VISIBLE
-        val intent = Intent(itemView.context, NewsDetailActivity::class.java)
-        intent.putExtra(DATA, item)
-        intent.putExtra(API, requestDetailApi)
-        itemView.context.startActivity(intent)
+        this.listner?.onItemClick(item)
     }
 
+    fun setOnNewsItemClickListener(action:((NewsListResponse)->Unit)){
+        this.listner = object:OnNewsListItemClickListener{
+            override fun onItemClick(newsData: NewsListResponse) {
+                action(newsData)
+            }
+
+        }
+    }
+
+
+    interface OnNewsListItemClickListener{
+        fun onItemClick(newsData:NewsListResponse)
+    }
 }

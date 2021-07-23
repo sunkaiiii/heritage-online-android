@@ -9,13 +9,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
-import com.example.sunkai.heritage.network.RequestHelper
 import com.example.sunkai.heritage.entity.NewsDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
-import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
-import com.example.sunkai.heritage.interfaces.RequestAction
-import com.example.sunkai.heritage.tools.MakeToast.toast
+import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TITLE
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +23,7 @@ class NewsDetailActivity : BaseGlideActivity() {
 
     var link: String? = null
     private val newsDetailViewModel by lazy { ViewModelProvider(this).get(NewsDetailViewModel::class.java) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,11 +79,6 @@ class NewsDetailActivity : BaseGlideActivity() {
 
         })
         bottomNewsDetailRecyclerview.adapter = adapter
-    }
-
-    override fun onRequestError(api: RequestHelper, action: RequestAction, ex: Exception) {
-        super.onRequestError(api, action, ex)
-        toast(getString(R.string.network_error))
     }
 
 }

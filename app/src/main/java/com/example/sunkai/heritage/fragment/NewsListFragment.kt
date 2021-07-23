@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.adapter.NewsListAdapter
 import com.example.sunkai.heritage.entity.NewsListViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.interfaces.OnPageLoaded
 import com.example.sunkai.heritage.tools.EHeritageApplication
+import com.example.sunkai.heritage.value.API
+import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.news_list_framgent.*
 import kotlinx.coroutines.flow.collect
@@ -30,7 +34,13 @@ class NewsListFragment : BaseGlideFragment(){
         val view = inflater.inflate(R.layout.news_list_framgent, container, false)
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as MainFragment.NewsPages
         recycletView = view.findViewById(R.id.fragmentMainRecyclerview)
-        val adapter = NewsListAdapter(glide, reqeustArgument ?: return null)
+        val adapter = NewsListAdapter(glide)
+        adapter.setOnNewsItemClickListener { item ->
+            val intent = Intent(requireContext(), NewsDetailActivity::class.java)
+            intent.putExtra(DATA, item)
+            intent.putExtra(API, reqeustArgument)
+            startActivity(intent)
+        }
         recycletView.adapter = adapter
         viewModel.newsListPagingData.observe(viewLifecycleOwner,{data->
             lifecycleScope.launch {
