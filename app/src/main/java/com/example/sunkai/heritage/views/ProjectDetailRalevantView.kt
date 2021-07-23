@@ -14,14 +14,14 @@ import com.example.sunkai.heritage.value.DATA
 
 class ProjectDetailRalevantView(context: Context, attr: AttributeSet?) : FrameLayout(context, attr) {
     init {
-        LayoutInflater.from(context).inflate(R.layout.activity_project_detail_relative_project_layout, this, true)
+        LayoutInflater.from(context).inflate(R.layout.fragment_project_detail_relative_project_layout, this, true)
     }
 
     fun setData(datas: List<RelevantProject>) {
         val contentView: LinearLayout = findViewById(R.id.projectDetailRelativeInheritate)
         datas.forEach { project ->
             try {
-                val itemView = LayoutInflater.from(context).inflate(R.layout.activity_project_detail_inheritate_layout_item, contentView, false)
+                val itemView = LayoutInflater.from(context).inflate(R.layout.fragment_project_detail_inheritate_layout_item, contentView, false)
                 val name: TextView = itemView.findViewById(R.id.relevant_name)
                 val province: TextView = itemView.findViewById(R.id.relevant_provance)
                 name.text = project.content.first { it.key.contains("名称") }.value

@@ -10,7 +10,7 @@ import com.example.sunkai.heritage.R
 
 class ProjectDetailTopGridView(context: Context, attr: AttributeSet?) : FrameLayout(context, attr) {
     init {
-        LayoutInflater.from(context).inflate(R.layout.activity_project_detail_top_layout, this, true)
+        LayoutInflater.from(context).inflate(R.layout.fragment_project_detail_top_layout, this, true)
     }
 
     fun setData(datas: List<String>) {

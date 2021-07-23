@@ -26,5 +26,18 @@
         <action
             android:id="@+id/project_detail_to_project_detail"
             app:destination="@id/projectDetail"/>
+        <action
+            android:id="@+id/project_detail_to_inheritate_detail"
+            app:destination="@id/inheritateDetail"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/inheritateDetail"
+        android:name="com.example.sunkai.heritage.fragment.InheritateDetailFragment"
+        android:label="InheritateDetail"
+        tools:layout="@layout/fragment_inheritate_detail">
+        <argument
+            android:name="data"
+            app:argType="string"/>
     </fragment>
 </navigation>

@@ -20,7 +20,6 @@
         <activity
             android:name=".activity.SearchProjectActivity"
             android:theme="@style/AppThemeNoActionBar" />
-        <activity android:name=".activity.InheritateDetailActivity" />
         <activity
             android:name=".activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout|uiMode"
