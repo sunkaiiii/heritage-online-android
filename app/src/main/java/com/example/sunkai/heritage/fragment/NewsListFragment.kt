@@ -12,15 +12,10 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.adapter.NewsListAdapter
 import com.example.sunkai.heritage.entity.NewsListViewModel
-import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.interfaces.OnPageLoaded
-import com.example.sunkai.heritage.tools.EHeritageApplication
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.news_list_framgent.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
