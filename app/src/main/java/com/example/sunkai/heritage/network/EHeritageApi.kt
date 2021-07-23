@@ -4,8 +4,6 @@ import com.example.sunkai.heritage.interfaces.MyEHeritageApi
 import java.io.Serializable
 
 enum class EHeritageApi constructor(val _name: String, val _url: String, val _type: RequestType) : MyEHeritageApi, Serializable {
-    SearchProject("searchProject", "/api/HeritageProject/SearchHeritageProject", RequestType.GET),
-    GetSearchCategory("searchCategory","/api/HeritageProject/GetSearchCategories",RequestType.GET),
     GetPeopleDetail("peopleDetail", "/api/People/GetPeopleDetail", RequestType.GET);
 
     override fun getRequestName(): String {

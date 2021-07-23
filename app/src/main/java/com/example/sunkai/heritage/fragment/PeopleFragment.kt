@@ -82,6 +82,8 @@ class PeopleFragment : BaseGlideFragment() {
                 }
             })
             fragmentPeopleViewpager.currentItem = middleItem
+            adapter.setBannerClickListener { _, people -> findNavController().navigate(R.id.action_people_list_to_detail,
+                bundleOf(DATA to people.link)) }
         })
         val adapter = PeopleFragmentListAdapter(glide)
         peopleFragmentRecyclerView.adapter = adapter
@@ -99,6 +101,7 @@ class PeopleFragment : BaseGlideFragment() {
             }
 
         })
+
         return view
     }
 
