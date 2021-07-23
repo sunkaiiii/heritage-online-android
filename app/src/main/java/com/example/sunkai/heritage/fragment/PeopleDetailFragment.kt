@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.fragment
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +16,7 @@ import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_news_detail.*
+import kotlinx.android.synthetic.main.fragment_news_detail.*
 
 @AndroidEntryPoint
 class PeopleDetailFragment:BaseGlideFragment() {
@@ -28,7 +27,7 @@ class PeopleDetailFragment:BaseGlideFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.activity_news_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_news_detail, container, false)
         viewModel.peopleDetail.observe(viewLifecycleOwner,{
             setDataToView(it)
         })

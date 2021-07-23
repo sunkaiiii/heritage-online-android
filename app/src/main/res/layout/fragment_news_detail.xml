@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.sunkai.heritage.activity.NewsDetailActivity">
+    tools:context="com.example.sunkai.heritage.fragment.NewsDetailFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/bottom_news_detail_appbar"

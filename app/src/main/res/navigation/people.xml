@@ -19,7 +19,7 @@
         android:id="@+id/peopleDetail"
         android:name="com.example.sunkai.heritage.fragment.PeopleDetailFragment"
         android:label="PeopleDetail"
-        tools:layout="@layout/activity_news_detail">
+        tools:layout="@layout/fragment_news_detail">
         <argument
             android:name="data"
             app:argType="string" />

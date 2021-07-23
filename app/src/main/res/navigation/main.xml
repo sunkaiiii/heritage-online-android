@@ -9,5 +9,26 @@
         android:id="@+id/mainFragment"
         android:name="com.example.sunkai.heritage.fragment.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/main_fragment_to_news_detail"
+            app:destination="@+id/newsDetail" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsDetail"
+        android:name="com.example.sunkai.heritage.fragment.NewsDetailFragment"
+        android:label="NewsDetail"
+        tools:layout="@layout/fragment_news_detail">
+        <argument
+            android:name="data"
+            app:argType="com.example.sunkai.heritage.entity.response.NewsListResponse"
+             />
+        <argument
+            android:name="api"
+            app:argType="com.example.sunkai.heritage.entity.NewsPages"
+             />
+        <action
+            android:id="@+id/relative_news_to_news_detail"
+            app:destination="@id/newsDetail" />
+    </fragment>
 </navigation>

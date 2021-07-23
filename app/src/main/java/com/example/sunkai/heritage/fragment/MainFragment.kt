@@ -16,19 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
-import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
-import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
-import com.example.sunkai.heritage.entity.response.NewsDetail
-import com.example.sunkai.heritage.entity.response.NewsListResponse
+import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_main.*
-import retrofit2.Call
-import java.io.Serializable
-import kotlin.reflect.KFunction1
 
 
 /**
@@ -40,12 +34,6 @@ class MainFragment : BaseGlideFragment() {
     private val PAGES = arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
     private var onMenuToggleClicked:MenuToggleClickListener? = null
     private val viewModel by lazy { ViewModelProvider(this).get(MainPageViewModel::class.java) }
-
-    enum class NewsPages(val _name: String, val reqeustApi: KFunction1<Int, Call<List<NewsListResponse>>>, val detailApi: KFunction1<String, Call<NewsDetail>>, val newsListDaoName: NewsDatabase.NewsListDaoName) : Serializable {
-        NewsPage("newsPage", EHeritageApiRetrofitServiceCreator.EhritageService::getNewsList, EHeritageApiRetrofitServiceCreator.EhritageService::getNewsDetail,  NewsDatabase.NewsListDaoName.NEWS_LIST),
-        ForumsPage("forumsPage", EHeritageApiRetrofitServiceCreator.EhritageService::getForumsList, EHeritageApiRetrofitServiceCreator.EhritageService::getForumsDetail, NewsDatabase.NewsListDaoName.FORUMS_LIST),
-        SpecialTopicPage("specialTopicPage", EHeritageApiRetrofitServiceCreator.EhritageService::getSpecialTopicList, EHeritageApiRetrofitServiceCreator.EhritageService::getSpecialTopicDetail, NewsDatabase.NewsListDaoName.SPECIAL_TOPIC_LIST),
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

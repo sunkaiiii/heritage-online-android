@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
 import com.example.sunkai.heritage.adapter.SettingListSelectThemeColorAdapter
+import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.tools.MakeToast.toast
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getLightThemeColor
@@ -42,6 +44,7 @@ class MainActivity : BaseGlideActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG,NewsPages::class.java.name)
         setContentView(R.layout.activity_main)
         initViews()
         setIgnoreToolbar(true)

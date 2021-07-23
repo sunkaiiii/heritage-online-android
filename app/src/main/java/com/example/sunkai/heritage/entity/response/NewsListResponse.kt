@@ -28,5 +28,7 @@ data class NewsListResponse(val link: String,
             it.type
     )
 
+    constructor(relativeNews: NewsDetailRelativeNews) : this(relativeNews.link,relativeNews.title,relativeNews.date,"","",null,false,null,null)
+
 
 }

@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.adapter
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +15,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.activity.NewsDetailActivity
 import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.fragment.MainFragment
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.value.API
-import com.example.sunkai.heritage.value.DATA
 
 /**
  * 首页新闻的RecyclerView的Adapter
