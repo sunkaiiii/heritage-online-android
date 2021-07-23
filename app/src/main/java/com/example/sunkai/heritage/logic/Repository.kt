@@ -64,7 +64,7 @@ class Repository @Inject constructor() {
     }
 
     fun getSpecialTopicDetail(link:String) = liveData{
-        val specialTopic = EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link)
+        val specialTopic = EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link).await()
         Result.success(specialTopic)
         emit(specialTopic)
     }

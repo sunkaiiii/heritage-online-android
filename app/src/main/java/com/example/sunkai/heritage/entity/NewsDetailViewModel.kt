@@ -14,10 +14,10 @@ class NewsDetailViewModel @Inject constructor(val repository: Repository) : View
     private val newsDetailLink = MutableLiveData<Pair<String, NewsPages>>()
 
     val newsDetail = Transformations.switchMap(newsDetailLink) { pair ->
-        liveData {
-            val detail = pair.second.detailApi(pair.first).await()
-            Result.success(detail)
-            emit(detail)
+        when(pair.second){
+            NewsPages.NewsPage->repository.getNewsDetail(pair.first)
+            NewsPages.ForumsPage->repository.getForumsDetail(pair.first)
+            NewsPages.SpecialTopicPage->repository.getSpecialTopicDetail(pair.first)
         }
     }
 
