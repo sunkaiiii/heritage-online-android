@@ -5,31 +5,33 @@ import android.os.Bundle
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseGlideActivity
+import com.example.sunkai.heritage.databinding.ActivityWebViewBinding
 import com.example.sunkai.heritage.value.URL
-import kotlinx.android.synthetic.main.activity_web_view.*
 
 class WebViewActivity : BaseGlideActivity() {
 
+    private lateinit var binding:ActivityWebViewBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web_view)
+        binding = ActivityWebViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initWebView()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebView() {
-        webView.loadUrl(intent.getStringExtra(URL) ?: return)
-        webView.webChromeClient = object : WebChromeClient() {
+        binding.webView.loadUrl(intent.getStringExtra(URL) ?: return)
+        binding.webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 if (newProgress < 100) {
-                    webviewProgress.progress = newProgress
+                    binding.webviewProgress.progress = newProgress
                 } else {
-                    webviewProgress.visibility = View.GONE
+                    binding.webviewProgress.visibility = View.GONE
                 }
             }
         }
-        webView.settings.javaScriptEnabled = true
+        binding.webView.settings.javaScriptEnabled = true
     }
 }

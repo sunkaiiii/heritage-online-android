@@ -3,24 +3,27 @@ package com.example.sunkai.heritage.activity
 import android.os.Bundle
 import android.transition.Fade
 import android.view.View
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.base.BaseViewImageActivity
 import com.example.sunkai.heritage.adapter.ViewImageGalleryAdapter
+import com.example.sunkai.heritage.databinding.ActivityViewImageBinding
 import com.example.sunkai.heritage.tools.WindowHelper
 import com.example.sunkai.heritage.value.IMAGE_COMPRESS_URL
 import com.example.sunkai.heritage.value.IMAGE_POSITION
 import com.example.sunkai.heritage.value.IMAGE_URL
-import kotlinx.android.synthetic.main.activity_view_image.*
 
 //用于浏览图片的Activity
 class ViewImageActivity : BaseViewImageActivity() {
 
+    private lateinit var binding:ActivityViewImageBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_image)
+        binding = ActivityViewImageBinding.inflate(layoutInflater)
+        setContentView(binding.rootView)
         setWindowAnimation()
         getImage()
     }
+    
 
     private fun getImage() {
         val imageUrl = intent.getStringArrayExtra(IMAGE_URL)
@@ -34,8 +37,8 @@ class ViewImageActivity : BaseViewImageActivity() {
         val adapter = ViewImageGalleryAdapter(this, imageUrl,compressedUrls, glide)
         adapter.setOnDragListener(this)
         adapter.setOnPhotoViewImageClickListener(this)
-        activityViewImageGallery.adapter = adapter
-        activityViewImageGallery.currentItem = position
+        binding.activityViewImageGallery.adapter = adapter
+        binding.activityViewImageGallery.currentItem = position
     }
 
     override fun onStart() {
@@ -44,7 +47,7 @@ class ViewImageActivity : BaseViewImageActivity() {
     }
 
     override fun getRootView(): View {
-        return rootView
+        return binding.rootView
     }
 
     private fun setWindowAnimation() {

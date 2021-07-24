@@ -30,7 +30,9 @@ android {
     } else {
         throw new GradleException("Could not read version.properties!")
     }
-    viewBinding.enabled = true
+    buildFeatures{
+        viewBinding true
+    }
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
