@@ -1,9 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
 import android.os.*
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
@@ -11,21 +9,20 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.adapter.ProjectSearchHistoryAdapter
 import com.example.sunkai.heritage.database.entities.SearchHistory
+import com.example.sunkai.heritage.databinding.FragmentSearchProjectBinding
 import com.example.sunkai.heritage.dialog.SearchProjectDialog
 import com.example.sunkai.heritage.entity.SearchProjectViewModel
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_search_project.*
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class SearchProjectFragment : BaseGlideFragment() {
+class SearchProjectFragment : BaseViewBindingFragment<FragmentSearchProjectBinding>() {
 
     private val viewModel by lazy { ViewModelProvider(this).get(SearchProjectViewModel::class.java) }
     private val searchHandler = object : Handler(Looper.getMainLooper()) {
@@ -36,36 +33,26 @@ class SearchProjectFragment : BaseGlideFragment() {
             if (msg.what == HISTORY) {
                 this.removeMessages(SEARCH)
             }
-            requestSearch(searchEditext.text?.toString())
+            requestSearch(binding.searchEditext.text?.toString())
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_search_project,container,false)
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViews()
-    }
+    override fun getBindingClass(): Class<FragmentSearchProjectBinding> = FragmentSearchProjectBinding::class.java
 
-    private fun initViews() {
-        searchButton.setOnClickListener { findNavController().popBackStack() }
-        searchEditext.addTextChangedListener {
+    override fun initView() {
+        binding.searchButton.setOnClickListener { findNavController().popBackStack() }
+        binding.searchEditext.addTextChangedListener {
             searchHandler.removeMessages(SEARCH)
             if (it?.isEmpty() == true) {
-                searchClearText.visibility = View.GONE
+                binding.searchClearText.visibility = View.GONE
                 //setHistoryDataToRecyclerView(historyData)
                 return@addTextChangedListener
             }
-            searchClearText.visibility = View.VISIBLE
+            binding.searchClearText.visibility = View.VISIBLE
             searchHandler.sendEmptyMessageDelayed(SEARCH, SEARCH_DELAY)
         }
-        searchEditext.setOnEditorActionListener { v, actionId, _ ->
+        binding.searchEditext.setOnEditorActionListener { v, actionId, _ ->
             searchHandler.removeMessages(SEARCH)
             if (actionId == EditorInfo.IME_ACTION_GO) {
                 if (v.text.isEmpty())
@@ -74,8 +61,8 @@ class SearchProjectFragment : BaseGlideFragment() {
             }
             false
         }
-        searchClearText.setOnClickListener {
-            searchEditext.setText("")
+        binding.searchClearText.setOnClickListener {
+            binding.searchEditext.setText("")
         }
 
         viewModel.searchHistory.observe(viewLifecycleOwner, { historyData ->
@@ -83,7 +70,7 @@ class SearchProjectFragment : BaseGlideFragment() {
         })
 
         viewModel.searchResult.observe(viewLifecycleOwner, { result ->
-            loadingBackground.visibility = View.GONE
+            binding.loadingBackground.visibility = View.GONE
             val adapter = ProjectInformationAdapter()
             adapter.addLoadStateListener {
                 if (it.refresh is LoadState.Error) {
@@ -95,10 +82,10 @@ class SearchProjectFragment : BaseGlideFragment() {
             }
         })
 
-        activitySearchAdvanceButton.setOnClickListener {
-            loadingBackground.visibility = View.VISIBLE
+        binding.activitySearchAdvanceButton.setOnClickListener {
+            binding.loadingBackground.visibility = View.VISIBLE
             viewModel.searchCategory.observe(viewLifecycleOwner, { searchCategory ->
-                loadingBackground.visibility = View.GONE
+                binding.loadingBackground.visibility = View.GONE
                 showSearchDialog(searchCategory)
             })
         }
@@ -110,10 +97,10 @@ class SearchProjectFragment : BaseGlideFragment() {
             viewModel.removeSearchResult(searchHistory)
         }
         adapter.setOnItemClickListener { _, position ->
-            searchEditext.setText(adapter.getItem(position).title ?: "")
+            binding.searchEditext.setText(adapter.getItem(position).title ?: "")
             searchHandler.sendEmptyMessage(HISTORY)
         }
-        searchRecyclerview.adapter = adapter
+        binding.searchRecyclerview.adapter = adapter
     }
 
 
@@ -125,7 +112,7 @@ class SearchProjectFragment : BaseGlideFragment() {
     }
 
     private fun requestSearch(searchReqeust: SearchRequest) {
-        loadingBackground.visibility = View.VISIBLE
+        binding.loadingBackground.visibility = View.VISIBLE
         viewModel.searchProject(searchReqeust)
     }
 
@@ -138,7 +125,7 @@ class SearchProjectFragment : BaseGlideFragment() {
 
     private fun saveSearchHistory() {
         val searchHistory = SearchHistory()
-        searchHistory.title = searchEditext.text.toString()
+        searchHistory.title = binding.searchEditext.text.toString()
         viewModel.addSearchResult(searchHistory)
     }
 

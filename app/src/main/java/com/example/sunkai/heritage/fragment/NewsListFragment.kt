@@ -11,9 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.NewsListAdapter
+import com.example.sunkai.heritage.databinding.NewsListFramgentBinding
 import com.example.sunkai.heritage.entity.NewsListViewModel
 import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,24 +23,19 @@ import kotlinx.coroutines.launch
 import java.io.Serializable
 
 @AndroidEntryPoint
-class NewsListFragment : BaseGlideFragment() {
-    lateinit var recycletView: RecyclerView
+class NewsListFragment : BaseViewBindingFragment<NewsListFramgentBinding>() {
+
     var reqeustArgument: NewsPages? = null
     private val viewModel by lazy { ViewModelProvider(this).get(NewsListViewModel::class.java) }
 
+    override fun getBindingClass() = NewsListFramgentBinding::class.java
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.news_list_framgent, container, false)
+    override fun initView() {
         reqeustArgument = arguments?.getSerializable(MainFragment.PAGE) as NewsPages
 
-        recycletView = view.findViewById(R.id.fragmentMainRecyclerview)
         val adapter = NewsListAdapter(glide)
 
-        recycletView.adapter = adapter
+        binding.fragmentMainRecyclerview.adapter = adapter
         viewModel.newsListPagingData.observe(viewLifecycleOwner, { data ->
             lifecycleScope.launch {
                 adapter.submitData(data)
@@ -54,11 +51,10 @@ class NewsListFragment : BaseGlideFragment() {
                     )
                 )
             }
-            view.post {
+            binding.root.post {
                 viewModel.setListCaller(it.reqeustApi)
             }
 
         }
-        return view
     }
 }

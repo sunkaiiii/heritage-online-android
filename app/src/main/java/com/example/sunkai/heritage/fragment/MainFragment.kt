@@ -21,7 +21,7 @@ import com.example.sunkai.heritage.databinding.FragmentMainBinding
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.entity.NewsPages
-import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -29,26 +29,21 @@ import dagger.hilt.android.AndroidEntryPoint
  * 首页
  */
 @AndroidEntryPoint
-class MainFragment : BaseGlideFragment() {
+class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
 
     private val PAGES =
         arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
     private var onMenuToggleClicked: MenuToggleClickListener? = null
     private val viewModel by lazy { ViewModelProvider(this).get(MainPageViewModel::class.java) }
 
-    private var _binding: FragmentMainBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+    override fun initView() {
         viewModel.banner.observe(viewLifecycleOwner, {
             setMainPageSlideAdapter(it)
         })
-        return binding.root
     }
+
+    override fun getBindingClass(): Class<FragmentMainBinding> = FragmentMainBinding::class.java
+
 
     override fun setNeedChangeThemeColorWidget() {
         changeThemeWidge.add(R.id.mainPageTabLayout)
@@ -140,10 +135,6 @@ class MainFragment : BaseGlideFragment() {
         viewpagerRecyclerScrollHandler.removeMessages(SCROLL)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
 
     companion object {

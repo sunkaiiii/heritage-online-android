@@ -1,69 +1,60 @@
 package com.example.sunkai.heritage.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.databinding.FragmentProjectDetailBinding
 import com.example.sunkai.heritage.entity.ProjectDetailViewModel
 import com.example.sunkai.heritage.entity.response.ProjectDetailResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_project_detail.*
 
 @AndroidEntryPoint
-class ProjectDetailFragment : BaseGlideFragment() {
+class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBinding>() {
 
     private val viewModel by lazy { ViewModelProvider(this).get(ProjectDetailViewModel::class.java) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_project_detail, container, false)
+    override fun getBindingClass(): Class<FragmentProjectDetailBinding> = FragmentProjectDetailBinding::class.java
+
+    override fun initView() {
         viewModel.projectDetail.observe(viewLifecycleOwner, {
             setDatatoView(it)
         })
         arguments?.getString(DATA)?.let { link ->
-            view.post {
-                projectDetailProgressBar.visibility = View.GONE
-                projectDetailScrollView.visibility = View.VISIBLE
+            binding.root.post {
+                binding.projectDetailProgressBar.visibility = View.GONE
+                binding.projectDetailScrollView.visibility = View.VISIBLE
                 viewModel.loadProjectDetail(link)
             }
         }
-        return view
     }
-
     private var projectDetailToolbarLocationArray = IntArray(2)
     private var projectDetailTitleLocationArray = IntArray(2)
     private fun initView(projectDetail: ProjectDetailResponse) {
-        projectDetailToolbarBackArrow.setOnClickListener { findNavController().popBackStack() }
-        projectDetailToolbarTitle.text = projectDetail.title
-        projectDetailToolbarTitle.alpha = 0f
-        projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            projectDetailTitle.getLocationInWindow(projectDetailTitleLocationArray)
-            projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
+        binding.projectDetailToolbarBackArrow.setOnClickListener { findNavController().popBackStack() }
+        binding.projectDetailToolbarTitle.text = projectDetail.title
+        binding.projectDetailToolbarTitle.alpha = 0f
+        binding.projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
+            binding.projectDetailTitle.getLocationInWindow(projectDetailTitleLocationArray)
+            binding.projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
             val scrollDy = scrollY - oldScrollY
             //设置toolbar title的透明度
             var crossY =
-                projectDetailToolbarLocationArray[1] + projectDetailToolbar.height - projectDetailTitleLocationArray[1]
+                projectDetailToolbarLocationArray[1] + binding.projectDetailToolbar.height - projectDetailTitleLocationArray[1]
             if (crossY < 0) {
                 crossY = 0
             }
-            val alpha = crossY.toFloat() / projectDetailToolbar.height
-            projectDetailToolbarTitle.alpha = alpha
+            val alpha = crossY.toFloat() / binding.projectDetailToolbar.height
+            binding.projectDetailToolbarTitle.alpha = alpha
             //设置toolbar的位置
-            if (projectDetailTitleLocationArray[1] < projectDetailToolbarLocationArray[1] && projectDetailToolbar.translationY + projectDetailToolbar.height >= 0 && scrollDy > 0) {
-                projectDetailToolbar.translationY = projectDetailToolbar.translationY - scrollDy
-            } else if (scrollDy < 0 && projectDetailToolbar.translationY < 0) {
-                projectDetailToolbar.translationY = projectDetailToolbar.translationY - scrollDy
-                if (projectDetailToolbar.translationY > 0) {
-                    projectDetailToolbar.translationY = 0f
+            if (projectDetailTitleLocationArray[1] < projectDetailToolbarLocationArray[1] && binding.projectDetailToolbar.translationY + binding.projectDetailToolbar.height >= 0 && scrollDy > 0) {
+                binding.projectDetailToolbar.translationY = binding.projectDetailToolbar.translationY - scrollDy
+            } else if (scrollDy < 0 && binding.projectDetailToolbar.translationY < 0) {
+                binding.projectDetailToolbar.translationY = binding.projectDetailToolbar.translationY - scrollDy
+                if (binding.projectDetailToolbar.translationY > 0) {
+                    binding.projectDetailToolbar.translationY = 0f
                 }
             }
         }
@@ -73,17 +64,17 @@ class ProjectDetailFragment : BaseGlideFragment() {
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         changeWidgeTheme()
         initView(projectDetail)
-        projectDetailTitle.text = projectDetail.title
-        projectDesc.text = projectDetail.text
-        projectDetailTopGridView.setData(projectDetail.desc)
+        binding.projectDetailTitle.text = projectDetail.title
+        binding.projectDesc.text = projectDetail.text
+        binding.projectDetailTopGridView.setData(projectDetail.desc)
         if (!projectDetail.inheritate.isNullOrEmpty()) {
-            activityProjectDetailInheritateLayout.visibility = View.VISIBLE
-            activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
+            binding.activityProjectDetailInheritateLayout.visibility = View.VISIBLE
+            binding.activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
         }
 
         if (!projectDetail.ralevant.isNullOrEmpty()) {
-            activityProjectDetailRalevantProject.visibility = View.VISIBLE
-            activityProjectDetailRalevantProject.setData(projectDetail.ralevant)
+            binding.activityProjectDetailRalevantProject.visibility = View.VISIBLE
+            binding.activityProjectDetailRalevantProject.setData(projectDetail.ralevant)
         }
     }
 }

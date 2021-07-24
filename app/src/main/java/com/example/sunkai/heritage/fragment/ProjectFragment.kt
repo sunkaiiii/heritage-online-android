@@ -2,14 +2,11 @@ package com.example.sunkai.heritage.fragment
 
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -17,46 +14,47 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
+import com.example.sunkai.heritage.databinding.FragmentProjectBinding
 import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
 import com.example.sunkai.heritage.entity.ProjectPageViewModel
 import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
-import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.DATA
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_project.*
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ProjectFragment : BaseGlideFragment() {
-
-    private lateinit var fragmentProjectSearchCard: View
-    private lateinit var fragmentProjectAppBarLayout: AppBarLayout
-    private lateinit var projectInformationList: RecyclerView
-    private lateinit var projectDescLoading: View
-    private lateinit var projectPageLayout: View
-    private lateinit var projectPageTitle: TextView
-    private lateinit var projectFragmentShowContent: View
-    private lateinit var fragmentProjectToolbar: Toolbar
+class ProjectFragment : BaseViewBindingFragment<FragmentProjectBinding>() {
 
     private val projectViewModel by lazy { ViewModelProvider(this).get(ProjectPageViewModel::class.java) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_project, container, false)
-        fragmentProjectSearchCard = view.findViewById(R.id.fragmentProjectSearchCard)
-        fragmentProjectAppBarLayout = view.findViewById(R.id.fragmentProjectAppBarLayout)
-        projectInformationList = view.findViewById(R.id.projectInformationList)
-        projectDescLoading = view.findViewById(R.id.projectDescLoading)
-        projectPageLayout = view.findViewById(R.id.projectPageLayout)
-        projectPageTitle = view.findViewById(R.id.projectPageTitle)
-        projectFragmentShowContent = view.findViewById(R.id.projectFragmentShowContent)
-        fragmentProjectToolbar = view.findViewById(R.id.fragmentProjectToolbar)
-        initview()
+    override fun getBindingClass(): Class<FragmentProjectBinding> =
+        FragmentProjectBinding::class.java
+
+    override fun changeSpecificViewTheme() {
+        val background = binding.fragmentProjectTopBackgroundRelativeLayout.background
+        if (background is GradientDrawable) {
+            background.setColor(getTransparentColor(getThemeColor()))
+        }
+
+        binding.projectOverViewCardview.setCardBackgroundColor(getDarkThemeColor())
+    }
+
+    override fun initView() {
+        binding.fragmentProjectSearchCard.setOnClickListener {
+            navigateToSearchPage()
+        }
+        binding.fragmentProjectToolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.search_menu -> {
+                    navigateToSearchPage()
+                }
+            }
+
+            true
+        }
         projectViewModel.projectBasicInformation.observe(viewLifecycleOwner, {
             fillProjectBasicDataIntoView(it)
         })
@@ -67,44 +65,17 @@ class ProjectFragment : BaseGlideFragment() {
                 bundleOf(DATA to projectListInformation.link)
             )
         }
-        projectInformationList.adapter = adapter
-        projectInformationList.addOnScrollListener(onScrollDirectionHelper)
-        fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
-            fragmentProjectSearchCard.visibility =
-                if (projectInformationList.y == 0f) View.VISIBLE else View.GONE
+        binding.projectInformationList.adapter = adapter
+        binding.projectInformationList.addOnScrollListener(onScrollDirectionHelper)
+        binding.fragmentProjectAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, _ ->
+            binding.fragmentProjectSearchCard.visibility =
+                if (binding.projectInformationList.y == 0f) View.VISIBLE else View.GONE
         })
         projectViewModel.projectList.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
         })
-
-        return view
-    }
-
-
-    override fun changeSpecificViewTheme() {
-        val background = fragmentProjectTopBackgroundRelativeLayout.background
-        if (background is GradientDrawable) {
-            background.setColor(getTransparentColor(getThemeColor()))
-        }
-
-        projectOverViewCardview.setCardBackgroundColor(getDarkThemeColor())
-    }
-
-    private fun initview() {
-        fragmentProjectSearchCard.setOnClickListener {
-            navigateToSearchPage()
-        }
-        fragmentProjectToolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.search_menu -> {
-                    navigateToSearchPage()
-                }
-            }
-
-            true
-        }
     }
 
 
@@ -116,10 +87,10 @@ class ProjectFragment : BaseGlideFragment() {
     private val onScrollDirectionHelper = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val visibility = if (recyclerView.y == 0f) View.VISIBLE else View.GONE
-            if (fragmentProjectSearchCard.visibility != visibility) {
+            if (binding.fragmentProjectSearchCard.visibility != visibility) {
                 when (visibility) {
                     View.VISIBLE -> {
-                        fragmentProjectSearchCard.startAnimation(
+                        binding.fragmentProjectSearchCard.startAnimation(
                             AnimationUtils.loadAnimation(
                                 context,
                                 R.anim.popup_enter
@@ -127,7 +98,7 @@ class ProjectFragment : BaseGlideFragment() {
                         )
                     }
                     View.GONE -> {
-                        fragmentProjectSearchCard.startAnimation(
+                        binding.fragmentProjectSearchCard.startAnimation(
                             AnimationUtils.loadAnimation(
                                 context,
                                 R.anim.popup_exit
@@ -136,17 +107,17 @@ class ProjectFragment : BaseGlideFragment() {
                     }
                 }
             }
-            fragmentProjectSearchCard.visibility =
+            binding.fragmentProjectSearchCard.visibility =
                 if (recyclerView.y == 0f) View.VISIBLE else View.GONE
         }
     }
 
 
     private fun fillProjectBasicDataIntoView(projectInformation: ProjectBasicInformation) {
-        projectDescLoading.visibility = View.GONE
-        projectPageLayout.visibility = View.VISIBLE
-        projectPageTitle.text = projectInformation.title
-        projectFragmentShowContent.setOnClickListener {
+        binding.projectDescLoading.visibility = View.GONE
+        binding.projectPageLayout.visibility = View.VISIBLE
+        binding.projectPageTitle.text = projectInformation.title
+        binding.projectFragmentShowContent.setOnClickListener {
             val dialog = FragmentProjectContentDialog(
                 context
                     ?: return@setOnClickListener, projectInformation
@@ -159,7 +130,7 @@ class ProjectFragment : BaseGlideFragment() {
         }
         projectInformation.numItem.forEach {
             val itemLayout = LayoutInflater.from(context)
-                .inflate(R.layout.fragment_project_item_layout, ProjectDescLayout, false)
+                .inflate(R.layout.fragment_project_item_layout, binding.projectDescLayout, false)
             itemLayout.findViewById<TextView>(R.id.FragmentProjectItemTitle).text = it.desc
             itemLayout.findViewById<TextView>(R.id.FragmentProjectItemContent).text = it.num
             val layoutParams = itemLayout.layoutParams
@@ -167,13 +138,13 @@ class ProjectFragment : BaseGlideFragment() {
                 layoutParams.weight = 1.0f
                 itemLayout.layoutParams = layoutParams
             }
-            ProjectDescLayout.addView(itemLayout)
+            binding.projectDescLayout.addView(itemLayout)
         }
 
         val bitmap = BitmapFactory.decodeResource(
             resources,
             R.drawable.fragment_project_top_background_image
         )
-        fragmentProjectTopImage.setImageBitmap(bitmap.toBlurBitmap(context ?: return))
+        binding.fragmentProjectTopImage.setImageBitmap(bitmap.toBlurBitmap(context ?: return))
     }
 }

@@ -18,7 +18,6 @@ import com.example.sunkai.heritage.databinding.FragmentPeopleBinding
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
-import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import com.example.sunkai.heritage.value.DATA
 import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -99,14 +98,6 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
         const val PAGE = "page"
     }
 
-    override fun getBindingClass(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentPeopleBinding {
-        return FragmentPeopleBinding.inflate(inflater, container, false)
-    }
+    override fun getBindingClass()= FragmentPeopleBinding::class.java
 
-    override fun getBindingView(): View {
-        return binding.root
-    }
 }

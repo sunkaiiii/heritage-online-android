@@ -11,34 +11,28 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
+import com.example.sunkai.heritage.databinding.FragmentNewsDetailBinding
 import com.example.sunkai.heritage.entity.NewsDetailViewModel
 import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
 import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_news_detail.*
 import java.io.Serializable
 
 @AndroidEntryPoint
-class NewsDetailFragment : BaseGlideFragment() {
+class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() {
 
     private var link: String? = null
     private var api: NewsPages? = null
     private val newsDetailViewModel by lazy { ViewModelProvider(this).get(NewsDetailViewModel::class.java) }
 
+    override fun initView() {}
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_news_detail, container, false)
-        return view
-    }
+    override fun getBindingClass() = FragmentNewsDetailBinding::class.java
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -46,7 +40,7 @@ class NewsDetailFragment : BaseGlideFragment() {
         if (data is NewsListResponse) {
             this.link = data.link
             setDataToView(data)
-            toolbar.title = data.title
+            binding.toolbar.title = data.title
 
         } else if (data is String) {
             this.link = data
@@ -63,14 +57,14 @@ class NewsDetailFragment : BaseGlideFragment() {
     }
 
     private fun setDataToView(data: NewsListResponse) {
-        bottomNewsDetailTitle.text = data.title
+        binding.bottomNewsDetailTitle.text = data.title
     }
 
 
     private fun setDataToView(data: NewsDetail) {
-        bottomNewsDetailTitle.text =
+        binding.bottomNewsDetailTitle.text =
             data.title.replace("\r", "").replace("\n", "").replace("\t", "")
-        newsDetailSubtitleLayout.removeAllViews()
+        binding.newsDetailSubtitleLayout.removeAllViews()
         data.subtitle?.let { list ->
             list.forEach {
                 val textView = TextView(requireContext())
@@ -80,10 +74,10 @@ class NewsDetailFragment : BaseGlideFragment() {
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
                 layoutParams.weight = 1f
-                newsDetailSubtitleLayout.addView(textView)
+                binding.newsDetailSubtitleLayout.addView(textView)
             }
         }
-        bottomNewsDetailAuther.text = data.author
+        binding.bottomNewsDetailAuther.text = data.author
         val adapter =
             NewsDetailRecyclerViewAdapter(requireContext(), data.content, glide, data.relativeNews)
         adapter.setOnRelevantNewsClickListner(object :
@@ -100,7 +94,7 @@ class NewsDetailFragment : BaseGlideFragment() {
             }
 
         })
-        bottomNewsDetailRecyclerview.adapter = adapter
+        binding.bottomNewsDetailRecyclerview.adapter = adapter
     }
 
 }
