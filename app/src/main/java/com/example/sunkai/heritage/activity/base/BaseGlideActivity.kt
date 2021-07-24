@@ -16,7 +16,6 @@ import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CHANGE_THEME
-import kotlinx.android.synthetic.main.activity_web_view.*
 
 abstract class BaseGlideActivity : AppCompatActivity() {
     protected lateinit var glide: RequestManager
@@ -33,7 +32,6 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LocalBroadcastManager.getInstance(this).registerReceiver(broadReceiver, IntentFilter(CHANGE_THEME))
         glide = Glide.with(this)
-        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
