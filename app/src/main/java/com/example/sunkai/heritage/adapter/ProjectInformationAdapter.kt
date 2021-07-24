@@ -3,11 +3,10 @@ package com.example.sunkai.heritage.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.databinding.FragmentProjectListItemBinding
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
 
 class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null) : PagingDataAdapter<ProjectListInformation,ProjectInformationAdapter.Holder>(
@@ -30,13 +29,13 @@ class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null)
         }
     }
 
-    class Holder(view: View) : RecyclerView.ViewHolder(view) {
-        val number:TextView=view.findViewById(R.id.project_number)
-        val title: TextView = view.findViewById(R.id.project_title)
-        val type:TextView=view.findViewById(R.id.project_type)
-        val category:TextView=view.findViewById(R.id.project_category)
-        val location:TextView=view.findViewById(R.id.project_location)
-        val time:TextView=view.findViewById(R.id.project_time)
+    class Holder(binding: FragmentProjectListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val number = binding.projectNumber
+        val title = binding.projectTitle
+        val type = binding.projectType
+        val category = binding.projectCategory
+        val location = binding.projectLocation
+        val time = binding.projectTime
     }
 
 
@@ -54,8 +53,7 @@ class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_project_list_item, parent, false)
-        return Holder(view)
+        return Holder(FragmentProjectListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
 

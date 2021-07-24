@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.databinding.BottomFolkNewsLayoutBinding
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.ViewImageUtils
 import com.example.sunkai.heritage.tools.getThemeColor
@@ -39,25 +40,16 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
     }
 
 
-    class Holder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView
-        val time: TextView
-        val briefly: TextView
-        val image: ImageView
-        val readMark: View
-
-        init {
-            title = view.findViewById(R.id.bottom_view_title)
-            time = view.findViewById(R.id.bottom_view_time)
-            briefly = view.findViewById(R.id.bottom_view_briefly)
-            image = view.findViewById(R.id.bottom_view_image)
-            readMark = view.findViewById(R.id.isReadMark)
-        }
+    class Holder(binding:BottomFolkNewsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        val title: TextView = binding.bottomViewTitle
+        val time: TextView = binding.bottomViewTime
+        val briefly: TextView = binding.bottomViewBriefly
+        val image: ImageView = binding.bottomViewImage
+        val readMark: View = binding.isReadMark
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.bottom_folk_news_layout, parent, false)
-        return Holder(view)
+        return Holder(BottomFolkNewsLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

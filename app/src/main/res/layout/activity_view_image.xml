@@ -5,7 +5,7 @@
     android:id="@+id/rootView"
     android:background="#000000">
 
-    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/activityViewImageGallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

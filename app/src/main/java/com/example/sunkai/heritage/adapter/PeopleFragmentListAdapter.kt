@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.databinding.FragmentPeopleListItemBinding
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.views.tools.RectangleImageView
@@ -27,28 +28,18 @@ class PeopleFragmentListAdapter(private val glide: RequestManager,private var li
         }
     }
 
-    class Holder(view: View) : RecyclerView.ViewHolder(view) {
-        val peopleContent: View
-        val peopleImageLayout: View
-        val peopleImage: RectangleImageView
-        val peopleTitleTextInsideImage: TextView
-        val peopleTitleOutSideImage: TextView
-        val peopleDesc: TextView
-
-        init {
-            peopleContent = view.findViewById(R.id.peopleContengLayout)
-            peopleImageLayout = view.findViewById(R.id.peopleImageLayout)
-            peopleImage = view.findViewById(R.id.peopleImage)
-            peopleTitleTextInsideImage = view.findViewById(R.id.peopleTitleTextInsideImage)
-            peopleTitleOutSideImage = view.findViewById(R.id.peopleTitleOutsideImage)
-            peopleDesc = view.findViewById(R.id.peopleDesc)
-        }
+    class Holder(binding: FragmentPeopleListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val peopleContent = binding.peopleContengLayout
+        val peopleImageLayout = binding.peopleImageLayout
+        val peopleImage = binding.peopleImage
+        val peopleTitleTextInsideImage = binding.peopleTitleTextInsideImage
+        val peopleTitleOutSideImage = binding.peopleTitleOutsideImage
+        val peopleDesc = binding.peopleDesc
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_people_list_item, parent, false)
-        return Holder(view)
+        return Holder(FragmentPeopleListItemBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
