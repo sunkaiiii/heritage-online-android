@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
@@ -21,7 +22,6 @@ import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -88,7 +88,8 @@ class MainFragment : BaseGlideFragment() {
         //让他在初始的时候在中间的位置，且保证是第一个页面，可以做到左翻页
         val middleItem = 0 + 4 * 200
         binding.mainPageSlideViewpager.setCurrentItem(middleItem, false)
-        binding.mainPageSlideViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
+        binding.mainPageSlideViewpager.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 startRecyclerScroll()
             }
@@ -105,7 +106,8 @@ class MainFragment : BaseGlideFragment() {
     private val viewpagerRecyclerScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
-                binding.mainPageSlideViewpager.currentItem = binding.mainPageSlideViewpager.currentItem + 1
+                binding.mainPageSlideViewpager.currentItem =
+                    binding.mainPageSlideViewpager.currentItem + 1
                 startRecyclerScroll()
             }
         }
