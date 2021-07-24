@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
-                    android:id="@+id/MainPageSlideViewpager"
+                    android:id="@+id/main_page_slide_viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_collapseMode="parallax" />

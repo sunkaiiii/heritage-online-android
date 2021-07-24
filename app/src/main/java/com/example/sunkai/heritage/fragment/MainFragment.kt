@@ -16,13 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
+import com.example.sunkai.heritage.databinding.FragmentMainBinding
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.BaseOnPageChangeListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_main.*
 
 
 /**
@@ -31,16 +31,23 @@ import kotlinx.android.synthetic.main.fragment_main.*
 @AndroidEntryPoint
 class MainFragment : BaseGlideFragment() {
 
-    private val PAGES = arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
-    private var onMenuToggleClicked:MenuToggleClickListener? = null
+    private val PAGES =
+        arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
+    private var onMenuToggleClicked: MenuToggleClickListener? = null
     private val viewModel by lazy { ViewModelProvider(this).get(MainPageViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        viewModel.banner.observe(viewLifecycleOwner,{
+    private var _binding: FragmentMainBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        viewModel.banner.observe(viewLifecycleOwner, {
             setMainPageSlideAdapter(it)
         })
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        return binding.root
     }
 
     override fun setNeedChangeThemeColorWidget() {
@@ -51,7 +58,7 @@ class MainFragment : BaseGlideFragment() {
         super.onViewCreated(view, savedInstanceState)
         val manager = activity?.supportFragmentManager ?: return
         setViewPager(manager)
-        menuImage.setOnClickListener {
+        binding.menuImage.setOnClickListener {
             onMenuToggleClicked?.onClick(it)
         }
     }
@@ -68,21 +75,20 @@ class MainFragment : BaseGlideFragment() {
     private fun setViewPager(manager: FragmentManager) {
         val fragments = createFragments()
         val adapter = MainPageViewPagerAdapter(manager, fragments)
-        mainPageViewPager.offscreenPageLimit = fragments.size
-        mainPageViewPager.adapter = adapter
-        mainPageTabLayout.setupWithViewPager(mainPageViewPager)
+        binding.mainPageViewPager.offscreenPageLimit = fragments.size
+        binding.mainPageViewPager.adapter = adapter
+        binding.mainPageTabLayout.setupWithViewPager(binding.mainPageViewPager)
     }
-
 
 
     private fun setMainPageSlideAdapter(data: List<MainPageBanner>) {
         val activity = activity ?: return
         val adapter = MainPageBannerAdapter(activity, data, glide)
-        MainPageSlideViewpager.adapter = adapter
+        binding.mainPageSlideViewpager.adapter = adapter
         //让他在初始的时候在中间的位置，且保证是第一个页面，可以做到左翻页
         val middleItem = 0 + 4 * 200
-        MainPageSlideViewpager.setCurrentItem(middleItem, false)
-        MainPageSlideViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
+        binding.mainPageSlideViewpager.setCurrentItem(middleItem, false)
+        binding.mainPageSlideViewpager.addOnPageChangeListener(object : BaseOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 startRecyclerScroll()
             }
@@ -99,7 +105,7 @@ class MainFragment : BaseGlideFragment() {
     private val viewpagerRecyclerScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
-                MainPageSlideViewpager.currentItem = MainPageSlideViewpager.currentItem + 1
+                binding.mainPageSlideViewpager.currentItem = binding.mainPageSlideViewpager.currentItem + 1
                 startRecyclerScroll()
             }
         }
@@ -117,7 +123,7 @@ class MainFragment : BaseGlideFragment() {
         return fragments
     }
 
-    fun setOnMenuButtonClicked(listner:MenuToggleClickListener){
+    fun setOnMenuButtonClicked(listner: MenuToggleClickListener) {
         this.onMenuToggleClicked = listner
     }
 
@@ -130,6 +136,11 @@ class MainFragment : BaseGlideFragment() {
     override fun onPause() {
         super.onPause()
         viewpagerRecyclerScrollHandler.removeMessages(SCROLL)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 
