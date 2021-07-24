@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
@@ -37,7 +38,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
         }
     }
 
-    
+
     override fun initView() {
         binding.fragmentPeopleAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             val scrollRange = binding.fragmentPeopleAppBarLayout.totalScrollRange
@@ -45,11 +46,11 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
             binding.fragmentPeopleTopTitleBackground.alpha = alpha * alpha * alpha
         })
         peopleViewModel.peopleTopBanner.observe(viewLifecycleOwner, { data ->
-            val adapter = FragmentPeopleBannerAdapter(context ?: return@observe, data.table, glide)
+            val adapter = FragmentPeopleBannerAdapter(data.table, glide)
             val middleItem = data.table.size * 2000
             binding.fragmentPeopleViewpager.adapter = adapter
-            binding.fragmentPeopleViewpager.addOnPageChangeListener(object :
-                BaseOnPageChangeListener() {
+            binding.fragmentPeopleViewpager.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     startViewpagerScrollDelay()
                 }

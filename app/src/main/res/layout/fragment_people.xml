@@ -32,7 +32,7 @@
                 android:layout_height="400dp"
                 app:layout_scrollFlags="scroll">
 
-                <com.example.sunkai.heritage.views.tools.FollowThemeEdgeViewPager
+                <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/fragmentPeopleViewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
