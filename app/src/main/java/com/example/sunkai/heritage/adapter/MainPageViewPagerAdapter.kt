@@ -1,19 +1,27 @@
 package com.example.sunkai.heritage.adapter
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.sunkai.heritage.entity.NewsPages
+import com.example.sunkai.heritage.fragment.MainFragment
+import com.example.sunkai.heritage.fragment.NewsListFragment
 
-class MainPageViewPagerAdapter(manager: FragmentManager, private val fragments:List<Fragment>): FragmentPagerAdapter(manager) {
-    override fun getPageTitle(position: Int): CharSequence? {
-        return MAIN_PAGE_TABLAYOUT_TEXT[position]
-    }
-    override fun getItem(position: Int): Fragment {
-        return fragments[position]
+class MainPageViewPagerAdapter(activity: FragmentActivity): FragmentStateAdapter(activity) {
+    private val PAGES =
+        arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
+
+    override fun getItemCount(): Int  = PAGES.size
+
+    override fun createFragment(position: Int): Fragment {
+        val pageInfo = PAGES[position]
+        val fragment = NewsListFragment()
+        val bundle = Bundle()
+        bundle.putSerializable(MainFragment.PAGE, pageInfo)
+        fragment.arguments = bundle
+        return fragment
     }
 
-    override fun getCount(): Int {
-        return fragments.size
-    }
+
 }
