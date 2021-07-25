@@ -77,6 +77,9 @@ class MainActivity : BaseGlideActivity() {
         binding.bottomNavigationButton.setupWithNavController(navController)
     }
 
+    fun showNavigationDrawerLayout(){
+        binding.activityMainDrawerLayout.openDrawer(GravityCompat.START)
+    }
     override fun onBackPressed() {
         if(binding.activityMainDrawerLayout.isDrawerOpen(GravityCompat.START)){
             binding.activityMainDrawerLayout.closeDrawer(GravityCompat.START)

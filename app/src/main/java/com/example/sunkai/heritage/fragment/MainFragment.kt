@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.activity.MainActivity
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.databinding.FragmentMainBinding
@@ -35,6 +36,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         viewModel.banner.observe(viewLifecycleOwner, {
             setMainPageSlideAdapter(it)
         })
+        setOnMenuButtonClicked()
     }
 
     override fun getBindingClass(): Class<FragmentMainBinding> = FragmentMainBinding::class.java
@@ -47,11 +49,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setViewPager()
-        binding.menuImage.setOnClickListener {
-            onMenuToggleClicked?.onClick(it)
-        }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -102,8 +100,13 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         }
     }
 
-    fun setOnMenuButtonClicked(listner: MenuToggleClickListener) {
-        this.onMenuToggleClicked = listner
+    private fun setOnMenuButtonClicked() {
+        binding.menuImage.setOnClickListener {
+            val activity = requireActivity()
+            if (activity is MainActivity) {
+                activity.showNavigationDrawerLayout()
+            }
+        }
     }
 
     override fun onResume() {
