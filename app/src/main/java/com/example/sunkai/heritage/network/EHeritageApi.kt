@@ -35,25 +35,23 @@ const val SearchCategory = "/api/HeritageProject/GetSearchCategories"
 const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
 const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
 
-object EHeritageApiRetrofitServiceCreator {
-    private const val HOST = "sunkai.xyz"
-    private const val SCHEME = "https"
-    private const val PORT = 5001
-    private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
-    private val httpUrl = HttpUrl.Builder().scheme(SCHEME).host(HOST).port(PORT).build()
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(httpUrl)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+private const val HOST = "sunkai.xyz"
+private const val SCHEME = "https"
+private const val PORT = 5001
+private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+private val httpUrl = HttpUrl.Builder().scheme(SCHEME).host(HOST).port(PORT).build()
+private val retrofit = Retrofit.Builder()
+    .baseUrl(httpUrl)
+    .client(client)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
 
-    private fun <T> create(serviceClass:Class<T>):T = retrofit.create(serviceClass)
+private fun <T> create(serviceClass:Class<T>):T = retrofit.create(serviceClass)
 
-    private inline fun <reified T> create():T= create(T::class.java)
+private inline fun <reified T> create():T= create(T::class.java)
 
-    val EhritageService = create<EHeritageApiRetrofit>()
-}
+val EHeritageApi = create<EHeritageApiRetrofit>()
 
 interface EHeritageApiRetrofit{
     @GET(Banner)

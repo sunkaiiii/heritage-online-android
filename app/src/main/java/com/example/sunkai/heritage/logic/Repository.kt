@@ -11,8 +11,7 @@ import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
-import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
-import com.example.sunkai.heritage.network.EHeritageApiRetrofitServiceCreator
+import com.example.sunkai.heritage.network.EHeritageApi
 import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.tools.EHeritageApplication
 import kotlinx.coroutines.Dispatchers
@@ -40,14 +39,14 @@ class Repository @Inject constructor() {
     fun fetchPeopleListPageData(): Flow<PagingData<NewsListResponse>> {
         return Pager(
             config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { NewsListPageSource(EHeritageApiRetrofitServiceCreator.EhritageService::getPeopleList) }
+            pagingSourceFactory = { NewsListPageSource(EHeritageApi::getPeopleList) }
         ).flow
     }
 
     fun fetchProjectListPageData(): Flow<PagingData<ProjectListInformation>> {
         return Pager(
             config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { ProjectListPageSource(EHeritageApiRetrofitServiceCreator.EhritageService::getProjecrList) }
+            pagingSourceFactory = { ProjectListPageSource(EHeritageApi::getProjecrList) }
         ).flow
     }
 
@@ -59,7 +58,7 @@ class Repository @Inject constructor() {
             NewsDetail(content)
         } else {
             val newsDetail =
-                EHeritageApiRetrofitServiceCreator.EhritageService.getNewsDetail(link).await()
+                EHeritageApi.getNewsDetail(link).await()
             saveIntoDatabase(newsDetail)
             newsDetail
         }
@@ -110,7 +109,7 @@ class Repository @Inject constructor() {
             NewsDetail(content)
         } else {
             val forumsDetail =
-                EHeritageApiRetrofitServiceCreator.EhritageService.getForumsDetail(link).await()
+                EHeritageApi.getForumsDetail(link).await()
             saveIntoDatabase(forumsDetail)
             forumsDetail
         }
@@ -126,7 +125,7 @@ class Repository @Inject constructor() {
             NewsDetail(content)
         } else {
             val specialTopic =
-                EHeritageApiRetrofitServiceCreator.EhritageService.getSpecialTopicDetail(link)
+                EHeritageApi.getSpecialTopicDetail(link)
                     .await()
             saveIntoDatabase(specialTopic)
             specialTopic
@@ -136,49 +135,49 @@ class Repository @Inject constructor() {
     }
 
     fun getBanner() = liveData(Dispatchers.IO) {
-        val banner = EHeritageApiRetrofitServiceCreator.EhritageService.getBanner().await()
+        val banner = EHeritageApi.getBanner().await()
         Result.success(banner)
         emit(banner)
     }
 
     fun getPeopleTopBanner() = liveData(Dispatchers.IO) {
         val peopleTopBanner =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getPeopleTopBanner().await()
+            EHeritageApi.getPeopleTopBanner().await()
         Result.success(peopleTopBanner)
         emit(peopleTopBanner)
     }
 
     fun getPeopleDetail(link: String) = liveData(Dispatchers.IO) {
         val detail =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getPeopleDetail(link).await()
+            EHeritageApi.getPeopleDetail(link).await()
         Result.success(detail)
         emit(detail)
     }
 
     fun getProjectBasicInformation() = liveData(Dispatchers.IO) {
         val projectInformation =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getProjectBasicInformation().await()
+            EHeritageApi.getProjectBasicInformation().await()
         Result.success(projectInformation)
         emit(projectInformation)
     }
 
     fun getProjectDetail(link: String) = liveData(Dispatchers.IO) {
         val projectDetail =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getProjectDetail(link).await()
+            EHeritageApi.getProjectDetail(link).await()
         Result.success(projectDetail)
         emit(projectDetail)
     }
 
     fun getInheritanceDetail(link: String) = liveData(Dispatchers.IO) {
         val detail =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getInheritanceDetail(link).await()
+            EHeritageApi.getInheritanceDetail(link).await()
         Result.success(detail)
         emit(detail)
     }
 
     fun getSearchCategory() = liveData(Dispatchers.IO) {
         val category =
-            EHeritageApiRetrofitServiceCreator.EhritageService.getSearchCategory().await()
+            EHeritageApi.getSearchCategory().await()
         Result.success(category)
         emit(category)
     }
@@ -206,7 +205,7 @@ class Repository @Inject constructor() {
     }
 
     private fun getSearchResultCaller(request: SearchRequest) =
-        EHeritageApiRetrofitServiceCreator.EhritageService.getSearchProjectResult(
+        EHeritageApi.getSearchProjectResult(
             request.num,
             request.title,
             request.type,
