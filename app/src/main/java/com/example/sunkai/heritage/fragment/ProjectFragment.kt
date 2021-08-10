@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class ProjectFragment : BaseViewBindingFragment<FragmentProjectBinding>() {
 
-    private val projectViewModel by lazy { ViewModelProvider(this).get(ProjectPageViewModel::class.java) }
+    private val projectViewModel by lazy { ViewModelProvider(requireActivity()).get(ProjectPageViewModel::class.java) }
 
     override fun getBindingClass(): Class<FragmentProjectBinding> =
         FragmentProjectBinding::class.java

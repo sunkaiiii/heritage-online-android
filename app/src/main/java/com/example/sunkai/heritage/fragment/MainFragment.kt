@@ -30,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
 
     private var onMenuToggleClicked: MenuToggleClickListener? = null
-    private val viewModel by lazy { ViewModelProvider(this).get(MainPageViewModel::class.java) }
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(MainPageViewModel::class.java) }
 
     override fun initView() {
         viewModel.banner.observe(viewLifecycleOwner, {

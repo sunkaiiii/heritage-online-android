@@ -27,7 +27,7 @@ import kotlin.math.abs
 @AndroidEntryPoint
 class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
 
-    private val peopleViewModel by lazy { ViewModelProvider(this).get(PeoplePageViewModel::class.java) }
+    private val peopleViewModel by lazy { ViewModelProvider(requireActivity()).get(PeoplePageViewModel::class.java) }
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
