@@ -5,46 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".activity.AboutUSActivity">
 
-    <TextView
-        android:id="@+id/base_line"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_centerVertical="true" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="48sp"
-        android:layout_height="48sp"
-        android:layout_above="@id/base_line"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="12sp"
-        android:contentDescription="@string/logo"
-        android:src="@mipmap/ic_launcher_round" />
-
-    <TextView
+    <androidx.compose.ui.platform.ComposeView
         android:id="@+id/base_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/base_line"
         android:layout_centerInParent="true" />
-
-    <TextView
-        android:id="@+id/base_git_url"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/base_version"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:text="@string/program_git_url"
-        android:textIsSelectable="true" />
-
-    <TextView
-        android:id="@+id/licenceTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/base_git_url"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:text="@string/licence" />
-
 </RelativeLayout>

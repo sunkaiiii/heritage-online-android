@@ -31,6 +31,7 @@ android {
     }
     buildFeatures{
         viewBinding true
+        compose true
     }
     buildTypes {
         release {
@@ -47,6 +48,11 @@ android {
     }
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "1.5.10"
+        kotlinCompilerExtensionVersion "1.0.0"
     }
 
     kotlinOptions {
