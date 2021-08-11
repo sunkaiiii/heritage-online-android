@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.entity
 
 import androidx.lifecycle.ViewModel
+import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.logic.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

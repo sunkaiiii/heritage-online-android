@@ -47,7 +47,7 @@ class AboutUSActivity : BaseGlideActivity() {
     @Preview
     fun AboutUsCard() {
         val gitUrl = getString(R.string.program_git_url)
-        val margin = Modifier.padding(Dp(8f))
+        val margin = Modifier.padding(8.dp)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -29,7 +29,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
 
-    private var onMenuToggleClicked: MenuToggleClickListener? = null
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(MainPageViewModel::class.java) }
 
     override fun initView() {
@@ -60,7 +59,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
     }
 
     private fun setViewPager() {
-        val adapter = MainPageViewPagerAdapter(requireActivity())
+        val adapter = MainPageViewPagerAdapter(this)
         binding.mainPageViewPager.adapter = adapter
         TabLayoutMediator(binding.mainPageTabLayout, binding.mainPageViewPager) { tab, position ->
             tab.text = MAIN_PAGE_TABLAYOUT_TEXT[position]

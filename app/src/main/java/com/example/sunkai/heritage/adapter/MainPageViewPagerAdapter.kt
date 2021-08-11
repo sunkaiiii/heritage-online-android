@@ -8,7 +8,7 @@ import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.fragment.MainFragment
 import com.example.sunkai.heritage.fragment.NewsListFragment
 
-class MainPageViewPagerAdapter(activity: FragmentActivity): FragmentStateAdapter(activity) {
+class MainPageViewPagerAdapter(fragment: Fragment): FragmentStateAdapter(fragment) {
     private val PAGES =
         arrayOf(NewsPages.NewsPage, NewsPages.ForumsPage, NewsPages.SpecialTopicPage)
 

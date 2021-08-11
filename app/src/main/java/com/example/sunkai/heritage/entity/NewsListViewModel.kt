@@ -1,24 +1,18 @@
 package com.example.sunkai.heritage.entity
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.logic.Repository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import retrofit2.Call
-import javax.inject.Inject
 import kotlin.reflect.KFunction1
 
-@HiltViewModel
-class NewsListViewModel @Inject constructor(val repository: Repository) : ViewModel() {
-    private val listCaller=MutableLiveData<KFunction1<Int, Call<List<NewsListResponse>>>>()
-    val newsListPagingData = Transformations.switchMap(listCaller){listCaller->
-        repository.fetchNewsListPageData(listCaller).cachedIn(viewModelScope).asLiveData(Dispatchers.Main)
-    }
-   fun setListCaller(listCaller:KFunction1<Int, Call<List<NewsListResponse>>>){
-       this.listCaller.value=listCaller
-   }
+abstract class NewsListViewModel(private val repository: Repository, private val listCaller: KFunction1<Int, Call<List<NewsListResponse>>>):ViewModel() {
+    val newsListPagingData: LiveData<PagingData<NewsListResponse>> = repository.fetchNewsListPageData(listCaller).cachedIn(viewModelScope).asLiveData(
+        Dispatchers.Main)
 }
