@@ -7,10 +7,13 @@
     <color name="lightGrey">#e6e6e6</color>
     <color name="normalGrey">#c3c3c3</color>
     <color name="black">#000000</color>
+    <color name="banner_unselected_gray">#707070</color>
     <color name="white">#ffffff</color>
     <color name="deepGrey">#3f3f3f</color>
     <color name="midGrey">#9E9E9E</color>
     <color name="transparent_dark">#80000000</color>
     <color name="transparent_full">#00000000</color>
     <color name="peopleTitleTextInsideImageColor">#AAFFFFFF</color>
+    <color name="news_author_color">#888888</color>
+    <color name="news_time_color">#BCBCBC</color>
 </resources>

@@ -43,9 +43,9 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
     class Holder(binding:BottomFolkNewsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val title: TextView = binding.bottomViewTitle
         val time: TextView = binding.bottomViewTime
-        val briefly: TextView = binding.bottomViewBriefly
         val image: ImageView = binding.bottomViewImage
         val readMark: View = binding.isReadMark
+        val newsAuthor = binding.newsAuthor
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -65,7 +65,7 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
         holder.image.setImageDrawable(null)
         holder.title.text = data.title
         holder.time.text = data.date
-        holder.briefly.text = data.content
+        holder.newsAuthor.text = "作者："
         holder.readMark.setBackgroundColor(getThemeColor())
         holder.readMark.visibility = if (data.isRead) View.VISIBLE else View.GONE
         if (!data.img.isNullOrEmpty()) {

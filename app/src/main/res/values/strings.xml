@@ -2,7 +2,7 @@
     <string name="app_name">E迹</string>
     <string name="no_mean_content">null</string>
     <string name="network_error">网络错误，请稍后再试</string>
-
+    <string name="news">新闻</string>
     <string name="program_git_url">https://github.com/sunkaiiii/heritage-online-android</string>
     <string name="cancel">取消</string>
     <string name="news_feed">新闻动态</string>
@@ -81,8 +81,8 @@ limitations under the License.</string>
     <string name="theme_color">主题颜色</string>
     <string name="change_theme_view">change_theme_view</string>
     <string name="save_picture">保存图片</string>
-    <string name="save_success" >保存成功</string>
-    <string name="save_failed" >保存失败</string>
+    <string name="save_success">保存成功</string>
+    <string name="save_failed">保存失败</string>
     <string name="relevant_news">相关新闻</string>
     <string name="advance_search">更多查询</string>
     <string name="add_item">添加搜索条件</string>

@@ -1,77 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:foreground="?attr/selectableItemBackground"
-    android:orientation="vertical"
-    app:cardCornerRadius="4dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
 
-    <FrameLayout
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/bottom_view_image_container"
+        app:cardCornerRadius="8dp">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/bottom_view_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/no_mean_content"
+            android:scaleType="centerCrop" />
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <LinearLayout
+        android:id="@+id/infor_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@id/bottom_view_image_container"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/news_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/news_author_color"
+            android:textSize="14sp"
+            tools:text="王腾飞" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/bottom_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:orientation="vertical">
+            android:maxLines="5"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="标题标题标题标题标题标题标题标题标题标题" />
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/bottom_view_image"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/no_mean_content"
-                android:scaleType="centerCrop"
-                app:riv_corner_radius_top_left="4dp"
-                app:riv_corner_radius_top_right="4dp" />
+        <TextView
+            android:id="@+id/bottom_view_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/news_time_color"
+            android:textSize="14sp"
+            tools:text="12：00：00" />
 
-            <LinearLayout
-                android:id="@+id/news_layout_linear"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical">
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/bottom_view_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:text="标题标题标题标题标题标题标题标题标题标题" />
-
-                <TextView
-                    android:id="@+id/bottom_view_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/midGrey"
-                    android:textSize="14sp"
-                    tools:text="12：00：00" />
-
-                <TextView
-                    android:id="@+id/bottom_view_briefly"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:textColor="@color/deepGrey"
-                    android:textSize="16sp"
-                    tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <View
-            android:id="@+id/isReadMark"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_gravity="end|top"
-            android:tag="@string/change_theme_view" />
-    </FrameLayout>
-
-</androidx.cardview.widget.CardView>
+    <View
+        android:id="@+id/isReadMark"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignBottom="@id/infor_container"
+        android:layout_alignParentStart="true"
+        android:tag="@string/change_theme_view" />
+</RelativeLayout>
