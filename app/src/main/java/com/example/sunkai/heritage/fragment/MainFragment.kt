@@ -1,11 +1,16 @@
 package com.example.sunkai.heritage.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +23,7 @@ import com.example.sunkai.heritage.databinding.FragmentMainBinding
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
+import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +42,53 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
             setMainPageSlideAdapter(it)
         })
         setOnMenuButtonClicked()
+        setNewsListScrollBehaviour()
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setNewsListScrollBehaviour() {
+        var horizentalInitialPosition = -1f
+        var initialTranslateY = binding.newsListContainer.translationY
+        val minBoundry = 50.dip2px()
+        val maxBoundry = 250.dip2px()
+        val minRadius = 0.dip2px()
+        val maxRadius = 12.dip2px()
+        binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
+        val moveContainerView = { initialHorizentaltPosition: Float, movePosition: Float ->
+            var nextPosition = movePosition - initialHorizentaltPosition + initialTranslateY
+            if (nextPosition < minBoundry) {
+                nextPosition = minBoundry.toFloat()
+            }
+            if (nextPosition > maxBoundry) {
+                nextPosition = maxBoundry.toFloat()
+            }
+            if (binding.newsListContainer.translationY != nextPosition) {
+                binding.newsListContainer.translationY = nextPosition
+
+                val offsetFromMaxBoundryPercentage = (maxBoundry - nextPosition)/(maxBoundry - minBoundry)
+                val bannerBlurRadius = minRadius + (maxRadius - minRadius)*offsetFromMaxBoundryPercentage
+                Log.d(TAG,bannerBlurRadius.toString())
+                if(bannerBlurRadius == 0F){
+                    binding.mainPageSlideViewpager.setRenderEffect(null)
+                }else{
+                    binding.mainPageSlideViewpager.setRenderEffect(RenderEffect.createBlurEffect(bannerBlurRadius,bannerBlurRadius,Shader.TileMode.CLAMP))
+                }
+            }
+        }
+        binding.newsListContainer.setDispatchTouchEventHandler { view, motionEvent ->
+            when (motionEvent.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialTranslateY = view.translationY
+                    horizentalInitialPosition = motionEvent.rawY
+                }
+                MotionEvent.ACTION_MOVE -> moveContainerView(
+                    horizentalInitialPosition,
+                    motionEvent.rawY
+                )
+            }
+        }
+    }
+
 
     override fun getBindingClass(): Class<FragmentMainBinding> = FragmentMainBinding::class.java
 

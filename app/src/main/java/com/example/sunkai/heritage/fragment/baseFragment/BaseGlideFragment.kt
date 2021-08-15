@@ -20,7 +20,7 @@ abstract class BaseGlideFragment : Fragment() {
     protected lateinit var glide: RequestManager
     protected var changeThemeWidge: MutableList<Int>
     private var ignoreToolbar = false
-    private val TAG=this.javaClass.simpleName
+    protected val TAG: String =this.javaClass.simpleName
     private val broadReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             changeWidgeTheme()

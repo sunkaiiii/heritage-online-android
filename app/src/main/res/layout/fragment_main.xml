@@ -1,54 +1,37 @@
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.fragment.MainFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="300dp">
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/main_page_slide_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:background="@color/midGrey"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll">
+            android:layout_height="match_parent"
+            />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/menuImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="24dp"
+            android:contentDescription="@string/no_mean_content"
+            android:src="@drawable/baseline_menu_24"
+            app:tint="@color/white" />
+    </FrameLayout>
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/main_page_slide_viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_collapseMode="parallax" />
-
-                <ImageView
-                    android:id="@+id/menuImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:contentDescription="@string/no_mean_content"
-                    android:src="@drawable/baseline_menu_24"
-                    app:tint="@color/white" />
-            </FrameLayout>
-
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.card.MaterialCardView
+    <com.example.sunkai.heritage.views.CollaborativeCardView
+        android:id="@+id/news_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:translationY="250dp"
+        app:cardElevation="12dp"
+        app:cardCornerRadius="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -103,6 +86,6 @@
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </com.example.sunkai.heritage.views.CollaborativeCardView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

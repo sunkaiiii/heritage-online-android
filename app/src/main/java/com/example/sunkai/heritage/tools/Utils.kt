@@ -9,6 +9,15 @@ object Utils {
         return (dipValue * scale + 0.5).toInt()
     }
 
+    @JvmName("dip2px1")
+    fun Int.dip2px():Int{
+        return dip2px(this)
+    }
+
+    fun Float.dip2px():Int{
+        return Utils.dip2px(this.toInt())
+    }
+
     fun getScreenWidth(): Int = EHeritageApplication.instance.resources.displayMetrics.widthPixels
 
 
