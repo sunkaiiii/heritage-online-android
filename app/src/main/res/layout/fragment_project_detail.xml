@@ -6,42 +6,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.fragment.ProjectDetailFragment">
+
     <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/projectDetailProgressBar"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleSmall"
         android:layout_gravity="center" />
+
+    <include layout="@layout/general_toolbar" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/projectDetailScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:tag="@string/change_theme_view"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:background="@color/colorPrimary"
-                >
-
-                <TextView
-                    android:id="@+id/projectDetailTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    tools:text="非遗标题" />
-            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
