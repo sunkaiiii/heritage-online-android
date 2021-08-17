@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/news_detail_background"
     tools:context="com.example.sunkai.heritage.fragment.NewsDetailFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -22,24 +23,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize" />
+                    android:layout_height="?attr/actionBarSize"
+                    app:menu="@menu/common_share_menu"
+                    app:navigationIcon="@drawable/general_arrow_back" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:orientation="vertical">
 
+                    <com.makeramen.roundedimageview.RoundedImageView
+                        android:id="@+id/news_detail_main_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="260dp"
+                        app:riv_corner_radius="8dp" />
+
                     <TextView
                         android:id="@+id/bottomNewsDetailTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:transitionName="@string/bottom_news_share_title" />
+                        android:textStyle="bold" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/news_detail_subcontent_color"
+                        android:paddingStart="22dp"
+                        android:paddingTop="15dp"
+                        android:paddingEnd="22dp"
+                        android:paddingBottom="15dp">
+
+                        <TextView
+                            android:id="@+id/news_detail_sub_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/bottomNewsDetailAuther"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/news_detail_text_color" />
 
                     <LinearLayout
                         android:id="@+id/newsDetailSubtitleLayout"
@@ -47,12 +81,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
 
-                    <TextView
-                        android:id="@+id/bottomNewsDetailAuther"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:transitionName="@string/bottom_news_share_time"
-                        tools:targetApi="lollipop" />
+
                 </LinearLayout>
             </LinearLayout>
 

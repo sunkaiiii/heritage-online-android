@@ -126,8 +126,6 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
                 theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
                 holder.textView?.typeface = Typeface.DEFAULT
             }
-            val colorRes: Int = if (typedValue.resourceId != 0) typedValue.resourceId else typedValue.data
-            holder.textView?.setTextColor(ContextCompat.getColor(context, colorRes))
             holder.textView?.visibility = View.VISIBLE
             holder.imageView?.visibility = View.GONE
             holder.textView?.text = data.content.replace("\r", "").replace("\n", "").replace("\t", "")

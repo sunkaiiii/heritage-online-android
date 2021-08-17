@@ -39,8 +39,6 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
         val data = arguments?.getSerializable(DATA)
         if (data is NewsListResponse) {
             this.link = data.link
-            setDataToView(data)
-            binding.toolbar.title = data.title
 
         } else if (data is String) {
             this.link = data
@@ -54,11 +52,11 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
             setDataToView(newsDetail)
         })
         newsDetailViewModel.loadNewsDetail(link ?: return, api ?: return)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
-    private fun setDataToView(data: NewsListResponse) {
-        binding.bottomNewsDetailTitle.text = data.title
-    }
 
 
     private fun setDataToView(data: NewsDetail) {
