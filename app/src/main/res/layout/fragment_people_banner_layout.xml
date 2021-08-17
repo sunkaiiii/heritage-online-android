@@ -6,25 +6,31 @@
 
     <com.example.sunkai.heritage.views.tools.RectangleImageView
         android:id="@+id/bannerImageView"
-        tools:src="@drawable/project_detail_top_background"
-        tools:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:scaleType="centerCrop"
+        tools:src="@drawable/project_detail_top_background" />
 
     <TextView
-        android:id="@+id/bannerIamgeDescTextView"
+        android:id="@+id/bannerImageDescTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/bannerImageView"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:textSize="19sp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="56dp"
+        android:textColor="@color/banner_text_color"
+        android:textSize="54sp"
         android:textStyle="bold"
-        android:gravity="center_horizontal"
-        android:background="@color/peopleTitleTextInsideImageColor"
-        android:elevation="12dp"
-        android:textColor="@color/black"
         tools:text="硕大的撒多撒撒群无" />
+
+    <TextView
+        android:id="@+id/banner_image_desc_sub_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bannerImageDescTextView"
+        android:layout_alignStart="@+id/bannerImageDescTextView"
+        android:textColor="@color/banner_text_color"
+        android:textStyle="bold"
+        android:textSize="30sp" />
 </RelativeLayout>

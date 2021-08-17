@@ -16,8 +16,10 @@ class FragmentPeopleBannerAdapter(
     private var listner: OnPeopleBannerClickListener? = null
 ) : RecyclerView.Adapter<FragmentPeopleBannerAdapter.PeopleBannerHolder>() {
 
-    class PeopleBannerHolder(binding:FragmentPeopleBannerLayoutBinding):RecyclerView.ViewHolder(binding.root){
-        val text = binding.bannerIamgeDescTextView
+    class PeopleBannerHolder(binding: FragmentPeopleBannerLayoutBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        val text = binding.bannerImageDescTextView
+        val subText = binding.bannerImageDescSubText
         val image = binding.bannerImageView
     }
 
@@ -39,16 +41,26 @@ class FragmentPeopleBannerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PeopleBannerHolder {
-        return PeopleBannerHolder(FragmentPeopleBannerLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return PeopleBannerHolder(
+            FragmentPeopleBannerLayoutBinding.inflate(
+                LayoutInflater.from(
+                    parent.context
+                ), parent, false
+            )
+        )
     }
 
 
     override fun onBindViewHolder(holder: PeopleBannerHolder, position: Int) {
         val data = data[position % data.size]
         glide.loadImageFromServer(data.img).into(holder.image)
-        holder.text.text = data.desc
+        val descText = data.desc.split("：")
+        holder.text.text = descText[0]
+        if (descText.size > 1) {
+            holder.subText.text = descText[1]
+        }
         holder.itemView.setOnClickListener {
-            this.listner?.onItemClick(it,data)
+            this.listner?.onItemClick(it, data)
         }
     }
 

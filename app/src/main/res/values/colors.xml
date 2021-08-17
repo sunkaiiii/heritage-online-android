@@ -19,4 +19,6 @@
     <color name="news_detail_background_color">#D0C6C1</color>
     <color name="news_detail_text_color">#1D0500</color>
     <color name="news_detail_subcontent_color">#E4E4E4</color>
+    <color name="banner_text_color">#CCE3D6</color>
+
 </resources>
