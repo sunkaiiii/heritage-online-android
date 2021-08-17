@@ -15,12 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        android:textColor="@color/news_detail_text_color"
         tools:text="啊时代v就安慰哦给叽歪哦解码恩公i额外" />
 
     <TextView
         android:id="@+id/relevant_news_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/midGrey"
+        android:textColor="@color/news_detail_text_color"
         tools:text="2020.02.02" />
 </LinearLayout>
