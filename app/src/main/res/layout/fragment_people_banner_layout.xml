@@ -4,10 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.sunkai.heritage.views.tools.RectangleImageView
+    <ImageView
         android:id="@+id/bannerImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="centerCrop"
         tools:scaleType="centerCrop"
         tools:src="@drawable/project_detail_top_background" />
 

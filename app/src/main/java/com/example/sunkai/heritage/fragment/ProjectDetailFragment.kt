@@ -37,7 +37,6 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
         binding.projectDetailToolbarTitle.text = projectDetail.title
         binding.projectDetailToolbarTitle.alpha = 0f
         binding.projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            binding.projectDetailTitle.getLocationInWindow(projectDetailTitleLocationArray)
             binding.projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
             val scrollDy = scrollY - oldScrollY
             //设置toolbar title的透明度
@@ -64,7 +63,6 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         changeWidgeTheme()
         initView(projectDetail)
-        binding.projectDetailTitle.text = projectDetail.title
         binding.projectDesc.text = projectDetail.text
         binding.projectDetailTopGridView.setData(projectDetail.desc)
         if (!projectDetail.inheritate.isNullOrEmpty()) {

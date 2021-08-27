@@ -45,7 +45,6 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         setNewsListScrollBehaviour()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setNewsListScrollBehaviour() {
         var horizentalInitialPosition = -1f
         var initialTranslateY = binding.newsListContainer.translationY

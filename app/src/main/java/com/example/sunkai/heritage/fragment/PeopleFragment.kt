@@ -1,11 +1,15 @@
 package com.example.sunkai.heritage.fragment
 
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.view.LayoutInflater
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -18,16 +22,19 @@ import com.example.sunkai.heritage.databinding.FragmentPeopleBinding
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
+import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.value.DATA
-import com.google.android.material.appbar.AppBarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
 
-    private val peopleViewModel by lazy { ViewModelProvider(requireActivity()).get(PeoplePageViewModel::class.java) }
+    private val peopleViewModel by lazy {
+        ViewModelProvider(requireActivity()).get(
+            PeoplePageViewModel::class.java
+        )
+    }
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
@@ -39,11 +46,6 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
 
 
     override fun initView() {
-        binding.fragmentPeopleAppBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            val scrollRange = binding.fragmentPeopleAppBarLayout.totalScrollRange
-            val alpha = abs(verticalOffset.toFloat() / scrollRange)
-            binding.fragmentPeopleTopTitleBackground.alpha = alpha * alpha * alpha
-        })
         peopleViewModel.peopleTopBanner.observe(viewLifecycleOwner, { data ->
             val adapter = FragmentPeopleBannerAdapter(data.table, glide)
             val middleItem = data.table.size * 2000
@@ -66,7 +68,6 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
         binding.peopleFragmentRecyclerView.adapter = adapter
         peopleViewModel.peopleList.observe(viewLifecycleOwner) {
             binding.peopleLoadingProgressBar.visibility = View.GONE
-            binding.peopleMainPage.visibility = View.VISIBLE
             lifecycleScope.launch {
                 adapter.submitData(it)
             }
@@ -76,10 +77,35 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val bundle = bundleOf(DATA to item.link)
                 findNavController().navigate(R.id.action_people_list_to_detail, bundle)
             }
-
         })
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.peopleContainer.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.peopleContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val maxBoundry = binding.peopleContainer.height - 97.dip2px().toFloat()
+                binding.peopleContainer.translationY =
+                    maxBoundry
+                val minBoundry = 50.dip2px()
+                val minRadius = 0.dip2px()
+                val maxRadius = 12.dip2px()
+                binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
+                binding.peopleContainer.setOnMoveAction { distance, offsetPercentage ->
+                    val bannerBlurRadius = minRadius + (maxRadius - minRadius) * offsetPercentage
+                    binding.fragmentPeopleViewpager.setRenderEffect(
+                        if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
+                            bannerBlurRadius, bannerBlurRadius,
+                            Shader.TileMode.CLAMP
+                        )
+                    )
+                }
+            }
+        })
+    }
 
     private fun startViewpagerScrollDelay() {
         viewPageScrollHandler.removeMessages(SCROLL)
@@ -98,6 +124,6 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
         const val PAGE = "page"
     }
 
-    override fun getBindingClass()= FragmentPeopleBinding::class.java
+    override fun getBindingClass() = FragmentPeopleBinding::class.java
 
 }
