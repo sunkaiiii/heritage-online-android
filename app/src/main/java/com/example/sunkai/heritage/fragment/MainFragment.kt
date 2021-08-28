@@ -5,10 +5,7 @@ import android.graphics.Color
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -67,9 +64,9 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
                 val offsetFromMaxBoundryPercentage = (maxBoundry - nextPosition)/(maxBoundry - minBoundry)
                 val bannerBlurRadius = minRadius + (maxRadius - minRadius)*offsetFromMaxBoundryPercentage
                 Log.d(TAG,bannerBlurRadius.toString())
-                if(bannerBlurRadius == 0F){
+                if(bannerBlurRadius == 0F && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
                     binding.mainPageSlideViewpager.setRenderEffect(null)
-                }else{
+                }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
                     binding.mainPageSlideViewpager.setRenderEffect(RenderEffect.createBlurEffect(bannerBlurRadius,bannerBlurRadius,Shader.TileMode.CLAMP))
                 }
             }

@@ -2,10 +2,7 @@ package com.example.sunkai.heritage.fragment
 
 import android.graphics.RenderEffect
 import android.graphics.Shader
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
+import android.os.*
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -95,13 +92,17 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val maxRadius = 12.dip2px()
                 binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
                 binding.peopleContainer.setOnMoveAction { distance, offsetPercentage ->
-                    val bannerBlurRadius = minRadius + (maxRadius - minRadius) * offsetPercentage
-                    binding.fragmentPeopleViewpager.setRenderEffect(
-                        if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
-                            bannerBlurRadius, bannerBlurRadius,
-                            Shader.TileMode.CLAMP
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        val bannerBlurRadius =
+                            minRadius + (maxRadius - minRadius) * offsetPercentage
+                        binding.fragmentPeopleViewpager.setRenderEffect(
+                            if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
+                                bannerBlurRadius, bannerBlurRadius,
+                                Shader.TileMode.CLAMP
+                            )
                         )
-                    )
+                    }
+
                 }
             }
         })

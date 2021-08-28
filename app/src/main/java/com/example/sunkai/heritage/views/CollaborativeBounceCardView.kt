@@ -16,6 +16,9 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
     private var maxBoundry = -1
     private var initialActionDownTranslationY = -1f
     private var horizentalInitialPosition = -1f
+    private var currentState: CollaborativeBounceView.BounceType =
+        CollaborativeBounceView.BounceType.Hide
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
@@ -33,10 +36,12 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
     }
 
     private fun onBounce() {
-        val moveDistance = maxBoundry - translationY
+        val moveDistance =
+            if (currentState == CollaborativeBounceView.BounceType.Hide) maxBoundry - translationY else translationY - minBoundry
         val boundryDistance = maxBoundry - minBoundry
         val bounceType =
-            if (boundryDistance / 2 > moveDistance) CollaborativeBounceView.BounceType.Hide else CollaborativeBounceView.BounceType.Expand
+            if (moveDistance > boundryDistance / 4) revertState() else currentState
+        currentState = bounceType
         onBounceListener?.invoke(bounceType)
         translationY = when (bounceType) {
             CollaborativeBounceView.BounceType.Hide -> maxBoundry.toFloat()
@@ -46,6 +51,11 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
             (maxBoundry - translationY).toInt(),
             if (translationY == maxBoundry.toFloat()) 0.0f else 1.0f
         )
+    }
+
+    private fun revertState(): CollaborativeBounceView.BounceType {
+        return if (currentState == CollaborativeBounceView.BounceType.Hide)
+            CollaborativeBounceView.BounceType.Expand else CollaborativeBounceView.BounceType.Hide
     }
 
     private fun validateFields() {
