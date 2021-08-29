@@ -3,159 +3,56 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/fragment_project_background">
 
     <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/projectDescLoading"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        tools:visibility="gone" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/fragmentProjectCoordicatorlayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/fragmentProjectAppBarLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent_full">
+            android:padding="12dp">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/projectPageTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll">
+                android:layout_alignParentStart="true"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="国家级非物质文化遗产代表名录" />
 
-                <FrameLayout
-                    android:id="@+id/projectPageLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-
-                    <com.example.sunkai.heritage.views.tools.RectangleImageView
-                        android:id="@+id/fragmentProjectTopImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/fragment_project_top_background_image"
-                        app:riv_corner_radius_bottom_left="8dp"
-                        app:riv_corner_radius_bottom_right="8dp" />
-
-                    <RelativeLayout
-                        android:id="@+id/fragmentProjectTopBackgroundRelativeLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/fragment_project_top_background">
-
-                        <androidx.appcompat.widget.Toolbar
-                            android:id="@+id/fragmentProjectToolbar"
-                            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                            android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize"
-                            android:layout_alignParentTop="true"
-                            app:menu="@menu/framgent_project_menu" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:padding="12dp">
-
-                            <TextView
-                                android:id="@+id/projectPageTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:textColor="#ffffff"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                tools:text="国家级非物质文化遗产代表名录" />
-
-                            <androidx.appcompat.widget.AppCompatImageView
-                                android:id="@+id/projectFragmentShowContent"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_marginEnd="4dp"
-                                android:layout_marginBottom="-12dp"
-                                android:layout_toEndOf="@id/projectPageTitle"
-                                android:alpha="0.6"
-                                android:src="@drawable/fragment_project_show_content_icon"
-                                android:tint="#ffffff" />
-
-                        </RelativeLayout>
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/projectOverViewCardview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="16dp"
-                            app:cardBackgroundColor="#5f2121"
-                            app:cardCornerRadius="8dp"
-                            app:cardElevation="10dp"
-                            app:contentPadding="4dp">
-
-                            <LinearLayout
-                                android:id="@+id/project_desc_layout"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal" />
-                        </androidx.cardview.widget.CardView>
-
-                    </RelativeLayout>
-                </FrameLayout>
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-        </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/projectFragmentShowContent"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="-12dp"
+                android:layout_toEndOf="@id/projectPageTitle"
+                android:src="@drawable/fragment_project_show_content_icon"
+                android:tint="#848181" />
+        </RelativeLayout>
 
         <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
             android:id="@+id/projectInformationList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/fragmentProjectSearchCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_margin="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:cardCornerRadius="6dp"
-        app:cardElevation="12dp"
-        tools:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_search_grey_400_24dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_gravity="bottom"
-                android:background="@color/lightGrey" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
 </FrameLayout>
 

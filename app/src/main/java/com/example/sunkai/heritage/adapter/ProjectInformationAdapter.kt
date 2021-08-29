@@ -32,7 +32,6 @@ class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null)
     class Holder(binding: FragmentProjectListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val number = binding.projectNumber
         val title = binding.projectTitle
-        val type = binding.projectType
         val category = binding.projectCategory
         val location = binding.projectLocation
         val time = binding.projectTime
@@ -44,10 +43,9 @@ class ProjectInformationAdapter(private var listener:ProjectListItemClick?=null)
         holder.itemView.setOnClickListener {
             this.listener?.onItemClick(holder.itemView,data)
         }
-        holder.number.text=data.project_num
+        holder.number.text=data.num
         holder.title.text=data.title
         holder.category.text=data.cate
-        holder.type.text=data.type
         holder.time.text=data.rx_time
         holder.location.text=data.province
     }
