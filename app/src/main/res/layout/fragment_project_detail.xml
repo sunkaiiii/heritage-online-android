@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.fragment.ProjectDetailFragment">
 
     <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
@@ -14,91 +13,156 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <include layout="@layout/general_toolbar" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/projectDetailScrollView"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="#DFD3CE">
 
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/project_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#32313C"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        tools:text="孔雀东南飞传说" />
+
+                    <TextView
+                        android:id="@+id/project_location_and_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#707070"
+                        android:textSize="16sp"
+                        tools:text="安徽省北京市`民间文学" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/project_detail_second_layer_background"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp">
+
+                    <LinearLayout
+                        android:id="@+id/project_desc_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:orientation="horizontal"
+                        android:translationY="-9dp">
+
+                        <TextView
+                            android:id="@+id/project_category"
+                            style="@style/project_item_sub_desc_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="2016(第四批)" />
+
+                        <TextView
+                            android:id="@+id/project_num"
+                            style="@style/project_item_sub_desc_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            tools:text="I-130" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/project_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/project_desc_container"
+                        android:textColor="#32313C"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:translationY="-9dp"
+                        tools:text="新增项目" />
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="#DFD3CE"
+                    app:layout_collapseMode="pin"
+                    app:menu="@menu/common_share_menu"
+                    app:navigationIcon="@drawable/general_arrow_back">
+
+                    <TextView
+                        android:id="@+id/toolbar_project_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/projectDetailScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/project_detail_third_layer_background"
+            android:scrollbars="none"
+            android:translationY="-18dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:orientation="vertical">
 
-                <com.example.sunkai.heritage.views.ProjectDetailTopGridView
-                    android:id="@+id/projectDetailTopGridView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
-                <TextView
-                    android:id="@+id/projectDesc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <com.example.sunkai.heritage.views.ProjectDetailInheritateView
-                    android:id="@+id/activityProjectDetailInheritateLayout"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                <com.example.sunkai.heritage.views.ProjectDetailRalevantView
-                    android:id="@+id/activityProjectDetailRalevantProject"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    tools:visibility="visible" />
+                    <com.example.sunkai.heritage.views.ProjectDetailDescView
+                        android:id="@+id/projectDetailTopGridView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:id="@+id/projectDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.example.sunkai.heritage.views.ProjectDetailInheritateView
+                        android:id="@+id/activityProjectDetailInheritateLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                    <com.example.sunkai.heritage.views.ProjectDetailRalevantView
+                        android:id="@+id/activityProjectDetailRalevantProject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0"
-        android:elevation="16dp"
-        app:cardBackgroundColor="@color/colorPrimary"
-        tools:alpha="100">
-
-    </androidx.cardview.widget.CardView>
-
-    <com.example.sunkai.heritage.views.tools.FollowThemeToolbar
-        android:id="@+id/projectDetailToolbar"
-        style="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        android:elevation="12dp"
-        app:title="">
-
-        <com.example.sunkai.heritage.views.tools.RoundedShadowImageView
-            android:id="@+id/projectDetailToolbarBackArrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/back_arrow_white" />
-
-        <TextView
-            android:id="@+id/projectDetailToolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="@string/fragment_project_search_project" />
-    </com.example.sunkai.heritage.views.tools.FollowThemeToolbar>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </FrameLayout>

@@ -1,9 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
 import android.view.View
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.example.sunkai.heritage.databinding.FragmentProjectDetailBinding
 import com.example.sunkai.heritage.entity.ProjectDetailViewModel
 import com.example.sunkai.heritage.entity.response.ProjectDetailResponse
@@ -30,39 +28,12 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
             }
         }
     }
-    private var projectDetailToolbarLocationArray = IntArray(2)
-    private var projectDetailTitleLocationArray = IntArray(2)
-    private fun initView(projectDetail: ProjectDetailResponse) {
-        binding.projectDetailToolbarBackArrow.setOnClickListener { findNavController().popBackStack() }
-        binding.projectDetailToolbarTitle.text = projectDetail.title
-        binding.projectDetailToolbarTitle.alpha = 0f
-        binding.projectDetailScrollView.setOnScrollChangeListener { v: NestedScrollView?, _: Int, scrollY: Int, _: Int, oldScrollY: Int ->
-            binding.projectDetailToolbar.getLocationInWindow(projectDetailToolbarLocationArray)
-            val scrollDy = scrollY - oldScrollY
-            //设置toolbar title的透明度
-            var crossY =
-                projectDetailToolbarLocationArray[1] + binding.projectDetailToolbar.height - projectDetailTitleLocationArray[1]
-            if (crossY < 0) {
-                crossY = 0
-            }
-            val alpha = crossY.toFloat() / binding.projectDetailToolbar.height
-            binding.projectDetailToolbarTitle.alpha = alpha
-            //设置toolbar的位置
-            if (projectDetailTitleLocationArray[1] < projectDetailToolbarLocationArray[1] && binding.projectDetailToolbar.translationY + binding.projectDetailToolbar.height >= 0 && scrollDy > 0) {
-                binding.projectDetailToolbar.translationY = binding.projectDetailToolbar.translationY - scrollDy
-            } else if (scrollDy < 0 && binding.projectDetailToolbar.translationY < 0) {
-                binding.projectDetailToolbar.translationY = binding.projectDetailToolbar.translationY - scrollDy
-                if (binding.projectDetailToolbar.translationY > 0) {
-                    binding.projectDetailToolbar.translationY = 0f
-                }
-            }
-        }
-    }
+
 
 
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         changeWidgeTheme()
-        initView(projectDetail)
+        binding.projectName.text = projectDetail.title
         binding.projectDesc.text = projectDetail.text
         binding.projectDetailTopGridView.setData(projectDetail.desc)
         if (!projectDetail.inheritate.isNullOrEmpty()) {
