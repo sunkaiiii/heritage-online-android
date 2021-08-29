@@ -133,7 +133,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp">
+                    android:paddingStart="40dp"
+                    android:paddingTop="18dp"
+                    android:paddingEnd="40dp"
+                    android:paddingBottom="18dp">
 
                     <com.example.sunkai.heritage.views.ProjectDetailDescView
                         android:id="@+id/projectDetailTopGridView"
@@ -144,7 +147,16 @@
                     <TextView
                         android:id="@+id/projectDesc"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textColor="#32313C"
+                        android:textSize="14sp" />
+
+                    <com.example.sunkai.heritage.views.ProjectDetailRalevantView
+                        android:id="@+id/activityProjectDetailRalevantProject"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
                     <com.example.sunkai.heritage.views.ProjectDetailInheritateView
                         android:id="@+id/activityProjectDetailInheritateLayout"
@@ -153,12 +165,7 @@
                         android:visibility="gone"
                         tools:visibility="visible" />
 
-                    <com.example.sunkai.heritage.views.ProjectDetailRalevantView
-                        android:id="@+id/activityProjectDetailRalevantProject"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
+
                 </LinearLayout>
 
             </LinearLayout>

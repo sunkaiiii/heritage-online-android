@@ -21,7 +21,7 @@ class ProjectDetailRalevantView(context: Context, attr: AttributeSet?) : FrameLa
         val contentView: LinearLayout = findViewById(R.id.projectDetailRelativeInheritate)
         datas.forEach { project ->
             try {
-                val itemView = LayoutInflater.from(context).inflate(R.layout.fragment_project_detail_inheritate_layout_item, contentView, false)
+                val itemView = LayoutInflater.from(context).inflate(R.layout.fragment_project_detail_relevant_project_item, contentView, false)
                 val name: TextView = itemView.findViewById(R.id.relevant_name)
                 val province: TextView = itemView.findViewById(R.id.relevant_provance)
                 name.text = project.content.first { it.key.contains("名称") }.value
