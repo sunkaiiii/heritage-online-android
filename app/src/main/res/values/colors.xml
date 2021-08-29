@@ -20,5 +20,5 @@
     <color name="news_detail_text_color">#1D0500</color>
     <color name="news_detail_subcontent_color">#E4E4E4</color>
     <color name="banner_text_color">#CCE3D6</color>
-
+    <color name="people_list_item_text_color">#565A58</color>
 </resources>

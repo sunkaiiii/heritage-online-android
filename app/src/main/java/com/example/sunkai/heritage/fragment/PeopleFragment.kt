@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
@@ -61,7 +62,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
             }
         })
         val adapter = PeopleFragmentListAdapter(glide)
-        binding.peopleFragmentRecyclerView.layoutManager = GridLayoutManager(requireContext(),2)
+        binding.peopleFragmentRecyclerView.layoutManager = StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL)
         binding.peopleFragmentRecyclerView.adapter = adapter
         peopleViewModel.peopleList.observe(viewLifecycleOwner) {
             binding.peopleLoadingProgressBar.visibility = View.GONE
