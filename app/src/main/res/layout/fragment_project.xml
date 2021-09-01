@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="国家级非物质文化遗产代表名录" />
 
