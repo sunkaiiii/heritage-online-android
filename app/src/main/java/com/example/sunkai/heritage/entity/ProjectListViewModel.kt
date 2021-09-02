@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectPageViewModel @Inject constructor(val repository: Repository):ViewModel(){
-    val projectBasicInformation=repository.getProjectBasicInformation()
+class ProjectListViewModel @Inject constructor(val repository: Repository):ViewModel() {
+    val projectList=repository.fetchProjectListPageData().cachedIn(viewModelScope).asLiveData(
+        Dispatchers.Main)
 }

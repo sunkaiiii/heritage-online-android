@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.adapter.ProjectFragmentViewPagerAdapter
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.databinding.FragmentProjectBinding
 import com.example.sunkai.heritage.dialog.FragmentProjectContentDialog
@@ -14,8 +15,10 @@ import com.example.sunkai.heritage.entity.response.ProjectBasicInformation
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.DATA
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.example.sunkai.heritage.value.PROJECT_FRAGMENT_TABLAYOUT_TEXT
 
 @AndroidEntryPoint
 class ProjectFragment : BaseViewBindingFragment<FragmentProjectBinding>() {
@@ -27,24 +30,14 @@ class ProjectFragment : BaseViewBindingFragment<FragmentProjectBinding>() {
 
 
     override fun initView() {
-
         projectViewModel.projectBasicInformation.observe(viewLifecycleOwner, {
             fillProjectBasicDataIntoView(it)
         })
-        val adapter = ProjectInformationAdapter()
-        adapter.setProjectItemClickListener { _, projectListInformation ->
-            findNavController().navigate(
-                R.id.project_list_to_project_detail,
-                bundleOf(DATA to projectListInformation.link)
-            )
-        }
-        binding.projectInformationList.adapter = adapter
-
-        projectViewModel.projectList.observe(viewLifecycleOwner, {
-            lifecycleScope.launch {
-                adapter.submitData(it)
-            }
-        })
+        val adapter = ProjectFragmentViewPagerAdapter(this)
+        binding.fragmentProjectViewPager.adapter = adapter
+        TabLayoutMediator(binding.fragmentProjectTablayout,binding.fragmentProjectViewPager){tab,position ->
+            tab.text = PROJECT_FRAGMENT_TABLAYOUT_TEXT[position]
+        }.attach()
     }
 
     private fun fillProjectBasicDataIntoView(projectInformation: ProjectBasicInformation) {

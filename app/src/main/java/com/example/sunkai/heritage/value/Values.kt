@@ -56,6 +56,8 @@ const val IHCHINA = "http://www.ihchina.cn"
 
 val MAIN_PAGE_TABLAYOUT_TEXT = arrayListOf(EHeritageApplication.instance.getString(R.string.news_feed), EHeritageApplication.instance.getString(R.string.forums), EHeritageApplication.instance.getString(R.string.special_topic))
 
+val PROJECT_FRAGMENT_TABLAYOUT_TEXT = arrayListOf("名录","统计")
+
 const val NEWS_DETAIL_DATABASE="NewsDetail"
 
 

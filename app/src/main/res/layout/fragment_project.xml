@@ -45,11 +45,22 @@
                 android:tint="#848181" />
         </RelativeLayout>
 
-        <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
-            android:id="@+id/projectInformationList"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/fragmentProjectTablayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            app:tabIndicatorColor="@color/black"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorHeight="5dp"
+            app:tabSelectedTextColor="@color/black"
+            app:tabTextColor="@color/banner_unselected_gray" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/fragmentProjectViewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:layout_height="match_parent" />
+
 
     </LinearLayout>
 

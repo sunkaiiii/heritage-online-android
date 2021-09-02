@@ -1,22 +1,29 @@
 package com.example.sunkai.heritage.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.material.Text
+import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewModelProvider
-import com.example.sunkai.heritage.databinding.FragmentProjectStatisticsBinding
 import com.example.sunkai.heritage.entity.ProjectStatisticsViewModel
-import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
-import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
+import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 
-class ProjectStatisticsFragment:BaseViewBindingFragment<FragmentProjectStatisticsBinding>() {
-    val viewModel by lazy { ViewModelProvider(this).get(ProjectStatisticsViewModel::class.java) }
-    override fun getBindingClass(): Class<FragmentProjectStatisticsBinding> = FragmentProjectStatisticsBinding::class.java
+class ProjectStatisticsFragment:BaseGlideFragment() {
+    val viewModel by lazy { ViewModelProvider(requireActivity()).get(ProjectStatisticsViewModel::class.java) }
 
-    override fun initView() {
-        viewModel.projectStatistics.observe(viewLifecycleOwner){
-            setStatisticsDataIntoView(it)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val view = ComposeView(requireContext())
+        view.apply {
+            setContent {
+                Text("compose view text")
+            }
         }
-    }
-
-    private fun setStatisticsDataIntoView(statisticsResponse: HeritageProjectStatisticsResponse?) {
-
+        return view
     }
 }
