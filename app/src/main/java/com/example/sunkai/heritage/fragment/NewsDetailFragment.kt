@@ -18,6 +18,7 @@ import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
+import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
@@ -60,8 +61,13 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
 
 
     private fun setDataToView(data: NewsDetail) {
+        val imgUrl = data.compressImg ?: data.img
+        if(imgUrl != null){
+            glide.loadImageFromServer(imgUrl).into(binding.newsDetailMainImage)
+        }
         binding.bottomNewsDetailTitle.text =
             data.title.replace("\r", "").replace("\n", "").replace("\t", "")
+        binding.newsDetailSubContent.text = data.subContent
         binding.newsDetailSubtitleLayout.removeAllViews()
         data.subtitle?.let { list ->
             list.forEach {

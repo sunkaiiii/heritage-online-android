@@ -11,6 +11,9 @@ class NewsDetail(val link: String,
                  val subtitle: List<String>?,
                  val time: String?,
                  val author: String,
+                 val subContent:String,
+                 val img:String?,
+                 val compressImg: String?,
                  var content: List<NewsDetailContent>,
                  var relativeNews: List<NewsDetailRelativeNews>) {
     constructor(databaseData: NewsWithNewsDetailContent) : this(
@@ -19,6 +22,9 @@ class NewsDetail(val link: String,
             databaseData.newsDetail.subtitle.split(","),
             databaseData.newsDetail.time,
             databaseData.newsDetail.author,
+        "",
+        null,
+        null,
             arrayListOf(),
             arrayListOf()
     ) {
