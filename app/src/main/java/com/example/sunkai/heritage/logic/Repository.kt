@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.logic
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -187,6 +188,12 @@ class Repository @Inject constructor() {
             config = PagingConfig(COMMON_LIST_PAGE_SIZE),
             pagingSourceFactory = { SearchProjectPageSource(request, this::getSearchResultCaller) }
         ).flow
+    }
+
+    fun getProjectStatistics() = liveData(Dispatchers.IO){
+        val statisticsResponse = EHeritageApi.getProjectStatistics().await()
+        Result.success(statisticsResponse)
+        emit(statisticsResponse)
     }
 
     fun getSearchHistory() =

@@ -33,6 +33,7 @@ const val ProjectDetail = "/api/HeritageProject/GetHeritageDetail"
 const val InheritanceDetail = "/api/HeritageProject/GetInheritatePeople"
 const val SearchCategory = "/api/HeritageProject/GetSearchCategories"
 const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
+const val ProjectStatistics = "/api/HeritageProject/GetProjectStatisticInformation"
 const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
 
 private const val HOST = "sunkai.xyz"
@@ -101,6 +102,9 @@ interface EHeritageApiRetrofit{
 
     @GET(SearchProject)
     fun getSearchProjectResult(@Query("num")num:String?,@Query("title")title:String?,@Query("type")type:String?,@Query("rx_time")rx_time:String?,@Query("cate")cate:String?,@Query("province")province:String?,@Query("unit")unit:String?,@Path("page")page:Int):Call<List<ProjectListInformation>>
+
+    @GET(ProjectStatistics)
+    fun getProjectStatistics():Call<HeritageProjectStatisticsResponse>
 }
 
 suspend fun <T> Call<T>.await():T{
