@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,6 +19,7 @@ import com.example.sunkai.heritage.entity.ProjectStatisticsViewModel
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.views.ProjectStatisticsByTime
+import com.example.sunkai.heritage.views.ProjectStatisticsByTypeView
 
 class ProjectStatisticsFragment : BaseGlideFragment() {
     val viewModel by lazy { ViewModelProvider(requireActivity()).get(ProjectStatisticsViewModel::class.java) }
@@ -40,9 +43,11 @@ class ProjectStatisticsFragment : BaseGlideFragment() {
     @Composable
     fun StatisticsViews(list: HeritageProjectStatisticsResponse) {
         Column(modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp)) {
+                .verticalScroll(rememberScrollState())
+                .padding(12.dp)) {
             ProjectStatisticsByTime(list.statisticsByTime)
+            Spacer(modifier = Modifier.height(18.dp))
+            ProjectStatisticsByTypeView(list.statisticsByType)
         }
     }
 }
