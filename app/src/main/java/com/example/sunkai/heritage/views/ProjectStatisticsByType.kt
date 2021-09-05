@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.views
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyRow
@@ -14,7 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,9 +42,9 @@ class ProjectStatisticsDescribtionColorSet(borderColor: Long, backgroundColor: L
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProjectStatisticsByTypeView(statisByType: List<HeritageProjectStatisticsItem>) {
+    val allValue = statisByType.sumOf { it.value }.toFloat()
     Card(elevation = 8.dp) {
         Column(modifier = Modifier
                 .fillMaxWidth()
@@ -52,10 +54,27 @@ fun ProjectStatisticsByTypeView(statisByType: List<HeritageProjectStatisticsItem
             LazyRow {
                 items(statisByType.size) { index ->
                     val it = statisByType[index]
-                    ProjectStatiticsDescView(firstText = it.name, secondText = "${it.value}%", descViewColors[index % descViewColors.size])
+                    ProjectStatiticsDescView(firstText = it.name, secondText = "${((it.value / allValue) * 100).toInt()}%", descViewColors[index % descViewColors.size])
                     Spacer(modifier = Modifier.width(8.dp))
                 }
             }
+            Spacer(modifier = Modifier.height(26.dp))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Canvas(modifier = Modifier
+                        .width(210.dp)
+                        .height(210.dp)) {
+                    var startArc = 0f
+                    statisByType.forEach {
+                        for (i in descViewColors.indices) {
+                            val currentArc = (it.value / allValue) * 360
+                            drawArc(color = descViewColors[i].borderColor, startAngle = startArc, sweepAngle = currentArc, useCenter = true)
+                            startArc += currentArc
+                        }
+                    }
+                    drawCircle(Color.White, 130.dp.value)
+                }
+            }
+
         }
     }
 }
