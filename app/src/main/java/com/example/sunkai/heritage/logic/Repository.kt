@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.logic
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -9,6 +8,7 @@ import com.example.sunkai.heritage.database.entities.NewsDetailContent
 import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
 import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.entity.request.SearchRequest
+import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.entity.response.ProjectListInformation
@@ -191,7 +191,9 @@ class Repository @Inject constructor() {
     }
 
     fun getProjectStatistics() = liveData(Dispatchers.IO){
-        val statisticsResponse = EHeritageApi.getProjectStatistics().await()
+        val tempResponse = EHeritageApi.getProjectStatistics().await()
+        val statisListByRegion = tempResponse.statisticsByRegion.sortedByDescending { it.value }
+        val statisticsResponse = HeritageProjectStatisticsResponse(statisListByRegion,tempResponse.statisticsByTime,tempResponse.statisticsByType)
         Result.success(statisticsResponse)
         emit(statisticsResponse)
     }
