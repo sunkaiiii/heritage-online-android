@@ -21,6 +21,7 @@ import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.Utils.dip2px
+import com.example.sunkai.heritage.tools.Utils.getColorResource
 import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,6 +51,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
+        val drawable = ColorDrawable(getColorResource(R.color.black))
         val moveContainerView = { initialHorizentaltPosition: Float, movePosition: Float ->
             var nextPosition = movePosition - initialHorizentaltPosition + initialTranslateY
             if (nextPosition < minBoundry) {
@@ -61,13 +63,25 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
             if (binding.newsListContainer.translationY != nextPosition) {
                 binding.newsListContainer.translationY = nextPosition
 
-                val offsetFromMaxBoundryPercentage = (maxBoundry - nextPosition)/(maxBoundry - minBoundry)
-                val bannerBlurRadius = minRadius + (maxRadius - minRadius)*offsetFromMaxBoundryPercentage
-                Log.d(TAG,bannerBlurRadius.toString())
-                if(bannerBlurRadius == 0F && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                val offsetFromMaxBoundryPercentage =
+                    (maxBoundry - nextPosition) / (maxBoundry - minBoundry)
+                val bannerBlurRadius =
+                    minRadius + (maxRadius - minRadius) * offsetFromMaxBoundryPercentage
+                Log.d(TAG, bannerBlurRadius.toString())
+                if (bannerBlurRadius == 0F && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     binding.mainPageSlideViewpager.setRenderEffect(null)
-                }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                    binding.mainPageSlideViewpager.setRenderEffect(RenderEffect.createBlurEffect(bannerBlurRadius,bannerBlurRadius,Shader.TileMode.CLAMP))
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    binding.mainPageSlideViewpager.setRenderEffect(
+                        RenderEffect.createBlurEffect(
+                            bannerBlurRadius,
+                            bannerBlurRadius,
+                            Shader.TileMode.CLAMP
+                        )
+                    )
+                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    val maxAlpha = 175
+                    drawable.alpha = (maxAlpha*offsetFromMaxBoundryPercentage).toInt()
+                    binding.mainPageSlideViewpager.foreground = drawable
                 }
             }
         }

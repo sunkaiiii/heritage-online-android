@@ -2,6 +2,7 @@ package com.example.sunkai.heritage.fragment
 
 import android.graphics.RenderEffect
 import android.graphics.Shader
+import android.graphics.drawable.ColorDrawable
 import android.os.*
 import android.view.View
 import android.view.ViewTreeObserver
@@ -19,6 +20,7 @@ import com.example.sunkai.heritage.databinding.FragmentPeopleBinding
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
+import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,6 +93,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val minBoundry = 50.dip2px()
                 val minRadius = 0.dip2px()
                 val maxRadius = 12.dip2px()
+                val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
                 binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
                 binding.peopleContainer.setOnMoveAction { distance, offsetPercentage ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -102,6 +105,10 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                                 Shader.TileMode.CLAMP
                             )
                         )
+                    }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        val maxAlpha = 175
+                        drawable.alpha = (maxAlpha*offsetPercentage).toInt()
+                        binding.fragmentPeopleViewpager.foreground = drawable
                     }
 
                 }

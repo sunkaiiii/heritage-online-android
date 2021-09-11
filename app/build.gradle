@@ -23,8 +23,6 @@ android {
             versionName "5.0.0-beta1"
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             resConfigs "zh", "en"
-            renderscriptTargetApi 31
-            renderscriptSupportModeEnabled true
         }
     } else {
         throw new GradleException("Could not read version.properties!")
