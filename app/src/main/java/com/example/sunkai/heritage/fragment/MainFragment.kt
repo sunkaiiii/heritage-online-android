@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.RenderEffect
 import android.graphics.Shader
@@ -78,14 +77,14 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
                             Shader.TileMode.CLAMP
                         )
                     )
-                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                } else{
                     val maxAlpha = 175
                     drawable.alpha = (maxAlpha*offsetFromMaxBoundryPercentage).toInt()
                     binding.mainPageSlideViewpager.foreground = drawable
                 }
             }
         }
-        binding.newsListContainer.setDispatchTouchEventHandler { view, motionEvent ->
+        binding.newsListContainer.dispatchTouchEventHandler = { view, motionEvent ->
             when (motionEvent.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     initialTranslateY = view.translationY

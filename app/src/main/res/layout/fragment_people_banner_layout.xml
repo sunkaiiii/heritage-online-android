@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         tools:scaleType="centerCrop"
-        tools:src="@drawable/project_detail_top_background" />
+        tools:src="@color/deepGrey" />
 
     <TextView
         android:id="@+id/bannerImageDescTextView"

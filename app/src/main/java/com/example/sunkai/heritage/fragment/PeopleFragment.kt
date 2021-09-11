@@ -105,7 +105,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                                 Shader.TileMode.CLAMP
                             )
                         )
-                    }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    }else{
                         val maxAlpha = 175
                         drawable.alpha = (maxAlpha*offsetPercentage).toInt()
                         binding.fragmentPeopleViewpager.foreground = drawable

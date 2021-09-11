@@ -1,57 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <include layout="@layout/general_toolbar" />
 
     <ImageView
         android:id="@+id/people_main_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/people_main_image_blur"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:alpha="0"
+        android:foreground="#55FFFFFF"
+        android:scaleType="centerCrop" />
+
+    <com.example.sunkai.heritage.views.CollaborativeFrameLayout
+        android:id="@+id/people_detail_collaborative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:translationY="400dp">
 
-        <TextView
-            android:id="@+id/people_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="54sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/people_sub_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/people_detail_author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/people_detail_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/people_detail_list"
+        <com.example.sunkai.heritage.views.PeopleDetailRoundedBackgroundView
+            android:id="@+id/people_rounded_background_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/people_detail_information_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="8dp"
+            android:translationY="100dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/people_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:paddingStart="40dp"
+                android:paddingEnd="40dp"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/people_detail_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/people_detail_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/people_detail_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </com.example.sunkai.heritage.views.CollaborativeFrameLayout>
+
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/general_toolbar" />
 
 </FrameLayout>

@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.google.android.material.card.MaterialCardView
+import android.widget.FrameLayout
 
-class CollaborativeBounceCardView @JvmOverloads constructor(
+class CollaborativeFrameLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : MaterialCardView(context, attrs, defStyleAttr), CollaborativeBounceView {
+) : FrameLayout(context, attrs, defStyleAttr), CollaborativeBounceView {
     private var _dispatchTouchEventHandler: ((View, MotionEvent) -> Unit)? = null
     private var _onBounceListener: ((CollaborativeBounceView.BounceType) -> Unit)? = null
     private var _onMoveListener: ((Int, Float) -> Unit)? = null
@@ -16,7 +16,7 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
     override var maxBoundry = -1
     override var initialActionDownTranslationY = -1f
     override var horizentalInitialPosition = -1f
-    override var autoBounce: Boolean = true
+    override var autoBounce: Boolean = false
     override var viewTranslationDistance
         get() = translationY
         set(value) {
@@ -40,6 +40,10 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
             _onMoveListener = value
         }
 
+    init {
+        isClickable = true
+    }
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
@@ -47,9 +51,7 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
         return super.dispatchTouchEvent(event)
     }
 
-
     private fun validateFields() {
 
     }
-
 }
