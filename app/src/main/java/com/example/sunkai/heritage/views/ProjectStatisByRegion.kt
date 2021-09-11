@@ -1,23 +1,34 @@
 package com.example.sunkai.heritage.views
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.entity.ProjectStatisticsViewModel
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsItem
 
 @ExperimentalFoundationApi
 @Composable
-fun ProjectStatisticsByRegion(statisByRegion: List<HeritageProjectStatisticsItem>) {
+fun ProjectStatisticsByRegion(
+    statisByRegion: List<HeritageProjectStatisticsItem>,
+    viewModel: ProjectStatisticsViewModel
+) {
+    val isExpand: Boolean by viewModel.isExpandStatisticsByRegion.observeAsState(false)
     Card(elevation = 8.dp) {
         Column(modifier = Modifier
             .padding(18.dp)
@@ -36,16 +47,38 @@ fun ProjectStatisticsByRegion(statisByRegion: List<HeritageProjectStatisticsItem
                     statisByRegion = statisByRegion,
                     modifier = modifier,
                     maxValue,
-                    maxColor
+                    maxColor,
+                    isExpand
                 )
                 StatisitcsRegionColumn(
                     startIndex = 1,
                     statisByRegion = statisByRegion,
                     modifier = modifier,
                     maxValue,
-                    maxColor
+                    maxColor,
+                    isExpand
                 )
             }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                Modifier
+                    .align(Alignment.End)
+                    .clickable {
+                        viewModel.onExpandAreaClick()
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(if (isExpand) "收起" else "显示更多")
+                Image(
+                    painter = painterResource(if (isExpand) R.drawable.shrink else R.drawable.expand),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .width(24.dp)
+                        .height(24.dp)
+                )
+            }
+
+
         }
     }
 }
@@ -57,13 +90,14 @@ fun StatisitcsRegionColumn(
     modifier: Modifier,
     maxValue: Int,
     maxColor: Color,
+    isExpand: Boolean,
     stepping: Int = 2,
     minAlpha: Float = 35 / 255f
 ) {
     val size = statisByRegion.size
     var index = startIndex
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        while (index < size) {
+        while (index < if (isExpand) size else 3 * stepping) {
             val it = statisByRegion[index]
             val valuePercentage = it.value.toFloat() / maxValue;
             val valueAlpha = 1 - ((1 - minAlpha) - (1 - minAlpha) * valuePercentage)
@@ -87,7 +121,7 @@ fun StatisitcsRegionColumn(
                             .padding(8.dp)
                             .fillMaxWidth()
                     ) {
-                        Text(it.name,textAlign = TextAlign.Center)
+                        Text(it.name, textAlign = TextAlign.Center)
                         Text(it.value.toString())
                     }
                     index += stepping

@@ -45,14 +45,16 @@ class ProjectStatisticsFragment : BaseGlideFragment() {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun StatisticsViews(list: HeritageProjectStatisticsResponse) {
-        Column(modifier = Modifier
+        Column(
+            modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(12.dp)) {
+                .padding(12.dp)
+        ) {
             ProjectStatisticsByTime(list.statisticsByTime)
             Spacer(modifier = Modifier.height(18.dp))
             ProjectStatisticsByTypeView(list.statisticsByType)
             Spacer(modifier = Modifier.height(18.dp))
-            ProjectStatisticsByRegion(list.statisticsByRegion)
+            ProjectStatisticsByRegion(list.statisticsByRegion, viewModel)
         }
     }
 }
