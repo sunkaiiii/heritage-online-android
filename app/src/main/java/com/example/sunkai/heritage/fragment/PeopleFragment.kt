@@ -4,6 +4,8 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
 import android.os.*
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.os.bundleOf
@@ -23,6 +25,7 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.views.CollaborativeBounceView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -64,7 +67,8 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
             }
         })
         val adapter = PeopleFragmentListAdapter(glide)
-        binding.peopleFragmentRecyclerView.layoutManager = StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL)
+        binding.peopleFragmentRecyclerView.layoutManager =
+            StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL)
         binding.peopleFragmentRecyclerView.adapter = adapter
         peopleViewModel.peopleList.observe(viewLifecycleOwner) {
             binding.peopleLoadingProgressBar.visibility = View.GONE
@@ -95,6 +99,18 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val maxRadius = 12.dip2px()
                 val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
                 binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
+                binding.peopleContainer.setMoveEventBlocker { event, moveOrientation ->
+                    if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || isClickOutRecyclerView()) {
+                        return@setMoveEventBlocker false
+                    }
+                    val gridLayoutManager =
+                        binding.peopleFragmentRecyclerView.layoutManager as? StaggeredGridLayoutManager
+                            ?: return@setMoveEventBlocker false
+                    val array = gridLayoutManager.findFirstCompletelyVisibleItemPositions(
+                        IntArray(gridLayoutManager.spanCount)
+                    )
+                    return@setMoveEventBlocker array[0] != 0
+                }
                 binding.peopleContainer.setOnMoveAction { distance, offsetPercentage ->
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         val bannerBlurRadius =
@@ -105,15 +121,21 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                                 Shader.TileMode.CLAMP
                             )
                         )
-                    }else{
+                    } else {
                         val maxAlpha = 175
-                        drawable.alpha = (maxAlpha*offsetPercentage).toInt()
+                        drawable.alpha = (maxAlpha * offsetPercentage).toInt()
                         binding.fragmentPeopleViewpager.foreground = drawable
                     }
-
                 }
             }
         })
+    }
+
+    private fun isClickOutRecyclerView(): Boolean {
+        val position = binding.peopleContainer.horizentalInitialPosition
+        val locationRect = IntArray(2)
+        binding.peopleFragmentRecyclerView.getLocationOnScreen(locationRect)
+        return position < locationRect[1]
     }
 
     private fun startViewpagerScrollDelay() {

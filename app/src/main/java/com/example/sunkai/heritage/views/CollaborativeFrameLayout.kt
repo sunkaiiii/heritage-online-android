@@ -40,6 +40,9 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
             _onMoveListener = value
         }
 
+    override var interceptTouchEventBlocker: ((event: MotionEvent) -> Boolean)? = null
+    override var interceptMoveEventBlocker: ((MotionEvent, CollaborativeBounceView.MoveOrientation) -> Boolean)? = null
+
     init {
         isClickable = true
     }
@@ -48,7 +51,7 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
         intercepter.dispatchTouchEvent(event)
-        return super.dispatchTouchEvent(event)
+        return interceptTouchEventBlocker?.let { it(ev) }==true || super.dispatchTouchEvent(event)
     }
 
     private fun validateFields() {

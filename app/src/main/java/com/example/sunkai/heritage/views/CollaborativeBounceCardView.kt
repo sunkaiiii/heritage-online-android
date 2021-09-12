@@ -39,17 +39,21 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
         set(value) {
             _onMoveListener = value
         }
+    override var interceptTouchEventBlocker: ((event: MotionEvent) -> Boolean)? = null
+    override var interceptMoveEventBlocker: ((MotionEvent, CollaborativeBounceView.MoveOrientation) -> Boolean)? = null
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
         intercepter.dispatchTouchEvent(event)
-        return super.dispatchTouchEvent(event)
+        return interceptTouchEventBlocker?.let { it(ev) }==true || super.dispatchTouchEvent(event)
     }
+
 
 
     private fun validateFields() {
 
     }
+
 
 }

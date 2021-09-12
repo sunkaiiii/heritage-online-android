@@ -15,7 +15,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-private fun buildUrl(baseImageUrl: String): String {
+fun buildUrl(baseImageUrl: String): String {
     var newUrl = baseImageUrl.replace(",", "")
     newUrl = if (!newUrl.contains(IMAGE_HOST)) IMAGE_HOST + newUrl else newUrl
     return newUrl

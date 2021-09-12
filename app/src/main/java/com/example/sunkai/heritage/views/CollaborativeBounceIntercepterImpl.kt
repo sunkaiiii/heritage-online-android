@@ -10,9 +10,13 @@ class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView) :
                 view.initialActionDownTranslationY = view.viewTranslationDistance
                 view.horizentalInitialPosition = event.rawY
             }
-            MotionEvent.ACTION_MOVE -> moveView(
-                event.rawY
-            )
+            MotionEvent.ACTION_MOVE -> {
+                val moveOrientation = if(event.rawY - view.horizentalInitialPosition > 0)CollaborativeBounceView.MoveOrientation.Down else CollaborativeBounceView.MoveOrientation.Up
+                if(view.interceptMoveEventBlocker==null || view.interceptMoveEventBlocker?.let { it(event,moveOrientation) } == false){
+                    moveView(event.rawY)
+                }
+
+            }
             MotionEvent.ACTION_UP -> {
                 if (view.autoBounce) {
                     onBounce()

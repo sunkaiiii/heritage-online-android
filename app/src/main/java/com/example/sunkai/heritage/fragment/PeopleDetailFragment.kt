@@ -1,32 +1,54 @@
 package com.example.sunkai.heritage.fragment
 
-import android.content.Intent
-import android.graphics.Color
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.view.View
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.example.sunkai.heritage.adapter.NewsDetailRecyclerViewAdapter
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.databinding.FragmentPeopleDetailBinding
 import com.example.sunkai.heritage.entity.PeopleDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
-import com.example.sunkai.heritage.entity.response.NewsDetailRelativeNews
+import com.example.sunkai.heritage.entity.response.NewsDetailContent
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
-import com.example.sunkai.heritage.tools.Utils.dip2px
+import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.buildUrl
 import com.example.sunkai.heritage.tools.loadImageFromServer
 import com.example.sunkai.heritage.tools.toBlurBitmap
 import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.TYPE_TEXT
+import com.example.sunkai.heritage.views.CollaborativeBounceView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding>() {
+    private var isFullyScrollToTheFirstItem: (() -> Boolean)? = null
+
     private val viewModel by lazy { ViewModelProvider(this).get(PeopleDetailViewModel::class.java) }
 
     override fun getBindingClass(): Class<FragmentPeopleDetailBinding> =
@@ -42,44 +64,115 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
                 viewModel.setLink(it)
             }
         }
-        binding.toolbarLayout.toolbar.setBackgroundColor(Color.TRANSPARENT)
+        binding.toolbarLayout.toolbar.setBackgroundColor(android.graphics.Color.TRANSPARENT)
     }
 
     private fun setDataToView(data: NewsDetail) {
 
-        binding.peopleTitle.text =
-            data.title.replace("\r", "").replace("\n", "").replace("\t", "")
+
         loadImage(data)
         initScrollBehaviour()
+        binding.peopleDetailInformationContainer.setContent {
+            PeopleDetailContentView(data)
+        }
+    }
 
-        binding.peopleDetailAuthor.text = data.author
-        val adapter =
-            NewsDetailRecyclerViewAdapter(data.content, glide, data.relativeNews)
-        adapter.setOnRelevantNewsClickListner(object :
-            NewsDetailRecyclerViewAdapter.onRelevantNewsClick {
-            override fun onClick(v: View, news: NewsDetailRelativeNews) {
-                val intent = Intent()
-                intent.putExtra(DATA, news.link)
-                startActivity(intent)
+    @Composable
+    fun PeopleDetailContentView(peopleDetail: NewsDetail) {
+        val listState = rememberLazyListState()
+        isFullyScrollToTheFirstItem = { listState.isFullyScrolledToTheFirst() }
+        val isTextLine = { content: NewsDetailContent -> content.type == TYPE_TEXT }
+        LazyColumn(Modifier.fillMaxSize(), state = listState) {
+            item {
+                PeopleDetailTitleView(peopleDetail)
             }
+            val detailList = peopleDetail.content
+            items(detailList.size) { index ->
+                val data = detailList[index]
+                if (isTextLine(data)) {
+                    val isLastImage = index - 1 >= 0 && !isTextLine(detailList[index - 1])
+                    PeopleDetailTextLine(data, isLastImage)
+                } else {
+                    PeopleDetailImageView(data)
+                }
+            }
+            val relevantNews = peopleDetail.relativeNews
+            items(relevantNews.size) { index ->
+                val news = relevantNews[index]
+                Text(news.title)
+            }
+        }
+    }
 
-        })
-        binding.peopleDetailList.adapter = adapter
+    @Composable
+    fun PeopleDetailTextLine(content: NewsDetailContent, isLastOneImage: Boolean = false) {
+        Text(
+            content.content,
+            color = Color(Utils.getColorResource(R.color.news_detail_text_color)),
+            fontSize = 16.sp,
+            fontWeight = if (isLastOneImage) FontWeight.Bold else FontWeight.Normal
+        )
+    }
+
+    @OptIn(ExperimentalCoilApi::class)
+    @Composable
+    fun PeopleDetailImageView(content: NewsDetailContent) {
+        val url = content.compressImg ?: content.content
+        Image(
+            painter = rememberImagePainter(buildUrl(url), builder = {
+                placeholder(R.drawable.place_holder)
+            }),
+            contentDescription = null,
+            Modifier
+                .shadow(8.dp, RoundedCornerShape(27.dp))
+                .clip(
+                    RoundedCornerShape(27.dp)
+                )
+                .fillMaxWidth()
+                .height(200.dp),
+            contentScale = ContentScale.Crop
+        )
+    }
+
+    @Composable
+    fun PeopleDetailTitleView(data: NewsDetail) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                data.title,
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+                modifier = Modifier.padding(start = 40.dp, end = 40.dp),
+                fontWeight = FontWeight.Bold
+            )
+            Text(data.author, fontSize = 16.sp)
+            Text(data.time ?: "", fontSize = 16.sp)
+        }
     }
 
     private fun initScrollBehaviour() {
         val initialAlphaOfCollaborativeView = binding.peopleRoundedBackgroundView.alpha
-        val minInformationContainerTranslationY = binding.toolbarLayout.toolbar.height + 8.dip2px()
         val initalInformationContainerTranslationY =
             binding.peopleDetailInformationContainer.translationY
         binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0)
+        binding.peopleDetailCollaborativeLayout.setTouchEventBlocker {
+            return@setTouchEventBlocker binding.peopleDetailCollaborativeLayout.translationY != 0f
+        }
+        binding.peopleDetailCollaborativeLayout.setMoveEventBlocker { event, moveOrientation ->
+            if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up) {
+                return@setMoveEventBlocker false
+            }
+            return@setMoveEventBlocker isFullyScrollToTheFirstItem?.let { !it() } ?: false
+        }
         binding.peopleDetailCollaborativeLayout.setOnMoveAction { distance, offsetPercentage ->
             val currentAlpha =
                 initialAlphaOfCollaborativeView - (initialAlphaOfCollaborativeView * offsetPercentage)
             binding.peopleRoundedBackgroundView.alpha = currentAlpha
             binding.peopleMainImageBlur.alpha = 1 * offsetPercentage
             binding.peopleDetailInformationContainer.translationY =
-                initalInformationContainerTranslationY - ((initalInformationContainerTranslationY - minInformationContainerTranslationY) * offsetPercentage)
+                initalInformationContainerTranslationY - (initalInformationContainerTranslationY * offsetPercentage)
         }
     }
 
@@ -124,7 +217,12 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
                     }
                 }).submit()
             }
-
         }
     }
+
+    private fun LazyListState.isFullyScrolledToTheFirst(): Boolean {
+        val firstItem = layoutInfo.visibleItemsInfo.firstOrNull()
+        return firstItem?.index == 0 && firstItem.offset == 0
+    }
+
 }
