@@ -83,7 +83,7 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
         }
         binding.bottomNewsDetailAuther.text = data.author
         val adapter =
-            NewsDetailRecyclerViewAdapter(requireContext(), data.content, glide, data.relativeNews)
+            NewsDetailRecyclerViewAdapter(data.content, glide, data.relativeNews)
         adapter.setOnRelevantNewsClickListner(object :
             NewsDetailRecyclerViewAdapter.onRelevantNewsClick {
             override fun onClick(v: View, news: NewsDetailRelativeNews) {

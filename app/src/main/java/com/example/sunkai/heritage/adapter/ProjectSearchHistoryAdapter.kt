@@ -15,14 +15,14 @@ class ProjectSearchHistoryAdapter(
     data: List<SearchHistory>,
     glide: RequestManager,
     private var projectSearchItemClickListener: OnProjectSearchItemClickListener? = null
-) : BaseRecyclerAdapter<ProjectSearchHistoryAdapter.Holder, SearchHistory>(context, data, glide) {
+) : BaseRecyclerAdapter<ProjectSearchHistoryAdapter.Holder, SearchHistory>(data, glide) {
     class Holder(binding: FragmentSearchHistoryItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val clearIcon = binding.searchHistoryClearIcon
         val searchHistoryTextView = binding.searchHistoryTextView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(FragmentSearchHistoryItemLayoutBinding.inflate(LayoutInflater.from(context),parent,false))
+        return Holder(FragmentSearchHistoryItemLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

@@ -11,7 +11,7 @@ import com.example.sunkai.heritage.interfaces.OnItemLongClickListener
  * Created by sunkai on 2018/1/2.
  * 给RecyclerAdapter封装了一些点击的操作
  */
-abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(protected val context: Context, datas: List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(), View.OnClickListener, View.OnLongClickListener {
+abstract class BaseRecyclerAdapter<T : RecyclerView.ViewHolder, W>(datas: List<W>, val glide: RequestManager) : RecyclerView.Adapter<T>(), View.OnClickListener, View.OnLongClickListener {
     private var mOnItemClickListener: OnItemClickListener = object : OnItemClickListener {
         override fun onItemClick(view: View, position: Int) {
             setItemClick(view, getItem(position))

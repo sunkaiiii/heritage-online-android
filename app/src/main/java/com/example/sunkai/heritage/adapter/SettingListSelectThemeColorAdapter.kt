@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
@@ -16,7 +15,7 @@ import com.example.sunkai.heritage.tools.getSelectGradientDrawableColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.setThemeColor
 
-class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, glide: RequestManager) : BaseRecyclerAdapter<SettingListSelectThemeColorAdapter.Holder, String>(context, datas, glide) {
+class SettingListSelectThemeColorAdapter(datas: List<String>, glide: RequestManager) : BaseRecyclerAdapter<SettingListSelectThemeColorAdapter.Holder, String>( datas, glide) {
 
     companion object {
         val IMAGE_VIEW_SIZE = Utils.dip2px(48)
@@ -37,7 +36,7 @@ class SettingListSelectThemeColorAdapter(context: Context, datas: List<String>, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(ImageView(context))
+        return Holder(ImageView(parent.context))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

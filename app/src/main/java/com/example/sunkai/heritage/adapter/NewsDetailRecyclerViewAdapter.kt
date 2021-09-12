@@ -24,7 +24,7 @@ import com.example.sunkai.heritage.value.TYPE_TEXT
  * 底部新闻的详情页
  * Created by sunkai on 2018/2/15.
  */
-class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailContent>, glide: RequestManager, private val relevantNews: List<NewsDetailRelativeNews>) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, NewsDetailContent>(context, data, glide) {
+class NewsDetailRecyclerViewAdapter(data: List<NewsDetailContent>, glide: RequestManager, private val relevantNews: List<NewsDetailRelativeNews>) : BaseRecyclerAdapter<NewsDetailRecyclerViewAdapter.ViewHolder, NewsDetailContent>(data, glide) {
 
     private val images: Array<String>
     private val compressImages: Array<String?>
@@ -63,9 +63,9 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = if (viewType == ViewType.NORMAL) {
-            LayoutInflater.from(context).inflate(R.layout.news_detail_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.news_detail_item, parent, false)
         } else {
-            LayoutInflater.from(context).inflate(R.layout.news_detail_footer_view, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.news_detail_footer_view, parent, false)
         }
         return ViewHolder(view, viewType)
     }
@@ -94,7 +94,7 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
         if (!initFooter) {
             val layoutView = holder.itemView.findViewById<LinearLayout>(R.id.relevant_item_layout)
             relevantNews.forEach { relativeNews ->
-                val view = LayoutInflater.from(context).inflate(R.layout.news_detail_relevant_news_item, layoutView, false)
+                val view = LayoutInflater.from(holder.itemView.context).inflate(R.layout.news_detail_relevant_news_item, layoutView, false)
                 val title = view.findViewById<TextView>(R.id.relevant_news_title)
                 val date = view.findViewById<TextView>(R.id.relevant_news_date)
                 title.text = relativeNews.title
@@ -117,7 +117,7 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
 
     private fun setData(holder: ViewHolder, data: NewsDetailContent, isInfoText: Boolean = true, isLastOneImage: Boolean = false) {
         val typedValue = TypedValue()
-        val theme = context.theme
+        val theme = holder.itemView.context.theme
         if (isInfoText) {
             if (isLastOneImage) {
                 holder.textView?.typeface = Typeface.DEFAULT_BOLD
@@ -135,7 +135,7 @@ class NewsDetailRecyclerViewAdapter(context: Context, data: List<NewsDetailConte
             glide.loadImageFromServerToList(data.compressImg ?: data.content, holder.imageView
                     ?: return)
             holder.imageView.setOnClickListener {
-                ViewImageUtils.setViewImageClick(context, holder.imageView, images, compressImages, images.indexOf(data.content))
+                ViewImageUtils.setViewImageClick(holder.itemView.context, holder.imageView, images, compressImages, images.indexOf(data.content))
             }
         }
     }

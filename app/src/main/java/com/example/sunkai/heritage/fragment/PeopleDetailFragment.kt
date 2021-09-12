@@ -52,23 +52,9 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
         loadImage(data)
         initScrollBehaviour()
 
-
-//        binding.newsDetailSubtitleLayout.removeAllViews()
-//        data.subtitle?.let { list ->
-//            list.forEach {
-//                val textView = TextView(requireContext())
-//                textView.text = it
-//                val layoutParams = LinearLayout.LayoutParams(
-//                    ViewGroup.LayoutParams.WRAP_CONTENT,
-//                    ViewGroup.LayoutParams.WRAP_CONTENT
-//                )
-//                layoutParams.weight = 1f
-//                binding.newsDetailSubtitleLayout.addView(textView)
-//            }
-//        }
         binding.peopleDetailAuthor.text = data.author
         val adapter =
-            NewsDetailRecyclerViewAdapter(requireContext(), data.content, glide, data.relativeNews)
+            NewsDetailRecyclerViewAdapter(data.content, glide, data.relativeNews)
         adapter.setOnRelevantNewsClickListner(object :
             NewsDetailRecyclerViewAdapter.onRelevantNewsClick {
             override fun onClick(v: View, news: NewsDetailRelativeNews) {
