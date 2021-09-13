@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,11 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asFlow
 import androidx.navigation.fragment.findNavController
@@ -34,11 +37,15 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.entity.SearchNewsViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.value.API
+import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.Serializable
 
 @AndroidEntryPoint
 class SearchNewsFragment : BaseGlideFragment() {
@@ -140,13 +147,59 @@ class SearchNewsFragment : BaseGlideFragment() {
         }
     }
 
+
     @Composable
-    fun SearchNewsResultList(newsList: LazyPagingItems<NewsListResponse>){
-        LazyColumn(Modifier.fillMaxSize()){
-            items(newsList){news->
-                Text(news?.title ?:"")
+    fun SearchNewsResultList(newsList: LazyPagingItems<NewsListResponse>) {
+        LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            items(newsList) { news ->
+                SearchNewsResultListItem(news)
             }
         }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun SearchNewsResultListItem(news: NewsListResponse?) {
+        news ?: return
+        Card(elevation = 0.dp, shape = RoundedCornerShape(16.dp), onClick = {
+            jumpToNewsDetail(news)
+        }) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+            ) {
+                Text(news.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Spacer(Modifier.height(26.dp))
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_material_author),
+                        contentDescription = "作者",
+                        Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text("", color = Color(0xFFBCBCBC))
+                    Spacer(Modifier.width(30.dp))
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_material_timelapse),
+                        contentDescription = "发布时间",
+                        Modifier.size(18.dp)
+                    )
+                    Text(news.date, color = Color(0xFFBCBCBC))
+                }
+            }
+        }
+
+    }
+
+    private fun jumpToNewsDetail(news: NewsListResponse) {
+        findNavController().navigate(
+            R.id.search_news_to_news_detail,
+            bundleOf(
+                Pair<String, Serializable>(DATA, news),
+                Pair<String, Serializable>(API, NewsPages.NewsPage)
+            )
+        )
     }
 
     @Preview

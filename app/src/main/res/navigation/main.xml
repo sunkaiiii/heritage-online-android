@@ -21,7 +21,9 @@
         android:id="@+id/searchNews"
         android:name="com.example.sunkai.heritage.fragment.SearchNewsFragment"
         android:label="fragment_search_news">
-
+        <action
+            android:id="@+id/search_news_to_news_detail"
+            app:destination="@id/newsDetail" />
     </fragment>
     <fragment
         android:id="@+id/newsDetail"
