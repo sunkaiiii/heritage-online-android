@@ -1,5 +1,6 @@
 package com.example.sunkai.heritage.network
 
+import com.example.sunkai.heritage.database.entities.NewsList
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.*
 import okhttp3.HttpUrl
@@ -34,6 +35,7 @@ const val InheritanceDetail = "/api/HeritageProject/GetInheritatePeople"
 const val SearchCategory = "/api/HeritageProject/GetSearchCategories"
 const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
 const val ProjectStatistics = "/api/HeritageProject/GetProjectStatisticInformation"
+const val SearchNews = "/api/NewsList/SearchNews/{pages}"
 const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
 
 private const val HOST = "sunkai.xyz"
@@ -105,6 +107,9 @@ interface EHeritageApiRetrofit{
 
     @GET(ProjectStatistics)
     fun getProjectStatistics():Call<HeritageProjectStatisticsResponse>
+
+    @GET(SearchNews)
+    fun searchNews(@Path("pages")page:Int,@Query("keywords")keywords:String,@Query("year")year:String?):Call<List<NewsListResponse>>
 }
 
 suspend fun <T> Call<T>.await():T{

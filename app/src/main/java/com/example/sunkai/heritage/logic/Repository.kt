@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.example.sunkai.heritage.database.entities.NewsDetailContent
 import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
 import com.example.sunkai.heritage.database.entities.SearchHistory
+import com.example.sunkai.heritage.entity.request.SearchNewsRequest
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
 import com.example.sunkai.heritage.entity.response.NewsDetail
@@ -51,6 +52,14 @@ class Repository @Inject constructor() {
         ).flow
     }
 
+    fun fetchSearchProjectData(
+        request:SearchNewsRequest
+    ): Flow<PagingData<NewsListResponse>> {
+        return Pager(
+            config = PagingConfig((COMMON_LIST_PAGE_SIZE)),
+            pagingSourceFactory = { SearchNewsPageSource(request) }
+        ).flow
+    }
 
     fun getNewsDetail(link: String) = liveData(Dispatchers.IO) {
         val content =
@@ -66,6 +75,7 @@ class Repository @Inject constructor() {
         Result.success(detail)
         emit(detail)
     }
+
 
     private fun saveIntoDatabase(data: NewsDetail) {
         GlobalScope.launch {
@@ -190,10 +200,14 @@ class Repository @Inject constructor() {
         ).flow
     }
 
-    fun getProjectStatistics() = liveData(Dispatchers.IO){
+    fun getProjectStatistics() = liveData(Dispatchers.IO) {
         val tempResponse = EHeritageApi.getProjectStatistics().await()
         val statisListByRegion = tempResponse.statisticsByRegion.sortedByDescending { it.value }
-        val statisticsResponse = HeritageProjectStatisticsResponse(statisListByRegion,tempResponse.statisticsByTime,tempResponse.statisticsByType)
+        val statisticsResponse = HeritageProjectStatisticsResponse(
+            statisListByRegion,
+            tempResponse.statisticsByTime,
+            tempResponse.statisticsByType
+        )
         Result.success(statisticsResponse)
         emit(statisticsResponse)
     }
