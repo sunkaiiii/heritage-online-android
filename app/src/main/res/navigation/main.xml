@@ -13,6 +13,15 @@
         <action
             android:id="@+id/main_fragment_to_news_detail"
             app:destination="@+id/newsDetail" />
+        <action
+            android:id="@+id/main_fragment_to_search_news"
+            app:destination="@+id/searchNews" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchNews"
+        android:name="com.example.sunkai.heritage.fragment.SearchNewsFragment"
+        android:label="fragment_search_news">
+
     </fragment>
     <fragment
         android:id="@+id/newsDetail"
@@ -21,12 +30,10 @@
         tools:layout="@layout/fragment_news_detail">
         <argument
             android:name="data"
-            app:argType="com.example.sunkai.heritage.entity.response.NewsListResponse"
-             />
+            app:argType="com.example.sunkai.heritage.entity.response.NewsListResponse" />
         <argument
             android:name="api"
-            app:argType="com.example.sunkai.heritage.entity.NewsPages"
-             />
+            app:argType="com.example.sunkai.heritage.entity.NewsPages" />
         <action
             android:id="@+id/relative_news_to_news_detail"
             app:destination="@id/newsDetail" />

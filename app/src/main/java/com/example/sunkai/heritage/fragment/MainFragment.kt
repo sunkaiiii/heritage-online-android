@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.MainActivity
@@ -166,6 +167,9 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
             if (activity is MainActivity) {
                 activity.showNavigationDrawerLayout()
             }
+        }
+        binding.newsSearch.setOnClickListener {
+            findNavController().navigate(R.id.main_fragment_to_search_news)
         }
     }
 
