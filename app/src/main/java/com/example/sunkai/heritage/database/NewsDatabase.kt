@@ -11,8 +11,9 @@ import java.io.Serializable
     NewsDetailContent::class,
     NewsList::class,
     SearchHistory::class,
-    NewsDetailRelevantContent::class],
-        version = 3)
+    NewsDetailRelevantContent::class,
+                     SearchNewsHistory::class],
+        version = 5)
 abstract class NewsDatabase : RoomDatabase() {
     abstract fun newsDetailDao(): NewsDetailDao
     abstract fun newsDetailContentDao(): NewsDetailContentDao

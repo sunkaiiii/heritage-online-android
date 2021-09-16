@@ -7,6 +7,7 @@ import androidx.paging.PagingData
 import com.example.sunkai.heritage.database.entities.NewsDetailContent
 import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
 import com.example.sunkai.heritage.database.entities.SearchHistory
+import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 import com.example.sunkai.heritage.entity.request.SearchNewsRequest
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
@@ -53,12 +54,35 @@ class Repository @Inject constructor() {
     }
 
     fun fetchSearchProjectData(
-        request:SearchNewsRequest
+        request: SearchNewsRequest
     ): Flow<PagingData<NewsListResponse>> {
         return Pager(
             config = PagingConfig((COMMON_LIST_PAGE_SIZE)),
             pagingSourceFactory = { SearchNewsPageSource(request) }
         ).flow
+    }
+
+    fun getSearchNewsHistory() =
+        EHeritageApplication.newsDetailDatabase.newsListaDao().getSearchNewsHistory()
+
+    fun addSearchNewsHistory(searchNewsHistory: SearchNewsHistory) {
+        GlobalScope.launch {
+            val existedSearchHistory = EHeritageApplication.newsDetailDatabase.newsListaDao()
+                .getSearchNewsHistoryFromValueExisted(searchNewsHistory.searchValue)
+            if (existedSearchHistory != null) {
+                val updateRecordHistory = SearchNewsHistory(
+                    existedSearchHistory.id,
+                    existedSearchHistory.searchValue,
+                    searchNewsHistory.searchHappenedTime
+                )
+                EHeritageApplication.newsDetailDatabase.newsListaDao()
+                    .updateExistedSearchHistory(updateRecordHistory)
+            } else {
+                EHeritageApplication.newsDetailDatabase.newsListaDao()
+                    .insertSearchNewsRecord(searchNewsHistory)
+            }
+
+        }
     }
 
     fun getNewsDetail(link: String) = liveData(Dispatchers.IO) {

@@ -1,10 +1,12 @@
 package com.example.sunkai.heritage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.sunkai.heritage.database.entities.NewsList
+import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 
 @Dao
 interface NewsListDao {
@@ -22,5 +24,17 @@ interface NewsListDao {
 
     @Update
     fun update(newsList: NewsList)
+
+    @Insert
+    fun insertSearchNewsRecord(searchRecord:SearchNewsHistory)
+
+    @Query("SELECT * FROM SearchNewsHistory ")
+    fun getSearchNewsHistory():LiveData<List<SearchNewsHistory>>
+
+    @Query("SELECT * FROM SearchNewsHistory WHERE searchValue=:searchValue LIMIT 1")
+    fun getSearchNewsHistoryFromValueExisted(searchValue:String):SearchNewsHistory?
+
+    @Update
+    fun updateExistedSearchHistory(searchRecord:SearchNewsHistory)
 
 }

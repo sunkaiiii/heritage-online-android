@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -54,16 +56,20 @@ import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
+import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class SearchNewsFragment : BaseGlideFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(SearchNewsViewModel::class.java) }
-    private val autoSearchHandler by lazy { object:Handler(Looper.getMainLooper()){
-        override fun handleMessage(msg: Message) {
-            val text = msg.data.get("text") as String? ?: return
-            viewModel.startSearchNews(text)
+    private val autoSearchHandler by lazy {
+        object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                val text = msg.data.get("text") as String? ?: return
+                viewModel.startSearchNews(text)
+            }
         }
-    } }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,13 +80,15 @@ class SearchNewsFragment : BaseGlideFragment() {
                 SearchNewsView()
             }
             background = ColorDrawable(Utils.getColorResource(R.color.search_news_background))
-            viewModel.startSearchNews("江苏")
         }
     }
 
     @Composable
     fun SearchNewsView() {
         val searchResult = viewModel.searchNewsResult.asFlow().collectAsLazyPagingItems()
+        val searchHistoryState = viewModel.searchNewsHistory.observeAsState()
+        val searchHistoryNews = searchHistoryState.value?.sortedByDescending { it.searchHappenedTime }
+            ?.map { it.searchValue } ?: listOf()
         Column(
             Modifier
                 .fillMaxSize()
@@ -90,9 +98,10 @@ class SearchNewsFragment : BaseGlideFragment() {
             Spacer(Modifier.height(27.dp))
             SearchNewsEditTextBar()
             Spacer(Modifier.height(15.dp))
-            SearchNewsArgumentView(listOf())
+            SearchNewsArgumentView(searchHistoryNews)
             Spacer(Modifier.height(30.dp))
             SearchNewsResultList(searchResult)
+
         }
     }
 
@@ -140,7 +149,7 @@ class SearchNewsFragment : BaseGlideFragment() {
                             msg.data = bundleOf("text" to it)
                             msg.what = 0
                             autoSearchHandler.removeMessages(0)
-                            autoSearchHandler.sendMessageDelayed(msg,1000)
+                            autoSearchHandler.sendMessageDelayed(msg, 1000)
                         }, modifier = Modifier
                             .fillMaxSize()
                             .background(Color.Transparent)
@@ -159,7 +168,8 @@ class SearchNewsFragment : BaseGlideFragment() {
                     Modifier
                         .height(24.dp)
                         .padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 4.dp)
-                        .background(Color.White, RoundedCornerShape(12.dp)),
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .clickable { viewModel.startSearchNews(argument[it]) },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
