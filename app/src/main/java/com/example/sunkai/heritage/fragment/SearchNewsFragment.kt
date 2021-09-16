@@ -2,6 +2,9 @@ package com.example.sunkai.heritage.fragment
 
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +20,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +58,12 @@ import java.io.Serializable
 @AndroidEntryPoint
 class SearchNewsFragment : BaseGlideFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(SearchNewsViewModel::class.java) }
+    private val autoSearchHandler by lazy { object:Handler(Looper.getMainLooper()){
+        override fun handleMessage(msg: Message) {
+            val text = msg.data.get("text") as String? ?: return
+            viewModel.startSearchNews(text)
+        }
+    } }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -94,6 +108,7 @@ class SearchNewsFragment : BaseGlideFragment() {
 
     @Composable
     fun SearchNewsEditTextBar() {
+        var text by rememberSaveable { mutableStateOf("") }
         ConstraintLayout(Modifier.fillMaxWidth()) {
             val (editTextCard, filterButton) = createRefs()
             Card(
@@ -102,7 +117,6 @@ class SearchNewsFragment : BaseGlideFragment() {
                     .constrainAs(filterButton) {
                         end.linkTo(parent.end)
                     }) {
-
             }
             Card(
                 Modifier
@@ -113,8 +127,24 @@ class SearchNewsFragment : BaseGlideFragment() {
                         width = Dimension.fillToConstraints
                     }, shape = RoundedCornerShape(21.dp)
             ) {
-                Column(Modifier.fillMaxHeight()) {
-
+                Row(Modifier.fillMaxHeight()) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_search_grey_400_24dp),
+                        contentDescription = "搜索",
+                        Modifier.padding(start = 18.dp, top = 12.dp, bottom = 12.dp)
+                    )
+                    TextField(
+                        value = text, onValueChange = {
+                            text = it
+                            val msg = Message()
+                            msg.data = bundleOf("text" to it)
+                            msg.what = 0
+                            autoSearchHandler.removeMessages(0)
+                            autoSearchHandler.sendMessageDelayed(msg,1000)
+                        }, modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Transparent)
+                    )
                 }
             }
         }
