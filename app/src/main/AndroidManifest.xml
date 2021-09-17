@@ -35,7 +35,6 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".activity.AboutUSActivity" />
         <activity
             android:name=".activity.ViewImageActivity"
             android:theme="@style/Theme.AppCompat.Translucent" />

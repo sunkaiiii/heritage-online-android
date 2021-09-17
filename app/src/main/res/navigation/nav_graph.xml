@@ -4,7 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@+id/main">
-    <include app:graph="@navigation/main"/>
-    <include app:graph="@navigation/people"/>
-    <include app:graph="@navigation/project"/>
+    <action
+        android:id="@+id/main_view_to_about_us_fragment"
+        app:destination="@id/aboutUsFragment" />
+    <include app:graph="@navigation/main" />
+    <include app:graph="@navigation/people" />
+    <include app:graph="@navigation/project" />
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.example.sunkai.heritage.fragment.AboutUSFragment"
+        android:label="AboutUsFragment"/>
 </navigation>

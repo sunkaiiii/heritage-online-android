@@ -89,8 +89,7 @@ class MainActivity : BaseGlideActivity() {
     }
 
     private fun navigateToAboutUsPage() {
-        val intent = Intent(this, AboutUSActivity::class.java)
-        startActivity(intent)
+        navController.navigate(R.id.main_view_to_about_us_fragment)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
