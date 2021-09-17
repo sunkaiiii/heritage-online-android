@@ -61,5 +61,8 @@
         <argument
             android:name="data"
             app:argType="string" />
+        <argument
+            android:name="project_title"
+            app:argType="string" />
     </fragment>
 </navigation>

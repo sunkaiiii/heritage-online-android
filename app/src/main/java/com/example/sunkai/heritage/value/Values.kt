@@ -10,6 +10,7 @@ import kotlin.math.roundToInt
 const val URL = "url"
 const val TYPE_TEXT = "text"
 const val DATA = "data"
+const val PROJECT_TITLE = "project_title"
 const val SETTING = "setting"
 const val TITLE = "title"
 const val THEME_COLOR = "theme_color"

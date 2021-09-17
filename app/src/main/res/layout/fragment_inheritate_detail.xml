@@ -41,14 +41,32 @@
                     android:layout_gravity="center"
                     android:background="@color/inheritate_detail_top_background">
 
-                    <TextView
-                        android:id="@+id/inheritateTitle"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        tools:text="张全蛋" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/inheritateTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="#4A4A4A"
+                            android:textSize="32sp"
+                            android:textStyle="bold"
+                            tools:text="张全蛋" />
+
+                        <TextView
+                            android:id="@+id/inheritate_sub_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:textColor="#8D8C8C"
+                            android:textSize="16sp"
+                            tools:text="孔雀东南飞传说传承人" />
+                    </LinearLayout>
+
                 </FrameLayout>
 
                 <com.google.android.material.card.MaterialCardView
@@ -56,9 +74,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="56dp"
+                    android:layout_marginTop="-90dp"
                     android:layout_marginEnd="56dp"
                     app:cardCornerRadius="26dp"
-                    app:cardElevation="8dp">
+                    app:cardElevation="8dp"
+                    tools:layout_height="180dp">
 
                     <com.example.sunkai.heritage.views.ProjectDetailDescView
                         android:id="@+id/inheritateDetailTopGridLayout"
@@ -72,7 +92,8 @@
                 <TextView
                     android:id="@+id/inheritateDetailDesc"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp" />
 
                 <com.example.sunkai.heritage.views.ProjectDetailInheritateView
                     android:id="@+id/inheritateOthersView"

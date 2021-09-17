@@ -14,7 +14,8 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
 
     private val viewModel by lazy { ViewModelProvider(this).get(ProjectDetailViewModel::class.java) }
 
-    override fun getBindingClass(): Class<FragmentProjectDetailBinding> = FragmentProjectDetailBinding::class.java
+    override fun getBindingClass(): Class<FragmentProjectDetailBinding> =
+        FragmentProjectDetailBinding::class.java
 
     override fun initView() {
         viewModel.projectDetail.observe(viewLifecycleOwner, {
@@ -30,7 +31,6 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
     }
 
 
-
     private fun setDatatoView(projectDetail: ProjectDetailResponse) {
         changeWidgeTheme()
         binding.projectName.text = projectDetail.title
@@ -40,7 +40,10 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
         binding.projectNum.text = projectDetail.num
         if (!projectDetail.inheritate.isNullOrEmpty()) {
             binding.activityProjectDetailInheritateLayout.visibility = View.VISIBLE
-            binding.activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
+            binding.activityProjectDetailInheritateLayout.setData(
+                projectDetail.title,
+                projectDetail.inheritate
+            )
         }
 
         if (!projectDetail.ralevant.isNullOrEmpty()) {

@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.entity.response.nestedData.InheritatePeople
 import com.example.sunkai.heritage.value.DATA
+import com.example.sunkai.heritage.value.PROJECT_TITLE
 
 class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) :
     FrameLayout(context, attr) {
@@ -19,7 +20,7 @@ class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) 
             .inflate(R.layout.fragment_project_detail_inheritate_layout, this, true)
     }
 
-    fun setData(datas: List<InheritatePeople>) {
+    fun setData(projectName:String,datas: List<InheritatePeople>) {
         val parentLayout: LinearLayout = findViewById(R.id.projectDetailRelativeInheritate)
         datas.forEach { people ->
             val contentView = LayoutInflater.from(context)
@@ -29,7 +30,7 @@ class ProjectDetailInheritateView(context: Context, attr: AttributeSet? = null) 
             contentView.setOnClickListener {
                 findNavController().navigate(
                     R.id.project_detail_to_inheritate_detail,
-                    bundleOf(DATA to people.link)
+                    bundleOf(DATA to people.link, PROJECT_TITLE to projectName)
                 )
             }
             parentLayout.addView(contentView)

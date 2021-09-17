@@ -10,7 +10,7 @@ import javax.inject.Inject
 @HiltViewModel
 class InheritateDetailViewModel @Inject constructor(val repository: Repository):ViewModel() {
     private val link = MutableLiveData<String>()
-
+    var projectTitle = MutableLiveData<String>()
     val inheritateDetail = Transformations.switchMap(link) { link ->
         repository.getInheritanceDetail(link)
     }
