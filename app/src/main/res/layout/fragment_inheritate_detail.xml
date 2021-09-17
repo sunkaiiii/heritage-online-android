@@ -1,62 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/inheritate_detail_background">
 
     <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        tools:visibility="gone" />
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/containerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        <include layout="@layout/general_toolbar" />
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            tools:context="com.example.sunkai.heritage.fragment.InheritateDetailFragment">
+            android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
-
-            <TextView
-                android:id="@+id/inheritateTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="张全蛋" />
-
-            <com.example.sunkai.heritage.views.ProjectDetailDescView
-                android:id="@+id/inheritateDetailTopGridLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                tools:context="com.example.sunkai.heritage.fragment.InheritateDetailFragment">
 
-            <TextView
-                android:id="@+id/inheritateDetailDesc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <FrameLayout
+                    android:id="@+id/inheritateTitleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    android:background="@color/inheritate_detail_top_background">
 
-            <com.example.sunkai.heritage.views.ProjectDetailInheritateView
-                android:id="@+id/inheritateOthersView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                    <TextView
+                        android:id="@+id/inheritateTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="张全蛋" />
+                </FrameLayout>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/inheritate_information_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="56dp"
+                    android:layout_marginEnd="56dp"
+                    app:cardCornerRadius="26dp"
+                    app:cardElevation="8dp">
+
+                    <com.example.sunkai.heritage.views.ProjectDetailDescView
+                        android:id="@+id/inheritateDetailTopGridLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical" />
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <TextView
+                    android:id="@+id/inheritateDetailDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.example.sunkai.heritage.views.ProjectDetailInheritateView
+                    android:id="@+id/inheritateOthersView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+
 </FrameLayout>
 
 

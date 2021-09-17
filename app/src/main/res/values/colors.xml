@@ -22,4 +22,6 @@
     <color name="banner_text_color">#CCE3D6</color>
     <color name="people_list_item_text_color">#565A58</color>
     <color name="search_news_background">#F6F8FC</color>
+    <color name="inheritate_detail_top_background">#EEE8E5</color>
+    <color name="inheritate_detail_background">#DFD3CE</color>
 </resources>

@@ -1,10 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.databinding.FragmentInheritateDetailBinding
 import com.example.sunkai.heritage.entity.InheritateDetailViewModel
 import com.example.sunkai.heritage.entity.response.InheritateDetailResponse
@@ -21,7 +18,6 @@ class InheritateDetailFragment : BaseViewBindingFragment<FragmentInheritateDetai
 
 
     override fun initView() {
-        binding.toolbar.title = getString(R.string.inheritors)
         viewModel.inheritateDetail.observe(viewLifecycleOwner, {
             setDataToView(it)
         })
@@ -35,6 +31,10 @@ class InheritateDetailFragment : BaseViewBindingFragment<FragmentInheritateDetai
         binding.inheritateTitle.text = inheritateData.title
         binding.inheritateDetailDesc.text = inheritateData.text
         binding.inheritateDetailTopGridLayout.setData(inheritateData.desc)
+        binding.inheritateInformationContainer.post {
+            binding.inheritateInformationContainer.translationY =
+                (-(binding.inheritateInformationContainer.height / 2)).toFloat()
+        }
         inheritateData.inheritate?.let {
             if (it.isNotEmpty()) {
                 binding.inheritateOthersView.visibility = View.VISIBLE
