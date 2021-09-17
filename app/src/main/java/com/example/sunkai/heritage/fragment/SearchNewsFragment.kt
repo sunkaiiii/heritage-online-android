@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +46,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 import com.example.sunkai.heritage.entity.NewsPages
 import com.example.sunkai.heritage.entity.SearchNewsViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
@@ -56,7 +56,6 @@ import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.Serializable
-import java.time.LocalDateTime
 
 @AndroidEntryPoint
 class SearchNewsFragment : BaseGlideFragment() {
@@ -88,7 +87,7 @@ class SearchNewsFragment : BaseGlideFragment() {
         val searchResult = viewModel.searchNewsResult.asFlow().collectAsLazyPagingItems()
         val searchHistoryState = viewModel.searchNewsHistory.observeAsState()
         val searchHistoryNews = searchHistoryState.value?.sortedByDescending { it.searchHappenedTime }
-            ?.map { it.searchValue } ?: listOf()
+            ?: listOf()
         Column(
             Modifier
                 .fillMaxSize()
@@ -117,7 +116,7 @@ class SearchNewsFragment : BaseGlideFragment() {
 
     @Composable
     fun SearchNewsEditTextBar() {
-        var text by rememberSaveable { mutableStateOf("") }
+        var text = viewModel.searchEditFieldText.observeAsState("")
         ConstraintLayout(Modifier.fillMaxWidth()) {
             val (editTextCard, filterButton) = createRefs()
             Card(
@@ -143,8 +142,8 @@ class SearchNewsFragment : BaseGlideFragment() {
                         Modifier.padding(start = 18.dp, top = 12.dp, bottom = 12.dp)
                     )
                     TextField(
-                        value = text, onValueChange = {
-                            text = it
+                        value = text.value, onValueChange = {
+                            viewModel.searchEditFieldText.value = it
                             val msg = Message()
                             msg.data = bundleOf("text" to it)
                             msg.what = 0
@@ -161,7 +160,7 @@ class SearchNewsFragment : BaseGlideFragment() {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun SearchNewsArgumentView(argument: List<String>) {
+    fun SearchNewsArgumentView(argument: List<SearchNewsHistory>) {
         LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 72.dp)) {
             items(argument.size) {
                 Row(
@@ -169,19 +168,23 @@ class SearchNewsFragment : BaseGlideFragment() {
                         .height(24.dp)
                         .padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 4.dp)
                         .background(Color.White, RoundedCornerShape(12.dp))
-                        .clickable { viewModel.startSearchNews(argument[it]) },
+                        .clickable { viewModel.startSearchNews(argument[it].searchValue) },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(Modifier.width(14.dp))
-                    Text(argument[it], fontSize = 12.sp, color = Color(0xff252A3B))
-                    Spacer(Modifier.height(5.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(argument[it].searchValue, fontSize = 12.sp, color = Color(0xff252A3B))
+                    Spacer(Modifier.width(4.dp))
                     Image(
                         painter = painterResource(id = R.drawable.icon_material_cancel),
                         contentDescription = null,
-                        Modifier.size(8.dp)
+                        Modifier
+                            .size(8.dp)
+                            .clickable {
+                                viewModel.deleteSearchHistory(argument[it])
+                            },
                     )
-                    Spacer(Modifier.width(10.dp))
+                    Spacer(Modifier.width(6.dp))
                 }
             }
         }
@@ -261,18 +264,7 @@ class SearchNewsFragment : BaseGlideFragment() {
     fun SearchNewsArgumentViewPreview() {
         SearchNewsArgumentView(
             argument = listOf(
-                "长江",
-                "黄河",
-                "长江",
-                "黄河",
-                "长江",
-                "黄河",
-                "长江",
-                "黄河",
-                "长江",
-                "黄河",
-                "长江",
-                "黄河"
+               SearchNewsHistory("长江")
             )
         )
     }

@@ -12,6 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchNewsViewModel @Inject constructor(val repository: Repository) : ViewModel() {
     private val searchParameter = MutableLiveData<SearchNewsRequest>()
+    val searchEditFieldText = MutableLiveData("")
     val searchNewsHistory = repository.getSearchNewsHistory()
     val searchNewsResult = Transformations.switchMap(searchParameter) { request ->
         repository.fetchSearchProjectData(request).cachedIn(viewModelScope)
@@ -29,5 +30,10 @@ class SearchNewsViewModel @Inject constructor(val repository: Repository) : View
         val searchHistory = SearchNewsHistory(keywords)
         repository.addSearchNewsHistory(searchHistory)
         searchParameter.value = newValue
+        searchEditFieldText.value = newValue.keywords
+    }
+
+    fun deleteSearchHistory(searchNewsHistory: SearchNewsHistory) {
+        repository.deleteSearchNewsHistory(searchNewsHistory)
     }
 }

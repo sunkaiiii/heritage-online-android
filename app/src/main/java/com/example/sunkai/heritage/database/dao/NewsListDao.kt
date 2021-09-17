@@ -1,10 +1,7 @@
 package com.example.sunkai.heritage.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.example.sunkai.heritage.database.entities.NewsList
 import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 
@@ -36,5 +33,8 @@ interface NewsListDao {
 
     @Update
     fun updateExistedSearchHistory(searchRecord:SearchNewsHistory)
+
+    @Delete
+    fun deleteSearchHistory(searchRecord: SearchNewsHistory)
 
 }

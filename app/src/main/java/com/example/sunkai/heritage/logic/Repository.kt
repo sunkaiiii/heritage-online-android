@@ -65,6 +65,12 @@ class Repository @Inject constructor() {
     fun getSearchNewsHistory() =
         EHeritageApplication.newsDetailDatabase.newsListaDao().getSearchNewsHistory()
 
+    fun deleteSearchNewsHistory(searchHistory: SearchNewsHistory){
+        GlobalScope.launch {
+            EHeritageApplication.newsDetailDatabase.newsListaDao().deleteSearchHistory(searchHistory)
+        }
+    }
+
     fun addSearchNewsHistory(searchNewsHistory: SearchNewsHistory) {
         GlobalScope.launch {
             val existedSearchHistory = EHeritageApplication.newsDetailDatabase.newsListaDao()
