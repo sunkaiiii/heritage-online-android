@@ -36,6 +36,8 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
         binding.projectName.text = projectDetail.title
         binding.projectDesc.text = projectDetail.text
         binding.projectDetailTopGridView.setData(projectDetail.desc)
+        binding.projectCategory.text = projectDetail.cate
+        binding.projectNum.text = projectDetail.num
         if (!projectDetail.inheritate.isNullOrEmpty()) {
             binding.activityProjectDetailInheritateLayout.visibility = View.VISIBLE
             binding.activityProjectDetailInheritateLayout.setData(projectDetail.inheritate)
