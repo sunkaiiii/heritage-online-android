@@ -10,11 +10,11 @@ object Utils {
     }
 
     @JvmName("dip2px1")
-    fun Int.dip2px():Int{
+    fun Int.dip2px(): Int {
         return dip2px(this)
     }
 
-    fun Float.dip2px():Int{
+    fun Float.dip2px(): Int {
         return Utils.dip2px(this.toInt())
     }
 
@@ -32,5 +32,9 @@ object Utils {
     //是否为横屏
     fun isHorizontalScreenMode(): Boolean = getScreenMode() == Configuration.ORIENTATION_PORTRAIT
 
-    fun getColorResource(resID: Int): Int = ContextCompat.getColor(EHeritageApplication.instance, resID)
+    fun getColorResource(resID: Int): Int =
+        ContextCompat.getColor(EHeritageApplication.instance, resID)
 }
+
+fun getString(id: Int) =
+    EHeritageApplication.instance.getString(id)

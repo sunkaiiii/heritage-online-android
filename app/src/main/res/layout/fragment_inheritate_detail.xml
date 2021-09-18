@@ -93,12 +93,16 @@
                     android:id="@+id/inheritateDetailDesc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp" />
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="30dp" />
 
-                <com.example.sunkai.heritage.views.ProjectDetailInheritateView
+                <androidx.compose.ui.platform.ComposeView
                     android:id="@+id/inheritateOthersView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
                     android:visibility="gone"
                     tools:visibility="visible" />
 

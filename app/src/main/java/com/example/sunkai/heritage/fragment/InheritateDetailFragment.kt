@@ -2,13 +2,19 @@ package com.example.sunkai.heritage.fragment
 
 import android.annotation.SuppressLint
 import android.view.View
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.Modifier
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.databinding.FragmentInheritateDetailBinding
 import com.example.sunkai.heritage.entity.InheritateDetailViewModel
 import com.example.sunkai.heritage.entity.response.InheritateDetailResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.PROJECT_TITLE
+import com.example.sunkai.heritage.views.ProjectDetaiInheritateViewCompose
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,10 +42,22 @@ class InheritateDetailFragment : BaseViewBindingFragment<FragmentInheritateDetai
         binding.inheritateDetailDesc.text = inheritateData.text
         binding.inheritateDetailTopGridLayout.setData(inheritateData.desc)
         binding.inheritateSubTitle.text = "${viewModel.projectTitle.value}传承人"
-        inheritateData.inheritate?.let {
-            if (it.isNotEmpty()) {
+        inheritateData.inheritate?.let { inheritatePeople ->
+            if (inheritatePeople.isNotEmpty()) {
                 binding.inheritateOthersView.visibility = View.VISIBLE
-                binding.inheritateOthersView.setData(viewModel.projectTitle.value?:"",it)
+                binding.inheritateOthersView.setContent {
+                    val projectName = viewModel.projectTitle.value ?: ""
+                    ProjectDetaiInheritateViewCompose(
+                        projectName = projectName,
+                        datas = inheritatePeople,
+                        Modifier.fillMaxWidth()
+                    ) {
+                        findNavController().navigate(
+                            R.id.inheritate_detail_to_inheritate_detail,
+                            bundleOf(DATA to it, PROJECT_TITLE to projectName)
+                        )
+                    }
+                }
             }
         }
 
