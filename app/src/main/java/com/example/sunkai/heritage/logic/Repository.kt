@@ -33,39 +33,39 @@ class Repository @Inject constructor() {
 
     fun fetchNewsListPageData(listCaller: KFunction1<Int, Call<List<NewsListResponse>>>): Flow<PagingData<NewsListResponse>> {
         return Pager(
-            config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { NewsListPageSource(listCaller) }
+                config = PagingConfig(COMMON_LIST_PAGE_SIZE),
+                pagingSourceFactory = { NewsListPageSource(listCaller) }
         ).flow
     }
 
 
     fun fetchPeopleListPageData(): Flow<PagingData<NewsListResponse>> {
         return Pager(
-            config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { NewsListPageSource(EHeritageApi::getPeopleList) }
+                config = PagingConfig(COMMON_LIST_PAGE_SIZE),
+                pagingSourceFactory = { NewsListPageSource(EHeritageApi::getPeopleList) }
         ).flow
     }
 
     fun fetchProjectListPageData(): Flow<PagingData<ProjectListInformation>> {
         return Pager(
-            config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { ProjectListPageSource(EHeritageApi::getProjecrList) }
+                config = PagingConfig(COMMON_LIST_PAGE_SIZE),
+                pagingSourceFactory = { ProjectListPageSource(EHeritageApi::getProjecrList) }
         ).flow
     }
 
     fun fetchSearchProjectData(
-        request: SearchNewsRequest
+            request: SearchNewsRequest
     ): Flow<PagingData<NewsListResponse>> {
         return Pager(
-            config = PagingConfig((COMMON_LIST_PAGE_SIZE)),
-            pagingSourceFactory = { SearchNewsPageSource(request) }
+                config = PagingConfig((COMMON_LIST_PAGE_SIZE)),
+                pagingSourceFactory = { SearchNewsPageSource(request) }
         ).flow
     }
 
     fun getSearchNewsHistory() =
-        EHeritageApplication.newsDetailDatabase.newsListaDao().getSearchNewsHistory()
+            EHeritageApplication.newsDetailDatabase.newsListaDao().getSearchNewsHistory()
 
-    fun deleteSearchNewsHistory(searchHistory: SearchNewsHistory){
+    fun deleteSearchNewsHistory(searchHistory: SearchNewsHistory) {
         GlobalScope.launch {
             EHeritageApplication.newsDetailDatabase.newsListaDao().deleteSearchHistory(searchHistory)
         }
@@ -74,18 +74,18 @@ class Repository @Inject constructor() {
     fun addSearchNewsHistory(searchNewsHistory: SearchNewsHistory) {
         GlobalScope.launch {
             val existedSearchHistory = EHeritageApplication.newsDetailDatabase.newsListaDao()
-                .getSearchNewsHistoryFromValueExisted(searchNewsHistory.searchValue)
+                    .getSearchNewsHistoryFromValueExisted(searchNewsHistory.searchValue)
             if (existedSearchHistory != null) {
                 val updateRecordHistory = SearchNewsHistory(
-                    existedSearchHistory.id,
-                    existedSearchHistory.searchValue,
-                    searchNewsHistory.searchHappenedTime
+                        existedSearchHistory.id,
+                        existedSearchHistory.searchValue,
+                        searchNewsHistory.searchHappenedTime
                 )
                 EHeritageApplication.newsDetailDatabase.newsListaDao()
-                    .updateExistedSearchHistory(updateRecordHistory)
+                        .updateExistedSearchHistory(updateRecordHistory)
             } else {
                 EHeritageApplication.newsDetailDatabase.newsListaDao()
-                    .insertSearchNewsRecord(searchNewsHistory)
+                        .insertSearchNewsRecord(searchNewsHistory)
             }
 
         }
@@ -93,12 +93,12 @@ class Repository @Inject constructor() {
 
     fun getNewsDetail(link: String) = liveData(Dispatchers.IO) {
         val content =
-            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+                EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
         val detail = if (content != null) {
             NewsDetail(content)
         } else {
             val newsDetail =
-                EHeritageApi.getNewsDetail(link).await()
+                    EHeritageApi.getNewsDetail(link).await()
             saveIntoDatabase(newsDetail)
             newsDetail
         }
@@ -114,24 +114,24 @@ class Repository @Inject constructor() {
             val newsRelevantNews = arrayListOf<NewsDetailRelevantContent>()
             data.content.forEach {
                 newsDetailContentList.add(
-                    NewsDetailContent(
-                        null,
-                        it.type,
-                        it.content,
-                        it.compressImg,
-                        data.link
-                    )
+                        NewsDetailContent(
+                                null,
+                                it.type,
+                                it.content,
+                                it.compressImg,
+                                data.link
+                        )
                 )
             }
             data.relativeNews.forEach {
                 newsRelevantNews.add(
-                    NewsDetailRelevantContent(
-                        null,
-                        it.link,
-                        it.title,
-                        it.date,
-                        data.link
-                    )
+                        NewsDetailRelevantContent(
+                                null,
+                                it.link,
+                                it.title,
+                                it.date,
+                                data.link
+                        )
                 )
             }
             val dao = database.newsDetailDao()
@@ -145,12 +145,12 @@ class Repository @Inject constructor() {
 
     fun getForumsDetail(link: String) = liveData(Dispatchers.IO) {
         val content =
-            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+                EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
         val detail = if (content != null) {
             NewsDetail(content)
         } else {
             val forumsDetail =
-                EHeritageApi.getForumsDetail(link).await()
+                    EHeritageApi.getForumsDetail(link).await()
             saveIntoDatabase(forumsDetail)
             forumsDetail
         }
@@ -161,13 +161,13 @@ class Repository @Inject constructor() {
 
     fun getSpecialTopicDetail(link: String) = liveData(Dispatchers.IO) {
         val content =
-            EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
+                EHeritageApplication.newsDetailDatabase.newsDetailDao().getNewsDetailWithContent(link)
         val detail = if (content != null) {
             NewsDetail(content)
         } else {
             val specialTopic =
-                EHeritageApi.getSpecialTopicDetail(link)
-                    .await()
+                    EHeritageApi.getSpecialTopicDetail(link)
+                            .await()
             saveIntoDatabase(specialTopic)
             specialTopic
         }
@@ -183,50 +183,50 @@ class Repository @Inject constructor() {
 
     fun getPeopleTopBanner() = liveData(Dispatchers.IO) {
         val peopleTopBanner =
-            EHeritageApi.getPeopleTopBanner().await()
+                EHeritageApi.getPeopleTopBanner().await()
         Result.success(peopleTopBanner)
         emit(peopleTopBanner)
     }
 
     fun getPeopleDetail(link: String) = liveData(Dispatchers.IO) {
         val detail =
-            EHeritageApi.getPeopleDetail(link).await()
+                EHeritageApi.getPeopleDetail(link).await()
         Result.success(detail)
         emit(detail)
     }
 
     fun getProjectBasicInformation() = liveData(Dispatchers.IO) {
         val projectInformation =
-            EHeritageApi.getProjectBasicInformation().await()
+                EHeritageApi.getProjectBasicInformation().await()
         Result.success(projectInformation)
         emit(projectInformation)
     }
 
     fun getProjectDetail(link: String) = liveData(Dispatchers.IO) {
         val projectDetail =
-            EHeritageApi.getProjectDetail(link).await()
+                EHeritageApi.getProjectDetail(link).await()
         Result.success(projectDetail)
         emit(projectDetail)
     }
 
     fun getInheritanceDetail(link: String) = liveData(Dispatchers.IO) {
         val detail =
-            EHeritageApi.getInheritanceDetail(link).await()
+                EHeritageApi.getInheritanceDetail(link).await()
         Result.success(detail)
         emit(detail)
     }
 
     fun getSearchCategory() = liveData(Dispatchers.IO) {
         val category =
-            EHeritageApi.getSearchCategory().await()
+                EHeritageApi.getSearchCategory().await()
         Result.success(category)
         emit(category)
     }
 
     fun getSearchResult(request: SearchRequest): Flow<PagingData<ProjectListInformation>> {
         return Pager(
-            config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-            pagingSourceFactory = { SearchProjectPageSource(request, this::getSearchResultCaller) }
+                config = PagingConfig(COMMON_LIST_PAGE_SIZE),
+                pagingSourceFactory = { SearchProjectPageSource(request, this::getSearchResultCaller) }
         ).flow
     }
 
@@ -234,16 +234,22 @@ class Repository @Inject constructor() {
         val tempResponse = EHeritageApi.getProjectStatistics().await()
         val statisListByRegion = tempResponse.statisticsByRegion.sortedByDescending { it.value }
         val statisticsResponse = HeritageProjectStatisticsResponse(
-            statisListByRegion,
-            tempResponse.statisticsByTime,
-            tempResponse.statisticsByType
+                statisListByRegion,
+                tempResponse.statisticsByTime,
+                tempResponse.statisticsByType
         )
         Result.success(statisticsResponse)
         emit(statisticsResponse)
     }
 
+    fun getAllProjectType() = liveData(Dispatchers.IO) {
+        val result = EHeritageApi.getAllProjectType().await()
+        Result.success(result)
+        emit(result)
+    }
+
     fun getSearchHistory() =
-        EHeritageApplication.newsDetailDatabase.searchHistoryDao().getAllSearchHistory()
+            EHeritageApplication.newsDetailDatabase.searchHistoryDao().getAllSearchHistory()
 
     fun addSearchHistory(searchHistory: SearchHistory) {
         GlobalScope.launch {
@@ -258,14 +264,14 @@ class Repository @Inject constructor() {
     }
 
     private fun getSearchResultCaller(request: SearchRequest) =
-        EHeritageApi.getSearchProjectResult(
-            request.num,
-            request.title,
-            request.type,
-            request.rx_time,
-            request.cate,
-            request.province,
-            request.unit,
-            request.page
-        )
+            EHeritageApi.getSearchProjectResult(
+                    request.num,
+                    request.title,
+                    request.type,
+                    request.rx_time,
+                    request.cate,
+                    request.province,
+                    request.unit,
+                    request.page
+            )
 }

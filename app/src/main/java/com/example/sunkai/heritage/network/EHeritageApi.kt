@@ -36,6 +36,7 @@ const val SearchCategory = "/api/HeritageProject/GetSearchCategories"
 const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
 const val ProjectStatistics = "/api/HeritageProject/GetProjectStatisticInformation"
 const val SearchNews = "/api/NewsList/SearchNews/{pages}"
+const val GetAllProjectType = "/api/HeritageProject/GetAllProjectType"
 const val IMAGE_HOST = "https://sunkai.xyz:5001/img/"
 
 private const val HOST = "sunkai.xyz"
@@ -110,6 +111,9 @@ interface EHeritageApiRetrofit{
 
     @GET(SearchNews)
     fun searchNews(@Path("pages")page:Int,@Query("keywords")keywords:String,@Query("year")year:String?):Call<List<NewsListResponse>>
+
+    @GET(GetAllProjectType)
+    fun getAllProjectType():Call<SearchProjectTypeResponse>
 }
 
 suspend fun <T> Call<T>.await():T{

@@ -13,4 +13,6 @@ import javax.inject.Inject
 class ProjectListViewModel @Inject constructor(val repository: Repository):ViewModel() {
     val projectList=repository.fetchProjectListPageData().cachedIn(viewModelScope).asLiveData(
         Dispatchers.Main)
+
+    val allProjectType = repository.getAllProjectType()
 }
