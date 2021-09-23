@@ -1,6 +1,5 @@
 package com.example.sunkai.heritage.network
 
-import com.example.sunkai.heritage.database.entities.NewsList
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.response.*
 import okhttp3.HttpUrl
@@ -15,7 +14,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 const val Banner = "/api/banner"

@@ -10,10 +10,7 @@ import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 import com.example.sunkai.heritage.entity.request.SearchNewsRequest
 import com.example.sunkai.heritage.entity.request.SearchRequest
-import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsResponse
-import com.example.sunkai.heritage.entity.response.NewsDetail
-import com.example.sunkai.heritage.entity.response.NewsListResponse
-import com.example.sunkai.heritage.entity.response.ProjectListInformation
+import com.example.sunkai.heritage.entity.response.*
 import com.example.sunkai.heritage.network.EHeritageApi
 import com.example.sunkai.heritage.network.await
 import com.example.sunkai.heritage.tools.EHeritageApplication
@@ -244,8 +241,9 @@ class Repository @Inject constructor() {
 
     fun getAllProjectType() = liveData(Dispatchers.IO) {
         val result = EHeritageApi.getAllProjectType().await()
-        Result.success(result)
-        emit(result)
+        val searchProjectViewData = SearchProjectTypeViewData(result.projectTypes)
+        Result.success(searchProjectViewData)
+        emit(searchProjectViewData)
     }
 
     fun getSearchHistory() =
