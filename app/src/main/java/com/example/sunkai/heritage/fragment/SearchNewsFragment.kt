@@ -17,10 +17,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -52,6 +50,8 @@ import com.example.sunkai.heritage.entity.SearchNewsViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.tools.getThemeColor
+import com.example.sunkai.heritage.tools.getThemeColorCompose
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,9 +70,9 @@ class SearchNewsFragment : BaseGlideFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
@@ -87,12 +87,13 @@ class SearchNewsFragment : BaseGlideFragment() {
         val searchResult = viewModel.searchNewsResult.asFlow().collectAsLazyPagingItems()
         val searchHistoryState = viewModel.searchNewsHistory.observeAsState()
         val searchHistoryNews = searchHistoryState.value?.sortedByDescending { it.searchHappenedTime }
-            ?: listOf()
+                ?: listOf()
         Column(
-            Modifier
-                .fillMaxSize()
-                .padding(start = 30.dp, end = 30.dp)
+                Modifier
+                        .fillMaxSize()
+                        .padding(start = 30.dp, end = 30.dp)
         ) {
+            Spacer(Modifier.height(24.dp))
             SearchNewsTopBar(onBack = { findNavController().popBackStack() })
             Spacer(Modifier.height(27.dp))
             SearchNewsEditTextBar()
@@ -107,54 +108,67 @@ class SearchNewsFragment : BaseGlideFragment() {
     @Composable
     fun SearchNewsTopBar(onBack: () -> Unit) {
         Image(
-            painter = painterResource(id = R.drawable.general_arrow_back),
-            contentDescription = "back",
-            Modifier.clickable {
-                onBack()
-            })
+                painter = painterResource(id = R.drawable.general_arrow_back),
+                contentDescription = "back",
+                Modifier.clickable {
+                    onBack()
+                })
     }
 
+    @Preview
     @Composable
     fun SearchNewsEditTextBar() {
-        var text = viewModel.searchEditFieldText.observeAsState("")
+        val text = viewModel.searchEditFieldText.observeAsState("")
         ConstraintLayout(Modifier.fillMaxWidth()) {
             val (editTextCard, filterButton) = createRefs()
+
             Card(
-                Modifier
-                    .size(42.dp)
-                    .constrainAs(filterButton) {
-                        end.linkTo(parent.end)
-                    }) {
-            }
-            Card(
-                Modifier
-                    .height(42.dp)
-                    .constrainAs(editTextCard) {
-                        end.linkTo(filterButton.start, margin = 18.dp)
-                        start.linkTo(parent.start, margin = 0.dp)
-                        width = Dimension.fillToConstraints
-                    }, shape = RoundedCornerShape(21.dp)
+                    Modifier
+                            .size(42.dp)
+                            .constrainAs(filterButton) {
+                                end.linkTo(parent.end)
+                            }, shape = RoundedCornerShape(9.dp), elevation = 6.dp
             ) {
-                Row(Modifier.fillMaxHeight()) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_search_grey_400_24dp),
-                        contentDescription = "搜索",
-                        Modifier.padding(start = 18.dp, top = 12.dp, bottom = 12.dp)
-                    )
-                    TextField(
-                        value = text.value, onValueChange = {
-                            viewModel.searchEditFieldText.value = it
-                            val msg = Message()
-                            msg.data = bundleOf("text" to it)
-                            msg.what = 0
-                            autoSearchHandler.removeMessages(0)
-                            autoSearchHandler.sendMessageDelayed(msg, 1000)
-                        }, modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Transparent)
-                    )
+                Box(Modifier
+                        .fillMaxSize(), contentAlignment = Alignment.Center
+                ) {
+                    Image(modifier = Modifier.size(21.dp), painter = painterResource(id = R.drawable.search_news_filter_icon), contentDescription = "筛选")
                 }
+
             }
+            TextField(
+                    value = text.value,
+                    onValueChange = {
+                        viewModel.searchEditFieldText.value = it
+                        val msg = Message()
+                        msg.data = bundleOf("text" to it)
+                        msg.what = 0
+                        autoSearchHandler.removeMessages(0)
+                        autoSearchHandler.sendMessageDelayed(msg, 1000)
+                    },
+                    modifier = Modifier
+                            .fillMaxWidth()
+                            .constrainAs(editTextCard) {
+                                end.linkTo(filterButton.start, margin = 18.dp)
+                                start.linkTo(parent.start, margin = 0.dp)
+                                width = Dimension.fillToConstraints
+                            }
+                            .shadow(6.dp, shape = RoundedCornerShape(21.dp))
+                            .height(42.dp),
+                    leadingIcon = {
+                        Image(
+                                painter = painterResource(id = R.drawable.ic_search_grey_400_24dp),
+                                contentDescription = "搜索",
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent, //hide the indicator
+                            unfocusedIndicatorColor = Color.Transparent),
+                    shape = RoundedCornerShape(21.dp),
+                    singleLine = true,
+            )
+
         }
     }
 
@@ -164,25 +178,25 @@ class SearchNewsFragment : BaseGlideFragment() {
         LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 72.dp)) {
             items(argument.size) {
                 Row(
-                    Modifier
-                        .height(24.dp)
-                        .padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 4.dp)
-                        .background(Color.White, RoundedCornerShape(12.dp))
-                        .clickable { viewModel.startSearchNews(argument[it].searchValue) },
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        Modifier
+                                .height(24.dp)
+                                .padding(start = 14.dp, end = 14.dp, top = 4.dp, bottom = 4.dp)
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .clickable { viewModel.startSearchNews(argument[it].searchValue) },
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(Modifier.width(6.dp))
                     Text(argument[it].searchValue, fontSize = 12.sp, color = Color(0xff252A3B))
                     Spacer(Modifier.width(4.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.icon_material_cancel),
-                        contentDescription = null,
-                        Modifier
-                            .size(8.dp)
-                            .clickable {
-                                viewModel.deleteSearchHistory(argument[it])
-                            },
+                            painter = painterResource(id = R.drawable.icon_material_cancel),
+                            contentDescription = null,
+                            Modifier
+                                    .size(8.dp)
+                                    .clickable {
+                                        viewModel.deleteSearchHistory(argument[it])
+                                    },
                     )
                     Spacer(Modifier.width(6.dp))
                 }
@@ -208,25 +222,25 @@ class SearchNewsFragment : BaseGlideFragment() {
             jumpToNewsDetail(news)
         }) {
             Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
+                    Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
             ) {
                 Text(news.title, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Spacer(Modifier.height(26.dp))
                 Row {
                     Image(
-                        painter = painterResource(id = R.drawable.icon_material_author),
-                        contentDescription = "作者",
-                        Modifier.size(18.dp)
+                            painter = painterResource(id = R.drawable.icon_material_author),
+                            contentDescription = "作者",
+                            Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(6.dp))
                     Text("", color = Color(0xFFBCBCBC))
                     Spacer(Modifier.width(30.dp))
                     Image(
-                        painter = painterResource(id = R.drawable.icon_material_timelapse),
-                        contentDescription = "发布时间",
-                        Modifier.size(18.dp)
+                            painter = painterResource(id = R.drawable.icon_material_timelapse),
+                            contentDescription = "发布时间",
+                            Modifier.size(18.dp)
                     )
                     Text(news.date, color = Color(0xFFBCBCBC))
                 }
@@ -237,11 +251,11 @@ class SearchNewsFragment : BaseGlideFragment() {
 
     private fun jumpToNewsDetail(news: NewsListResponse) {
         findNavController().navigate(
-            R.id.search_news_to_news_detail,
-            bundleOf(
-                Pair<String, Serializable>(DATA, news),
-                Pair<String, Serializable>(API, NewsPages.NewsPage)
-            )
+                R.id.search_news_to_news_detail,
+                bundleOf(
+                        Pair<String, Serializable>(DATA, news),
+                        Pair<String, Serializable>(API, NewsPages.NewsPage)
+                )
         )
     }
 
@@ -263,9 +277,9 @@ class SearchNewsFragment : BaseGlideFragment() {
     @Composable
     fun SearchNewsArgumentViewPreview() {
         SearchNewsArgumentView(
-            argument = listOf(
-               SearchNewsHistory("长江")
-            )
+                argument = listOf(
+                        SearchNewsHistory("长江")
+                )
         )
     }
 }

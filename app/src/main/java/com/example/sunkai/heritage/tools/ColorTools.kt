@@ -34,7 +34,7 @@ import com.google.android.material.tabs.TabLayout
  * 用于处理主题切换的工具类
  */
 private var themeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
-private var userChoiceThemeColor=EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
+private var userChoiceThemeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
 private var darkThemeColor = getDarkerColor(getThemeColor())
 private var lightThemeColor = getLighterColor(getThemeColor())
 private var darkmode = false
@@ -56,11 +56,13 @@ fun setThemeColor(color: Int) {
     }
 }
 
-fun getUserChoiceThemeColor():Int= userChoiceThemeColor
+fun getUserChoiceThemeColor(): Int = userChoiceThemeColor
 
 fun getThemeColor(specialDarkmodeColor: Boolean = false): Int {
     return if (specialDarkmodeColor) ContextCompat.getColor(EHeritageApplication.instance, R.color.deepGrey) else themeColor
 }
+
+fun getThemeColorCompose(specialDarkmodeColor: Boolean = false): androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(getThemeColor())
 
 fun getDarkThemeColor(): Int {
     return darkThemeColor
@@ -141,7 +143,7 @@ fun tintBottomNavigationView(navigationView: BottomNavigationView) {
     val colorStateList = ColorStateList(states, colors)
     navigationView.itemTextColor = colorStateList
     navigationView.itemIconTintList = colorStateList
-    navigationView.itemRippleColor= ColorStateList.valueOf(getTransparentColor(getLightThemeColor(),30))
+    navigationView.itemRippleColor = ColorStateList.valueOf(getTransparentColor(getLightThemeColor(), 30))
 }
 
 fun tintSwitch(view: SwitchCompat) {
@@ -185,16 +187,16 @@ fun tintViewPager(view: ViewPager) {
 fun tintNestedScrollView(view: NestedScrollView) {
     try {
         val topEdgeEffectField = NestedScrollView::class.java.getDeclaredField("mEdgeGlowTop")
-        val bottomEdgeEffectField =NestedScrollView::class.java.getDeclaredField("mEdgeGlowBottom")
+        val bottomEdgeEffectField = NestedScrollView::class.java.getDeclaredField("mEdgeGlowBottom")
         topEdgeEffectField.isAccessible = true
         bottomEdgeEffectField.isAccessible = true
-        val topEdgeEffect =  EdgeEffect(view.context)
-        val bottomEdgeEffect =  EdgeEffect(view.context)
+        val topEdgeEffect = EdgeEffect(view.context)
+        val bottomEdgeEffect = EdgeEffect(view.context)
         topEdgeEffect.color = themeColor
         bottomEdgeEffect.color = themeColor
-        topEdgeEffectField.set(view,topEdgeEffect)
-        bottomEdgeEffectField.set(view,bottomEdgeEffect)
-    }catch (e:Exception){
+        topEdgeEffectField.set(view, topEdgeEffect)
+        bottomEdgeEffectField.set(view, bottomEdgeEffect)
+    } catch (e: Exception) {
         e.printStackTrace()
     }
 }
@@ -207,8 +209,8 @@ fun tintToolbar(view: Toolbar) {
     view.setBackgroundColor(getThemeColor())
 }
 
-fun loadThemeColor(){
-    val config=EHeritageApplication.instance.resources.configuration
+fun loadThemeColor() {
+    val config = EHeritageApplication.instance.resources.configuration
     when (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
         Configuration.UI_MODE_NIGHT_NO -> {
             darkmode = false
@@ -219,7 +221,7 @@ fun loadThemeColor(){
             themeColor = ContextCompat.getColor(EHeritageApplication.instance, R.color.midGrey)
         } // Night mode is active, we're using dark theme
     }
-    userChoiceThemeColor=EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
+    userChoiceThemeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
     darkThemeColor = getDarkerColor(getThemeColor())
     lightThemeColor = getLighterColor(getThemeColor())
 }
