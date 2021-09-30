@@ -43,6 +43,8 @@ fun reloadThemeColor() {
     LocalBroadcastManager.getInstance(EHeritageApplication.instance).sendBroadcast(Intent(CHANGE_THEME))
 }
 
+fun getResourceColorCompose(id:Int):androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(EHeritageApplication.instance.getColor(id))
+
 fun setThemeColor(color: Int) {
     EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
         putInt(THEME_COLOR, color)
