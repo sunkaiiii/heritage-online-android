@@ -9,6 +9,7 @@ import com.example.sunkai.heritage.database.entities.NewsDetailRelevantContent
 import com.example.sunkai.heritage.database.entities.SearchHistory
 import com.example.sunkai.heritage.database.entities.SearchNewsHistory
 import com.example.sunkai.heritage.entity.request.SearchNewsRequest
+import com.example.sunkai.heritage.entity.request.SearchProjectRequest
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.*
 import com.example.sunkai.heritage.network.EHeritageApi
@@ -43,12 +44,13 @@ class Repository @Inject constructor() {
         ).flow
     }
 
-    fun fetchProjectListPageData(): Flow<PagingData<ProjectListInformation>> {
+    fun fetchProjectListPageData(searchProjectRequest: SearchProjectRequest): Flow<PagingData<ProjectListInformation>> {
         return Pager(
                 config = PagingConfig(COMMON_LIST_PAGE_SIZE),
-                pagingSourceFactory = { ProjectListPageSource(EHeritageApi::getProjecrList) }
+                pagingSourceFactory = { ProjectListPageSource(EHeritageApi::getProjecrList,searchProjectRequest) }
         ).flow
     }
+
 
     fun fetchSearchProjectData(
             request: SearchNewsRequest

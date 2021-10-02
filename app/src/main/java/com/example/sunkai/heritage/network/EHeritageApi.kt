@@ -87,7 +87,7 @@ interface EHeritageApiRetrofit{
     fun getPeopleDetail(@Query("link")link:String):Call<NewsDetail>
 
     @GET(ProjectList)
-    fun getProjecrList(@Path("page")page:Int):Call<List<ProjectListInformation>>
+    fun getProjecrList(@Path("page")page:Int,@Query("keywords")keywords: String? = null,@Query("year")year:Int? = null,@Query("type")type: String? = null):Call<List<ProjectListInformation>>
 
     @GET(ProjectBasicInformation)
     fun getProjectBasicInformation():Call<ProjectBasicInformation>

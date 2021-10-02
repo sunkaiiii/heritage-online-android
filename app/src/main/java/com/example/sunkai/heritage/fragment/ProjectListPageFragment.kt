@@ -42,40 +42,12 @@ class ProjectListPageFragment : BaseViewBindingFragment<FragmentProjectListPageB
         binding.projectInformationList.adapter = adapter
 
         binding.blurBackground.setOnClickListener {
-            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
-            animation.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) {}
-
-                override fun onAnimationEnd(p0: Animation?) {
-                    binding.blurBackground.visibility = View.GONE
-                    binding.blurBackground.setImageBitmap(null)
-                }
-
-                override fun onAnimationRepeat(p0: Animation?) {}
-
-            })
-            binding.blurBackground.startAnimation(animation)
-            binding.projectListSearchView.visibility = View.VISIBLE
-            binding.projectListSearchDetailView.visibility = View.GONE
-            val transition = AutoTransition()
-            transition.duration = 200
-            TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup, transition)
+            showSearchView()
         }
 
         binding.projectListSearchView.setOnClickListener {
-            it.visibility = View.GONE
-            binding.projectListSearchDetailView.visibility = View.VISIBLE
-            binding.projectListSearchDetailView.setContent {
-                ProjectListSearchProjectDetailDialog()
+            showDetailView()
             }
-            requireView().takeBlurScreenShot(requireActivity(), { bitmap ->
-                binding.blurBackground.visibility = View.VISIBLE
-                binding.blurBackground.setImageBitmap(bitmap)
-                binding.blurBackground.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in))
-            })
-            binding.blurBackground.visibility = View.VISIBLE
-            TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup)
-        }
 
         viewModel.projectList.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
@@ -84,12 +56,51 @@ class ProjectListPageFragment : BaseViewBindingFragment<FragmentProjectListPageB
         })
     }
 
+    fun showDetailView(){
+        binding.projectListSearchView.visibility = View.GONE
+        binding.projectListSearchDetailView.visibility = View.VISIBLE
+        binding.projectListSearchDetailView.setContent {
+            ProjectListSearchProjectDetailDialog()
+        }
+        requireView().takeBlurScreenShot(requireActivity(), { bitmap ->
+            binding.blurBackground.visibility = View.VISIBLE
+            binding.blurBackground.setImageBitmap(bitmap)
+            binding.blurBackground.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in))
+        })
+        binding.blurBackground.visibility = View.VISIBLE
+        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup)
+    }
+
+    fun showSearchView(){
+        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
+        animation.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) {}
+
+            override fun onAnimationEnd(p0: Animation?) {
+                binding.blurBackground.visibility = View.GONE
+                binding.blurBackground.setImageBitmap(null)
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) {}
+
+        })
+        binding.blurBackground.startAnimation(animation)
+        binding.projectListSearchView.visibility = View.VISIBLE
+        binding.projectListSearchDetailView.visibility = View.GONE
+        val transition = AutoTransition()
+        transition.duration = 200
+        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup, transition)
+    }
+
     @Composable
     fun ProjectListSearchProjectDetailDialog() {
         val projectTypeDataState = viewModel.allProjectType.observeAsState()
         val searchProjectViewData = projectTypeDataState.value
         if (searchProjectViewData != null) {
-            ProjectListSearchProjectDetailView(searchProjectViewData)
+            ProjectListSearchProjectDetailView(searchProjectViewData){
+                viewModel.searchProject(keywords = it)
+                showSearchView()
+            }
         } else {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
