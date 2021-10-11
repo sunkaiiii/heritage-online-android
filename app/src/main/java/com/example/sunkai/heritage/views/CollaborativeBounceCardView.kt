@@ -55,5 +55,12 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
 
     }
 
+    fun isClickOutRecyclerView(): Boolean {
+        val position =horizentalInitialPosition
+        val locationRect = IntArray(2)
+        getLocationOnScreen(locationRect)
+        return position < locationRect[1]
+    }
+
 
 }

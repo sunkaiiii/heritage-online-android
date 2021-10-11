@@ -9,8 +9,11 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.activity.MainActivity
@@ -23,6 +26,7 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.tools.Utils.getColorResource
 import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
+import com.example.sunkai.heritage.views.CollaborativeBounceView
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,57 +48,33 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
     }
 
     private fun setNewsListScrollBehaviour() {
-        var horizentalInitialPosition = -1f
-        var initialTranslateY = binding.newsListContainer.translationY
         val minBoundry = 50.dip2px()
         val maxBoundry = 250.dip2px()
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
-        val drawable = ColorDrawable(getColorResource(R.color.black))
-        val moveContainerView = { initialHorizentaltPosition: Float, movePosition: Float ->
-            var nextPosition = movePosition - initialHorizentaltPosition + initialTranslateY
-            if (nextPosition < minBoundry) {
-                nextPosition = minBoundry.toFloat()
+        binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry)
+        binding.newsListContainer.setMoveEventBlocker { event, orientation ->
+            if(orientation == CollaborativeBounceView.MoveOrientation.Up){
+                return@setMoveEventBlocker false
             }
-            if (nextPosition > maxBoundry) {
-                nextPosition = maxBoundry.toFloat()
-            }
-            if (binding.newsListContainer.translationY != nextPosition) {
-                binding.newsListContainer.translationY = nextPosition
-
-                val offsetFromMaxBoundryPercentage =
-                    (maxBoundry - nextPosition) / (maxBoundry - minBoundry)
-                val bannerBlurRadius =
-                    minRadius + (maxRadius - minRadius) * offsetFromMaxBoundryPercentage
-                Log.d(TAG, bannerBlurRadius.toString())
-                if (bannerBlurRadius == 0F && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.mainPageSlideViewpager.setRenderEffect(null)
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.mainPageSlideViewpager.setRenderEffect(
-                        RenderEffect.createBlurEffect(
-                            bannerBlurRadius,
-                            bannerBlurRadius,
-                            Shader.TileMode.CLAMP
-                        )
-                    )
-                } else{
-                    val maxAlpha = 175
-                    drawable.alpha = (maxAlpha*offsetFromMaxBoundryPercentage).toInt()
-                    binding.mainPageSlideViewpager.foreground = drawable
-                }
-            }
+            val linearLayoutManager = binding.mainPageViewPager[0].findViewById<RecyclerView>(R.id.fragmentMainRecyclerview).layoutManager as? LinearLayoutManager
+            val position = linearLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: return@setMoveEventBlocker false
+            return@setMoveEventBlocker position!=0
         }
-        binding.newsListContainer.dispatchTouchEventHandler = { view, motionEvent ->
-            when (motionEvent.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    initialTranslateY = view.translationY
-                    horizentalInitialPosition = motionEvent.rawY
-                }
-                MotionEvent.ACTION_MOVE -> moveContainerView(
-                    horizentalInitialPosition,
-                    motionEvent.rawY
-                )
+        val drawable = ColorDrawable(getColorResource(R.color.black))
+        binding.newsListContainer.setOnMoveAction { distance, offsetPercentage ->
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                val blurRadius = minRadius + (maxRadius - minRadius) * offsetPercentage
+                binding.mainPageSlideViewpager.setRenderEffect(
+                        if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
+                                blurRadius, blurRadius,
+                                Shader.TileMode.CLAMP
+                ))
+            }else{
+                val maxAlpha = 175
+                drawable.alpha = (maxAlpha * offsetPercentage).toInt()
+                binding.mainPageSlideViewpager.foreground = drawable
             }
         }
     }

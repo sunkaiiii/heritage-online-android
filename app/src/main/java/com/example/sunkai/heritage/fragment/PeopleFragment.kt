@@ -100,7 +100,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
                 binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
                 binding.peopleContainer.setMoveEventBlocker { event, moveOrientation ->
-                    if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || isClickOutRecyclerView()) {
+                    if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || binding.peopleContainer.isClickOutRecyclerView()) {
                         return@setMoveEventBlocker false
                     }
                     val gridLayoutManager =
@@ -129,13 +129,6 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 }
             }
         })
-    }
-
-    private fun isClickOutRecyclerView(): Boolean {
-        val position = binding.peopleContainer.horizentalInitialPosition
-        val locationRect = IntArray(2)
-        binding.peopleFragmentRecyclerView.getLocationOnScreen(locationRect)
-        return position < locationRect[1]
     }
 
     private fun startViewpagerScrollDelay() {

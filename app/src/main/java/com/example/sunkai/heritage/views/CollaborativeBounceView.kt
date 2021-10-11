@@ -43,7 +43,6 @@ interface CollaborativeBounceView : CollaborativeView {
         this.interceptMoveEventBlocker = blocker
     }
 
-
     enum class BounceType {
         Expand,
         Hide
