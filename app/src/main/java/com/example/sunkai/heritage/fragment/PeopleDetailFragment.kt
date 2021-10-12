@@ -156,7 +156,7 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
         val initialAlphaOfCollaborativeView = binding.peopleRoundedBackgroundView.alpha
         val initalInformationContainerTranslationY =
             binding.peopleDetailInformationContainer.translationY
-        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0)
+        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0,viewModel)
         binding.peopleDetailCollaborativeLayout.setTouchEventBlocker {
             return@setTouchEventBlocker binding.peopleDetailCollaborativeLayout.translationY != 0f
         }

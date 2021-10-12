@@ -98,7 +98,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val minRadius = 0.dip2px()
                 val maxRadius = 12.dip2px()
                 val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
-                binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt())
+                binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt(),peopleViewModel)
                 binding.peopleContainer.setMoveEventBlocker { event, moveOrientation ->
                     if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || binding.peopleContainer.isClickOutRecyclerView()) {
                         return@setMoveEventBlocker false

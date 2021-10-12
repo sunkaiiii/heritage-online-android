@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.views
 
 import android.view.MotionEvent
+import com.example.sunkai.heritage.entity.CollaborativeViewModel
 
 interface CollaborativeBounceView : CollaborativeView {
     var onBounceListener: ((BounceType) -> Unit)?
@@ -14,6 +15,7 @@ interface CollaborativeBounceView : CollaborativeView {
     var horizentalInitialPosition: Float
     var viewTranslationDistance: Float
     var autoBounce: Boolean
+    var collaborativeViewModel:CollaborativeViewModel?
     val intercepter: CollaborativeBounceIntercepter
         get() = CollaborativeBounceIntercepterImpl(
             this
@@ -25,10 +27,11 @@ interface CollaborativeBounceView : CollaborativeView {
     }
 
 
-    fun setBounceBoundry(minBoundry: Int, maxBoundry: Int) {
+    fun setBounceBoundry(minBoundry: Int, maxBoundry: Int,collaborativeViewModel: CollaborativeViewModel) {
         this.minBoundry = minBoundry
         this.maxBoundry = maxBoundry
         viewTranslationDistance = maxBoundry.toFloat()
+        this.collaborativeViewModel = collaborativeViewModel
     }
 
     fun setOnMoveAction(listener: (distance: Int, offsetPercentage: Float) -> Unit) {

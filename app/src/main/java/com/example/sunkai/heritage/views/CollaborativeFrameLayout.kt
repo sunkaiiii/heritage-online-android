@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.FrameLayout
+import com.example.sunkai.heritage.entity.CollaborativeViewModel
 
 class CollaborativeFrameLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -17,6 +18,7 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
     override var initialActionDownTranslationY = -1f
     override var horizentalInitialPosition = -1f
     override var autoBounce: Boolean = false
+    override var collaborativeViewModel: CollaborativeViewModel? = null
     override var viewTranslationDistance
         get() = translationY
         set(value) {

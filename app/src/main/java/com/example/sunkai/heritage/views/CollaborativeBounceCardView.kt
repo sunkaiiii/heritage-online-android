@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.example.sunkai.heritage.entity.CollaborativeViewModel
 import com.google.android.material.card.MaterialCardView
 
 class CollaborativeBounceCardView @JvmOverloads constructor(
@@ -17,6 +18,7 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
     override var initialActionDownTranslationY = -1f
     override var horizentalInitialPosition = -1f
     override var autoBounce: Boolean = true
+    override var collaborativeViewModel: CollaborativeViewModel? = null
     override var viewTranslationDistance
         get() = translationY
         set(value) {
@@ -61,6 +63,4 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
         getLocationOnScreen(locationRect)
         return position < locationRect[1]
     }
-
-
 }
