@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @HiltViewModel
-class PeoplePageViewModel @Inject constructor(val repository: Repository) : ViewModel(),CollaborativeViewModel {
+class PeoplePageViewModel @Inject constructor(val repository: Repository) : ViewModel() {
     val peopleList = repository.fetchPeopleListPageData().cachedIn(viewModelScope).asLiveData(Dispatchers.Main)
 
     val peopleTopBanner = repository.getPeopleTopBanner()

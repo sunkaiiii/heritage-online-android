@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PeopleDetailViewModel @Inject constructor(val repository: Repository) : ViewModel(),CollaborativeViewModel {
+class PeopleDetailViewModel @Inject constructor(val repository: Repository) : ViewModel() {
     private val link = MutableLiveData<String>()
 
     val peopleDetail = Transformations.switchMap(link) { link ->
@@ -18,7 +18,4 @@ class PeopleDetailViewModel @Inject constructor(val repository: Repository) : Vi
     fun setLink(link: String) {
         this.link.value = link
     }
-
-    override val viewTranslationDistance: MutableLiveData<Float> = MutableLiveData()
-    override val initialActionDownTranslationY: MutableLiveData<Float> = MutableLiveData()
 }

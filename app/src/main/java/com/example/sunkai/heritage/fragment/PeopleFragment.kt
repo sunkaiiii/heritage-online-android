@@ -19,6 +19,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
 import com.example.sunkai.heritage.databinding.FragmentPeopleBinding
+import com.example.sunkai.heritage.entity.CollaborativeViewModelImpl
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
@@ -37,6 +38,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
             PeoplePageViewModel::class.java
         )
     }
+    private val collaborativeViewModel by lazy { ViewModelProvider(this).get(CollaborativeViewModelImpl::class.java) }
     private val viewPageScrollHandler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
             if (msg.what == SCROLL) {
@@ -98,7 +100,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val minRadius = 0.dip2px()
                 val maxRadius = 12.dip2px()
                 val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
-                binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt(),peopleViewModel)
+                binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt(),collaborativeViewModel)
                 binding.peopleContainer.setMoveEventBlocker { event, moveOrientation ->
                     if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || binding.peopleContainer.isClickOutRecyclerView()) {
                         return@setMoveEventBlocker false

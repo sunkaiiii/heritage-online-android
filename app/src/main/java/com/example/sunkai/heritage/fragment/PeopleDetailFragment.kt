@@ -32,6 +32,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.databinding.FragmentPeopleDetailBinding
+import com.example.sunkai.heritage.entity.CollaborativeViewModelImpl
 import com.example.sunkai.heritage.entity.PeopleDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsDetailContent
@@ -50,6 +51,8 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     private var isFullyScrollToTheFirstItem: (() -> Boolean)? = null
 
     private val viewModel by lazy { ViewModelProvider(this).get(PeopleDetailViewModel::class.java) }
+
+    private val collaborativeViewModel by lazy { ViewModelProvider(this).get(CollaborativeViewModelImpl::class.java) }
 
     override fun getBindingClass(): Class<FragmentPeopleDetailBinding> =
         FragmentPeopleDetailBinding::class.java
@@ -153,10 +156,11 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     }
 
     private fun initScrollBehaviour() {
+        collaborativeViewModel.viewTranslationDistance.value = view?.height?.div(2)?.toFloat() ?: 0f
         val initialAlphaOfCollaborativeView = binding.peopleRoundedBackgroundView.alpha
         val initalInformationContainerTranslationY =
             binding.peopleDetailInformationContainer.translationY
-        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0,viewModel)
+        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0,collaborativeViewModel)
         binding.peopleDetailCollaborativeLayout.setTouchEventBlocker {
             return@setTouchEventBlocker binding.peopleDetailCollaborativeLayout.translationY != 0f
         }

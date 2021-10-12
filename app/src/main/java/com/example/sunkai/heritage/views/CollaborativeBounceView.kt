@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.views
 
 import android.view.MotionEvent
+import androidx.lifecycle.ViewModel
 import com.example.sunkai.heritage.entity.CollaborativeViewModel
 
 interface CollaborativeBounceView : CollaborativeView {
@@ -18,9 +19,8 @@ interface CollaborativeBounceView : CollaborativeView {
     var collaborativeViewModel:CollaborativeViewModel?
     val intercepter: CollaborativeBounceIntercepter
         get() = CollaborativeBounceIntercepterImpl(
-            this
+            this,collaborativeViewModel!!
         )
-
 
     fun setOnBounceAction(listener: (BounceType) -> Unit) {
         this.onBounceListener = listener

@@ -1,13 +1,14 @@
 package com.example.sunkai.heritage.views
 
 import android.view.MotionEvent
+import com.example.sunkai.heritage.entity.CollaborativeViewModel
 
-class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView) :
+class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView,val viewModel:CollaborativeViewModel) :
     CollaborativeBounceIntercepter {
     override fun dispatchTouchEvent(event: MotionEvent) {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
-                view.initialActionDownTranslationY = view.viewTranslationDistance
+                viewModel.initialActionDownTranslationY.value = view.viewTranslationDistance
                 view.horizentalInitialPosition = event.rawY
             }
             MotionEvent.ACTION_MOVE -> {
@@ -27,19 +28,24 @@ class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView) :
 
     private fun onBounce() {
         val moveDistance =
-            if (view.currentState == CollaborativeBounceView.BounceType.Hide) view.maxBoundry - view.viewTranslationDistance else view.viewTranslationDistance - view.minBoundry
+            if (view.currentState == CollaborativeBounceView.BounceType.Hide){
+                view.maxBoundry - (viewModel.viewTranslationDistance.value?.toInt() ?:0 )
+            }
+            else {
+                (viewModel.viewTranslationDistance.value?.toInt() ?: 0) - view.minBoundry
+            }
         val boundryDistance = view.maxBoundry - view.minBoundry
         val bounceType =
             if (moveDistance > boundryDistance / 4) revertState() else view.currentState
         view.currentState = bounceType
         view.onBounceListener?.invoke(bounceType)
-        view.viewTranslationDistance = when (bounceType) {
+        viewModel.viewTranslationDistance.value = when (bounceType) {
             CollaborativeBounceView.BounceType.Hide -> view.maxBoundry.toFloat()
             CollaborativeBounceView.BounceType.Expand -> view.minBoundry.toFloat()
         }
         view.onMoveListener?.invoke(
-            (view.maxBoundry - view.viewTranslationDistance).toInt(),
-            if (view.viewTranslationDistance == view.maxBoundry.toFloat()) 0.0f else 1.0f
+                view.maxBoundry - (viewModel.viewTranslationDistance.value?.toInt()?:0),
+            if (viewModel.viewTranslationDistance.value == view.maxBoundry.toFloat()) 0.0f else 1.0f
         )
     }
 
@@ -50,15 +56,15 @@ class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView) :
 
     private fun moveView(movePosition: Float) {
         var nextPosition =
-            movePosition - view.horizentalInitialPosition + view.initialActionDownTranslationY
+            movePosition - view.horizentalInitialPosition + (viewModel.initialActionDownTranslationY.value?.toInt()?:0)
         if (nextPosition < view.minBoundry) {
             nextPosition = view.minBoundry.toFloat()
         }
         if (nextPosition > view.maxBoundry) {
             nextPosition = view.maxBoundry.toFloat()
         }
-        if (view.viewTranslationDistance != nextPosition) {
-            view.viewTranslationDistance = nextPosition
+        if (viewModel.viewTranslationDistance.value != nextPosition) {
+            viewModel.viewTranslationDistance.value = nextPosition
             val offsetFromMaxBoundryPercentage =
                 (view.maxBoundry - nextPosition) / (view.maxBoundry - view.minBoundry)
             view.onMoveListener?.invoke(

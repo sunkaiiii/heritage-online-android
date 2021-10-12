@@ -20,6 +20,7 @@ import com.example.sunkai.heritage.activity.MainActivity
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.databinding.FragmentMainBinding
+import com.example.sunkai.heritage.entity.CollaborativeViewModelImpl
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
@@ -38,6 +39,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
 
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(MainPageViewModel::class.java) }
+    private val collaborativeViewModel by lazy { ViewModelProvider(this).get(CollaborativeViewModelImpl::class.java) }
 
     override fun initView() {
         viewModel.banner.observe(viewLifecycleOwner, {
@@ -53,6 +55,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val maxBoundry = 250.dip2px()
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
+        collaborativeViewModel.viewTranslationDistance.value = maxBoundry.toFloat()
         val drawable = ColorDrawable(getColorResource(R.color.black))
         viewModel.offsetPercentage.observe(viewLifecycleOwner,{ offsetPercentage->
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
@@ -69,7 +72,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
             }
         })
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
-        binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,viewModel)
+        binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,collaborativeViewModel)
         binding.newsListContainer.setMoveEventBlocker { event, orientation ->
             if(orientation == CollaborativeBounceView.MoveOrientation.Up){
                 return@setMoveEventBlocker false

@@ -8,9 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class MainPageViewModel @Inject constructor(val repository: Repository): ViewModel(),CollaborativeViewModel {
+class MainPageViewModel @Inject constructor(val repository: Repository): ViewModel() {
     val banner = repository.getBanner()
     val offsetPercentage = MutableLiveData<Float>()
-    override val viewTranslationDistance: MutableLiveData<Float> = MutableLiveData()
-    override val initialActionDownTranslationY: MutableLiveData<Float> = MutableLiveData()
 }
