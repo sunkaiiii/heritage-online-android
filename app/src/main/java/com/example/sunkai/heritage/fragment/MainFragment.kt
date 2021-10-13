@@ -55,7 +55,6 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val maxBoundry = 250.dip2px()
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
-        collaborativeViewModel.viewTranslationDistance.value = maxBoundry.toFloat()
         val drawable = ColorDrawable(getColorResource(R.color.black))
         viewModel.offsetPercentage.observe(viewLifecycleOwner,{ offsetPercentage->
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){

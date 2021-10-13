@@ -1,11 +1,10 @@
 package com.example.sunkai.heritage.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -56,13 +55,13 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        setCollectionAction()
     }
-
 
 
     private fun setDataToView(data: NewsDetail) {
         val imgUrl = data.compressImg ?: data.img
-        if(imgUrl != null){
+        if (imgUrl != null) {
             glide.loadImageFromServer(imgUrl).into(binding.newsDetailMainImage)
         }
         binding.bottomNewsDetailTitle.text =
@@ -87,7 +86,7 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
         adapter.setOnRelevantNewsClickListner(object :
             NewsDetailRecyclerViewAdapter.onRelevantNewsClick {
             override fun onClick(v: View, news: NewsDetailRelativeNews) {
-                val api = api ?:return
+                val api = api ?: return
                 findNavController().navigate(
                     R.id.relative_news_to_news_detail,
                     bundleOf(
@@ -99,6 +98,26 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
 
         })
         binding.bottomNewsDetailRecyclerview.adapter = adapter
+    }
+
+
+    fun setCollectionAction(){
+        val item = binding.toolbar.menu.findItem(R.id.collect)
+        newsDetailViewModel.isCollected.observe(viewLifecycleOwner, {
+            item.icon = if (it) ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.ic_bookmark_border_white_24dp
+            ) else ContextCompat.getDrawable(requireContext(), R.drawable.general_collection_unflag)
+        })
+        item.setOnMenuItemClickListener {
+            val isCollected = newsDetailViewModel.isCollected.value?:false
+            if(isCollected){
+                newsDetailViewModel.deleteCollection()
+            }else{
+                newsDetailViewModel.addCollection(link?:return@setOnMenuItemClickListener true)
+            }
+            return@setOnMenuItemClickListener true
+        }
     }
 
 }
