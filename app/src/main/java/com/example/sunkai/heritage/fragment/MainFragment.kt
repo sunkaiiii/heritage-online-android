@@ -56,20 +56,6 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
         val drawable = ColorDrawable(getColorResource(R.color.black))
-        viewModel.offsetPercentage.observe(viewLifecycleOwner,{ offsetPercentage->
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                val blurRadius = minRadius + (maxRadius - minRadius) * offsetPercentage
-                binding.mainPageSlideViewpager.setRenderEffect(
-                    if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
-                        blurRadius, blurRadius,
-                        Shader.TileMode.CLAMP
-                    ))
-            }else{
-                val maxAlpha = 175
-                drawable.alpha = (maxAlpha * offsetPercentage).toInt()
-                binding.mainPageSlideViewpager.foreground = drawable
-            }
-        })
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
         binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,collaborativeViewModel)
         binding.newsListContainer.setMoveEventBlocker { event, orientation ->
@@ -81,7 +67,18 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
             return@setMoveEventBlocker position!=0
         }
         binding.newsListContainer.setOnMoveAction { distance, offsetPercentage ->
-            viewModel.offsetPercentage.value = offsetPercentage
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                val blurRadius = minRadius + (maxRadius - minRadius) * offsetPercentage
+                binding.mainPageSlideViewpager.setRenderEffect(
+                        if (offsetPercentage == 0f) null else RenderEffect.createBlurEffect(
+                                blurRadius, blurRadius,
+                                Shader.TileMode.CLAMP
+                        ))
+            }else{
+                val maxAlpha = 175
+                drawable.alpha = (maxAlpha * offsetPercentage).toInt()
+                binding.mainPageSlideViewpager.foreground = drawable
+            }
         }
     }
 
