@@ -7,11 +7,18 @@
     <action
         android:id="@+id/main_view_to_about_us_fragment"
         app:destination="@id/aboutUsFragment" />
+    <action
+        android:id="@+id/main_view_to_my_collection_fragment"
+        app:destination="@+id/myCollectionFragment" />
     <include app:graph="@navigation/main" />
     <include app:graph="@navigation/people" />
     <include app:graph="@navigation/project" />
     <fragment
         android:id="@+id/aboutUsFragment"
         android:name="com.example.sunkai.heritage.fragment.AboutUSFragment"
-        android:label="AboutUsFragment"/>
+        android:label="AboutUsFragment" />
+    <fragment
+        android:id="@+id/myCollectionFragment"
+        android:name="com.example.sunkai.heritage.fragment.CollectionListFragment"
+        android:label="MyCollection" />
 </navigation>

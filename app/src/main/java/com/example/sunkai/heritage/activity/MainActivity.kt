@@ -60,6 +60,7 @@ class MainActivity : BaseGlideActivity() {
         binding.activityMainNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_about_us -> navigateToAboutUsPage()
+                R.id.navigation_collection -> navigateToMyCollectionPage()
             }
             binding.activityMainDrawerLayout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener true
@@ -77,6 +78,7 @@ class MainActivity : BaseGlideActivity() {
         binding.bottomNavigationButton.setupWithNavController(navController)
     }
 
+
     fun showNavigationDrawerLayout(){
         binding.activityMainDrawerLayout.openDrawer(GravityCompat.START)
     }
@@ -90,6 +92,11 @@ class MainActivity : BaseGlideActivity() {
 
     private fun navigateToAboutUsPage() {
         navController.navigate(R.id.main_view_to_about_us_fragment)
+    }
+
+
+    private fun navigateToMyCollectionPage() {
+        navController.navigate(R.id.main_view_to_my_collection_fragment)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
