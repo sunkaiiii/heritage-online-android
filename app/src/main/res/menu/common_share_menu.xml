@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/collect"
-        android:icon="@drawable/general_collection_unflag"
+        android:icon="@drawable/outline_bookmark_border_black_36"
         android:title="@string/collect"
         app:showAsAction="ifRoom" />
 

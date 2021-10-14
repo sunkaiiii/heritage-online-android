@@ -9,6 +9,8 @@ data class Collection(
 
     @ColumnInfo val collectionType: CollectionType,
     @ColumnInfo val key: String,
+    @ColumnInfo val content:String,
+    @ColumnInfo val imageLink:String?,
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo val collectDate: String = Calendar.getInstance().toString()
 ) {

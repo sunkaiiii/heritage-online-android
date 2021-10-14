@@ -12,15 +12,11 @@ import javax.inject.Singleton
 
 @Singleton
 class CollectionHandler @Inject constructor() {
-    private val collectionDao: CollectionDao
+    private val collectionDao: CollectionDao = EHeritageApplication.newsDetailDatabase.collectionDao()
 
-    init {
-        collectionDao = EHeritageApplication.newsDetailDatabase.collectionDao()
-    }
-
-    suspend fun addCollection(type: Collection.CollectionType, key: String) {
+    suspend fun addCollection(type: Collection.CollectionType, key: String,content:String,imageLink:String?=null) {
         coroutineScope {
-            val newCollection = Collection(type, key)
+            val newCollection = Collection(type, key,content,imageLink)
             collectionDao.insert(newCollection)
         }
     }

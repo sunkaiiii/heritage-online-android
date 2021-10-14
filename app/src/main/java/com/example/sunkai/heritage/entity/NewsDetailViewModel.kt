@@ -40,14 +40,13 @@ class NewsDetailViewModel @Inject constructor(
         newsDetailLink.value = Pair(link, api)
     }
 
-    override fun addCollection(key: String) {
+    override fun addCollection(key: String, content: String, imageLink: String?) {
         if (collectionInformation.value != null) {
             return
         }
         runBlocking(Dispatchers.IO) {
-            collectionHandler.addCollection(collectionType(), key)
+            collectionHandler.addCollection(collectionType(), key,content,imageLink)
         }
-
     }
 
     override fun deleteCollection() {

@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/general_collection_unflag" />
+            android:src="@drawable/outline_bookmark_border_black_36" />
 
         <TextView
             android:id="@+id/people_main_title"
