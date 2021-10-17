@@ -34,4 +34,6 @@ class CollectionHandler @Inject constructor() {
     fun getALlCollection(): LiveData<List<Collection>> {
         return collectionDao.getAll()
     }
+
+    fun getCollectionByType(collectionType: Collection.CollectionType)=collectionDao.searhByType(collectionType)
 }

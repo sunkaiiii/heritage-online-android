@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage.database.entities
 
 import androidx.room.*
+import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.getString
 import java.util.*
 
 @Entity
@@ -14,13 +16,15 @@ data class Collection(
     @PrimaryKey(autoGenerate = true) val id: Int? = null,
     @ColumnInfo val collectDate: String = Calendar.getInstance().toString()
 ) {
-    enum class CollectionType(val value: Int) {
-        NewsDetail(0),
-        ForumsDetail(1),
-        SpeicialListDetail(2),
-        PeopleDetail(3),
-        ProjectDetail(4),
-        InheritatePeopleDetail(5)
+    enum class CollectionType(val value: Int,private val text:String) {
+        NewsDetail(0, getString(R.string.news)),
+        ForumsDetail(1, getString(R.string.forums)),
+        SpeicialListDetail(2, getString(R.string.special_topic)),
+        PeopleDetail(3, getString(R.string.people)),
+        ProjectDetail(4, getString(R.string.project_page)),
+        InheritatePeopleDetail(5, getString(R.string.inheritors));
+
+        fun getName() = text
     }
 
     class CollectionTypeConverters {

@@ -15,6 +15,9 @@ interface CollectionDao {
     @Query("SELECT * FROM Collection WHERE `key`=:key LIMIT 1")
     fun searchOne(key:String):LiveData<Collection?>
 
+    @Query("SELECT * FROM Collection WHERE collectionType=:type")
+    fun searhByType(type:Collection.CollectionType):LiveData<List<Collection>>
+
     @Delete
     fun delete(collection: Collection)
 
