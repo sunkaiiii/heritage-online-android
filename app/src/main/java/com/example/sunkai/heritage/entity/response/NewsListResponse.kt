@@ -15,7 +15,7 @@ data class NewsListResponse(val link: String,
                        var compressImg: String?,
                        var isRead: Boolean = false,
                        var idFromDataBase: Int?,
-                       var typeFromDatabase: String?) : Serializable {
+                       var typeFromDatabase: NewsList.NewsType?) : Serializable {
     constructor(it: NewsList) : this(
             it.link,
             it.title,

@@ -73,8 +73,8 @@ class CollectionListFragment : BaseGlideFragment() {
         val collectionList = viewModel.collectionListData.observeAsState().value
         val width = 2080
         val cornerShape = RoundedCornerShape(12.dp)
-        if (collectionList != null) {
-            LazyVerticalGrid(cells = GridCells.Fixed(2)) {
+        if (!collectionList.isNullOrEmpty()) {
+            LazyVerticalGrid(cells = GridCells.Adaptive(180.dp)) {
                 items(collectionList.size) {
                     Box(
                         Modifier
