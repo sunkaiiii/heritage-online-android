@@ -71,7 +71,6 @@ class CollectionListFragment : BaseGlideFragment() {
     @Composable
     private fun PagerContent() {
         val collectionList = viewModel.collectionListData.observeAsState().value
-        val width = 2080
         val cornerShape = RoundedCornerShape(12.dp)
         if (!collectionList.isNullOrEmpty()) {
             LazyVerticalGrid(cells = GridCells.Adaptive(180.dp)) {
