@@ -16,7 +16,7 @@ interface CollectionDao {
     fun searchOne(key:String):LiveData<Collection?>
 
     @Query("SELECT * FROM Collection WHERE collectionType=:type")
-    fun searhByType(type:Collection.CollectionType):LiveData<List<Collection>>
+    fun searhByType(type:Int):LiveData<List<Collection>>
 
     @Delete
     fun delete(collection: Collection)

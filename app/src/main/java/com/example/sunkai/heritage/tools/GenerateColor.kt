@@ -28,6 +28,10 @@ fun Bitmap.generateDarkColor():Int{
     return Palette.from(this).generate().getDarkVibrantColor(getThemeColor())
 }
 
+fun Bitmap.generateLightColor():Int{
+    return Palette.from(this).generate().getLightVibrantColor(generateColor())
+}
+
 fun Drawable.generateTextColor():Int{
     val bitmap=this.toBitmap()
     return bitmap.generateTextColor()

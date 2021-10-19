@@ -13,9 +13,6 @@ class CollectionListViewModel @Inject constructor(collectionHandler: CollectionH
     ViewModel() {
     val selectedIndex = MutableLiveData(0)
     val collectionListData = Transformations.switchMap(selectedIndex) { index ->
-        when (index) {
-            0 -> collectionHandler.getALlCollection()
-            else -> collectionHandler.getCollectionByType(Collection.CollectionType.values()[index])
-        }
+        collectionHandler.getCollectionByType(Collection.CollectionType.values()[index])
     }
 }

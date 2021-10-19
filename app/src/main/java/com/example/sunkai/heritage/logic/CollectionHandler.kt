@@ -35,5 +35,5 @@ class CollectionHandler @Inject constructor() {
         return collectionDao.getAll()
     }
 
-    fun getCollectionByType(collectionType: Collection.CollectionType)=collectionDao.searhByType(collectionType)
+    fun getCollectionByType(collectionType: Collection.CollectionType)=collectionDao.searhByType(collectionType.value)
 }

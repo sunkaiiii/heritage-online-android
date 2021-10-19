@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +15,8 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -25,7 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import coil.annotation.ExperimentalCoilApi
+import coil.compose.ImagePainter
 import coil.compose.rememberImagePainter
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.database.entities.Collection
@@ -34,6 +40,9 @@ import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.tools.Utils.px2dip
 import com.example.sunkai.heritage.tools.buildUrl
+import com.example.sunkai.heritage.tools.generateColor
+import com.example.sunkai.heritage.tools.generateLightColor
+import com.example.sunkai.heritage.tools.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
@@ -41,7 +50,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class CollectionListFragment : BaseGlideFragment() {
     private val viewModel by lazy { ViewModelProvider(this).get(CollectionListViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
                 Column(Modifier.fillMaxSize()) {
@@ -55,7 +68,13 @@ class CollectionListFragment : BaseGlideFragment() {
     @Preview
     @Composable
     private fun CollectionTitle() {
-        Text(getString(R.string.collection), modifier = Modifier.padding(start = 24.dp, top = 36.dp, bottom = 36.dp, end = 24.dp))
+        TopAppBar(title = {
+            Text(getString(R.string.collection))
+        }, navigationIcon = {
+            IconButton(onClick = { findNavController().popBackStack() }) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = getString(R.string.back))
+            }
+        }, backgroundColor = Color(0xFFE6F0F0), contentColor = Color(0XFF213938))
     }
 
 
@@ -75,33 +94,63 @@ class CollectionListFragment : BaseGlideFragment() {
         if (!collectionList.isNullOrEmpty()) {
             LazyVerticalGrid(cells = GridCells.Adaptive(180.dp)) {
                 items(collectionList.size) {
+                    val item = collectionList[it]
+                    var contentBackground by remember {
+                        mutableStateOf(Color.LightGray)
+                    }
                     Box(
                         Modifier
                             .padding(12.dp)
-                            .fillMaxWidth()) {
+                            .fillMaxWidth()
+                    ) {
                         Column(
                             Modifier
-                                .background(shape = cornerShape, color = Color(0XFFE7F0FF))
+                                .background(shape = cornerShape, color = contentBackground)
                                 .fillMaxWidth()
                         ) {
-                            val item = collectionList[it]
                             if (!item.imageLink.isNullOrBlank()) {
-                                Image(painter = rememberImagePainter(buildUrl(item.imageLink)), contentDescription = null, contentScale = ContentScale.FillHeight, modifier = Modifier
-                                    .clip(cornerShape)
-                                    .fillMaxWidth()
-                                    .height(200.dp))
+                                val painterState =
+                                    rememberImagePainter(buildUrl(item.imageLink), builder = {
+                                        crossfade(true)
+                                        placeholder(R.color.deepGrey)
+                                        allowHardware(false)
+                                    })
+                                Image(
+                                    painter = painterState,
+                                    contentDescription = null,
+                                    contentScale = ContentScale.FillHeight,
+                                    modifier = Modifier
+                                        .clip(cornerShape)
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                )
+                                if (painterState.state is ImagePainter.State.Success) {
+                                    LaunchedEffect(key1 = painterState) {
+                                        val image =
+                                            painterState.imageLoader.execute(painterState.request).drawable
+                                        if (image is BitmapDrawable) {
+                                            contentBackground =
+                                                Color(image.bitmap.generateLightColor())
+                                        }
+                                    }
+                                }
                             }
-                            Text(text = item.content, color = Color(0xFF434247), fontSize = 13.sp,modifier = Modifier.padding(start = 16.dp,end = 16.dp))
+                            Text(
+                                text = item.content,
+                                color = Color(0xFF434247),
+                                fontSize = 13.sp,
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                            )
                         }
                     }
 
                 }
             }
-        } else{
+        } else {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                if(collectionList?.size == 0){
+                if (collectionList?.size == 0) {
                     Text(text = "没有收藏")
-                }else{
+                } else {
                     CircularProgressIndicator()
                 }
 
@@ -115,9 +164,16 @@ class CollectionListFragment : BaseGlideFragment() {
     private fun PagerTab() {
         val types = Collection.CollectionType.values()
         val state = viewModel.selectedIndex.observeAsState().value
-        ScrollableTabRow(selectedTabIndex = state?:0) {
+        ScrollableTabRow(
+            selectedTabIndex = state ?: 0,
+            backgroundColor = Color(0xFFE6F0F0),
+            contentColor = Color(0XFF213938)
+        ) {
             types.forEachIndexed { index, type ->
-                Tab(text = { Text(type.getName()) }, selected = state == index, onClick = { viewModel.selectedIndex.value = index })
+                Tab(
+                    text = { Text(type.getName()) },
+                    selected = state == index,
+                    onClick = { viewModel.selectedIndex.value = index })
             }
 
         }
