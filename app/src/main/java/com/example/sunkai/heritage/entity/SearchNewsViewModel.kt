@@ -22,7 +22,7 @@ class SearchNewsViewModel @Inject constructor(val repository: Repository) : View
 
     fun startSearchNews(keywords: String, year: String? = null) {
         val currentValue = searchParameter.value
-        val newValue = SearchNewsRequest(keywords, year)
+        val newValue = SearchNewsRequest(keywords.trim(), year)
         currentValue?.let {
             if (it == newValue) {
                 return
