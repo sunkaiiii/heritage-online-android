@@ -8,7 +8,7 @@ import com.example.sunkai.heritage.entity.CollaborativeViewModel
 import com.google.android.material.card.MaterialCardView
 
 class CollaborativeBounceCardView @JvmOverloads constructor(
-        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : MaterialCardView(context, attrs, defStyleAttr), CollaborativeBounceView {
     private var _dispatchTouchEventHandler: ((View, MotionEvent) -> Unit)? = null
     private var _onBounceListener: ((CollaborativeBounceView.BounceType) -> Unit)? = null
@@ -16,7 +16,8 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
     override var minBoundry = -1
     override var maxBoundry = -1
     override var collaborativeViewModel: CollaborativeViewModel? = null
-    override var initialActionDownTranslationY = collaborativeViewModel?.initialActionDownTranslationY?.value
+    override var initialActionDownTranslationY =
+        collaborativeViewModel?.initialActionDownTranslationY?.value
             ?: -1f
     override var horizentalInitialPosition = -1f
     override var autoBounce: Boolean = true
@@ -26,7 +27,7 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
             collaborativeViewModel?.viewTranslationDistance?.value = value
         }
     override var currentState: CollaborativeBounceView.BounceType =
-            CollaborativeBounceView.BounceType.Hide
+        CollaborativeBounceView.BounceType.Hide
     override var dispatchTouchEventHandler: ((View, MotionEvent) -> Unit)?
         get() = _dispatchTouchEventHandler
         set(value) {
@@ -43,12 +44,15 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
             _onMoveListener = value
         }
     override var interceptTouchEventBlocker: ((event: MotionEvent) -> Boolean)? = null
-    override var interceptMoveEventBlocker: ((MotionEvent, CollaborativeBounceView.MoveOrientation) -> Boolean)? = null
+    override var interceptMoveEventBlocker: ((MotionEvent, CollaborativeBounceView.MoveOrientation) -> Boolean)? =
+        null
+
+    override var intercepter: CollaborativeBounceIntercepter? = null
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
-        intercepter.dispatchTouchEvent(event)
+        intercepter?.dispatchTouchEvent(event)
         return interceptTouchEventBlocker?.let { it(ev) } == true || super.dispatchTouchEvent(event)
     }
 
@@ -62,9 +66,14 @@ class CollaborativeBounceCardView @JvmOverloads constructor(
         this.translationY = value
     }
 
-    override fun setBounceBoundry(minBoundry: Int, maxBoundry: Int, collaborativeViewModel: CollaborativeViewModel) {
+    override fun setBounceBoundry(
+        minBoundry: Int,
+        maxBoundry: Int,
+        collaborativeViewModel: CollaborativeViewModel
+    ) {
         collaborativeViewModel.viewTranslationDistance.observeForever(translationYObserver)
         super.setBounceBoundry(minBoundry, maxBoundry, collaborativeViewModel)
+        intercepter = CollaborativeBounceIntercepterImpl(this, collaborativeViewModel)
 //        collaborativeViewModel.initialActionDownTranslationY.observeForever(initialYObserver)
     }
 

@@ -39,7 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
 
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(MainPageViewModel::class.java) }
-    private val collaborativeViewModel by lazy { ViewModelProvider(this).get(CollaborativeViewModelImpl::class.java) }
 
     override fun initView() {
         viewModel.banner.observe(viewLifecycleOwner, {
@@ -57,7 +56,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val maxRadius = 12.dip2px()
         val drawable = ColorDrawable(getColorResource(R.color.black))
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
-        binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,collaborativeViewModel)
+        binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,viewModel)
         binding.newsListContainer.setMoveEventBlocker { event, orientation ->
             if(orientation == CollaborativeBounceView.MoveOrientation.Up){
                 return@setMoveEventBlocker false

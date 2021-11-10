@@ -20,9 +20,9 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
     override var autoBounce: Boolean = false
     override var collaborativeViewModel: CollaborativeViewModel? = null
     override var viewTranslationDistance
-        get() = translationY
+        get() = collaborativeViewModel?.viewTranslationDistance?.value ?: -1f
         set(value) {
-            translationY = value
+            collaborativeViewModel?.viewTranslationDistance?.value = value
         }
     override var currentState: CollaborativeBounceView.BounceType =
         CollaborativeBounceView.BounceType.Hide
@@ -45,6 +45,8 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
     override var interceptTouchEventBlocker: ((event: MotionEvent) -> Boolean)? = null
     override var interceptMoveEventBlocker: ((MotionEvent, CollaborativeBounceView.MoveOrientation) -> Boolean)? = null
 
+    override var intercepter: CollaborativeBounceIntercepter? = null
+
     init {
         isClickable = true
     }
@@ -52,10 +54,18 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
-        intercepter.dispatchTouchEvent(event)
+        intercepter?.dispatchTouchEvent(event)
         return interceptTouchEventBlocker?.let { it(ev) }==true || super.dispatchTouchEvent(event)
     }
 
+    override fun setBounceBoundry(
+        minBoundry: Int,
+        maxBoundry: Int,
+        collaborativeViewModel: CollaborativeViewModel
+    ) {
+        super.setBounceBoundry(minBoundry, maxBoundry, collaborativeViewModel)
+        intercepter = CollaborativeBounceIntercepterImpl(this,collaborativeViewModel)
+    }
     private fun validateFields() {
 
     }

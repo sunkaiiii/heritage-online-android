@@ -29,7 +29,7 @@ class CollaborativeBounceIntercepterImpl(val view: CollaborativeBounceView,val v
     private fun onBounce() {
         val moveDistance =
             if (view.currentState == CollaborativeBounceView.BounceType.Hide){
-                view.maxBoundry - (viewModel.viewTranslationDistance.value?.toInt() ?:0 )
+                view.maxBoundry - (viewModel.viewTranslationDistance.value?.toInt() ?:view.maxBoundry )
             }
             else {
                 (viewModel.viewTranslationDistance.value?.toInt() ?: 0) - view.minBoundry
