@@ -71,8 +71,6 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     }
 
     private fun setDataToView(data: NewsDetail) {
-
-
         loadImage(data)
         initScrollBehaviour()
         binding.peopleDetailInformationContainer.setContent {
@@ -156,10 +154,7 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     }
 
     private fun initScrollBehaviour() {
-        collaborativeViewModel.viewTranslationDistance.value = view?.height?.div(2)?.toFloat() ?: 0f
         val initialAlphaOfCollaborativeView = binding.peopleRoundedBackgroundView.alpha
-        val initalInformationContainerTranslationY =
-            binding.peopleDetailInformationContainer.translationY
         binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0,collaborativeViewModel)
         binding.peopleDetailCollaborativeLayout.setTouchEventBlocker {
             return@setTouchEventBlocker binding.peopleDetailCollaborativeLayout.translationY != 0f
@@ -175,8 +170,6 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
                 initialAlphaOfCollaborativeView - (initialAlphaOfCollaborativeView * offsetPercentage)
             binding.peopleRoundedBackgroundView.alpha = currentAlpha
             binding.peopleMainImageBlur.alpha = 1 * offsetPercentage
-            binding.peopleDetailInformationContainer.translationY =
-                initalInformationContainerTranslationY - (initalInformationContainerTranslationY * offsetPercentage)
         }
     }
 

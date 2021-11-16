@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import com.example.sunkai.heritage.entity.CollaborativeViewModel
 
 class CollaborativeFrameLayout @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr), CollaborativeBounceView {
     private var _dispatchTouchEventHandler: ((View, MotionEvent) -> Unit)? = null
     private var _onBounceListener: ((CollaborativeBounceView.BounceType) -> Unit)? = null
@@ -25,7 +25,7 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
             collaborativeViewModel?.viewTranslationDistance?.value = value
         }
     override var currentState: CollaborativeBounceView.BounceType =
-        CollaborativeBounceView.BounceType.Hide
+            CollaborativeBounceView.BounceType.Hide
     override var dispatchTouchEventHandler: ((View, MotionEvent) -> Unit)?
         get() = _dispatchTouchEventHandler
         set(value) {
@@ -55,17 +55,23 @@ class CollaborativeFrameLayout @JvmOverloads constructor(
         validateFields()
         val event = ev ?: return super.dispatchTouchEvent(ev)
         intercepter?.dispatchTouchEvent(event)
-        return interceptTouchEventBlocker?.let { it(ev) }==true || super.dispatchTouchEvent(event)
+        return interceptTouchEventBlocker?.let { it(ev) } == true || super.dispatchTouchEvent(event)
     }
 
     override fun setBounceBoundry(
-        minBoundry: Int,
-        maxBoundry: Int,
-        collaborativeViewModel: CollaborativeViewModel
+            minBoundry: Int,
+            maxBoundry: Int,
+            collaborativeViewModel: CollaborativeViewModel
     ) {
         super.setBounceBoundry(minBoundry, maxBoundry, collaborativeViewModel)
-        intercepter = CollaborativeBounceIntercepterImpl(this,collaborativeViewModel)
+        collaborativeViewModel.viewTranslationDistance.observeForever(translationYObserver)
+        intercepter = CollaborativeBounceIntercepterImpl(this, collaborativeViewModel)
     }
+
+    private val translationYObserver = { value: Float ->
+        this.translationY = value
+    }
+
     private fun validateFields() {
 
     }
