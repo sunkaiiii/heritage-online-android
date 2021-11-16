@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/navigation_collection"
-        android:icon="@drawable/outline_bookmark_black_24"
-        android:iconTint="#CDCDCD"
-        android:title="@string/my_collection"
-        tools:targetApi="o" />
+<!--    <item-->
+<!--        android:id="@+id/navigation_collection"-->
+<!--        android:icon="@drawable/outline_bookmark_black_24"-->
+<!--        android:iconTint="#CDCDCD"-->
+<!--        android:title="@string/my_collection"-->
+<!--        tools:targetApi="o" />-->
     <item
         android:id="@+id/navigation_about_us"
         android:icon="@drawable/fragment_project_show_content_icon"

@@ -1,6 +1,8 @@
 package com.example.sunkai.heritage.views
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -24,49 +26,67 @@ class SwipePhotoView @JvmOverloads constructor(
     private var rawHeight = -1
     private var rawWidth = -1
     private var onDragListner: OnDragListner? = null
+    private var onClickListener: OnClickListener? = null
+    private var onLongClickListener: OnLongClickListener? = null
 
-    init {
-        setOnTouchListener { v, event ->
-            when (event?.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    firstCalendar = Calendar.getInstance()
-                    firstX = (event.rawX - translationX).toInt()
-                    firstY = (event.rawY - translationY).toInt()
+    private var longClickHandler = Handler(Looper.getMainLooper()) {
+        onLongClickListener?.onLongClick(this)
+        true
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                longClickHandler.sendEmptyMessageDelayed(0, 1000)
+                firstCalendar = Calendar.getInstance()
+                firstX = (event.rawX - translationX).toInt()
+                firstY = (event.rawY - translationY).toInt()
+            }
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                Log.d(TAG, "Multiple touch detected.")
+                multiTouch = true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                longClickHandler.removeMessages(0)
+                if (horizonScroll == null && isInViewPager) {
+                    Log.d(TAG, isHorizonScroll(event).toString())
+                    horizonScroll = isHorizonScroll(event)
                 }
-                MotionEvent.ACTION_POINTER_DOWN -> {
-                    Log.d(TAG, "Multiple touch detected.")
-                    multiTouch = true
+                if (shouldHandleEvent()) {
+                    handleViewMove(event)
+                    return true
                 }
-                MotionEvent.ACTION_MOVE -> {
-                    if (horizonScroll == null && isInViewPager) {
-                        Log.d(TAG, isHorizonScroll(event).toString())
-                        horizonScroll = isHorizonScroll(event)
+            }
+            MotionEvent.ACTION_UP -> {
+                longClickHandler.removeMessages(0)
+                val endCalendar = Calendar.getInstance()
+                val time = endCalendar.timeInMillis - (firstCalendar?.timeInMillis ?: 0)
+                if (isClickOrDragUp(time)) {
+                    if (dragOutBound()) {
+                        onDragListner?.onDragClose()
+                    } else {
+                        boundToOrinalPlace()
                     }
-                    if (shouldHandleEvent()) {
-                        handleViewMove(event)
-                        return@setOnTouchListener true
-                    }
-                }
-                MotionEvent.ACTION_UP -> {
-                    val endCalendar = Calendar.getInstance()
-                    val time = endCalendar.timeInMillis - (firstCalendar?.timeInMillis ?: 0)
-                    if (isClickOrDragUp(time)) {
-                        if (dragOutBound()) {
-                            onDragListner?.onDragClose()
-                        } else {
-                            boundToOrinalPlace()
-                        }
-                        resetVariable()
-                        return@setOnTouchListener true
-                    }
+                    resetVariable()
+                    return true
+                } else {
                     resetVariable()
                     resetTranslate()
                     multiTouch = false
+                    onClickListener?.onClick(this)
                 }
-            }
-            return@setOnTouchListener attacher.onTouch(v, event)
-        }
 
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
+    override fun setOnLongClickListener(l: OnLongClickListener?) {
+        this.onLongClickListener = l
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        this.onClickListener = l
     }
 
     private fun isHorizonScroll(event: MotionEvent): Boolean? {
@@ -157,7 +177,7 @@ class SwipePhotoView @JvmOverloads constructor(
         this.isInViewPager = inViewpager
     }
 
-    fun isMoved() = offsetX !=Int.MIN_VALUE || offsetY!= Int.MIN_VALUE
+    fun isMoved() = offsetX != Int.MIN_VALUE || offsetY != Int.MIN_VALUE
 
 
     interface OnDragListner {
