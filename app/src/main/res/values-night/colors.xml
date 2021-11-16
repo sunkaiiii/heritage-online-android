@@ -11,7 +11,25 @@
 
     <color name="black">#ffffff</color>
     <color name="white">#000000</color>
+    <color name="news_detail_sub_content_color">#FFFFFF</color>
     <color name="transparent_dark">#80000000</color>
+    <color name="news_detail_subcontent_color">#343434</color>
     <color name="transparent_full">#00000000</color>
     <color name="peopleTitleTextInsideImageColor">#AA000000</color>
+    <color name="news_detail_background_color">#111111</color>
+    <color name="news_detail_text_color">#AAAAAA</color>
+    <color name="people_list_item_text_color">#a9a5a8</color>
+    <color name="people_detail_blur_background">#99000000</color>
+    <color name="project_start_color">#121212</color>
+    <color name="project_end_color">#121212</color>
+    <color name="project_detail_first_background">#444444</color>
+    <color name="project_detail_second_background">#232323</color>
+    <color name="project_detail_third_background">#121212</color>
+    <color name="project_detail_title_color">#DCDCDC</color>
+    <color name="project_detail_second_title_color">#808080</color>
+    <color name="project_detail_desc_color">#CDCEC3</color>
+    <color name="inheritate_detail_top_background">#444444</color>
+    <color name="inheritate_detail_background">#232323</color>
+    <color name="inheritate_title_color">#C4C4C4</color>
+    <color name="inheritate_second_title_color">#A4A4A4</color>
 </resources>

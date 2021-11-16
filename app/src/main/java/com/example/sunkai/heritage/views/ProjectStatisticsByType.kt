@@ -45,7 +45,7 @@ class ProjectStatisticsDescribtionColorSet(borderColor: Long, backgroundColor: L
 @Composable
 fun ProjectStatisticsByTypeView(statisByType: List<HeritageProjectStatisticsItem>) {
     val allValue = statisByType.sumOf { it.value }.toFloat()
-    Card(elevation = 8.dp) {
+    Card(elevation = 8.dp, backgroundColor = if(isSystemInDarkTheme())Color.Black else Color.White) {
         Column(modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp)) {

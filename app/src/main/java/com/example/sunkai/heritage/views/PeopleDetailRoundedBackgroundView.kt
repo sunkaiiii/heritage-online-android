@@ -5,6 +5,8 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
+import androidx.compose.foundation.isSystemInDarkTheme
+import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.Utils.dip2px
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 
@@ -13,7 +15,7 @@ class PeopleDetailRoundedBackgroundView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
     private val p = Paint().apply {
         style = Paint.Style.FILL
-        color = Color.WHITE
+        color = if(Utils.isSystemInDarkTheme()) Color.BLACK else Color.WHITE
         isAntiAlias = true
         strokeWidth = 20f
     }

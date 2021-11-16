@@ -48,14 +48,14 @@ class PeopleFragmentListAdapter(
         val peopleTitle: TextView,
         val peopleSubtitle: TextView,
         val peopleImage: ImageView?,
-        val peopleCollection: ImageView
+//        val peopleCollection: ImageView
     ) : RecyclerView.ViewHolder(rootView) {
         constructor(binding: FragmentPeopleListItemBinding) : this(
             binding.root,
             binding.peopleMainTitle,
             binding.peopleSubTitle,
             binding.peopleImage,
-            binding.peopleCollect
+//            binding.peopleCollect
         )
 
         constructor(binding: FragmentPeopleListItemNoImageBinding) : this(
@@ -63,7 +63,7 @@ class PeopleFragmentListAdapter(
             binding.peopleMainTitle,
             binding.peopleSubTitle,
             null,
-            binding.peopleCollect
+//            binding.peopleCollect
         )
     }
 

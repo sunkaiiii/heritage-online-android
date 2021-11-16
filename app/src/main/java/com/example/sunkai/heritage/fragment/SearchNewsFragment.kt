@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -48,8 +47,6 @@ import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.getResourceColorCompose
-import com.example.sunkai.heritage.tools.getThemeColor
-import com.example.sunkai.heritage.tools.getThemeColorCompose
 import com.example.sunkai.heritage.value.API
 import com.example.sunkai.heritage.value.DATA
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,7 +73,7 @@ class SearchNewsFragment : BaseGlideFragment() {
             setContent {
                 SearchNewsView()
             }
-            background = ColorDrawable(Utils.getColorResource(R.color.search_news_background))
+            background = ColorDrawable(Utils.getColorResourceValue(R.color.search_news_background))
         }
     }
 

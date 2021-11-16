@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
@@ -53,6 +55,7 @@ class AboutUSFragment : BaseGlideFragment() {
     fun AboutUsCard() {
         val gitUrl = getString(R.string.program_git_url)
         val margin = Modifier.padding(8.dp)
+        val textColor = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
         Column(Modifier.fillMaxSize()) {
             TopAppBar(title = {
                 Text(getString(R.string.about_us))
@@ -69,18 +72,18 @@ class AboutUSFragment : BaseGlideFragment() {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher),
                     contentDescription = getString(R.string.logo),
-                    Modifier
-                        .size(48.dp, 48.dp)
-                        .padding(0.dp, 0.dp, 0.dp, 12.dp)
+                        Modifier
+                                .size(48.dp, 48.dp)
+                                .padding(0.dp, 0.dp, 0.dp, 12.dp)
                 )
-                Text(text = VERSION_NAME())
+                Text(text = VERSION_NAME(), color = textColor)
                 ClickableText(text = AnnotatedString(gitUrl), onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(gitUrl))
                     startActivity(intent)
-                }, modifier = margin)
+                }, modifier = margin, style = TextStyle(color = textColor))
                 ClickableText(text = AnnotatedString(getString(R.string.licence)), onClick = {
                     LicenceDialog().show(parentFragmentManager, "licence")
-                })
+                },style = TextStyle(color = textColor))
             }
         }
 

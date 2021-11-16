@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.fragment.NewsDetailFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.example.sunkai.heritage.views.tools.FollowThemeToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -73,7 +73,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:textSize="14sp"
-                                android:textColor="#000000"/>
+                                android:textColor="@color/news_detail_sub_content_color"/>
                         </FrameLayout>
 
                         <TextView

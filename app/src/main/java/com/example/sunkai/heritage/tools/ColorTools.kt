@@ -4,8 +4,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.EdgeEffect
@@ -17,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.children
+import androidx.core.view.forEach
 import androidx.core.widget.NestedScrollView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
@@ -208,7 +208,11 @@ fun tintProgressBar(view: ProgressBar?) {
 }
 
 fun tintToolbar(view: Toolbar) {
-    view.setBackgroundColor(getThemeColor())
+    view.menu.forEach {
+        it.icon.setTint(Utils.getColorResourceValue(R.color.black))
+    }
+    view.navigationIcon?.setTint(Utils.getColorResourceValue(R.color.black))
+//    view.setBackgroundColor(getThemeColor())
 }
 
 fun loadThemeColor() {

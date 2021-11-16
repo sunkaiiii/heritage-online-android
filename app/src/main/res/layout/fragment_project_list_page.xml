@@ -4,56 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="8dp">
+<!--    <com.google.android.material.card.MaterialCardView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_horizontal"-->
+<!--        app:cardCornerRadius="20dp"-->
+<!--        app:cardElevation="8dp">-->
 
-        <androidx.compose.ui.platform.ComposeView
-            android:id="@+id/project_list_search_detail_view"
-            android:layout_width="250dp"
-            android:layout_height="200dp"
-            android:paddingStart="12dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:visibility="gone" />
+<!--        <androidx.compose.ui.platform.ComposeView-->
+<!--            android:id="@+id/project_list_search_detail_view"-->
+<!--            android:layout_width="250dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:paddingStart="12dp"-->
+<!--            android:paddingTop="16dp"-->
+<!--            android:paddingEnd="16dp"-->
+<!--            android:paddingBottom="16dp"-->
+<!--            android:visibility="gone" />-->
 
-        <LinearLayout
-            android:id="@+id/project_list_search_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="18dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="8dp">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/project_list_search_view"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:paddingStart="18dp"-->
+<!--            android:paddingTop="8dp"-->
+<!--            android:paddingEnd="18dp"-->
+<!--            android:paddingBottom="8dp">-->
 
-            <ImageView
-                android:layout_width="11dp"
-                android:layout_height="11dp"
-                android:src="@drawable/project_list_fragment_category" />
+<!--            <ImageView-->
+<!--                android:layout_width="11dp"-->
+<!--                android:layout_height="11dp"-->
+<!--                android:src="@drawable/project_list_fragment_category" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="@string/all_category"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="6dp"-->
+<!--                android:text="@string/all_category"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textStyle="bold" />-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:src="@drawable/project_list_fragment_arrow_down" />
+<!--            <ImageView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:src="@drawable/project_list_fragment_arrow_down" />-->
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+<!--        </LinearLayout>-->
+<!--    </com.google.android.material.card.MaterialCardView>-->
 
     <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
         android:id="@+id/projectInformationList"

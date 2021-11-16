@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:foreground="#55FFFFFF"
+        android:foreground="@color/people_detail_blur_background"
         android:scaleType="centerCrop" />
 
     <com.example.sunkai.heritage.views.CollaborativeFrameLayout

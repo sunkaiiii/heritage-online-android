@@ -20,7 +20,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#DFD3CE">
+            android:background="@color/project_detail_first_background">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                         android:id="@+id/project_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#32313C"
+                        android:textColor="@color/project_detail_title_color"
                         android:textSize="28sp"
                         android:textStyle="bold"
                         tools:text="孔雀东南飞传说" />
@@ -46,7 +46,7 @@
                         android:id="@+id/project_location_and_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="#707070"
+                        android:textColor="@color/project_detail_second_title_color"
                         android:textSize="16sp"
                         tools:text="安徽省北京市`民间文学" />
                 </LinearLayout>
@@ -100,9 +100,10 @@
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="#DFD3CE"
+                    android:background="@color/project_detail_first_background"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/common_share_menu"
+                    android:id="@+id/toolbar"
                     app:navigationIcon="@drawable/general_arrow_back">
 
                     <TextView
@@ -148,7 +149,7 @@
                         android:id="@+id/projectDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="#32313C"
+                        android:textColor="@color/project_detail_desc_color"
                         android:textSize="14sp" />
 
                     <com.example.sunkai.heritage.views.ProjectDetailRalevantView

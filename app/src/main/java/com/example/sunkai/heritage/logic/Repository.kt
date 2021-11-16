@@ -104,7 +104,7 @@ class Repository @Inject constructor() {
             val newsDetail =
                 EHeritageApi.getNewsDetail(link).await()
             newsDetail.newsType = NewsList.NewsType.NewsList
-            saveIntoDatabase(newsDetail)
+            saveIntoDatabase(newsDetail,NewsList.NewsType.NewsList)
             newsDetail
         }
         Result.success(detail)
@@ -112,7 +112,7 @@ class Repository @Inject constructor() {
     }
 
 
-    private fun saveIntoDatabase(data: NewsDetail) {
+    private fun saveIntoDatabase(data: NewsDetail,newsType: NewsList.NewsType) {
         GlobalScope.launch {
             val database = EHeritageApplication.newsDetailDatabase
             val newsDetailContentList = arrayListOf<NewsDetailContent>()
@@ -157,7 +157,7 @@ class Repository @Inject constructor() {
             val forumsDetail =
                 EHeritageApi.getForumsDetail(link).await()
             forumsDetail.newsType = NewsList.NewsType.ForumList
-            saveIntoDatabase(forumsDetail)
+            saveIntoDatabase(forumsDetail,NewsList.NewsType.ForumList)
             forumsDetail
         }
 
@@ -175,7 +175,7 @@ class Repository @Inject constructor() {
                 EHeritageApi.getSpecialTopicDetail(link)
                     .await()
             specialTopic.newsType = NewsList.NewsType.SpecialTopic
-            saveIntoDatabase(specialTopic)
+            saveIntoDatabase(specialTopic,NewsList.NewsType.SpecialTopic)
             specialTopic
         }
         Result.success(detail)

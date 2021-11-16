@@ -32,6 +32,9 @@ class InheritateDetailFragment : BaseViewBindingFragment<FragmentInheritateDetai
         val link = arguments?.getString(DATA) ?: return
         viewModel.projectTitle.value = arguments?.getString(PROJECT_TITLE) ?: ""
         viewModel.setInheritateDetailLink(link)
+        binding.generalToolbar.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     @SuppressLint("SetTextI18n")

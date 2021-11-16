@@ -55,7 +55,7 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        setCollectionAction()
+//        setCollectionAction()
     }
 
 
@@ -101,24 +101,24 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
     }
 
 
-    fun setCollectionAction(){
-        val item = binding.toolbar.menu.findItem(R.id.collect)
-        newsDetailViewModel.isCollected.observe(viewLifecycleOwner, {
-            item.icon = if (it) ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.outline_bookmark_black_36
-            ) else ContextCompat.getDrawable(requireContext(), R.drawable.outline_bookmark_border_black_36)
-        })
-        item.setOnMenuItemClickListener {
-            val isCollected = newsDetailViewModel.isCollected.value?:false
-            if(isCollected){
-                newsDetailViewModel.deleteCollection()
-            }else{
-                val newsDetail = newsDetailViewModel.newsDetail.value ?: return@setOnMenuItemClickListener true
-                newsDetailViewModel.addCollection(newsDetail.link,newsDetail.title,newsDetail.compressImg)
-            }
-            return@setOnMenuItemClickListener true
-        }
-    }
+//    fun setCollectionAction(){
+//        val item = binding.toolbar.menu.findItem(R.id.collect)
+//        newsDetailViewModel.isCollected.observe(viewLifecycleOwner, {
+//            item.icon = if (it) ContextCompat.getDrawable(
+//                requireContext(),
+//                R.drawable.outline_bookmark_black_36
+//            ) else ContextCompat.getDrawable(requireContext(), R.drawable.outline_bookmark_border_black_36)
+//        })
+//        item.setOnMenuItemClickListener {
+//            val isCollected = newsDetailViewModel.isCollected.value?:false
+//            if(isCollected){
+//                newsDetailViewModel.deleteCollection()
+//            }else{
+//                val newsDetail = newsDetailViewModel.newsDetail.value ?: return@setOnMenuItemClickListener true
+//                newsDetailViewModel.addCollection(newsDetail.link,newsDetail.title,newsDetail.compressImg)
+//            }
+//            return@setOnMenuItemClickListener true
+//        }
+//    }
 
 }

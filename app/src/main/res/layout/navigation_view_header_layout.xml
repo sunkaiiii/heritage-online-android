@@ -21,29 +21,30 @@
             android:src="@mipmap/ic_launcher" />
     </FrameLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:drawableStart="@drawable/baseline_color_lens_black_24"
-        android:drawablePadding="24dp"
-        android:drawableTint="@color/deepGrey"
-        android:gravity="center"
-        android:text="@string/theme_color"
-        android:textColor="@color/deepGrey"
-        android:textStyle="bold"
-        tools:ignore="UnusedAttribute" />
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:drawableStart="@drawable/baseline_color_lens_black_24"-->
+<!--        android:drawablePadding="24dp"-->
+<!--        android:drawableTint="@color/deepGrey"-->
+<!--        android:gravity="center"-->
+<!--        android:text="@string/theme_color"-->
+<!--        android:textColor="@color/deepGrey"-->
+<!--        android:textStyle="bold"-->
+<!--        tools:ignore="UnusedAttribute" />-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/navigationViewHeaderRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/navigationViewHeaderRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="8dp"-->
+<!--        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/lightGrey" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:background="@color/lightGrey" />-->
+    
 </LinearLayout>

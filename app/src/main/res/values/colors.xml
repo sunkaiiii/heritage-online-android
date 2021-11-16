@@ -19,9 +19,22 @@
     <color name="news_detail_background_color">#D0C6C1</color>
     <color name="news_detail_text_color">#1D0500</color>
     <color name="news_detail_subcontent_color">#E4E4E4</color>
+    <color name="news_detail_sub_content_color">#000000</color>
     <color name="banner_text_color">#CCE3D6</color>
     <color name="people_list_item_text_color">#565A58</color>
     <color name="search_news_background">#F6F8FC</color>
     <color name="inheritate_detail_top_background">#EEE8E5</color>
     <color name="inheritate_detail_background">#DFD3CE</color>
+    <color name="people_detail_blur_background">#55FFFFFF</color>
+    <color name="project_start_color">#F9F9F9</color>
+    <color name="project_end_color">#EDF5F2</color>
+    <color name="statis_by_time_row_text_color">#FF525A6A</color>
+    <color name="project_detail_first_background">#DFD3CE</color>
+    <color name="project_detail_second_background">#EEE8E5</color>
+    <color name="project_detail_third_background">#FAF8F6</color>
+    <color name="project_detail_title_color">#32313C</color>
+    <color name="project_detail_second_title_color">#707070</color>
+    <color name="project_detail_desc_color">#32313C</color>
+    <color name="inheritate_title_color">#4A4A4A</color>
+    <color name="inheritate_second_title_color">#8D8C8C</color>
 </resources>

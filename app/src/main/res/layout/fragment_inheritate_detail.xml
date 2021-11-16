@@ -22,7 +22,7 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <include layout="@layout/general_toolbar" />
+        <include layout="@layout/general_toolbar" android:id="@+id/general_toolbar" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:textColor="#4A4A4A"
+                            android:textColor="@color/inheritate_title_color"
                             android:textSize="32sp"
                             android:textStyle="bold"
                             tools:text="张全蛋" />
@@ -62,7 +62,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:textColor="#8D8C8C"
+                            android:textColor="@color/inheritate_second_title_color"
                             android:textSize="16sp"
                             tools:text="孔雀东南飞传说传承人" />
                     </LinearLayout>

@@ -22,7 +22,7 @@
             android:layout_margin="24dp"
             android:contentDescription="@string/no_mean_content"
             android:src="@drawable/baseline_menu_24"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
     </FrameLayout>
 
     <com.example.sunkai.heritage.views.CollaborativeBounceCardView
@@ -59,6 +59,7 @@
                     android:id="@+id/news_search"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
+                    app:tint="@color/black"
                     android:layout_gravity="end|center"
                     android:src="@drawable/search" />
             </FrameLayout>

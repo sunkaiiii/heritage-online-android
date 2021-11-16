@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.tools
 
 import android.content.res.Configuration
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.core.content.ContextCompat
 
@@ -10,9 +11,9 @@ object Utils {
         return (dipValue * scale + 0.5).toInt()
     }
 
-    fun px2dip(pxValue:Int):Int{
+    fun px2dip(pxValue: Int): Int {
         val scale = EHeritageApplication.instance.resources.displayMetrics.density
-        return (pxValue/scale).toInt()
+        return (pxValue / scale).toInt()
     }
 
     @JvmName("dip2px1")
@@ -21,7 +22,7 @@ object Utils {
     }
 
     @JvmName("px2dip1")
-    fun Int.px2dip():Int{
+    fun Int.px2dip(): Int {
         return px2dip(this)
     }
 
@@ -43,9 +44,13 @@ object Utils {
     //是否为横屏
     fun isHorizontalScreenMode(): Boolean = getScreenMode() == Configuration.ORIENTATION_PORTRAIT
 
-    fun getColorResource(resID: Int): Int =
-        ContextCompat.getColor(EHeritageApplication.instance, resID)
+    fun getColorResourceValue(resID: Int): Int =
+            ContextCompat.getColor(EHeritageApplication.instance, resID)
+
+    fun getColorResource(resID: Int) = Color(ContextCompat.getColor(EHeritageApplication.instance, resID))
+    fun isSystemInDarkTheme(): Boolean = EHeritageApplication.instance.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
 }
 
 fun getString(id: Int) =
-    EHeritageApplication.instance.getString(id)
+        EHeritageApplication.instance.getString(id)

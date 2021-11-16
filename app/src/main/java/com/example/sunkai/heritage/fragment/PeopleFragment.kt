@@ -4,8 +4,6 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
 import android.os.*
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.core.os.bundleOf
@@ -19,7 +17,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.FragmentPeopleBannerAdapter
 import com.example.sunkai.heritage.adapter.PeopleFragmentListAdapter
 import com.example.sunkai.heritage.databinding.FragmentPeopleBinding
-import com.example.sunkai.heritage.entity.CollaborativeViewModelImpl
 import com.example.sunkai.heritage.entity.PeoplePageViewModel
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
@@ -99,7 +96,7 @@ class PeopleFragment : BaseViewBindingFragment<FragmentPeopleBinding>() {
                 val minBoundry = 50.dip2px()
                 val minRadius = 0.dip2px()
                 val maxRadius = 12.dip2px()
-                val drawable = ColorDrawable(Utils.getColorResource(R.color.black))
+                val drawable = ColorDrawable(Utils.getColorResourceValue(R.color.black))
                 binding.peopleContainer.setBounceBoundry(minBoundry, maxBoundry.toInt(),peopleViewModel)
                 binding.peopleContainer.setMoveEventBlocker { event, moveOrientation ->
                     if (moveOrientation == CollaborativeBounceView.MoveOrientation.Up || binding.peopleContainer.isClickOutRecyclerView()) {

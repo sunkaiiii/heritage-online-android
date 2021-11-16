@@ -1,6 +1,7 @@
 package com.example.sunkai.heritage.views
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -17,15 +18,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsItem
+import com.example.sunkai.heritage.tools.Utils
+import com.example.sunkai.heritage.R
 
 
 @Composable
 fun ProjectStatisticsByTime(statisByTime: List<HeritageProjectStatisticsItem>) {
-    Card(elevation = 8.dp) {
+    Card(elevation = 8.dp, backgroundColor = if(isSystemInDarkTheme())Color.Black else Color.White) {
         Column(
             modifier = Modifier
-                .padding(18.dp)
-                .fillMaxWidth()
+                    .padding(18.dp)
+                    .fillMaxWidth()
         ) {
             StatisticsProjectTitle(title = "新增项目")
             Spacer(modifier = Modifier.height(28.dp))
@@ -40,7 +43,7 @@ fun StatisticsProjectTitle(title: String) {
         DoubleCircleIndicator()
         Text(
             text = title,
-            color = Color.Black,
+            color = if(isSystemInDarkTheme()) Color.White else Color.Black,
             modifier = Modifier.padding(start = 4.dp),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -53,13 +56,13 @@ fun StatisticsProjectTitle(title: String) {
 private fun DoubleCircleIndicator() {
     Box(
         modifier = Modifier
-            .height(12.dp)
-            .width(12.dp)
+                .height(12.dp)
+                .width(12.dp)
     ) {
         Canvas(
             modifier = Modifier
-                .height(12.dp)
-                .width(12.dp)
+                    .height(12.dp)
+                    .width(12.dp)
         ) {
             drawCircle(
                 color = Color(0xFFD6E5FF)
@@ -77,8 +80,8 @@ private fun ProjectStatisticsByTimeBarChart(statisByTime: List<HeritageProjectSt
     Column() {
         Canvas(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp)
+                    .fillMaxWidth()
+                    .height(240.dp)
         ) {
             val height = size.height
             val width = size.width
@@ -128,7 +131,7 @@ private fun ProjectStatisticsByTimeBarChart(statisByTime: List<HeritageProjectSt
                     text = it.name,
                     textAlign = TextAlign.Center,
                     fontSize = 10.sp,
-                    color = Color(0XFF525A6A)
+                    color = Utils.getColorResource(R.color.statis_by_time_row_text_color)
                 )
             }
         }

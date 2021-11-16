@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.bumptech.glide.load.DataSource
@@ -55,7 +57,7 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     private val collaborativeViewModel by lazy { ViewModelProvider(this).get(CollaborativeViewModelImpl::class.java) }
 
     override fun getBindingClass(): Class<FragmentPeopleDetailBinding> =
-        FragmentPeopleDetailBinding::class.java
+            FragmentPeopleDetailBinding::class.java
 
     override fun initView() {
         viewModel.peopleDetail.observe(viewLifecycleOwner, {
@@ -66,6 +68,9 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
             binding.root.post {
                 viewModel.setLink(it)
             }
+        }
+        binding.toolbarLayout.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
         }
         binding.toolbarLayout.toolbar.setBackgroundColor(android.graphics.Color.TRANSPARENT)
     }
@@ -108,10 +113,10 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     @Composable
     fun PeopleDetailTextLine(content: NewsDetailContent, isLastOneImage: Boolean = false) {
         Text(
-            content.content,
-            color = Color(Utils.getColorResource(R.color.news_detail_text_color)),
-            fontSize = 16.sp,
-            fontWeight = if (isLastOneImage) FontWeight.Bold else FontWeight.Normal
+                content.content,
+                color = Color(Utils.getColorResourceValue(R.color.news_detail_text_color)),
+                fontSize = 16.sp,
+                fontWeight = if (isLastOneImage) FontWeight.Bold else FontWeight.Normal
         )
     }
 
@@ -120,42 +125,45 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     fun PeopleDetailImageView(content: NewsDetailContent) {
         val url = content.compressImg ?: content.content
         Image(
-            painter = rememberImagePainter(buildUrl(url), builder = {
-                placeholder(R.drawable.place_holder)
-            }),
-            contentDescription = null,
-            Modifier
-                .shadow(8.dp, RoundedCornerShape(27.dp))
-                .clip(
-                    RoundedCornerShape(27.dp)
-                )
-                .fillMaxWidth()
-                .height(200.dp),
-            contentScale = ContentScale.Crop
+                painter = rememberImagePainter(buildUrl(url), builder = {
+                    placeholder(R.drawable.place_holder)
+                }),
+                contentDescription = null,
+                Modifier
+                        .shadow(8.dp, RoundedCornerShape(27.dp))
+                        .clip(
+                                RoundedCornerShape(27.dp)
+                        )
+                        .fillMaxWidth()
+                        .height(200.dp),
+                contentScale = ContentScale.Crop
         )
     }
 
     @Composable
     fun PeopleDetailTitleView(data: NewsDetail) {
+        val titleColor = if (isSystemInDarkTheme()) Color.White else Color.Black
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                data.title,
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(start = 40.dp, end = 40.dp),
-                fontWeight = FontWeight.Bold
+                    data.title,
+                    textAlign = TextAlign.Center,
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(start = 40.dp, end = 40.dp),
+                    fontWeight = FontWeight.Bold,
+                    color = titleColor
             )
-            Text(data.author, fontSize = 16.sp)
-            Text(data.time ?: "", fontSize = 16.sp)
+            Text(data.author, fontSize = 16.sp, color = titleColor)
+            Text(data.time ?: "", fontSize = 16.sp, color = titleColor)
         }
     }
 
     private fun initScrollBehaviour() {
         val initialAlphaOfCollaborativeView = binding.peopleRoundedBackgroundView.alpha
-        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2) ?: 0,collaborativeViewModel)
+        binding.peopleDetailCollaborativeLayout.setBounceBoundry(0, view?.height?.div(2)
+                ?: 0, collaborativeViewModel)
         binding.peopleDetailCollaborativeLayout.setTouchEventBlocker {
             return@setTouchEventBlocker binding.peopleDetailCollaborativeLayout.translationY != 0f
         }
@@ -167,7 +175,7 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
         }
         binding.peopleDetailCollaborativeLayout.setOnMoveAction { distance, offsetPercentage ->
             val currentAlpha =
-                initialAlphaOfCollaborativeView - (initialAlphaOfCollaborativeView * offsetPercentage)
+                    initialAlphaOfCollaborativeView - (initialAlphaOfCollaborativeView * offsetPercentage)
             binding.peopleRoundedBackgroundView.alpha = currentAlpha
             binding.peopleMainImageBlur.alpha = 1 * offsetPercentage
         }
@@ -179,36 +187,36 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 glide.loadImageFromServer(it).into(binding.peopleMainImageBlur)
                 binding.peopleMainImageBlur.setRenderEffect(
-                    RenderEffect.createBlurEffect(
-                        50f, 50f,
-                        Shader.TileMode.CLAMP
-                    )
+                        RenderEffect.createBlurEffect(
+                                50f, 50f,
+                                Shader.TileMode.CLAMP
+                        )
                 )
             } else {
                 glide.loadImageFromServer(it).addListener(object : RequestListener<Drawable> {
                     override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
                     ): Boolean {
                         val bitmapDrawable = resource as BitmapDrawable? ?: return false
                         binding.peopleMainImageBlur.post {
                             binding.peopleMainImageBlur.setImageBitmap(
-                                bitmapDrawable.bitmap.toBlurBitmap(
-                                    requireContext()
-                                )
+                                    bitmapDrawable.bitmap.toBlurBitmap(
+                                            requireContext()
+                                    )
                             )
                         }
                         return true
                     }
 
                     override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
                     ): Boolean {
                         return false
                     }

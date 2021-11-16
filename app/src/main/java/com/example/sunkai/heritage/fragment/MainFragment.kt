@@ -5,8 +5,6 @@ import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.ColorDrawable
 import android.os.*
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -20,12 +18,11 @@ import com.example.sunkai.heritage.activity.MainActivity
 import com.example.sunkai.heritage.adapter.MainPageBannerAdapter
 import com.example.sunkai.heritage.adapter.MainPageViewPagerAdapter
 import com.example.sunkai.heritage.databinding.FragmentMainBinding
-import com.example.sunkai.heritage.entity.CollaborativeViewModelImpl
 import com.example.sunkai.heritage.entity.MainPageBanner
 import com.example.sunkai.heritage.entity.MainPageViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.Utils.dip2px
-import com.example.sunkai.heritage.tools.Utils.getColorResource
+import com.example.sunkai.heritage.tools.Utils.getColorResourceValue
 import com.example.sunkai.heritage.value.MAIN_PAGE_TABLAYOUT_TEXT
 import com.example.sunkai.heritage.views.CollaborativeBounceView
 import com.google.android.material.tabs.TabLayoutMediator
@@ -54,7 +51,7 @@ class MainFragment : BaseViewBindingFragment<FragmentMainBinding>() {
         val maxBoundry = 250.dip2px()
         val minRadius = 0.dip2px()
         val maxRadius = 12.dip2px()
-        val drawable = ColorDrawable(getColorResource(R.color.black))
+        val drawable = ColorDrawable(getColorResourceValue(R.color.black))
         binding.newsListContainer.maxCardElevation = maxRadius.toFloat()
         binding.newsListContainer.setBounceBoundry(minBoundry,maxBoundry,viewModel)
         binding.newsListContainer.setMoveEventBlocker { event, orientation ->

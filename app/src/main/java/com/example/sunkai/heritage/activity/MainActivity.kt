@@ -60,7 +60,7 @@ class MainActivity : BaseGlideActivity() {
         binding.activityMainNavigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_about_us -> navigateToAboutUsPage()
-                R.id.navigation_collection -> navigateToMyCollectionPage()
+//                R.id.navigation_collection -> navigateToMyCollectionPage()
             }
             binding.activityMainDrawerLayout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener true

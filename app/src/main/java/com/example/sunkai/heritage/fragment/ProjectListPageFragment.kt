@@ -1,22 +1,11 @@
 package com.example.sunkai.heritage.fragment
 
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.transition.AutoTransition
-import androidx.transition.TransitionManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.adapter.ProjectInformationAdapter
 import com.example.sunkai.heritage.databinding.FragmentProjectListPageBinding
@@ -24,7 +13,6 @@ import com.example.sunkai.heritage.entity.ProjectListViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
 import com.example.sunkai.heritage.tools.takeBlurScreenShot
 import com.example.sunkai.heritage.value.DATA
-import com.example.sunkai.heritage.views.ProjectListSearchProjectDetailView
 import kotlinx.coroutines.launch
 
 class ProjectListPageFragment : BaseViewBindingFragment<FragmentProjectListPageBinding>() {
@@ -41,13 +29,13 @@ class ProjectListPageFragment : BaseViewBindingFragment<FragmentProjectListPageB
         }
         binding.projectInformationList.adapter = adapter
 
-        binding.blurBackground.setOnClickListener {
-            showSearchView()
-        }
+//        binding.blurBackground.setOnClickListener {
+//            showSearchView()
+//        }
 
-        binding.projectListSearchView.setOnClickListener {
-            showDetailView()
-            }
+//        binding.projectListSearchView.setOnClickListener {
+//            showDetailView()
+//            }
 
         viewModel.projectList.observe(viewLifecycleOwner, {
             lifecycleScope.launch {
@@ -57,54 +45,54 @@ class ProjectListPageFragment : BaseViewBindingFragment<FragmentProjectListPageB
     }
 
     fun showDetailView(){
-        binding.projectListSearchView.visibility = View.GONE
-        binding.projectListSearchDetailView.visibility = View.VISIBLE
-        binding.projectListSearchDetailView.setContent {
-            ProjectListSearchProjectDetailDialog()
-        }
+//        binding.projectListSearchView.visibility = View.GONE
+//        binding.projectListSearchDetailView.visibility = View.VISIBLE
+//        binding.projectListSearchDetailView.setContent {
+//            ProjectListSearchProjectDetailDialog()
+//        }
         requireView().takeBlurScreenShot(requireActivity(), { bitmap ->
             binding.blurBackground.visibility = View.VISIBLE
             binding.blurBackground.setImageBitmap(bitmap)
             binding.blurBackground.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.fade_in))
         })
         binding.blurBackground.visibility = View.VISIBLE
-        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup)
+//        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup)
     }
 
-    fun showSearchView(){
-        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
-        animation.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(p0: Animation?) {}
+//    fun showSearchView(){
+//        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
+//        animation.setAnimationListener(object : Animation.AnimationListener {
+//            override fun onAnimationStart(p0: Animation?) {}
+//
+//            override fun onAnimationEnd(p0: Animation?) {
+//                binding.blurBackground.visibility = View.GONE
+//                binding.blurBackground.setImageBitmap(null)
+//            }
+//
+//            override fun onAnimationRepeat(p0: Animation?) {}
+//
+//        })
+//        binding.blurBackground.startAnimation(animation)
+//        binding.projectListSearchView.visibility = View.VISIBLE
+//        binding.projectListSearchDetailView.visibility = View.GONE
+//        val transition = AutoTransition()
+//        transition.duration = 200
+//        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup, transition)
+//    }
 
-            override fun onAnimationEnd(p0: Animation?) {
-                binding.blurBackground.visibility = View.GONE
-                binding.blurBackground.setImageBitmap(null)
-            }
-
-            override fun onAnimationRepeat(p0: Animation?) {}
-
-        })
-        binding.blurBackground.startAnimation(animation)
-        binding.projectListSearchView.visibility = View.VISIBLE
-        binding.projectListSearchDetailView.visibility = View.GONE
-        val transition = AutoTransition()
-        transition.duration = 200
-        TransitionManager.beginDelayedTransition(binding.projectListSearchView.parent as ViewGroup, transition)
-    }
-
-    @Composable
-    fun ProjectListSearchProjectDetailDialog() {
-        val projectTypeDataState = viewModel.allProjectType.observeAsState()
-        val searchProjectViewData = projectTypeDataState.value
-        if (searchProjectViewData != null) {
-            ProjectListSearchProjectDetailView(searchProjectViewData){
-                viewModel.searchProject(keywords = it)
-                showSearchView()
-            }
-        } else {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-    }
+//    @Composable
+//    fun ProjectListSearchProjectDetailDialog() {
+//        val projectTypeDataState = viewModel.allProjectType.observeAsState()
+//        val searchProjectViewData = projectTypeDataState.value
+//        if (searchProjectViewData != null) {
+//            ProjectListSearchProjectDetailView(searchProjectViewData){
+//                viewModel.searchProject(keywords = it)
+//                showSearchView()
+//            }
+//        } else {
+//            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                CircularProgressIndicator()
+//            }
+//        }
+//    }
 }

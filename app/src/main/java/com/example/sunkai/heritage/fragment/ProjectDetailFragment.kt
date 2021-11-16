@@ -36,6 +36,9 @@ class ProjectDetailFragment : BaseViewBindingFragment<FragmentProjectDetailBindi
                 viewModel.loadProjectDetail(link)
             }
         }
+        binding.toolbar.setNavigationOnClickListener{
+            findNavController().popBackStack()
+        }
     }
 
 
