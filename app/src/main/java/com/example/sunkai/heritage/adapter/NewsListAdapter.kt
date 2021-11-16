@@ -25,9 +25,9 @@ import com.example.sunkai.heritage.tools.loadImageFromServer
  * 首页新闻的RecyclerView的Adapter
  * Created by sunkai on 2018/2/12.
  */
-class NewsListAdapter(private val glide: RequestManager,private var listner:OnNewsListItemClickListener?=null) : PagingDataAdapter<NewsListResponse,NewsListAdapter.Holder>(
-    COMPARATOR) {
-    companion object{
+class NewsListAdapter(private val glide: RequestManager, private var listner: OnNewsListItemClickListener? = null) : PagingDataAdapter<NewsListResponse, NewsListAdapter.Holder>(
+        COMPARATOR) {
+    companion object {
         private val COMPARATOR = object : DiffUtil.ItemCallback<NewsListResponse>() {
             override fun areItemsTheSame(oldItem: NewsListResponse, newItem: NewsListResponse): Boolean {
                 return oldItem.link == newItem.link
@@ -40,23 +40,24 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
     }
 
 
-    class Holder(binding:BottomFolkNewsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(binding: BottomFolkNewsLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val title: TextView = binding.bottomViewTitle
         val time: TextView = binding.bottomViewTime
         val image: ImageView = binding.bottomViewImage
         val readMark: View = binding.isReadMark
         val newsAuthor = binding.newsAuthor
+        val imgContainer = binding.bottomViewImageContainer
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(BottomFolkNewsLayoutBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(BottomFolkNewsLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val data = getItem(position) ?:return
+        val data = getItem(position) ?: return
         setData(holder, data)
         holder.itemView.setOnClickListener {
-            onItemClick(holder.itemView,data)
+            onItemClick(holder.itemView, data)
         }
     }
 
@@ -68,8 +69,10 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
         holder.newsAuthor.text = "作者："
         holder.readMark.setBackgroundColor(getThemeColor())
         holder.readMark.visibility = if (data.isRead) View.VISIBLE else View.GONE
+        holder.imgContainer.visibility = View.GONE
         if (!data.img.isNullOrEmpty()) {
             holder.image.visibility = View.VISIBLE
+            holder.imgContainer.visibility = View.VISIBLE
             glide.loadImageFromServer(data.compressImg ?: data.img
             ?: "").listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
@@ -94,12 +97,12 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
 
     private fun onItemClick(itemView: View, item: NewsListResponse) {
         item.isRead = true
-        itemView.findViewById<View>(R.id.isReadMark).visibility=View.VISIBLE
+        itemView.findViewById<View>(R.id.isReadMark).visibility = View.VISIBLE
         this.listner?.onItemClick(item)
     }
 
-    fun setOnNewsItemClickListener(action:((NewsListResponse)->Unit)){
-        this.listner = object:OnNewsListItemClickListener{
+    fun setOnNewsItemClickListener(action: ((NewsListResponse) -> Unit)) {
+        this.listner = object : OnNewsListItemClickListener {
             override fun onItemClick(newsData: NewsListResponse) {
                 action(newsData)
             }
@@ -108,7 +111,7 @@ class NewsListAdapter(private val glide: RequestManager,private var listner:OnNe
     }
 
 
-    interface OnNewsListItemClickListener{
-        fun onItemClick(newsData:NewsListResponse)
+    interface OnNewsListItemClickListener {
+        fun onItemClick(newsData: NewsListResponse)
     }
 }

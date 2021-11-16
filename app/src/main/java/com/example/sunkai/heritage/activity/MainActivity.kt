@@ -65,13 +65,13 @@ class MainActivity : BaseGlideActivity() {
             binding.activityMainDrawerLayout.closeDrawer(GravityCompat.START)
             return@setNavigationItemSelectedListener true
         }
-        val themeColorRecyclerView = binding.activityMainNavigationView.getHeaderView(0).findViewById<RecyclerView>(R.id.navigationViewHeaderRecyclerView)
-        themeColorRecyclerView.post {
-            val themeColorAdapter = SettingListSelectThemeColorAdapter(THEME_COLOR_ARRAYS.toList(), Glide.with(themeColorRecyclerView))
-            val spanCount=(themeColorRecyclerView.width/SettingListSelectThemeColorAdapter.IMAGE_VIEW_SIZE)-1
-            themeColorRecyclerView.layoutManager= GridLayoutManager(this,spanCount)
-            themeColorRecyclerView.adapter=themeColorAdapter
-        }
+//        val themeColorRecyclerView = binding.activityMainNavigationView.getHeaderView(0).findViewById<RecyclerView>(R.id.navigationViewHeaderRecyclerView)
+//        themeColorRecyclerView.post {
+//            val themeColorAdapter = SettingListSelectThemeColorAdapter(THEME_COLOR_ARRAYS.toList(), Glide.with(themeColorRecyclerView))
+//            val spanCount=(themeColorRecyclerView.width/SettingListSelectThemeColorAdapter.IMAGE_VIEW_SIZE)-1
+//            themeColorRecyclerView.layoutManager= GridLayoutManager(this,spanCount)
+//            themeColorRecyclerView.adapter=themeColorAdapter
+//        }
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
         navController = navHostFragment.navController
         //设置底部导航
