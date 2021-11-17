@@ -20,7 +20,7 @@ android {
             minSdkVersion 23
             targetSdkVersion 31
             versionCode code
-            versionName "5.0.0-beta1"
+            versionName "5.0.0"
             testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
             resConfigs "zh", "en"
             renderscriptTargetApi 31

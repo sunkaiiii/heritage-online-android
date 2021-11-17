@@ -43,7 +43,6 @@ class NewsListFragment : BaseViewBindingFragment<NewsListFramgentBinding>() {
         }
 
         val adapter = NewsListAdapter(glide)
-
         binding.fragmentMainRecyclerview.adapter = adapter
         viewModel.newsListPagingData.observe(viewLifecycleOwner, { data ->
             lifecycleScope.launch {

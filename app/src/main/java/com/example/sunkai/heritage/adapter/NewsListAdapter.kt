@@ -96,8 +96,8 @@ class NewsListAdapter(private val glide: RequestManager, private var listner: On
 
 
     private fun onItemClick(itemView: View, item: NewsListResponse) {
-        item.isRead = true
-        itemView.findViewById<View>(R.id.isReadMark).visibility = View.VISIBLE
+//        item.isRead = true
+//        itemView.findViewById<View>(R.id.isReadMark).visibility = View.VISIBLE
         this.listner?.onItemClick(item)
     }
 
