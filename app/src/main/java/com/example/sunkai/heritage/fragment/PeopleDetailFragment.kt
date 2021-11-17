@@ -1,9 +1,11 @@
 package com.example.sunkai.heritage.fragment
 
+import android.content.Intent
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -12,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -129,13 +134,13 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
                     placeholder(R.drawable.place_holder)
                 }),
                 contentDescription = null,
-                Modifier
-                        .shadow(8.dp, RoundedCornerShape(27.dp))
-                        .clip(
-                                RoundedCornerShape(27.dp)
-                        )
-                        .fillMaxWidth()
-                        .height(200.dp),
+            Modifier
+                .shadow(8.dp, RoundedCornerShape(27.dp))
+                .clip(
+                    RoundedCornerShape(27.dp)
+                )
+                .fillMaxWidth()
+                .height(200.dp),
                 contentScale = ContentScale.Crop
         )
     }
@@ -157,6 +162,10 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
             )
             Text(data.author, fontSize = 16.sp, color = titleColor)
             Text(data.time ?: "", fontSize = 16.sp, color = titleColor)
+            ClickableText(text = AnnotatedString(getString(R.string.source_from)+getString(R.string.source_url)), onClick = {
+                val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.source_url)+data.link))
+                startActivity(intent)
+            },style = TextStyle(color = titleColor))
         }
     }
 

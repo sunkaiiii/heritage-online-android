@@ -1,5 +1,7 @@
 package com.example.sunkai.heritage.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -78,6 +80,10 @@ class NewsDetailFragment : BaseViewBindingFragment<FragmentNewsDetailBinding>() 
                 )
                 layoutParams.weight = 1f
                 binding.newsDetailSubtitleLayout.addView(textView)
+            }
+            binding.newsDetailSubtitleLayout.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(getString(R.string.source_url)+link))
+                startActivity(intent)
             }
         }
         binding.bottomNewsDetailAuther.text = data.author

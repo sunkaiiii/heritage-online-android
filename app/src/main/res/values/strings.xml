@@ -93,4 +93,7 @@ limitations under the License.</string>
     <string name="collection">收藏</string>
     <string name="my_collection">我的收藏</string>
     <string name="news_detail">新闻详情</string>
+    <string name="source_from">内容来源</string>
+    <string name="source_url">http://www.ihchina.cn</string>
+    <string name="contact_email">联系邮箱：</string>
 </resources>

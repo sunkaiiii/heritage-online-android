@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.fragment.findNavController
@@ -54,7 +55,9 @@ class AboutUSFragment : BaseGlideFragment() {
     @Preview
     fun AboutUsCard() {
         val gitUrl = getString(R.string.program_git_url)
+        val sourceUrl = getString(R.string.source_url)
         val margin = Modifier.padding(8.dp)
+        val email = getString(R.string.contact_email)
         val textColor = if(isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
         Column(Modifier.fillMaxSize()) {
             TopAppBar(title = {
@@ -72,11 +75,20 @@ class AboutUSFragment : BaseGlideFragment() {
                 Image(
                     painter = painterResource(R.drawable.ic_launcher),
                     contentDescription = getString(R.string.logo),
-                        Modifier
-                                .size(48.dp, 48.dp)
-                                .padding(0.dp, 0.dp, 0.dp, 12.dp)
+                    Modifier
+                        .size(48.dp, 48.dp)
+                        .padding(0.dp, 0.dp, 0.dp, 12.dp)
                 )
-                Text(text = VERSION_NAME(), color = textColor)
+                Text(text = VERSION_NAME(), color = textColor,fontWeight = FontWeight.Bold)
+                Row{
+                    Text(text = getString(R.string.source_from),color =textColor)
+                    ClickableText(text = AnnotatedString("ihchina.cn"), onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(sourceUrl))
+                        startActivity(intent)
+                    },style = TextStyle(color = textColor))
+                }
+                Text(text = "contact email: fwz@ihchina.cn",color = textColor)
+                Spacer(modifier = Modifier.height(24.dp))
                 ClickableText(text = AnnotatedString(gitUrl), onClick = {
                     val intent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(gitUrl))
                     startActivity(intent)

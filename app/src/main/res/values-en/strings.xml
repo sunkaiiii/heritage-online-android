@@ -86,4 +86,6 @@ limitations under the License.</string>
     <string name="advance_search">Advanced search</string>
     <string name="add_item">Add_condition</string>
     <string name="all_category">All Category</string>
+    <string name="source_from">Source from:</string>
+    <string name="contact_email">contact email:</string>
 </resources>
