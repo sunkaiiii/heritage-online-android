@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.example.sunkai.heritage.database.NewsDatabase
 import com.example.sunkai.heritage.value.NEWS_DETAIL_DATABASE
+import com.google.android.material.color.DynamicColors
 import dagger.hilt.android.HiltAndroidApp
 
 
@@ -18,6 +19,7 @@ class EHeritageApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        DynamicColors.applyToActivitiesIfAvailable(this)
         instance = this
         MakeToast.initToast(this)
         reloadThemeColor()
