@@ -33,10 +33,10 @@ import com.google.android.material.tabs.TabLayout
  * 2018/7/17
  * 用于处理主题切换的工具类
  */
-private var themeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
+private var themeColor = ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_primary60)
 private var userChoiceThemeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
-private var darkThemeColor = getDarkerColor(getThemeColor())
-private var lightThemeColor = getLighterColor(getThemeColor())
+private var darkThemeColor = ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_primary40)
+private var lightThemeColor = ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_primary70)
 private var darkmode = false
 
 fun reloadThemeColor() {
@@ -45,18 +45,6 @@ fun reloadThemeColor() {
 
 fun getResourceColorCompose(id:Int):androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(EHeritageApplication.instance.getColor(id))
 
-fun setThemeColor(color: Int) {
-    EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).edit {
-        putInt(THEME_COLOR, color)
-    }
-    if (!darkmode) {
-        themeColor = color
-        darkThemeColor = getDarkerColor(themeColor)
-        lightThemeColor = getLighterColor(color)
-        val intent = Intent(CHANGE_THEME)
-        LocalBroadcastManager.getInstance(EHeritageApplication.instance).sendBroadcast(intent)
-    }
-}
 
 fun getUserChoiceThemeColor(): Int = userChoiceThemeColor
 
@@ -78,6 +66,13 @@ fun getTransparentColor(color: Int, a: Int = 119): Int {
     return Color.argb(a, Color.red(color), Color.green(color), Color.blue(color))
 }
 
+fun getSecondaryColor()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary60)
+fun getSecondaryLight()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary80)
+fun getSecondaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary40)
+
+fun getTertiary()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary60)
+fun getTertiaryLight()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary80)
+fun getTertiaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary40)
 fun getDarkerColor(color: Int): Int {
     val hsvArray = FloatArray(3)
     Color.colorToHSV(color, hsvArray)
@@ -220,16 +215,11 @@ fun loadThemeColor() {
     when (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
         Configuration.UI_MODE_NIGHT_NO -> {
             darkmode = false
-            themeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
         } // Night mode is not active, we're using the light theme
         Configuration.UI_MODE_NIGHT_YES -> {
             darkmode = true
-            themeColor = ContextCompat.getColor(EHeritageApplication.instance, R.color.midGrey)
         } // Night mode is active, we're using dark theme
     }
-    userChoiceThemeColor = EHeritageApplication.instance.getSharedPreferences(SETTING, MODE_PRIVATE).getInt(THEME_COLOR, ContextCompat.getColor(EHeritageApplication.instance, R.color.colorPrimary))
-    darkThemeColor = getDarkerColor(getThemeColor())
-    lightThemeColor = getLighterColor(getThemeColor())
 }
 
 fun forEachAndTintViews(view: ViewGroup) {

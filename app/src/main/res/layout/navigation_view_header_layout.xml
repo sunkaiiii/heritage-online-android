@@ -9,9 +9,7 @@
     <FrameLayout
         android:id="@+id/navigationViewTopHeaderLayout"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@color/colorPrimary">
-
+        android:layout_height="180dp">
         <com.example.sunkai.heritage.views.tools.RoundedShadowImageView
             android:layout_width="60dp"
             android:layout_height="60dp"

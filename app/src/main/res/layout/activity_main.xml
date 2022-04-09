@@ -18,7 +18,7 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/nav_graph"
             />
-        <com.example.sunkai.heritage.views.tools.FollowThemeBottomNavigationView
+        <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

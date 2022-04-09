@@ -5,13 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
@@ -49,8 +52,9 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         if (!ignoreToolbar) {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(getThemeColor()))
         }
-        window.statusBarColor = getDarkThemeColor()
-        window.navigationBarColor = getThemeColor()
+        val color = ContextCompat.getColor(this, R.color.material_dynamic_primary70)
+        window.statusBarColor = color
+        window.navigationBarColor = color
     }
 
     open fun changeSpecificViewTheme() {
