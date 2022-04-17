@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/news_detail_background"
     android:orientation="vertical"
     tools:context="com.example.sunkai.heritage.fragment.NewsDetailFragment">
 
@@ -62,7 +61,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:background="@color/news_detail_subcontent_color"
                             android:paddingStart="22dp"
                             android:paddingTop="15dp"
                             android:paddingEnd="22dp"

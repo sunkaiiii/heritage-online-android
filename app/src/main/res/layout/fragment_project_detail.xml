@@ -20,7 +20,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/project_detail_first_background">
+            android:background="@color/material_dynamic_primary90">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                         android:id="@+id/project_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/project_detail_title_color"
+                        android:textColor="@color/material_dynamic_primary10"
                         android:textSize="28sp"
                         android:textStyle="bold"
                         tools:text="孔雀东南飞传说" />
@@ -46,7 +46,7 @@
                         android:id="@+id/project_location_and_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/project_detail_second_title_color"
+                        android:textColor="@color/material_dynamic_neutral_variant50"
                         android:textSize="16sp"
                         tools:text="安徽省北京市`民间文学" />
                 </LinearLayout>
@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@id/project_desc_container"
-                        android:textColor="#32313C"
+                        android:textColor="@color/material_dynamic_neutral_variant20"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:translationY="-9dp"
@@ -100,7 +100,7 @@
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="@color/project_detail_first_background"
+                    android:background="@color/material_dynamic_primary90"
                     app:layout_collapseMode="pin"
                     app:menu="@menu/common_share_menu"
                     android:id="@+id/toolbar"

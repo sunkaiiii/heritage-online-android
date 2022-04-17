@@ -33,14 +33,6 @@ class MainActivity : BaseGlideActivity() {
     }
 
     override fun changeSpecificViewTheme() {
-        val drawable = GradientDrawable(
-            GradientDrawable.Orientation.LEFT_RIGHT, arrayOf(
-                getTertiaryDark(), getTertiary(), getTertiaryLight()
-            ).toIntArray()
-        )
-        drawable.orientation = GradientDrawable.Orientation.BL_TR
-        binding.activityMainNavigationView.getHeaderView(0)
-            .findViewById<View>(R.id.navigationViewTopHeaderLayout).background = drawable
     }
 
     private fun initViews() {

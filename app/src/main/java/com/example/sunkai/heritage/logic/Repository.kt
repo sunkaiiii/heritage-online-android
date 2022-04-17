@@ -142,7 +142,9 @@ class Repository @Inject constructor() {
             val dao = database.newsDetailDao()
             val contentdao = database.newsDetailContentDao()
             val relevantNewsDat = database.newsDetailRelevantNewsDao()
-            dao.insert(com.example.sunkai.heritage.database.entities.NewsDetail(data))
+            if(dao.getNewsDetailWithContent(data.link) == null){
+                dao.insert(com.example.sunkai.heritage.database.entities.NewsDetail(data))
+            }
             contentdao.insertAll(newsDetailContentList)
             relevantNewsDat.insertAll(newsRelevantNews)
         }

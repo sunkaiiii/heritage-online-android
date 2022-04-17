@@ -42,6 +42,8 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="45dp"
             android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/material_dynamic_primary99"
+            app:strokeColor="@color/material_dynamic_neutral80"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp">
 
@@ -60,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_dynamic_primary10"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     tools:text="苗族古歌" />
@@ -75,7 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="#878787"
+                        android:textColor="@color/material_dynamic_secondary50"
                         android:textSize="14sp"
                         tools:text="苗族古歌" />
 
@@ -85,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="2dp"
-                        android:textColor="#878787"
+                        android:textColor="@color/material_dynamic_secondary50"
                         android:textSize="14sp"
                         tools:text="新增项目" />
                 </LinearLayout>
@@ -106,7 +108,7 @@
                         android:paddingTop="4dp"
                         android:paddingEnd="12dp"
                         android:paddingBottom="4dp"
-                        android:textColor="#E37A3C"
+                        android:textColor="@color/material_dynamic_primary60"
                         android:textSize="12sp"
                         tools:text="苗族古歌" />
 
@@ -121,7 +123,7 @@
                         android:paddingTop="4dp"
                         android:paddingEnd="12dp"
                         android:paddingBottom="4dp"
-                        android:textColor="#E37A3C"
+                        android:textColor="@color/material_dynamic_primary60"
                         android:textSize="12sp"
                         tools:text="苗族古歌" />
                 </LinearLayout>

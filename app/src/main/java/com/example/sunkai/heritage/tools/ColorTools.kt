@@ -43,9 +43,6 @@ fun reloadThemeColor() {
     LocalBroadcastManager.getInstance(EHeritageApplication.instance).sendBroadcast(Intent(CHANGE_THEME))
 }
 
-fun getResourceColorCompose(id:Int):androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color(EHeritageApplication.instance.getColor(id))
-
-
 fun getUserChoiceThemeColor(): Int = userChoiceThemeColor
 
 fun getThemeColor(specialDarkmodeColor: Boolean = false): Int {
@@ -73,6 +70,9 @@ fun getSecondaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.co
 fun getTertiary()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary60)
 fun getTertiaryLight()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary80)
 fun getTertiaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary40)
+
+fun getResourceColor(resource:Int)=ContextCompat.getColor(EHeritageApplication.instance,resource)
+fun getResourceColorCompose(resource: Int) =androidx.compose.ui.graphics.Color(getResourceColor(resource))
 fun getDarkerColor(color: Int): Int {
     val hsvArray = FloatArray(3)
     Color.colorToHSV(color, hsvArray)
@@ -211,15 +211,20 @@ fun tintToolbar(view: Toolbar) {
 }
 
 fun loadThemeColor() {
+    darkmode= isDarkMode()
+}
+
+fun isDarkMode():Boolean{
     val config = EHeritageApplication.instance.resources.configuration
     when (config.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
         Configuration.UI_MODE_NIGHT_NO -> {
-            darkmode = false
+            return false
         } // Night mode is not active, we're using the light theme
         Configuration.UI_MODE_NIGHT_YES -> {
-            darkmode = true
+            return true
         } // Night mode is active, we're using dark theme
     }
+    return false
 }
 
 fun forEachAndTintViews(view: ViewGroup) {

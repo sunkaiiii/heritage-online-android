@@ -1,10 +1,15 @@
 package com.example.sunkai.heritage.views
 
+import android.os.Build
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,6 +17,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +26,9 @@ import androidx.compose.ui.unit.sp
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsItem
 import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.R
+import com.example.sunkai.heritage.tools.getDarkerColor
+import com.example.sunkai.heritage.tools.getResourceColorCompose
+import com.example.sunkai.heritage.tools.isDarkMode
 
 
 @Composable
@@ -43,7 +52,7 @@ fun StatisticsProjectTitle(title: String) {
         DoubleCircleIndicator()
         Text(
             text = title,
-            color = if(isSystemInDarkTheme()) Color.White else Color.Black,
+            color = getResourceColorCompose(R.color.material_dynamic_primary10),
             modifier = Modifier.padding(start = 4.dp),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -65,10 +74,10 @@ private fun DoubleCircleIndicator() {
                     .width(12.dp)
         ) {
             drawCircle(
-                color = Color(0xFFD6E5FF)
+                color = getResourceColorCompose(R.color.material_dynamic_tertiary90)
             )
             drawCircle(
-                color = Color(0XFF0073FF),
+                color = getResourceColorCompose(R.color.material_dynamic_tertiary60),
                 radius = (12.dp).value / 3
             )
         }
@@ -90,13 +99,13 @@ private fun ProjectStatisticsByTimeBarChart(statisByTime: List<HeritageProjectSt
                 it.value
             }
             val normalBarBrush =
-                Brush.verticalGradient(listOf(Color(0XFFFFB4B1), Color(0XFFFFEBEB)))
+                Brush.verticalGradient(listOf(getResourceColorCompose(R.color.material_dynamic_primary80), getResourceColorCompose(R.color.material_dynamic_primary95)))
             val maxValueBarBrush = Brush.verticalGradient(
                 listOf(
-                    Color(0XFFE65650),
-                    Color(0XFFD4757F),
-                    Color(0XFFD06F7A),
-                    Color(0XFFFFB5B2)
+                    getResourceColorCompose(R.color.material_dynamic_primary50),
+                    getResourceColorCompose(R.color.material_dynamic_primary70),
+                    getResourceColorCompose(R.color.material_dynamic_primary60),
+                    getResourceColorCompose(R.color.material_dynamic_primary80)
                 )
             )
             for (i in 0..5) {
