@@ -32,32 +32,32 @@ ___
 
 ### introduction
 
-1. This is my second android application and also my graduate design. It accompleshed basic function of Android development such as getting information, post data, and account regist and login.
+1. This is my second android application as well as my graduate design in 2018. It implements the basic function of Android development such as getting information, paging and the implementation of UI design
 
   
-2. I'm tring to refactor the code and introduce modern Android development paradigm to make it to be better in every iteration.
+2. I'm tring to refactor the code and introduce modern Android development paradigm when the new version of sdk comes in every year.
 
   
 3. This app is about China heritages which contains news and the information of heritage project list.
 
   
-4. when I developed the program,I controlled the using of the third party library because of the learning needs that I want to implement my app foundation without use a matured framework, I think that could help me understand the Android development procedure.
+4. The implementation of this application is trying to use most of support libraries provided by Google as many as I can, which aims to follow the design and code guideline of Android Development.
 
   
 5. This application has 3 parts, which is the main page, people page and project page, which include news of heritage, people bibliographies and project list and its statistics. 
 
 
-6. Here is my application server [heritage-webservice](https://github.com/sunkaiiii/heritage_webservice )
+6. Here is my application server [HeritageOnlineDotNetCore](https://github.com/sunkaiiii/HeritageOnlineDotNetCore)
 
 
-7. The old versions server, older than v2.6.1, is in [heritage_webservice_old](https://github.com/sunkaiiii/heritage_webservice_old)
+7. The old versions' server for the App before v2.6.1, is in [heritage_webservice_old](https://github.com/sunkaiiii/heritage_webservice_old)，and for the App before v3.4.2 is in [heritage-webservice](https://github.com/sunkaiiii/heritage_webservice )
 
 
-8. This app is firstly coding by Java, but after v2.0, using Kotlin to implement new functions, for now, this is a completely Kotlin project.
+8. Completely Kotlin project with the implementation of single activity architecture.
 
   
 
-#### the application now is available in the Google Play: https://play.google.com/store/apps/details?id=com.datong.heritage_online
+#### To get the app, it's available on Google Play: https://play.google.com/store/apps/details?id=com.datong.heritage_online
 
   
 
