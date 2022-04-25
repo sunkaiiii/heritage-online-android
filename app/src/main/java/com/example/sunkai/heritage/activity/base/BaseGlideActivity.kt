@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.tools.forEachAndTintViews
+import com.example.sunkai.heritage.tools.getColorFromAttr
 import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CHANGE_THEME
@@ -52,7 +53,7 @@ abstract class BaseGlideActivity : AppCompatActivity() {
         if (!ignoreToolbar) {
             supportActionBar?.setBackgroundDrawable(ColorDrawable(getThemeColor()))
         }
-        val color = ContextCompat.getColor(this, R.color.material_dynamic_primary70)
+        val color = getColorFromAttr(R.attr.colorPrimarySurface)
         window.statusBarColor = color
         window.navigationBarColor = color
     }
