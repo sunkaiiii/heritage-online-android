@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -44,10 +45,7 @@ import com.example.sunkai.heritage.entity.PeopleDetailViewModel
 import com.example.sunkai.heritage.entity.response.NewsDetail
 import com.example.sunkai.heritage.entity.response.NewsDetailContent
 import com.example.sunkai.heritage.fragment.baseFragment.BaseViewBindingFragment
-import com.example.sunkai.heritage.tools.Utils
-import com.example.sunkai.heritage.tools.buildUrl
-import com.example.sunkai.heritage.tools.loadImageFromServer
-import com.example.sunkai.heritage.tools.toBlurBitmap
+import com.example.sunkai.heritage.tools.*
 import com.example.sunkai.heritage.value.DATA
 import com.example.sunkai.heritage.value.TYPE_TEXT
 import com.example.sunkai.heritage.views.CollaborativeBounceView
@@ -65,9 +63,9 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
             FragmentPeopleDetailBinding::class.java
 
     override fun initView() {
-        viewModel.peopleDetail.observe(viewLifecycleOwner, {
+        viewModel.peopleDetail.observe(viewLifecycleOwner) {
             setDataToView(it)
-        })
+        }
         val link = arguments?.getString(DATA)
         link?.let {
             binding.root.post {
@@ -119,7 +117,7 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     fun PeopleDetailTextLine(content: NewsDetailContent, isLastOneImage: Boolean = false) {
         Text(
                 content.content,
-                color = Color(Utils.getColorResourceValue(R.color.news_detail_text_color)),
+                color = getResourceColorCompose(R.color.material_dynamic_tertiary10),
                 fontSize = 16.sp,
                 fontWeight = if (isLastOneImage) FontWeight.Bold else FontWeight.Normal
         )
@@ -181,6 +179,9 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
                 return@setMoveEventBlocker false
             }
             return@setMoveEventBlocker isFullyScrollToTheFirstItem?.let { !it() } ?: false
+        }
+        binding.peopleMainImageBlur.foreground = ColorDrawable(getResourceColor(R.color.material_dynamic_primary99)).apply {
+            this.alpha=180
         }
         binding.peopleDetailCollaborativeLayout.setOnMoveAction { distance, offsetPercentage ->
             val currentAlpha =
