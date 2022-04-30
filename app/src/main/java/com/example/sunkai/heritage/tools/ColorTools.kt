@@ -67,11 +67,11 @@ fun getTransparentColor(color: Int, a: Int = 119): Int {
     return Color.argb(a, Color.red(color), Color.green(color), Color.blue(color))
 }
 
-fun getSecondaryColor()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary60)
-fun getSecondaryLight()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary80)
-fun getSecondaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_secondary40)
+fun getSecondaryColor()= getColorFromAttr(R.attr.colorSecondary)
+fun getSecondaryLight()= getColorFromAttr(R.attr.colorSecondaryVariant)
+fun getSecondaryDark()= getDarkerColor(getSecondaryColor())
 
-fun getTertiary()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary60)
+fun getTertiary()= ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary60)
 fun getTertiaryLight()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary80)
 fun getTertiaryDark()=ContextCompat.getColor(EHeritageApplication.instance,R.color.material_dynamic_tertiary40)
 
@@ -253,5 +253,12 @@ fun Context.getColorFromAttr(
     resolveRefs: Boolean = true
 ): Int {
     theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+    return typedValue.data
+}
+
+
+@ColorInt
+fun getColorFromAttr(@AttrRes attrColor: Int, typedValue: TypedValue= TypedValue(), resolveRefs: Boolean=true):Int{
+    EHeritageApplication.instance.theme.resolveAttribute(attrColor,typedValue,resolveRefs)
     return typedValue.data
 }
