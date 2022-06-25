@@ -13,9 +13,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -196,10 +196,9 @@ class SearchNewsFragment : BaseGlideFragment() {
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun SearchNewsArgumentView(argument: List<SearchNewsHistory>) {
-        LazyVerticalGrid(cells = GridCells.Adaptive(minSize = 72.dp)) {
+        LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 72.dp)) {
             items(argument.size) {
                 Row(
                     Modifier
