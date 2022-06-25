@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:src="@drawable/baseline_remove_circle_24" />
 
-    <com.example.sunkai.heritage.views.tools.FollowThemeEditText
+    <EditText
         android:id="@+id/searchText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

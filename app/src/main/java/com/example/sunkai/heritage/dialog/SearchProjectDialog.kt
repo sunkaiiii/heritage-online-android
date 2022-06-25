@@ -10,7 +10,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.dialog.base.BaseDialogFragment
 import com.example.sunkai.heritage.entity.request.SearchRequest
 import com.example.sunkai.heritage.entity.response.SearchCategoryResponse
-import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.google.android.material.button.MaterialButton
 import java.lang.Exception
 
@@ -40,9 +39,6 @@ class SearchProjectDialog(searchCategoryResponse: SearchCategoryResponse) : Base
         val searchButton = view.findViewById<MaterialButton>(R.id.searchButton)
         addSearchConditionButton.setOnClickListener {
             val itemView = LayoutInflater.from(context).inflate(R.layout.fragment_search_advanced_search_dialog_item, searhItemLayout, false)
-            if (itemView is ViewGroup) {
-                forEachAndTintViews(itemView)
-            }
             val removeButton = itemView.findViewById<View>(R.id.removeButton)
             val spinner: Spinner = itemView.findViewById(R.id.searchSpinner)
             spinner.adapter = ArrayAdapter(context

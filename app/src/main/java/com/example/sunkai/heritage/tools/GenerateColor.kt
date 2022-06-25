@@ -10,33 +10,33 @@ import androidx.palette.graphics.Palette
  * Created by sunkai on 2018/1/18.
  */
 
-fun Drawable.generateColor():Int{
-    val bitmap=this.toBitmap()
-    return bitmap.generateColor()
-}
-
-fun Drawable.generateDarkColor():Int{
-    val bitmap=this.toBitmap()
-    return bitmap.generateDarkColor()
-}
-
-fun Bitmap.generateColor():Int{
-    return Palette.from(this).generate().getDominantColor(getThemeColor())
-}
-
-fun Bitmap.generateDarkColor():Int{
-    return Palette.from(this).generate().getDarkVibrantColor(getThemeColor())
-}
-
-fun Bitmap.generateLightColor():Int{
-    return Palette.from(this).generate().getLightVibrantColor(generateColor())
-}
-
-fun Drawable.generateTextColor():Int{
-    val bitmap=this.toBitmap()
-    return bitmap.generateTextColor()
-}
-
-fun Bitmap.generateTextColor():Int{
-    return Palette.from(this).generate().dominantSwatch?.titleTextColor?: getThemeColor()
-}
+//fun Drawable.generateColor():Int{
+//    val bitmap=this.toBitmap()
+//    return bitmap.generateColor()
+//}
+//
+//fun Drawable.generateDarkColor():Int{
+//    val bitmap=this.toBitmap()
+//    return bitmap.generateDarkColor()
+//}
+//
+//fun Bitmap.generateColor():Int{
+//    return Palette.from(this).generate().getDominantColor(getThemeColor())
+//}
+//
+//fun Bitmap.generateDarkColor():Int{
+//    return Palette.from(this).generate().getDarkVibrantColor(getThemeColor())
+//}
+//
+//fun Bitmap.generateLightColor():Int{
+//    return Palette.from(this).generate().getLightVibrantColor(generateColor())
+//}
+//
+//fun Drawable.generateTextColor():Int{
+//    val bitmap=this.toBitmap()
+//    return bitmap.generateTextColor()
+//}
+//
+//fun Bitmap.generateTextColor():Int{
+//    return Palette.from(this).generate().dominantSwatch?.titleTextColor?: getThemeColor()
+//}

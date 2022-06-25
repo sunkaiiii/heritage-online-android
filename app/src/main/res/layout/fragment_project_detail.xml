@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.sunkai.heritage.fragment.ProjectDetailFragment">
 
-    <com.example.sunkai.heritage.views.tools.FollowThemeProgressBar
+    <ProgressBar
         android:id="@+id/projectDetailProgressBar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"

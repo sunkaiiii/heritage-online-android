@@ -15,10 +15,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.example.sunkai.heritage.tools.getColorFromAttr
-import com.example.sunkai.heritage.tools.getDarkThemeColor
-import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.value.CHANGE_THEME
 
 abstract class BaseGlideActivity : AppCompatActivity() {
@@ -46,13 +43,6 @@ abstract class BaseGlideActivity : AppCompatActivity() {
 
     open fun changeWidgeTheme() {
         val decorview = window.decorView
-        if (decorview is ViewGroup) {
-            forEachAndTintViews(decorview)
-        }
-        changeSpecificViewTheme()
-        if (!ignoreToolbar) {
-            supportActionBar?.setBackgroundDrawable(ColorDrawable(getThemeColor()))
-        }
         val color = getColorFromAttr(R.attr.colorPrimarySurface)
         window.statusBarColor = color
         window.navigationBarColor = color

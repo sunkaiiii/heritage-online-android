@@ -1,15 +1,14 @@
 package com.example.sunkai.heritage.views
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
-import android.widget.FrameLayout
-import androidx.compose.foundation.isSystemInDarkTheme
 import com.example.sunkai.heritage.R
-import com.example.sunkai.heritage.tools.Utils
 import com.example.sunkai.heritage.tools.Utils.dip2px
-import com.example.sunkai.heritage.tools.getDarkThemeColor
 import com.example.sunkai.heritage.tools.getResourceColor
 
 class PeopleDetailRoundedBackgroundView @JvmOverloads constructor(

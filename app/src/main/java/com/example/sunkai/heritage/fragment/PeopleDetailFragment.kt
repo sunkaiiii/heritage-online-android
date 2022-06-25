@@ -117,7 +117,6 @@ class PeopleDetailFragment : BaseViewBindingFragment<FragmentPeopleDetailBinding
     fun PeopleDetailTextLine(content: NewsDetailContent, isLastOneImage: Boolean = false) {
         Text(
                 content.content,
-                color = getResourceColorCompose(R.color.material_dynamic_tertiary10),
                 fontSize = 16.sp,
                 fontWeight = if (isLastOneImage) FontWeight.Bold else FontWeight.Normal
         )

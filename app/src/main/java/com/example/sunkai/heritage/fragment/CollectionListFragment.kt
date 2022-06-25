@@ -1,13 +1,10 @@
 package com.example.sunkai.heritage.fragment
 
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -37,12 +34,7 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.database.entities.Collection
 import com.example.sunkai.heritage.entity.CollectionListViewModel
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.tools.Utils.dip2px
-import com.example.sunkai.heritage.tools.Utils.px2dip
 import com.example.sunkai.heritage.tools.buildUrl
-import com.example.sunkai.heritage.tools.generateColor
-import com.example.sunkai.heritage.tools.generateLightColor
-import com.example.sunkai.heritage.tools.getThemeColor
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalCoilApi
@@ -128,8 +120,8 @@ class CollectionListFragment : BaseGlideFragment() {
                                         val image =
                                             painterState.imageLoader.execute(painterState.request).drawable
                                         if (image is BitmapDrawable) {
-                                            contentBackground =
-                                                Color(image.bitmap.generateLightColor())
+//                                            contentBackground =
+//                                                Color(image.bitmap.generateLightColor())
                                         }
                                     }
                                 }

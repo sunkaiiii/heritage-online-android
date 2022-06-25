@@ -22,7 +22,6 @@ class EHeritageApplication : Application() {
         DynamicColors.applyToActivitiesIfAvailable(this)
         instance = this
         MakeToast.initToast(this)
-        reloadThemeColor()
         newsDetailDatabase=Room.databaseBuilder(
                 this,
                 NewsDatabase::class.java,NEWS_DETAIL_DATABASE

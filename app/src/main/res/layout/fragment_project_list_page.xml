@@ -55,7 +55,7 @@
 <!--        </LinearLayout>-->
 <!--    </com.google.android.material.card.MaterialCardView>-->
 
-    <com.example.sunkai.heritage.views.tools.FollowThemeEdgeRecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/projectInformationList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

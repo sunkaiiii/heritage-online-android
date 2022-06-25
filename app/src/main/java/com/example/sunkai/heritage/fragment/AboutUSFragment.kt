@@ -34,10 +34,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.dialog.LicenceDialog
 import com.example.sunkai.heritage.fragment.baseFragment.BaseGlideFragment
-import com.example.sunkai.heritage.tools.getThemeColor
-import com.example.sunkai.heritage.tools.getThemeColorCompose
 import com.example.sunkai.heritage.tools.isDarkMode
 import com.example.sunkai.heritage.value.VERSION_NAME
+import com.example.sunkai.heritage.views.EHeritageComposeTheme
 
 /**
  * Created by sunkai on 2017/12/29.
@@ -50,8 +49,11 @@ class AboutUSFragment : BaseGlideFragment() {
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
+
             setContent {
-                AboutUsCard()
+                EHeritageComposeTheme {
+                    AboutUsCard()
+                }
             }
         }
     }
@@ -75,11 +77,11 @@ class AboutUSFragment : BaseGlideFragment() {
         Column(Modifier.fillMaxSize()) {
             TopAppBar(title = {
                 Text(getString(R.string.about_us))
-            }, backgroundColor = getThemeColorCompose(), navigationIcon = {
+            },  navigationIcon = {
                 IconButton(onClick = { findNavController().popBackStack() }) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = getString(R.string.back))
                 }
-            }, contentColor = Color.White)
+            }, contentColor = Color.White, backgroundColor = MaterialTheme.colorScheme.primary)
             Column(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
