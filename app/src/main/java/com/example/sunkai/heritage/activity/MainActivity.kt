@@ -56,6 +56,7 @@ class MainActivity : BaseGlideActivity() {
         binding.activityMainDrawerLayout.openDrawer(GravityCompat.START)
     }
 
+    @Deprecated("would be replaced")
     override fun onBackPressed() {
         if (binding.activityMainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.activityMainDrawerLayout.closeDrawer(GravityCompat.START)
