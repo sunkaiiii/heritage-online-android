@@ -35,9 +35,9 @@ const val SearchProject = "/api/HeritageProject/SearchHeritageProject"
 const val ProjectStatistics = "/api/HeritageProject/GetProjectStatisticInformation"
 const val SearchNews = "/api/NewsList/SearchNews/{pages}"
 const val GetAllProjectType = "/api/HeritageProject/GetAllProjectType"
-const val IMAGE_HOST = "https://www.sunkai.xyz:5001/img/"
+const val IMAGE_HOST = "https://file.duckylife.net/heritageonline/"
 
-private const val HOST = "www.sunkai.xyz"
+private const val HOST = "sunkai.xyz"
 private const val SCHEME = "https"
 private const val PORT = 5001
 private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
