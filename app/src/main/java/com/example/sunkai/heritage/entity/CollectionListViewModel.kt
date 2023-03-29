@@ -1,8 +1,8 @@
 package com.example.sunkai.heritage.entity
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.example.sunkai.heritage.database.entities.Collection
 import com.example.sunkai.heritage.logic.CollectionHandler
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +12,7 @@ import javax.inject.Inject
 class CollectionListViewModel @Inject constructor(collectionHandler: CollectionHandler) :
     ViewModel() {
     val selectedIndex = MutableLiveData(0)
-    val collectionListData = Transformations.switchMap(selectedIndex) { index ->
+    val collectionListData = selectedIndex.switchMap{ index ->
         collectionHandler.getCollectionByType(Collection.CollectionType.values()[index])
     }
 }

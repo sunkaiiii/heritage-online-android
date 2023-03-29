@@ -1,9 +1,6 @@
 package com.example.sunkai.heritage.entity
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.sunkai.heritage.database.entities.Collection
 import com.example.sunkai.heritage.interfaces.CollectionView
 import com.example.sunkai.heritage.logic.CollectionHandler
@@ -20,7 +17,7 @@ class NewsDetailViewModel @Inject constructor(
 ) : ViewModel(), CollectionView {
     private val newsDetailLink = MutableLiveData<Pair<String, NewsPages>>()
 
-    val newsDetail = Transformations.switchMap(newsDetailLink) { pair ->
+    val newsDetail = newsDetailLink.switchMap{ pair ->
         when (pair.second) {
             NewsPages.NewsPage -> repository.getNewsDetail(pair.first)
             NewsPages.ForumsPage -> repository.getForumsDetail(pair.first)
@@ -28,11 +25,11 @@ class NewsDetailViewModel @Inject constructor(
         }
     }
 
-    val collectionInformation = Transformations.switchMap(newsDetailLink) { pair ->
+    val collectionInformation = newsDetailLink.switchMap { pair ->
         getCollection(pair.first)
     }
 
-    val isCollected = Transformations.map(collectionInformation) { collectionInformation ->
+    val isCollected = collectionInformation.map{ collectionInformation ->
         collectionInformation != null
     }
 

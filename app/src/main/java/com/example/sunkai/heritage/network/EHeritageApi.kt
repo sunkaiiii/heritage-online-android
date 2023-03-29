@@ -37,9 +37,9 @@ const val SearchNews = "/api/NewsList/SearchNews/{pages}"
 const val GetAllProjectType = "/api/HeritageProject/GetAllProjectType"
 const val IMAGE_HOST = "https://file.duckylife.net/heritageonline/"
 
-private const val HOST = "sunkai.xyz"
+private const val HOST = "heritagewebservicedotnetcore20230329004215.azurewebsites.net"
 private const val SCHEME = "https"
-private const val PORT = 5001
+private const val PORT = 443
 private val interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 private val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 private val httpUrl = HttpUrl.Builder().scheme(SCHEME).host(HOST).port(PORT).build()

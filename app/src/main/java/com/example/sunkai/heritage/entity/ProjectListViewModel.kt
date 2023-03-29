@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectListViewModel @Inject constructor(val repository: Repository):ViewModel() {
     private val searchProjectRequest = MutableLiveData<SearchProjectRequest>()
-    val projectList=Transformations.switchMap(searchProjectRequest) { request ->
+    val projectList=searchProjectRequest.switchMap{ request ->
         repository.fetchProjectListPageData(request).cachedIn(viewModelScope).asLiveData(
             Dispatchers.Main
         )

@@ -15,7 +15,7 @@ class SearchNewsViewModel @Inject constructor(val repository: Repository) : View
     val searchEditFieldText = MutableLiveData("")
     val searchNewsHistory = repository.getSearchNewsHistory()
     val openDialog = MutableLiveData(false)
-    val searchNewsResult = Transformations.switchMap(searchParameter) { request ->
+    val searchNewsResult = searchParameter.switchMap{ request ->
         repository.fetchSearchProjectData(request).cachedIn(viewModelScope)
             .asLiveData(Dispatchers.Main)
     }

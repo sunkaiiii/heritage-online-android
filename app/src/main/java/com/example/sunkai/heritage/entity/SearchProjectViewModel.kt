@@ -39,7 +39,7 @@ class SearchProjectViewModel @Inject constructor(val repository: Repository) : V
         repository.removeSearchHistory(searchHistory)
     }
 
-    val searchResult = Transformations.switchMap(searchQuery) { query ->
+    val searchResult = searchQuery.switchMap { query ->
         repository.getSearchResult(query).cachedIn(viewModelScope)
             .asLiveData(Dispatchers.Main)
     }
