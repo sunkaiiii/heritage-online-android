@@ -5,7 +5,6 @@ heritage_online_android —— An information mobile platform about China intang
 
 中文版:[README_CN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_CN.md)
 
-[![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
 
 #### v5.0.0 <br>
   
@@ -54,10 +53,6 @@ ___
 
 
 8. Completely Kotlin project with the implementation of single activity architecture.
-
-  
-
-#### To get the app, it's available on Google Play: https://play.google.com/store/apps/details?id=com.datong.heritage_online
 
   
 
