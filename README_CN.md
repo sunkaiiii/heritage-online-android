@@ -3,8 +3,6 @@
 
 English version README:[README_EN](https://github.com/sunkaiiii/heritage-online-android/blob/master/README_EN.md)
 
-[![996.ICU](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu) 
-
 E迹 非遗掌上信息化平台（毕设）
 
 #### v5.0.0 <br>
@@ -60,15 +58,6 @@ ___
   
 8、APP前期由Java编写，在v2.0版本开始，陆续转用Kotlin实现新的功能，并在v2.5版本将全部代码迁移到Kotlin上。目前为纯Kotlin编写的APP
 
-  
-  
-
-#### 小米商店下载体验地址：http://app.xiaomi.com/detail/549196
-
-#### Google Play 下载体验地址: https://play.google.com/store/apps/details?id=com.datong.heritage_online
-
-  
-  
 
 ___
 
