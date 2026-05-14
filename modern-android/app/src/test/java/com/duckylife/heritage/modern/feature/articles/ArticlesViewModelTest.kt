@@ -40,14 +40,14 @@ class ArticlesViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertFalse(state.isLoadingBanners)
+        assertNull(state.bannerErrorMessage)
+        assertEquals(ArticleCategory.News, state.selectedCategory)
         assertEquals(listOf("1", "2"), state.banners.map { it.id })
-        assertEquals("article-1", state.articles.single().id)
     }
 
     @Test
-    fun refreshPublishesErrorStateWhenRepositoryFails() = runTest {
+    fun refreshPublishesBannerErrorStateWhenRepositoryFails() = runTest {
         val viewModel = ArticlesViewModel(
             repository = FakeHeritageRepository(
                 failure = IllegalStateException("network down"),
@@ -57,7 +57,35 @@ class ArticlesViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertEquals("network down", state.errorMessage)
+        assertFalse(state.isLoadingBanners)
+        assertEquals("network down", state.bannerErrorMessage)
+    }
+
+    @Test
+    fun selectCategoryUpdatesSelectedCategory() = runTest {
+        val viewModel = ArticlesViewModel(
+            repository = FakeHeritageRepository(),
+        )
+
+        viewModel.selectCategory(ArticleCategory.SpecialTopic)
+        advanceUntilIdle()
+
+        assertEquals(ArticleCategory.SpecialTopic, viewModel.uiState.value.selectedCategory)
+    }
+
+    @Test
+    fun refreshBannersKeepsSelectedCategory() = runTest {
+        val viewModel = ArticlesViewModel(
+            repository = FakeHeritageRepository(
+                banners = listOf(HomeBannerDto(id = "banner-1")),
+            ),
+        )
+        advanceUntilIdle()
+
+        viewModel.selectCategory(ArticleCategory.Forum)
+        viewModel.refreshBanners()
+        advanceUntilIdle()
+
+        assertEquals(ArticleCategory.Forum, viewModel.uiState.value.selectedCategory)
     }
 }

@@ -27,6 +27,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,6 +41,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
@@ -55,9 +61,12 @@ fun ArticlesRoute(
     viewModel: ArticlesViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val articles = viewModel.articles.collectAsLazyPagingItems()
     ArticlesScreen(
         uiState = uiState,
-        onRetry = viewModel::refresh,
+        articles = articles,
+        onRefreshBanners = viewModel::refreshBanners,
+        onCategorySelected = viewModel::selectCategory,
         onArticleSelected = onArticleSelected,
         modifier = modifier,
     )
@@ -66,38 +75,30 @@ fun ArticlesRoute(
 @Composable
 fun ArticlesScreen(
     uiState: ArticlesUiState,
-    onRetry: () -> Unit,
+    articles: LazyPagingItems<ArticleSummaryDto>,
+    onRefreshBanners: () -> Unit,
+    onCategorySelected: (ArticleCategory) -> Unit,
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
-    when {
-        uiState.isLoading -> LoadingContent(modifier)
-        uiState.errorMessage != null -> ErrorContent(
-            message = uiState.errorMessage,
-            onRetry = onRetry,
-            modifier = modifier,
-        )
-
-        uiState.isEmpty -> EmptyContent(
-            onRetry = onRetry,
-            modifier = modifier,
-        )
-
-        else -> ArticlesContent(
-            uiState = uiState,
-            onRetry = onRetry,
-            onArticleSelected = onArticleSelected,
-            imageLoader = imageLoader,
-            modifier = modifier,
-        )
-    }
+    ArticlesContent(
+        uiState = uiState,
+        articles = articles,
+        onRefreshBanners = onRefreshBanners,
+        onCategorySelected = onCategorySelected,
+        onArticleSelected = onArticleSelected,
+        imageLoader = imageLoader,
+        modifier = modifier,
+    )
 }
 
 @Composable
 private fun ArticlesContent(
     uiState: ArticlesUiState,
-    onRetry: () -> Unit,
+    articles: LazyPagingItems<ArticleSummaryDto>,
+    onRefreshBanners: () -> Unit,
+    onCategorySelected: (ArticleCategory) -> Unit,
     onArticleSelected: (String) -> Unit,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
@@ -108,14 +109,27 @@ private fun ArticlesContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {
-            ArticlesHeader(onRetry)
+            ArticlesHeader(
+                onRetry = {
+                    onRefreshBanners()
+                    articles.refresh()
+                },
+            )
         }
 
-        if (uiState.banners.isNotEmpty()) {
-            item {
-                BannerStrip(
+        item {
+            when {
+                uiState.banners.isNotEmpty() -> BannerStrip(
                     banners = uiState.banners,
                     imageLoader = imageLoader,
+                )
+
+                uiState.isLoadingBanners -> BannerLoadingStrip()
+
+                uiState.bannerErrorMessage != null -> InlineRetryMessage(
+                    message = uiState.bannerErrorMessage,
+                    onRetry = onRefreshBanners,
+                    modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
         }
@@ -129,15 +143,103 @@ private fun ArticlesContent(
             )
         }
 
-        items(
-            items = uiState.articles,
-            key = { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
-        ) { article ->
-            ArticleRow(
-                article = article,
-                imageLoader = imageLoader,
-                onClick = onArticleSelected,
+        item {
+            ArticleCategoryTabs(
+                selectedCategory = uiState.selectedCategory,
+                onCategorySelected = onCategorySelected,
                 modifier = Modifier.padding(horizontal = 20.dp),
+            )
+        }
+
+        when (val refreshState = articles.loadState.refresh) {
+            is LoadState.Loading -> item {
+                LoadingContent(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                )
+            }
+
+            is LoadState.Error -> item {
+                ErrorContent(
+                    message = refreshState.error.message ?: "文章加载失败",
+                    onRetry = articles::retry,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(220.dp),
+                )
+            }
+
+            is LoadState.NotLoading -> {
+                if (articles.itemCount == 0) {
+                    item {
+                        EmptyContent(
+                            onRetry = articles::refresh,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(220.dp),
+                        )
+                    }
+                }
+            }
+        }
+
+        items(
+            count = articles.itemCount,
+            key = articles.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
+        ) { index ->
+            val article = articles[index]
+            if (article != null) {
+                ArticleRow(
+                    article = article,
+                    imageLoader = imageLoader,
+                    onClick = onArticleSelected,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
+        }
+
+        when (val appendState = articles.loadState.append) {
+            is LoadState.Loading -> item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is LoadState.Error -> item {
+                InlineRetryMessage(
+                    message = appendState.error.message ?: "加载更多失败",
+                    onRetry = articles::retry,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
+
+            is LoadState.NotLoading -> Unit
+        }
+    }
+}
+
+@Composable
+private fun ArticleCategoryTabs(
+    selectedCategory: ArticleCategory,
+    onCategorySelected: (ArticleCategory) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val categories = ArticleCategory.entries
+    PrimaryTabRow(
+        selectedTabIndex = categories.indexOf(selectedCategory).coerceAtLeast(0),
+        modifier = modifier,
+    ) {
+        categories.forEach { category ->
+            Tab(
+                selected = category == selectedCategory,
+                onClick = { onCategorySelected(category) },
+                text = { Text(category.label) },
             )
         }
     }
@@ -210,6 +312,52 @@ private fun BannerCard(
             imageLoader = imageLoader,
             modifier = Modifier.fillMaxSize(),
         )
+    }
+}
+
+@Composable
+private fun BannerLoadingStrip() {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(2) {
+            Box(
+                modifier = Modifier
+                    .size(width = 300.dp, height = 156.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+            )
+        }
+    }
+}
+
+@Composable
+private fun InlineRetryMessage(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                modifier = Modifier.weight(1f),
+            )
+            Button(onClick = onRetry) {
+                Text("重试")
+            }
+        }
     }
 }
 
@@ -383,27 +531,5 @@ private val ArticleCategory.label: String
 @Preview(showBackground = true)
 @Composable
 private fun ArticlesScreenPreview() {
-    HeritageTheme {
-        ArticlesScreen(
-            uiState = ArticlesUiState(
-                isLoading = false,
-                banners = listOf(
-                    HomeBannerDto(id = "banner", sortOrder = 1),
-                ),
-                articles = listOf(
-                    ArticleSummaryDto(
-                        id = "1",
-                        category = ArticleCategory.News,
-                        title = "传统技艺在城市街巷里重新发芽",
-                        summary = "一个用于预览首页列表的文章摘要。",
-                    ),
-                ),
-            ),
-            onRetry = {},
-            onArticleSelected = {},
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
-        )
-    }
+    HeritageTheme {}
 }
