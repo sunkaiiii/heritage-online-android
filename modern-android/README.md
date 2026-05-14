@@ -12,6 +12,8 @@ The legacy app in the repository root remains untouched as a functional referenc
 - Compose BOM 2026.05.00
 - Material 3
 - Navigation 3 dependencies prepared for the next slice
+- Ktor Client 3.4.3
+- kotlinx.serialization 1.11.0
 - Flow/StateFlow-first architecture planned
 
 ## Run
@@ -21,12 +23,39 @@ cd modern-android
 ./gradlew :app:assembleDebug
 ```
 
-## Next Slice
+## API Contract Layer
 
-The next step is to add the API contract layer from the local Swagger document:
+The first network contract layer is in place:
 
-- `https://localhost:5078/swagger/v1/swagger.json`
+- DTOs: `app/src/main/java/com/duckylife/heritage/modern/core/network/dto`
+- API client: `app/src/main/java/com/duckylife/heritage/modern/core/network/HeritageApiClient.kt`
+- Repository boundary: `app/src/main/java/com/duckylife/heritage/modern/core/data/HeritageRepository.kt`
+- Local development base URL: `https://10.0.2.2:5078`
+
+The contract maps the local Swagger document:
+
 - `/api/home-banners`
 - `/api/articles`
 - `/api/directory-items`
 - `/api/inheritors`
+
+## Verify
+
+```bash
+cd modern-android
+./gradlew :app:testDebugUnitTest :app:assembleDebug
+```
+
+## Next Slice
+
+The first visible product slice has started:
+
+1. Home banner data loading
+2. Article list ViewModel with loading/error/empty states
+3. Compose article list screen
+
+Next up:
+
+1. Article detail screen
+2. Navigation 3 back stack wiring
+3. Basic pagination for article list
