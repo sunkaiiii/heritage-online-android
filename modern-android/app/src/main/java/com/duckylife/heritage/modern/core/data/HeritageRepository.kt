@@ -4,7 +4,6 @@ import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.HeritageApiClient
 import com.duckylife.heritage.modern.core.network.InheritorQuery
-import com.duckylife.heritage.modern.core.network.createHeritageApiClient
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
@@ -13,6 +12,7 @@ import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import javax.inject.Inject
 
 interface HeritageRepository {
     suspend fun homeBanners(): List<HomeBannerDto>
@@ -32,8 +32,8 @@ interface HeritageRepository {
     suspend fun inheritor(id: String): InheritorDetailDto
 }
 
-class DefaultHeritageRepository(
-    private val apiClient: HeritageApiClient = createHeritageApiClient(),
+class DefaultHeritageRepository @Inject constructor(
+    private val apiClient: HeritageApiClient,
 ) : HeritageRepository {
     override suspend fun homeBanners(): List<HomeBannerDto> =
         apiClient.getHomeBanners()

@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
@@ -52,7 +52,7 @@ import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 fun ArticlesRoute(
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ArticlesViewModel = viewModel(),
+    viewModel: ArticlesViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     ArticlesScreen(

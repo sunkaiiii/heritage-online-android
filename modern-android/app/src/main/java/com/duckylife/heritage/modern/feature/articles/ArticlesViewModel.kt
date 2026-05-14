@@ -2,9 +2,10 @@ package com.duckylife.heritage.modern.feature.articles
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.network.ArticleQuery
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,8 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ArticlesViewModel(
-    private val repository: HeritageRepository = DefaultHeritageRepository(),
+@HiltViewModel
+class ArticlesViewModel @Inject constructor(
+    private val repository: HeritageRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ArticlesUiState())
     val uiState: StateFlow<ArticlesUiState> = _uiState.asStateFlow()

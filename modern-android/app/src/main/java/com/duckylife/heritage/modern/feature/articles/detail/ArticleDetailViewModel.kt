@@ -2,17 +2,21 @@ package com.duckylife.heritage.modern.feature.articles.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ArticleDetailViewModel(
-    private val articleId: String,
-    private val repository: HeritageRepository = DefaultHeritageRepository(),
+@HiltViewModel(assistedFactory = ArticleDetailViewModel.Factory::class)
+class ArticleDetailViewModel @AssistedInject constructor(
+    @Assisted private val articleId: String,
+    private val repository: HeritageRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ArticleDetailUiState())
     val uiState: StateFlow<ArticleDetailUiState> = _uiState.asStateFlow()
@@ -40,5 +44,10 @@ class ArticleDetailViewModel(
                 }
             }
         }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(articleId: String): ArticleDetailViewModel
     }
 }

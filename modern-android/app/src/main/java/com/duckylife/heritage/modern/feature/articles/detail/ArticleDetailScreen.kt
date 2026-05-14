@@ -39,14 +39,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
-import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
-import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
@@ -61,11 +57,10 @@ fun ArticleDetailRoute(
     articleId: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    repository: HeritageRepository = DefaultHeritageRepository(),
 ) {
-    val viewModel: ArticleDetailViewModel = viewModel(
+    val viewModel: ArticleDetailViewModel = hiltViewModel<ArticleDetailViewModel, ArticleDetailViewModel.Factory>(
         key = "article-detail-$articleId",
-        factory = ArticleDetailViewModelFactory(articleId, repository),
+        creationCallback = { factory -> factory.create(articleId) },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ArticleDetailScreen(
@@ -361,16 +356,6 @@ private val ArticleCategory.label: String
         ArticleCategory.Forum -> "论坛"
         ArticleCategory.SpecialTopic -> "专题"
     }
-
-private class ArticleDetailViewModelFactory(
-    private val articleId: String,
-    private val repository: HeritageRepository,
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ArticleDetailViewModel(articleId, repository) as T
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
