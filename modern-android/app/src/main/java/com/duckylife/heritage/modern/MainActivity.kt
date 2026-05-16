@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
+import com.duckylife.heritage.modern.feature.directory.DirectoryRoute
 import com.duckylife.heritage.modern.feature.settings.SettingsScreen
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -115,9 +116,7 @@ private fun HeritageApp(
                     .padding(contentPadding),
             )
 
-            HomeDestination.Directory -> PlaceholderDestination(
-                title = stringResource(R.string.nav_directory),
-                description = stringResource(R.string.placeholder_directory_description),
+            HomeDestination.Directory -> DirectoryRoute(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

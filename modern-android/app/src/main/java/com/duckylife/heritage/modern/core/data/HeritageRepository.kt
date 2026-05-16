@@ -12,6 +12,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
@@ -26,6 +27,12 @@ data class ArticleDetailLookup(
     val sourceId: String? = null,
     val sourceUrl: String? = null,
     val category: ArticleCategory = ArticleCategory.News,
+)
+
+data class DirectoryDetailLookup(
+    val itemId: String? = null,
+    val sourceId: String? = null,
+    val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
 )
 
 interface HeritageRepository {
@@ -49,7 +56,15 @@ interface HeritageRepository {
         query: DirectoryItemQuery = DirectoryItemQuery(),
     ): PagedResult<DirectoryItemSummaryDto>
 
+    fun pagedDirectoryItems(query: DirectoryItemQuery = DirectoryItemQuery()): Flow<PagingData<DirectoryItemSummaryDto>>
+
     suspend fun directoryItem(id: String): DirectoryItemDetailDto
+
+    suspend fun directoryItemBySourceId(sourceId: String, kind: DirectoryItemKind): DirectoryItemDetailDto
+
+    fun cachedDirectoryDetail(lookup: DirectoryDetailLookup): Flow<DirectoryItemDetailDto?>
+
+    suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup): DirectoryItemDetailDto
 
     suspend fun inheritors(query: InheritorQuery = InheritorQuery()): PagedResult<InheritorSummaryDto>
 
@@ -58,6 +73,7 @@ interface HeritageRepository {
 
 class DefaultHeritageRepository @Inject constructor(
     private val articlePagingRepository: ArticlePagingRepository,
+    private val directoryPagingRepository: DirectoryPagingRepository,
     private val apiClient: HeritageApiClient,
     private val database: HeritageDatabase,
 ) : HeritageRepository {
@@ -140,8 +156,57 @@ class DefaultHeritageRepository @Inject constructor(
     ): PagedResult<DirectoryItemSummaryDto> =
         apiClient.getDirectoryItems(query)
 
+    override fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> =
+        directoryPagingRepository.pagedDirectoryItems(query)
+
     override suspend fun directoryItem(id: String): DirectoryItemDetailDto =
-        apiClient.getDirectoryItem(id)
+        refreshDirectoryDetail(DirectoryDetailLookup(itemId = id))
+
+    override suspend fun directoryItemBySourceId(
+        sourceId: String,
+        kind: DirectoryItemKind,
+    ): DirectoryItemDetailDto =
+        refreshDirectoryDetail(
+            DirectoryDetailLookup(
+                sourceId = sourceId,
+                kind = kind,
+            ),
+        )
+
+    override fun cachedDirectoryDetail(lookup: DirectoryDetailLookup): Flow<DirectoryItemDetailDto?> {
+        val detailDao = database.directoryDetailDao()
+        val cachedDirectory = when {
+            !lookup.itemId.isNullOrBlank() -> detailDao.observeById(lookup.itemId)
+            !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(
+                sourceId = lookup.sourceId,
+                kind = lookup.kind.wireName,
+            )
+
+            else -> error("Missing directory lookup key")
+        }
+        return cachedDirectory.map { it?.toDto() }
+    }
+
+    override suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup): DirectoryItemDetailDto {
+        val detail = when {
+            !lookup.itemId.isNullOrBlank() -> apiClient.getDirectoryItem(lookup.itemId)
+            !lookup.sourceId.isNullOrBlank() -> apiClient.getDirectoryItemBySourceId(
+                sourceId = lookup.sourceId,
+                kind = lookup.kind,
+            )
+
+            else -> error("Missing directory lookup key")
+        }
+
+        database.directoryDetailDao().upsert(
+            detail.toEntity(
+                kind = detail.kind,
+                sourceId = lookup.sourceId,
+                updatedAtEpochMillis = System.currentTimeMillis(),
+            ),
+        )
+        return detail
+    }
 
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         apiClient.getInheritors(query)

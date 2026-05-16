@@ -8,6 +8,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
@@ -19,15 +20,21 @@ import kotlinx.coroutines.flow.flowOf
 class FakeHeritageRepository(
     private val banners: List<HomeBannerDto> = emptyList(),
     private val articles: List<ArticleSummaryDto> = emptyList(),
+    private val directoryItems: List<DirectoryItemSummaryDto> = emptyList(),
     private val articleDetails: Map<String, ArticleDetailDto> = emptyMap(),
     private val articleDetailsBySourceId: Map<String, ArticleDetailDto> = emptyMap(),
     private val articleDetailsBySourceUrl: Map<String, ArticleDetailDto> = emptyMap(),
     private val cachedArticleDetails: Map<ArticleDetailLookup, ArticleDetailDto?> = emptyMap(),
+    private val directoryDetails: Map<String, DirectoryItemDetailDto> = emptyMap(),
+    private val directoryDetailsBySourceId: Map<String, DirectoryItemDetailDto> = emptyMap(),
+    private val cachedDirectoryDetails: Map<DirectoryDetailLookup, DirectoryItemDetailDto?> = emptyMap(),
     private val failure: Throwable? = null,
 ) : HeritageRepository {
     val pagedArticleQueries = mutableListOf<ArticleQuery>()
+    val pagedDirectoryItemQueries = mutableListOf<DirectoryItemQuery>()
     val articleSourceIdQueries = mutableListOf<Pair<String, ArticleCategory>>()
     val articleSourceUrlQueries = mutableListOf<Pair<String, ArticleCategory>>()
+    val directorySourceIdQueries = mutableListOf<Pair<String, DirectoryItemKind>>()
 
     override suspend fun homeBanners(): List<HomeBannerDto> {
         failure?.let { throw it }
@@ -84,11 +91,43 @@ class FakeHeritageRepository(
 
     override suspend fun directoryItems(
         query: DirectoryItemQuery,
-    ): PagedResult<DirectoryItemSummaryDto> =
-        throw UnsupportedOperationException()
+    ): PagedResult<DirectoryItemSummaryDto> {
+        failure?.let { throw it }
+        return PagedResult(
+            items = directoryItems,
+            page = query.page,
+            pageSize = query.pageSize,
+        )
+    }
 
-    override suspend fun directoryItem(id: String): DirectoryItemDetailDto =
-        throw UnsupportedOperationException()
+    override fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> {
+        pagedDirectoryItemQueries.add(query)
+        return flowOf(PagingData.from(directoryItems))
+    }
+
+    override suspend fun directoryItem(id: String): DirectoryItemDetailDto {
+        failure?.let { throw it }
+        return directoryDetails[id] ?: error("Missing directory detail for $id")
+    }
+
+    override suspend fun directoryItemBySourceId(
+        sourceId: String,
+        kind: DirectoryItemKind,
+    ): DirectoryItemDetailDto {
+        failure?.let { throw it }
+        directorySourceIdQueries.add(sourceId to kind)
+        return directoryDetailsBySourceId[sourceId] ?: error("Missing directory detail for source id $sourceId")
+    }
+
+    override fun cachedDirectoryDetail(lookup: DirectoryDetailLookup): Flow<DirectoryItemDetailDto?> =
+        flowOf(cachedDirectoryDetails[lookup])
+
+    override suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup): DirectoryItemDetailDto =
+        when {
+            !lookup.itemId.isNullOrBlank() -> directoryItem(lookup.itemId)
+            !lookup.sourceId.isNullOrBlank() -> directoryItemBySourceId(lookup.sourceId, lookup.kind)
+            else -> error("Missing directory lookup key")
+        }
 
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         throw UnsupportedOperationException()
