@@ -21,70 +21,111 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.duckylife.heritage.modern.core.settings.AppThemeMode
+import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
+import com.duckylife.heritage.modern.feature.settings.SettingsScreen
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var themeSettingsRepository: ThemeSettingsRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HeritageTheme {
-                HeritageApp()
+            val themeMode by themeSettingsRepository.themeMode.collectAsStateWithLifecycle(
+                initialValue = AppThemeMode.System,
+            )
+            val coroutineScope = rememberCoroutineScope()
+            HeritageTheme(themeMode = themeMode) {
+                HeritageApp(
+                    themeMode = themeMode,
+                    onThemeModeSelected = { selectedThemeMode ->
+                        coroutineScope.launch {
+                            themeSettingsRepository.setThemeMode(selectedThemeMode)
+                        }
+                    },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun HeritageApp() {
+private fun HeritageApp(
+    themeMode: AppThemeMode,
+    onThemeModeSelected: (AppThemeMode) -> Unit,
+) {
     var selectedDestination by remember { mutableStateOf(HomeDestination.Articles) }
+    var showSettings by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
             NavigationBar {
                 HomeDestination.entries.forEach { destination ->
+                    val label = stringResource(destination.labelRes)
                     NavigationBarItem(
                         selected = destination == selectedDestination,
                         onClick = { selectedDestination = destination },
                         icon = {
                             Icon(
                                 imageVector = destination.icon,
-                                contentDescription = destination.label,
+                                contentDescription = label,
                             )
                         },
-                        label = { Text(destination.label) },
+                        label = { Text(label) },
                     )
                 }
             }
         },
     ) { contentPadding ->
+        if (showSettings) {
+            SettingsScreen(
+                themeMode = themeMode,
+                onThemeModeSelected = onThemeModeSelected,
+                onBack = { showSettings = false },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+            )
+            return@Scaffold
+        }
+
         when (selectedDestination) {
             HomeDestination.Articles -> ArticlesNavHost(
+                onSettingsSelected = { showSettings = true },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
             )
 
             HomeDestination.Directory -> PlaceholderDestination(
-                title = "名录",
-                description = "下一条切片会接入非遗项目名录。",
+                title = stringResource(R.string.nav_directory),
+                description = stringResource(R.string.placeholder_directory_description),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
             )
 
             HomeDestination.Inheritors -> PlaceholderDestination(
-                title = "传承人",
-                description = "传承人列表会在项目名录之后接入。",
+                title = stringResource(R.string.nav_inheritors),
+                description = stringResource(R.string.placeholder_inheritors_description),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -118,18 +159,21 @@ private fun PlaceholderDestination(
 }
 
 private enum class HomeDestination(
-    val label: String,
+    @param:StringRes val labelRes: Int,
     val icon: ImageVector,
 ) {
-    Articles("文章", Icons.AutoMirrored.Outlined.Article),
-    Directory("名录", Icons.Outlined.CollectionsBookmark),
-    Inheritors("传承人", Icons.Outlined.Groups),
+    Articles(R.string.nav_articles, Icons.AutoMirrored.Outlined.Article),
+    Directory(R.string.nav_directory, Icons.Outlined.CollectionsBookmark),
+    Inheritors(R.string.nav_inheritors, Icons.Outlined.Groups),
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HeritageAppPreview() {
     HeritageTheme {
-        HeritageApp()
+        HeritageApp(
+            themeMode = AppThemeMode.System,
+            onThemeModeSelected = {},
+        )
     }
 }

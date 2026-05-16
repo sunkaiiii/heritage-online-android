@@ -10,6 +10,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.duckylife.heritage.modern.core.settings.AppThemeMode
 
 private val LightColors = lightColorScheme(
     primary = Color(0xFF9B3D39),
@@ -25,9 +26,15 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun HeritageTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: AppThemeMode = AppThemeMode.System,
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = when (themeMode) {
+        AppThemeMode.System -> isSystemInDarkTheme()
+        AppThemeMode.Light -> false
+        AppThemeMode.Dark -> true
+    }
+
     val colorScheme = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && darkTheme ->
             dynamicDarkColorScheme(LocalContext.current)

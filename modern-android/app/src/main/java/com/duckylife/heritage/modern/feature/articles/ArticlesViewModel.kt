@@ -64,7 +64,7 @@ class ArticlesViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingBanners = false,
-                        bannerErrorMessage = throwable.message ?: "Banner 加载失败",
+                        bannerErrorMessage = throwable.message.orEmpty(),
                     )
                 }
             }

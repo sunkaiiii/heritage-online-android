@@ -1,10 +1,14 @@
 package com.duckylife.heritage.modern.core.data
 
 import androidx.paging.PagingData
+import com.duckylife.heritage.modern.core.database.HeritageDatabase
+import com.duckylife.heritage.modern.core.database.mapper.toDto
+import com.duckylife.heritage.modern.core.database.mapper.toEntity
 import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.HeritageApiClient
 import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
@@ -14,7 +18,15 @@ import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+
+data class ArticleDetailLookup(
+    val articleId: String? = null,
+    val sourceId: String? = null,
+    val sourceUrl: String? = null,
+    val category: ArticleCategory = ArticleCategory.News,
+)
 
 interface HeritageRepository {
     suspend fun homeBanners(): List<HomeBannerDto>
@@ -24,6 +36,14 @@ interface HeritageRepository {
     fun pagedArticles(query: ArticleQuery = ArticleQuery()): Flow<PagingData<ArticleSummaryDto>>
 
     suspend fun article(id: String): ArticleDetailDto
+
+    suspend fun articleBySourceId(sourceId: String, category: ArticleCategory): ArticleDetailDto
+
+    suspend fun articleBySourceUrl(sourceUrl: String, category: ArticleCategory): ArticleDetailDto
+
+    fun cachedArticleDetail(lookup: ArticleDetailLookup): Flow<ArticleDetailDto?>
+
+    suspend fun refreshArticleDetail(lookup: ArticleDetailLookup): ArticleDetailDto
 
     suspend fun directoryItems(
         query: DirectoryItemQuery = DirectoryItemQuery(),
@@ -39,6 +59,7 @@ interface HeritageRepository {
 class DefaultHeritageRepository @Inject constructor(
     private val articlePagingRepository: ArticlePagingRepository,
     private val apiClient: HeritageApiClient,
+    private val database: HeritageDatabase,
 ) : HeritageRepository {
     override suspend fun homeBanners(): List<HomeBannerDto> =
         apiClient.getHomeBanners()
@@ -50,7 +71,69 @@ class DefaultHeritageRepository @Inject constructor(
         articlePagingRepository.pagedArticles(query)
 
     override suspend fun article(id: String): ArticleDetailDto =
-        apiClient.getArticle(id)
+        refreshArticleDetail(ArticleDetailLookup(articleId = id))
+
+    override suspend fun articleBySourceId(sourceId: String, category: ArticleCategory): ArticleDetailDto =
+        refreshArticleDetail(
+            ArticleDetailLookup(
+                sourceId = sourceId,
+                category = category,
+            ),
+        )
+
+    override suspend fun articleBySourceUrl(sourceUrl: String, category: ArticleCategory): ArticleDetailDto =
+        refreshArticleDetail(
+            ArticleDetailLookup(
+                sourceUrl = sourceUrl,
+                category = category,
+            ),
+        )
+
+    override fun cachedArticleDetail(lookup: ArticleDetailLookup): Flow<ArticleDetailDto?> {
+        val detailDao = database.articleDetailDao()
+        val cachedArticle = when {
+            !lookup.articleId.isNullOrBlank() -> detailDao.observeById(lookup.articleId)
+            !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(
+                sourceId = lookup.sourceId,
+                category = lookup.category.wireName,
+            )
+
+            !lookup.sourceUrl.isNullOrBlank() -> detailDao.observeBySourceUrl(
+                sourceUrl = lookup.sourceUrl,
+                category = lookup.category.wireName,
+            )
+
+            else -> error("Missing article lookup key")
+        }
+        return cachedArticle.map { it?.toDto() }
+    }
+
+    override suspend fun refreshArticleDetail(lookup: ArticleDetailLookup): ArticleDetailDto {
+        val article = when {
+            !lookup.articleId.isNullOrBlank() -> apiClient.getArticle(lookup.articleId)
+            !lookup.sourceId.isNullOrBlank() -> apiClient.getArticleBySourceId(
+                sourceId = lookup.sourceId,
+                category = lookup.category,
+            )
+
+            !lookup.sourceUrl.isNullOrBlank() -> apiClient.getArticleBySourceUrl(
+                sourceUrl = lookup.sourceUrl,
+                category = lookup.category,
+            )
+
+            else -> error("Missing article lookup key")
+        }
+
+        database.articleDetailDao().upsert(
+            article.toEntity(
+                category = article.category,
+                sourceId = lookup.sourceId,
+                sourceUrl = lookup.sourceUrl,
+                updatedAtEpochMillis = System.currentTimeMillis(),
+            ),
+        )
+        return article
+    }
 
     override suspend fun directoryItems(
         query: DirectoryItemQuery,

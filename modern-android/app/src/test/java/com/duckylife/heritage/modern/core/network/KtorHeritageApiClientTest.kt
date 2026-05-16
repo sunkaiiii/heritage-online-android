@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.core.network
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
+import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -116,5 +117,155 @@ class KtorHeritageApiClientTest {
 
         val request = requireNotNull(capturedRequest)
         assertEquals("news", request.url.parameters["category"])
+    }
+
+    @Test
+    fun getArticleDecodesDetailContentBlocksAndReferences() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "article-1",
+                      "category": "news",
+                      "title": "非遗新闻详情",
+                      "summary": "详情摘要",
+                      "publishedAt": "2026-04-22T14:30:00Z",
+                      "sourceName": "测试来源",
+                      "author": "作者",
+                      "editor": "编辑",
+                      "sourceUrl": "https://example.test/source",
+                      "coverImage": {
+                        "displayUrl": "https://example.test/cover.jpg"
+                      },
+                      "contentBlocks": [
+                        {
+                          "type": "text",
+                          "text": "正文第一段",
+                          "image": null
+                        },
+                        {
+                          "type": "image",
+                          "text": null,
+                          "image": {
+                            "displayUrl": "https://example.test/body.jpg"
+                          }
+                        }
+                      ],
+                      "relatedArticles": [
+                        {
+                          "title": "相关新闻",
+                          "detailUrl": "https://example.test/related",
+                          "sourceId": "31566",
+                          "publishedAt": "2026-04-21T14:30:00Z"
+                        }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(HeritageJson)
+            }
+        }
+        val api = KtorHeritageApiClient(
+            httpClient = client,
+            baseUrl = "https://example.test",
+        )
+
+        val article = api.getArticle("article-1")
+
+        assertEquals("article-1", article.id)
+        assertEquals("非遗新闻详情", article.title)
+        assertEquals("测试来源", article.sourceName)
+        assertEquals("https://example.test/source", article.sourceUrl)
+        assertEquals(2, article.contentBlocks.size)
+        assertEquals(ArticleContentBlockType.Text, article.contentBlocks.first().type)
+        assertEquals("正文第一段", article.contentBlocks.first().text)
+        assertEquals(ArticleContentBlockType.Image, article.contentBlocks[1].type)
+        assertEquals("https://example.test/body.jpg", article.contentBlocks[1].image?.displayUrl)
+        assertEquals("相关新闻", article.relatedArticles.single().title)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/articles/article-1", request.url.encodedPath)
+    }
+
+    @Test
+    fun getArticleBySourceIdSendsCategory() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "article-1",
+                      "category": "forum",
+                      "title": "论坛文章"
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(HeritageJson)
+            }
+        }
+        val api = KtorHeritageApiClient(
+            httpClient = client,
+            baseUrl = "https://example.test",
+        )
+
+        val article = api.getArticleBySourceId(
+            sourceId = "31566",
+            category = ArticleCategory.Forum,
+        )
+
+        assertEquals("论坛文章", article.title)
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/articles/source/31566", request.url.encodedPath)
+        assertEquals("forum", request.url.parameters["category"])
+    }
+
+    @Test
+    fun getArticleBySourceUrlSendsCategoryAndSourceUrl() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val sourceUrl = "http://www.ihchina.cn/news2_details/31566.html"
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "article-1",
+                      "category": "specialTopic",
+                      "title": "专题文章"
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(HeritageJson)
+            }
+        }
+        val api = KtorHeritageApiClient(
+            httpClient = client,
+            baseUrl = "https://example.test",
+        )
+
+        val article = api.getArticleBySourceUrl(
+            sourceUrl = sourceUrl,
+            category = ArticleCategory.SpecialTopic,
+        )
+
+        assertEquals("专题文章", article.title)
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/articles/source", request.url.encodedPath)
+        assertEquals("specialTopic", request.url.parameters["category"])
+        assertEquals(sourceUrl, request.url.parameters["sourceUrl"])
     }
 }

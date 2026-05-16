@@ -22,5 +22,7 @@ object DatabaseModule {
             context,
             HeritageDatabase::class.java,
             "heritage-modern.db",
-        ).build()
+        )
+            .fallbackToDestructiveMigration(true)
+            .build()
 }

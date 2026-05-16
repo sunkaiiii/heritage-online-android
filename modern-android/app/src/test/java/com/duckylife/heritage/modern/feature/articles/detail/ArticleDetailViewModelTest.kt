@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.articles.detail
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
+import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
@@ -22,6 +23,9 @@ class ArticleDetailViewModelTest {
     fun refreshLoadsArticleDetail() = runTest {
         val viewModel = ArticleDetailViewModel(
             articleId = "article-1",
+            sourceId = null,
+            sourceUrl = null,
+            category = ArticleCategory.News,
             repository = FakeHeritageRepository(
                 articleDetails = mapOf(
                     "article-1" to ArticleDetailDto(
@@ -46,6 +50,9 @@ class ArticleDetailViewModelTest {
     fun refreshPublishesErrorStateWhenRepositoryFails() = runTest {
         val viewModel = ArticleDetailViewModel(
             articleId = "article-1",
+            sourceId = null,
+            sourceUrl = null,
+            category = ArticleCategory.News,
             repository = FakeHeritageRepository(
                 failure = IllegalStateException("detail unavailable"),
             ),
@@ -56,5 +63,84 @@ class ArticleDetailViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
         assertEquals("detail unavailable", state.errorMessage)
+    }
+
+    @Test
+    fun refreshLoadsArticleDetailBySourceId() = runTest {
+        val repository = FakeHeritageRepository(
+            articleDetailsBySourceId = mapOf(
+                "31566" to ArticleDetailDto(
+                    id = "article-2",
+                    category = ArticleCategory.News,
+                    title = "相关新闻",
+                ),
+            ),
+        )
+        val viewModel = ArticleDetailViewModel(
+            articleId = null,
+            sourceId = "31566",
+            sourceUrl = null,
+            category = ArticleCategory.News,
+            repository = repository,
+        )
+
+        advanceUntilIdle()
+
+        assertEquals("article-2", viewModel.uiState.value.article?.id)
+        assertEquals(listOf("31566" to ArticleCategory.News), repository.articleSourceIdQueries)
+    }
+
+    @Test
+    fun refreshLoadsArticleDetailBySourceUrl() = runTest {
+        val sourceUrl = "http://www.ihchina.cn/news2_details/31566.html"
+        val repository = FakeHeritageRepository(
+            articleDetailsBySourceUrl = mapOf(
+                sourceUrl to ArticleDetailDto(
+                    id = "article-3",
+                    category = ArticleCategory.News,
+                    title = "相关新闻 URL",
+                ),
+            ),
+        )
+        val viewModel = ArticleDetailViewModel(
+            articleId = null,
+            sourceId = null,
+            sourceUrl = sourceUrl,
+            category = ArticleCategory.News,
+            repository = repository,
+        )
+
+        advanceUntilIdle()
+
+        assertEquals("article-3", viewModel.uiState.value.article?.id)
+        assertEquals(listOf(sourceUrl to ArticleCategory.News), repository.articleSourceUrlQueries)
+    }
+
+    @Test
+    fun showsCachedArticleWhenRefreshFails() = runTest {
+        val lookup = ArticleDetailLookup(articleId = "article-1")
+        val viewModel = ArticleDetailViewModel(
+            articleId = "article-1",
+            sourceId = null,
+            sourceUrl = null,
+            category = ArticleCategory.News,
+            repository = FakeHeritageRepository(
+                cachedArticleDetails = mapOf(
+                    lookup to ArticleDetailDto(
+                        id = "article-1",
+                        category = ArticleCategory.News,
+                        title = "缓存详情",
+                    ),
+                ),
+                failure = IllegalStateException("network down"),
+            ),
+        )
+
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.isLoading)
+        assertNull(state.errorMessage)
+        assertEquals("缓存详情", state.article?.title)
     }
 }

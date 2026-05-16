@@ -1,12 +1,14 @@
 package com.duckylife.heritage.modern.feature.articles.detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,21 +31,31 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.annotation.StringRes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
@@ -51,22 +64,35 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun ArticleDetailRoute(
-    articleId: String,
+    articleId: String?,
+    sourceId: String?,
+    sourceUrl: String?,
+    category: ArticleCategory,
     onBack: () -> Unit,
+    onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: ArticleDetailViewModel = hiltViewModel<ArticleDetailViewModel, ArticleDetailViewModel.Factory>(
-        key = "article-detail-$articleId",
-        creationCallback = { factory -> factory.create(articleId) },
+        key = "article-detail-${articleId.orEmpty()}-${sourceId.orEmpty()}-${sourceUrl.orEmpty()}-${category.wireName}",
+        creationCallback = { factory ->
+            factory.create(
+                articleId = articleId,
+                sourceId = sourceId,
+                sourceUrl = sourceUrl,
+                category = category,
+            )
+        },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ArticleDetailScreen(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
+        onRelatedArticleSelected = onRelatedArticleSelected,
         modifier = modifier,
     )
 }
@@ -77,19 +103,27 @@ fun ArticleDetailScreen(
     uiState: ArticleDetailUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
+    val uriHandler = LocalUriHandler.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
-                title = { Text("文章详情") },
+                title = { Text(stringResource(R.string.article_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(R.string.action_back),
                         )
                     }
                 },
@@ -97,7 +131,7 @@ fun ArticleDetailScreen(
                     IconButton(onClick = onRetry) {
                         Icon(
                             imageVector = Icons.Outlined.Refresh,
-                            contentDescription = "刷新",
+                            contentDescription = stringResource(R.string.action_refresh),
                         )
                     }
                 },
@@ -112,7 +146,9 @@ fun ArticleDetailScreen(
             )
 
             uiState.errorMessage != null -> ErrorDetailContent(
-                message = uiState.errorMessage,
+                message = uiState.errorMessage
+                    .takeUnless { it.isBlank() }
+                    ?: stringResource(R.string.article_detail_load_failed),
                 onRetry = onRetry,
                 modifier = Modifier
                     .fillMaxSize()
@@ -122,6 +158,16 @@ fun ArticleDetailScreen(
             uiState.article != null -> ArticleDetailContent(
                 article = uiState.article,
                 imageLoader = imageLoader,
+                onOpenSource = { sourceUrl ->
+                    runCatching {
+                        uriHandler.openUri(sourceUrl)
+                    }.onFailure {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+                        }
+                    }
+                },
+                onRelatedArticleSelected = onRelatedArticleSelected,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -134,8 +180,11 @@ fun ArticleDetailScreen(
 private fun ArticleDetailContent(
     article: ArticleDetailDto,
     imageLoader: ImageLoader,
+    onOpenSource: (String) -> Unit,
+    onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val unnamedArticle = stringResource(R.string.unnamed_article)
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
@@ -144,12 +193,12 @@ private fun ArticleDetailContent(
         item {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    text = article.category.label,
+                    text = stringResource(article.category.labelRes),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = article.title.orEmpty().ifBlank { "未命名文章" },
+                    text = article.title.orEmpty().ifBlank { unnamedArticle },
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -161,6 +210,17 @@ private fun ArticleDetailContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+                if (!article.sourceUrl.isNullOrBlank()) {
+                    TextButton(onClick = { onOpenSource(article.sourceUrl) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.size(6.dp))
+                        Text(stringResource(R.string.action_view_source))
+                    }
+                }
             }
         }
 
@@ -169,9 +229,10 @@ private fun ArticleDetailContent(
                 DetailImage(
                     image = coverImage,
                     imageLoader = imageLoader,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(210.dp)
+                        .aspectRatio(16f / 9f)
                         .clip(RoundedCornerShape(8.dp)),
                 )
             }
@@ -194,19 +255,34 @@ private fun ArticleDetailContent(
             )
         }
 
+        if (article.contentBlocks.isEmpty() && article.summary.isNullOrBlank()) {
+            item {
+                Text(
+                    text = stringResource(R.string.article_body_empty),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+
         if (article.relatedArticles.isNotEmpty()) {
             item {
                 HorizontalDivider()
             }
             item {
                 Text(
-                    text = "相关新闻",
+                    text = stringResource(R.string.related_articles_title),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                 )
             }
             items(article.relatedArticles) { reference ->
-                RelatedArticleRow(reference)
+                RelatedArticleRow(
+                    reference = reference,
+                    onClick = {
+                        onRelatedArticleSelected(reference, article.category)
+                    },
+                )
             }
         }
     }
@@ -228,10 +304,19 @@ private fun ContentBlock(
 
         ArticleContentBlockType.Text -> {
             if (!block.text.isNullOrBlank()) {
-                Text(
-                    text = block.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                if (isStandaloneSectionTitle(block.text)) {
+                    Text(
+                        text = block.text.trim(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                } else {
+                    Text(
+                        text = block.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        lineHeight = 28.sp,
+                    )
+                }
             }
         }
 
@@ -239,9 +324,10 @@ private fun ContentBlock(
             DetailImage(
                 image = block.image,
                 imageLoader = imageLoader,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .aspectRatio(4f / 3f)
                     .clip(RoundedCornerShape(8.dp)),
             )
         }
@@ -252,6 +338,7 @@ private fun ContentBlock(
 private fun DetailImage(
     image: MediaAssetDto?,
     imageLoader: ImageLoader,
+    contentScale: ContentScale,
     modifier: Modifier = Modifier,
 ) {
     val imageUrl = image?.displayUrl ?: image?.thumbnailUrl ?: image?.originalUrl ?: image?.sourceUrl
@@ -261,7 +348,7 @@ private fun DetailImage(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "E迹",
+                text = stringResource(R.string.brand_fallback),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -271,15 +358,24 @@ private fun DetailImage(
             model = imageUrl,
             contentDescription = image?.altText,
             imageLoader = imageLoader,
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
+            modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),
+            contentScale = contentScale,
         )
     }
 }
 
 @Composable
-private fun RelatedArticleRow(reference: ArticleReferenceDto) {
+private fun RelatedArticleRow(
+    reference: ArticleReferenceDto,
+    onClick: () -> Unit,
+) {
+    val unnamedArticle = stringResource(R.string.unnamed_article)
+    val canOpen = !reference.sourceId.isNullOrBlank() || !reference.detailUrl.isNullOrBlank()
     Card(
+        modifier = Modifier.clickable(
+            enabled = canOpen,
+            onClick = onClick,
+        ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
@@ -288,13 +384,14 @@ private fun RelatedArticleRow(reference: ArticleReferenceDto) {
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = reference.title.orEmpty().ifBlank { "未命名文章" },
+                text = reference.title.orEmpty().ifBlank { unnamedArticle },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
-            if (!reference.publishedAt.isNullOrBlank()) {
+            val publishedAt = formatArticleDate(reference.publishedAt)
+            if (!publishedAt.isNullOrBlank()) {
                 Text(
-                    text = reference.publishedAt,
+                    text = publishedAt,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -325,7 +422,7 @@ private fun ErrorDetailContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "加载失败",
+            text = stringResource(R.string.content_load_failed),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
         )
@@ -337,24 +434,26 @@ private fun ErrorDetailContent(
         )
         Spacer(modifier = Modifier.height(18.dp))
         Button(onClick = onRetry) {
-            Text("重试")
+            Text(stringResource(R.string.action_retry))
         }
     }
 }
 
+@Composable
 private fun ArticleDetailDto.metaText(): String =
     listOfNotNull(
-        publishedAt?.takeIf { it.isNotBlank() },
+        formatArticleDate(publishedAt),
         sourceName?.takeIf { it.isNotBlank() },
-        author?.takeIf { it.isNotBlank() }?.let { "作者：$it" },
-        editor?.takeIf { it.isNotBlank() }?.let { "编辑：$it" },
+        author?.takeIf { it.isNotBlank() }?.let { stringResource(R.string.article_author_format, it) },
+        editor?.takeIf { it.isNotBlank() }?.let { stringResource(R.string.article_editor_format, it) },
     ).joinToString(" · ")
 
-private val ArticleCategory.label: String
+@get:StringRes
+private val ArticleCategory.labelRes: Int
     get() = when (this) {
-        ArticleCategory.News -> "新闻"
-        ArticleCategory.Forum -> "论坛"
-        ArticleCategory.SpecialTopic -> "专题"
+        ArticleCategory.News -> R.string.category_news
+        ArticleCategory.Forum -> R.string.category_forum
+        ArticleCategory.SpecialTopic -> R.string.category_special_topic
     }
 
 @Preview(showBackground = true)
@@ -386,6 +485,7 @@ private fun ArticleDetailScreenPreview() {
             ),
             onBack = {},
             onRetry = {},
+            onRelatedArticleSelected = { _, _ -> },
         )
     }
 }

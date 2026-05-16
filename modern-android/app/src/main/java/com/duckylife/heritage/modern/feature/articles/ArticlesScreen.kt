@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.annotation.StringRes
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
@@ -47,6 +50,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
@@ -56,6 +60,7 @@ import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun ArticlesRoute(
+    onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ArticlesViewModel = hiltViewModel(),
@@ -67,6 +72,7 @@ fun ArticlesRoute(
         articles = articles,
         onRefreshBanners = viewModel::refreshBanners,
         onCategorySelected = viewModel::selectCategory,
+        onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         modifier = modifier,
     )
@@ -78,6 +84,7 @@ fun ArticlesScreen(
     articles: LazyPagingItems<ArticleSummaryDto>,
     onRefreshBanners: () -> Unit,
     onCategorySelected: (ArticleCategory) -> Unit,
+    onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -87,6 +94,7 @@ fun ArticlesScreen(
         articles = articles,
         onRefreshBanners = onRefreshBanners,
         onCategorySelected = onCategorySelected,
+        onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         imageLoader = imageLoader,
         modifier = modifier,
@@ -99,6 +107,7 @@ private fun ArticlesContent(
     articles: LazyPagingItems<ArticleSummaryDto>,
     onRefreshBanners: () -> Unit,
     onCategorySelected: (ArticleCategory) -> Unit,
+    onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
@@ -110,6 +119,7 @@ private fun ArticlesContent(
     ) {
         item {
             ArticlesHeader(
+                onSettingsSelected = onSettingsSelected,
                 onRetry = {
                     onRefreshBanners()
                     articles.refresh()
@@ -127,7 +137,9 @@ private fun ArticlesContent(
                 uiState.isLoadingBanners -> BannerLoadingStrip()
 
                 uiState.bannerErrorMessage != null -> InlineRetryMessage(
-                    message = uiState.bannerErrorMessage,
+                    message = uiState.bannerErrorMessage
+                        .takeUnless { it.isBlank() }
+                        ?: stringResource(R.string.banner_load_failed),
                     onRetry = onRefreshBanners,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
@@ -136,7 +148,7 @@ private fun ArticlesContent(
 
         item {
             Text(
-                text = "最新文章",
+                text = stringResource(R.string.articles_latest_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(horizontal = 20.dp),
@@ -162,7 +174,7 @@ private fun ArticlesContent(
 
             is LoadState.Error -> item {
                 ErrorContent(
-                    message = refreshState.error.message ?: "文章加载失败",
+                    message = refreshState.error.message ?: stringResource(R.string.article_load_failed),
                     onRetry = articles::retry,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -213,7 +225,7 @@ private fun ArticlesContent(
 
             is LoadState.Error -> item {
                 InlineRetryMessage(
-                    message = appendState.error.message ?: "加载更多失败",
+                    message = appendState.error.message ?: stringResource(R.string.article_append_failed),
                     onRetry = articles::retry,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
@@ -239,14 +251,17 @@ private fun ArticleCategoryTabs(
             Tab(
                 selected = category == selectedCategory,
                 onClick = { onCategorySelected(category) },
-                text = { Text(category.label) },
+                text = { Text(stringResource(category.labelRes)) },
             )
         }
     }
 }
 
 @Composable
-private fun ArticlesHeader(onRetry: () -> Unit) {
+private fun ArticlesHeader(
+    onSettingsSelected: () -> Unit,
+    onRetry: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -256,21 +271,29 @@ private fun ArticlesHeader(onRetry: () -> Unit) {
     ) {
         Column {
             Text(
-                text = "E迹",
+                text = stringResource(R.string.articles_header_title),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "非遗新闻、论坛与专题",
+                text = stringResource(R.string.articles_header_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        IconButton(onClick = onRetry) {
-            Icon(
-                imageVector = Icons.Outlined.Refresh,
-                contentDescription = "刷新",
-            )
+        Row {
+            IconButton(onClick = onSettingsSelected) {
+                Icon(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = stringResource(R.string.nav_settings),
+                )
+            }
+            IconButton(onClick = onRetry) {
+                Icon(
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = stringResource(R.string.action_refresh),
+                )
+            }
         }
     }
 }
@@ -355,7 +378,7 @@ private fun InlineRetryMessage(
                 modifier = Modifier.weight(1f),
             )
             Button(onClick = onRetry) {
-                Text("重试")
+                Text(stringResource(R.string.action_retry))
             }
         }
     }
@@ -369,6 +392,7 @@ private fun ArticleRow(
     modifier: Modifier = Modifier,
 ) {
     val articleId = article.id
+    val unnamedArticle = stringResource(R.string.unnamed_article)
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -396,12 +420,12 @@ private fun ArticleRow(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = article.category.label,
+                    text = stringResource(article.category.labelRes),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = article.title.orEmpty().ifBlank { "未命名文章" },
+                    text = article.title.orEmpty().ifBlank { unnamedArticle },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
@@ -433,7 +457,7 @@ private fun ImageOrFallback(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "E迹",
+                text = stringResource(R.string.brand_fallback),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -466,9 +490,9 @@ private fun ErrorContent(
     modifier: Modifier = Modifier,
 ) {
     StatusContent(
-        title = "加载失败",
+        title = stringResource(R.string.content_load_failed),
         message = message,
-        actionLabel = "重试",
+        actionLabel = stringResource(R.string.action_retry),
         onAction = onRetry,
         modifier = modifier,
     )
@@ -480,9 +504,9 @@ private fun EmptyContent(
     modifier: Modifier = Modifier,
 ) {
     StatusContent(
-        title = "暂无内容",
-        message = "后端暂时没有返回首页内容。",
-        actionLabel = "刷新",
+        title = stringResource(R.string.content_empty_title),
+        message = stringResource(R.string.home_empty_message),
+        actionLabel = stringResource(R.string.action_refresh),
         onAction = onRetry,
         modifier = modifier,
     )
@@ -521,11 +545,12 @@ private fun StatusContent(
     }
 }
 
-private val ArticleCategory.label: String
+@get:StringRes
+private val ArticleCategory.labelRes: Int
     get() = when (this) {
-        ArticleCategory.News -> "新闻"
-        ArticleCategory.Forum -> "论坛"
-        ArticleCategory.SpecialTopic -> "专题"
+        ArticleCategory.News -> R.string.category_news
+        ArticleCategory.Forum -> R.string.category_forum
+        ArticleCategory.SpecialTopic -> R.string.category_special_topic
     }
 
 @Preview(showBackground = true)

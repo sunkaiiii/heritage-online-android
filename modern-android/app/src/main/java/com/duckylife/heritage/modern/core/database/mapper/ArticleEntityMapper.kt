@@ -45,5 +45,5 @@ fun ArticleEntity.toDto(): ArticleSummaryDto =
         sourceUrl = sourceUrl,
     )
 
-private inline fun <reified T> String.decodeJsonOrNull(json: Json): T? =
+inline fun <reified T> String.decodeJsonOrNull(json: Json): T? =
     runCatching { json.decodeFromString<T>(this) }.getOrNull()

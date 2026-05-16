@@ -2,7 +2,9 @@ package com.duckylife.heritage.modern.feature.articles.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -15,21 +17,52 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = ArticleDetailViewModel.Factory::class)
 class ArticleDetailViewModel @AssistedInject constructor(
-    @Assisted private val articleId: String,
+    @Assisted("articleId") private val articleId: String?,
+    @Assisted("sourceId") private val sourceId: String?,
+    @Assisted("sourceUrl") private val sourceUrl: String?,
+    @Assisted private val category: ArticleCategory,
     private val repository: HeritageRepository,
 ) : ViewModel() {
+    private val lookup = ArticleDetailLookup(
+        articleId = articleId,
+        sourceId = sourceId,
+        sourceUrl = sourceUrl,
+        category = category,
+    )
     private val _uiState = MutableStateFlow(ArticleDetailUiState())
     val uiState: StateFlow<ArticleDetailUiState> = _uiState.asStateFlow()
 
     init {
+        observeCachedArticle()
         refresh()
+    }
+
+    private fun observeCachedArticle() {
+        viewModelScope.launch {
+            repository.cachedArticleDetail(lookup).collect { article ->
+                if (article != null) {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            article = article,
+                            errorMessage = null,
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update {
+                it.copy(
+                    isLoading = it.article == null,
+                    errorMessage = null,
+                )
+            }
             runCatching {
-                repository.article(articleId)
+                repository.refreshArticleDetail(lookup)
             }.onSuccess { article ->
                 _uiState.value = ArticleDetailUiState(
                     isLoading = false,
@@ -39,7 +72,7 @@ class ArticleDetailViewModel @AssistedInject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = throwable.message ?: "文章详情加载失败",
+                        errorMessage = if (it.article == null) throwable.message.orEmpty() else null,
                     )
                 }
             }
@@ -48,6 +81,11 @@ class ArticleDetailViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(articleId: String): ArticleDetailViewModel
+        fun create(
+            @Assisted("articleId") articleId: String?,
+            @Assisted("sourceId") sourceId: String?,
+            @Assisted("sourceUrl") sourceUrl: String?,
+            @Assisted category: ArticleCategory,
+        ): ArticleDetailViewModel
     }
 }
