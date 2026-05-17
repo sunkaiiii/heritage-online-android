@@ -52,6 +52,7 @@ class ArticleRemoteMediator(
                 )
             }
 
+            // 清空和插入放在同一个事务里，避免 Paging 读到半刷新状态。
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     remoteKeyDao.clearByQuery(queryKey)

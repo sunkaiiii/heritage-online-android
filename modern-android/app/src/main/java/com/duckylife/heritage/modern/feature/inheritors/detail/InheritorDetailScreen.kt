@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.inheritors.detail
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -32,14 +35,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,12 +68,15 @@ import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun InheritorDetailRoute(
     inheritorId: String?,
     sourceId: String?,
     onBack: () -> Unit,
+    onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
+    onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: InheritorDetailViewModel = hiltViewModel<InheritorDetailViewModel, InheritorDetailViewModel.Factory>(
@@ -81,6 +93,8 @@ fun InheritorDetailRoute(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
+        onRelatedProjectSelected = onRelatedProjectSelected,
+        onRelatedInheritorSelected = onRelatedInheritorSelected,
         modifier = modifier,
     )
 }
@@ -91,11 +105,20 @@ fun InheritorDetailScreen(
     uiState: InheritorDetailUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
+    onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
+    val uriHandler = LocalUriHandler.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.inheritor_detail_title)) },
@@ -127,9 +150,10 @@ fun InheritorDetailScreen(
 
             uiState.errorMessage != null -> StatusContent(
                 title = stringResource(R.string.content_load_failed),
-                message = uiState.errorMessage
-                    .takeUnless { it.isBlank() }
-                    ?: stringResource(R.string.inheritor_detail_load_failed),
+                message = friendlyDetailErrorMessage(
+                    errorMessage = uiState.errorMessage,
+                    fallbackMessage = stringResource(R.string.inheritor_detail_load_failed),
+                ),
                 actionLabel = stringResource(R.string.action_retry),
                 onAction = onRetry,
                 modifier = Modifier
@@ -140,6 +164,17 @@ fun InheritorDetailScreen(
             uiState.item != null -> InheritorDetailContent(
                 item = uiState.item,
                 imageLoader = imageLoader,
+                onOpenSource = { sourceUrl ->
+                    runCatching {
+                        uriHandler.openUri(sourceUrl)
+                    }.onFailure {
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+                        }
+                    }
+                },
+                onRelatedProjectSelected = onRelatedProjectSelected,
+                onRelatedInheritorSelected = onRelatedInheritorSelected,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -152,6 +187,9 @@ fun InheritorDetailScreen(
 private fun InheritorDetailContent(
     item: InheritorDetailDto,
     imageLoader: ImageLoader,
+    onOpenSource: (String) -> Unit,
+    onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
+    onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
@@ -175,6 +213,17 @@ private fun InheritorDetailContent(
                     fontWeight = FontWeight.SemiBold,
                 )
                 InheritorMetaChips(item)
+                if (!item.sourceUrl.isNullOrBlank()) {
+                    TextButton(onClick = { onOpenSource(item.sourceUrl) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.size(6.dp))
+                        Text(stringResource(R.string.action_view_source))
+                    }
+                }
             }
         }
 
@@ -217,10 +266,12 @@ private fun InheritorDetailContent(
         ReferenceSection(
             title = relatedProjectsTitle,
             references = item.relatedProjects,
+            onReferenceSelected = onRelatedProjectSelected,
         )
         ReferenceSection(
             title = relatedInheritorsTitle,
             references = item.relatedInheritors,
+            onReferenceSelected = onRelatedInheritorSelected,
         )
     }
 }
@@ -349,6 +400,7 @@ private fun ContentBlock(
 private fun LazyListScope.ReferenceSection(
     title: String,
     references: List<DirectoryReferenceDto>,
+    onReferenceSelected: (DirectoryReferenceDto) -> Unit,
 ) {
     if (references.isEmpty()) {
         return
@@ -360,13 +412,25 @@ private fun LazyListScope.ReferenceSection(
         SectionTitle(text = title)
     }
     items(references) { reference ->
-        ReferenceRow(reference)
+        ReferenceRow(
+            reference = reference,
+            onClick = onReferenceSelected
+                .takeIf { reference.canOpenDetail }
+                ?.let { { it(reference) } },
+        )
     }
 }
 
 @Composable
-private fun ReferenceRow(reference: DirectoryReferenceDto) {
+private fun ReferenceRow(
+    reference: DirectoryReferenceDto,
+    onClick: (() -> Unit)?,
+) {
     Card(
+        modifier = Modifier.clickable(
+            enabled = onClick != null,
+            onClick = { onClick?.invoke() },
+        ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
@@ -393,6 +457,24 @@ private fun ReferenceRow(reference: DirectoryReferenceDto) {
                 )
             }
         }
+    }
+}
+
+private val DirectoryReferenceDto.canOpenDetail: Boolean
+    get() = !sourceId.isNullOrBlank()
+
+@Composable
+private fun friendlyDetailErrorMessage(
+    errorMessage: String?,
+    fallbackMessage: String,
+): String {
+    val rawMessage = errorMessage.orEmpty()
+    return when {
+        rawMessage.contains("404") || rawMessage.contains("Not Found", ignoreCase = true) ->
+            stringResource(R.string.content_not_available)
+
+        rawMessage.isBlank() -> fallbackMessage
+        else -> rawMessage
     }
 }
 

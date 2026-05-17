@@ -24,6 +24,8 @@ class DirectoryPagingRepository @Inject constructor(
     private val apiClient: HeritageApiClient,
 ) {
     fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> =
+        // Paging 从 Room 读数据，RemoteMediator 负责网络刷新。
+        // queryKey 用来隔离不同名录类型/筛选条件，避免切 tab 时混用缓存行。
         Pager(
             config = PagingConfig(
                 pageSize = query.pageSize,

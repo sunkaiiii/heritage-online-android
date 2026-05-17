@@ -37,6 +37,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
 
     private fun observeCachedItem() {
         viewModelScope.launch {
+            // 先立刻显示缓存详情；网络刷新成功后再用新内容替换。
             repository.cachedDirectoryDetail(lookup).collect { item ->
                 if (item != null) {
                     _uiState.update {
@@ -70,6 +71,8 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
+                        // 如果缓存里已有内容，保留可读页面并隐藏临时网络错误；
+                        // 空页面仍然要把失败原因展示出来。
                         errorMessage = if (it.item == null) throwable.message.orEmpty() else null,
                     )
                 }

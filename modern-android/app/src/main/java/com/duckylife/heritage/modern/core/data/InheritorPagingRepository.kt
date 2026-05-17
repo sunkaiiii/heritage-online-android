@@ -24,6 +24,8 @@ class InheritorPagingRepository @Inject constructor(
     private val apiClient: HeritageApiClient,
 ) {
     fun pagedInheritors(query: InheritorQuery): Flow<PagingData<InheritorSummaryDto>> =
+        // Paging 从 Room 读数据，RemoteMediator 负责网络刷新。
+        // UI 只收集这个 flow，不需要关心行数据来自缓存还是刚刷新。
         Pager(
             config = PagingConfig(
                 pageSize = query.pageSize,

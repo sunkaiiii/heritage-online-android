@@ -15,6 +15,8 @@ fun DirectoryItemDetailDto.toEntity(
     updatedAtEpochMillis: Long,
 ): DirectoryDetailEntity =
     DirectoryDetailEntity(
+        // 关联名录链接进入详情时，客户端可能还不知道 Mongo id。
+        // 用 sourceId/sourceUrl 兜底，保证这些入口也能写入详情缓存。
         id = id ?: sourceId ?: sourceUrl ?: title.orEmpty(),
         sourceId = sourceId,
         kind = kind.wireName,

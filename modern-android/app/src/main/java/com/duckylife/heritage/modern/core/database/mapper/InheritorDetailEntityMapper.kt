@@ -13,6 +13,8 @@ fun InheritorDetailDto.toEntity(
     updatedAtEpochMillis: Long,
 ): InheritorDetailEntity =
     InheritorDetailEntity(
+        // 关联传承人链接进入详情时，客户端可能还不知道 Mongo id。
+        // 用 sourceId/sourceUrl 兜底，保证这些入口也能写入详情缓存。
         id = id ?: sourceId ?: sourceUrl ?: name.orEmpty(),
         sourceId = sourceId,
         name = name,

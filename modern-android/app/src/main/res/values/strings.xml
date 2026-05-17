@@ -63,6 +63,7 @@
     <string name="article_detail_load_failed">文章详情加载失败</string>
     <string name="unnamed_article">未命名文章</string>
     <string name="content_load_failed">加载失败</string>
+    <string name="content_not_available">关联内容暂未入库或已不可用。</string>
     <string name="content_empty_title">暂无内容</string>
     <string name="home_empty_message">后端暂时没有返回首页内容。</string>
     <string name="article_detail_title">文章详情</string>
@@ -76,7 +77,12 @@
     <string name="settings_title">设置</string>
     <string name="settings_appearance_title">外观</string>
     <string name="settings_theme_mode_title">主题模式</string>
+    <string name="settings_language_title">语言</string>
+    <string name="settings_language_mode_title">应用语言</string>
     <string name="theme_mode_system">跟随系统</string>
     <string name="theme_mode_light">浅色</string>
     <string name="theme_mode_dark">深色</string>
+    <string name="language_mode_system">跟随系统</string>
+    <string name="language_mode_simplified_chinese">简体中文</string>
+    <string name="language_mode_english">English</string>
 </resources>

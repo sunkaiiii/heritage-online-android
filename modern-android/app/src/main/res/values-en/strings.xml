@@ -63,6 +63,7 @@
     <string name="article_detail_load_failed">Failed to load article detail</string>
     <string name="unnamed_article">Untitled article</string>
     <string name="content_load_failed">Load failed</string>
+    <string name="content_not_available">This related item is not available in the local backend yet.</string>
     <string name="content_empty_title">No content</string>
     <string name="home_empty_message">The backend did not return home content yet.</string>
     <string name="article_detail_title">Article Detail</string>
@@ -76,7 +77,12 @@
     <string name="settings_title">Settings</string>
     <string name="settings_appearance_title">Appearance</string>
     <string name="settings_theme_mode_title">Theme mode</string>
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_mode_title">App language</string>
     <string name="theme_mode_system">Follow system</string>
     <string name="theme_mode_light">Light</string>
     <string name="theme_mode_dark">Dark</string>
+    <string name="language_mode_system">Follow system</string>
+    <string name="language_mode_simplified_chinese">简体中文</string>
+    <string name="language_mode_english">English</string>
 </resources>

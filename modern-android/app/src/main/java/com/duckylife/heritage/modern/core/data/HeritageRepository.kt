@@ -40,6 +40,8 @@ data class InheritorDetailLookup(
     val sourceId: String? = null,
 )
 
+// Repository 同时提供一次性接口和 Room 支撑的缓存流。
+// 列表走 Paging，详情页先观察缓存，再从后端刷新。
 interface HeritageRepository {
     suspend fun homeBanners(): List<HomeBannerDto>
 
@@ -121,6 +123,8 @@ class DefaultHeritageRepository @Inject constructor(
 
     override fun cachedArticleDetail(lookup: ArticleDetailLookup): Flow<ArticleDetailDto?> {
         val detailDao = database.articleDetailDao()
+        // 详情页入口可能来自列表 id、关联 sourceId 或原站 URL。
+        // lookup 保持显式字段，方便每条路由使用自己手上最可靠的 key。
         val cachedArticle = when {
             !lookup.articleId.isNullOrBlank() -> detailDao.observeById(lookup.articleId)
             !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(
@@ -139,6 +143,8 @@ class DefaultHeritageRepository @Inject constructor(
     }
 
     override suspend fun refreshArticleDetail(lookup: ArticleDetailLookup): ArticleDetailDto {
+        // 刷新成功后统一写入 Room；界面再从缓存流拿到同一份数据，
+        // 这样在线、离线和重试路径的状态来源是一致的。
         val article = when {
             !lookup.articleId.isNullOrBlank() -> apiClient.getArticle(lookup.articleId)
             !lookup.sourceId.isNullOrBlank() -> apiClient.getArticleBySourceId(
@@ -189,6 +195,7 @@ class DefaultHeritageRepository @Inject constructor(
 
     override fun cachedDirectoryDetail(lookup: DirectoryDetailLookup): Flow<DirectoryItemDetailDto?> {
         val detailDao = database.directoryDetailDao()
+        // 名录 sourceId 只在 kind 内唯一，所以缓存查询必须带上 kind。
         val cachedDirectory = when {
             !lookup.itemId.isNullOrBlank() -> detailDao.observeById(lookup.itemId)
             !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(
@@ -236,6 +243,7 @@ class DefaultHeritageRepository @Inject constructor(
 
     override fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?> {
         val detailDao = database.inheritorDetailDao()
+        // 当前后端的传承人 sourceId 在集合内是全局唯一的。
         val cachedInheritor = when {
             !lookup.inheritorId.isNullOrBlank() -> detailDao.observeById(lookup.inheritorId)
             !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(lookup.sourceId)

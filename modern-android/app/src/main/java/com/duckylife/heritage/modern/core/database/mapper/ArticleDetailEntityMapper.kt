@@ -16,6 +16,8 @@ fun ArticleDetailDto.toEntity(
     updatedAtEpochMillis: Long,
 ): ArticleDetailEntity =
     ArticleDetailEntity(
+        // 优先使用后端 id；但关联链接有时只有 sourceId 或 URL。
+        // fallback 能让这些入口也先入库，等 API 返回正式 id 后再自然覆盖。
         id = id ?: sourceId ?: sourceUrl ?: this.sourceUrl ?: title.orEmpty(),
         sourceId = sourceId,
         category = category.wireName,

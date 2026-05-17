@@ -56,8 +56,10 @@ import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
+import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private data object DirectoryList
@@ -66,6 +68,11 @@ private data class DirectoryDetail(
     val id: String? = null,
     val sourceId: String? = null,
     val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+)
+
+private data class DirectoryInheritorDetail(
+    val id: String? = null,
+    val sourceId: String? = null,
 )
 
 @Composable
@@ -102,6 +109,33 @@ fun DirectoryRoute(
                         sourceId = key.sourceId,
                         kind = key.kind,
                         onBack = { backStack.removeLastOrNull() },
+                        onRelatedProjectSelected = { reference, fallbackKind ->
+                            when {
+                                reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
+                                else -> reference.toDirectoryDetail(fallbackKind)?.let(backStack::add)
+                            }
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            reference.toInheritorDetail()?.let(backStack::add)
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is DirectoryInheritorDetail -> NavEntry(key) {
+                    InheritorDetailRoute(
+                        inheritorId = key.id,
+                        sourceId = key.sourceId,
+                        onBack = { backStack.removeLastOrNull() },
+                        onRelatedProjectSelected = { reference ->
+                            when {
+                                reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
+                                else -> reference.toDirectoryDetail(DirectoryItemKind.NationalProject)?.let(backStack::add)
+                            }
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            reference.toInheritorDetail()?.let(backStack::add)
+                        },
                         modifier = modifier,
                     )
                 }
@@ -123,6 +157,32 @@ fun DirectoryRoute(
         },
     )
 }
+
+private fun DirectoryReferenceDto.toDirectoryDetail(fallbackKind: DirectoryItemKind): DirectoryDetail? {
+    if (sourceId.isNullOrBlank() || isInheritorReference) {
+        return null
+    }
+    return DirectoryDetail(
+        sourceId = sourceId,
+        kind = kind.toDirectoryItemKindOrNull() ?: fallbackKind,
+    )
+}
+
+private fun DirectoryReferenceDto.toInheritorDetail(): DirectoryInheritorDetail? {
+    if (sourceId.isNullOrBlank()) {
+        return null
+    }
+    return DirectoryInheritorDetail(sourceId = sourceId)
+}
+
+private fun String?.toDirectoryItemKindOrNull(): DirectoryItemKind? =
+    DirectoryItemKind.entries.firstOrNull { it.wireName == this }
+
+// 后端有些 relatedProjects 实际指向 /ccr_detail/，这是 ihchina 的传承人页面。
+// URL 形态比偶尔误导的 kind 字段更可靠。
+private val DirectoryReferenceDto.isInheritorReference: Boolean
+    get() = kind.equals("inheritor", ignoreCase = true) ||
+        detailUrl?.contains("/ccr_detail/", ignoreCase = true) == true
 
 @Composable
 private fun DirectoryListRoute(

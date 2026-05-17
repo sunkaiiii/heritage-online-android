@@ -24,6 +24,8 @@ class ArticlePagingRepository @Inject constructor(
     private val apiClient: HeritageApiClient,
 ) {
     fun pagedArticles(query: ArticleQuery): Flow<PagingData<ArticleSummaryDto>> =
+        // Paging 从 Room 读数据，RemoteMediator 负责网络刷新。
+        // 这样本地开发后端短暂不可用时，滚动列表仍能读到已有缓存。
         Pager(
             config = PagingConfig(
                 pageSize = query.pageSize,
