@@ -21,6 +21,7 @@ class FakeHeritageRepository(
     private val banners: List<HomeBannerDto> = emptyList(),
     private val articles: List<ArticleSummaryDto> = emptyList(),
     private val directoryItems: List<DirectoryItemSummaryDto> = emptyList(),
+    private val inheritors: List<InheritorSummaryDto> = emptyList(),
     private val articleDetails: Map<String, ArticleDetailDto> = emptyMap(),
     private val articleDetailsBySourceId: Map<String, ArticleDetailDto> = emptyMap(),
     private val articleDetailsBySourceUrl: Map<String, ArticleDetailDto> = emptyMap(),
@@ -28,13 +29,18 @@ class FakeHeritageRepository(
     private val directoryDetails: Map<String, DirectoryItemDetailDto> = emptyMap(),
     private val directoryDetailsBySourceId: Map<String, DirectoryItemDetailDto> = emptyMap(),
     private val cachedDirectoryDetails: Map<DirectoryDetailLookup, DirectoryItemDetailDto?> = emptyMap(),
+    private val inheritorDetails: Map<String, InheritorDetailDto> = emptyMap(),
+    private val inheritorDetailsBySourceId: Map<String, InheritorDetailDto> = emptyMap(),
+    private val cachedInheritorDetails: Map<InheritorDetailLookup, InheritorDetailDto?> = emptyMap(),
     private val failure: Throwable? = null,
 ) : HeritageRepository {
     val pagedArticleQueries = mutableListOf<ArticleQuery>()
     val pagedDirectoryItemQueries = mutableListOf<DirectoryItemQuery>()
+    val pagedInheritorQueries = mutableListOf<InheritorQuery>()
     val articleSourceIdQueries = mutableListOf<Pair<String, ArticleCategory>>()
     val articleSourceUrlQueries = mutableListOf<Pair<String, ArticleCategory>>()
     val directorySourceIdQueries = mutableListOf<Pair<String, DirectoryItemKind>>()
+    val inheritorSourceIdQueries = mutableListOf<String>()
 
     override suspend fun homeBanners(): List<HomeBannerDto> {
         failure?.let { throw it }
@@ -129,9 +135,38 @@ class FakeHeritageRepository(
             else -> error("Missing directory lookup key")
         }
 
-    override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
-        throw UnsupportedOperationException()
+    override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> {
+        failure?.let { throw it }
+        return PagedResult(
+            items = inheritors,
+            page = query.page,
+            pageSize = query.pageSize,
+        )
+    }
 
-    override suspend fun inheritor(id: String): InheritorDetailDto =
-        throw UnsupportedOperationException()
+    override fun pagedInheritors(query: InheritorQuery): Flow<PagingData<InheritorSummaryDto>> {
+        pagedInheritorQueries.add(query)
+        return flowOf(PagingData.from(inheritors))
+    }
+
+    override suspend fun inheritor(id: String): InheritorDetailDto {
+        failure?.let { throw it }
+        return inheritorDetails[id] ?: error("Missing inheritor detail for $id")
+    }
+
+    override suspend fun inheritorBySourceId(sourceId: String): InheritorDetailDto {
+        failure?.let { throw it }
+        inheritorSourceIdQueries.add(sourceId)
+        return inheritorDetailsBySourceId[sourceId] ?: error("Missing inheritor detail for source id $sourceId")
+    }
+
+    override fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?> =
+        flowOf(cachedInheritorDetails[lookup])
+
+    override suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup): InheritorDetailDto =
+        when {
+            !lookup.inheritorId.isNullOrBlank() -> inheritor(lookup.inheritorId)
+            !lookup.sourceId.isNullOrBlank() -> inheritorBySourceId(lookup.sourceId)
+            else -> error("Missing inheritor lookup key")
+        }
 }

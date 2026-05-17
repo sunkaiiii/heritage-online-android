@@ -36,6 +36,7 @@ import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
 import com.duckylife.heritage.modern.feature.directory.DirectoryRoute
+import com.duckylife.heritage.modern.feature.inheritors.InheritorsRoute
 import com.duckylife.heritage.modern.feature.settings.SettingsScreen
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -122,9 +123,7 @@ private fun HeritageApp(
                     .padding(contentPadding),
             )
 
-            HomeDestination.Inheritors -> PlaceholderDestination(
-                title = stringResource(R.string.nav_inheritors),
-                description = stringResource(R.string.placeholder_inheritors_description),
+            HomeDestination.Inheritors -> InheritorsRoute(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

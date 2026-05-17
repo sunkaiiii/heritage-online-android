@@ -35,6 +35,11 @@ data class DirectoryDetailLookup(
     val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
 )
 
+data class InheritorDetailLookup(
+    val inheritorId: String? = null,
+    val sourceId: String? = null,
+)
+
 interface HeritageRepository {
     suspend fun homeBanners(): List<HomeBannerDto>
 
@@ -68,12 +73,21 @@ interface HeritageRepository {
 
     suspend fun inheritors(query: InheritorQuery = InheritorQuery()): PagedResult<InheritorSummaryDto>
 
+    fun pagedInheritors(query: InheritorQuery = InheritorQuery()): Flow<PagingData<InheritorSummaryDto>>
+
     suspend fun inheritor(id: String): InheritorDetailDto
+
+    suspend fun inheritorBySourceId(sourceId: String): InheritorDetailDto
+
+    fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?>
+
+    suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup): InheritorDetailDto
 }
 
 class DefaultHeritageRepository @Inject constructor(
     private val articlePagingRepository: ArticlePagingRepository,
     private val directoryPagingRepository: DirectoryPagingRepository,
+    private val inheritorPagingRepository: InheritorPagingRepository,
     private val apiClient: HeritageApiClient,
     private val database: HeritageDatabase,
 ) : HeritageRepository {
@@ -211,6 +225,38 @@ class DefaultHeritageRepository @Inject constructor(
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         apiClient.getInheritors(query)
 
+    override fun pagedInheritors(query: InheritorQuery): Flow<PagingData<InheritorSummaryDto>> =
+        inheritorPagingRepository.pagedInheritors(query)
+
     override suspend fun inheritor(id: String): InheritorDetailDto =
-        apiClient.getInheritor(id)
+        refreshInheritorDetail(InheritorDetailLookup(inheritorId = id))
+
+    override suspend fun inheritorBySourceId(sourceId: String): InheritorDetailDto =
+        refreshInheritorDetail(InheritorDetailLookup(sourceId = sourceId))
+
+    override fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?> {
+        val detailDao = database.inheritorDetailDao()
+        val cachedInheritor = when {
+            !lookup.inheritorId.isNullOrBlank() -> detailDao.observeById(lookup.inheritorId)
+            !lookup.sourceId.isNullOrBlank() -> detailDao.observeBySourceId(lookup.sourceId)
+            else -> error("Missing inheritor lookup key")
+        }
+        return cachedInheritor.map { it?.toDto() }
+    }
+
+    override suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup): InheritorDetailDto {
+        val detail = when {
+            !lookup.inheritorId.isNullOrBlank() -> apiClient.getInheritor(lookup.inheritorId)
+            !lookup.sourceId.isNullOrBlank() -> apiClient.getInheritorBySourceId(lookup.sourceId)
+            else -> error("Missing inheritor lookup key")
+        }
+
+        database.inheritorDetailDao().upsert(
+            detail.toEntity(
+                sourceId = lookup.sourceId,
+                updatedAtEpochMillis = System.currentTimeMillis(),
+            ),
+        )
+        return detail
+    }
 }
