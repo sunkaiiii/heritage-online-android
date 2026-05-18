@@ -17,8 +17,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -27,17 +31,22 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -74,9 +83,14 @@ private data class InheritorDirectoryDetail(
 
 @Composable
 fun InheritorsRoute(
+    onSecondaryDestinationChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backStack = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateListOf<Any>(InheritorsList) }
+    val isInDetail = backStack.lastOrNull() != InheritorsList
+    LaunchedEffect(isInDetail) {
+        onSecondaryDestinationChanged(isInDetail)
+    }
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
@@ -187,9 +201,12 @@ private fun InheritorsListRoute(
     modifier: Modifier = Modifier,
     viewModel: InheritorsViewModel = hiltViewModel(),
 ) {
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val inheritors = viewModel.inheritors.collectAsLazyPagingItems()
     InheritorsScreen(
+        uiState = uiState,
         inheritors = inheritors,
+        onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onInheritorSelected = onInheritorSelected,
         modifier = modifier,
     )
@@ -197,7 +214,9 @@ private fun InheritorsListRoute(
 
 @Composable
 fun InheritorsScreen(
+    uiState: InheritorsUiState,
     inheritors: LazyPagingItems<InheritorSummaryDto>,
+    onSearchKeywordsChanged: (String) -> Unit,
     onInheritorSelected: (InheritorSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -209,6 +228,14 @@ fun InheritorsScreen(
     ) {
         item {
             InheritorsHeader(onRetry = inheritors::refresh)
+        }
+
+        item {
+            InheritorsSearchField(
+                keywords = uiState.searchKeywords,
+                onKeywordsChanged = onSearchKeywordsChanged,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
         }
 
         when (val refreshState = inheritors.loadState.refresh) {
@@ -237,7 +264,13 @@ fun InheritorsScreen(
                     item {
                         StatusContent(
                             title = stringResource(R.string.content_empty_title),
-                            message = stringResource(R.string.inheritors_empty_message),
+                            message = stringResource(
+                                if (uiState.searchKeywords.isBlank()) {
+                                    R.string.inheritors_empty_message
+                                } else {
+                                    R.string.inheritors_search_empty_message
+                                },
+                            ),
                             actionLabel = stringResource(R.string.action_refresh),
                             onAction = inheritors::refresh,
                             modifier = Modifier
@@ -287,6 +320,45 @@ fun InheritorsScreen(
             is LoadState.NotLoading -> Unit
         }
     }
+}
+
+@Composable
+private fun InheritorsSearchField(
+    keywords: String,
+    onKeywordsChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val focusManager = LocalFocusManager.current
+    OutlinedTextField(
+        value = keywords,
+        onValueChange = onKeywordsChanged,
+        modifier = modifier.fillMaxWidth(),
+        label = { Text(stringResource(R.string.inheritors_search_label)) },
+        placeholder = { Text(stringResource(R.string.inheritors_search_placeholder)) },
+        singleLine = true,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = null,
+            )
+        },
+        trailingIcon = {
+            if (keywords.isNotBlank()) {
+                IconButton(onClick = { onKeywordsChanged("") }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = stringResource(R.string.action_clear_search),
+                    )
+                }
+            }
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                focusManager.clearFocus()
+            },
+        ),
+    )
 }
 
 @Composable

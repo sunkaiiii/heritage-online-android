@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.articles
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,9 +25,14 @@ private data class ArticleDetail(
 @Composable
 fun ArticlesNavHost(
     onSettingsSelected: () -> Unit,
+    onSecondaryDestinationChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backStack = remember { mutableStateListOf<Any>(ArticlesList) }
+    val isInDetail = backStack.lastOrNull() is ArticleDetail
+    LaunchedEffect(isInDetail) {
+        onSecondaryDestinationChanged(isInDetail)
+    }
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },

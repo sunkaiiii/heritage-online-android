@@ -3,10 +3,12 @@ package com.duckylife.heritage.modern.feature.settings
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -38,34 +40,35 @@ fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp, vertical = 18.dp),
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.action_back),
+        item {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                        contentDescription = stringResource(R.string.action_back),
+                    )
+                }
+                Text(
+                    text = stringResource(R.string.settings_title),
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
-            Text(
-                text = stringResource(R.string.settings_title),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            SettingsSectionTitle(text = stringResource(R.string.settings_appearance_title))
-            SettingsGroupTitle(text = stringResource(R.string.settings_theme_mode_title))
-
-            Column {
+        item {
+            SettingsSection(
+                title = stringResource(R.string.settings_appearance_title),
+                groupTitle = stringResource(R.string.settings_theme_mode_title),
+            ) {
                 AppThemeMode.entries.forEachIndexed { index, mode ->
                     SettingsOptionRow(
                         label = stringResource(mode.labelRes),
@@ -79,11 +82,11 @@ fun SettingsScreen(
             }
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            SettingsSectionTitle(text = stringResource(R.string.settings_language_title))
-            SettingsGroupTitle(text = stringResource(R.string.settings_language_mode_title))
-
-            Column {
+        item {
+            SettingsSection(
+                title = stringResource(R.string.settings_language_title),
+                groupTitle = stringResource(R.string.settings_language_mode_title),
+            ) {
                 AppLanguageMode.entries.forEachIndexed { index, mode ->
                     SettingsOptionRow(
                         label = stringResource(mode.labelRes),
@@ -96,6 +99,19 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun SettingsSection(
+    title: String,
+    groupTitle: String,
+    content: @Composable () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        SettingsSectionTitle(text = title)
+        SettingsGroupTitle(text = groupTitle)
+        Column(content = { content() })
     }
 }
 

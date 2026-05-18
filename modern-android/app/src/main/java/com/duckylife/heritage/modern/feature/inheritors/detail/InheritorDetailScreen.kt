@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,9 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -67,6 +69,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
+import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -276,6 +279,7 @@ private fun InheritorDetailContent(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun InheritorMetaChips(item: InheritorDetailDto) {
     val labels = listOfNotNull(
@@ -286,21 +290,30 @@ private fun InheritorMetaChips(item: InheritorDetailDto) {
         item.batch?.takeIf { it.isNotBlank() },
     )
     if (labels.isNotEmpty()) {
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            items(labels) { label ->
-                AssistChip(
-                    onClick = {},
-                    label = {
-                        Text(
-                            text = label,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
-                )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            labels.forEach { label ->
+                DetailAssistChip(label = label)
             }
         }
     }
+}
+
+@Composable
+private fun DetailAssistChip(label: String) {
+    AssistChip(
+        onClick = {},
+        label = {
+            Text(
+                text = label,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        modifier = Modifier.widthIn(max = 280.dp),
+    )
 }
 
 @Composable
@@ -444,7 +457,7 @@ private fun ReferenceRow(
                 fontWeight = FontWeight.SemiBold,
             )
             val meta = listOfNotNull(
-                reference.kind?.takeIf { it.isNotBlank() },
+                reference.localizedKindLabel(),
                 reference.category?.takeIf { it.isNotBlank() },
                 reference.region?.takeIf { it.isNotBlank() },
                 reference.publishedYear?.let { stringResource(R.string.directory_year_format, it) },

@@ -4,4 +4,5 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 
 data class DirectoryUiState(
     val selectedKind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+    val searchKeywords: String = "",
 )

@@ -19,7 +19,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,17 +31,23 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -77,9 +85,14 @@ private data class DirectoryInheritorDetail(
 
 @Composable
 fun DirectoryRoute(
+    onSecondaryDestinationChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val backStack = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateListOf<Any>(DirectoryList) }
+    val isInDetail = backStack.lastOrNull() != DirectoryList
+    LaunchedEffect(isInDetail) {
+        onSecondaryDestinationChanged(isInDetail)
+    }
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
@@ -196,6 +209,7 @@ private fun DirectoryListRoute(
         uiState = uiState,
         items = items,
         onKindSelected = viewModel::selectKind,
+        onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onItemSelected = onItemSelected,
         modifier = modifier,
     )
@@ -206,6 +220,7 @@ fun DirectoryScreen(
     uiState: DirectoryUiState,
     items: LazyPagingItems<DirectoryItemSummaryDto>,
     onKindSelected: (DirectoryItemKind) -> Unit,
+    onSearchKeywordsChanged: (String) -> Unit,
     onItemSelected: (DirectoryItemSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -217,6 +232,14 @@ fun DirectoryScreen(
     ) {
         item {
             DirectoryHeader(onRetry = items::refresh)
+        }
+
+        item {
+            DirectorySearchField(
+                keywords = uiState.searchKeywords,
+                onKeywordsChanged = onSearchKeywordsChanged,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
         }
 
         item {
@@ -252,7 +275,13 @@ fun DirectoryScreen(
                     item {
                         StatusContent(
                             title = stringResource(R.string.content_empty_title),
-                            message = stringResource(R.string.directory_empty_message),
+                            message = stringResource(
+                                if (uiState.searchKeywords.isBlank()) {
+                                    R.string.directory_empty_message
+                                } else {
+                                    R.string.directory_search_empty_message
+                                },
+                            ),
                             actionLabel = stringResource(R.string.action_refresh),
                             onAction = items::refresh,
                             modifier = Modifier
@@ -302,6 +331,45 @@ fun DirectoryScreen(
             is LoadState.NotLoading -> Unit
         }
     }
+}
+
+@Composable
+private fun DirectorySearchField(
+    keywords: String,
+    onKeywordsChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val focusManager = LocalFocusManager.current
+    OutlinedTextField(
+        value = keywords,
+        onValueChange = onKeywordsChanged,
+        modifier = modifier.fillMaxWidth(),
+        label = { Text(stringResource(R.string.directory_search_label)) },
+        placeholder = { Text(stringResource(R.string.directory_search_placeholder)) },
+        singleLine = true,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Outlined.Search,
+                contentDescription = null,
+            )
+        },
+        trailingIcon = {
+            if (keywords.isNotBlank()) {
+                IconButton(onClick = { onKeywordsChanged("") }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = stringResource(R.string.action_clear_search),
+                    )
+                }
+            }
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                focusManager.clearFocus()
+            },
+        ),
+    )
 }
 
 @Composable

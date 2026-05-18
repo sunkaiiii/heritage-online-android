@@ -1,11 +1,15 @@
 package com.duckylife.heritage.modern
 
 import android.app.LocaleManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.LocaleList
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,10 +68,20 @@ class MainActivity : ComponentActivity() {
                 initialValue = null,
             )
             val coroutineScope = rememberCoroutineScope()
+            val systemInDarkTheme = isSystemInDarkTheme()
+            val darkTheme = when (themeMode) {
+                AppThemeMode.System -> systemInDarkTheme
+                AppThemeMode.Light -> false
+                AppThemeMode.Dark -> true
+            }
             // 先等 DataStore 返回真实语言设置；如果先用 System 临时值，
             // Android 会先重启 Activity，等保存值回来后又再重启一次。
             LaunchedEffect(languageMode) {
                 languageMode?.let(::applyLanguageMode)
+            }
+            SideEffect {
+                // App 支持独立主题设置，系统栏图标也要跟随 App 当前明暗主题。
+                applySystemBarStyle(darkTheme)
             }
             HeritageTheme(themeMode = themeMode) {
                 HeritageApp(
@@ -85,6 +100,21 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    private fun applySystemBarStyle(darkTheme: Boolean) {
+        val style = if (darkTheme) {
+            SystemBarStyle.dark(Color.TRANSPARENT)
+        } else {
+            SystemBarStyle.light(
+                scrim = Color.TRANSPARENT,
+                darkScrim = Color.argb(0x80, 0x1B, 0x1B, 0x1B),
+            )
+        }
+        enableEdgeToEdge(
+            statusBarStyle = style,
+            navigationBarStyle = style,
+        )
     }
 
     private fun applyLanguageMode(languageMode: AppLanguageMode) {
@@ -118,23 +148,37 @@ private fun HeritageApp(
 ) {
     var selectedDestination by remember { mutableStateOf(HomeDestination.Articles) }
     var showSettings by remember { mutableStateOf(false) }
+    var articlesInDetail by remember { mutableStateOf(false) }
+    var directoryInDetail by remember { mutableStateOf(false) }
+    var inheritorsInDetail by remember { mutableStateOf(false) }
+    val selectedDestinationInDetail = when (selectedDestination) {
+        HomeDestination.Articles -> articlesInDetail
+        HomeDestination.Directory -> directoryInDetail
+        HomeDestination.Inheritors -> inheritorsInDetail
+    }
+    val shouldShowBottomBar = !showSettings && !selectedDestinationInDetail
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
-                HomeDestination.entries.forEach { destination ->
-                    val label = stringResource(destination.labelRes)
-                    NavigationBarItem(
-                        selected = destination == selectedDestination,
-                        onClick = { selectedDestination = destination },
-                        icon = {
-                            Icon(
-                                imageVector = destination.icon,
-                                contentDescription = label,
-                            )
-                        },
-                        label = { Text(label) },
-                    )
+            if (shouldShowBottomBar) {
+                NavigationBar {
+                    HomeDestination.entries.forEach { destination ->
+                        val label = stringResource(destination.labelRes)
+                        NavigationBarItem(
+                            selected = destination == selectedDestination,
+                            onClick = {
+                                showSettings = false
+                                selectedDestination = destination
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = destination.icon,
+                                    contentDescription = label,
+                                )
+                            },
+                            label = { Text(label) },
+                        )
+                    }
                 }
             }
         },
@@ -156,18 +200,21 @@ private fun HeritageApp(
         when (selectedDestination) {
             HomeDestination.Articles -> ArticlesNavHost(
                 onSettingsSelected = { showSettings = true },
+                onSecondaryDestinationChanged = { articlesInDetail = it },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
             )
 
             HomeDestination.Directory -> DirectoryRoute(
+                onSecondaryDestinationChanged = { directoryInDetail = it },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
             )
 
             HomeDestination.Inheritors -> InheritorsRoute(
+                onSecondaryDestinationChanged = { inheritorsInDetail = it },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

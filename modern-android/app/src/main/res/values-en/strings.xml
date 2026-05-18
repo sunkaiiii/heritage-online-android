@@ -11,6 +11,9 @@
     <string name="inheritor_detail_load_failed">Failed to load inheritor detail</string>
     <string name="inheritors_append_failed">Failed to load more inheritors</string>
     <string name="inheritors_empty_message">The backend did not return inheritor content yet.</string>
+    <string name="inheritors_search_label">Search inheritors</string>
+    <string name="inheritors_search_placeholder">Name, project, region, or category</string>
+    <string name="inheritors_search_empty_message">No matching inheritors found.</string>
     <string name="unnamed_inheritor">Unnamed inheritor</string>
     <string name="inheritor_project_code_format">Project code: %1$s</string>
     <string name="inheritor_field_project_name">Project</string>
@@ -26,6 +29,9 @@
     <string name="directory_detail_load_failed">Failed to load directory detail</string>
     <string name="directory_append_failed">Failed to load more directory items</string>
     <string name="directory_empty_message">The backend did not return directory content yet.</string>
+    <string name="directory_search_label">Search directory</string>
+    <string name="directory_search_placeholder">Project, region, or category</string>
+    <string name="directory_search_empty_message">No matching directory items found.</string>
     <string name="unnamed_directory_item">Untitled item</string>
     <string name="directory_kind_national_project">National Projects</string>
     <string name="directory_kind_cultural_eco_zone">Eco Zones</string>
@@ -54,6 +60,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_retry">Retry</string>
     <string name="action_back">Back</string>
+    <string name="action_clear_search">Clear search</string>
     <string name="category_news">News</string>
     <string name="category_forum">Forum</string>
     <string name="category_special_topic">Specials</string>

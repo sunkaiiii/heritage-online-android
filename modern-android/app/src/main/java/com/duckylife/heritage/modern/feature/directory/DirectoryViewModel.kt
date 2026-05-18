@@ -30,20 +30,25 @@ class DirectoryViewModel @Inject constructor(
 
     val items: Flow<PagingData<DirectoryItemSummaryDto>> =
         uiState
-            .map { it.selectedKind }
-            .distinctUntilChanged()
-            .flatMapLatest { kind ->
-                repository.pagedDirectoryItems(
-                    DirectoryItemQuery(
-                        kind = kind,
-                        page = 1,
-                        pageSize = 20,
-                    ),
+            .map { state ->
+                DirectoryItemQuery(
+                    kind = state.selectedKind,
+                    page = 1,
+                    pageSize = 20,
+                    keywords = state.searchKeywords.trim().takeIf { it.isNotEmpty() },
                 )
+            }
+            .distinctUntilChanged()
+            .flatMapLatest { query ->
+                repository.pagedDirectoryItems(query)
             }
             .cachedIn(viewModelScope)
 
     fun selectKind(kind: DirectoryItemKind) {
         _uiState.update { it.copy(selectedKind = kind) }
+    }
+
+    fun updateSearchKeywords(keywords: String) {
+        _uiState.update { it.copy(searchKeywords = keywords) }
     }
 }

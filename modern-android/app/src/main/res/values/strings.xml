@@ -11,6 +11,9 @@
     <string name="inheritor_detail_load_failed">传承人详情加载失败</string>
     <string name="inheritors_append_failed">加载更多传承人失败</string>
     <string name="inheritors_empty_message">后端暂时没有返回传承人内容。</string>
+    <string name="inheritors_search_label">搜索传承人</string>
+    <string name="inheritors_search_placeholder">姓名、项目名、地区或类别</string>
+    <string name="inheritors_search_empty_message">没有找到匹配的传承人。</string>
     <string name="unnamed_inheritor">未命名传承人</string>
     <string name="inheritor_project_code_format">项目编号：%1$s</string>
     <string name="inheritor_field_project_name">代表性项目</string>
@@ -26,6 +29,9 @@
     <string name="directory_detail_load_failed">名录详情加载失败</string>
     <string name="directory_append_failed">加载更多名录失败</string>
     <string name="directory_empty_message">后端暂时没有返回名录内容。</string>
+    <string name="directory_search_label">搜索名录</string>
+    <string name="directory_search_placeholder">项目名、地区或类别</string>
+    <string name="directory_search_empty_message">没有找到匹配的名录项目。</string>
     <string name="unnamed_directory_item">未命名项目</string>
     <string name="directory_kind_national_project">国家级项目</string>
     <string name="directory_kind_cultural_eco_zone">文化生态区</string>
@@ -54,6 +60,7 @@
     <string name="action_refresh">刷新</string>
     <string name="action_retry">重试</string>
     <string name="action_back">返回</string>
+    <string name="action_clear_search">清空搜索</string>
     <string name="category_news">新闻</string>
     <string name="category_forum">论坛</string>
     <string name="category_special_topic">专题</string>
