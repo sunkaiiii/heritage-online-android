@@ -2,7 +2,6 @@ package com.duckylife.heritage.modern.feature.inheritors.detail
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,13 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +37,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -70,6 +66,9 @@ import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -119,12 +118,17 @@ fun InheritorDetailScreen(
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.inheritor_detail_title)) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -201,47 +205,15 @@ private fun InheritorDetailContent(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(R.string.nav_inheritors),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = item.name.orEmpty().ifBlank { unnamedInheritor },
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                InheritorMetaChips(item)
-                if (!item.sourceUrl.isNullOrBlank()) {
-                    TextButton(onClick = { onOpenSource(item.sourceUrl) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(modifier = Modifier.size(6.dp))
-                        Text(stringResource(R.string.action_view_source))
-                    }
-                }
-            }
-        }
-
-        item.coverImage?.let { coverImage ->
-            item {
-                DetailImage(
-                    image = coverImage,
-                    imageLoader = imageLoader,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .clip(RoundedCornerShape(8.dp)),
-                )
-            }
+            InheritorHero(
+                item = item,
+                unnamedInheritor = unnamedInheritor,
+                imageLoader = imageLoader,
+                onOpenSource = onOpenSource,
+            )
         }
 
         item {
@@ -281,6 +253,67 @@ private fun InheritorDetailContent(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
+private fun InheritorHero(
+    item: InheritorDetailDto,
+    unnamedInheritor: String,
+    imageLoader: ImageLoader,
+    onOpenSource: (String) -> Unit,
+) {
+    HeritageContentCard {
+        Column {
+            item.coverImage?.let { coverImage ->
+                DetailImage(
+                    image = coverImage,
+                    imageLoader = imageLoader,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f),
+                )
+            }
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.nav_inheritors),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = item.name.orEmpty().ifBlank { unnamedInheritor },
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                if (!item.projectName.isNullOrBlank()) {
+                    Text(
+                        text = item.projectName,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                InheritorMetaChips(item)
+                if (!item.sourceUrl.isNullOrBlank()) {
+                    TextButton(
+                        onClick = { onOpenSource(item.sourceUrl) },
+                        contentPadding = PaddingValues(horizontal = 0.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.size(6.dp))
+                        Text(stringResource(R.string.action_view_source))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
 private fun InheritorMetaChips(item: InheritorDetailDto) {
     val labels = listOfNotNull(
         item.gender?.takeIf { it.isNotBlank() },
@@ -295,25 +328,13 @@ private fun InheritorMetaChips(item: InheritorDetailDto) {
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             labels.forEach { label ->
-                DetailAssistChip(label = label)
+                HeritageMetaChip(
+                    text = label,
+                    modifier = Modifier.widthIn(max = 280.dp),
+                )
             }
         }
     }
-}
-
-@Composable
-private fun DetailAssistChip(label: String) {
-    AssistChip(
-        onClick = {},
-        label = {
-            Text(
-                text = label,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-        },
-        modifier = Modifier.widthIn(max = 280.dp),
-    )
 }
 
 @Composable
@@ -327,10 +348,7 @@ private fun InheritorFacts(item: InheritorDetailDto) {
     if (facts.isEmpty()) {
         return
     }
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
+    HeritageContentCard {
         Column(
             modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -419,10 +437,10 @@ private fun LazyListScope.ReferenceSection(
         return
     }
     item {
-        HorizontalDivider()
-    }
-    item {
-        SectionTitle(text = title)
+        SectionTitle(
+            text = title,
+            modifier = Modifier.padding(top = 2.dp),
+        )
     }
     items(references) { reference ->
         ReferenceRow(
@@ -439,13 +457,8 @@ private fun ReferenceRow(
     reference: DirectoryReferenceDto,
     onClick: (() -> Unit)?,
 ) {
-    Card(
-        modifier = Modifier.clickable(
-            enabled = onClick != null,
-            onClick = { onClick?.invoke() },
-        ),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    HeritageContentCard(
+        onClick = onClick,
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
@@ -492,11 +505,13 @@ private fun friendlyDetailErrorMessage(
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleLarge,
-        fontWeight = FontWeight.SemiBold,
+private fun SectionTitle(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    HeritageSectionHeader(
+        title = text,
+        modifier = modifier,
     )
 }
 

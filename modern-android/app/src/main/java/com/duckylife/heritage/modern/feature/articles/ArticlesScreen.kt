@@ -1,7 +1,6 @@
 package com.duckylife.heritage.modern.feature.articles
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +24,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -56,6 +54,11 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
+import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
@@ -112,126 +115,126 @@ private fun ArticlesContent(
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 18.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        item {
-            ArticlesHeader(
-                onSettingsSelected = onSettingsSelected,
-                onRetry = {
-                    onRefreshBanners()
-                    articles.refresh()
-                },
-            )
-        }
-
-        item {
-            when {
-                uiState.banners.isNotEmpty() -> BannerStrip(
-                    banners = uiState.banners,
-                    imageLoader = imageLoader,
+    HeritagePageBackground(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            item {
+                ArticlesHeader(
+                    onSettingsSelected = onSettingsSelected,
+                    onRetry = {
+                        onRefreshBanners()
+                        articles.refresh()
+                    },
                 )
+            }
 
-                uiState.isLoadingBanners -> BannerLoadingStrip()
+            item {
+                when {
+                    uiState.banners.isNotEmpty() -> BannerStrip(
+                        banners = uiState.banners,
+                        imageLoader = imageLoader,
+                    )
 
-                uiState.bannerErrorMessage != null -> InlineRetryMessage(
-                    message = uiState.bannerErrorMessage
-                        .takeUnless { it.isBlank() }
-                        ?: stringResource(R.string.banner_load_failed),
-                    onRetry = onRefreshBanners,
+                    uiState.isLoadingBanners -> BannerLoadingStrip()
+
+                    uiState.bannerErrorMessage != null -> InlineRetryMessage(
+                        message = uiState.bannerErrorMessage
+                            .takeUnless { it.isBlank() }
+                            ?: stringResource(R.string.banner_load_failed),
+                        onRetry = onRefreshBanners,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+            }
+
+            item {
+                HeritageSectionHeader(
+                    title = stringResource(R.string.articles_latest_title),
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
-        }
 
-        item {
-            Text(
-                text = stringResource(R.string.articles_latest_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-        }
-
-        item {
-            ArticleCategoryTabs(
-                selectedCategory = uiState.selectedCategory,
-                onCategorySelected = onCategorySelected,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-        }
-
-        when (val refreshState = articles.loadState.refresh) {
-            is LoadState.Loading -> item {
-                LoadingContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
+            item {
+                ArticleCategoryTabs(
+                    selectedCategory = uiState.selectedCategory,
+                    onCategorySelected = onCategorySelected,
                 )
             }
 
-            is LoadState.Error -> item {
-                ErrorContent(
-                    message = refreshState.error.message ?: stringResource(R.string.article_load_failed),
-                    onRetry = articles::retry,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp),
-                )
-            }
+            when (val refreshState = articles.loadState.refresh) {
+                is LoadState.Loading -> item {
+                    LoadingContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                    )
+                }
 
-            is LoadState.NotLoading -> {
-                if (articles.itemCount == 0) {
-                    item {
-                        EmptyContent(
-                            onRetry = articles::refresh,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(220.dp),
-                        )
+                is LoadState.Error -> item {
+                    ErrorContent(
+                        message = refreshState.error.message ?: stringResource(R.string.article_load_failed),
+                        onRetry = articles::retry,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                    )
+                }
+
+                is LoadState.NotLoading -> {
+                    if (articles.itemCount == 0) {
+                        item {
+                            EmptyContent(
+                                onRetry = articles::refresh,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(220.dp),
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        items(
-            count = articles.itemCount,
-            key = articles.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
-        ) { index ->
-            val article = articles[index]
-            if (article != null) {
-                ArticleRow(
-                    article = article,
-                    imageLoader = imageLoader,
-                    onClick = onArticleSelected,
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                )
-            }
-        }
-
-        when (val appendState = articles.loadState.append) {
-            is LoadState.Loading -> item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+            items(
+                count = articles.itemCount,
+                key = articles.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
+            ) { index ->
+                val article = articles[index]
+                if (article != null) {
+                    ArticleRow(
+                        article = article,
+                        imageLoader = imageLoader,
+                        prominent = index == 0,
+                        onClick = onArticleSelected,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
                 }
             }
 
-            is LoadState.Error -> item {
-                InlineRetryMessage(
-                    message = appendState.error.message ?: stringResource(R.string.article_append_failed),
-                    onRetry = articles::retry,
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                )
-            }
+            when (val appendState = articles.loadState.append) {
+                is LoadState.Loading -> item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
 
-            is LoadState.NotLoading -> Unit
+                is LoadState.Error -> item {
+                    InlineRetryMessage(
+                        message = appendState.error.message ?: stringResource(R.string.article_append_failed),
+                        onRetry = articles::retry,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+
+                is LoadState.NotLoading -> Unit
+            }
         }
     }
 }
@@ -242,16 +245,16 @@ private fun ArticleCategoryTabs(
     onCategorySelected: (ArticleCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val categories = ArticleCategory.entries
-    PrimaryTabRow(
-        selectedTabIndex = categories.indexOf(selectedCategory).coerceAtLeast(0),
-        modifier = modifier,
+    LazyRow(
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        categories.forEach { category ->
-            Tab(
+        items(ArticleCategory.entries) { category ->
+            FilterChip(
                 selected = category == selectedCategory,
                 onClick = { onCategorySelected(category) },
-                text = { Text(stringResource(category.labelRes)) },
+                label = { Text(stringResource(category.labelRes)) },
             )
         }
     }
@@ -262,38 +265,21 @@ private fun ArticlesHeader(
     onSettingsSelected: () -> Unit,
     onRetry: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    HeritagePageHeader(
+        title = stringResource(R.string.articles_header_title),
+        subtitle = stringResource(R.string.articles_header_subtitle),
     ) {
-        Column {
-            Text(
-                text = stringResource(R.string.articles_header_title),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = stringResource(R.string.articles_header_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+        IconButton(onClick = onSettingsSelected) {
+            Icon(
+                imageVector = Icons.Outlined.Settings,
+                contentDescription = stringResource(R.string.nav_settings),
             )
         }
-        Row {
-            IconButton(onClick = onSettingsSelected) {
-                Icon(
-                    imageVector = Icons.Outlined.Settings,
-                    contentDescription = stringResource(R.string.nav_settings),
-                )
-            }
-            IconButton(onClick = onRetry) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = stringResource(R.string.action_refresh),
-                )
-            }
+        IconButton(onClick = onRetry) {
+            Icon(
+                imageVector = Icons.Outlined.Refresh,
+                contentDescription = stringResource(R.string.action_refresh),
+            )
         }
     }
 }
@@ -328,7 +314,8 @@ private fun BannerCard(
         modifier = Modifier
             .size(width = 300.dp, height = 156.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         ImageOrFallback(
             image = banner.mobileImage ?: banner.displayImage ?: banner.desktopImage,
@@ -388,58 +375,84 @@ private fun InlineRetryMessage(
 private fun ArticleRow(
     article: ArticleSummaryDto,
     imageLoader: ImageLoader,
+    prominent: Boolean,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val articleId = article.id
     val unnamedArticle = stringResource(R.string.unnamed_article)
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(enabled = !articleId.isNullOrBlank()) {
-                if (articleId != null) {
-                    onClick(articleId)
-                }
-            },
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    HeritageContentCard(
+        modifier = modifier,
+        onClick = articleId?.let { id -> { onClick(id) } },
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            ImageOrFallback(
-                image = article.coverImage,
-                imageLoader = imageLoader,
-                modifier = Modifier
-                    .size(width = 104.dp, height = 82.dp)
-                    .clip(RoundedCornerShape(6.dp)),
-            )
+        if (prominent) {
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(14.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Text(
-                    text = stringResource(article.category.labelRes),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                ImageOrFallback(
+                    image = article.coverImage,
+                    imageLoader = imageLoader,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                        .clip(RoundedCornerShape(6.dp)),
                 )
-                Text(
-                    text = article.title.orEmpty().ifBlank { unnamedArticle },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+                ArticleTextContent(
+                    article = article,
+                    unnamedArticle = unnamedArticle,
+                    titleMaxLines = 3,
                 )
-                Text(
-                    text = article.summary.orEmpty().ifBlank { article.publishedAt.orEmpty() },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+            }
+        } else {
+            Row(
+                modifier = Modifier.padding(14.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            ) {
+                ImageOrFallback(
+                    image = article.coverImage,
+                    imageLoader = imageLoader,
+                    modifier = Modifier
+                        .size(width = 104.dp, height = 82.dp)
+                        .clip(RoundedCornerShape(6.dp)),
+                )
+                ArticleTextContent(
+                    article = article,
+                    unnamedArticle = unnamedArticle,
+                    titleMaxLines = 2,
+                    modifier = Modifier.weight(1f),
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun ArticleTextContent(
+    article: ArticleSummaryDto,
+    unnamedArticle: String,
+    titleMaxLines: Int,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        HeritageMetaChip(text = stringResource(article.category.labelRes))
+        Text(
+            text = article.title.orEmpty().ifBlank { unnamedArticle },
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = titleMaxLines,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = article.summary.orEmpty().ifBlank { article.publishedAt.orEmpty() },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 

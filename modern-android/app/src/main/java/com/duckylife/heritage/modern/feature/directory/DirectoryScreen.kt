@@ -2,10 +2,11 @@ package com.duckylife.heritage.modern.feature.directory
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,10 +20,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,7 +29,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,15 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -68,6 +61,11 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
+import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private data object DirectoryList
@@ -225,174 +223,125 @@ fun DirectoryScreen(
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 18.dp),
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        item {
-            DirectoryHeader(onRetry = items::refresh)
-        }
+    HeritagePageBackground(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 18.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            item {
+                DirectoryHeader(onRetry = items::refresh)
+            }
 
-        item {
-            DirectorySearchField(
-                keywords = uiState.searchKeywords,
-                onKeywordsChanged = onSearchKeywordsChanged,
-                modifier = Modifier.padding(horizontal = 20.dp),
-            )
-        }
-
-        item {
-            DirectoryKindFilters(
-                selectedKind = uiState.selectedKind,
-                onKindSelected = onKindSelected,
-            )
-        }
-
-        when (val refreshState = items.loadState.refresh) {
-            is LoadState.Loading -> item {
-                LoadingContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
+            item {
+                HeritageSearchField(
+                    value = uiState.searchKeywords,
+                    onValueChange = onSearchKeywordsChanged,
+                    label = stringResource(R.string.directory_search_label),
+                    placeholder = stringResource(R.string.directory_search_placeholder),
+                    clearContentDescription = stringResource(R.string.action_clear_search),
+                    modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
 
-            is LoadState.Error -> item {
-                StatusContent(
-                    title = stringResource(R.string.content_load_failed),
-                    message = refreshState.error.message ?: stringResource(R.string.directory_load_failed),
-                    actionLabel = stringResource(R.string.action_retry),
-                    onAction = items::retry,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp),
+            item {
+                DirectoryKindFilters(
+                    selectedKind = uiState.selectedKind,
+                    onKindSelected = onKindSelected,
                 )
             }
 
-            is LoadState.NotLoading -> {
-                if (items.itemCount == 0) {
-                    item {
-                        StatusContent(
-                            title = stringResource(R.string.content_empty_title),
-                            message = stringResource(
-                                if (uiState.searchKeywords.isBlank()) {
-                                    R.string.directory_empty_message
-                                } else {
-                                    R.string.directory_search_empty_message
-                                },
-                            ),
-                            actionLabel = stringResource(R.string.action_refresh),
-                            onAction = items::refresh,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(220.dp),
-                        )
+            when (val refreshState = items.loadState.refresh) {
+                is LoadState.Loading -> item {
+                    LoadingContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp),
+                    )
+                }
+
+                is LoadState.Error -> item {
+                    StatusContent(
+                        title = stringResource(R.string.content_load_failed),
+                        message = refreshState.error.message ?: stringResource(R.string.directory_load_failed),
+                        actionLabel = stringResource(R.string.action_retry),
+                        onAction = items::retry,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(220.dp),
+                    )
+                }
+
+                is LoadState.NotLoading -> {
+                    if (items.itemCount == 0) {
+                        item {
+                            StatusContent(
+                                title = stringResource(R.string.content_empty_title),
+                                message = stringResource(
+                                    if (uiState.searchKeywords.isBlank()) {
+                                        R.string.directory_empty_message
+                                    } else {
+                                        R.string.directory_search_empty_message
+                                    },
+                                ),
+                                actionLabel = stringResource(R.string.action_refresh),
+                                onAction = items::refresh,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(220.dp),
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        items(
-            count = items.itemCount,
-            key = items.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
-        ) { index ->
-            val item = items[index]
-            if (item != null) {
-                DirectoryItemRow(
-                    item = item,
-                    imageLoader = imageLoader,
-                    onClick = { onItemSelected(item) },
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                )
-            }
-        }
-
-        when (val appendState = items.loadState.append) {
-            is LoadState.Loading -> item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+            items(
+                count = items.itemCount,
+                key = items.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
+            ) { index ->
+                val item = items[index]
+                if (item != null) {
+                    DirectoryItemRow(
+                        item = item,
+                        imageLoader = imageLoader,
+                        onClick = { onItemSelected(item) },
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
                 }
             }
 
-            is LoadState.Error -> item {
-                InlineRetryMessage(
-                    message = appendState.error.message ?: stringResource(R.string.directory_append_failed),
-                    onRetry = items::retry,
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                )
-            }
+            when (val appendState = items.loadState.append) {
+                is LoadState.Loading -> item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
 
-            is LoadState.NotLoading -> Unit
+                is LoadState.Error -> item {
+                    InlineRetryMessage(
+                        message = appendState.error.message ?: stringResource(R.string.directory_append_failed),
+                        onRetry = items::retry,
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+
+                is LoadState.NotLoading -> Unit
+            }
         }
     }
 }
 
 @Composable
-private fun DirectorySearchField(
-    keywords: String,
-    onKeywordsChanged: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val focusManager = LocalFocusManager.current
-    OutlinedTextField(
-        value = keywords,
-        onValueChange = onKeywordsChanged,
-        modifier = modifier.fillMaxWidth(),
-        label = { Text(stringResource(R.string.directory_search_label)) },
-        placeholder = { Text(stringResource(R.string.directory_search_placeholder)) },
-        singleLine = true,
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Outlined.Search,
-                contentDescription = null,
-            )
-        },
-        trailingIcon = {
-            if (keywords.isNotBlank()) {
-                IconButton(onClick = { onKeywordsChanged("") }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Close,
-                        contentDescription = stringResource(R.string.action_clear_search),
-                    )
-                }
-            }
-        },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                focusManager.clearFocus()
-            },
-        ),
-    )
-}
-
-@Composable
 private fun DirectoryHeader(onRetry: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 18.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    HeritagePageHeader(
+        title = stringResource(R.string.directory_title),
+        subtitle = stringResource(R.string.directory_subtitle),
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = stringResource(R.string.directory_title),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = stringResource(R.string.directory_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
         IconButton(onClick = onRetry) {
             Icon(
                 imageVector = Icons.Outlined.Refresh,
@@ -429,22 +378,19 @@ private fun DirectoryItemRow(
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    HeritageContentCard(
+        modifier = modifier,
+        onClick = onClick,
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             ImageOrFallback(
                 image = item.coverImage,
                 imageLoader = imageLoader,
                 modifier = Modifier
-                    .size(width = 84.dp, height = 84.dp)
+                    .size(width = 92.dp, height = 92.dp)
                     .clip(RoundedCornerShape(6.dp)),
             )
             Column(
@@ -473,6 +419,7 @@ private fun DirectoryItemRow(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DirectoryMetaRow(item: DirectoryItemSummaryDto) {
     val projectCode = item.projectCode?.takeIf { it.isNotBlank() }?.let {
@@ -489,20 +436,12 @@ private fun DirectoryMetaRow(item: DirectoryItemSummaryDto) {
         item.listType?.takeIf { it.isNotBlank() },
     )
 
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        items(labels) { label ->
-            AssistChip(
-                onClick = {},
-                label = {
-                    Text(
-                        text = label,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                },
-            )
+        labels.forEach { label ->
+            HeritageMetaChip(text = label)
         }
     }
 }

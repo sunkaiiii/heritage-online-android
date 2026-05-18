@@ -1,7 +1,6 @@
 package com.duckylife.heritage.modern.feature.articles.detail
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,11 +21,8 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +32,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -63,6 +60,9 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -113,12 +113,17 @@ fun ArticleDetailScreen(
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
     Scaffold(
         modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.article_detail_title)) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                ),
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -188,54 +193,15 @@ private fun ArticleDetailContent(
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    text = stringResource(article.category.labelRes),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = article.title.orEmpty().ifBlank { unnamedArticle },
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                val meta = article.metaText()
-                if (meta.isNotBlank()) {
-                    Text(
-                        text = meta,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (!article.sourceUrl.isNullOrBlank()) {
-                    TextButton(onClick = { onOpenSource(article.sourceUrl) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Spacer(modifier = Modifier.size(6.dp))
-                        Text(stringResource(R.string.action_view_source))
-                    }
-                }
-            }
-        }
-
-        article.coverImage?.let { coverImage ->
-            item {
-                DetailImage(
-                    image = coverImage,
-                    imageLoader = imageLoader,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .clip(RoundedCornerShape(8.dp)),
-                )
-            }
+            ArticleHero(
+                article = article,
+                unnamedArticle = unnamedArticle,
+                imageLoader = imageLoader,
+                onOpenSource = onOpenSource,
+            )
         }
 
         if (!article.summary.isNullOrBlank()) {
@@ -267,13 +233,9 @@ private fun ArticleDetailContent(
 
         if (article.relatedArticles.isNotEmpty()) {
             item {
-                HorizontalDivider()
-            }
-            item {
-                Text(
-                    text = stringResource(R.string.related_articles_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
+                HeritageSectionHeader(
+                    title = stringResource(R.string.related_articles_title),
+                    modifier = Modifier.padding(top = 2.dp),
                 )
             }
             items(article.relatedArticles) { reference ->
@@ -289,16 +251,70 @@ private fun ArticleDetailContent(
 }
 
 @Composable
+private fun ArticleHero(
+    article: ArticleDetailDto,
+    unnamedArticle: String,
+    imageLoader: ImageLoader,
+    onOpenSource: (String) -> Unit,
+) {
+    HeritageContentCard {
+        Column {
+            article.coverImage?.let { coverImage ->
+                DetailImage(
+                    image = coverImage,
+                    imageLoader = imageLoader,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f),
+                )
+            }
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                HeritageMetaChip(text = stringResource(article.category.labelRes))
+                Text(
+                    text = article.title.orEmpty().ifBlank { unnamedArticle },
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                val meta = article.metaText()
+                if (meta.isNotBlank()) {
+                    Text(
+                        text = meta,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (!article.sourceUrl.isNullOrBlank()) {
+                    TextButton(
+                        onClick = { onOpenSource(article.sourceUrl) },
+                        contentPadding = PaddingValues(horizontal = 0.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(modifier = Modifier.size(6.dp))
+                        Text(stringResource(R.string.action_view_source))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun ContentBlock(
     block: ArticleContentBlockDto,
     imageLoader: ImageLoader,
 ) {
     when (block.type) {
         ArticleContentBlockType.Heading -> {
-            Text(
-                text = block.text.orEmpty(),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
+            HeritageSectionHeader(
+                title = block.text.orEmpty(),
             )
         }
 
@@ -371,13 +387,8 @@ private fun RelatedArticleRow(
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
     val canOpen = !reference.sourceId.isNullOrBlank() || !reference.detailUrl.isNullOrBlank()
-    Card(
-        modifier = Modifier.clickable(
-            enabled = canOpen,
-            onClick = onClick,
-        ),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    HeritageContentCard(
+        onClick = onClick.takeIf { canOpen },
     ) {
         Column(
             modifier = Modifier.padding(14.dp),
