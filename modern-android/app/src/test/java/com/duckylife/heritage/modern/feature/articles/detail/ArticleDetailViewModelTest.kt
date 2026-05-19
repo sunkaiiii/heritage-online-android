@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
+import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -35,6 +36,7 @@ class ArticleDetailViewModelTest {
                     ),
                 ),
             ),
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -56,6 +58,7 @@ class ArticleDetailViewModelTest {
             repository = FakeHeritageRepository(
                 failure = IllegalStateException("detail unavailable"),
             ),
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -82,6 +85,7 @@ class ArticleDetailViewModelTest {
             sourceUrl = null,
             category = ArticleCategory.News,
             repository = repository,
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -108,6 +112,7 @@ class ArticleDetailViewModelTest {
             sourceUrl = sourceUrl,
             category = ArticleCategory.News,
             repository = repository,
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -134,6 +139,7 @@ class ArticleDetailViewModelTest {
                 ),
                 failure = IllegalStateException("network down"),
             ),
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()

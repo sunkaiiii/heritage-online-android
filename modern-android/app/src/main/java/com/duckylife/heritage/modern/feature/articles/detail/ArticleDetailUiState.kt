@@ -6,4 +6,5 @@ data class ArticleDetailUiState(
     val isLoading: Boolean = true,
     val article: ArticleDetailDto? = null,
     val errorMessage: String? = null,
+    val isFavorite: Boolean = false,
 )

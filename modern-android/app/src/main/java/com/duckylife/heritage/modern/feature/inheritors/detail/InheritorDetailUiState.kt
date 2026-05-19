@@ -6,4 +6,5 @@ data class InheritorDetailUiState(
     val isLoading: Boolean = true,
     val item: InheritorDetailDto? = null,
     val errorMessage: String? = null,
+    val isFavorite: Boolean = false,
 )

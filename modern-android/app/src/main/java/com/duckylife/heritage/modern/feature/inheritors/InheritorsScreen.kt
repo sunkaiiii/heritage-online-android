@@ -69,6 +69,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
+import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
@@ -94,12 +95,26 @@ private data class InheritorDirectoryDetail(
 @Composable
 fun InheritorsRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    pendingNavigation: MyPageDestination.Inheritor? = null,
+    onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val backStack = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateListOf<Any>(InheritorsList) }
     val isInDetail = backStack.lastOrNull() != InheritorsList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
+    }
+    LaunchedEffect(pendingNavigation) {
+        val dest = pendingNavigation ?: return@LaunchedEffect
+        backStack.clear()
+        backStack.add(InheritorsList)
+        backStack.add(
+            InheritorDetail(
+                id = dest.inheritorId,
+                sourceId = dest.sourceId,
+            ),
+        )
+        onPendingNavigationConsumed()
     }
     NavDisplay(
         backStack = backStack,

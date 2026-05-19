@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.data.DirectoryDetailLookup
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -34,6 +35,7 @@ class DirectoryDetailViewModelTest {
                     ),
                 ),
             ),
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -61,6 +63,7 @@ class DirectoryDetailViewModelTest {
             sourceId = "source-1",
             kind = DirectoryItemKind.CulturalEcoZone,
             repository = repository,
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()
@@ -89,6 +92,7 @@ class DirectoryDetailViewModelTest {
                 ),
                 failure = IllegalStateException("network down"),
             ),
+            savedContentRepository = FakeSavedContentRepository(),
         )
 
         advanceUntilIdle()

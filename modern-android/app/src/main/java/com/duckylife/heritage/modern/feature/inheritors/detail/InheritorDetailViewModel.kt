@@ -4,6 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.InheritorDetailLookup
+import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.saved.SavedContentRepository
+import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
+import com.duckylife.heritage.modern.core.saved.SavedContentTarget
+import com.duckylife.heritage.modern.core.saved.SavedContentType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -13,12 +18,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 
 @HiltViewModel(assistedFactory = InheritorDetailViewModel.Factory::class)
 class InheritorDetailViewModel @AssistedInject constructor(
     @Assisted("inheritorId") private val inheritorId: String?,
     @Assisted("sourceId") private val sourceId: String?,
     private val repository: HeritageRepository,
+    private val savedContentRepository: SavedContentRepository,
 ) : ViewModel() {
     private val lookup = InheritorDetailLookup(
         inheritorId = inheritorId,
@@ -27,14 +34,28 @@ class InheritorDetailViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(InheritorDetailUiState())
     val uiState: StateFlow<InheritorDetailUiState> = _uiState.asStateFlow()
 
+    private var snapshot: SavedContentSnapshot? = null
+
     init {
+        observeFavorite()
         observeCachedItem()
         refresh()
     }
 
+    private fun observeFavorite() {
+        val target = SavedContentTarget(
+            id = inheritorId,
+            sourceId = sourceId,
+        )
+        viewModelScope.launch {
+            savedContentRepository.observeFavoriteState(target).collect { isFav ->
+                _uiState.update { it.copy(isFavorite = isFav) }
+            }
+        }
+    }
+
     private fun observeCachedItem() {
         viewModelScope.launch {
-            // 先立刻显示缓存详情；网络刷新成功后再用新内容替换。
             repository.cachedInheritorDetail(lookup).collect { item ->
                 if (item != null) {
                     _uiState.update {
@@ -44,6 +65,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
                             errorMessage = null,
                         )
                     }
+                    recordViewedIfNew(item)
                 }
             }
         }
@@ -63,16 +85,46 @@ class InheritorDetailViewModel @AssistedInject constructor(
                 _uiState.value = InheritorDetailUiState(
                     isLoading = false,
                     item = item,
+                    isFavorite = _uiState.value.isFavorite,
                 )
+                recordViewedIfNew(item)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        // 如果缓存里已有内容，保留可读页面并隐藏临时网络错误；
-                        // 空页面仍然要把失败原因展示出来。
                         errorMessage = if (it.item == null) throwable.message.orEmpty() else null,
                     )
                 }
+            }
+        }
+    }
+
+    fun toggleFavorite() {
+        val snap = snapshot ?: return
+        viewModelScope.launch {
+            savedContentRepository.toggleFavorite(snap)
+        }
+    }
+
+    private fun recordViewedIfNew(item: com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto) {
+        val newSnapshot = SavedContentSnapshot(
+            contentType = SavedContentType.Inheritor,
+            id = item.id,
+            title = item.name,
+            summary = item.description,
+            coverImageJson = item.coverImage?.let { HeritageJson.encodeToString(it) },
+            category = item.category,
+            region = item.region,
+            sourceUrl = item.sourceUrl,
+            target = SavedContentTarget(
+                id = item.id,
+                sourceId = sourceId,
+            ),
+        )
+        if (newSnapshot != snapshot) {
+            snapshot = newSnapshot
+            viewModelScope.launch {
+                savedContentRepository.recordViewed(newSnapshot)
             }
         }
     }

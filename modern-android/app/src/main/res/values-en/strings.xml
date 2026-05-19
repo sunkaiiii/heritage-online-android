@@ -108,4 +108,12 @@
     <string name="articles_search_placeholder">Title or keywords</string>
     <string name="articles_search_empty_message">No matching articles found.</string>
     <string name="article_count_format">%1$d</string>
+    <string name="my_title">My</string>
+    <string name="favorites_tab">Favorites</string>
+    <string name="recent_tab">Recent</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_unfavorite">Unfavorite</string>
+    <string name="favorites_empty_message">No favorites yet.</string>
+    <string name="recent_empty_message">No browsing history yet.</string>
+    <string name="my_page_entry">Favorites &amp; Recent</string>
 </resources>

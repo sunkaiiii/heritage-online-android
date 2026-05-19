@@ -12,6 +12,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
+import com.duckylife.heritage.modern.feature.my.MyPageDestination
 
 private data object ArticlesList
 
@@ -26,12 +27,28 @@ private data class ArticleDetail(
 fun ArticlesNavHost(
     onSettingsSelected: () -> Unit,
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    pendingNavigation: MyPageDestination.Article? = null,
+    onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val backStack = remember { mutableStateListOf<Any>(ArticlesList) }
     val isInDetail = backStack.lastOrNull() is ArticleDetail
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
+    }
+    LaunchedEffect(pendingNavigation) {
+        val dest = pendingNavigation ?: return@LaunchedEffect
+        backStack.clear()
+        backStack.add(ArticlesList)
+        backStack.add(
+            ArticleDetail(
+                id = dest.articleId,
+                sourceId = dest.sourceId,
+                sourceUrl = dest.sourceUrl,
+                category = dest.category,
+            ),
+        )
+        onPendingNavigationConsumed()
     }
     NavDisplay(
         backStack = backStack,

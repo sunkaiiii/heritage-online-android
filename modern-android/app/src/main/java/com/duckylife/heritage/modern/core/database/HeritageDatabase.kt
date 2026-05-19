@@ -11,6 +11,7 @@ import com.duckylife.heritage.modern.core.database.dao.DirectoryRemoteKeyDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorDetailDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorRemoteKeyDao
+import com.duckylife.heritage.modern.core.database.dao.SavedContentDao
 import com.duckylife.heritage.modern.core.database.entity.ArticleDetailEntity
 import com.duckylife.heritage.modern.core.database.entity.ArticleEntity
 import com.duckylife.heritage.modern.core.database.entity.ArticleRemoteKeyEntity
@@ -20,6 +21,7 @@ import com.duckylife.heritage.modern.core.database.entity.DirectoryRemoteKeyEnti
 import com.duckylife.heritage.modern.core.database.entity.InheritorDetailEntity
 import com.duckylife.heritage.modern.core.database.entity.InheritorEntity
 import com.duckylife.heritage.modern.core.database.entity.InheritorRemoteKeyEntity
+import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 
 @Database(
     entities = [
@@ -32,8 +34,9 @@ import com.duckylife.heritage.modern.core.database.entity.InheritorRemoteKeyEnti
         InheritorEntity::class,
         InheritorDetailEntity::class,
         InheritorRemoteKeyEntity::class,
+        SavedContentEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = false,
 )
 abstract class HeritageDatabase : RoomDatabase() {
@@ -46,4 +49,5 @@ abstract class HeritageDatabase : RoomDatabase() {
     abstract fun inheritorDao(): InheritorDao
     abstract fun inheritorDetailDao(): InheritorDetailDao
     abstract fun inheritorRemoteKeyDao(): InheritorRemoteKeyDao
+    abstract fun savedContentDao(): SavedContentDao
 }

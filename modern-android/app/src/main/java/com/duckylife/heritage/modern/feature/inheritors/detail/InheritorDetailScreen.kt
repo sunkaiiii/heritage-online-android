@@ -23,6 +23,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.OpenInNew
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -96,6 +98,7 @@ fun InheritorDetailRoute(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
+        onToggleFavorite = viewModel::toggleFavorite,
         onRelatedProjectSelected = onRelatedProjectSelected,
         onRelatedInheritorSelected = onRelatedInheritorSelected,
         modifier = modifier,
@@ -108,6 +111,7 @@ fun InheritorDetailScreen(
     uiState: InheritorDetailUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
+    onToggleFavorite: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     modifier: Modifier = Modifier,
@@ -139,6 +143,17 @@ fun InheritorDetailScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onToggleFavorite) {
+                        Icon(
+                            imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = if (uiState.isFavorite) {
+                                stringResource(R.string.action_unfavorite)
+                            } else {
+                                stringResource(R.string.action_favorite)
+                            },
+                            tint = if (uiState.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                     IconButton(onClick = onRetry) {
                         Icon(
                             imageVector = Icons.Outlined.Refresh,

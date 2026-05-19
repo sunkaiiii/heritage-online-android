@@ -6,4 +6,5 @@ data class DirectoryDetailUiState(
     val isLoading: Boolean = true,
     val item: DirectoryItemDetailDto? = null,
     val errorMessage: String? = null,
+    val isFavorite: Boolean = false,
 )

@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.settings
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +44,7 @@ fun SettingsScreen(
     onThemeModeSelected: (AppThemeMode) -> Unit,
     onLanguageModeSelected: (AppLanguageMode) -> Unit,
     onBack: () -> Unit,
+    onMyPageClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
@@ -101,6 +104,30 @@ fun SettingsScreen(
                         if (index != AppLanguageMode.entries.lastIndex) {
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                         }
+                    }
+                }
+            }
+
+            item {
+                HeritageContentCard(
+                    modifier = Modifier.clickable(onClick = onMyPageClick),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.my_page_entry),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
             }

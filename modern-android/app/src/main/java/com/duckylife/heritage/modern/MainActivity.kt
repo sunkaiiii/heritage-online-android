@@ -48,6 +48,8 @@ import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
 import com.duckylife.heritage.modern.feature.directory.DirectoryRoute
 import com.duckylife.heritage.modern.feature.inheritors.InheritorsRoute
+import com.duckylife.heritage.modern.feature.my.MyPage
+import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.feature.settings.SettingsScreen
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -149,15 +151,17 @@ private fun HeritageApp(
 ) {
     var selectedDestination by remember { mutableStateOf(HomeDestination.Articles) }
     var showSettings by remember { mutableStateOf(false) }
+    var showMyPage by remember { mutableStateOf(false) }
     var articlesInDetail by remember { mutableStateOf(false) }
     var directoryInDetail by remember { mutableStateOf(false) }
     var inheritorsInDetail by remember { mutableStateOf(false) }
+    var myPageDestination by remember { mutableStateOf<MyPageDestination?>(null) }
     val selectedDestinationInDetail = when (selectedDestination) {
         HomeDestination.Articles -> articlesInDetail
         HomeDestination.Directory -> directoryInDetail
         HomeDestination.Inheritors -> inheritorsInDetail
     }
-    val shouldShowBottomBar = !showSettings && !selectedDestinationInDetail
+    val shouldShowBottomBar = !showSettings && !showMyPage && !selectedDestinationInDetail
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -195,6 +199,29 @@ private fun HeritageApp(
             }
         },
     ) { contentPadding ->
+        // MyPage 分支必须在 Settings 之前：从设置页进入"收藏与最近浏览"后，
+        // showSettings 和 showMyPage 同时为 true，MyPage 优先渲染；
+        // 从 MyPage 返回时只关 MyPage，Settings 仍在下方。
+        if (showMyPage) {
+            MyPage(
+                onBack = { showMyPage = false },
+                onNavigate = { destination ->
+                    myPageDestination = destination
+                    showMyPage = false
+                    showSettings = false
+                    selectedDestination = when (destination) {
+                        is MyPageDestination.Article -> HomeDestination.Articles
+                        is MyPageDestination.Directory -> HomeDestination.Directory
+                        is MyPageDestination.Inheritor -> HomeDestination.Inheritors
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+            )
+            return@Scaffold
+        }
+
         if (showSettings) {
             SettingsScreen(
                 themeMode = themeMode,
@@ -202,6 +229,7 @@ private fun HeritageApp(
                 onThemeModeSelected = onThemeModeSelected,
                 onLanguageModeSelected = onLanguageModeSelected,
                 onBack = { showSettings = false },
+                onMyPageClick = { showMyPage = true },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -213,6 +241,8 @@ private fun HeritageApp(
             HomeDestination.Articles -> ArticlesNavHost(
                 onSettingsSelected = { showSettings = true },
                 onSecondaryDestinationChanged = { articlesInDetail = it },
+                pendingNavigation = myPageDestination as? MyPageDestination.Article,
+                onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -220,6 +250,8 @@ private fun HeritageApp(
 
             HomeDestination.Directory -> DirectoryRoute(
                 onSecondaryDestinationChanged = { directoryInDetail = it },
+                pendingNavigation = myPageDestination as? MyPageDestination.Directory,
+                onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -227,6 +259,8 @@ private fun HeritageApp(
 
             HomeDestination.Inheritors -> InheritorsRoute(
                 onSecondaryDestinationChanged = { inheritorsInDetail = it },
+                pendingNavigation = myPageDestination as? MyPageDestination.Inheritor,
+                onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

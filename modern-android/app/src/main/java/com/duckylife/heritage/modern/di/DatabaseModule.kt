@@ -3,6 +3,9 @@ package com.duckylife.heritage.modern.di
 import android.content.Context
 import androidx.room.Room
 import com.duckylife.heritage.modern.core.database.HeritageDatabase
+import com.duckylife.heritage.modern.core.saved.RoomSavedContentRepository
+import com.duckylife.heritage.modern.core.saved.SavedContentRepository
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,4 +28,14 @@ object DatabaseModule {
         )
             .fallbackToDestructiveMigration(true)
             .build()
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SavedContentModule {
+    @Binds
+    @Singleton
+    abstract fun bindSavedContentRepository(
+        impl: RoomSavedContentRepository,
+    ): SavedContentRepository
 }
