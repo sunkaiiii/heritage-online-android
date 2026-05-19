@@ -1,6 +1,5 @@
 package com.duckylife.heritage.modern.feature.articles.detail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,7 +50,6 @@ import androidx.annotation.StringRes
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
@@ -59,9 +57,10 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
-import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
@@ -257,13 +256,18 @@ private fun ArticleHero(
     imageLoader: ImageLoader,
     onOpenSource: (String) -> Unit,
 ) {
+    val fallbackText = stringResource(R.string.brand_fallback)
     HeritageContentCard {
         Column {
             article.coverImage?.let { coverImage ->
-                DetailImage(
-                    image = coverImage,
+                val coverUrl = coverImage.displayUrl
+                    ?: coverImage.thumbnailUrl
+                    ?: coverImage.originalUrl
+                    ?: coverImage.sourceUrl
+                HeritageDetailImage(
+                    imageUrl = coverUrl,
                     imageLoader = imageLoader,
-                    contentScale = ContentScale.Crop,
+                    fallbackText = fallbackText,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f),
@@ -337,9 +341,14 @@ private fun ContentBlock(
         }
 
         ArticleContentBlockType.Image -> {
-            DetailImage(
-                image = block.image,
+            val blockImageUrl = block.image?.displayUrl
+                ?: block.image?.thumbnailUrl
+                ?: block.image?.originalUrl
+                ?: block.image?.sourceUrl
+            HeritageDetailImage(
+                imageUrl = blockImageUrl,
                 imageLoader = imageLoader,
+                fallbackText = stringResource(R.string.brand_fallback),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -351,64 +360,17 @@ private fun ContentBlock(
 }
 
 @Composable
-private fun DetailImage(
-    image: MediaAssetDto?,
-    imageLoader: ImageLoader,
-    contentScale: ContentScale,
-    modifier: Modifier = Modifier,
-) {
-    val imageUrl = image?.displayUrl ?: image?.thumbnailUrl ?: image?.originalUrl ?: image?.sourceUrl
-    if (imageUrl.isNullOrBlank()) {
-        Box(
-            modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.brand_fallback),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
-        }
-    } else {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = image?.altText,
-            imageLoader = imageLoader,
-            modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            contentScale = contentScale,
-        )
-    }
-}
-
-@Composable
 private fun RelatedArticleRow(
     reference: ArticleReferenceDto,
     onClick: () -> Unit,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
     val canOpen = !reference.sourceId.isNullOrBlank() || !reference.detailUrl.isNullOrBlank()
-    HeritageContentCard(
+    HeritageReferenceCard(
+        title = reference.title.orEmpty().ifBlank { unnamedArticle },
+        meta = formatArticleDate(reference.publishedAt),
         onClick = onClick.takeIf { canOpen },
-    ) {
-        Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = reference.title.orEmpty().ifBlank { unnamedArticle },
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            val publishedAt = formatArticleDate(reference.publishedAt)
-            if (!publishedAt.isNullOrBlank()) {
-                Text(
-                    text = publishedAt,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
+    )
 }
 
 @Composable

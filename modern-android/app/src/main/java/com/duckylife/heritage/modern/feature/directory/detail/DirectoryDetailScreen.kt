@@ -1,7 +1,6 @@
 package com.duckylife.heritage.modern.feature.directory.detail
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +56,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
@@ -69,7 +67,11 @@ import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
+import com.duckylife.heritage.modern.ui.component.HeritageFact
+import com.duckylife.heritage.modern.ui.component.HeritageFactCard
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
@@ -283,13 +285,18 @@ private fun DirectoryHero(
     imageLoader: ImageLoader,
     onOpenSource: (String) -> Unit,
 ) {
+    val fallbackText = stringResource(R.string.brand_fallback)
     HeritageContentCard {
         Column {
             item.coverImage?.let { coverImage ->
-                DetailImage(
-                    image = coverImage,
+                val coverUrl = coverImage.displayUrl
+                    ?: coverImage.thumbnailUrl
+                    ?: coverImage.originalUrl
+                    ?: coverImage.sourceUrl
+                HeritageDetailImage(
+                    imageUrl = coverUrl,
                     imageLoader = imageLoader,
-                    contentScale = ContentScale.Crop,
+                    fallbackText = fallbackText,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f),
@@ -356,39 +363,12 @@ private fun DirectoryMetaChips(item: DirectoryItemDetailDto) {
 @Composable
 private fun DirectoryFacts(item: DirectoryItemDetailDto) {
     val facts = listOfNotNull(
-        item.projectCode?.takeIf { it.isNotBlank() }?.let { R.string.directory_field_project_code to it },
-        item.batch?.takeIf { it.isNotBlank() }?.let { R.string.directory_field_batch to it },
-        item.protectionUnit?.takeIf { it.isNotBlank() }?.let { R.string.directory_field_protection_unit to it },
-        item.nominationType?.takeIf { it.isNotBlank() }?.let { R.string.directory_field_nomination_type to it },
+        item.projectCode?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.directory_field_project_code), it) },
+        item.batch?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.directory_field_batch), it) },
+        item.protectionUnit?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.directory_field_protection_unit), it) },
+        item.nominationType?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.directory_field_nomination_type), it) },
     )
-    if (facts.isEmpty()) {
-        return
-    }
-    HeritageContentCard {
-        Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            facts.forEach { (labelRes, value) ->
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.Top,
-                ) {
-                    Text(
-                        text = stringResource(labelRes),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.weight(0.32f),
-                    )
-                    Text(
-                        text = value,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.weight(0.68f),
-                    )
-                }
-            }
-        }
-    }
+    HeritageFactCard(facts = facts)
 }
 
 @Composable
@@ -396,14 +376,16 @@ private fun GalleryStrip(
     images: List<MediaAssetDto>,
     imageLoader: ImageLoader,
 ) {
+    val fallbackText = stringResource(R.string.brand_fallback)
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items(images) { image ->
-            DetailImage(
-                image = image,
+            val url = image.displayUrl ?: image.thumbnailUrl ?: image.originalUrl ?: image.sourceUrl
+            HeritageDetailImage(
+                imageUrl = url,
                 imageLoader = imageLoader,
-                contentScale = ContentScale.Crop,
+                fallbackText = fallbackText,
                 modifier = Modifier
                     .fillParentMaxWidth(0.72f)
                     .aspectRatio(4f / 3f)
@@ -442,9 +424,14 @@ private fun ContentBlock(
         }
 
         ArticleContentBlockType.Image -> {
-            DetailImage(
-                image = block.image,
+            val blockImageUrl = block.image?.displayUrl
+                ?: block.image?.thumbnailUrl
+                ?: block.image?.originalUrl
+                ?: block.image?.sourceUrl
+            HeritageDetailImage(
+                imageUrl = blockImageUrl,
                 imageLoader = imageLoader,
+                fallbackText = stringResource(R.string.brand_fallback),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -470,8 +457,9 @@ private fun LazyListScope.ReferenceSection(
         )
     }
     items(references) { reference ->
-        ReferenceRow(
-            reference = reference,
+        HeritageReferenceCard(
+            title = reference.title.orEmpty().ifBlank { stringResource(R.string.unnamed_directory_item) },
+            meta = reference.toReferenceMeta(),
             onClick = onReferenceSelected
                 ?.takeIf { reference.canOpenDetail }
                 ?.let { { it(reference) } },
@@ -479,42 +467,17 @@ private fun LazyListScope.ReferenceSection(
     }
 }
 
-@Composable
-private fun ReferenceRow(
-    reference: DirectoryReferenceDto,
-    onClick: (() -> Unit)?,
-) {
-    HeritageContentCard(
-        onClick = onClick,
-    ) {
-        Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Text(
-                text = reference.title.orEmpty().ifBlank { stringResource(R.string.unnamed_directory_item) },
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-            val meta = listOfNotNull(
-                reference.localizedKindLabel(),
-                reference.category?.takeIf { it.isNotBlank() },
-                reference.region?.takeIf { it.isNotBlank() },
-                reference.publishedYear?.let { stringResource(R.string.directory_year_format, it) },
-            ).joinToString(" · ")
-            if (meta.isNotBlank()) {
-                Text(
-                    text = meta,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
 private val DirectoryReferenceDto.canOpenDetail: Boolean
     get() = !sourceId.isNullOrBlank()
+
+@Composable
+private fun DirectoryReferenceDto.toReferenceMeta(): String =
+    listOfNotNull(
+        localizedKindLabel(),
+        category?.takeIf { it.isNotBlank() },
+        region?.takeIf { it.isNotBlank() },
+        publishedYear?.let { stringResource(R.string.directory_year_format, it) },
+    ).joinToString(" · ")
 
 @Composable
 private fun friendlyDetailErrorMessage(
@@ -540,36 +503,6 @@ private fun SectionTitle(
         title = text,
         modifier = modifier,
     )
-}
-
-@Composable
-private fun DetailImage(
-    image: MediaAssetDto?,
-    imageLoader: ImageLoader,
-    contentScale: ContentScale,
-    modifier: Modifier = Modifier,
-) {
-    val imageUrl = image?.displayUrl ?: image?.thumbnailUrl ?: image?.originalUrl ?: image?.sourceUrl
-    if (imageUrl.isNullOrBlank()) {
-        Box(
-            modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.brand_fallback),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
-        }
-    } else {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = image?.altText,
-            imageLoader = imageLoader,
-            modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            contentScale = contentScale,
-        )
-    }
 }
 
 @Composable

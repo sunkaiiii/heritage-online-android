@@ -1,6 +1,5 @@
 package com.duckylife.heritage.modern.feature.inheritors
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,16 +48,15 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
-import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
-import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageListCard
+import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
@@ -348,70 +345,63 @@ private fun InheritorRow(
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
-    HeritageContentCard(
-        modifier = modifier,
+    val fallbackText = stringResource(R.string.brand_fallback)
+    val imageUrl = inheritor.coverImage?.displayUrl
+        ?: inheritor.coverImage?.thumbnailUrl
+        ?: inheritor.coverImage?.originalUrl
+        ?: inheritor.coverImage?.sourceUrl
+    HeritageListCard(
         onClick = onClick,
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-        ) {
-            ImageOrFallback(
-                image = inheritor.coverImage,
+        modifier = modifier,
+        image = {
+            HeritageListImage(
+                imageUrl = imageUrl,
                 imageLoader = imageLoader,
+                fallbackText = fallbackText,
                 modifier = Modifier
                     .size(width = 92.dp, height = 92.dp)
                     .clip(RoundedCornerShape(6.dp)),
             )
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
+        },
+        text = {
+            Text(
+                text = inheritor.name.orEmpty().ifBlank { unnamedInheritor },
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (!inheritor.projectName.isNullOrBlank()) {
                 Text(
-                    text = inheritor.name.orEmpty().ifBlank { unnamedInheritor },
-                    style = MaterialTheme.typography.titleMedium,
+                    text = inheritor.projectName,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                if (!inheritor.projectName.isNullOrBlank()) {
-                    Text(
-                        text = inheritor.projectName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                InheritorMetaRow(inheritor)
-                if (!inheritor.description.isNullOrBlank()) {
-                    Text(
-                        text = inheritor.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
             }
-        }
-    }
+            InheritorMetaRow(inheritor)
+            if (!inheritor.description.isNullOrBlank()) {
+                Text(
+                    text = inheritor.description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        },
+    )
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun InheritorMetaRow(inheritor: InheritorSummaryDto) {
-    val projectCode = inheritor.projectCode?.takeIf { it.isNotBlank() }?.let {
-        stringResource(R.string.inheritor_project_code_format, it)
-    }
     val labels = listOfNotNull(
-        inheritor.gender?.takeIf { it.isNotBlank() },
-        inheritor.ethnicity?.takeIf { it.isNotBlank() },
         inheritor.category?.takeIf { it.isNotBlank() },
         inheritor.region?.takeIf { it.isNotBlank() },
-        projectCode,
         inheritor.batch?.takeIf { it.isNotBlank() },
-    )
+    ).take(3)
 
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -420,35 +410,6 @@ private fun InheritorMetaRow(inheritor: InheritorSummaryDto) {
         labels.forEach { label ->
             HeritageMetaChip(text = label)
         }
-    }
-}
-
-@Composable
-private fun ImageOrFallback(
-    image: MediaAssetDto?,
-    imageLoader: ImageLoader,
-    modifier: Modifier = Modifier,
-) {
-    val imageUrl = image?.displayUrl ?: image?.thumbnailUrl ?: image?.originalUrl ?: image?.sourceUrl
-    if (imageUrl.isNullOrBlank()) {
-        Box(
-            modifier = modifier.background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.brand_fallback),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
-        }
-    } else {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = image?.altText,
-            imageLoader = imageLoader,
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
-        )
     }
 }
 

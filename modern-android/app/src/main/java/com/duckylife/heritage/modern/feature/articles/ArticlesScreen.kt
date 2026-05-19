@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,14 +46,13 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil3.ImageLoader
-import coil3.compose.AsyncImage
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
-import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
-import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageListCard
+import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
@@ -310,6 +308,12 @@ private fun BannerCard(
     banner: HomeBannerDto,
     imageLoader: ImageLoader,
 ) {
+    val bannerImageUrl = banner.mobileImage?.thumbnailUrl
+        ?: banner.mobileImage?.displayUrl
+        ?: banner.displayImage?.thumbnailUrl
+        ?: banner.displayImage?.displayUrl
+        ?: banner.desktopImage?.thumbnailUrl
+        ?: banner.desktopImage?.displayUrl
     Card(
         modifier = Modifier
             .size(width = 300.dp, height = 156.dp),
@@ -317,9 +321,10 @@ private fun BannerCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        ImageOrFallback(
-            image = banner.mobileImage ?: banner.displayImage ?: banner.desktopImage,
+        HeritageListImage(
+            imageUrl = bannerImageUrl,
             imageLoader = imageLoader,
+            fallbackText = stringResource(R.string.brand_fallback),
             modifier = Modifier.fillMaxSize(),
         )
     }
@@ -381,109 +386,51 @@ private fun ArticleRow(
 ) {
     val articleId = article.id
     val unnamedArticle = stringResource(R.string.unnamed_article)
-    HeritageContentCard(
-        modifier = modifier,
+    val fallbackText = stringResource(R.string.brand_fallback)
+    val imageUrl = article.coverImage?.displayUrl
+        ?: article.coverImage?.thumbnailUrl
+        ?: article.coverImage?.originalUrl
+        ?: article.coverImage?.sourceUrl
+    val titleMaxLines = if (prominent) 3 else 2
+    HeritageListCard(
         onClick = articleId?.let { id -> { onClick(id) } },
-    ) {
-        if (prominent) {
-            Column(
-                modifier = Modifier.padding(14.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                ImageOrFallback(
-                    image = article.coverImage,
-                    imageLoader = imageLoader,
-                    modifier = Modifier
+        modifier = modifier,
+        prominent = prominent,
+        image = {
+            HeritageListImage(
+                imageUrl = imageUrl,
+                imageLoader = imageLoader,
+                fallbackText = fallbackText,
+                modifier = if (prominent) {
+                    Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
-                        .clip(RoundedCornerShape(6.dp)),
-                )
-                ArticleTextContent(
-                    article = article,
-                    unnamedArticle = unnamedArticle,
-                    titleMaxLines = 3,
-                )
-            }
-        } else {
-            Row(
-                modifier = Modifier.padding(14.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-            ) {
-                ImageOrFallback(
-                    image = article.coverImage,
-                    imageLoader = imageLoader,
-                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                } else {
+                    Modifier
                         .size(width = 104.dp, height = 82.dp)
-                        .clip(RoundedCornerShape(6.dp)),
-                )
-                ArticleTextContent(
-                    article = article,
-                    unnamedArticle = unnamedArticle,
-                    titleMaxLines = 2,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ArticleTextContent(
-    article: ArticleSummaryDto,
-    unnamedArticle: String,
-    titleMaxLines: Int,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
-        HeritageMetaChip(text = stringResource(article.category.labelRes))
-        Text(
-            text = article.title.orEmpty().ifBlank { unnamedArticle },
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = titleMaxLines,
-            overflow = TextOverflow.Ellipsis,
-        )
-        Text(
-            text = article.summary.orEmpty().ifBlank { article.publishedAt.orEmpty() },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-private fun ImageOrFallback(
-    image: MediaAssetDto?,
-    imageLoader: ImageLoader,
-    modifier: Modifier = Modifier,
-) {
-    val imageUrl = image?.displayUrl ?: image?.thumbnailUrl ?: image?.originalUrl ?: image?.sourceUrl
-    if (imageUrl.isNullOrBlank()) {
-        Box(
-            modifier = modifier
-                .background(MaterialTheme.colorScheme.secondaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                text = stringResource(R.string.brand_fallback),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        .clip(RoundedCornerShape(6.dp))
+                },
             )
-        }
-    } else {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = image?.altText,
-            imageLoader = imageLoader,
-            modifier = modifier,
-            contentScale = ContentScale.Crop,
-        )
-    }
+        },
+        text = {
+            HeritageMetaChip(text = stringResource(article.category.labelRes))
+            Text(
+                text = article.title.orEmpty().ifBlank { unnamedArticle },
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = titleMaxLines,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = article.summary.orEmpty().ifBlank { article.publishedAt.orEmpty() },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+    )
 }
 
 @Composable
