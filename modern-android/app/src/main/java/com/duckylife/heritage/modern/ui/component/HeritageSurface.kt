@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +28,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 
@@ -319,6 +325,31 @@ fun HeritageReferenceCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun HeritageFilterButton(
+    activeFilterCount: Int,
+    onClick: () -> Unit,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
+) {
+    IconButton(onClick = onClick, modifier = modifier) {
+        BadgedBox(
+            badge = {
+                if (activeFilterCount > 0) {
+                    Badge {
+                        Text(activeFilterCount.toString())
+                    }
+                }
+            },
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.FilterList,
+                contentDescription = contentDescription,
+            )
         }
     }
 }

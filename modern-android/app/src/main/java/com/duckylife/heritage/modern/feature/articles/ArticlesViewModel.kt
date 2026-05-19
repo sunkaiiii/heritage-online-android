@@ -31,16 +31,18 @@ class ArticlesViewModel @Inject constructor(
 
     val articles: Flow<PagingData<ArticleSummaryDto>> =
         uiState
-            .map { it.selectedCategory }
-            .distinctUntilChanged()
-            .flatMapLatest { category ->
-                repository.pagedArticles(
-                    ArticleQuery(
-                        category = category,
-                        page = 1,
-                        pageSize = 20,
-                    ),
+            .map { state ->
+                ArticleQuery(
+                    category = state.selectedCategory,
+                    page = 1,
+                    pageSize = 20,
+                    keywords = state.searchKeywords.trim().takeIf { it.isNotEmpty() },
+                    year = state.yearFilter.toIntOrNull(),
                 )
+            }
+            .distinctUntilChanged()
+            .flatMapLatest { query ->
+                repository.pagedArticles(query)
             }
             .cachedIn(viewModelScope)
 
@@ -73,5 +75,17 @@ class ArticlesViewModel @Inject constructor(
 
     fun selectCategory(category: ArticleCategory) {
         _uiState.update { it.copy(selectedCategory = category) }
+    }
+
+    fun updateSearchKeywords(keywords: String) {
+        _uiState.update { it.copy(searchKeywords = keywords) }
+    }
+
+    fun updateYearFilter(year: String) {
+        _uiState.update { it.copy(yearFilter = year) }
+    }
+
+    fun clearFilters() {
+        _uiState.update { it.copy(searchKeywords = "", yearFilter = "") }
     }
 }

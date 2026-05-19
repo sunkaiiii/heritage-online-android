@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,12 +24,25 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +69,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
+import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
@@ -190,6 +205,7 @@ private val DirectoryReferenceDto.isInheritorReference: Boolean
     get() = kind.equals("inheritor", ignoreCase = true) ||
         detailUrl?.contains("/ccr_detail/", ignoreCase = true) == true
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InheritorsListRoute(
     onInheritorSelected: (InheritorSummaryDto) -> Unit,
@@ -198,20 +214,38 @@ private fun InheritorsListRoute(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val inheritors = viewModel.inheritors.collectAsLazyPagingItems()
+    var showFilterSheet by remember { mutableStateOf(false) }
     InheritorsScreen(
         uiState = uiState,
         inheritors = inheritors,
+        showFilterSheet = showFilterSheet,
         onSearchKeywordsChanged = viewModel::updateSearchKeywords,
+        onFilterClick = { showFilterSheet = true },
+        onFilterDismiss = { showFilterSheet = false },
+        onRegionFilterChanged = viewModel::updateRegionFilter,
+        onCategoryFilterChanged = viewModel::updateCategoryFilter,
+        onYearFilterChanged = viewModel::updateYearFilter,
+        onGenderFilterChanged = viewModel::updateGenderFilter,
+        onClearFilters = viewModel::clearFilters,
         onInheritorSelected = onInheritorSelected,
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InheritorsScreen(
     uiState: InheritorsUiState,
     inheritors: LazyPagingItems<InheritorSummaryDto>,
+    showFilterSheet: Boolean,
     onSearchKeywordsChanged: (String) -> Unit,
+    onFilterClick: () -> Unit,
+    onFilterDismiss: () -> Unit,
+    onRegionFilterChanged: (String) -> Unit,
+    onCategoryFilterChanged: (String) -> Unit,
+    onYearFilterChanged: (String) -> Unit,
+    onGenderFilterChanged: (String) -> Unit,
+    onClearFilters: () -> Unit,
     onInheritorSelected: (InheritorSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -223,7 +257,11 @@ fun InheritorsScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
-                InheritorsHeader(onRetry = inheritors::refresh)
+                InheritorsHeader(
+                    activeFilterCount = uiState.activeFilterCount,
+                    onFilterClick = onFilterClick,
+                    onRetry = inheritors::refresh,
+                )
             }
 
             item {
@@ -320,14 +358,40 @@ fun InheritorsScreen(
             }
         }
     }
+    if (showFilterSheet) {
+        InheritorFilterSheet(
+            regionFilter = uiState.regionFilter,
+            categoryFilter = uiState.categoryFilter,
+            yearFilter = uiState.yearFilter,
+            genderFilter = uiState.genderFilter,
+            onRegionFilterChanged = onRegionFilterChanged,
+            onCategoryFilterChanged = onCategoryFilterChanged,
+            onYearFilterChanged = onYearFilterChanged,
+            onGenderFilterChanged = onGenderFilterChanged,
+            onClear = {
+                onClearFilters()
+                onFilterDismiss()
+            },
+            onDismiss = onFilterDismiss,
+        )
+    }
 }
 
 @Composable
-private fun InheritorsHeader(onRetry: () -> Unit) {
+private fun InheritorsHeader(
+    activeFilterCount: Int,
+    onFilterClick: () -> Unit,
+    onRetry: () -> Unit,
+) {
     HeritagePageHeader(
         title = stringResource(R.string.inheritors_title),
         subtitle = stringResource(R.string.inheritors_subtitle),
     ) {
+        HeritageFilterButton(
+            activeFilterCount = activeFilterCount,
+            onClick = onFilterClick,
+            contentDescription = stringResource(R.string.filter_button),
+        )
         IconButton(onClick = onRetry) {
             Icon(
                 imageVector = Icons.Outlined.Refresh,
@@ -481,6 +545,110 @@ private fun StatusContent(
         Spacer(modifier = Modifier.height(18.dp))
         Button(onClick = onAction) {
             Text(actionLabel)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun InheritorFilterSheet(
+    regionFilter: String,
+    categoryFilter: String,
+    yearFilter: String,
+    genderFilter: String,
+    onRegionFilterChanged: (String) -> Unit,
+    onCategoryFilterChanged: (String) -> Unit,
+    onYearFilterChanged: (String) -> Unit,
+    onGenderFilterChanged: (String) -> Unit,
+    onClear: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.filter_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            OutlinedTextField(
+                value = regionFilter,
+                onValueChange = onRegionFilterChanged,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.filter_field_region)) },
+                placeholder = { Text("四川") },
+                singleLine = true,
+            )
+            OutlinedTextField(
+                value = categoryFilter,
+                onValueChange = onCategoryFilterChanged,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.filter_field_category)) },
+                placeholder = { Text(stringResource(R.string.directory_field_category)) },
+                singleLine = true,
+            )
+            OutlinedTextField(
+                value = yearFilter,
+                onValueChange = onYearFilterChanged,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.filter_field_year)) },
+                placeholder = { Text("2018") },
+                singleLine = true,
+            )
+            Text(
+                text = stringResource(R.string.filter_field_gender),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            val genderOptions = listOf(
+                stringResource(R.string.filter_gender_any),
+                stringResource(R.string.filter_gender_male),
+                stringResource(R.string.filter_gender_female),
+            )
+            val selectedIndex = when (genderFilter) {
+                "男" -> 1
+                "女" -> 2
+                else -> 0
+            }
+            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                genderOptions.forEachIndexed { index, label ->
+                    SegmentedButton(
+                        selected = index == selectedIndex,
+                        onClick = {
+                            val value = when (index) {
+                                1 -> "男"
+                                2 -> "女"
+                                else -> ""
+                            }
+                            onGenderFilterChanged(value)
+                        },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = genderOptions.size,
+                        ),
+                    ) {
+                        Text(label)
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.filter_clear))
+                }
+            }
         }
     }
 }

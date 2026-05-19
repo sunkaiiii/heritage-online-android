@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,12 +26,21 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,14 +62,17 @@ import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
+import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesRoute(
     onSettingsSelected: () -> Unit,
@@ -68,23 +82,40 @@ fun ArticlesRoute(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val articles = viewModel.articles.collectAsLazyPagingItems()
+    var showFilterSheet by remember { mutableStateOf(false) }
+    val activeFilterCount = listOf(uiState.yearFilter).count { it.isNotBlank() }
     ArticlesScreen(
         uiState = uiState,
         articles = articles,
+        activeFilterCount = activeFilterCount,
+        showFilterSheet = showFilterSheet,
         onRefreshBanners = viewModel::refreshBanners,
         onCategorySelected = viewModel::selectCategory,
+        onSearchKeywordsChanged = viewModel::updateSearchKeywords,
+        onFilterClick = { showFilterSheet = true },
+        onFilterDismiss = { showFilterSheet = false },
+        onYearFilterChanged = viewModel::updateYearFilter,
+        onClearFilters = viewModel::clearFilters,
         onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesScreen(
     uiState: ArticlesUiState,
     articles: LazyPagingItems<ArticleSummaryDto>,
+    activeFilterCount: Int,
+    showFilterSheet: Boolean,
     onRefreshBanners: () -> Unit,
     onCategorySelected: (ArticleCategory) -> Unit,
+    onSearchKeywordsChanged: (String) -> Unit,
+    onFilterClick: () -> Unit,
+    onFilterDismiss: () -> Unit,
+    onYearFilterChanged: (String) -> Unit,
+    onClearFilters: () -> Unit,
     onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -93,21 +124,38 @@ fun ArticlesScreen(
     ArticlesContent(
         uiState = uiState,
         articles = articles,
+        activeFilterCount = activeFilterCount,
         onRefreshBanners = onRefreshBanners,
         onCategorySelected = onCategorySelected,
+        onSearchKeywordsChanged = onSearchKeywordsChanged,
+        onFilterClick = onFilterClick,
         onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         imageLoader = imageLoader,
         modifier = modifier,
     )
+    if (showFilterSheet) {
+        ArticleFilterSheet(
+            yearFilter = uiState.yearFilter,
+            onYearFilterChanged = onYearFilterChanged,
+            onClear = {
+                onClearFilters()
+                onFilterDismiss()
+            },
+            onDismiss = onFilterDismiss,
+        )
+    }
 }
 
 @Composable
 private fun ArticlesContent(
     uiState: ArticlesUiState,
     articles: LazyPagingItems<ArticleSummaryDto>,
+    activeFilterCount: Int,
     onRefreshBanners: () -> Unit,
     onCategorySelected: (ArticleCategory) -> Unit,
+    onSearchKeywordsChanged: (String) -> Unit,
+    onFilterClick: () -> Unit,
     onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     imageLoader: ImageLoader,
@@ -121,6 +169,8 @@ private fun ArticlesContent(
         ) {
             item {
                 ArticlesHeader(
+                    activeFilterCount = activeFilterCount,
+                    onFilterClick = onFilterClick,
                     onSettingsSelected = onSettingsSelected,
                     onRetry = {
                         onRefreshBanners()
@@ -156,6 +206,17 @@ private fun ArticlesContent(
             }
 
             item {
+                HeritageSearchField(
+                    value = uiState.searchKeywords,
+                    onValueChange = onSearchKeywordsChanged,
+                    label = stringResource(R.string.articles_search_label),
+                    placeholder = stringResource(R.string.articles_search_placeholder),
+                    clearContentDescription = stringResource(R.string.action_clear_search),
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
+
+            item {
                 ArticleCategoryTabs(
                     selectedCategory = uiState.selectedCategory,
                     onCategorySelected = onCategorySelected,
@@ -184,7 +245,13 @@ private fun ArticlesContent(
                 is LoadState.NotLoading -> {
                     if (articles.itemCount == 0) {
                         item {
+                            val emptyMessage = if (uiState.searchKeywords.isNotBlank()) {
+                                stringResource(R.string.articles_search_empty_message)
+                            } else {
+                                stringResource(R.string.home_empty_message)
+                            }
                             EmptyContent(
+                                message = emptyMessage,
                                 onRetry = articles::refresh,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -260,6 +327,8 @@ private fun ArticleCategoryTabs(
 
 @Composable
 private fun ArticlesHeader(
+    activeFilterCount: Int,
+    onFilterClick: () -> Unit,
     onSettingsSelected: () -> Unit,
     onRetry: () -> Unit,
 ) {
@@ -267,6 +336,11 @@ private fun ArticlesHeader(
         title = stringResource(R.string.articles_header_title),
         subtitle = stringResource(R.string.articles_header_subtitle),
     ) {
+        HeritageFilterButton(
+            activeFilterCount = activeFilterCount,
+            onClick = onFilterClick,
+            contentDescription = stringResource(R.string.filter_button),
+        )
         IconButton(onClick = onSettingsSelected) {
             Icon(
                 imageVector = Icons.Outlined.Settings,
@@ -460,12 +534,13 @@ private fun ErrorContent(
 
 @Composable
 private fun EmptyContent(
+    message: String,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     StatusContent(
         title = stringResource(R.string.content_empty_title),
-        message = stringResource(R.string.home_empty_message),
+        message = message,
         actionLabel = stringResource(R.string.action_refresh),
         onAction = onRetry,
         modifier = modifier,
@@ -512,6 +587,52 @@ private val ArticleCategory.labelRes: Int
         ArticleCategory.Forum -> R.string.category_forum
         ArticleCategory.SpecialTopic -> R.string.category_special_topic
     }
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@Composable
+private fun ArticleFilterSheet(
+    yearFilter: String,
+    onYearFilterChanged: (String) -> Unit,
+    onClear: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.filter_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold,
+            )
+            OutlinedTextField(
+                value = yearFilter,
+                onValueChange = onYearFilterChanged,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.filter_field_year)) },
+                placeholder = { Text("2024") },
+                singleLine = true,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = onClear) {
+                    Text(stringResource(R.string.filter_clear))
+                }
+            }
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

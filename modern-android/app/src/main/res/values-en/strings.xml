@@ -92,4 +92,20 @@
     <string name="language_mode_system">Follow system</string>
     <string name="language_mode_simplified_chinese">简体中文</string>
     <string name="language_mode_english">English</string>
+    <string name="filter_button">Filter</string>
+    <string name="filter_clear">Clear filters</string>
+    <string name="filter_apply">Apply</string>
+    <string name="filter_title">Filters</string>
+    <string name="filter_field_region">Region</string>
+    <string name="filter_field_category">Category</string>
+    <string name="filter_field_year">Year</string>
+    <string name="filter_field_gender">Gender</string>
+    <string name="filter_field_list_type">List type</string>
+    <string name="filter_gender_any">Any</string>
+    <string name="filter_gender_male">Male</string>
+    <string name="filter_gender_female">Female</string>
+    <string name="articles_search_label">Search articles</string>
+    <string name="articles_search_placeholder">Title or keywords</string>
+    <string name="articles_search_empty_message">No matching articles found.</string>
+    <string name="article_count_format">%1$d</string>
 </resources>

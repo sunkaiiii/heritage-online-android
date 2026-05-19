@@ -36,6 +36,10 @@ class DirectoryViewModel @Inject constructor(
                     page = 1,
                     pageSize = 20,
                     keywords = state.searchKeywords.trim().takeIf { it.isNotEmpty() },
+                    region = state.regionFilter.trim().takeIf { it.isNotEmpty() },
+                    category = state.categoryFilter.trim().takeIf { it.isNotEmpty() },
+                    year = state.yearFilter.toIntOrNull(),
+                    listType = state.listTypeFilter.trim().takeIf { it.isNotEmpty() },
                 )
             }
             .distinctUntilChanged()
@@ -50,5 +54,33 @@ class DirectoryViewModel @Inject constructor(
 
     fun updateSearchKeywords(keywords: String) {
         _uiState.update { it.copy(searchKeywords = keywords) }
+    }
+
+    fun updateRegionFilter(region: String) {
+        _uiState.update { it.copy(regionFilter = region) }
+    }
+
+    fun updateCategoryFilter(category: String) {
+        _uiState.update { it.copy(categoryFilter = category) }
+    }
+
+    fun updateYearFilter(year: String) {
+        _uiState.update { it.copy(yearFilter = year) }
+    }
+
+    fun updateListTypeFilter(listType: String) {
+        _uiState.update { it.copy(listTypeFilter = listType) }
+    }
+
+    fun clearFilters() {
+        _uiState.update {
+            it.copy(
+                searchKeywords = "",
+                regionFilter = "",
+                categoryFilter = "",
+                yearFilter = "",
+                listTypeFilter = "",
+            )
+        }
     }
 }
