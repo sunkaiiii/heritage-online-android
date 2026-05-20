@@ -10,6 +10,9 @@ android {
     namespace = "com.duckylife.heritage.modern"
     compileSdk = 36
 
+    val apiBaseUrl = project.findProperty("heritageApiBaseUrl") as? String
+        ?: "https://10.0.2.2:5078"
+
     defaultConfig {
         applicationId = "com.duckylife.heritage.modern"
         minSdk = 26
@@ -18,10 +21,24 @@ android {
         versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "HERITAGE_API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
+    }
+
+    buildTypes {
+        debug {
+            val trustSelfSigned = project.findProperty("heritageTrustSelfSigned") as? String ?: "true"
+            buildConfigField("boolean", "HERITAGE_TRUST_SELF_SIGNED_CERTS", trustSelfSigned)
+        }
+        release {
+            val trustSelfSigned = project.findProperty("heritageTrustSelfSigned") as? String ?: "false"
+            buildConfigField("boolean", "HERITAGE_TRUST_SELF_SIGNED_CERTS", trustSelfSigned)
+        }
     }
 
 }

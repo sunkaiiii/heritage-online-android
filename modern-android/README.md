@@ -30,7 +30,7 @@ The first network contract layer is in place:
 - DTOs: `app/src/main/java/com/duckylife/heritage/modern/core/network/dto`
 - API client: `app/src/main/java/com/duckylife/heritage/modern/core/network/HeritageApiClient.kt`
 - Repository boundary: `app/src/main/java/com/duckylife/heritage/modern/core/data/HeritageRepository.kt`
-- Local development base URL: `https://10.0.2.2:5078`
+- Base URL configured via `BuildConfig.HERITAGE_API_BASE_URL` (default `https://10.0.2.2:5078`)
 
 The contract maps the local Swagger document:
 
@@ -46,16 +46,36 @@ cd modern-android
 ./gradlew :app:testDebugUnitTest :app:assembleDebug
 ```
 
-## Next Slice
+## Network Configuration
 
-The first visible product slice has started:
+The base URL and HTTPS trust settings are injected at build time via `BuildConfig`:
 
-1. Home banner data loading
-2. Article list ViewModel with loading/error/empty states
-3. Compose article list screen
+| Field | Source | Default |
+|-------|--------|---------|
+| `HERITAGE_API_BASE_URL` | `-PheritageApiBaseUrl=...` | `https://10.0.2.2:5078` |
+| `HERITAGE_TRUST_SELF_SIGNED_CERTS` | `-PheritageTrustSelfSigned=...` | `true` (debug) / `false` (release) |
 
-Next up:
+### Emulator (default)
 
-1. Article detail screen
-2. Navigation 3 back stack wiring
-3. Basic pagination for article list
+The Android emulator maps the host machine's `localhost` to `10.0.2.2`.
+No extra configuration is needed when the backend is running on the same machine.
+
+### Physical device
+
+Use your machine's LAN IP so the device can reach the backend:
+
+```bash
+./gradlew :app:assembleDebug -PheritageApiBaseUrl=https://192.168.x.x:5078
+```
+
+### Self-signed certificates
+
+Debug builds trust self-signed certificates by default.
+Release builds do not. To force trust in a release build:
+
+```bash
+./gradlew :app:assembleRelease -PheritageTrustSelfSigned=true
+```
+
+When `HERITAGE_TRUST_SELF_SIGNED_CERTS` is false, the OkHttp engine
+will reject any certificate that is not trusted by the system trust store.

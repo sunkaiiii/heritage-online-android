@@ -64,7 +64,7 @@ interface HeritageApiClient {
 
 class KtorHeritageApiClient(
     private val httpClient: HttpClient,
-    private val baseUrl: String = LocalDevBaseUrl,
+    private val baseUrl: String,
 ) : HeritageApiClient {
     override suspend fun getHomeBanners(): List<HomeBannerDto> =
         httpClient.get(endpoint("api/home-banners")).body()
@@ -144,7 +144,7 @@ class KtorHeritageApiClient(
 }
 
 fun createHeritageHttpClient(
-    config: HeritageApiConfig = HeritageApiConfig(),
+    config: HeritageApiConfig,
 ): HttpClient = HttpClient(OkHttp) {
     expectSuccess = true
 
@@ -169,7 +169,7 @@ fun createHeritageHttpClient(
 }
 
 fun createHeritageApiClient(
-    config: HeritageApiConfig = HeritageApiConfig(),
+    config: HeritageApiConfig,
 ): HeritageApiClient = KtorHeritageApiClient(
     httpClient = createHeritageHttpClient(config),
     baseUrl = config.baseUrl,
@@ -181,7 +181,7 @@ private fun HttpRequestBuilder.optionalParameter(name: String, value: Any?) {
     }
 }
 
-private fun trustAllCertificatesManager(): X509TrustManager =
+fun trustAllCertificatesManager(): X509TrustManager =
     object : X509TrustManager {
         override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) = Unit
 
@@ -190,7 +190,7 @@ private fun trustAllCertificatesManager(): X509TrustManager =
         override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
     }
 
-private fun trustAllSslSocketFactory(trustManager: X509TrustManager): SSLSocketFactory {
+fun trustAllSslSocketFactory(trustManager: X509TrustManager): SSLSocketFactory {
     val sslContext = SSLContext.getInstance("TLS")
     sslContext.init(null, arrayOf(trustManager), SecureRandom())
     return sslContext.socketFactory
