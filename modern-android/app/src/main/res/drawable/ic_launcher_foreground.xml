@@ -4,30 +4,28 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- 抽象印章：外框保留非遗印记感，内部刻痕暗示 E 与“迹”。 -->
+    <!-- 第二版抽象印记：去掉内框，让图标在圆形裁切下更干净。 -->
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,33h40c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,49h31c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,65h40c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
     <path
         android:fillColor="#00000000"
-        android:pathData="M31,24h46c4.4,0 8,3.6 8,8v44c0,4.4 -3.6,8 -8,8H31c-4.4,0 -8,-3.6 -8,-8V32c0,-4.4 3.6,-8 8,-8z"
-        android:strokeWidth="5"
-        android:strokeColor="#FFF7EF"
-        android:strokeLineJoin="round" />
-    <path
-        android:fillColor="#FFF7EF"
-        android:pathData="M34,36h31c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
-    <path
-        android:fillColor="#FFF7EF"
-        android:pathData="M34,51h25c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
-    <path
-        android:fillColor="#FFF7EF"
-        android:pathData="M34,66h33c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
-    <path
-        android:fillColor="#00000000"
-        android:pathData="M73,37c6,8 5.2,16.5 -2.2,25.2c-2.6,3.1 -2.1,6.8 2.2,9.8c3.2,2.2 7.2,3.6 11,4.2"
-        android:strokeWidth="5"
-        android:strokeColor="#FFF7EF"
+        android:pathData="M74,34c8,9 8,20 0,29c-3,3.4 -3,7.4 0.6,10.5c2.8,2.4 6.6,3.9 10.4,4.6"
+        android:strokeWidth="6.5"
+        android:strokeColor="#F8E9DD"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:fillColor="#FFF7EF"
-        android:pathData="M78,25.5c2.5,0 4.5,2 4.5,4.5s-2,4.5 -4.5,4.5s-4.5,-2 -4.5,-4.5s2,-4.5 4.5,-4.5z" />
+        android:fillColor="#F8E9DD"
+        android:pathData="M80,24c3,0 5.5,2.5 5.5,5.5S83,35 80,35s-5.5,-2.5 -5.5,-5.5S77,24 80,24z" />
+    <path
+        android:fillColor="#C66B4E"
+        android:fillAlpha="0.32"
+        android:pathData="M29,82h48c2.2,0 4,1.8 4,4s-1.8,4 -4,4H29c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4z" />
 </vector>
