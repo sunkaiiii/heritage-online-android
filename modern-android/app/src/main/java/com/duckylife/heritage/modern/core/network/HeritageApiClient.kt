@@ -6,6 +6,9 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
@@ -47,6 +50,16 @@ interface HeritageApiClient {
     suspend fun getDirectoryItems(
         query: DirectoryItemQuery = DirectoryItemQuery(),
     ): PagedResult<DirectoryItemSummaryDto>
+
+    suspend fun getDirectoryStatisticsOverview(
+        kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+    ): DirectoryStatisticsOverviewDto
+
+    suspend fun getDirectoryStatisticsBreakdown(
+        kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+        dimension: DirectoryStatisticDimension,
+        limit: Int = 50,
+    ): DirectoryStatisticDimensionDto
 
     suspend fun getDirectoryItem(id: String): DirectoryItemDetailDto
 
@@ -110,6 +123,24 @@ class KtorHeritageApiClient(
             optionalParameter("category", query.category)
             optionalParameter("year", query.year)
             optionalParameter("listType", query.listType)
+        }.body()
+
+    override suspend fun getDirectoryStatisticsOverview(
+        kind: DirectoryItemKind,
+    ): DirectoryStatisticsOverviewDto =
+        httpClient.get(endpoint("api/directory-items/statistics")) {
+            optionalParameter("kind", kind.wireName)
+        }.body()
+
+    override suspend fun getDirectoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ): DirectoryStatisticDimensionDto =
+        httpClient.get(endpoint("api/directory-items/statistics/breakdown")) {
+            optionalParameter("kind", kind.wireName)
+            optionalParameter("dimension", dimension.wireName)
+            optionalParameter("limit", limit)
         }.body()
 
     override suspend fun getDirectoryItem(id: String): DirectoryItemDetailDto =

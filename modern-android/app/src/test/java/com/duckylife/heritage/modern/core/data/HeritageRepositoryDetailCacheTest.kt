@@ -4,6 +4,10 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -162,6 +166,52 @@ class HeritageRepositoryDetailCacheTest {
         val result = repo.cachedDirectoryDetail(lookup).first()
         assertNotNull(result)
         assertEquals("Cached Directory", result?.title)
+    }
+
+    // endregion
+
+    // region Directory statistics
+
+    @Test
+    fun directoryStatisticsOverviewUsesKind() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = DirectoryStatisticsOverviewDto(
+                kind = "nationalProject",
+                total = 950,
+            ),
+        )
+
+        val result = repo.directoryStatisticsOverview(DirectoryItemKind.NationalProject)
+
+        assertEquals(950, result.total)
+        assertEquals(1, repo.directoryStatisticsOverviewQueries.size)
+        assertEquals(DirectoryItemKind.NationalProject, repo.directoryStatisticsOverviewQueries.first())
+    }
+
+    @Test
+    fun directoryStatisticsBreakdownUsesKindDimensionAndLimit() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsBreakdowns = mapOf(
+                DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(
+                    dimension = "region",
+                    items = listOf(DirectoryStatisticItemDto(key = "西藏自治区", name = "西藏自治区", value = 7)),
+                ),
+            ),
+        )
+
+        val result = repo.directoryStatisticsBreakdown(
+            kind = DirectoryItemKind.NationalProject,
+            dimension = DirectoryStatisticDimension.Region,
+            limit = 20,
+        )
+
+        assertEquals("region", result.dimension)
+        assertEquals(7, result.items.first().value)
+        assertEquals(1, repo.directoryStatisticsBreakdownQueries.size)
+        assertEquals(
+            Triple(DirectoryItemKind.NationalProject, DirectoryStatisticDimension.Region, 20),
+            repo.directoryStatisticsBreakdownQueries.first(),
+        )
     }
 
     // endregion

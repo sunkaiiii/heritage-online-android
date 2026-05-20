@@ -132,4 +132,17 @@
     <string name="filter_placeholder_year">2024</string>
     <string name="filter_placeholder_region">北京</string>
     <string name="filter_placeholder_list_type">representative</string>
+    <string name="directory_tab_list">名录</string>
+    <string name="directory_tab_statistics">统计</string>
+    <string name="statistics_overview_title">总览</string>
+    <string name="statistics_total_projects">%1$d 个项目</string>
+    <string name="statistics_generated_at">统计生成于 %1$s</string>
+    <string name="statistics_dimensions_count">%1$d 个统计维度</string>
+    <string name="statistics_year_title">年份分布</string>
+    <string name="statistics_category_title">类别分布</string>
+    <string name="statistics_region_title">地区排行</string>
+    <string name="statistics_loading">统计数据加载中</string>
+    <string name="statistics_empty_message">暂无统计数据</string>
+    <string name="statistics_load_failed">统计数据加载失败</string>
+    <string name="statistics_percentage_format">%.1f%%</string>
 </resources>

@@ -2,6 +2,8 @@ package com.duckylife.heritage.modern.core.network
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -267,5 +269,106 @@ class KtorHeritageApiClientTest {
         assertEquals("/api/articles/source", request.url.encodedPath)
         assertEquals("specialTopic", request.url.parameters["category"])
         assertEquals(sourceUrl, request.url.parameters["sourceUrl"])
+    }
+
+    @Test
+    fun getDirectoryStatisticsOverviewDecodesDimensionsAndSendsKind() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "kind": "nationalProject",
+                      "total": 950,
+                      "generatedAt": "2026-05-20T10:00:00Z",
+                      "dimensions": [
+                        {
+                          "dimension": "publishedYear",
+                          "items": [
+                            { "key": "2006", "name": "2006", "value": 227 },
+                            { "key": "2008", "name": "2008", "value": 398 }
+                          ]
+                        },
+                        {
+                          "dimension": "region",
+                          "items": [
+                            { "key": "浙江省杭州市", "name": "浙江省杭州市", "value": 7 }
+                          ]
+                        }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(HeritageJson)
+            }
+        }
+        val api = KtorHeritageApiClient(
+            httpClient = client,
+            baseUrl = "https://example.test",
+        )
+
+        val result = api.getDirectoryStatisticsOverview(DirectoryItemKind.NationalProject)
+
+        assertEquals("nationalProject", result.kind)
+        assertEquals(950, result.total)
+        assertEquals(2, result.dimensions.size)
+        assertEquals("publishedYear", result.dimensions.first().dimension)
+        assertEquals("2006", result.dimensions.first().items.first().key)
+        assertEquals(227, result.dimensions.first().items.first().value)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/directory-items/statistics", request.url.encodedPath)
+        assertEquals("nationalProject", request.url.parameters["kind"])
+    }
+
+    @Test
+    fun getDirectoryStatisticsBreakdownSendsDimensionAndLimit() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "dimension": "region",
+                      "items": [
+                        { "key": "西藏自治区", "name": "西藏自治区", "value": 7 },
+                        { "key": "内蒙古自治区", "name": "内蒙古自治区", "value": 6 }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) {
+                json(HeritageJson)
+            }
+        }
+        val api = KtorHeritageApiClient(
+            httpClient = client,
+            baseUrl = "https://example.test",
+        )
+
+        val result = api.getDirectoryStatisticsBreakdown(
+            kind = DirectoryItemKind.NationalProject,
+            dimension = DirectoryStatisticDimension.Region,
+            limit = 20,
+        )
+
+        assertEquals("region", result.dimension)
+        assertEquals(2, result.items.size)
+        assertEquals("西藏自治区", result.items.first().name)
+        assertEquals(7, result.items.first().value)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/directory-items/statistics/breakdown", request.url.encodedPath)
+        assertEquals("nationalProject", request.url.parameters["kind"])
+        assertEquals("region", request.url.parameters["dimension"])
+        assertEquals("20", request.url.parameters["limit"])
     }
 }

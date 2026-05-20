@@ -9,10 +9,15 @@ import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +27,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 private const val KEY_DIR_KIND = "dir_kind"
 private const val KEY_DIR_SEARCH = "dir_search"
@@ -29,6 +35,7 @@ private const val KEY_DIR_REGION = "dir_region"
 private const val KEY_DIR_CATEGORY = "dir_category"
 private const val KEY_DIR_YEAR = "dir_year"
 private const val KEY_DIR_LIST_TYPE = "dir_list_type"
+private const val KEY_DIR_TAB = "dir_tab"
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
@@ -36,6 +43,8 @@ class DirectoryViewModel @Inject constructor(
     private val repository: HeritageRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+    private var statisticsJob: Job? = null
+
     private val _uiState = MutableStateFlow(
         DirectoryUiState(
             selectedKind = savedStateHandle.get<String>(KEY_DIR_KIND)
@@ -46,6 +55,9 @@ class DirectoryViewModel @Inject constructor(
             categoryFilter = savedStateHandle.get<String>(KEY_DIR_CATEGORY) ?: "",
             yearFilter = savedStateHandle.get<String>(KEY_DIR_YEAR) ?: "",
             listTypeFilter = savedStateHandle.get<String>(KEY_DIR_LIST_TYPE) ?: "",
+            selectedTab = savedStateHandle.get<String>(KEY_DIR_TAB)
+                ?.let { DirectoryTab.entries.firstOrNull { t -> t.name == it } }
+                ?: DirectoryTab.List,
         )
     )
     val uiState: StateFlow<DirectoryUiState> = _uiState.asStateFlow()
@@ -74,6 +86,67 @@ class DirectoryViewModel @Inject constructor(
     fun selectKind(kind: DirectoryItemKind) {
         savedStateHandle[KEY_DIR_KIND] = kind.wireName
         _uiState.update { it.copy(selectedKind = kind) }
+        if (_uiState.value.selectedTab == DirectoryTab.Statistics) {
+            loadStatistics()
+        }
+    }
+
+    fun selectTab(tab: DirectoryTab) {
+        savedStateHandle[KEY_DIR_TAB] = tab.name
+        _uiState.update { it.copy(selectedTab = tab) }
+        if (tab == DirectoryTab.Statistics && _uiState.value.statisticsState.overview == null) {
+            loadStatistics()
+        }
+    }
+
+    fun refreshStatistics() {
+        loadStatistics()
+    }
+
+    private fun loadStatistics() {
+        statisticsJob?.cancel()
+        val kind = _uiState.value.selectedKind
+        _uiState.update { it.copy(statisticsState = it.statisticsState.copy(isLoading = true, errorKind = null)) }
+        statisticsJob = viewModelScope.launch {
+            try {
+                coroutineScope {
+                    val overviewDeferred = async { repository.directoryStatisticsOverview(kind) }
+                    val yearDeferred = async {
+                        repository.directoryStatisticsBreakdown(kind, DirectoryStatisticDimension.PublishedYear, 50)
+                    }
+                    val categoryDeferred = async {
+                        repository.directoryStatisticsBreakdown(kind, DirectoryStatisticDimension.Category, 12)
+                    }
+                    val regionDeferred = async {
+                        repository.directoryStatisticsBreakdown(kind, DirectoryStatisticDimension.Region, 20)
+                    }
+                    val overview = overviewDeferred.await()
+                    val year = yearDeferred.await()
+                    val category = categoryDeferred.await()
+                    val region = regionDeferred.await()
+                    _uiState.update {
+                        it.copy(
+                            statisticsState = DirectoryStatisticsState(
+                                isLoading = false,
+                                overview = overview,
+                                yearBreakdown = year,
+                                categoryBreakdown = category,
+                                regionBreakdown = region,
+                            ),
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        statisticsState = it.statisticsState.copy(
+                            isLoading = false,
+                            errorKind = e.toUiError().kind,
+                        ),
+                    )
+                }
+            }
+        }
     }
 
     fun updateSearchKeywords(keywords: String) {

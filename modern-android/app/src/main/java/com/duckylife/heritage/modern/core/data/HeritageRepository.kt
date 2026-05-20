@@ -14,6 +14,9 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
@@ -66,6 +69,16 @@ interface HeritageRepository {
     suspend fun directoryItems(
         query: DirectoryItemQuery = DirectoryItemQuery(),
     ): PagedResult<DirectoryItemSummaryDto>
+
+    suspend fun directoryStatisticsOverview(
+        kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+    ): DirectoryStatisticsOverviewDto
+
+    suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+        dimension: DirectoryStatisticDimension,
+        limit: Int = 50,
+    ): DirectoryStatisticDimensionDto
 
     fun pagedDirectoryItems(query: DirectoryItemQuery = DirectoryItemQuery()): Flow<PagingData<DirectoryItemSummaryDto>>
 
@@ -193,6 +206,22 @@ class DefaultHeritageRepository @Inject constructor(
         query: DirectoryItemQuery,
     ): PagedResult<DirectoryItemSummaryDto> =
         apiClient.getDirectoryItems(query)
+
+    override suspend fun directoryStatisticsOverview(
+        kind: DirectoryItemKind,
+    ): DirectoryStatisticsOverviewDto =
+        apiClient.getDirectoryStatisticsOverview(kind)
+
+    override suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ): DirectoryStatisticDimensionDto =
+        apiClient.getDirectoryStatisticsBreakdown(
+            kind = kind,
+            dimension = dimension,
+            limit = limit,
+        )
 
     override fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> =
         directoryPagingRepository.pagedDirectoryItems(query)

@@ -132,4 +132,17 @@
     <string name="filter_placeholder_year">2024</string>
     <string name="filter_placeholder_region">Beijing</string>
     <string name="filter_placeholder_list_type">representative</string>
+    <string name="directory_tab_list">Directory</string>
+    <string name="directory_tab_statistics">Statistics</string>
+    <string name="statistics_overview_title">Overview</string>
+    <string name="statistics_total_projects">%1$d items</string>
+    <string name="statistics_generated_at">Generated at %1$s</string>
+    <string name="statistics_dimensions_count">%1$d dimensions</string>
+    <string name="statistics_year_title">By Year</string>
+    <string name="statistics_category_title">By Category</string>
+    <string name="statistics_region_title">By Region</string>
+    <string name="statistics_loading">Loading statistics</string>
+    <string name="statistics_empty_message">No statistics data available</string>
+    <string name="statistics_load_failed">Failed to load statistics</string>
+    <string name="statistics_percentage_format">%.1f%%</string>
 </resources>

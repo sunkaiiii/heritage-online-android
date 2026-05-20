@@ -109,6 +109,51 @@ enum class DirectoryItemKind(val wireName: String) {
 }
 
 @Serializable
+enum class DirectoryStatisticDimension(val wireName: String) {
+    @SerialName("publishedYear")
+    PublishedYear("publishedYear"),
+
+    @SerialName("category")
+    Category("category"),
+
+    @SerialName("region")
+    Region("region"),
+
+    @SerialName("batch")
+    Batch("batch"),
+
+    @SerialName("listType")
+    ListType("listType"),
+
+    @SerialName("nominationType")
+    NominationType("nominationType"),
+
+    @SerialName("protectionUnit")
+    ProtectionUnit("protectionUnit"),
+}
+
+@Serializable
+data class DirectoryStatisticsOverviewDto(
+    val kind: String? = null,
+    val total: Long = 0,
+    val generatedAt: String? = null,
+    val dimensions: List<DirectoryStatisticDimensionDto> = emptyList(),
+)
+
+@Serializable
+data class DirectoryStatisticDimensionDto(
+    val dimension: String? = null,
+    val items: List<DirectoryStatisticItemDto> = emptyList(),
+)
+
+@Serializable
+data class DirectoryStatisticItemDto(
+    val key: String? = null,
+    val name: String? = null,
+    val value: Long = 0,
+)
+
+@Serializable
 data class DirectoryReferenceDto(
     val title: String? = null,
     val detailUrl: String? = null,

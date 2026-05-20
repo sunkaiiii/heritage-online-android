@@ -4,14 +4,22 @@ import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import androidx.lifecycle.SavedStateHandle
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.ui.error.ErrorKind
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DirectoryViewModelTest {
@@ -145,4 +153,134 @@ class DirectoryViewModelTest {
         assertEquals("", state.listTypeFilter)
         assertEquals(0, state.activeFilterCount)
     }
+
+    // region statistics
+
+    @Test
+    fun `selectTab switches to Statistics tab`() = runTest {
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository())
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+
+        assertEquals(DirectoryTab.Statistics, viewModel.uiState.value.selectedTab)
+    }
+
+    @Test
+    fun `switching to Statistics tab triggers statistics API calls`() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = DirectoryStatisticsOverviewDto(
+                kind = "nationalProject",
+                total = 950,
+                generatedAt = "2025-01-01",
+            ),
+            directoryStatisticsBreakdowns = mapOf(
+                DirectoryStatisticDimension.PublishedYear to DirectoryStatisticDimensionDto(
+                    dimension = "publishedYear",
+                    items = listOf(DirectoryStatisticItemDto(key = "2006", name = "2006", value = 200)),
+                ),
+                DirectoryStatisticDimension.Category to DirectoryStatisticDimensionDto(
+                    dimension = "category",
+                    items = listOf(DirectoryStatisticItemDto(key = "music", name = "传统音乐", value = 300)),
+                ),
+                DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(
+                    dimension = "region",
+                    items = listOf(DirectoryStatisticItemDto(key = "beijing", name = "北京", value = 100)),
+                ),
+            ),
+        )
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+
+        assertEquals(1, repo.directoryStatisticsOverviewQueries.size)
+        assertEquals(DirectoryItemKind.NationalProject, repo.directoryStatisticsOverviewQueries.first())
+        assertEquals(3, repo.directoryStatisticsBreakdownQueries.size)
+
+        val state = viewModel.uiState.value.statisticsState
+        assertEquals(950L, state.overview?.total)
+        assertNotNull(state.yearBreakdown)
+        assertNotNull(state.categoryBreakdown)
+        assertNotNull(state.regionBreakdown)
+        assertEquals(false, state.isLoading)
+        assertNull(state.errorKind)
+    }
+
+    @Test
+    fun `changing kind while on Statistics tab re-fetches statistics`() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = DirectoryStatisticsOverviewDto(total = 100),
+            directoryStatisticsBreakdowns = mapOf(
+                DirectoryStatisticDimension.PublishedYear to DirectoryStatisticDimensionDto(),
+                DirectoryStatisticDimension.Category to DirectoryStatisticDimensionDto(),
+                DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(),
+            ),
+        )
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+        assertEquals(1, repo.directoryStatisticsOverviewQueries.size)
+
+        viewModel.selectKind(DirectoryItemKind.UnescoEntry)
+        advanceUntilIdle()
+
+        assertEquals(2, repo.directoryStatisticsOverviewQueries.size)
+        assertEquals(DirectoryItemKind.UnescoEntry, repo.directoryStatisticsOverviewQueries.last())
+    }
+
+    @Test
+    fun `API failure sets errorKind in statisticsState`() = runTest {
+        val repo = FakeHeritageRepository(failure = IOException("Network error"))
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value.statisticsState
+        assertEquals(false, state.isLoading)
+        assertNotNull(state.errorKind)
+        assertEquals(ErrorKind.NetworkUnavailable, state.errorKind)
+    }
+
+    @Test
+    fun `empty dimensions produce empty items without crash`() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = DirectoryStatisticsOverviewDto(
+                kind = "nationalProject",
+                total = 0,
+                dimensions = emptyList(),
+            ),
+            directoryStatisticsBreakdowns = emptyMap(),
+        )
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value.statisticsState
+        assertEquals(false, state.isLoading)
+        assertNull(state.errorKind)
+        assertNotNull(state.overview)
+        assertEquals(0L, state.overview?.total)
+        assertTrue(state.yearBreakdown?.items.orEmpty().isEmpty())
+        assertTrue(state.categoryBreakdown?.items.orEmpty().isEmpty())
+        assertTrue(state.regionBreakdown?.items.orEmpty().isEmpty())
+    }
+
+    @Test
+    fun `tab state persists through SavedStateHandle`() = runTest {
+        val handle = SavedStateHandle()
+        val viewModel = DirectoryViewModel(savedStateHandle = handle, repository = FakeHeritageRepository())
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+        assertEquals("Statistics", handle.get<String>("dir_tab"))
+
+        val restored = DirectoryViewModel(savedStateHandle = handle, repository = FakeHeritageRepository())
+        assertEquals(DirectoryTab.Statistics, restored.uiState.value.selectedTab)
+    }
+
+    // endregion
 }

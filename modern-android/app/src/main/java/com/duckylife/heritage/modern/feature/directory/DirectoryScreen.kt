@@ -271,6 +271,7 @@ private fun DirectoryListRoute(
         items = items,
         showFilterSheet = showFilterSheet,
         onKindSelected = viewModel::selectKind,
+        onTabSelected = viewModel::selectTab,
         onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onFilterClick = { showFilterSheet = true },
         onFilterDismiss = { showFilterSheet = false },
@@ -279,6 +280,7 @@ private fun DirectoryListRoute(
         onClearFilters = viewModel::clearFilters,
         onClearAdvancedFilters = viewModel::clearAdvancedFilters,
         onItemSelected = onItemSelected,
+        onStatisticsRefresh = viewModel::refreshStatistics,
         modifier = modifier,
     )
 }
@@ -290,6 +292,7 @@ fun DirectoryScreen(
     items: LazyPagingItems<DirectoryItemSummaryDto>,
     showFilterSheet: Boolean,
     onKindSelected: (DirectoryItemKind) -> Unit,
+    onTabSelected: (DirectoryTab) -> Unit,
     onSearchKeywordsChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
     onFilterDismiss: () -> Unit,
@@ -298,6 +301,7 @@ fun DirectoryScreen(
     onClearFilters: () -> Unit,
     onClearAdvancedFilters: () -> Unit,
     onItemSelected: (DirectoryItemSummaryDto) -> Unit,
+    onStatisticsRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -311,45 +315,55 @@ fun DirectoryScreen(
                 DirectoryHeader(
                     activeFilterCount = uiState.activeFilterCount,
                     onFilterClick = onFilterClick,
-                    onRetry = items::refresh,
+                    onRetry = if (uiState.selectedTab == DirectoryTab.List) items::refresh else onStatisticsRefresh,
                 )
             }
 
             item {
-                HeritageSearchField(
-                    value = uiState.searchKeywords,
-                    onValueChange = onSearchKeywordsChanged,
-                    label = stringResource(R.string.directory_search_label),
-                    placeholder = stringResource(R.string.directory_search_placeholder),
-                    clearContentDescription = stringResource(R.string.action_clear_search),
+                DirectoryTabToggle(
+                    selectedTab = uiState.selectedTab,
+                    onTabSelected = onTabSelected,
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
             }
 
-            val activeFilters = listOfNotNull(
-                uiState.regionFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Region to it },
-                uiState.categoryFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Category to it },
-                uiState.yearFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Year to it },
-                uiState.listTypeFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.ListType to it },
-            )
-            if (activeFilters.isNotEmpty()) {
+            if (uiState.selectedTab == DirectoryTab.List) {
                 item {
-                    ActiveFilterChipsRow(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        activeFilters.forEach { (field, value) ->
-                            FilterChip(
-                                selected = true,
-                                onClick = { onClearFilterField(field) },
-                                label = {
-                                    Text(stringResource(field.labelRes) + ": " + value)
-                                },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Close,
-                                        contentDescription = stringResource(R.string.action_clear_search),
-                                        modifier = Modifier.size(16.dp),
-                                    )
-                                },
-                            )
+                    HeritageSearchField(
+                        value = uiState.searchKeywords,
+                        onValueChange = onSearchKeywordsChanged,
+                        label = stringResource(R.string.directory_search_label),
+                        placeholder = stringResource(R.string.directory_search_placeholder),
+                        clearContentDescription = stringResource(R.string.action_clear_search),
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                    )
+                }
+
+                val activeFilters = listOfNotNull(
+                    uiState.regionFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Region to it },
+                    uiState.categoryFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Category to it },
+                    uiState.yearFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Year to it },
+                    uiState.listTypeFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.ListType to it },
+                )
+                if (activeFilters.isNotEmpty()) {
+                    item {
+                        ActiveFilterChipsRow(modifier = Modifier.padding(horizontal = 20.dp)) {
+                            activeFilters.forEach { (field, value) ->
+                                FilterChip(
+                                    selected = true,
+                                    onClick = { onClearFilterField(field) },
+                                    label = {
+                                        Text(stringResource(field.labelRes) + ": " + value)
+                                    },
+                                    trailingIcon = {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Close,
+                                            contentDescription = stringResource(R.string.action_clear_search),
+                                            modifier = Modifier.size(16.dp),
+                                        )
+                                    },
+                                )
+                            }
                         }
                     }
                 }
@@ -362,88 +376,99 @@ fun DirectoryScreen(
                 )
             }
 
-            when (val refreshState = items.loadState.refresh) {
-                is LoadState.Loading -> item {
-                    LoadingContent(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
+            if (uiState.selectedTab == DirectoryTab.Statistics) {
+                item {
+                    DirectoryStatisticsContent(
+                        state = uiState.statisticsState,
+                        selectedKind = uiState.selectedKind,
+                        onRetry = onStatisticsRefresh,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
+            } else {
+                when (val refreshState = items.loadState.refresh) {
+                    is LoadState.Loading -> item {
+                        LoadingContent(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(180.dp),
+                        )
+                    }
 
-                is LoadState.Error -> item {
-                    val refreshErrRes = refreshState.error.toUiError().fallbackResId
-                    StatusContent(
-                        title = stringResource(R.string.content_load_failed),
-                        message = stringResource(refreshErrRes),
-                        actionLabel = stringResource(R.string.action_retry),
-                        onAction = items::retry,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(220.dp),
-                    )
-                }
+                    is LoadState.Error -> item {
+                        val refreshErrRes = refreshState.error.toUiError().fallbackResId
+                        StatusContent(
+                            title = stringResource(R.string.content_load_failed),
+                            message = stringResource(refreshErrRes),
+                            actionLabel = stringResource(R.string.action_retry),
+                            onAction = items::retry,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(220.dp),
+                        )
+                    }
 
-                is LoadState.NotLoading -> {
-                    if (items.itemCount == 0) {
-                        item {
-                            StatusContent(
-                                title = stringResource(R.string.content_empty_title),
-                                message = stringResource(
-                                    if (uiState.searchKeywords.isBlank()) {
-                                        R.string.directory_empty_message
-                                    } else {
-                                        R.string.directory_search_empty_message
-                                    },
-                                ),
-                                actionLabel = stringResource(R.string.action_refresh),
-                                onAction = items::refresh,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(220.dp),
-                            )
+                    is LoadState.NotLoading -> {
+                        if (items.itemCount == 0) {
+                            item {
+                                StatusContent(
+                                    title = stringResource(R.string.content_empty_title),
+                                    message = stringResource(
+                                        if (uiState.searchKeywords.isBlank()) {
+                                            R.string.directory_empty_message
+                                        } else {
+                                            R.string.directory_search_empty_message
+                                        },
+                                    ),
+                                    actionLabel = stringResource(R.string.action_refresh),
+                                    onAction = items::refresh,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(220.dp),
+                                )
+                            }
                         }
                     }
                 }
-            }
 
-            items(
-                count = items.itemCount,
-                key = items.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
-            ) { index ->
-                val item = items[index]
-                if (item != null) {
-                    DirectoryItemRow(
-                        item = item,
-                        imageLoader = imageLoader,
-                        onClick = { onItemSelected(item) },
-                        modifier = Modifier.padding(horizontal = 20.dp),
-                    )
-                }
-            }
-
-            when (val appendState = items.loadState.append) {
-                is LoadState.Loading -> item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
+                items(
+                    count = items.itemCount,
+                    key = items.itemKey { it.id ?: it.sourceUrl ?: it.title.orEmpty() },
+                ) { index ->
+                    val item = items[index]
+                    if (item != null) {
+                        DirectoryItemRow(
+                            item = item,
+                            imageLoader = imageLoader,
+                            onClick = { onItemSelected(item) },
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                        )
                     }
                 }
 
-                is LoadState.Error -> item {
-                    val appendErrRes = appendState.error.toUiError().fallbackResId
-                    InlineRetryMessage(
-                        message = stringResource(appendErrRes),
-                        onRetry = items::retry,
-                        modifier = Modifier.padding(horizontal = 20.dp),
-                    )
-                }
+                when (val appendState = items.loadState.append) {
+                    is LoadState.Loading -> item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
 
-                is LoadState.NotLoading -> Unit
+                    is LoadState.Error -> item {
+                        val appendErrRes = appendState.error.toUiError().fallbackResId
+                        InlineRetryMessage(
+                            message = stringResource(appendErrRes),
+                            onRetry = items::retry,
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                        )
+                    }
+
+                    is LoadState.NotLoading -> Unit
+                }
             }
         }
     }
@@ -485,6 +510,26 @@ private fun DirectoryHeader(
             Icon(
                 imageVector = Icons.Outlined.Refresh,
                 contentDescription = stringResource(R.string.action_refresh),
+            )
+        }
+    }
+}
+
+@Composable
+private fun DirectoryTabToggle(
+    selectedTab: DirectoryTab,
+    onTabSelected: (DirectoryTab) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        DirectoryTab.entries.forEach { tab ->
+            FilterChip(
+                selected = tab == selectedTab,
+                onClick = { onTabSelected(tab) },
+                label = { Text(stringResource(tab.labelRes)) },
             )
         }
     }
@@ -650,17 +695,6 @@ private fun StatusContent(
         }
     }
 }
-
-@get:StringRes
-private val DirectoryItemKind.labelRes: Int
-    get() = when (this) {
-        DirectoryItemKind.NationalProject -> R.string.directory_kind_national_project
-        DirectoryItemKind.CulturalEcoZone -> R.string.directory_kind_cultural_eco_zone
-        DirectoryItemKind.ProductiveProtectionBase -> R.string.directory_kind_productive_protection_base
-        DirectoryItemKind.UnescoEntry -> R.string.directory_kind_unesco_entry
-        DirectoryItemKind.ChinaUnescoEntry -> R.string.directory_kind_china_unesco_entry
-        DirectoryItemKind.ContractingState -> R.string.directory_kind_contracting_state
-    }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable

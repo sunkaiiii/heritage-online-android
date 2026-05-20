@@ -16,6 +16,10 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
@@ -88,6 +92,27 @@ class TestFakeRepository : HeritageRepository {
         flowOf(PagingData.from(listOf(
             DirectoryItemSummaryDto(id = "d1", kind = DirectoryItemKind.NationalProject, title = TestDirectoryTitle, summary = "名录摘要"),
         )))
+
+    override suspend fun directoryStatisticsOverview(kind: DirectoryItemKind) =
+        DirectoryStatisticsOverviewDto(
+            kind = kind.wireName,
+            total = 1,
+            dimensions = listOf(
+                DirectoryStatisticDimensionDto(
+                    dimension = "region",
+                    items = listOf(DirectoryStatisticItemDto(key = "北京", name = "北京", value = 1)),
+                ),
+            ),
+        )
+
+    override suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ) = DirectoryStatisticDimensionDto(
+        dimension = dimension.wireName,
+        items = listOf(DirectoryStatisticItemDto(key = "北京", name = "北京", value = 1)),
+    )
 
     override suspend fun directoryItem(id: String) = DirectoryItemDetailDto(
         id = "d1",

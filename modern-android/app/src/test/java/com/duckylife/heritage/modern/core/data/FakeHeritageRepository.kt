@@ -10,6 +10,9 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
@@ -21,6 +24,8 @@ class FakeHeritageRepository(
     private val banners: List<HomeBannerDto> = emptyList(),
     private val articles: List<ArticleSummaryDto> = emptyList(),
     private val directoryItems: List<DirectoryItemSummaryDto> = emptyList(),
+    private val directoryStatisticsOverview: DirectoryStatisticsOverviewDto = DirectoryStatisticsOverviewDto(),
+    private val directoryStatisticsBreakdowns: Map<DirectoryStatisticDimension, DirectoryStatisticDimensionDto> = emptyMap(),
     private val inheritors: List<InheritorSummaryDto> = emptyList(),
     private val articleDetails: Map<String, ArticleDetailDto> = emptyMap(),
     private val articleDetailsBySourceId: Map<String, ArticleDetailDto> = emptyMap(),
@@ -40,6 +45,8 @@ class FakeHeritageRepository(
     val articleSourceIdQueries = mutableListOf<Pair<String, ArticleCategory>>()
     val articleSourceUrlQueries = mutableListOf<Pair<String, ArticleCategory>>()
     val directorySourceIdQueries = mutableListOf<Pair<String, DirectoryItemKind>>()
+    val directoryStatisticsOverviewQueries = mutableListOf<DirectoryItemKind>()
+    val directoryStatisticsBreakdownQueries = mutableListOf<Triple<DirectoryItemKind, DirectoryStatisticDimension, Int>>()
     val inheritorSourceIdQueries = mutableListOf<String>()
 
     override suspend fun homeBanners(): List<HomeBannerDto> {
@@ -116,6 +123,23 @@ class FakeHeritageRepository(
     override fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> {
         pagedDirectoryItemQueries.add(query)
         return flowOf(PagingData.from(directoryItems))
+    }
+
+    override suspend fun directoryStatisticsOverview(kind: DirectoryItemKind): DirectoryStatisticsOverviewDto {
+        failure?.let { throw it }
+        directoryStatisticsOverviewQueries.add(kind)
+        return directoryStatisticsOverview
+    }
+
+    override suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ): DirectoryStatisticDimensionDto {
+        failure?.let { throw it }
+        directoryStatisticsBreakdownQueries.add(Triple(kind, dimension, limit))
+        return directoryStatisticsBreakdowns[dimension]
+            ?: DirectoryStatisticDimensionDto(dimension = dimension.wireName)
     }
 
     override suspend fun directoryItem(id: String): DirectoryItemDetailDto {

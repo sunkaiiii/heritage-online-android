@@ -20,7 +20,7 @@ internal fun DirectoryReferenceDto.localizedKindLabel(): String? {
 }
 
 @get:StringRes
-private val DirectoryItemKind.labelRes: Int
+internal val DirectoryItemKind.labelRes: Int
     get() = when (this) {
         DirectoryItemKind.NationalProject -> R.string.directory_kind_national_project
         DirectoryItemKind.CulturalEcoZone -> R.string.directory_kind_cultural_eco_zone
