@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
@@ -94,7 +96,8 @@ fun ArticlesRoute(
         onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onFilterClick = { showFilterSheet = true },
         onFilterDismiss = { showFilterSheet = false },
-        onYearFilterChanged = viewModel::updateYearFilter,
+        onApplyFilters = viewModel::applyFilters,
+        onClearYearFilter = { viewModel.updateYearFilter("") },
         onClearFilters = viewModel::clearFilters,
         onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
@@ -114,7 +117,8 @@ fun ArticlesScreen(
     onSearchKeywordsChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
     onFilterDismiss: () -> Unit,
-    onYearFilterChanged: (String) -> Unit,
+    onApplyFilters: (String, String) -> Unit,
+    onClearYearFilter: () -> Unit,
     onClearFilters: () -> Unit,
     onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
@@ -129,6 +133,7 @@ fun ArticlesScreen(
         onCategorySelected = onCategorySelected,
         onSearchKeywordsChanged = onSearchKeywordsChanged,
         onFilterClick = onFilterClick,
+        onClearYearFilter = onClearYearFilter,
         onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         imageLoader = imageLoader,
@@ -136,8 +141,11 @@ fun ArticlesScreen(
     )
     if (showFilterSheet) {
         ArticleFilterSheet(
-            yearFilter = uiState.yearFilter,
-            onYearFilterChanged = onYearFilterChanged,
+            initialYearFilter = uiState.yearFilter,
+            onApply = { year ->
+                onApplyFilters(uiState.searchKeywords, year)
+                onFilterDismiss()
+            },
             onClear = {
                 onClearFilters()
                 onFilterDismiss()
@@ -156,6 +164,7 @@ private fun ArticlesContent(
     onCategorySelected: (ArticleCategory) -> Unit,
     onSearchKeywordsChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
+    onClearYearFilter: () -> Unit,
     onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     imageLoader: ImageLoader,
@@ -214,6 +223,27 @@ private fun ArticlesContent(
                     clearContentDescription = stringResource(R.string.action_clear_search),
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
+            }
+
+            if (uiState.yearFilter.isNotBlank()) {
+                item {
+                    ActiveFilterChipsRow(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        FilterChip(
+                            selected = true,
+                            onClick = onClearYearFilter,
+                            label = {
+                                Text(stringResource(R.string.filter_field_year) + ": " + uiState.yearFilter)
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Close,
+                                    contentDescription = stringResource(R.string.action_clear_search),
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            },
+                        )
+                    }
+                }
             }
 
             item {
@@ -591,12 +621,16 @@ private val ArticleCategory.labelRes: Int
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun ArticleFilterSheet(
-    yearFilter: String,
-    onYearFilterChanged: (String) -> Unit,
+    initialYearFilter: String,
+    onApply: (String) -> Unit,
     onClear: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
+    var draftYear by remember { mutableStateOf(initialYearFilter) }
+    val yearError = draftYear.isNotBlank() && !isValidYear(draftYear)
+    val canApply = !yearError
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -615,23 +649,47 @@ private fun ArticleFilterSheet(
                 fontWeight = FontWeight.SemiBold,
             )
             OutlinedTextField(
-                value = yearFilter,
-                onValueChange = onYearFilterChanged,
+                value = draftYear,
+                onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
                 placeholder = { Text("2024") },
                 singleLine = true,
+                isError = yearError,
+                supportingText = if (yearError) {
+                    { Text(stringResource(R.string.filter_invalid_year)) }
+                } else {
+                    null
+                },
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 TextButton(onClick = onClear) {
                     Text(stringResource(R.string.filter_clear))
                 }
+                Button(onClick = { onApply(draftYear) }, enabled = canApply) {
+                    Text(stringResource(R.string.filter_apply))
+                }
             }
         }
     }
+}
+
+private fun isValidYear(value: String): Boolean =
+    value.length == 4 && value.toIntOrNull() != null
+
+@Composable
+private fun ActiveFilterChipsRow(
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        content = content,
+    )
 }
 
 @Preview(showBackground = true)

@@ -22,7 +22,6 @@ class InheritorsViewModelTest {
         val viewModel = InheritorsViewModel(
             repository = FakeHeritageRepository(),
         )
-
         assertNotNull(viewModel.inheritors)
     }
 
@@ -45,7 +44,7 @@ class InheritorsViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = InheritorsViewModel(repository = repo)
 
-        viewModel.updateRegionFilter("四川")
+        viewModel.applyFilters(regionFilter = "四川", categoryFilter = "", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
 
         viewModel.inheritors.first()
@@ -57,7 +56,7 @@ class InheritorsViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = InheritorsViewModel(repository = repo)
 
-        viewModel.updateCategoryFilter("传统美术")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "传统美术", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
 
         viewModel.inheritors.first()
@@ -69,7 +68,7 @@ class InheritorsViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = InheritorsViewModel(repository = repo)
 
-        viewModel.updateYearFilter("2018")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "2018", genderFilter = "")
         advanceUntilIdle()
 
         viewModel.inheritors.first()
@@ -81,7 +80,7 @@ class InheritorsViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = InheritorsViewModel(repository = repo)
 
-        viewModel.updateGenderFilter("男")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "", genderFilter = "男")
         advanceUntilIdle()
 
         viewModel.inheritors.first()
@@ -93,8 +92,7 @@ class InheritorsViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = InheritorsViewModel(repository = repo)
 
-        viewModel.updateRegionFilter("  ")
-        viewModel.updateGenderFilter("")
+        viewModel.applyFilters(regionFilter = "  ", categoryFilter = "", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
 
         viewModel.inheritors.first()
@@ -109,8 +107,7 @@ class InheritorsViewModelTest {
 
         assertEquals(0, viewModel.uiState.value.activeFilterCount)
 
-        viewModel.updateRegionFilter("北京")
-        viewModel.updateGenderFilter("女")
+        viewModel.applyFilters(regionFilter = "北京", categoryFilter = "", yearFilter = "", genderFilter = "女")
         advanceUntilIdle()
 
         assertEquals(2, viewModel.uiState.value.activeFilterCount)
@@ -121,10 +118,7 @@ class InheritorsViewModelTest {
         val viewModel = InheritorsViewModel(repository = FakeHeritageRepository())
 
         viewModel.updateSearchKeywords("test")
-        viewModel.updateRegionFilter("湖南")
-        viewModel.updateCategoryFilter("传统技艺")
-        viewModel.updateYearFilter("2015")
-        viewModel.updateGenderFilter("男")
+        viewModel.applyFilters(regionFilter = "湖南", categoryFilter = "传统技艺", yearFilter = "2015", genderFilter = "男")
         advanceUntilIdle()
 
         viewModel.clearFilters()

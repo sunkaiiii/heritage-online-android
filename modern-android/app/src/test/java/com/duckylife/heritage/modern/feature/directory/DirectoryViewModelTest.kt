@@ -22,7 +22,6 @@ class DirectoryViewModelTest {
         val viewModel = DirectoryViewModel(
             repository = FakeHeritageRepository(),
         )
-
         assertEquals(DirectoryItemKind.NationalProject, viewModel.uiState.value.selectedKind)
     }
 
@@ -31,10 +30,8 @@ class DirectoryViewModelTest {
         val viewModel = DirectoryViewModel(
             repository = FakeHeritageRepository(),
         )
-
         viewModel.selectKind(DirectoryItemKind.CulturalEcoZone)
         advanceUntilIdle()
-
         assertEquals(DirectoryItemKind.CulturalEcoZone, viewModel.uiState.value.selectedKind)
     }
 
@@ -59,7 +56,7 @@ class DirectoryViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = DirectoryViewModel(repository = repo)
 
-        viewModel.updateRegionFilter("北京")
+        viewModel.applyFilters(regionFilter = "北京", categoryFilter = "", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
 
         viewModel.items.first()
@@ -71,7 +68,7 @@ class DirectoryViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = DirectoryViewModel(repository = repo)
 
-        viewModel.updateCategoryFilter("传统美术")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "传统美术", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
 
         viewModel.items.first()
@@ -83,7 +80,7 @@ class DirectoryViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = DirectoryViewModel(repository = repo)
 
-        viewModel.updateYearFilter("2006")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "2006", listTypeFilter = "")
         advanceUntilIdle()
 
         viewModel.items.first()
@@ -95,7 +92,7 @@ class DirectoryViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = DirectoryViewModel(repository = repo)
 
-        viewModel.updateListTypeFilter("representative")
+        viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "", listTypeFilter = "representative")
         advanceUntilIdle()
 
         viewModel.items.first()
@@ -107,8 +104,7 @@ class DirectoryViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = DirectoryViewModel(repository = repo)
 
-        viewModel.updateRegionFilter("  ")
-        viewModel.updateYearFilter("")
+        viewModel.applyFilters(regionFilter = "  ", categoryFilter = "", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
 
         viewModel.items.first()
@@ -123,8 +119,7 @@ class DirectoryViewModelTest {
 
         assertEquals(0, viewModel.uiState.value.activeFilterCount)
 
-        viewModel.updateRegionFilter("北京")
-        viewModel.updateCategoryFilter("传统美术")
+        viewModel.applyFilters(regionFilter = "北京", categoryFilter = "传统美术", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
 
         assertEquals(2, viewModel.uiState.value.activeFilterCount)
@@ -135,10 +130,7 @@ class DirectoryViewModelTest {
         val viewModel = DirectoryViewModel(repository = FakeHeritageRepository())
 
         viewModel.updateSearchKeywords("test")
-        viewModel.updateRegionFilter("北京")
-        viewModel.updateCategoryFilter("music")
-        viewModel.updateYearFilter("2020")
-        viewModel.updateListTypeFilter("list")
+        viewModel.applyFilters(regionFilter = "北京", categoryFilter = "music", yearFilter = "2020", listTypeFilter = "list")
         advanceUntilIdle()
 
         viewModel.clearFilters()

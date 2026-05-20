@@ -10,16 +10,18 @@ import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class InheritorsViewModel @Inject constructor(
     private val repository: HeritageRepository,
@@ -29,6 +31,7 @@ class InheritorsViewModel @Inject constructor(
 
     val inheritors: Flow<PagingData<InheritorSummaryDto>> =
         uiState
+            .debounce(SEARCH_DEBOUNCE_MS)
             .map { state ->
                 InheritorQuery(
                     page = 1,
@@ -50,20 +53,26 @@ class InheritorsViewModel @Inject constructor(
         _uiState.update { it.copy(searchKeywords = keywords) }
     }
 
-    fun updateRegionFilter(region: String) {
-        _uiState.update { it.copy(regionFilter = region) }
+    fun applyFilters(regionFilter: String, categoryFilter: String, yearFilter: String, genderFilter: String) {
+        _uiState.update {
+            it.copy(
+                regionFilter = regionFilter,
+                categoryFilter = categoryFilter,
+                yearFilter = yearFilter,
+                genderFilter = genderFilter,
+            )
+        }
     }
 
-    fun updateCategoryFilter(category: String) {
-        _uiState.update { it.copy(categoryFilter = category) }
-    }
-
-    fun updateYearFilter(year: String) {
-        _uiState.update { it.copy(yearFilter = year) }
-    }
-
-    fun updateGenderFilter(gender: String) {
-        _uiState.update { it.copy(genderFilter = gender) }
+    fun clearFilterField(field: InheritorFilterField) {
+        _uiState.update {
+            when (field) {
+                InheritorFilterField.Region -> it.copy(regionFilter = "")
+                InheritorFilterField.Category -> it.copy(categoryFilter = "")
+                InheritorFilterField.Year -> it.copy(yearFilter = "")
+                InheritorFilterField.Gender -> it.copy(genderFilter = "")
+            }
+        }
     }
 
     fun clearFilters() {
@@ -77,4 +86,15 @@ class InheritorsViewModel @Inject constructor(
             )
         }
     }
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_MS = 350L
+    }
+}
+
+enum class InheritorFilterField(val labelRes: Int) {
+    Region(com.duckylife.heritage.modern.R.string.filter_field_region),
+    Category(com.duckylife.heritage.modern.R.string.filter_field_category),
+    Year(com.duckylife.heritage.modern.R.string.filter_field_year),
+    Gender(com.duckylife.heritage.modern.R.string.filter_field_gender),
 }

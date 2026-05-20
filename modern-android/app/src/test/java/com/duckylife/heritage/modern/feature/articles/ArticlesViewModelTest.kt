@@ -1,7 +1,6 @@
 package com.duckylife.heritage.modern.feature.articles
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
-import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
@@ -13,7 +12,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -109,7 +107,6 @@ class ArticlesViewModelTest {
         viewModel.updateSearchKeywords("陶瓷")
         advanceUntilIdle()
 
-        // Trigger paging to record the query
         viewModel.articles.first()
         assertEquals(1, repo.pagedArticleQueries.size)
         val query = repo.pagedArticleQueries.first()
@@ -122,7 +119,7 @@ class ArticlesViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = ArticlesViewModel(repository = repo)
 
-        viewModel.updateYearFilter("2024")
+        viewModel.applyFilters(searchKeywords = "", yearFilter = "2024")
         advanceUntilIdle()
 
         viewModel.articles.first()
@@ -136,7 +133,7 @@ class ArticlesViewModelTest {
         val repo = FakeHeritageRepository()
         val viewModel = ArticlesViewModel(repository = repo)
 
-        viewModel.updateYearFilter("not-a-year")
+        viewModel.applyFilters(searchKeywords = "", yearFilter = "not-a-year")
         advanceUntilIdle()
 
         viewModel.articles.first()
@@ -162,7 +159,7 @@ class ArticlesViewModelTest {
         val viewModel = ArticlesViewModel(repository = FakeHeritageRepository())
 
         viewModel.updateSearchKeywords("test")
-        viewModel.updateYearFilter("2023")
+        viewModel.applyFilters(searchKeywords = "", yearFilter = "2023")
         advanceUntilIdle()
 
         viewModel.clearFilters()

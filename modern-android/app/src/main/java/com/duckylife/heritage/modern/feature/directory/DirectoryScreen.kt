@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -237,10 +239,8 @@ private fun DirectoryListRoute(
         onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onFilterClick = { showFilterSheet = true },
         onFilterDismiss = { showFilterSheet = false },
-        onRegionFilterChanged = viewModel::updateRegionFilter,
-        onCategoryFilterChanged = viewModel::updateCategoryFilter,
-        onYearFilterChanged = viewModel::updateYearFilter,
-        onListTypeFilterChanged = viewModel::updateListTypeFilter,
+        onApplyFilters = viewModel::applyFilters,
+        onClearFilterField = viewModel::clearFilterField,
         onClearFilters = viewModel::clearFilters,
         onItemSelected = onItemSelected,
         modifier = modifier,
@@ -257,10 +257,8 @@ fun DirectoryScreen(
     onSearchKeywordsChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
     onFilterDismiss: () -> Unit,
-    onRegionFilterChanged: (String) -> Unit,
-    onCategoryFilterChanged: (String) -> Unit,
-    onYearFilterChanged: (String) -> Unit,
-    onListTypeFilterChanged: (String) -> Unit,
+    onApplyFilters: (String, String, String, String) -> Unit,
+    onClearFilterField: (DirectoryFilterField) -> Unit,
     onClearFilters: () -> Unit,
     onItemSelected: (DirectoryItemSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
@@ -289,6 +287,35 @@ fun DirectoryScreen(
                     clearContentDescription = stringResource(R.string.action_clear_search),
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
+            }
+
+            val activeFilters = listOfNotNull(
+                uiState.regionFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Region to it },
+                uiState.categoryFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Category to it },
+                uiState.yearFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.Year to it },
+                uiState.listTypeFilter.takeIf { it.isNotBlank() }?.let { DirectoryFilterField.ListType to it },
+            )
+            if (activeFilters.isNotEmpty()) {
+                item {
+                    ActiveFilterChipsRow(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        activeFilters.forEach { (field, value) ->
+                            FilterChip(
+                                selected = true,
+                                onClick = { onClearFilterField(field) },
+                                label = {
+                                    Text(stringResource(field.labelRes) + ": " + value)
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = stringResource(R.string.action_clear_search),
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
             }
 
             item {
@@ -383,14 +410,14 @@ fun DirectoryScreen(
     }
     if (showFilterSheet) {
         DirectoryFilterSheet(
-            regionFilter = uiState.regionFilter,
-            categoryFilter = uiState.categoryFilter,
-            yearFilter = uiState.yearFilter,
-            listTypeFilter = uiState.listTypeFilter,
-            onRegionFilterChanged = onRegionFilterChanged,
-            onCategoryFilterChanged = onCategoryFilterChanged,
-            onYearFilterChanged = onYearFilterChanged,
-            onListTypeFilterChanged = onListTypeFilterChanged,
+            initialRegion = uiState.regionFilter,
+            initialCategory = uiState.categoryFilter,
+            initialYear = uiState.yearFilter,
+            initialListType = uiState.listTypeFilter,
+            onApply = { region, category, year, listType ->
+                onApplyFilters(region, category, year, listType)
+                onFilterDismiss()
+            },
             onClear = {
                 onClearFilters()
                 onFilterDismiss()
@@ -599,18 +626,22 @@ private val DirectoryItemKind.labelRes: Int
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun DirectoryFilterSheet(
-    regionFilter: String,
-    categoryFilter: String,
-    yearFilter: String,
-    listTypeFilter: String,
-    onRegionFilterChanged: (String) -> Unit,
-    onCategoryFilterChanged: (String) -> Unit,
-    onYearFilterChanged: (String) -> Unit,
-    onListTypeFilterChanged: (String) -> Unit,
+    initialRegion: String,
+    initialCategory: String,
+    initialYear: String,
+    initialListType: String,
+    onApply: (String, String, String, String) -> Unit,
     onClear: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
+    var draftRegion by remember { mutableStateOf(initialRegion) }
+    var draftCategory by remember { mutableStateOf(initialCategory) }
+    var draftYear by remember { mutableStateOf(initialYear) }
+    var draftListType by remember { mutableStateOf(initialListType) }
+    val yearError = draftYear.isNotBlank() && !isValidYear(draftYear)
+    val canApply = !yearError
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -629,32 +660,38 @@ private fun DirectoryFilterSheet(
                 fontWeight = FontWeight.SemiBold,
             )
             OutlinedTextField(
-                value = regionFilter,
-                onValueChange = onRegionFilterChanged,
+                value = draftRegion,
+                onValueChange = { draftRegion = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_region)) },
                 placeholder = { Text("北京") },
                 singleLine = true,
             )
             OutlinedTextField(
-                value = categoryFilter,
-                onValueChange = onCategoryFilterChanged,
+                value = draftCategory,
+                onValueChange = { draftCategory = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_category)) },
                 placeholder = { Text(stringResource(R.string.directory_field_category)) },
                 singleLine = true,
             )
             OutlinedTextField(
-                value = yearFilter,
-                onValueChange = onYearFilterChanged,
+                value = draftYear,
+                onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
                 placeholder = { Text("2006") },
                 singleLine = true,
+                isError = yearError,
+                supportingText = if (yearError) {
+                    { Text(stringResource(R.string.filter_invalid_year)) }
+                } else {
+                    null
+                },
             )
             OutlinedTextField(
-                value = listTypeFilter,
-                onValueChange = onListTypeFilterChanged,
+                value = draftListType,
+                onValueChange = { draftListType = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_list_type)) },
                 placeholder = { Text("representative") },
@@ -662,14 +699,32 @@ private fun DirectoryFilterSheet(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 TextButton(onClick = onClear) {
                     Text(stringResource(R.string.filter_clear))
                 }
+                Button(onClick = { onApply(draftRegion, draftCategory, draftYear, draftListType) }, enabled = canApply) {
+                    Text(stringResource(R.string.filter_apply))
+                }
             }
         }
     }
+}
+
+private fun isValidYear(value: String): Boolean =
+    value.length == 4 && value.toIntOrNull() != null
+
+@Composable
+private fun ActiveFilterChipsRow(
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        content = content,
+    )
 }
 
 @Preview(showBackground = true)

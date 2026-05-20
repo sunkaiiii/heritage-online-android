@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -237,10 +238,8 @@ private fun InheritorsListRoute(
         onSearchKeywordsChanged = viewModel::updateSearchKeywords,
         onFilterClick = { showFilterSheet = true },
         onFilterDismiss = { showFilterSheet = false },
-        onRegionFilterChanged = viewModel::updateRegionFilter,
-        onCategoryFilterChanged = viewModel::updateCategoryFilter,
-        onYearFilterChanged = viewModel::updateYearFilter,
-        onGenderFilterChanged = viewModel::updateGenderFilter,
+        onApplyFilters = viewModel::applyFilters,
+        onClearFilterField = viewModel::clearFilterField,
         onClearFilters = viewModel::clearFilters,
         onInheritorSelected = onInheritorSelected,
         modifier = modifier,
@@ -256,10 +255,8 @@ fun InheritorsScreen(
     onSearchKeywordsChanged: (String) -> Unit,
     onFilterClick: () -> Unit,
     onFilterDismiss: () -> Unit,
-    onRegionFilterChanged: (String) -> Unit,
-    onCategoryFilterChanged: (String) -> Unit,
-    onYearFilterChanged: (String) -> Unit,
-    onGenderFilterChanged: (String) -> Unit,
+    onApplyFilters: (String, String, String, String) -> Unit,
+    onClearFilterField: (InheritorFilterField) -> Unit,
     onClearFilters: () -> Unit,
     onInheritorSelected: (InheritorSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
@@ -288,6 +285,40 @@ fun InheritorsScreen(
                     clearContentDescription = stringResource(R.string.action_clear_search),
                     modifier = Modifier.padding(horizontal = 20.dp),
                 )
+            }
+
+            val activeFilters = listOfNotNull(
+                uiState.regionFilter.takeIf { it.isNotBlank() }?.let { InheritorFilterField.Region to it },
+                uiState.categoryFilter.takeIf { it.isNotBlank() }?.let { InheritorFilterField.Category to it },
+                uiState.yearFilter.takeIf { it.isNotBlank() }?.let { InheritorFilterField.Year to it },
+                uiState.genderFilter.takeIf { it.isNotBlank() }?.let { InheritorFilterField.Gender to it },
+            )
+            if (activeFilters.isNotEmpty()) {
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        activeFilters.forEach { (field, value) ->
+                            FilterChip(
+                                selected = true,
+                                onClick = { onClearFilterField(field) },
+                                label = {
+                                    Text(stringResource(field.labelRes) + ": " + value)
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Close,
+                                        contentDescription = stringResource(R.string.action_clear_search),
+                                        modifier = Modifier.size(16.dp),
+                                    )
+                                },
+                            )
+                        }
+                    }
+                }
             }
 
             when (val refreshState = inheritors.loadState.refresh) {
@@ -375,14 +406,14 @@ fun InheritorsScreen(
     }
     if (showFilterSheet) {
         InheritorFilterSheet(
-            regionFilter = uiState.regionFilter,
-            categoryFilter = uiState.categoryFilter,
-            yearFilter = uiState.yearFilter,
-            genderFilter = uiState.genderFilter,
-            onRegionFilterChanged = onRegionFilterChanged,
-            onCategoryFilterChanged = onCategoryFilterChanged,
-            onYearFilterChanged = onYearFilterChanged,
-            onGenderFilterChanged = onGenderFilterChanged,
+            initialRegion = uiState.regionFilter,
+            initialCategory = uiState.categoryFilter,
+            initialYear = uiState.yearFilter,
+            initialGender = uiState.genderFilter,
+            onApply = { region, category, year, gender ->
+                onApplyFilters(region, category, year, gender)
+                onFilterDismiss()
+            },
             onClear = {
                 onClearFilters()
                 onFilterDismiss()
@@ -567,18 +598,22 @@ private fun StatusContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InheritorFilterSheet(
-    regionFilter: String,
-    categoryFilter: String,
-    yearFilter: String,
-    genderFilter: String,
-    onRegionFilterChanged: (String) -> Unit,
-    onCategoryFilterChanged: (String) -> Unit,
-    onYearFilterChanged: (String) -> Unit,
-    onGenderFilterChanged: (String) -> Unit,
+    initialRegion: String,
+    initialCategory: String,
+    initialYear: String,
+    initialGender: String,
+    onApply: (String, String, String, String) -> Unit,
     onClear: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
+    var draftRegion by remember { mutableStateOf(initialRegion) }
+    var draftCategory by remember { mutableStateOf(initialCategory) }
+    var draftYear by remember { mutableStateOf(initialYear) }
+    var draftGender by remember { mutableStateOf(initialGender) }
+    val yearError = draftYear.isNotBlank() && draftYear.length != 4 || draftYear.isNotBlank() && draftYear.toIntOrNull() == null
+    val canApply = !yearError
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -597,28 +632,34 @@ private fun InheritorFilterSheet(
                 fontWeight = FontWeight.SemiBold,
             )
             OutlinedTextField(
-                value = regionFilter,
-                onValueChange = onRegionFilterChanged,
+                value = draftRegion,
+                onValueChange = { draftRegion = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_region)) },
                 placeholder = { Text("四川") },
                 singleLine = true,
             )
             OutlinedTextField(
-                value = categoryFilter,
-                onValueChange = onCategoryFilterChanged,
+                value = draftCategory,
+                onValueChange = { draftCategory = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_category)) },
                 placeholder = { Text(stringResource(R.string.directory_field_category)) },
                 singleLine = true,
             )
             OutlinedTextField(
-                value = yearFilter,
-                onValueChange = onYearFilterChanged,
+                value = draftYear,
+                onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
                 placeholder = { Text("2018") },
                 singleLine = true,
+                isError = yearError,
+                supportingText = if (yearError) {
+                    { Text(stringResource(R.string.filter_invalid_year)) }
+                } else {
+                    null
+                },
             )
             Text(
                 text = stringResource(R.string.filter_field_gender),
@@ -630,7 +671,7 @@ private fun InheritorFilterSheet(
                 stringResource(R.string.filter_gender_male),
                 stringResource(R.string.filter_gender_female),
             )
-            val selectedIndex = when (genderFilter) {
+            val selectedIndex = when (draftGender) {
                 "男" -> 1
                 "女" -> 2
                 else -> 0
@@ -640,12 +681,11 @@ private fun InheritorFilterSheet(
                     SegmentedButton(
                         selected = index == selectedIndex,
                         onClick = {
-                            val value = when (index) {
+                            draftGender = when (index) {
                                 1 -> "男"
                                 2 -> "女"
                                 else -> ""
                             }
-                            onGenderFilterChanged(value)
                         },
                         shape = SegmentedButtonDefaults.itemShape(
                             index = index,
@@ -658,10 +698,13 @@ private fun InheritorFilterSheet(
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 TextButton(onClick = onClear) {
                     Text(stringResource(R.string.filter_clear))
+                }
+                Button(onClick = { onApply(draftRegion, draftCategory, draftYear, draftGender) }, enabled = canApply) {
+                    Text(stringResource(R.string.filter_apply))
                 }
             }
         }
