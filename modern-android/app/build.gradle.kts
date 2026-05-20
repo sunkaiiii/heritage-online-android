@@ -38,22 +38,51 @@ android {
         release {
             val trustSelfSigned = project.findProperty("heritageTrustSelfSigned") as? String ?: "false"
             buildConfigField("boolean", "HERITAGE_TRUST_SELF_SIGNED_CERTS", trustSelfSigned)
-
-            val storeFile = project.findProperty("heritageReleaseStoreFile") as? String
-            if (storeFile != null) {
-                signingConfig = signingConfigs.maybeCreate("release").apply {
-                    this.storeFile = file(storeFile)
-                    storePassword = project.findProperty("heritageReleaseStorePassword") as? String
-                        ?: error("Missing heritageReleaseStorePassword. Set it in ~/.gradle/gradle.properties")
-                    keyAlias = project.findProperty("heritageReleaseKeyAlias") as? String
-                        ?: error("Missing heritageReleaseKeyAlias. Set it in ~/.gradle/gradle.properties")
-                    keyPassword = project.findProperty("heritageReleaseKeyPassword") as? String
-                        ?: error("Missing heritageReleaseKeyPassword. Set it in ~/.gradle/gradle.properties")
-                }
-            }
         }
     }
 
+}
+
+val homeDir = System.getProperty("user.home") ?: "~"
+val rawPath = project.findProperty("heritageReleaseStoreFile") as? String
+if (rawPath != null) {
+    val expandedPath = rawPath.replaceFirst("^~".toRegex(), homeDir)
+    val storeFile = file(expandedPath)
+    android.signingConfigs.maybeCreate("release").apply {
+        this.storeFile = storeFile
+        storePassword = project.findProperty("heritageReleaseStorePassword") as? String ?: ""
+        keyAlias = project.findProperty("heritageReleaseKeyAlias") as? String ?: ""
+        keyPassword = project.findProperty("heritageReleaseKeyPassword") as? String ?: ""
+    }
+    android.buildTypes.getByName("release").signingConfig = android.signingConfigs.getByName("release")
+}
+
+// 仅在执行 assembleRelease 时校验签名配置完整性，debug 不受影响。
+val relStoreFilePath = (project.findProperty("heritageReleaseStoreFile") as? String)?.replaceFirst("^~".toRegex(), homeDir)
+val relStoreFile = relStoreFilePath?.let { file(it) }
+val relStorePwd = project.findProperty("heritageReleaseStorePassword") as? String
+val relKeyAlias = project.findProperty("heritageReleaseKeyAlias") as? String
+val relKeyPwd = project.findProperty("heritageReleaseKeyPassword") as? String
+
+tasks.whenTaskAdded {
+    if (name == "packageRelease") {
+        doFirst {
+            if (relStoreFile == null || !relStoreFile.exists()) {
+                error(
+                    "Missing heritageReleaseStoreFile or keystore not found.\n" +
+                        "  1. Run: keytool -genkey -v -keystore ~/.gradle/heritage-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias heritage-release\n" +
+                        "  2. Add to ~/.gradle/gradle.properties:\n" +
+                        "    heritageReleaseStoreFile=~/.gradle/heritage-release.jks\n" +
+                        "    heritageReleaseStorePassword=<your-store-password>\n" +
+                        "    heritageReleaseKeyAlias=heritage-release\n" +
+                        "    heritageReleaseKeyPassword=<your-key-password>",
+                )
+            }
+            if (relStorePwd.isNullOrBlank()) error("Missing heritageReleaseStorePassword. Set it in ~/.gradle/gradle.properties")
+            if (relKeyAlias.isNullOrBlank()) error("Missing heritageReleaseKeyAlias. Set it in ~/.gradle/gradle.properties")
+            if (relKeyPwd.isNullOrBlank()) error("Missing heritageReleaseKeyPassword. Set it in ~/.gradle/gradle.properties")
+        }
+    }
 }
 
 dependencies {
@@ -102,9 +131,11 @@ dependencies {
     androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.androidx.paging.testing)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.test.ext.junit.ktx)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.hilt.android.testing)
+    androidTestImplementation(libs.espresso.core)
 }

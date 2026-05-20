@@ -71,10 +71,34 @@ private class TestFakeSavedContentRepository : SavedContentRepository {
         }
     }
 
-    override suspend fun recordViewed(snapshot: SavedContentSnapshot) {}
+    override suspend fun recordViewed(snapshot: SavedContentSnapshot) {
+        val key = SavedContentRepository.computeKey(snapshot)
+        val existing = entities.value[key]
+        val now = System.currentTimeMillis()
+        entities.value = entities.value + (key to SavedContentEntity(
+            contentKey = key,
+            contentType = snapshot.contentType.wireName,
+            title = snapshot.title,
+            summary = snapshot.summary,
+            coverImageJson = snapshot.coverImageJson,
+            category = snapshot.category,
+            region = snapshot.region,
+            year = snapshot.year,
+            sourceUrl = snapshot.sourceUrl,
+            targetId = snapshot.target.id,
+            targetSourceId = snapshot.target.sourceId,
+            targetSourceUrl = snapshot.target.sourceUrl,
+            targetCategory = snapshot.target.category,
+            targetKind = snapshot.target.kind,
+            isFavorite = existing?.isFavorite ?: false,
+            favoritedAt = existing?.favoritedAt,
+            lastViewedAt = now,
+        ))
+    }
 
     override fun favorites(): Flow<List<SavedContentEntity>> =
         entities.map { it.values.filter { e -> e.isFavorite } }
 
-    override fun recentlyViewed(): Flow<List<SavedContentEntity>> = flowOf(emptyList())
+    override fun recentlyViewed(): Flow<List<SavedContentEntity>> =
+        entities.map { it.values.sortedByDescending { e -> e.lastViewedAt } }
 }

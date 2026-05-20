@@ -44,16 +44,21 @@ The contract maps the local Swagger document:
 ```bash
 cd modern-android
 
-# Debug（默认开发用）
+# 全量验证（推荐开发用）
 ./gradlew :app:testDebugUnitTest :app:assembleDebug
 
-# Release
-./gradlew :app:testDebugUnitTest :app:assembleRelease
+# Instrumentation 测试（需模拟器在线）
+./gradlew :app:connectedDebugAndroidTest
+
+# Release（需先配置签名，见下方）
+./gradlew :app:assembleRelease
 ```
 
 ## Release Signing
 
-Release 构建需要签名。首先生成 keystore（仅一次）：
+Release 构建**必须**签名。缺少签名配置时，`assembleRelease` 会失败并提示具体缺少哪几项。
+
+首先生成 keystore（仅一次）：
 
 ```bash
 keytool -genkey -v -keystore ~/.gradle/heritage-release.jks \
@@ -70,13 +75,13 @@ heritageReleaseKeyAlias=heritage-release
 heritageReleaseKeyPassword=<your-key-password>
 ```
 
+`~` 路径会自动展开；构建时会校验 keystore 文件确实存在。
+
 ## Install
 
 ```bash
-# Debug — 连模拟器或真机后直接装
+# Debug（不需要签名）
 ./gradlew :app:installDebug
-
-# 或手动安装 ADB
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 # Release（需先配置签名）
