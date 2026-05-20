@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 抽象印章：外框保留非遗印记感，内部刻痕暗示 E 与“迹”。 -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M31,24h46c4.4,0 8,3.6 8,8v44c0,4.4 -3.6,8 -8,8H31c-4.4,0 -8,-3.6 -8,-8V32c0,-4.4 3.6,-8 8,-8z"
+        android:strokeWidth="5"
+        android:strokeColor="#FFF7EF"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FFF7EF"
+        android:pathData="M34,36h31c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
+    <path
+        android:fillColor="#FFF7EF"
+        android:pathData="M34,51h25c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
+    <path
+        android:fillColor="#FFF7EF"
+        android:pathData="M34,66h33c2,0 3.5,1.5 3.5,3.5v0c0,2 -1.5,3.5 -3.5,3.5H34c-2,0 -3.5,-1.5 -3.5,-3.5v0c0,-2 1.5,-3.5 3.5,-3.5z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M73,37c6,8 5.2,16.5 -2.2,25.2c-2.6,3.1 -2.1,6.8 2.2,9.8c3.2,2.2 7.2,3.6 11,4.2"
+        android:strokeWidth="5"
+        android:strokeColor="#FFF7EF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#FFF7EF"
+        android:pathData="M78,25.5c2.5,0 4.5,2 4.5,4.5s-2,4.5 -4.5,4.5s-4.5,-2 -4.5,-4.5s2,-4.5 4.5,-4.5z" />
+</vector>

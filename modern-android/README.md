@@ -39,11 +39,29 @@ The contract maps the local Swagger document:
 - `/api/directory-items`
 - `/api/inheritors`
 
-## Verify
+## Build
 
 ```bash
 cd modern-android
+
+# Debug（默认开发用）
 ./gradlew :app:testDebugUnitTest :app:assembleDebug
+
+# Release
+./gradlew :app:testDebugUnitTest :app:assembleRelease
+```
+
+## Install
+
+```bash
+# Debug — 连模拟器或真机后直接装
+./gradlew :app:installDebug
+
+# 或手动安装 APK
+adb install app/build/outputs/apk/debug/app-debug.apk
+
+# Release
+adb install app/build/outputs/apk/release/app-release-unsigned.apk
 ```
 
 ## Network Configuration

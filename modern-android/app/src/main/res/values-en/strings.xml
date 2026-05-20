@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Eji Modern</string>
+    <string name="app_name">Eji</string>
     <string name="nav_articles">Articles</string>
     <string name="nav_directory">Directory</string>
     <string name="nav_inheritors">Inheritors</string>
