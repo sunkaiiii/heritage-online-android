@@ -68,8 +68,12 @@
     <string name="article_detail_load_failed">Failed to load article detail</string>
     <string name="unnamed_article">Untitled article</string>
     <string name="content_load_failed">Load failed</string>
-    <string name="content_not_available">This related item is not available in the local backend yet.</string>
+    <string name="content_not_available">Content not available</string>
     <string name="content_empty_title">No content</string>
+    <string name="error_network_unavailable">Network unavailable. Check your connection.</string>
+    <string name="error_timeout">Request timed out. Try again later.</string>
+    <string name="error_server_unavailable">Service temporarily unavailable</string>
+    <string name="content_may_be_stale">Content may not be up to date</string>
     <string name="home_empty_message">The backend did not return home content yet.</string>
     <string name="article_detail_title">Article Detail</string>
     <string name="action_view_source">View Source</string>

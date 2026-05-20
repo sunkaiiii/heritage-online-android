@@ -79,6 +79,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
+import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private data object DirectoryList
@@ -371,9 +372,10 @@ fun DirectoryScreen(
                 }
 
                 is LoadState.Error -> item {
+                    val refreshErrRes = refreshState.error.toUiError().fallbackResId
                     StatusContent(
                         title = stringResource(R.string.content_load_failed),
-                        message = refreshState.error.message ?: stringResource(R.string.directory_load_failed),
+                        message = stringResource(refreshErrRes),
                         actionLabel = stringResource(R.string.action_retry),
                         onAction = items::retry,
                         modifier = Modifier
@@ -433,8 +435,9 @@ fun DirectoryScreen(
                 }
 
                 is LoadState.Error -> item {
+                    val appendErrRes = appendState.error.toUiError().fallbackResId
                     InlineRetryMessage(
-                        message = appendState.error.message ?: stringResource(R.string.directory_append_failed),
+                        message = stringResource(appendErrRes),
                         onRetry = items::retry,
                         modifier = Modifier.padding(horizontal = 20.dp),
                     )

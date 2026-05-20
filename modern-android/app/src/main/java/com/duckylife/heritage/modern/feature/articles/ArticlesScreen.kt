@@ -79,6 +79,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -288,8 +289,9 @@ private fun ArticlesContent(
                 }
 
                 is LoadState.Error -> item {
+                    val errRes = refreshState.error.toUiError().fallbackResId
                     ErrorContent(
-                        message = refreshState.error.message ?: stringResource(R.string.article_load_failed),
+                        message = stringResource(errRes),
                         onRetry = articles::retry,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -346,8 +348,9 @@ private fun ArticlesContent(
                 }
 
                 is LoadState.Error -> item {
+                    val appendErrRes = appendState.error.toUiError().fallbackResId
                     InlineRetryMessage(
-                        message = appendState.error.message ?: stringResource(R.string.article_append_failed),
+                        message = stringResource(appendErrRes),
                         onRetry = articles::retry,
                         modifier = Modifier.padding(horizontal = 20.dp),
                     )

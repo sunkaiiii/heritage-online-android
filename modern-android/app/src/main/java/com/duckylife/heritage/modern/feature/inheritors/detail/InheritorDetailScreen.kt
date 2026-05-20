@@ -72,6 +72,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageFactCard
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -171,12 +173,9 @@ fun InheritorDetailScreen(
                     .padding(contentPadding),
             )
 
-            uiState.errorMessage != null -> StatusContent(
+            uiState.errorKind != null -> StatusContent(
                 title = stringResource(R.string.content_load_failed),
-                message = friendlyDetailErrorMessage(
-                    errorMessage = uiState.errorMessage,
-                    fallbackMessage = stringResource(R.string.inheritor_detail_load_failed),
-                ),
+                message = stringResource(uiState.errorKind.fallbackResId()),
                 actionLabel = stringResource(R.string.action_retry),
                 onAction = onRetry,
                 modifier = Modifier
@@ -452,21 +451,6 @@ private fun DirectoryReferenceDto.toReferenceMeta(): String =
         region?.takeIf { it.isNotBlank() },
         publishedYear?.let { stringResource(R.string.directory_year_format, it) },
     ).joinToString(" · ")
-
-@Composable
-private fun friendlyDetailErrorMessage(
-    errorMessage: String?,
-    fallbackMessage: String,
-): String {
-    val rawMessage = errorMessage.orEmpty()
-    return when {
-        rawMessage.contains("404") || rawMessage.contains("Not Found", ignoreCase = true) ->
-            stringResource(R.string.content_not_available)
-
-        rawMessage.isBlank() -> fallbackMessage
-        else -> rawMessage
-    }
-}
 
 @Composable
 private fun SectionTitle(

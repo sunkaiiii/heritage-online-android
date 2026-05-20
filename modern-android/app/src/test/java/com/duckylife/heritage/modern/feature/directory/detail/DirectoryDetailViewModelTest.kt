@@ -42,7 +42,7 @@ class DirectoryDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("item-1", state.item?.id)
         assertEquals("两当号子", state.item?.title)
     }
@@ -99,7 +99,7 @@ class DirectoryDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("缓存名录", state.item?.title)
     }
 }

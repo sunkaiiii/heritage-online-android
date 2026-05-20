@@ -64,6 +64,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -164,10 +166,8 @@ fun ArticleDetailScreen(
                     .padding(contentPadding),
             )
 
-            uiState.errorMessage != null -> ErrorDetailContent(
-                message = uiState.errorMessage
-                    .takeUnless { it.isBlank() }
-                    ?: stringResource(R.string.article_detail_load_failed),
+            uiState.errorKind != null -> ErrorDetailContent(
+                message = stringResource(uiState.errorKind.fallbackResId()),
                 onRetry = onRetry,
                 modifier = Modifier
                     .fillMaxSize()

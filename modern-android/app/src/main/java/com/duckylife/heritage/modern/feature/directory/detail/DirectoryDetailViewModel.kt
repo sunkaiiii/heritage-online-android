@@ -10,6 +10,7 @@ import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import com.duckylife.heritage.modern.core.saved.SavedContentType
+import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -66,7 +67,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                         it.copy(
                             isLoading = false,
                             item = item,
-                            errorMessage = null,
+                            errorKind = null,
                         )
                     }
                     recordViewedIfNew(item)
@@ -80,7 +81,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
             _uiState.update {
                 it.copy(
                     isLoading = it.item == null,
-                    errorMessage = null,
+                    errorKind = null,
                 )
             }
             runCatching {
@@ -96,7 +97,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = if (it.item == null) throwable.message.orEmpty() else null,
+                        errorKind = if (it.item == null) throwable.toUiError().kind else null,
                     )
                 }
             }

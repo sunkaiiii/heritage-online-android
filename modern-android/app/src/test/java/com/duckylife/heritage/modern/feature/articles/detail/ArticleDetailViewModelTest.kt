@@ -11,6 +11,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +44,7 @@ class ArticleDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("article-1", state.article?.id)
         assertEquals("非遗新闻详情", state.article?.title)
     }
@@ -65,7 +66,7 @@ class ArticleDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertEquals("detail unavailable", state.errorMessage)
+        assertNotNull(state.errorKind)
     }
 
     @Test
@@ -146,7 +147,7 @@ class ArticleDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("缓存详情", state.article?.title)
     }
 }

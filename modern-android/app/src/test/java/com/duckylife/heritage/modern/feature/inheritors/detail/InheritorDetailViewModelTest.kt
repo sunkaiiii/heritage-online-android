@@ -40,7 +40,7 @@ class InheritorDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("inheritor-1", state.item?.id)
         assertEquals("张三", state.item?.name)
     }
@@ -91,7 +91,7 @@ class InheritorDetailViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoading)
-        assertNull(state.errorMessage)
+        assertNull(state.errorKind)
         assertEquals("缓存传承人", state.item?.name)
     }
 }

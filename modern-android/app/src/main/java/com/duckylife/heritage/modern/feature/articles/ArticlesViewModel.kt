@@ -103,10 +103,10 @@ class ArticlesViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isLoadingBanners = false,
-                        // 已有缓存时不显示错误，只保留缓存 banner
+                        // 已有缓存时保留缓存，不显示错误。
+                        // 无缓存时 bannerErrorMessage 非空，UI 会展示重试入口。
                         bannerErrorMessage = if (it.banners.isEmpty()) {
-                            throwable.message?.takeIf { m -> m.isNotBlank() }
-                                ?: "Banner load failed"
+                            throwable.message ?: "banner_load_error"
                         } else {
                             null
                         },

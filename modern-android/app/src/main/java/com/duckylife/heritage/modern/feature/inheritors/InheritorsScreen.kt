@@ -80,6 +80,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
+import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private data object InheritorsList
@@ -368,9 +369,10 @@ fun InheritorsScreen(
                 }
 
                 is LoadState.Error -> item {
+                    val inhRefreshErrRes = refreshState.error.toUiError().fallbackResId
                     StatusContent(
                         title = stringResource(R.string.content_load_failed),
-                        message = refreshState.error.message ?: stringResource(R.string.inheritors_load_failed),
+                        message = stringResource(inhRefreshErrRes),
                         actionLabel = stringResource(R.string.action_retry),
                         onAction = inheritors::retry,
                         modifier = Modifier
@@ -430,8 +432,9 @@ fun InheritorsScreen(
                 }
 
                 is LoadState.Error -> item {
+                    val inhAppendErrRes = appendState.error.toUiError().fallbackResId
                     InlineRetryMessage(
-                        message = appendState.error.message ?: stringResource(R.string.inheritors_append_failed),
+                        message = stringResource(inhAppendErrRes),
                         onRetry = inheritors::retry,
                         modifier = Modifier.padding(horizontal = 20.dp),
                     )
