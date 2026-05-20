@@ -20,7 +20,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.duckylife.heritage.modern.core.testing.HiltTestRunner"
 
         buildConfigField("String", "HERITAGE_API_BASE_URL", "\"$apiBaseUrl\"")
     }
@@ -91,14 +91,20 @@ dependencies {
 
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.room.compiler)
+    kspAndroidTest(libs.hilt.compiler)
+    kspAndroidTest(libs.androidx.room.compiler)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.ktor.client.mock)
 
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.room.testing)
     androidTestImplementation(libs.androidx.paging.testing)
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.ext.junit.ktx)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.hilt.android.testing)
 }
