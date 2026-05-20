@@ -21,5 +21,5 @@ data class SavedContentEntity(
     val targetKind: String?,
     val isFavorite: Boolean,
     val favoritedAt: Long?,
-    val lastViewedAt: Long,
+    val lastViewedAt: Long = 0L,
 )

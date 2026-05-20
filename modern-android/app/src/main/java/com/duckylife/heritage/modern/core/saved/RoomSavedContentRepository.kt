@@ -51,6 +51,18 @@ class RoomSavedContentRepository @Inject constructor(
 
     override fun recentlyViewed(): Flow<List<SavedContentEntity>> = dao.observeRecentlyViewed()
 
+    override suspend fun removeFavorite(target: SavedContentTarget) {
+        dao.removeFavorite(SavedContentRepository.computeKey(target))
+    }
+
+    override suspend fun removeRecent(target: SavedContentTarget) {
+        dao.removeRecent(SavedContentRepository.computeKey(target))
+    }
+
+    override suspend fun clearRecent() {
+        dao.clearRecent()
+    }
+
     private fun SavedContentSnapshot.toEntity(
         key: String,
         isFavorite: Boolean,

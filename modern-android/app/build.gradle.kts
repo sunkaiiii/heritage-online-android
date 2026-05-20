@@ -1,3 +1,5 @@
+import java.io.File
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.hilt)
@@ -44,12 +46,22 @@ android {
 }
 
 val homeDir = System.getProperty("user.home") ?: "~"
-val rawPath = project.findProperty("heritageReleaseStoreFile") as? String
-if (rawPath != null) {
-    val expandedPath = rawPath.replaceFirst("^~".toRegex(), homeDir)
-    val storeFile = file(expandedPath)
+
+// 将 keystore 路径统一按 rootProject（modern-android/）解析。
+// ~ 展开为用户 home；绝对路径原样返回；相对路径拼在 rootProject 目录下。
+fun resolveReleaseStoreFile(rawPath: String?): File? {
+    if (rawPath.isNullOrBlank()) return null
+    val expanded = rawPath.replaceFirst("^~".toRegex(), homeDir)
+    val f = File(expanded)
+    return if (f.isAbsolute) f else rootProject.file(expanded)
+}
+
+val resolvedStoreFile = resolveReleaseStoreFile(
+    project.findProperty("heritageReleaseStoreFile") as? String,
+)
+if (resolvedStoreFile != null) {
     android.signingConfigs.maybeCreate("release").apply {
-        this.storeFile = storeFile
+        storeFile = resolvedStoreFile
         storePassword = project.findProperty("heritageReleaseStorePassword") as? String ?: ""
         keyAlias = project.findProperty("heritageReleaseKeyAlias") as? String ?: ""
         keyPassword = project.findProperty("heritageReleaseKeyPassword") as? String ?: ""
@@ -57,32 +69,53 @@ if (rawPath != null) {
     android.buildTypes.getByName("release").signingConfig = android.signingConfigs.getByName("release")
 }
 
-// 仅在执行 assembleRelease 时校验签名配置完整性，debug 不受影响。
-val relStoreFilePath = (project.findProperty("heritageReleaseStoreFile") as? String)?.replaceFirst("^~".toRegex(), homeDir)
-val relStoreFile = relStoreFilePath?.let { file(it) }
-val relStorePwd = project.findProperty("heritageReleaseStorePassword") as? String
-val relKeyAlias = project.findProperty("heritageReleaseKeyAlias") as? String
-val relKeyPwd = project.findProperty("heritageReleaseKeyPassword") as? String
+// 自定义任务：仅在 assembleRelease 调用时校验签名配置。
+// @Input 属性可被 configuration cache 安全序列化。
+abstract class ValidateReleaseSigningTask : DefaultTask() {
+    @get:Input
+    abstract val storeFilePath: Property<String>
 
-tasks.whenTaskAdded {
-    if (name == "packageRelease") {
-        doFirst {
-            if (relStoreFile == null || !relStoreFile.exists()) {
-                error(
-                    "Missing heritageReleaseStoreFile or keystore not found.\n" +
-                        "  1. Run: keytool -genkey -v -keystore ~/.gradle/heritage-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias heritage-release\n" +
-                        "  2. Add to ~/.gradle/gradle.properties:\n" +
-                        "    heritageReleaseStoreFile=~/.gradle/heritage-release.jks\n" +
-                        "    heritageReleaseStorePassword=<your-store-password>\n" +
-                        "    heritageReleaseKeyAlias=heritage-release\n" +
-                        "    heritageReleaseKeyPassword=<your-key-password>",
-                )
-            }
-            if (relStorePwd.isNullOrBlank()) error("Missing heritageReleaseStorePassword. Set it in ~/.gradle/gradle.properties")
-            if (relKeyAlias.isNullOrBlank()) error("Missing heritageReleaseKeyAlias. Set it in ~/.gradle/gradle.properties")
-            if (relKeyPwd.isNullOrBlank()) error("Missing heritageReleaseKeyPassword. Set it in ~/.gradle/gradle.properties")
+    @get:Input
+    abstract val storePassword: Property<String>
+
+    @get:Input
+    abstract val keyAlias: Property<String>
+
+    @get:Input
+    abstract val keyPassword: Property<String>
+
+    @TaskAction
+    fun validate() {
+        val path = storeFilePath.get()
+        if (path.isBlank() || !File(path).exists()) {
+            val helpPath = path.ifBlank { "~/.gradle/heritage-release.jks" }
+            throw GradleException(
+                "Missing heritageReleaseStoreFile or keystore not found.\n" +
+                    "  1. Run: keytool -genkey -v -keystore $helpPath -keyalg RSA -keysize 2048 -validity 10000 -alias heritage-release\n" +
+                    "  2. Add to ~/.gradle/gradle.properties:\n" +
+                    "    heritageReleaseStoreFile=~/.gradle/heritage-release.jks\n" +
+                    "    heritageReleaseStorePassword=<your-store-password>\n" +
+                    "    heritageReleaseKeyAlias=heritage-release\n" +
+                    "    heritageReleaseKeyPassword=<your-key-password>",
+            )
         }
+        if (storePassword.get().isBlank()) throw GradleException("Missing heritageReleaseStorePassword. Set it in ~/.gradle/gradle.properties")
+        if (keyAlias.get().isBlank()) throw GradleException("Missing heritageReleaseKeyAlias. Set it in ~/.gradle/gradle.properties")
+        if (keyPassword.get().isBlank()) throw GradleException("Missing heritageReleaseKeyPassword. Set it in ~/.gradle/gradle.properties")
     }
+}
+
+// 校验和签名共用同一个 resolvedStoreFile，保证路径一致。
+tasks.register<ValidateReleaseSigningTask>("validateReleaseSigning") {
+    storeFilePath.set(resolvedStoreFile?.absolutePath ?: "")
+    storePassword.set((project.findProperty("heritageReleaseStorePassword") as? String).orEmpty())
+    keyAlias.set((project.findProperty("heritageReleaseKeyAlias") as? String).orEmpty())
+    keyPassword.set((project.findProperty("heritageReleaseKeyPassword") as? String).orEmpty())
+}
+
+// packageRelease 依赖 validateReleaseSigning——校验仅在 release 构建时运行。
+tasks.matching { it.name == "packageRelease" }.configureEach {
+    dependsOn("validateReleaseSigning")
 }
 
 dependencies {
@@ -138,4 +171,11 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
     androidTestImplementation(libs.hilt.android.testing)
     androidTestImplementation(libs.espresso.core)
+}
+
+// 本地快速验证：单元测试 + debug 构建，不依赖模拟器。
+tasks.register("verifyLocal") {
+    group = "verification"
+    description = "Runs unit tests and assembles debug APK"
+    dependsOn(":app:testDebugUnitTest", ":app:assembleDebug")
 }

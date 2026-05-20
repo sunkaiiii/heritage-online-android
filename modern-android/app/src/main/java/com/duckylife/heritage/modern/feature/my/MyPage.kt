@@ -17,6 +17,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ClearAll
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.DeleteOutline
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -25,9 +30,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -57,9 +65,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface MyPageDestination {
@@ -84,7 +94,7 @@ sealed interface MyPageDestination {
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    savedContentRepository: SavedContentRepository,
+    private val savedContentRepository: SavedContentRepository,
 ) : ViewModel() {
     val favorites: StateFlow<List<SavedContentEntity>> =
         savedContentRepository.favorites().stateIn(
@@ -99,6 +109,32 @@ class MyPageViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = emptyList(),
         )
+
+    fun unfavorite(entity: SavedContentEntity) {
+        viewModelScope.launch {
+            savedContentRepository.removeFavorite(entity.toTarget())
+        }
+    }
+
+    fun removeRecent(entity: SavedContentEntity) {
+        viewModelScope.launch {
+            savedContentRepository.removeRecent(entity.toTarget())
+        }
+    }
+
+    fun clearRecent() {
+        viewModelScope.launch {
+            savedContentRepository.clearRecent()
+        }
+    }
+
+    private fun SavedContentEntity.toTarget() = SavedContentTarget(
+        id = targetId,
+        sourceId = targetSourceId,
+        sourceUrl = targetSourceUrl,
+        category = targetCategory,
+        kind = targetKind,
+    )
 }
 
 @Composable
@@ -111,6 +147,7 @@ fun MyPage(
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val recentlyViewed by viewModel.recentlyViewed.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var showClearRecentDialog by remember { mutableStateOf(false) }
     val imageLoader = rememberHeritageImageLoader()
 
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
@@ -160,6 +197,20 @@ fun MyPage(
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
+                // 最近浏览非空时显示"清空最近浏览"
+                if (selectedTab == 1 && items.isNotEmpty()) {
+                    item {
+                        TextButton(onClick = { showClearRecentDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Outlined.ClearAll,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(stringResource(R.string.action_clear_recent))
+                        }
+                    }
+                }
                 if (items.isEmpty()) {
                     item {
                         Box(
@@ -180,14 +231,38 @@ fun MyPage(
                     SavedContentRow(
                         entity = entity,
                         imageLoader = imageLoader,
+                        isFavoriteTab = selectedTab == 0,
                         onClick = {
                             val dest = entity.toDestination() ?: return@SavedContentRow
                             onNavigate(dest)
+                        },
+                        onRemove = {
+                            if (selectedTab == 0) viewModel.unfavorite(entity)
+                            else viewModel.removeRecent(entity)
                         },
                     )
                 }
             }
         }
+    }
+
+    if (showClearRecentDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearRecentDialog = false },
+            title = { Text(stringResource(R.string.action_clear_recent)) },
+            text = { Text(stringResource(R.string.action_clear_recent_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.clearRecent()
+                    showClearRecentDialog = false
+                }) { Text(stringResource(R.string.confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearRecentDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }
 
@@ -195,48 +270,70 @@ fun MyPage(
 private fun SavedContentRow(
     entity: SavedContentEntity,
     imageLoader: ImageLoader,
+    isFavoriteTab: Boolean,
     onClick: () -> Unit,
+    onRemove: () -> Unit,
 ) {
     val fallbackText = stringResource(R.string.brand_fallback)
-    HeritageListCard(
-        onClick = onClick,
-        image = {
-            HeritageListImage(
-                imageUrl = entity.coverImageJson?.let { extractDisplayUrl(it) },
-                imageLoader = imageLoader,
-                fallbackText = fallbackText,
-                modifier = Modifier
-                    .size(width = 72.dp, height = 72.dp)
-                    .clip(RoundedCornerShape(6.dp)),
-            )
-        },
-        text = {
-            Text(
-                text = entity.title.orEmpty().ifBlank {
-                    stringResource(
-                        when (entity.contentType) {
-                            "inheritor" -> R.string.unnamed_inheritor
-                            "directoryItem" -> R.string.unnamed_directory_item
-                            else -> R.string.unnamed_article
-                        },
-                    )
-                },
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (!entity.summary.isNullOrBlank()) {
+    val removeLabel = if (isFavoriteTab) stringResource(R.string.action_unfavorite)
+    else stringResource(R.string.action_remove_recent)
+    Column {
+        HeritageListCard(
+            onClick = onClick,
+            image = {
+                HeritageListImage(
+                    imageUrl = entity.coverImageJson?.let { extractDisplayUrl(it) },
+                    imageLoader = imageLoader,
+                    fallbackText = fallbackText,
+                    modifier = Modifier
+                        .size(width = 72.dp, height = 72.dp)
+                        .clip(RoundedCornerShape(6.dp)),
+                )
+            },
+            text = {
                 Text(
-                    text = entity.summary,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
+                    text = entity.title.orEmpty().ifBlank {
+                        stringResource(
+                            when (entity.contentType) {
+                                "inheritor" -> R.string.unnamed_inheritor
+                                "directoryItem" -> R.string.unnamed_directory_item
+                                else -> R.string.unnamed_article
+                            },
+                        )
+                    },
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-            }
-        },
-    )
+                if (!entity.summary.isNullOrBlank()) {
+                    Text(
+                        text = entity.summary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            },
+        )
+        TextButton(
+            onClick = onRemove,
+            modifier = Modifier.padding(start = 4.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+        ) {
+            Icon(
+                imageVector = if (isFavoriteTab) Icons.Outlined.Favorite else Icons.Outlined.DeleteOutline,
+                contentDescription = removeLabel,
+                modifier = Modifier.size(16.dp),
+            )
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = removeLabel,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
+    }
 }
 
 internal fun extractDisplayUrl(coverImageJson: String?): String? {

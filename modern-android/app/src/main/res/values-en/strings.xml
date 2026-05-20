@@ -114,6 +114,11 @@
     <string name="favorites_empty_message">No favorites yet.</string>
     <string name="recent_empty_message">No browsing history yet.</string>
     <string name="my_page_entry">Favorites &amp; Recent</string>
+    <string name="action_remove_recent">Remove</string>
+    <string name="action_clear_recent">Clear recent</string>
+    <string name="action_clear_recent_confirm">Clear all recent browsing history? Favorites are not affected.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string name="filter_invalid_year">Enter a 4-digit year</string>
     <string name="filter_active_label">Filters</string>
     <string name="filter_clear_item">Clear %1$s</string>

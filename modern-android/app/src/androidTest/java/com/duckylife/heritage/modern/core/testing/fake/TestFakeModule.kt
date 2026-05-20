@@ -100,5 +100,21 @@ private class TestFakeSavedContentRepository : SavedContentRepository {
         entities.map { it.values.filter { e -> e.isFavorite } }
 
     override fun recentlyViewed(): Flow<List<SavedContentEntity>> =
-        entities.map { it.values.sortedByDescending { e -> e.lastViewedAt } }
+        entities.map { it.values.filter { e -> e.lastViewedAt > 0L }.sortedByDescending { e -> e.lastViewedAt } }
+
+    override suspend fun removeFavorite(target: SavedContentTarget) {
+        val key = SavedContentRepository.computeKey(target)
+        entities.value = entities.value + (key to (entities.value[key]?.copy(isFavorite = false, favoritedAt = null) ?: return))
+    }
+
+    override suspend fun removeRecent(target: SavedContentTarget) {
+        val key = SavedContentRepository.computeKey(target)
+        entities.value = entities.value + (key to (entities.value[key]?.copy(lastViewedAt = 0L) ?: return))
+    }
+
+    override suspend fun clearRecent() {
+        entities.value = entities.value.mapValues { (_, entity) ->
+            if (!entity.isFavorite) entity.copy(lastViewedAt = 0L) else entity
+        }
+    }
 }

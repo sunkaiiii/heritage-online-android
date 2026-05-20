@@ -114,6 +114,11 @@
     <string name="favorites_empty_message">还没有收藏内容。</string>
     <string name="recent_empty_message">还没有浏览记录。</string>
     <string name="my_page_entry">收藏与最近浏览</string>
+    <string name="action_remove_recent">移除记录</string>
+    <string name="action_clear_recent">清空最近浏览</string>
+    <string name="action_clear_recent_confirm">确认清空所有最近浏览记录？此操作不影响收藏。</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
     <string name="filter_invalid_year">请输入4位年份</string>
     <string name="filter_active_label">筛选</string>
     <string name="filter_clear_item">清除 %1$s</string>

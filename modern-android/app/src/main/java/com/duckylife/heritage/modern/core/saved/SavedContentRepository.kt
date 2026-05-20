@@ -14,6 +14,12 @@ interface SavedContentRepository {
 
     fun recentlyViewed(): Flow<List<SavedContentEntity>>
 
+    suspend fun removeFavorite(target: SavedContentTarget)
+
+    suspend fun removeRecent(target: SavedContentTarget)
+
+    suspend fun clearRecent()
+
     companion object {
         fun computeKey(target: SavedContentTarget): String =
             target.id

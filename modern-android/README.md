@@ -39,15 +39,35 @@ The contract maps the local Swagger document:
 - `/api/directory-items`
 - `/api/inheritors`
 
-## Build
+## Local Verification
+
+本项目不做远端 CI。每次大改后，按改动范围跑对应命令即可确认项目没坏。
+
+### 快速检查（推荐日常开发）
 
 ```bash
 cd modern-android
+./gradlew :app:verifyLocal
+```
 
-# 全量验证（推荐开发用）
-./gradlew :app:testDebugUnitTest :app:assembleDebug
+等价于 `testDebugUnitTest` + `assembleDebug`，不依赖模拟器。
 
-# Instrumentation 测试（需模拟器在线）
+### 改动分级检查表
+
+| 改动范围 | 需要跑的命令 |
+|---------|------------|
+| UI 布局、文案、样式 | `./gradlew :app:verifyLocal` |
+| Repository、Room、Paging、导航 | `./gradlew :app:verifyLocal`<br>`./gradlew :app:connectedDebugAndroidTest`（需模拟器在线） |
+| Release、签名、Gradle 配置 | `./gradlew :app:verifyLocal`<br>无签名参数跑 `:app:assembleRelease` 应失败<br>有签名参数跑 `:app:assembleRelease` 应成功 |
+| 后端 API、Mock 数据 | `./gradlew :app:connectedDebugAndroidTest`（模拟器 UI 验收） |
+
+### 单步命令
+
+```bash
+# 单元测试 + debug 构建
+./gradlew :app:verifyLocal
+
+# Instrumentation 测试（39 个，需模拟器在线）
 ./gradlew :app:connectedDebugAndroidTest
 
 # Release（需先配置签名，见下方）
