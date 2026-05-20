@@ -1,11 +1,13 @@
 package com.duckylife.heritage.modern.feature.articles
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -36,16 +38,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,6 +80,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,6 +107,7 @@ fun ArticlesRoute(
         onApplyFilters = viewModel::applyFilters,
         onClearYearFilter = { viewModel.updateYearFilter("") },
         onClearFilters = viewModel::clearFilters,
+        onClearAdvancedFilters = viewModel::clearAdvancedFilters,
         onSettingsSelected = onSettingsSelected,
         onArticleSelected = onArticleSelected,
         modifier = modifier,
@@ -120,6 +129,7 @@ fun ArticlesScreen(
     onApplyFilters: (String, String) -> Unit,
     onClearYearFilter: () -> Unit,
     onClearFilters: () -> Unit,
+    onClearAdvancedFilters: () -> Unit,
     onSettingsSelected: () -> Unit,
     onArticleSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -147,7 +157,7 @@ fun ArticlesScreen(
                 onFilterDismiss()
             },
             onClear = {
-                onClearFilters()
+                onClearAdvancedFilters()
                 onFilterDismiss()
             },
             onDismiss = onFilterDismiss,
@@ -170,30 +180,45 @@ private fun ArticlesContent(
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
 ) {
-    HeritagePageBackground(modifier = modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 18.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            item {
-                ArticlesHeader(
-                    activeFilterCount = activeFilterCount,
-                    onFilterClick = onFilterClick,
-                    onSettingsSelected = onSettingsSelected,
-                    onRetry = {
-                        onRefreshBanners()
-                        articles.refresh()
-                    },
-                )
-            }
+    val uriHandler = LocalUriHandler.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
 
-            item {
-                when {
-                    uiState.banners.isNotEmpty() -> BannerStrip(
-                        banners = uiState.banners,
-                        imageLoader = imageLoader,
+    HeritagePageBackground(modifier = modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 18.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                item {
+                    ArticlesHeader(
+                        activeFilterCount = activeFilterCount,
+                        onFilterClick = onFilterClick,
+                        onSettingsSelected = onSettingsSelected,
+                        onRetry = {
+                            onRefreshBanners()
+                            articles.refresh()
+                        },
                     )
+                }
+
+                item {
+                    when {
+                        uiState.banners.isNotEmpty() -> BannerStrip(
+                            banners = uiState.banners,
+                            imageLoader = imageLoader,
+                            onBannerSelected = { targetUrl ->
+                                runCatching {
+                                    uriHandler.openUri(targetUrl)
+                                }.onFailure {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+                                    }
+                                }
+                            },
+                        )
 
                     uiState.isLoadingBanners -> BannerLoadingStrip()
 
@@ -331,6 +356,11 @@ private fun ArticlesContent(
                 is LoadState.NotLoading -> Unit
             }
         }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
+    }
     }
 }
 
@@ -390,6 +420,7 @@ private fun ArticlesHeader(
 private fun BannerStrip(
     banners: List<HomeBannerDto>,
     imageLoader: ImageLoader,
+    onBannerSelected: (String) -> Unit,
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 20.dp),
@@ -402,6 +433,7 @@ private fun BannerStrip(
             BannerCard(
                 banner = banner,
                 imageLoader = imageLoader,
+                onBannerSelected = onBannerSelected,
             )
         }
     }
@@ -411,16 +443,24 @@ private fun BannerStrip(
 private fun BannerCard(
     banner: HomeBannerDto,
     imageLoader: ImageLoader,
+    onBannerSelected: (String) -> Unit,
 ) {
-    val bannerImageUrl = banner.mobileImage?.thumbnailUrl
-        ?: banner.mobileImage?.displayUrl
-        ?: banner.displayImage?.thumbnailUrl
+    val targetUrl = banner.targetUrl
+    // 图片优先级：mobile.displayUrl → mobile.thumbnailUrl → displayImage → desktopImage
+    val bannerImageUrl = banner.mobileImage?.displayUrl
+        ?: banner.mobileImage?.thumbnailUrl
         ?: banner.displayImage?.displayUrl
-        ?: banner.desktopImage?.thumbnailUrl
+        ?: banner.displayImage?.thumbnailUrl
         ?: banner.desktopImage?.displayUrl
+        ?: banner.desktopImage?.thumbnailUrl
+    val canClick = !targetUrl.isNullOrBlank()
     Card(
         modifier = Modifier
-            .size(width = 300.dp, height = 156.dp),
+            .size(width = 300.dp, height = 156.dp)
+            .then(
+                if (canClick) Modifier.clickable(onClick = { onBannerSelected(targetUrl!!) })
+                else Modifier
+            ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
@@ -627,7 +667,7 @@ private fun ArticleFilterSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var draftYear by remember { mutableStateOf(initialYearFilter) }
+    var draftYear by rememberSaveable { mutableStateOf(initialYearFilter) }
     val yearError = draftYear.isNotBlank() && !isValidYear(draftYear)
     val canApply = !yearError
 
@@ -653,7 +693,7 @@ private fun ArticleFilterSheet(
                 onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
-                placeholder = { Text("2024") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_year)) },
                 singleLine = true,
                 isError = yearError,
                 supportingText = if (yearError) {
@@ -680,14 +720,16 @@ private fun ArticleFilterSheet(
 private fun isValidYear(value: String): Boolean =
     value.length == 4 && value.toIntOrNull() != null
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ActiveFilterChipsRow(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
-    Row(
+    FlowRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
         content = content,
     )
 }

@@ -52,8 +52,6 @@
     <string name="directory_related_projects_title">Related projects</string>
     <string name="directory_related_inheritors_title">Related inheritors</string>
     <string name="directory_related_documents_title">Related documents</string>
-    <string name="placeholder_directory_description">The next slice will connect the heritage directory.</string>
-    <string name="placeholder_inheritors_description">The inheritor list will be connected after the directory.</string>
     <string name="articles_latest_title">Latest Articles</string>
     <string name="articles_header_title">Eji</string>
     <string name="articles_header_subtitle">Heritage news, forums, and specials</string>
@@ -119,4 +117,7 @@
     <string name="filter_invalid_year">Enter a 4-digit year</string>
     <string name="filter_active_label">Filters</string>
     <string name="filter_clear_item">Clear %1$s</string>
+    <string name="filter_placeholder_year">2024</string>
+    <string name="filter_placeholder_region">Beijing</string>
+    <string name="filter_placeholder_list_type">representative</string>
 </resources>

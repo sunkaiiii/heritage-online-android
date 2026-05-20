@@ -27,9 +27,12 @@ interface SavedContentDao {
     @Query("UPDATE saved_content SET isFavorite = 0, favoritedAt = NULL WHERE contentKey = :contentKey")
     suspend fun removeFavorite(contentKey: String)
 
+    // 只裁剪非收藏的旧记录，isFavorite = 1 的内容永不被删除。
     @Query(
         """
-        DELETE FROM saved_content WHERE contentKey NOT IN (
+        DELETE FROM saved_content
+        WHERE isFavorite = 0
+        AND contentKey NOT IN (
             SELECT contentKey FROM saved_content
             ORDER BY lastViewedAt DESC
             LIMIT :keepCount

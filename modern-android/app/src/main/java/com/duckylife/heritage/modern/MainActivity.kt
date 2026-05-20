@@ -270,30 +270,6 @@ private fun HeritageApp(
     }
 }
 
-@Composable
-private fun PlaceholderDestination(
-    title: String,
-    description: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier.padding(28.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-        )
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
 private enum class HomeDestination(
     @param:StringRes val labelRes: Int,
     val icon: ImageVector,

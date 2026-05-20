@@ -44,9 +44,10 @@ import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
+import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
-import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import androidx.compose.ui.tooling.preview.Preview
@@ -238,28 +239,12 @@ private fun SavedContentRow(
     )
 }
 
-private fun extractDisplayUrl(coverImageJson: String): String? {
-    return try {
-        // Simple extraction of displayUrl from JSON without full deserialization
-        val key = "\"displayUrl\":\""
-        val start = coverImageJson.indexOf(key)
-        if (start < 0) {
-            val key2 = "\"thumbnailUrl\":\""
-            val start2 = coverImageJson.indexOf(key2)
-            if (start2 < 0) return null
-            val begin = start2 + key2.length
-            val end = coverImageJson.indexOf('"', begin)
-            if (end < 0) return null
-            coverImageJson.substring(begin, end).replace("\\/", "/")
-        } else {
-            val begin = start + key.length
-            val end = coverImageJson.indexOf('"', begin)
-            if (end < 0) return null
-            coverImageJson.substring(begin, end).replace("\\/", "/")
-        }
-    } catch (_: Exception) {
-        null
-    }
+internal fun extractDisplayUrl(coverImageJson: String?): String? {
+    if (coverImageJson.isNullOrBlank()) return null
+    return runCatching {
+        val asset = HeritageJson.decodeFromString<MediaAssetDto>(coverImageJson)
+        asset.displayUrl ?: asset.thumbnailUrl
+    }.getOrNull()
 }
 
 private fun SavedContentEntity.toDestination(): MyPageDestination? {

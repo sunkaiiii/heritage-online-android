@@ -276,6 +276,7 @@ private fun DirectoryListRoute(
         onApplyFilters = viewModel::applyFilters,
         onClearFilterField = viewModel::clearFilterField,
         onClearFilters = viewModel::clearFilters,
+        onClearAdvancedFilters = viewModel::clearAdvancedFilters,
         onItemSelected = onItemSelected,
         modifier = modifier,
     )
@@ -294,6 +295,7 @@ fun DirectoryScreen(
     onApplyFilters: (String, String, String, String) -> Unit,
     onClearFilterField: (DirectoryFilterField) -> Unit,
     onClearFilters: () -> Unit,
+    onClearAdvancedFilters: () -> Unit,
     onItemSelected: (DirectoryItemSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -453,7 +455,7 @@ fun DirectoryScreen(
                 onFilterDismiss()
             },
             onClear = {
-                onClearFilters()
+                onClearAdvancedFilters()
                 onFilterDismiss()
             },
             onDismiss = onFilterDismiss,
@@ -669,10 +671,10 @@ private fun DirectoryFilterSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var draftRegion by remember { mutableStateOf(initialRegion) }
-    var draftCategory by remember { mutableStateOf(initialCategory) }
-    var draftYear by remember { mutableStateOf(initialYear) }
-    var draftListType by remember { mutableStateOf(initialListType) }
+    var draftRegion by rememberSaveable { mutableStateOf(initialRegion) }
+    var draftCategory by rememberSaveable { mutableStateOf(initialCategory) }
+    var draftYear by rememberSaveable { mutableStateOf(initialYear) }
+    var draftListType by rememberSaveable { mutableStateOf(initialListType) }
     val yearError = draftYear.isNotBlank() && !isValidYear(draftYear)
     val canApply = !yearError
 
@@ -698,7 +700,7 @@ private fun DirectoryFilterSheet(
                 onValueChange = { draftRegion = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_region)) },
-                placeholder = { Text("北京") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_region)) },
                 singleLine = true,
             )
             OutlinedTextField(
@@ -714,7 +716,7 @@ private fun DirectoryFilterSheet(
                 onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
-                placeholder = { Text("2006") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_year)) },
                 singleLine = true,
                 isError = yearError,
                 supportingText = if (yearError) {
@@ -728,7 +730,7 @@ private fun DirectoryFilterSheet(
                 onValueChange = { draftListType = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_list_type)) },
-                placeholder = { Text("representative") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_list_type)) },
                 singleLine = true,
             )
             Row(
@@ -749,14 +751,16 @@ private fun DirectoryFilterSheet(
 private fun isValidYear(value: String): Boolean =
     value.length == 4 && value.toIntOrNull() != null
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ActiveFilterChipsRow(
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit,
 ) {
-    Row(
+    FlowRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
         content = content,
     )
 }

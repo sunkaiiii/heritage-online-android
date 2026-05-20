@@ -122,6 +122,16 @@ class DirectoryViewModel @Inject constructor(
         }
     }
 
+    fun clearAdvancedFilters() {
+        savedStateHandle[KEY_DIR_REGION] = ""
+        savedStateHandle[KEY_DIR_CATEGORY] = ""
+        savedStateHandle[KEY_DIR_YEAR] = ""
+        savedStateHandle[KEY_DIR_LIST_TYPE] = ""
+        _uiState.update {
+            it.copy(regionFilter = "", categoryFilter = "", yearFilter = "", listTypeFilter = "")
+        }
+    }
+
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 350L
     }

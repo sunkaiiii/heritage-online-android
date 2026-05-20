@@ -117,6 +117,11 @@ class ArticlesViewModel @Inject constructor(
         _uiState.update { it.copy(searchKeywords = "", yearFilter = "") }
     }
 
+    fun clearAdvancedFilters() {
+        savedStateHandle[KEY_ARTICLE_YEAR] = ""
+        _uiState.update { it.copy(yearFilter = "") }
+    }
+
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 350L
     }

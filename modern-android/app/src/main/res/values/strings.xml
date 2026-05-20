@@ -52,8 +52,6 @@
     <string name="directory_related_projects_title">相关项目</string>
     <string name="directory_related_inheritors_title">相关传承人</string>
     <string name="directory_related_documents_title">相关文献</string>
-    <string name="placeholder_directory_description">下一条切片会接入非遗项目名录。</string>
-    <string name="placeholder_inheritors_description">传承人列表会在项目名录之后接入。</string>
     <string name="articles_latest_title">最新文章</string>
     <string name="articles_header_title">E迹</string>
     <string name="articles_header_subtitle">非遗新闻、论坛与专题</string>
@@ -119,4 +117,7 @@
     <string name="filter_invalid_year">请输入4位年份</string>
     <string name="filter_active_label">筛选</string>
     <string name="filter_clear_item">清除 %1$s</string>
+    <string name="filter_placeholder_year">2024</string>
+    <string name="filter_placeholder_region">北京</string>
+    <string name="filter_placeholder_list_type">representative</string>
 </resources>

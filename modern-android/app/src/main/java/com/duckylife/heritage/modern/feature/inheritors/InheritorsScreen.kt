@@ -275,6 +275,7 @@ private fun InheritorsListRoute(
         onApplyFilters = viewModel::applyFilters,
         onClearFilterField = viewModel::clearFilterField,
         onClearFilters = viewModel::clearFilters,
+        onClearAdvancedFilters = viewModel::clearAdvancedFilters,
         onInheritorSelected = onInheritorSelected,
         modifier = modifier,
     )
@@ -292,6 +293,7 @@ fun InheritorsScreen(
     onApplyFilters: (String, String, String, String) -> Unit,
     onClearFilterField: (InheritorFilterField) -> Unit,
     onClearFilters: () -> Unit,
+    onClearAdvancedFilters: () -> Unit,
     onInheritorSelected: (InheritorSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -329,11 +331,12 @@ fun InheritorsScreen(
             )
             if (activeFilters.isNotEmpty()) {
                 item {
-                    Row(
+                    FlowRow(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         activeFilters.forEach { (field, value) ->
                             FilterChip(
@@ -449,7 +452,7 @@ fun InheritorsScreen(
                 onFilterDismiss()
             },
             onClear = {
-                onClearFilters()
+                onClearAdvancedFilters()
                 onFilterDismiss()
             },
             onDismiss = onFilterDismiss,
@@ -641,10 +644,10 @@ private fun InheritorFilterSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
-    var draftRegion by remember { mutableStateOf(initialRegion) }
-    var draftCategory by remember { mutableStateOf(initialCategory) }
-    var draftYear by remember { mutableStateOf(initialYear) }
-    var draftGender by remember { mutableStateOf(initialGender) }
+    var draftRegion by rememberSaveable { mutableStateOf(initialRegion) }
+    var draftCategory by rememberSaveable { mutableStateOf(initialCategory) }
+    var draftYear by rememberSaveable { mutableStateOf(initialYear) }
+    var draftGender by rememberSaveable { mutableStateOf(initialGender) }
     val yearError = draftYear.isNotBlank() && draftYear.length != 4 || draftYear.isNotBlank() && draftYear.toIntOrNull() == null
     val canApply = !yearError
 
@@ -670,7 +673,7 @@ private fun InheritorFilterSheet(
                 onValueChange = { draftRegion = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_region)) },
-                placeholder = { Text("四川") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_region)) },
                 singleLine = true,
             )
             OutlinedTextField(
@@ -686,7 +689,7 @@ private fun InheritorFilterSheet(
                 onValueChange = { draftYear = it },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.filter_field_year)) },
-                placeholder = { Text("2018") },
+                placeholder = { Text(stringResource(R.string.filter_placeholder_year)) },
                 singleLine = true,
                 isError = yearError,
                 supportingText = if (yearError) {

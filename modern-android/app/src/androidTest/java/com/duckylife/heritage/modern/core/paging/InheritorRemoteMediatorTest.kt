@@ -9,12 +9,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.duckylife.heritage.modern.core.database.HeritageDatabase
-import com.duckylife.heritage.modern.core.database.entity.DirectoryItemEntity
-import com.duckylife.heritage.modern.core.database.entity.DirectoryRemoteKeyEntity
+import com.duckylife.heritage.modern.core.database.entity.InheritorEntity
+import com.duckylife.heritage.modern.core.database.entity.InheritorRemoteKeyEntity
 import com.duckylife.heritage.modern.core.database.mapper.queryKey
-import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
-import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
-import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
 import com.duckylife.heritage.modern.core.paging.testhelpers.FakeHeritageApiClient
 import java.io.IOException
@@ -23,7 +22,6 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -31,14 +29,11 @@ import org.junit.runner.RunWith
 
 @OptIn(ExperimentalPagingApi::class)
 @RunWith(AndroidJUnit4::class)
-class DirectoryRemoteMediatorTest {
+class InheritorRemoteMediatorTest {
 
     private lateinit var database: HeritageDatabase
     private lateinit var apiClient: FakeHeritageApiClient
-    private val query = DirectoryItemQuery(
-        kind = DirectoryItemKind.NationalProject,
-        pageSize = 20,
-    )
+    private val query = InheritorQuery(pageSize = 20)
     private val queryKey = query.queryKey()
 
     @Before
@@ -59,28 +54,25 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun refreshInsertsFirstPageAndRemoteKey() = runTest {
-        apiClient.directoryItemsResult = PagedResult(
-            items = listOf(testDirectoryItem(id = "d1", title = "项目1")),
+        apiClient.inheritorsResult = PagedResult(
+            items = listOf(testInheritor(id = "i1", name = "张三")),
             page = 1,
             pageSize = 20,
             hasMore = true,
             total = 30,
         )
         val mediator = createMediator()
-
-        val pagingState = pagingState()
-        val result = mediator.load(LoadType.REFRESH, pagingState)
+        val result = mediator.load(LoadType.REFRESH, pagingState())
 
         assertTrue(result is MediatorResult.Success)
         assertFalse((result as MediatorResult.Success).endOfPaginationReached)
 
-        // Verify items were inserted
-        val items = database.directoryItemDao().pagingSource(queryKey).loadSinglePage()
+        // 传承人字段正确写入 Room
+        val items = database.inheritorDao().pagingSource(queryKey).loadSinglePage()
         assertEquals(1, items.size)
-        assertEquals("项目1", items.first().title)
+        assertEquals("张三", items.first().name)
 
-        // Verify remote key was stored
-        val remoteKey = database.directoryRemoteKeyDao().remoteKey(queryKey)
+        val remoteKey = database.inheritorRemoteKeyDao().remoteKey(queryKey)
         assertNotNull(remoteKey)
         assertEquals(2, remoteKey?.nextPage)
         assertTrue(remoteKey?.hasMore == true)
@@ -88,21 +80,22 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun refreshClearsOldDataBeforeInsert() = runTest {
-        // Pre-populate with old data for the same queryKey
-        database.directoryItemDao().upsertAll(
+        // 预填充同 queryKey 的旧数据
+        database.inheritorDao().upsertAll(
             listOf(
-                DirectoryItemEntity(
+                InheritorEntity(
                     id = "old-1",
                     queryKey = queryKey,
-                    kind = "nationalProject",
-                    title = "旧数据",
-                    summary = null,
+                    name = "旧传承人",
+                    gender = null,
+                    birthDateText = null,
+                    ethnicity = null,
                     category = null,
-                    region = null,
                     projectCode = null,
+                    projectName = null,
+                    region = null,
                     batch = null,
-                    publishedYear = null,
-                    listType = null,
+                    description = null,
                     coverImageJson = null,
                     sourceUrl = null,
                     page = 1,
@@ -111,9 +104,8 @@ class DirectoryRemoteMediatorTest {
             ),
         )
 
-        // Now refresh with new data
-        apiClient.directoryItemsResult = PagedResult(
-            items = listOf(testDirectoryItem(id = "new-1", title = "新数据")),
+        apiClient.inheritorsResult = PagedResult(
+            items = listOf(testInheritor(id = "new-1", name = "新传承人")),
             page = 1,
             pageSize = 20,
             hasMore = false,
@@ -122,15 +114,15 @@ class DirectoryRemoteMediatorTest {
         val result = mediator.load(LoadType.REFRESH, pagingState())
 
         assertTrue(result is MediatorResult.Success)
-        val items = database.directoryItemDao().pagingSource(queryKey).loadSinglePage()
+        val items = database.inheritorDao().pagingSource(queryKey).loadSinglePage()
         assertEquals(1, items.size)
-        assertEquals("新数据", items.first().title)
+        assertEquals("新传承人", items.first().name)
     }
 
     @Test
     fun refreshReturnsSuccessWithEndOfPaginationWhenNoMorePages() = runTest {
-        apiClient.directoryItemsResult = PagedResult(
-            items = listOf(testDirectoryItem(id = "only", title = "唯一")),
+        apiClient.inheritorsResult = PagedResult(
+            items = listOf(testInheritor(id = "only", name = "唯一")),
             page = 1,
             pageSize = 20,
             hasMore = false,
@@ -145,12 +137,12 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun refreshReturnsErrorOnNetworkFailure() = runTest {
-        apiClient.failure = IOException("Network unavailable")
+        apiClient.failure = IOException("网络不可用")
         val mediator = createMediator()
         val result = mediator.load(LoadType.REFRESH, pagingState())
 
         assertTrue(result is MediatorResult.Error)
-        assertEquals("Network unavailable", (result as MediatorResult.Error).throwable.message)
+        assertEquals("网络不可用", (result as MediatorResult.Error).throwable.message)
     }
 
     // endregion
@@ -159,17 +151,16 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun appendUsesRemoteKeyNextPage() = runTest {
-        // First, simulate a REFRESH that stored a remote key
-        database.directoryRemoteKeyDao().upsert(
-            DirectoryRemoteKeyEntity(
+        database.inheritorRemoteKeyDao().upsert(
+            InheritorRemoteKeyEntity(
                 queryKey = queryKey,
                 nextPage = 2,
                 hasMore = true,
             ),
         )
 
-        apiClient.directoryItemsResult = PagedResult(
-            items = listOf(testDirectoryItem(id = "d2", title = "第二页项目")),
+        apiClient.inheritorsResult = PagedResult(
+            items = listOf(testInheritor(id = "i2", name = "第二页传承人")),
             page = 2,
             pageSize = 20,
             hasMore = false,
@@ -180,15 +171,14 @@ class DirectoryRemoteMediatorTest {
         assertTrue(result is MediatorResult.Success)
         assertTrue((result as MediatorResult.Success).endOfPaginationReached)
 
-        // Verify the correct page was requested
-        assertEquals(1, apiClient.directoryItemRequests.size)
-        assertEquals(2, apiClient.directoryItemRequests.first().page)
+        assertEquals(1, apiClient.inheritorRequests.size)
+        assertEquals(2, apiClient.inheritorRequests.first().page)
     }
 
     @Test
     fun appendEndsPaginationWhenRemoteKeyHasNoMore() = runTest {
-        database.directoryRemoteKeyDao().upsert(
-            DirectoryRemoteKeyEntity(
+        database.inheritorRemoteKeyDao().upsert(
+            InheritorRemoteKeyEntity(
                 queryKey = queryKey,
                 nextPage = null,
                 hasMore = false,
@@ -199,20 +189,19 @@ class DirectoryRemoteMediatorTest {
 
         assertTrue(result is MediatorResult.Success)
         assertTrue((result as MediatorResult.Success).endOfPaginationReached)
-        // Should not have made any API call
-        assertTrue(apiClient.directoryItemRequests.isEmpty())
+        assertTrue(apiClient.inheritorRequests.isEmpty())
     }
 
     @Test
     fun appendReturnsErrorOnNetworkFailure() = runTest {
-        database.directoryRemoteKeyDao().upsert(
-            DirectoryRemoteKeyEntity(
+        database.inheritorRemoteKeyDao().upsert(
+            InheritorRemoteKeyEntity(
                 queryKey = queryKey,
                 nextPage = 2,
                 hasMore = true,
             ),
         )
-        apiClient.failure = IOException("Timeout")
+        apiClient.failure = IOException("超时")
         val mediator = createMediator()
         val result = mediator.load(LoadType.APPEND, pagingState())
 
@@ -238,7 +227,7 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun refreshWithEmptyResultSetsEndOfPagination() = runTest {
-        apiClient.directoryItemsResult = PagedResult(
+        apiClient.inheritorsResult = PagedResult(
             items = emptyList(),
             page = 1,
             pageSize = 20,
@@ -258,26 +247,24 @@ class DirectoryRemoteMediatorTest {
 
     @Test
     fun refreshOnlyClearsSameQueryKey() = runTest {
-        val otherKey = DirectoryItemQuery(
-            kind = DirectoryItemKind.UnescoEntry,
-            pageSize = 20,
-        ).queryKey()
+        val otherKey = InheritorQuery(keywords = "剪纸", pageSize = 20).queryKey()
 
         // 写入另一个 queryKey 的数据
-        database.directoryItemDao().upsertAll(
+        database.inheritorDao().upsertAll(
             listOf(
-                DirectoryItemEntity(
+                InheritorEntity(
                     id = "other-1",
                     queryKey = otherKey,
-                    kind = "unescoEntry",
-                    title = "UNESCO项目",
-                    summary = null,
+                    name = "李四",
+                    gender = "女",
+                    birthDateText = null,
+                    ethnicity = null,
                     category = null,
-                    region = null,
                     projectCode = null,
+                    projectName = null,
+                    region = null,
                     batch = null,
-                    publishedYear = null,
-                    listType = null,
+                    description = null,
                     coverImageJson = null,
                     sourceUrl = null,
                     page = 1,
@@ -286,8 +273,8 @@ class DirectoryRemoteMediatorTest {
             ),
         )
 
-        apiClient.directoryItemsResult = PagedResult(
-            items = listOf(testDirectoryItem(id = "new-1", title = "国家级项目")),
+        apiClient.inheritorsResult = PagedResult(
+            items = listOf(testInheritor(id = "new-1", name = "新传承人")),
             page = 1,
             pageSize = 20,
             hasMore = false,
@@ -295,48 +282,43 @@ class DirectoryRemoteMediatorTest {
         val mediator = createMediator()
         mediator.load(LoadType.REFRESH, pagingState())
 
-        // 当前 queryKey 的数据已刷新
-        val currentItems = database.directoryItemDao().pagingSource(queryKey).loadSinglePage()
+        val currentItems = database.inheritorDao().pagingSource(queryKey).loadSinglePage()
         assertEquals(1, currentItems.size)
-        assertEquals("国家级项目", currentItems.first().title)
+        assertEquals("新传承人", currentItems.first().name)
 
         // 另一个 queryKey 的数据未被清理
-        val otherItems = database.directoryItemDao().pagingSource(otherKey).loadSinglePage()
+        val otherItems = database.inheritorDao().pagingSource(otherKey).loadSinglePage()
         assertEquals(1, otherItems.size)
-        assertEquals("UNESCO项目", otherItems.first().title)
+        assertEquals("李四", otherItems.first().name)
     }
 
     // endregion
 
-    private fun createMediator() = DirectoryRemoteMediator(
+    private fun createMediator() = InheritorRemoteMediator(
         query = query,
         database = database,
         apiClient = apiClient,
     )
 
-    private fun pagingState() = PagingState<Int, DirectoryItemEntity>(
+    private fun pagingState() = PagingState<Int, InheritorEntity>(
         pages = emptyList(),
         anchorPosition = null,
         config = PagingConfig(pageSize = 20),
         leadingPlaceholderCount = 0,
     )
 
-    private fun testDirectoryItem(id: String, title: String) = DirectoryItemSummaryDto(
+    private fun testInheritor(id: String, name: String) = InheritorSummaryDto(
         id = id,
-        kind = DirectoryItemKind.NationalProject,
-        title = title,
-        summary = "摘要",
+        name = name,
+        gender = "男",
         category = "传统美术",
         region = "北京",
-        projectCode = "VII-001",
-        batch = "第一批",
-        publishedYear = 2006,
-        listType = "representative",
+        projectName = "剪纸",
         sourceUrl = "https://src.test/$id",
     )
 
-    // Helper to load a single page from PagingSource
-    private suspend fun androidx.paging.PagingSource<Int, DirectoryItemEntity>.loadSinglePage(): List<DirectoryItemEntity> {
+    // 从 PagingSource 加载单页数据
+    private suspend fun androidx.paging.PagingSource<Int, InheritorEntity>.loadSinglePage(): List<InheritorEntity> {
         val loadResult = this.load(
             androidx.paging.PagingSource.LoadParams.Refresh(
                 key = null,
@@ -345,6 +327,6 @@ class DirectoryRemoteMediatorTest {
             ),
         )
         @Suppress("UNCHECKED_CAST")
-        return (loadResult as androidx.paging.PagingSource.LoadResult.Page<Int, DirectoryItemEntity>).data
+        return (loadResult as androidx.paging.PagingSource.LoadResult.Page<Int, InheritorEntity>).data
     }
 }

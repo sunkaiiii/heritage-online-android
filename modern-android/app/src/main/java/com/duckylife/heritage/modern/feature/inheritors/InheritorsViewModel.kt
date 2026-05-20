@@ -111,6 +111,16 @@ class InheritorsViewModel @Inject constructor(
         }
     }
 
+    fun clearAdvancedFilters() {
+        savedStateHandle[KEY_INH_REGION] = ""
+        savedStateHandle[KEY_INH_CATEGORY] = ""
+        savedStateHandle[KEY_INH_YEAR] = ""
+        savedStateHandle[KEY_INH_GENDER] = ""
+        _uiState.update {
+            it.copy(regionFilter = "", categoryFilter = "", yearFilter = "", genderFilter = "")
+        }
+    }
+
     companion object {
         private const val SEARCH_DEBOUNCE_MS = 350L
     }
