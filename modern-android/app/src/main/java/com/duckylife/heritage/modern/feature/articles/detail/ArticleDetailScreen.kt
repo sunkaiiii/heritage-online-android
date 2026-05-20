@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.articles.detail
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +39,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +72,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toUiError
+import com.duckylife.heritage.modern.ui.preview.ImagePreviewOverlay
+import com.duckylife.heritage.modern.ui.preview.buildPreviewUrls
+import com.duckylife.heritage.modern.ui.preview.previewUrl
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -118,82 +125,106 @@ fun ArticleDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
-    Scaffold(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.article_detail_title)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ),
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onToggleFavorite) {
-                        Icon(
-                            imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (uiState.isFavorite) {
-                                stringResource(R.string.action_unfavorite)
-                            } else {
-                                stringResource(R.string.action_favorite)
-                            },
-                            tint = if (uiState.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    IconButton(onClick = onRetry) {
-                        Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.action_refresh),
-                        )
-                    }
-                },
-            )
-        },
-    ) { contentPadding ->
-        when {
-            uiState.isLoading -> LoadingDetailContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            )
 
-            uiState.errorKind != null -> ErrorDetailContent(
-                message = stringResource(uiState.errorKind.fallbackResId()),
-                onRetry = onRetry,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            )
+    val previewUrls = remember(uiState.article) {
+        uiState.article?.let { article ->
+            buildPreviewUrls(coverImage = article.coverImage, contentBlocks = article.contentBlocks)
+        } ?: emptyList()
+    }
+    var showPreview by remember { mutableStateOf(false) }
+    var previewIndex by remember { mutableIntStateOf(0) }
 
-            uiState.article != null -> ArticleDetailContent(
-                article = uiState.article,
-                imageLoader = imageLoader,
-                isContentStale = uiState.isContentStale,
-                onRetry = onRetry,
-                onOpenSource = { sourceUrl ->
-                    runCatching {
-                        uriHandler.openUri(sourceUrl)
-                    }.onFailure {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.background,
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.article_detail_title)) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
                         }
-                    }
-                },
-                onRelatedArticleSelected = onRelatedArticleSelected,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
+                    },
+                    actions = {
+                        IconButton(onClick = onToggleFavorite) {
+                            Icon(
+                                imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (uiState.isFavorite) {
+                                    stringResource(R.string.action_unfavorite)
+                                } else {
+                                    stringResource(R.string.action_favorite)
+                                },
+                                tint = if (uiState.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        IconButton(onClick = onRetry) {
+                            Icon(
+                                imageVector = Icons.Outlined.Refresh,
+                                contentDescription = stringResource(R.string.action_refresh),
+                            )
+                        }
+                    },
+                )
+            },
+        ) { contentPadding ->
+            when {
+                uiState.isLoading -> LoadingDetailContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+
+                uiState.errorKind != null -> ErrorDetailContent(
+                    message = stringResource(uiState.errorKind.fallbackResId()),
+                    onRetry = onRetry,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+
+                uiState.article != null -> ArticleDetailContent(
+                    article = uiState.article,
+                    imageLoader = imageLoader,
+                    isContentStale = uiState.isContentStale,
+                    onRetry = onRetry,
+                    onOpenSource = { sourceUrl ->
+                        runCatching {
+                            uriHandler.openUri(sourceUrl)
+                        }.onFailure {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+                            }
+                        }
+                    },
+                    onRelatedArticleSelected = onRelatedArticleSelected,
+                    onPreviewImage = { index ->
+                        previewIndex = index
+                        showPreview = true
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+            }
+        }
+
+        if (showPreview && previewUrls.isNotEmpty()) {
+            ImagePreviewOverlay(
+                imageUrls = previewUrls,
+                initialIndex = previewIndex,
+                imageLoader = imageLoader,
+                onDismiss = { showPreview = false },
             )
         }
     }
@@ -207,9 +238,11 @@ private fun ArticleDetailContent(
     onRetry: () -> Unit,
     onOpenSource: (String) -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
+    onPreviewImage: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
+
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
@@ -240,6 +273,7 @@ private fun ArticleDetailContent(
                 unnamedArticle = unnamedArticle,
                 imageLoader = imageLoader,
                 onOpenSource = onOpenSource,
+                onCoverImageClick = article.coverImage?.previewUrl()?.let { { onPreviewImage(0) } },
             )
         }
 
@@ -253,10 +287,15 @@ private fun ArticleDetailContent(
             }
         }
 
+        var imageBlockIndex = if (article.coverImage?.previewUrl() != null) 1 else 0
         items(article.contentBlocks) { block ->
             ContentBlock(
                 block = block,
                 imageLoader = imageLoader,
+                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.previewUrl() != null) {
+                    val idx = imageBlockIndex++
+                    { onPreviewImage(idx) }
+                } else null,
             )
         }
 
@@ -295,22 +334,27 @@ private fun ArticleHero(
     unnamedArticle: String,
     imageLoader: ImageLoader,
     onOpenSource: (String) -> Unit,
+    onCoverImageClick: (() -> Unit)? = null,
 ) {
     val fallbackText = stringResource(R.string.brand_fallback)
     HeritageContentCard {
         Column {
             article.coverImage?.let { coverImage ->
-                val coverUrl = coverImage.displayUrl
-                    ?: coverImage.thumbnailUrl
-                    ?: coverImage.originalUrl
-                    ?: coverImage.sourceUrl
+                val coverUrl = coverImage.previewUrl()
                 HeritageDetailImage(
                     imageUrl = coverUrl,
                     imageLoader = imageLoader,
                     fallbackText = fallbackText,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f),
+                        .aspectRatio(16f / 9f)
+                        .then(
+                            if (onCoverImageClick != null && coverUrl != null) {
+                                Modifier.clickable(onClick = onCoverImageClick)
+                            } else {
+                                Modifier
+                            },
+                        ),
                 )
             }
             Column(
@@ -354,6 +398,7 @@ private fun ArticleHero(
 private fun ContentBlock(
     block: ArticleContentBlockDto,
     imageLoader: ImageLoader,
+    onImageClick: (() -> Unit)? = null,
 ) {
     when (block.type) {
         ArticleContentBlockType.Heading -> {
@@ -381,10 +426,7 @@ private fun ContentBlock(
         }
 
         ArticleContentBlockType.Image -> {
-            val blockImageUrl = block.image?.displayUrl
-                ?: block.image?.thumbnailUrl
-                ?: block.image?.originalUrl
-                ?: block.image?.sourceUrl
+            val blockImageUrl = block.image?.previewUrl()
             HeritageDetailImage(
                 imageUrl = blockImageUrl,
                 imageLoader = imageLoader,
@@ -393,7 +435,14 @@ private fun ContentBlock(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(4f / 3f)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(8.dp))
+                    .then(
+                        if (onImageClick != null && blockImageUrl != null) {
+                            Modifier.clickable(onClick = onImageClick)
+                        } else {
+                            Modifier
+                        },
+                    ),
             )
         }
     }

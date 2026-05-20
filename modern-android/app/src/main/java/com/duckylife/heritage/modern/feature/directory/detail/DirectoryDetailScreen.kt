@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.directory.detail
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
@@ -44,8 +46,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,6 +83,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.preview.ImagePreviewOverlay
+import com.duckylife.heritage.modern.ui.preview.buildPreviewUrls
+import com.duckylife.heritage.modern.ui.preview.previewUrl
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
@@ -130,85 +138,109 @@ fun DirectoryDetailScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
-    Scaffold(
-        modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.background,
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.directory_detail_title)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ),
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onToggleFavorite) {
-                        Icon(
-                            imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (uiState.isFavorite) {
-                                stringResource(R.string.action_unfavorite)
-                            } else {
-                                stringResource(R.string.action_favorite)
-                            },
-                            tint = if (uiState.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    IconButton(onClick = onRetry) {
-                        Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.action_refresh),
-                        )
-                    }
-                },
-            )
-        },
-    ) { contentPadding ->
-        when {
-            uiState.isLoading -> LoadingContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            )
 
-            uiState.errorKind != null -> StatusContent(
-                title = stringResource(R.string.content_load_failed),
-                message = stringResource(uiState.errorKind.fallbackResId()),
-                actionLabel = stringResource(R.string.action_retry),
-                onAction = onRetry,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            )
+    val previewUrls = remember(uiState.item) {
+        uiState.item?.let { item ->
+            buildPreviewUrls(coverImage = item.coverImage, gallery = item.gallery, contentBlocks = item.contentBlocks)
+        } ?: emptyList()
+    }
+    var showPreview by remember { mutableStateOf(false) }
+    var previewIndex by remember { mutableIntStateOf(0) }
 
-            uiState.item != null -> DirectoryDetailContent(
-                item = uiState.item,
-                imageLoader = imageLoader,
-                isContentStale = uiState.isContentStale,
-                onRetry = onRetry,
-                onOpenSource = { sourceUrl ->
-                    runCatching {
-                        uriHandler.openUri(sourceUrl)
-                    }.onFailure {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = modifier,
+            containerColor = MaterialTheme.colorScheme.background,
+            snackbarHost = {
+                SnackbarHost(hostState = snackbarHostState)
+            },
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.directory_detail_title)) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
                         }
-                    }
-                },
-                onRelatedProjectSelected = onRelatedProjectSelected,
-                onRelatedInheritorSelected = onRelatedInheritorSelected,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
+                    },
+                    actions = {
+                        IconButton(onClick = onToggleFavorite) {
+                            Icon(
+                                imageVector = if (uiState.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = if (uiState.isFavorite) {
+                                    stringResource(R.string.action_unfavorite)
+                                } else {
+                                    stringResource(R.string.action_favorite)
+                                },
+                                tint = if (uiState.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        IconButton(onClick = onRetry) {
+                            Icon(
+                                imageVector = Icons.Outlined.Refresh,
+                                contentDescription = stringResource(R.string.action_refresh),
+                            )
+                        }
+                    },
+                )
+            },
+        ) { contentPadding ->
+            when {
+                uiState.isLoading -> LoadingContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+
+                uiState.errorKind != null -> StatusContent(
+                    title = stringResource(R.string.content_load_failed),
+                    message = stringResource(uiState.errorKind.fallbackResId()),
+                    actionLabel = stringResource(R.string.action_retry),
+                    onAction = onRetry,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+
+                uiState.item != null -> DirectoryDetailContent(
+                    item = uiState.item,
+                    imageLoader = imageLoader,
+                    isContentStale = uiState.isContentStale,
+                    onRetry = onRetry,
+                    onOpenSource = { sourceUrl ->
+                        runCatching {
+                            uriHandler.openUri(sourceUrl)
+                        }.onFailure {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(sourceOpenFailedMessage)
+                            }
+                        }
+                    },
+                    onRelatedProjectSelected = onRelatedProjectSelected,
+                    onRelatedInheritorSelected = onRelatedInheritorSelected,
+                    onPreviewImage = { index ->
+                        previewIndex = index
+                        showPreview = true
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding),
+                )
+            }
+        }
+
+        if (showPreview && previewUrls.isNotEmpty()) {
+            ImagePreviewOverlay(
+                imageUrls = previewUrls,
+                initialIndex = previewIndex,
+                imageLoader = imageLoader,
+                onDismiss = { showPreview = false },
             )
         }
     }
@@ -223,12 +255,14 @@ private fun DirectoryDetailContent(
     onOpenSource: (String) -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
+    onPreviewImage: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
     val relatedProjectsTitle = stringResource(R.string.directory_related_projects_title)
     val relatedInheritorsTitle = stringResource(R.string.directory_related_inheritors_title)
     val relatedDocumentsTitle = stringResource(R.string.directory_related_documents_title)
+
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
@@ -259,6 +293,7 @@ private fun DirectoryDetailContent(
                 unnamedItem = unnamedItem,
                 imageLoader = imageLoader,
                 onOpenSource = onOpenSource,
+                onCoverImageClick = item.coverImage?.previewUrl()?.let { { onPreviewImage(0) } },
             )
         }
 
@@ -282,17 +317,27 @@ private fun DirectoryDetailContent(
                 SectionTitle(text = stringResource(R.string.directory_gallery_title))
             }
             item {
+                val galleryOffset = if (item.coverImage?.previewUrl() != null) 1 else 0
                 GalleryStrip(
                     images = item.gallery,
                     imageLoader = imageLoader,
+                    onImageClick = { galleryIdx ->
+                        onPreviewImage(galleryOffset + galleryIdx)
+                    },
                 )
             }
         }
 
+        var imageBlockIndex = if (item.coverImage?.previewUrl() != null) 1 else 0
+        imageBlockIndex += item.gallery.count { it.previewUrl() != null }
         items(item.contentBlocks) { block ->
             ContentBlock(
                 block = block,
                 imageLoader = imageLoader,
+                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.previewUrl() != null) {
+                    val idx = imageBlockIndex++
+                    { onPreviewImage(idx) }
+                } else null,
             )
         }
 
@@ -323,22 +368,27 @@ private fun DirectoryHero(
     unnamedItem: String,
     imageLoader: ImageLoader,
     onOpenSource: (String) -> Unit,
+    onCoverImageClick: (() -> Unit)? = null,
 ) {
     val fallbackText = stringResource(R.string.brand_fallback)
     HeritageContentCard {
         Column {
             item.coverImage?.let { coverImage ->
-                val coverUrl = coverImage.displayUrl
-                    ?: coverImage.thumbnailUrl
-                    ?: coverImage.originalUrl
-                    ?: coverImage.sourceUrl
+                val coverUrl = coverImage.previewUrl()
                 HeritageDetailImage(
                     imageUrl = coverUrl,
                     imageLoader = imageLoader,
                     fallbackText = fallbackText,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f),
+                        .aspectRatio(16f / 9f)
+                        .then(
+                            if (onCoverImageClick != null && coverUrl != null) {
+                                Modifier.clickable(onClick = onCoverImageClick)
+                            } else {
+                                Modifier
+                            },
+                        ),
                 )
             }
             Column(
@@ -414,13 +464,14 @@ private fun DirectoryFacts(item: DirectoryItemDetailDto) {
 private fun GalleryStrip(
     images: List<MediaAssetDto>,
     imageLoader: ImageLoader,
+    onImageClick: ((Int) -> Unit)? = null,
 ) {
     val fallbackText = stringResource(R.string.brand_fallback)
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        items(images) { image ->
-            val url = image.displayUrl ?: image.thumbnailUrl ?: image.originalUrl ?: image.sourceUrl
+        itemsIndexed(images) { index, image ->
+            val url = image.previewUrl()
             HeritageDetailImage(
                 imageUrl = url,
                 imageLoader = imageLoader,
@@ -428,7 +479,14 @@ private fun GalleryStrip(
                 modifier = Modifier
                     .fillParentMaxWidth(0.72f)
                     .aspectRatio(4f / 3f)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(8.dp))
+                    .then(
+                        if (onImageClick != null && url != null) {
+                            Modifier.clickable { onImageClick(index) }
+                        } else {
+                            Modifier
+                        },
+                    ),
             )
         }
     }
@@ -438,6 +496,7 @@ private fun GalleryStrip(
 private fun ContentBlock(
     block: ArticleContentBlockDto,
     imageLoader: ImageLoader,
+    onImageClick: (() -> Unit)? = null,
 ) {
     when (block.type) {
         ArticleContentBlockType.Heading -> {
@@ -463,10 +522,7 @@ private fun ContentBlock(
         }
 
         ArticleContentBlockType.Image -> {
-            val blockImageUrl = block.image?.displayUrl
-                ?: block.image?.thumbnailUrl
-                ?: block.image?.originalUrl
-                ?: block.image?.sourceUrl
+            val blockImageUrl = block.image?.previewUrl()
             HeritageDetailImage(
                 imageUrl = blockImageUrl,
                 imageLoader = imageLoader,
@@ -475,7 +531,14 @@ private fun ContentBlock(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(4f / 3f)
-                    .clip(RoundedCornerShape(8.dp)),
+                    .clip(RoundedCornerShape(8.dp))
+                    .then(
+                        if (onImageClick != null && blockImageUrl != null) {
+                            Modifier.clickable(onClick = onImageClick)
+                        } else {
+                            Modifier
+                        },
+                    ),
             )
         }
     }

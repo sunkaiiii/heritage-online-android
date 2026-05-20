@@ -74,6 +74,9 @@
     <string name="error_timeout">Request timed out. Try again later.</string>
     <string name="error_server_unavailable">Service temporarily unavailable</string>
     <string name="content_may_be_stale">Content may not be up to date</string>
+    <string name="preview_image">Preview image</string>
+    <string name="preview_close">Close preview</string>
+    <string name="preview_page_indicator">%1$d / %2$d</string>
     <string name="home_empty_message">The backend did not return home content yet.</string>
     <string name="article_detail_title">Article Detail</string>
     <string name="action_view_source">View Source</string>
