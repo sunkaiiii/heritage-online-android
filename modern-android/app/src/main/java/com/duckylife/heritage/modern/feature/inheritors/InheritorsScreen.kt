@@ -41,8 +41,10 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -93,6 +95,34 @@ private data class InheritorDirectoryDetail(
     val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
 )
 
+private fun serializeInheritors(stack: List<Any>): String =
+    stack.joinToString("\n") { entry ->
+        when (entry) {
+            InheritorsList -> "L"
+            is InheritorDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
+            is InheritorDirectoryDetail -> "P|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
+            else -> "L"
+        }
+    }
+
+private fun deserializeInheritors(str: String): List<Any> =
+    if (str.isBlank()) listOf(InheritorsList)
+    else str.split("\n").mapNotNull { item ->
+        val parts = item.split("|")
+        when (parts[0]) {
+            "D" -> InheritorDetail(
+                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+            )
+            "P" -> InheritorDirectoryDetail(
+                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+                kind = DirectoryItemKind.entries.firstOrNull { it.wireName == parts.getOrNull(3) } ?: DirectoryItemKind.NationalProject,
+            )
+            else -> InheritorsList
+        }
+    }
+
 @Composable
 fun InheritorsRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
@@ -100,7 +130,11 @@ fun InheritorsRoute(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val backStack = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateListOf<Any>(InheritorsList) }
+    var savedStack by rememberSaveable { mutableStateOf("L") }
+    val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeInheritors(savedStack)) } }
+    LaunchedEffect(backStack.size) {
+        savedStack = serializeInheritors(backStack.toList())
+    }
     val isInDetail = backStack.lastOrNull() != InheritorsList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)

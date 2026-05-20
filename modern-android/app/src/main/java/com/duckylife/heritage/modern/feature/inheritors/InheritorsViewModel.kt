@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.inheritors
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -21,12 +22,27 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
+private const val KEY_INH_SEARCH = "inh_search"
+private const val KEY_INH_REGION = "inh_region"
+private const val KEY_INH_CATEGORY = "inh_category"
+private const val KEY_INH_YEAR = "inh_year"
+private const val KEY_INH_GENDER = "inh_gender"
+
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class InheritorsViewModel @Inject constructor(
     private val repository: HeritageRepository,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(InheritorsUiState())
+    private val _uiState = MutableStateFlow(
+        InheritorsUiState(
+            searchKeywords = savedStateHandle.get<String>(KEY_INH_SEARCH) ?: "",
+            regionFilter = savedStateHandle.get<String>(KEY_INH_REGION) ?: "",
+            categoryFilter = savedStateHandle.get<String>(KEY_INH_CATEGORY) ?: "",
+            yearFilter = savedStateHandle.get<String>(KEY_INH_YEAR) ?: "",
+            genderFilter = savedStateHandle.get<String>(KEY_INH_GENDER) ?: "",
+        )
+    )
     val uiState: StateFlow<InheritorsUiState> = _uiState.asStateFlow()
 
     val inheritors: Flow<PagingData<InheritorSummaryDto>> =
@@ -50,10 +66,15 @@ class InheritorsViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     fun updateSearchKeywords(keywords: String) {
+        savedStateHandle[KEY_INH_SEARCH] = keywords
         _uiState.update { it.copy(searchKeywords = keywords) }
     }
 
     fun applyFilters(regionFilter: String, categoryFilter: String, yearFilter: String, genderFilter: String) {
+        savedStateHandle[KEY_INH_REGION] = regionFilter
+        savedStateHandle[KEY_INH_CATEGORY] = categoryFilter
+        savedStateHandle[KEY_INH_YEAR] = yearFilter
+        savedStateHandle[KEY_INH_GENDER] = genderFilter
         _uiState.update {
             it.copy(
                 regionFilter = regionFilter,
@@ -65,17 +86,20 @@ class InheritorsViewModel @Inject constructor(
     }
 
     fun clearFilterField(field: InheritorFilterField) {
-        _uiState.update {
-            when (field) {
-                InheritorFilterField.Region -> it.copy(regionFilter = "")
-                InheritorFilterField.Category -> it.copy(categoryFilter = "")
-                InheritorFilterField.Year -> it.copy(yearFilter = "")
-                InheritorFilterField.Gender -> it.copy(genderFilter = "")
-            }
+        when (field) {
+            InheritorFilterField.Region -> { savedStateHandle[KEY_INH_REGION] = ""; _uiState.update { it.copy(regionFilter = "") } }
+            InheritorFilterField.Category -> { savedStateHandle[KEY_INH_CATEGORY] = ""; _uiState.update { it.copy(categoryFilter = "") } }
+            InheritorFilterField.Year -> { savedStateHandle[KEY_INH_YEAR] = ""; _uiState.update { it.copy(yearFilter = "") } }
+            InheritorFilterField.Gender -> { savedStateHandle[KEY_INH_GENDER] = ""; _uiState.update { it.copy(genderFilter = "") } }
         }
     }
 
     fun clearFilters() {
+        savedStateHandle[KEY_INH_SEARCH] = ""
+        savedStateHandle[KEY_INH_REGION] = ""
+        savedStateHandle[KEY_INH_CATEGORY] = ""
+        savedStateHandle[KEY_INH_YEAR] = ""
+        savedStateHandle[KEY_INH_GENDER] = ""
         _uiState.update {
             it.copy(
                 searchKeywords = "",

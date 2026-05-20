@@ -40,8 +40,10 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -92,6 +94,34 @@ private data class DirectoryInheritorDetail(
     val sourceId: String? = null,
 )
 
+private fun serializeDirectory(stack: List<Any>): String =
+    stack.joinToString("\n") { entry ->
+        when (entry) {
+            DirectoryList -> "L"
+            is DirectoryDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
+            is DirectoryInheritorDetail -> "I|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
+            else -> "L"
+        }
+    }
+
+private fun deserializeDirectory(str: String): List<Any> =
+    if (str.isBlank()) listOf(DirectoryList)
+    else str.split("\n").mapNotNull { item ->
+        val parts = item.split("|")
+        when (parts[0]) {
+            "D" -> DirectoryDetail(
+                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+                kind = DirectoryItemKind.entries.firstOrNull { it.wireName == parts.getOrNull(3) } ?: DirectoryItemKind.NationalProject,
+            )
+            "I" -> DirectoryInheritorDetail(
+                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+            )
+            else -> DirectoryList
+        }
+    }
+
 @Composable
 fun DirectoryRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
@@ -99,7 +129,11 @@ fun DirectoryRoute(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val backStack = androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateListOf<Any>(DirectoryList) }
+    var savedStack by rememberSaveable { mutableStateOf("L") }
+    val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeDirectory(savedStack)) } }
+    LaunchedEffect(backStack.size) {
+        savedStack = serializeDirectory(backStack.toList())
+    }
     val isInDetail = backStack.lastOrNull() != DirectoryList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)

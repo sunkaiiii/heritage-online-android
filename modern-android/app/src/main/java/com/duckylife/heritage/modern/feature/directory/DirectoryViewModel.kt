@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.directory
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -22,12 +23,31 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
+private const val KEY_DIR_KIND = "dir_kind"
+private const val KEY_DIR_SEARCH = "dir_search"
+private const val KEY_DIR_REGION = "dir_region"
+private const val KEY_DIR_CATEGORY = "dir_category"
+private const val KEY_DIR_YEAR = "dir_year"
+private const val KEY_DIR_LIST_TYPE = "dir_list_type"
+
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class DirectoryViewModel @Inject constructor(
     private val repository: HeritageRepository,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(DirectoryUiState())
+    private val _uiState = MutableStateFlow(
+        DirectoryUiState(
+            selectedKind = savedStateHandle.get<String>(KEY_DIR_KIND)
+                ?.let { DirectoryItemKind.entries.firstOrNull { k -> k.wireName == it } }
+                ?: DirectoryItemKind.NationalProject,
+            searchKeywords = savedStateHandle.get<String>(KEY_DIR_SEARCH) ?: "",
+            regionFilter = savedStateHandle.get<String>(KEY_DIR_REGION) ?: "",
+            categoryFilter = savedStateHandle.get<String>(KEY_DIR_CATEGORY) ?: "",
+            yearFilter = savedStateHandle.get<String>(KEY_DIR_YEAR) ?: "",
+            listTypeFilter = savedStateHandle.get<String>(KEY_DIR_LIST_TYPE) ?: "",
+        )
+    )
     val uiState: StateFlow<DirectoryUiState> = _uiState.asStateFlow()
 
     val items: Flow<PagingData<DirectoryItemSummaryDto>> =
@@ -52,14 +72,20 @@ class DirectoryViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     fun selectKind(kind: DirectoryItemKind) {
+        savedStateHandle[KEY_DIR_KIND] = kind.wireName
         _uiState.update { it.copy(selectedKind = kind) }
     }
 
     fun updateSearchKeywords(keywords: String) {
+        savedStateHandle[KEY_DIR_SEARCH] = keywords
         _uiState.update { it.copy(searchKeywords = keywords) }
     }
 
     fun applyFilters(regionFilter: String, categoryFilter: String, yearFilter: String, listTypeFilter: String) {
+        savedStateHandle[KEY_DIR_REGION] = regionFilter
+        savedStateHandle[KEY_DIR_CATEGORY] = categoryFilter
+        savedStateHandle[KEY_DIR_YEAR] = yearFilter
+        savedStateHandle[KEY_DIR_LIST_TYPE] = listTypeFilter
         _uiState.update {
             it.copy(
                 regionFilter = regionFilter,
@@ -71,17 +97,20 @@ class DirectoryViewModel @Inject constructor(
     }
 
     fun clearFilterField(field: DirectoryFilterField) {
-        _uiState.update {
-            when (field) {
-                DirectoryFilterField.Region -> it.copy(regionFilter = "")
-                DirectoryFilterField.Category -> it.copy(categoryFilter = "")
-                DirectoryFilterField.Year -> it.copy(yearFilter = "")
-                DirectoryFilterField.ListType -> it.copy(listTypeFilter = "")
-            }
+        when (field) {
+            DirectoryFilterField.Region -> { savedStateHandle[KEY_DIR_REGION] = ""; _uiState.update { it.copy(regionFilter = "") } }
+            DirectoryFilterField.Category -> { savedStateHandle[KEY_DIR_CATEGORY] = ""; _uiState.update { it.copy(categoryFilter = "") } }
+            DirectoryFilterField.Year -> { savedStateHandle[KEY_DIR_YEAR] = ""; _uiState.update { it.copy(yearFilter = "") } }
+            DirectoryFilterField.ListType -> { savedStateHandle[KEY_DIR_LIST_TYPE] = ""; _uiState.update { it.copy(listTypeFilter = "") } }
         }
     }
 
     fun clearFilters() {
+        savedStateHandle[KEY_DIR_SEARCH] = ""
+        savedStateHandle[KEY_DIR_REGION] = ""
+        savedStateHandle[KEY_DIR_CATEGORY] = ""
+        savedStateHandle[KEY_DIR_YEAR] = ""
+        savedStateHandle[KEY_DIR_LIST_TYPE] = ""
         _uiState.update {
             it.copy(
                 searchKeywords = "",

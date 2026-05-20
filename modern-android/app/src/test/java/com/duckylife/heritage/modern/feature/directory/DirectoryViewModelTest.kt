@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.directory
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
+import androidx.lifecycle.SavedStateHandle
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +21,7 @@ class DirectoryViewModelTest {
     @Test
     fun startsWithNationalProjectKind() = runTest {
         val viewModel = DirectoryViewModel(
-            repository = FakeHeritageRepository(),
+            savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository(),
         )
         assertEquals(DirectoryItemKind.NationalProject, viewModel.uiState.value.selectedKind)
     }
@@ -28,7 +29,7 @@ class DirectoryViewModelTest {
     @Test
     fun selectKindUpdatesSelectedKind() = runTest {
         val viewModel = DirectoryViewModel(
-            repository = FakeHeritageRepository(),
+            savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository(),
         )
         viewModel.selectKind(DirectoryItemKind.CulturalEcoZone)
         advanceUntilIdle()
@@ -38,7 +39,7 @@ class DirectoryViewModelTest {
     @Test
     fun searchKeywordsMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.selectKind(DirectoryItemKind.UnescoEntry)
         viewModel.updateSearchKeywords("世界遗产")
@@ -54,7 +55,7 @@ class DirectoryViewModelTest {
     @Test
     fun regionFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "北京", categoryFilter = "", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
@@ -66,7 +67,7 @@ class DirectoryViewModelTest {
     @Test
     fun categoryFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "传统美术", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
@@ -78,7 +79,7 @@ class DirectoryViewModelTest {
     @Test
     fun yearFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "2006", listTypeFilter = "")
         advanceUntilIdle()
@@ -90,7 +91,7 @@ class DirectoryViewModelTest {
     @Test
     fun listTypeFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "", listTypeFilter = "representative")
         advanceUntilIdle()
@@ -102,7 +103,7 @@ class DirectoryViewModelTest {
     @Test
     fun blankFiltersNotMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = DirectoryViewModel(repository = repo)
+        val viewModel = DirectoryViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "  ", categoryFilter = "", yearFilter = "", listTypeFilter = "")
         advanceUntilIdle()
@@ -115,7 +116,7 @@ class DirectoryViewModelTest {
 
     @Test
     fun activeFilterCountReflectsNonBlankFilters() = runTest {
-        val viewModel = DirectoryViewModel(repository = FakeHeritageRepository())
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository())
 
         assertEquals(0, viewModel.uiState.value.activeFilterCount)
 
@@ -127,7 +128,7 @@ class DirectoryViewModelTest {
 
     @Test
     fun clearFiltersResetsAllToDefaults() = runTest {
-        val viewModel = DirectoryViewModel(repository = FakeHeritageRepository())
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository())
 
         viewModel.updateSearchKeywords("test")
         viewModel.applyFilters(regionFilter = "北京", categoryFilter = "music", yearFilter = "2020", listTypeFilter = "list")

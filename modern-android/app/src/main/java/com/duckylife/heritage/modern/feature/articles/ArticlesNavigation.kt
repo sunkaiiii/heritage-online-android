@@ -2,8 +2,12 @@ package com.duckylife.heritage.modern.feature.articles
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -23,6 +27,30 @@ private data class ArticleDetail(
     val category: ArticleCategory = ArticleCategory.News,
 )
 
+private fun serializeArticles(stack: List<Any>): String =
+    stack.joinToString("\n") { entry ->
+        when (entry) {
+            ArticlesList -> "L"
+            is ArticleDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
+            else -> "L"
+        }
+    }
+
+private fun deserializeArticles(str: String): List<Any> =
+    if (str.isBlank()) listOf(ArticlesList)
+    else str.split("\n").mapNotNull { item ->
+        val parts = item.split("|")
+        when (parts[0]) {
+            "D" -> ArticleDetail(
+                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+                sourceUrl = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
+                category = ArticleCategory.entries.firstOrNull { it.wireName == parts.getOrNull(4) } ?: ArticleCategory.News,
+            )
+            else -> ArticlesList
+        }
+    }
+
 @Composable
 fun ArticlesNavHost(
     onSettingsSelected: () -> Unit,
@@ -31,7 +59,11 @@ fun ArticlesNavHost(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val backStack = remember { mutableStateListOf<Any>(ArticlesList) }
+    var savedStack by rememberSaveable { mutableStateOf("L") }
+    val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeArticles(savedStack)) } }
+    LaunchedEffect(backStack.size) {
+        savedStack = serializeArticles(backStack.toList())
+    }
     val isInDetail = backStack.lastOrNull() is ArticleDetail
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)

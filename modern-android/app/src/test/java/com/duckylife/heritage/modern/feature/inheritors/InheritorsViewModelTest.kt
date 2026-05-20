@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.inheritors
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
+import androidx.lifecycle.SavedStateHandle
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -20,7 +21,7 @@ class InheritorsViewModelTest {
     @Test
     fun exposesPagedInheritorsFlow() {
         val viewModel = InheritorsViewModel(
-            repository = FakeHeritageRepository(),
+            savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository(),
         )
         assertNotNull(viewModel.inheritors)
     }
@@ -28,7 +29,7 @@ class InheritorsViewModelTest {
     @Test
     fun searchKeywordsMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.updateSearchKeywords("张三")
         advanceUntilIdle()
@@ -42,7 +43,7 @@ class InheritorsViewModelTest {
     @Test
     fun regionFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "四川", categoryFilter = "", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
@@ -54,7 +55,7 @@ class InheritorsViewModelTest {
     @Test
     fun categoryFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "传统美术", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
@@ -66,7 +67,7 @@ class InheritorsViewModelTest {
     @Test
     fun yearFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "2018", genderFilter = "")
         advanceUntilIdle()
@@ -78,7 +79,7 @@ class InheritorsViewModelTest {
     @Test
     fun genderFilterMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "", categoryFilter = "", yearFilter = "", genderFilter = "男")
         advanceUntilIdle()
@@ -90,7 +91,7 @@ class InheritorsViewModelTest {
     @Test
     fun blankFiltersNotMappedToQuery() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = InheritorsViewModel(repository = repo)
+        val viewModel = InheritorsViewModel(repository = repo, savedStateHandle = SavedStateHandle())
 
         viewModel.applyFilters(regionFilter = "  ", categoryFilter = "", yearFilter = "", genderFilter = "")
         advanceUntilIdle()
@@ -103,7 +104,7 @@ class InheritorsViewModelTest {
 
     @Test
     fun activeFilterCountReflectsNonBlankFilters() = runTest {
-        val viewModel = InheritorsViewModel(repository = FakeHeritageRepository())
+        val viewModel = InheritorsViewModel(savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository())
 
         assertEquals(0, viewModel.uiState.value.activeFilterCount)
 
@@ -115,7 +116,7 @@ class InheritorsViewModelTest {
 
     @Test
     fun clearFiltersResetsAllToDefaults() = runTest {
-        val viewModel = InheritorsViewModel(repository = FakeHeritageRepository())
+        val viewModel = InheritorsViewModel(savedStateHandle = SavedStateHandle(), repository = FakeHeritageRepository())
 
         viewModel.updateSearchKeywords("test")
         viewModel.applyFilters(regionFilter = "湖南", categoryFilter = "传统技艺", yearFilter = "2015", genderFilter = "男")
