@@ -47,6 +47,13 @@ class FakeHeritageRepository(
         return banners
     }
 
+    override fun cachedHomeBanners(): Flow<List<HomeBannerDto>> = flowOf(banners)
+
+    override suspend fun refreshHomeBanners(): List<HomeBannerDto> {
+        failure?.let { throw it }
+        return banners
+    }
+
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> {
         failure?.let { throw it }
         return PagedResult(

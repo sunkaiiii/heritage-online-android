@@ -45,6 +45,10 @@ data class InheritorDetailLookup(
 interface HeritageRepository {
     suspend fun homeBanners(): List<HomeBannerDto>
 
+    fun cachedHomeBanners(): Flow<List<HomeBannerDto>>
+
+    suspend fun refreshHomeBanners(): List<HomeBannerDto>
+
     suspend fun articles(query: ArticleQuery = ArticleQuery()): PagedResult<ArticleSummaryDto>
 
     fun pagedArticles(query: ArticleQuery = ArticleQuery()): Flow<PagingData<ArticleSummaryDto>>
@@ -94,7 +98,21 @@ class DefaultHeritageRepository @Inject constructor(
     private val database: HeritageDatabase,
 ) : HeritageRepository {
     override suspend fun homeBanners(): List<HomeBannerDto> =
-        apiClient.getHomeBanners()
+        refreshHomeBanners()
+
+    override fun cachedHomeBanners(): Flow<List<HomeBannerDto>> =
+        database.homeBannerDao().observeAll().map { entities ->
+            entities.map { it.toDto() }
+        }
+
+    override suspend fun refreshHomeBanners(): List<HomeBannerDto> {
+        val dtos = apiClient.getHomeBanners()
+        val dao = database.homeBannerDao()
+        dao.deleteAll()
+        val now = System.currentTimeMillis()
+        dao.upsertAll(dtos.map { it.toEntity(now) })
+        return dtos.sortedBy { it.sortOrder }
+    }
 
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> =
         apiClient.getArticles(query)

@@ -3,6 +3,7 @@ package com.duckylife.heritage.modern.di
 import android.content.Context
 import androidx.room.Room
 import com.duckylife.heritage.modern.core.database.HeritageDatabase
+import com.duckylife.heritage.modern.core.database.HeritageMigrations
 import com.duckylife.heritage.modern.core.saved.RoomSavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import dagger.Binds
@@ -26,7 +27,7 @@ object DatabaseModule {
             HeritageDatabase::class.java,
             "heritage-modern.db",
         )
-            .fallbackToDestructiveMigration(true)
+            .addMigrations(*HeritageMigrations.ALL)
             .build()
 }
 

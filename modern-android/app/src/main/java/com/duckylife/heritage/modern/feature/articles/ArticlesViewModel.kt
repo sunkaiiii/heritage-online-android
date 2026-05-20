@@ -64,26 +64,52 @@ class ArticlesViewModel @Inject constructor(
             .cachedIn(viewModelScope)
 
     init {
+        observeCachedBanners()
         refreshBanners()
+    }
+
+    private fun observeCachedBanners() {
+        viewModelScope.launch {
+            repository.cachedHomeBanners().collect { cached ->
+                if (cached.isNotEmpty()) {
+                    _uiState.update {
+                        it.copy(
+                            isLoadingBanners = false,
+                            banners = cached,
+                            bannersFromCache = true,
+                            bannerErrorMessage = null,
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun refreshBanners() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingBanners = true, bannerErrorMessage = null) }
+            _uiState.update { it.copy(isLoadingBanners = it.banners.isEmpty(), bannerErrorMessage = null) }
             runCatching {
                 repository.homeBanners()
             }.onSuccess { banners ->
                 _uiState.update {
                     it.copy(
                         isLoadingBanners = false,
-                        banners = banners.sortedBy { banner -> banner.sortOrder },
+                        banners = banners.sortedBy { it.sortOrder },
+                        bannersFromCache = false,
+                        bannerErrorMessage = null,
                     )
                 }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
                         isLoadingBanners = false,
-                        bannerErrorMessage = throwable.message.orEmpty(),
+                        // 已有缓存时不显示错误，只保留缓存 banner
+                        bannerErrorMessage = if (it.banners.isEmpty()) {
+                            throwable.message?.takeIf { m -> m.isNotBlank() }
+                                ?: "Banner load failed"
+                        } else {
+                            null
+                        },
                     )
                 }
             }

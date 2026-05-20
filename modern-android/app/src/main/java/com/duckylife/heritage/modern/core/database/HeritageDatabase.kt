@@ -11,6 +11,7 @@ import com.duckylife.heritage.modern.core.database.dao.DirectoryRemoteKeyDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorDetailDao
 import com.duckylife.heritage.modern.core.database.dao.InheritorRemoteKeyDao
+import com.duckylife.heritage.modern.core.database.dao.HomeBannerDao
 import com.duckylife.heritage.modern.core.database.dao.SavedContentDao
 import com.duckylife.heritage.modern.core.database.entity.ArticleDetailEntity
 import com.duckylife.heritage.modern.core.database.entity.ArticleEntity
@@ -20,6 +21,7 @@ import com.duckylife.heritage.modern.core.database.entity.DirectoryDetailEntity
 import com.duckylife.heritage.modern.core.database.entity.DirectoryRemoteKeyEntity
 import com.duckylife.heritage.modern.core.database.entity.InheritorDetailEntity
 import com.duckylife.heritage.modern.core.database.entity.InheritorEntity
+import com.duckylife.heritage.modern.core.database.entity.HomeBannerEntity
 import com.duckylife.heritage.modern.core.database.entity.InheritorRemoteKeyEntity
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 
@@ -31,13 +33,14 @@ import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
         DirectoryItemEntity::class,
         DirectoryDetailEntity::class,
         DirectoryRemoteKeyEntity::class,
+        HomeBannerEntity::class,
         InheritorEntity::class,
         InheritorDetailEntity::class,
         InheritorRemoteKeyEntity::class,
         SavedContentEntity::class,
     ],
-    version = 7,
-    exportSchema = false,
+    version = 8,
+    exportSchema = true,
 )
 abstract class HeritageDatabase : RoomDatabase() {
     abstract fun articleDao(): ArticleDao
@@ -46,6 +49,7 @@ abstract class HeritageDatabase : RoomDatabase() {
     abstract fun directoryItemDao(): DirectoryItemDao
     abstract fun directoryDetailDao(): DirectoryDetailDao
     abstract fun directoryRemoteKeyDao(): DirectoryRemoteKeyDao
+    abstract fun homeBannerDao(): HomeBannerDao
     abstract fun inheritorDao(): InheritorDao
     abstract fun inheritorDetailDao(): InheritorDetailDao
     abstract fun inheritorRemoteKeyDao(): InheritorRemoteKeyDao

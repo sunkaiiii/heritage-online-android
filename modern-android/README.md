@@ -109,6 +109,17 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
+## Database Governance
+
+Room schema 已导出到 `app/schemas/`。改 Entity 时必须遵循：
+
+1. 升版本号（`HeritageDatabase.version`）
+2. 在 `HeritageMigrations.kt` 补对应的 `Migration`
+3. 跑 `assembleDebug` 生成新 schema JSON
+4. 跑 migration test 确认迁移正确
+
+已移除 `.fallbackToDestructiveMigration(true)`。想重建数据库：卸载 App 或在系统设置里清除应用数据。
+
 ## Network Configuration
 
 The base URL and HTTPS trust settings are injected at build time via `BuildConfig`:

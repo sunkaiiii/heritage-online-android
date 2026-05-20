@@ -9,5 +9,6 @@ data class ArticlesUiState(
     val yearFilter: String = "",
     val isLoadingBanners: Boolean = true,
     val banners: List<HomeBannerDto> = emptyList(),
+    val bannersFromCache: Boolean = false,
     val bannerErrorMessage: String? = null,
 )

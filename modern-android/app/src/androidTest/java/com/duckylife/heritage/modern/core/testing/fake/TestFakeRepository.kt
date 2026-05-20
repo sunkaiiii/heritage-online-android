@@ -31,6 +31,15 @@ class TestFakeRepository : HeritageRepository {
         HomeBannerDto(id = "b2", sortOrder = 2),
     )
 
+    override fun cachedHomeBanners(): Flow<List<HomeBannerDto>> = flowOf(
+        listOf(
+            HomeBannerDto(id = "b1", sortOrder = 1),
+            HomeBannerDto(id = "b2", sortOrder = 2),
+        ),
+    )
+
+    override suspend fun refreshHomeBanners(): List<HomeBannerDto> = homeBanners()
+
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> {
         pagedArticleQueries.add(query)
         return PagedResult(

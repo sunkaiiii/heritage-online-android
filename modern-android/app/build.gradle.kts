@@ -173,6 +173,11 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 }
 
+// Room schema 导出路径，与 HeritageDatabase.exportSchema=true 配合。
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 // 本地快速验证：单元测试 + debug 构建，不依赖模拟器。
 tasks.register("verifyLocal") {
     group = "verification"
