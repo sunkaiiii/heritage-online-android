@@ -49,7 +49,6 @@ fun ImagePreviewOverlay(
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.96f)),
     ) {
-        // 图片分页 ��� 先绘制，在底层
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
@@ -67,7 +66,6 @@ fun ImagePreviewOverlay(
             }
         }
 
-        // 顶部操作栏 — 后绘制，在上层，zIndex 确保点击不被 Pager 拦截
         Row(
             modifier = Modifier
                 .fillMaxWidth()
