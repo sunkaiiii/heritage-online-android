@@ -8,4 +8,5 @@ data class InheritorDetailUiState(
     val item: InheritorDetailDto? = null,
     val errorKind: ErrorKind? = null,
     val isFavorite: Boolean = false,
+    val isContentStale: Boolean = false,
 )

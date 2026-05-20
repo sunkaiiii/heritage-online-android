@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import com.duckylife.heritage.modern.ui.error.toUiError
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -77,7 +78,7 @@ class ArticlesViewModel @Inject constructor(
                             isLoadingBanners = false,
                             banners = cached,
                             bannersFromCache = true,
-                            bannerErrorMessage = null,
+                            bannerErrorKind = null,
                         )
                     }
                 }
@@ -87,7 +88,7 @@ class ArticlesViewModel @Inject constructor(
 
     fun refreshBanners() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoadingBanners = it.banners.isEmpty(), bannerErrorMessage = null) }
+            _uiState.update { it.copy(isLoadingBanners = it.banners.isEmpty(), bannerErrorKind = null) }
             runCatching {
                 repository.homeBanners()
             }.onSuccess { banners ->
@@ -96,20 +97,15 @@ class ArticlesViewModel @Inject constructor(
                         isLoadingBanners = false,
                         banners = banners.sortedBy { it.sortOrder },
                         bannersFromCache = false,
-                        bannerErrorMessage = null,
+                        bannerErrorKind = null,
                     )
                 }
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
                         isLoadingBanners = false,
-                        // 已有缓存时保留缓存，不显示错误。
-                        // 无缓存时 bannerErrorMessage 非空，UI 会展示重试入口。
-                        bannerErrorMessage = if (it.banners.isEmpty()) {
-                            throwable.message ?: "banner_load_error"
-                        } else {
-                            null
-                        },
+                        // 已有缓存时保留缓存；无缓存时显示本地化错误。
+                        bannerErrorKind = if (it.banners.isEmpty()) throwable.toUiError().kind else null,
                     )
                 }
             }

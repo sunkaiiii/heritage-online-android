@@ -8,4 +8,5 @@ data class ArticleDetailUiState(
     val article: ArticleDetailDto? = null,
     val errorKind: ErrorKind? = null,
     val isFavorite: Boolean = false,
+    val isContentStale: Boolean = false,
 )

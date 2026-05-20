@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.articles
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.ui.error.ErrorKind
 
 data class ArticlesUiState(
     val selectedCategory: ArticleCategory = ArticleCategory.News,
@@ -10,5 +11,5 @@ data class ArticlesUiState(
     val isLoadingBanners: Boolean = true,
     val banners: List<HomeBannerDto> = emptyList(),
     val bannersFromCache: Boolean = false,
-    val bannerErrorMessage: String? = null,
+    val bannerErrorKind: ErrorKind? = null,
 )

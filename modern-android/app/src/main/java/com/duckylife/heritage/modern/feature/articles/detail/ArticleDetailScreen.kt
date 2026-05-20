@@ -21,6 +21,8 @@ import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,6 +179,8 @@ fun ArticleDetailScreen(
             uiState.article != null -> ArticleDetailContent(
                 article = uiState.article,
                 imageLoader = imageLoader,
+                isContentStale = uiState.isContentStale,
+                onRetry = onRetry,
                 onOpenSource = { sourceUrl ->
                     runCatching {
                         uriHandler.openUri(sourceUrl)
@@ -199,6 +203,8 @@ fun ArticleDetailScreen(
 private fun ArticleDetailContent(
     article: ArticleDetailDto,
     imageLoader: ImageLoader,
+    isContentStale: Boolean,
+    onRetry: () -> Unit,
     onOpenSource: (String) -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     modifier: Modifier = Modifier,
@@ -209,6 +215,25 @@ private fun ArticleDetailContent(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
+        if (isContentStale) {
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                ) {
+                    Row(Modifier.padding(14.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.content_may_be_stale),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Button(onClick = onRetry) { Text(stringResource(R.string.action_retry)) }
+                    }
+                }
+            }
+        }
         item {
             ArticleHero(
                 article = article,

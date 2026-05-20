@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +44,7 @@ class ArticlesViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoadingBanners)
-        assertNull(state.bannerErrorMessage)
+        assertNull(state.bannerErrorKind)
         assertEquals(ArticleCategory.News, state.selectedCategory)
         assertEquals(listOf("1", "2"), state.banners.map { it.id })
     }
@@ -60,7 +61,7 @@ class ArticlesViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.isLoadingBanners)
-        assertEquals("network down", state.bannerErrorMessage)
+        assertNotNull(state.bannerErrorKind)
     }
 
     @Test

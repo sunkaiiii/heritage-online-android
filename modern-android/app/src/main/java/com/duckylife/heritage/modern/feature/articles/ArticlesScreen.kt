@@ -79,6 +79,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
@@ -223,10 +224,8 @@ private fun ArticlesContent(
 
                     uiState.isLoadingBanners -> BannerLoadingStrip()
 
-                    uiState.bannerErrorMessage != null -> InlineRetryMessage(
-                        message = uiState.bannerErrorMessage
-                            .takeUnless { it.isBlank() }
-                            ?: stringResource(R.string.banner_load_failed),
+                    uiState.bannerErrorKind != null -> InlineRetryMessage(
+                        message = stringResource(uiState.bannerErrorKind.fallbackResId()),
                         onRetry = onRefreshBanners,
                         modifier = Modifier.padding(horizontal = 20.dp),
                     )
