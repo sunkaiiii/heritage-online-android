@@ -453,13 +453,15 @@ private fun BannerCard(
         ?: banner.displayImage?.thumbnailUrl
         ?: banner.desktopImage?.displayUrl
         ?: banner.desktopImage?.thumbnailUrl
-    val canClick = !targetUrl.isNullOrBlank()
     Card(
         modifier = Modifier
             .size(width = 300.dp, height = 156.dp)
             .then(
-                if (canClick) Modifier.clickable(onClick = { onBannerSelected(targetUrl!!) })
-                else Modifier
+                if (!targetUrl.isNullOrBlank()) {
+                    Modifier.clickable(onClick = { onBannerSelected(targetUrl) })
+                } else {
+                    Modifier
+                }
             ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),

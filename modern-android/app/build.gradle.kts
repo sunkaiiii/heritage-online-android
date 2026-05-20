@@ -38,6 +38,19 @@ android {
         release {
             val trustSelfSigned = project.findProperty("heritageTrustSelfSigned") as? String ?: "false"
             buildConfigField("boolean", "HERITAGE_TRUST_SELF_SIGNED_CERTS", trustSelfSigned)
+
+            val storeFile = project.findProperty("heritageReleaseStoreFile") as? String
+            if (storeFile != null) {
+                signingConfig = signingConfigs.maybeCreate("release").apply {
+                    this.storeFile = file(storeFile)
+                    storePassword = project.findProperty("heritageReleaseStorePassword") as? String
+                        ?: error("Missing heritageReleaseStorePassword. Set it in ~/.gradle/gradle.properties")
+                    keyAlias = project.findProperty("heritageReleaseKeyAlias") as? String
+                        ?: error("Missing heritageReleaseKeyAlias. Set it in ~/.gradle/gradle.properties")
+                    keyPassword = project.findProperty("heritageReleaseKeyPassword") as? String
+                        ?: error("Missing heritageReleaseKeyPassword. Set it in ~/.gradle/gradle.properties")
+                }
+            }
         }
     }
 

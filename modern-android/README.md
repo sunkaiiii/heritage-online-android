@@ -51,17 +51,37 @@ cd modern-android
 ./gradlew :app:testDebugUnitTest :app:assembleRelease
 ```
 
+## Release Signing
+
+Release 构建需要签名。首先生成 keystore（仅一次）：
+
+```bash
+keytool -genkey -v -keystore ~/.gradle/heritage-release.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -alias heritage-release
+```
+
+然后在 `~/.gradle/gradle.properties`（或仓库级 `gradle.properties`）中加入：
+
+```properties
+heritageReleaseStoreFile=~/.gradle/heritage-release.jks
+heritageReleaseStorePassword=<your-store-password>
+heritageReleaseKeyAlias=heritage-release
+heritageReleaseKeyPassword=<your-key-password>
+```
+
 ## Install
 
 ```bash
 # Debug — 连模拟器或真机后直接装
 ./gradlew :app:installDebug
 
-# 或手动安装 APK
-adb install app/build/outputs/apk/debug/app-debug.apk
+# 或手动安装 ADB
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 
-# Release
-adb install app/build/outputs/apk/release/app-release-unsigned.apk
+# Release（需先配置签名）
+./gradlew :app:assembleRelease
+adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
 ## Network Configuration
