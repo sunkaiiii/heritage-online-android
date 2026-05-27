@@ -122,6 +122,32 @@ class AppSmokeTest {
 
     // endregion
 
+    // region 统计 tab
+
+    @Test
+    fun statisticsTabShowsContentWithoutStuckLoading() {
+        clickContentDescription(R.string.nav_directory)
+
+        // 点击统计 tab
+        composeRule.onNodeWithText(string(R.string.directory_tab_statistics))
+            .performClick()
+
+        // 等待统计内容出现（年份分布标题）
+        waitUntilTextExists(string(R.string.statistics_year_title))
+
+        // 确认年份分布标题可见
+        composeRule.onNodeWithText(string(R.string.statistics_year_title))
+            .assertIsDisplayed()
+
+        // 确认不显示错误文案
+        composeRule.waitUntil(timeoutMillis = 1_000) {
+            composeRule.onAllNodesWithText(string(R.string.statistics_load_failed))
+                .fetchSemanticsNodes().isEmpty()
+        }
+    }
+
+    // endregion
+
     // region 收藏链路
 
     @Test

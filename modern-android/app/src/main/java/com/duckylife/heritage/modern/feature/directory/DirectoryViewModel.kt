@@ -13,6 +13,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensio
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -61,6 +62,12 @@ class DirectoryViewModel @Inject constructor(
         )
     )
     val uiState: StateFlow<DirectoryUiState> = _uiState.asStateFlow()
+
+    init {
+        if (_uiState.value.selectedTab == DirectoryTab.Statistics) {
+            loadStatistics()
+        }
+    }
 
     val items: Flow<PagingData<DirectoryItemSummaryDto>> =
         uiState
@@ -136,6 +143,8 @@ class DirectoryViewModel @Inject constructor(
                         )
                     }
                 }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(

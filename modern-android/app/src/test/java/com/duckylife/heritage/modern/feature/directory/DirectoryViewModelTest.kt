@@ -10,7 +10,9 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -282,5 +284,106 @@ class DirectoryViewModelTest {
         assertEquals(DirectoryTab.Statistics, restored.uiState.value.selectedTab)
     }
 
+    @Test
+    fun `restoring Statistics tab from SavedStateHandle triggers statistics load`() = runTest {
+        val overviewDto = DirectoryStatisticsOverviewDto(kind = "nationalProject", total = 42)
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = overviewDto,
+            directoryStatisticsBreakdowns = mapOf(
+                DirectoryStatisticDimension.PublishedYear to DirectoryStatisticDimensionDto(dimension = "publishedYear"),
+                DirectoryStatisticDimension.Category to DirectoryStatisticDimensionDto(dimension = "category"),
+                DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(dimension = "region"),
+            ),
+        )
+        val handle = SavedStateHandle(mapOf("dir_tab" to "Statistics"))
+
+        val restored = DirectoryViewModel(savedStateHandle = handle, repository = repo)
+        advanceUntilIdle()
+
+        assertEquals(1, repo.directoryStatisticsOverviewQueries.size)
+        assertEquals(3, repo.directoryStatisticsBreakdownQueries.size)
+        assertEquals(42L, restored.uiState.value.statisticsState.overview?.total)
+        assertEquals(false, restored.uiState.value.statisticsState.isLoading)
+        assertNull(restored.uiState.value.statisticsState.errorKind)
+    }
+
+    @Test
+    fun `fast kind switch does not leave error from cancelled request`() = runTest {
+        val repo = SlowStatisticsRepository(delayMs = 100)
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceTimeBy(50)
+
+        viewModel.selectKind(DirectoryItemKind.CulturalEcoZone)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value.statisticsState
+        assertEquals(DirectoryItemKind.CulturalEcoZone, viewModel.uiState.value.selectedKind)
+        assertEquals(false, state.isLoading)
+        assertNull(state.errorKind)
+        assertNotNull(state.overview)
+
+        val lastOverview = repo.delegate.directoryStatisticsOverviewQueries.last()
+        assertEquals(DirectoryItemKind.CulturalEcoZone, lastOverview)
+
+        val lastBreakdowns = repo.delegate.directoryStatisticsBreakdownQueries.takeLast(3)
+        assertTrue(lastBreakdowns.all { it.first == DirectoryItemKind.CulturalEcoZone })
+    }
+
+    @Test
+    fun `breakdown limits are 50 for year 12 for category 20 for region`() = runTest {
+        val repo = FakeHeritageRepository(
+            directoryStatisticsOverview = DirectoryStatisticsOverviewDto(total = 1),
+            directoryStatisticsBreakdowns = mapOf(
+                DirectoryStatisticDimension.PublishedYear to DirectoryStatisticDimensionDto(dimension = "publishedYear"),
+                DirectoryStatisticDimension.Category to DirectoryStatisticDimensionDto(dimension = "category"),
+                DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(dimension = "region"),
+            ),
+        )
+        val viewModel = DirectoryViewModel(savedStateHandle = SavedStateHandle(), repository = repo)
+
+        viewModel.selectTab(DirectoryTab.Statistics)
+        advanceUntilIdle()
+
+        val queries = repo.directoryStatisticsBreakdownQueries
+        assertEquals(3, queries.size)
+
+        val yearQuery = queries.first { it.second == DirectoryStatisticDimension.PublishedYear }
+        assertEquals(50, yearQuery.third)
+
+        val categoryQuery = queries.first { it.second == DirectoryStatisticDimension.Category }
+        assertEquals(12, categoryQuery.third)
+
+        val regionQuery = queries.first { it.second == DirectoryStatisticDimension.Region }
+        assertEquals(20, regionQuery.third)
+    }
+
     // endregion
+}
+
+private class SlowStatisticsRepository(
+    private val delayMs: Long,
+    internal val delegate: FakeHeritageRepository = FakeHeritageRepository(
+        directoryStatisticsOverview = DirectoryStatisticsOverviewDto(kind = "nationalProject", total = 10),
+        directoryStatisticsBreakdowns = mapOf(
+            DirectoryStatisticDimension.PublishedYear to DirectoryStatisticDimensionDto(dimension = "publishedYear"),
+            DirectoryStatisticDimension.Category to DirectoryStatisticDimensionDto(dimension = "category"),
+            DirectoryStatisticDimension.Region to DirectoryStatisticDimensionDto(dimension = "region"),
+        ),
+    ),
+) : com.duckylife.heritage.modern.core.data.HeritageRepository by delegate {
+    override suspend fun directoryStatisticsOverview(kind: DirectoryItemKind): DirectoryStatisticsOverviewDto {
+        delay(delayMs)
+        return delegate.directoryStatisticsOverview(kind)
+    }
+
+    override suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ): DirectoryStatisticDimensionDto {
+        delay(delayMs)
+        return delegate.directoryStatisticsBreakdown(kind, dimension, limit)
+    }
 }
