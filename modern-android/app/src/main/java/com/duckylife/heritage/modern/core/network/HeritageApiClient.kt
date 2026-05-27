@@ -237,7 +237,10 @@ class KtorHeritageApiClient(
     override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto =
         httpClient.get(endpoint("api/search/v2")) {
             optionalParameter("keywords", query.keywords)
-            optionalParameter("types", query.types)
+            optionalParameter(
+                "types",
+                query.types.takeIf { it.isNotEmpty() }?.joinToString(",") { it.wireName },
+            )
             optionalParameter("page", query.page)
             optionalParameter("pageSize", query.pageSize)
             optionalParameter("region", query.region)
@@ -256,7 +259,10 @@ class KtorHeritageApiClient(
     override suspend fun getTimelineV2(query: TimelineV2Query): TimelineV2ResponseDto =
         httpClient.get(endpoint("api/timeline/v2")) {
             optionalParameter("year", query.year)
-            optionalParameter("types", query.types)
+            optionalParameter(
+                "types",
+                query.types.takeIf { it.isNotEmpty() }?.joinToString(",") { it.wireName },
+            )
             optionalParameter("page", query.page)
             optionalParameter("pageSize", query.pageSize)
             optionalParameter("category", query.category)
@@ -278,7 +284,7 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getExploreTopic(type: String, key: String, limit: Int): ExploreTopicV2Dto =
-        httpClient.get(endpoint("api/explore/topics/$type/$key")) {
+        httpClient.get(endpoint("api/explore/topics/${pathSegment(type)}/${pathSegment(key)}")) {
             optionalParameter("limit", limit)
         }.body()
 
@@ -294,7 +300,7 @@ class KtorHeritageApiClient(
         httpClient.get(endpoint("api/regions/atlas")).body()
 
     override suspend fun getRegionAtlasDetail(region: String, limit: Int): RegionAtlasDetailDto =
-        httpClient.get(endpoint("api/regions/$region/atlas")) {
+        httpClient.get(endpoint("api/regions/${pathSegment(region)}/atlas")) {
             optionalParameter("limit", limit)
         }.body()
 
@@ -307,11 +313,15 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getTopicCollection(type: String, key: String, limit: Int): CollectionDto =
-        httpClient.get(endpoint("api/collections/topic/$type/$key")) {
+        httpClient.get(endpoint("api/collections/topic/${pathSegment(type)}/${pathSegment(key)}")) {
             optionalParameter("limit", limit)
         }.body()
 
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
+
+    private fun pathSegment(value: String): String =
+        java.net.URLEncoder.encode(value, "UTF-8")
+            .replace("+", "%20")
 }
 
 fun createHeritageHttpClient(

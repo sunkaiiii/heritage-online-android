@@ -1,7 +1,11 @@
 package com.duckylife.heritage.modern.core.network
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
+import com.duckylife.heritage.modern.core.network.dto.CollectionTopicType
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicListType
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicType
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 
 data class ArticleQuery(
     val category: ArticleCategory = ArticleCategory.News,
@@ -34,7 +38,7 @@ data class InheritorQuery(
 
 data class SearchV2Query(
     val keywords: String,
-    val types: String? = null,
+    val types: Set<SearchResultType> = emptySet(),
     val page: Int = 1,
     val pageSize: Int = 20,
     val region: String? = null,
@@ -46,7 +50,7 @@ data class SearchV2Query(
 
 data class TimelineV2Query(
     val year: Int? = null,
-    val types: String? = null,
+    val types: Set<SearchResultType> = emptySet(),
     val page: Int = 1,
     val pageSize: Int = 20,
     val category: String? = null,

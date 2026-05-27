@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -452,7 +453,7 @@ class KtorHeritageApiClientTest {
     }
 
     @Test
-    fun searchV2_sends_all_query_params() = runTest {
+    fun searchV2_sends_types_as_comma_separated() = runTest {
         var capturedRequest: HttpRequestData? = null
         val engine = MockEngine { request ->
             capturedRequest = request
@@ -479,7 +480,7 @@ class KtorHeritageApiClientTest {
         val result = api.searchV2(
             SearchV2Query(
                 keywords = "陶瓷",
-                types = "article,directoryItem",
+                types = setOf(SearchResultType.Article, SearchResultType.DirectoryItem),
                 page = 1,
                 pageSize = 10,
                 region = "浙江",
@@ -508,7 +509,28 @@ class KtorHeritageApiClientTest {
     }
 
     @Test
-    fun getTimelineV2_sends_filters() = runTest {
+    fun searchV2_sends_empty_types_as_null() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """{ "items": [], "page": 1, "pageSize": 20, "total": 0, "hasMore": false }""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.searchV2(SearchV2Query(keywords = "测试", types = emptySet()))
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals(null, request.url.parameters["types"])
+    }
+
+    @Test
+    fun getTimelineV2_sends_types_as_comma_separated() = runTest {
         var capturedRequest: HttpRequestData? = null
         val engine = MockEngine { request ->
             capturedRequest = request
@@ -539,7 +561,12 @@ class KtorHeritageApiClientTest {
         val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getTimelineV2(
-            TimelineV2Query(year = 2020, types = "article", region = "北京"),
+            TimelineV2Query(
+                year = 2020,
+                types = setOf(SearchResultType.Article, SearchResultType.Inheritor),
+                region = "北京",
+                category = "传统技艺",
+            ),
         )
 
         assertEquals(1, result.items.size)
@@ -551,12 +578,34 @@ class KtorHeritageApiClientTest {
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/timeline/v2", request.url.encodedPath)
         assertEquals("2020", request.url.parameters["year"])
-        assertEquals("article", request.url.parameters["types"])
+        assertEquals("article,inheritor", request.url.parameters["types"])
         assertEquals("北京", request.url.parameters["region"])
+        assertEquals("传统技艺", request.url.parameters["category"])
     }
 
     @Test
-    fun getExploreTopic_encodes_type_key_and_limit() = runTest {
+    fun getTimelineV2_sends_empty_types_as_null() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """{ "items": [], "page": 1, "pageSize": 20, "total": 0, "hasMore": false }""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getTimelineV2(TimelineV2Query(types = emptySet()))
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals(null, request.url.parameters["types"])
+    }
+
+    @Test
+    fun getExploreTopic_encodes_chinese_key_in_path() = runTest {
         var capturedRequest: HttpRequestData? = null
         val engine = MockEngine { request ->
             capturedRequest = request
@@ -599,8 +648,90 @@ class KtorHeritageApiClientTest {
         assertEquals("景德镇陶瓷", result.sections.first().items.first().title)
 
         val request = requireNotNull(capturedRequest)
-        assertEquals("/api/explore/topics/category/传统技艺", request.url.encodedPath)
+        // 中文 key 应该被编码
+        val encodedPath = request.url.encodedPath
+        assertEquals("/api/explore/topics/category/%E4%BC%A0%E7%BB%9F%E6%8A%80%E8%89%BA", encodedPath)
         assertEquals("10", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getRegionAtlasDetail_encodes_chinese_region_in_path() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "region": "浙江省",
+                      "displayName": "浙江省",
+                      "stats": {
+                        "directoryItemCount": 40,
+                        "inheritorCount": 2,
+                        "total": 42
+                      },
+                      "categoryBreakdown": [
+                        { "key": "传统技艺", "count": 15 }
+                      ],
+                      "kindBreakdown": [],
+                      "featuredDirectoryItems": [
+                        { "id": "ra1", "title": "西湖龙井" }
+                      ],
+                      "featuredInheritors": [],
+                      "relatedArticles": [],
+                      "timeline": [],
+                      "relatedRegions": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getRegionAtlasDetail("浙江省", limit = 5)
+
+        assertEquals("浙江省", result.region)
+        assertEquals(42L, result.stats?.total)
+        assertEquals(1, result.featuredDirectoryItems.size)
+        assertEquals("西湖龙井", result.featuredDirectoryItems.first().title)
+
+        val request = requireNotNull(capturedRequest)
+        // 中文 region 应该被编码
+        val encodedPath = request.url.encodedPath
+        assertEquals("/api/regions/%E6%B5%99%E6%B1%9F%E7%9C%81/atlas", encodedPath)
+        assertEquals("5", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getTopicCollection_encodes_chinese_key_in_path() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "tc1",
+                      "title": "专题集",
+                      "items": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getTopicCollection("category", "传统技艺", limit = 3)
+
+        val request = requireNotNull(capturedRequest)
+        // 中文 key 应该被编码
+        val encodedPath = request.url.encodedPath
+        assertEquals("/api/collections/topic/category/%E4%BC%A0%E7%BB%9F%E6%8A%80%E8%89%BA", encodedPath)
+        assertEquals("3", request.url.parameters["limit"])
     }
 
     @Test
@@ -644,54 +775,6 @@ class KtorHeritageApiClientTest {
     }
 
     @Test
-    fun getRegionAtlasDetail_calls_expected_url_with_limit() = runTest {
-        var capturedRequest: HttpRequestData? = null
-        val engine = MockEngine { request ->
-            capturedRequest = request
-            respond(
-                content = """
-                    {
-                      "region": "浙江省",
-                      "displayName": "浙江省",
-                      "stats": {
-                        "directoryItemCount": 40,
-                        "inheritorCount": 2,
-                        "total": 42
-                      },
-                      "categoryBreakdown": [
-                        { "key": "传统技艺", "count": 15 }
-                      ],
-                      "kindBreakdown": [],
-                      "featuredDirectoryItems": [
-                        { "id": "ra1", "title": "西湖龙井" }
-                      ],
-                      "featuredInheritors": [],
-                      "relatedArticles": [],
-                      "timeline": [],
-                      "relatedRegions": []
-                    }
-                """.trimIndent(),
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-            )
-        }
-        val client = HttpClient(engine) {
-            install(ContentNegotiation) { json(HeritageJson) }
-        }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
-
-        val result = api.getRegionAtlasDetail("浙江省", limit = 5)
-
-        assertEquals("浙江省", result.region)
-        assertEquals(42L, result.stats?.total)
-        assertEquals(1, result.featuredDirectoryItems.size)
-        assertEquals("西湖龙井", result.featuredDirectoryItems.first().title)
-
-        val request = requireNotNull(capturedRequest)
-        assertEquals("/api/regions/浙江省/atlas", request.url.encodedPath)
-        assertEquals("5", request.url.parameters["limit"])
-    }
-
-    @Test
     fun getCollection_calls_collection_id_with_limit() = runTest {
         var capturedRequest: HttpRequestData? = null
         val engine = MockEngine { request ->
@@ -723,33 +806,5 @@ class KtorHeritageApiClientTest {
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/collections/col1", request.url.encodedPath)
         assertEquals("5", request.url.parameters["limit"])
-    }
-
-    @Test
-    fun getTopicCollection_calls_topic_path() = runTest {
-        var capturedRequest: HttpRequestData? = null
-        val engine = MockEngine { request ->
-            capturedRequest = request
-            respond(
-                content = """
-                    {
-                      "id": "tc1",
-                      "title": "专题集",
-                      "items": []
-                    }
-                """.trimIndent(),
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
-            )
-        }
-        val client = HttpClient(engine) {
-            install(ContentNegotiation) { json(HeritageJson) }
-        }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
-
-        api.getTopicCollection("category", "传统技艺", limit = 3)
-
-        val request = requireNotNull(capturedRequest)
-        assertEquals("/api/collections/topic/category/传统技艺", request.url.encodedPath)
-        assertEquals("3", request.url.parameters["limit"])
     }
 }
