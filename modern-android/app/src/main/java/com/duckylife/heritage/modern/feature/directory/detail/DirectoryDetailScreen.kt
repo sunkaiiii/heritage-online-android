@@ -75,6 +75,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
+import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageFact
@@ -118,6 +119,7 @@ fun DirectoryDetailRoute(
         onToggleFavorite = viewModel::toggleFavorite,
         onRelatedProjectSelected = onRelatedProjectSelected,
         onRelatedInheritorSelected = onRelatedInheritorSelected,
+        onContextRetry = viewModel::loadContext,
         modifier = modifier,
     )
 }
@@ -131,6 +133,7 @@ fun DirectoryDetailScreen(
     onToggleFavorite: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -228,6 +231,10 @@ fun DirectoryDetailScreen(
                         previewIndex = index
                         showPreview = true
                     },
+                    contextLoading = uiState.contextLoading,
+                    context = uiState.context,
+                    contextErrorKind = uiState.contextErrorKind,
+                    onContextRetry = onContextRetry,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -256,6 +263,10 @@ private fun DirectoryDetailContent(
     onRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onPreviewImage: (Int) -> Unit,
+    contextLoading: Boolean = false,
+    context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
+    contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
@@ -358,6 +369,18 @@ private fun DirectoryDetailContent(
             references = item.relatedDocuments,
             onReferenceSelected = null,
         )
+
+        item {
+            DetailContextSection(
+                context = context,
+                isLoading = contextLoading,
+                errorKind = contextErrorKind,
+                onRetry = onContextRetry,
+                onItemClick = { _, _ -> },
+                onCollectionClick = {},
+                onTopicClick = { _, _ -> },
+            )
+        }
     }
 }
 

@@ -49,7 +49,7 @@ import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
 import com.duckylife.heritage.modern.feature.directory.DirectoryRoute
-import com.duckylife.heritage.modern.feature.discovery.DiscoveryRoute
+import com.duckylife.heritage.modern.feature.discovery.DiscoveryNavHost
 import com.duckylife.heritage.modern.feature.inheritors.InheritorsRoute
 import com.duckylife.heritage.modern.feature.my.MyPage
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
@@ -271,7 +271,8 @@ private fun HeritageApp(
                     .padding(contentPadding),
             )
 
-            HomeDestination.Discovery -> DiscoveryRoute(
+            HomeDestination.Discovery -> DiscoveryNavHost(
+                onSecondaryDestinationChanged = { discoveryInDetail = it },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

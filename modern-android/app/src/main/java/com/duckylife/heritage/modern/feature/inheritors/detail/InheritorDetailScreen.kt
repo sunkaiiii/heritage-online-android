@@ -71,6 +71,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
+import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageFact
@@ -112,6 +113,7 @@ fun InheritorDetailRoute(
         onToggleFavorite = viewModel::toggleFavorite,
         onRelatedProjectSelected = onRelatedProjectSelected,
         onRelatedInheritorSelected = onRelatedInheritorSelected,
+        onContextRetry = viewModel::loadContext,
         modifier = modifier,
     )
 }
@@ -125,6 +127,7 @@ fun InheritorDetailScreen(
     onToggleFavorite: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -222,6 +225,10 @@ fun InheritorDetailScreen(
                         previewIndex = index
                         showPreview = true
                     },
+                    contextLoading = uiState.contextLoading,
+                    context = uiState.context,
+                    contextErrorKind = uiState.contextErrorKind,
+                    onContextRetry = onContextRetry,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -250,6 +257,10 @@ private fun InheritorDetailContent(
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onPreviewImage: (Int) -> Unit,
+    contextLoading: Boolean = false,
+    context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
+    contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
@@ -327,6 +338,18 @@ private fun InheritorDetailContent(
             references = item.relatedInheritors,
             onReferenceSelected = onRelatedInheritorSelected,
         )
+
+        item {
+            DetailContextSection(
+                context = context,
+                isLoading = contextLoading,
+                errorKind = contextErrorKind,
+                onRetry = onContextRetry,
+                onItemClick = { _, _ -> },
+                onCollectionClick = {},
+                onTopicClick = { _, _ -> },
+            )
+        }
     }
 }
 

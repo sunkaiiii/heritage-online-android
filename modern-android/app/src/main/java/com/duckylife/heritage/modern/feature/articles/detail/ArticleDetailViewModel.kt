@@ -90,12 +90,15 @@ class ArticleDetailViewModel @AssistedInject constructor(
             runCatching {
                 repository.refreshArticleDetail(lookup)
             }.onSuccess { article ->
-                _uiState.value = ArticleDetailUiState(
-                    isLoading = false,
-                    article = article,
-                    isFavorite = _uiState.value.isFavorite,
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        article = article,
+                        errorKind = null,
+                    )
+                }
                 recordViewedIfNew(article)
+                loadContext(article.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -104,6 +107,25 @@ class ArticleDetailViewModel @AssistedInject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun loadContext() {
+        val id = _uiState.value.article?.id ?: return
+        loadContext(id)
+    }
+
+    private fun loadContext(articleId: String?) {
+        if (articleId.isNullOrBlank()) return
+        _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
+        viewModelScope.launch {
+            runCatching { repository.articleContext(articleId) }
+                .onSuccess { ctx ->
+                    _uiState.update { it.copy(contextLoading = false, context = ctx) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
+                }
         }
     }
 

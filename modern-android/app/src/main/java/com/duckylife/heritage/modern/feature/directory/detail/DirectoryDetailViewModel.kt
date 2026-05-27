@@ -87,12 +87,15 @@ class DirectoryDetailViewModel @AssistedInject constructor(
             runCatching {
                 repository.refreshDirectoryDetail(lookup)
             }.onSuccess { item ->
-                _uiState.value = DirectoryDetailUiState(
-                    isLoading = false,
-                    item = item,
-                    isFavorite = _uiState.value.isFavorite,
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        item = item,
+                        errorKind = null,
+                    )
+                }
                 recordViewedIfNew(item)
+                loadContext(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -101,6 +104,25 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun loadContext() {
+        val id = _uiState.value.item?.id ?: return
+        loadContext(id)
+    }
+
+    private fun loadContext(itemId: String?) {
+        if (itemId.isNullOrBlank()) return
+        _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
+        viewModelScope.launch {
+            runCatching { repository.directoryItemContext(itemId) }
+                .onSuccess { ctx ->
+                    _uiState.update { it.copy(contextLoading = false, context = ctx) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
+                }
         }
     }
 

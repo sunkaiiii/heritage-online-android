@@ -23,6 +23,7 @@ fun HeritageSearchField(
     placeholder: String,
     clearContentDescription: String,
     modifier: Modifier = Modifier,
+    onSearch: ((String) -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
@@ -52,6 +53,7 @@ fun HeritageSearchField(
         keyboardActions = KeyboardActions(
             onSearch = {
                 focusManager.clearFocus()
+                onSearch?.invoke(value)
             },
         ),
     )

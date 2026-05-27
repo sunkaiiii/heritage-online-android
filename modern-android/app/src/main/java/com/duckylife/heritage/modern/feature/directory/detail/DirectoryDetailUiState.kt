@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.directory.detail
 
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 
@@ -9,4 +10,7 @@ data class DirectoryDetailUiState(
     val errorKind: ErrorKind? = null,
     val isFavorite: Boolean = false,
     val isContentStale: Boolean = false,
+    val contextLoading: Boolean = false,
+    val context: DetailContextDto? = null,
+    val contextErrorKind: ErrorKind? = null,
 )

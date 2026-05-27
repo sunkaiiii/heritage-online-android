@@ -83,12 +83,15 @@ class InheritorDetailViewModel @AssistedInject constructor(
             runCatching {
                 repository.refreshInheritorDetail(lookup)
             }.onSuccess { item ->
-                _uiState.value = InheritorDetailUiState(
-                    isLoading = false,
-                    item = item,
-                    isFavorite = _uiState.value.isFavorite,
-                )
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        item = item,
+                        errorKind = null,
+                    )
+                }
                 recordViewedIfNew(item)
+                loadContext(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -97,6 +100,25 @@ class InheritorDetailViewModel @AssistedInject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun loadContext() {
+        val id = _uiState.value.item?.id ?: return
+        loadContext(id)
+    }
+
+    private fun loadContext(inheritorId: String?) {
+        if (inheritorId.isNullOrBlank()) return
+        _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
+        viewModelScope.launch {
+            runCatching { repository.inheritorContext(inheritorId) }
+                .onSuccess { ctx ->
+                    _uiState.update { it.copy(contextLoading = false, context = ctx) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
+                }
         }
     }
 

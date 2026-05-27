@@ -65,6 +65,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
+import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
@@ -106,6 +107,7 @@ fun ArticleDetailRoute(
         onRetry = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
         onRelatedArticleSelected = onRelatedArticleSelected,
+        onContextRetry = viewModel::loadContext,
         modifier = modifier,
     )
 }
@@ -118,6 +120,7 @@ fun ArticleDetailScreen(
     onRetry: () -> Unit,
     onToggleFavorite: () -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -212,6 +215,10 @@ fun ArticleDetailScreen(
                         previewIndex = index
                         showPreview = true
                     },
+                    contextLoading = uiState.contextLoading,
+                    context = uiState.context,
+                    contextErrorKind = uiState.contextErrorKind,
+                    onContextRetry = onContextRetry,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -239,6 +246,10 @@ private fun ArticleDetailContent(
     onOpenSource: (String) -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     onPreviewImage: (Int) -> Unit,
+    contextLoading: Boolean = false,
+    context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
+    contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    onContextRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
@@ -324,6 +335,18 @@ private fun ArticleDetailContent(
                     },
                 )
             }
+        }
+
+        item {
+            DetailContextSection(
+                context = context,
+                isLoading = contextLoading,
+                errorKind = contextErrorKind,
+                onRetry = onContextRetry,
+                onItemClick = { _, _ -> },
+                onCollectionClick = {},
+                onTopicClick = { _, _ -> },
+            )
         }
     }
 }

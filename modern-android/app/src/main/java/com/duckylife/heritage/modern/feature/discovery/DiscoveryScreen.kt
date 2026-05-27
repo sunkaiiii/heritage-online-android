@@ -56,6 +56,12 @@ import com.duckylife.heritage.modern.ui.error.fallbackResId
 
 @Composable
 fun DiscoveryRoute(
+    onSearchSubmit: (String) -> Unit,
+    onTopicClick: (ExploreTopicInfoDto) -> Unit,
+    onLearningPathClick: (LearningPathDto) -> Unit,
+    onCollectionClick: (FeaturedCollectionDto) -> Unit,
+    onRegionAtlasClick: () -> Unit,
+    onTimelineClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoveryViewModel = hiltViewModel(),
 ) {
@@ -63,12 +69,12 @@ fun DiscoveryRoute(
     DiscoveryScreen(
         uiState = uiState,
         onRefresh = viewModel::loadAll,
-        onSearchSubmit = { /* TODO: Navigate to search */ },
-        onTopicClick = { /* TODO: Navigate to topic detail */ },
-        onLearningPathClick = { /* TODO: Navigate to learning path detail */ },
-        onCollectionClick = { /* TODO: Navigate to collection detail */ },
-        onRegionAtlasClick = { /* TODO: Navigate to region atlas */ },
-        onTimelineClick = { /* TODO: Navigate to timeline */ },
+        onSearchSubmit = onSearchSubmit,
+        onTopicClick = onTopicClick,
+        onLearningPathClick = onLearningPathClick,
+        onCollectionClick = onCollectionClick,
+        onRegionAtlasClick = onRegionAtlasClick,
+        onTimelineClick = onTimelineClick,
         modifier = modifier,
     )
 }
@@ -216,6 +222,11 @@ private fun DiscoverySearchBar(
     HeritageSearchField(
         value = searchText,
         onValueChange = { searchText = it },
+        onSearch = { query ->
+            if (query.isNotBlank()) {
+                onSearchSubmit(query.trim())
+            }
+        },
         label = stringResource(R.string.discovery_search_placeholder),
         placeholder = stringResource(R.string.discovery_search_placeholder),
         clearContentDescription = stringResource(R.string.action_clear_search),
