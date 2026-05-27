@@ -3,6 +3,7 @@
     <string name="nav_articles">文章</string>
     <string name="nav_directory">名录</string>
     <string name="nav_inheritors">传承人</string>
+    <string name="nav_discovery">发现</string>
     <string name="nav_settings">设置</string>
     <string name="inheritors_title">代表性传承人</string>
     <string name="inheritors_subtitle">按项目、类别与地区浏览传承人资料</string>
@@ -145,4 +146,15 @@
     <string name="statistics_empty_message">暂无统计数据</string>
     <string name="statistics_load_failed">统计数据加载失败</string>
     <string name="statistics_percentage_format">%.1f%%</string>
+    <string name="discovery_title">发现</string>
+    <string name="discovery_subtitle">探索、学习路径与精选合集</string>
+    <string name="discovery_load_failed">发现页加载失败</string>
+    <string name="discovery_search_placeholder">搜索非遗内容</string>
+    <string name="discovery_explore_topics">今日探索</string>
+    <string name="discovery_learning_paths">学习路径</string>
+    <string name="discovery_featured_collections">精选合集</string>
+    <string name="discovery_region_atlas">地区图谱</string>
+    <string name="discovery_timeline">时间线</string>
+    <string name="discovery_view_all">查看全部</string>
+    <string name="discovery_items_count">%1$d 项</string>
 </resources>

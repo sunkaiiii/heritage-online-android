@@ -3,6 +3,7 @@
     <string name="nav_articles">Articles</string>
     <string name="nav_directory">Directory</string>
     <string name="nav_inheritors">Inheritors</string>
+    <string name="nav_discovery">Discover</string>
     <string name="nav_settings">Settings</string>
     <string name="inheritors_title">Representative Inheritors</string>
     <string name="inheritors_subtitle">Browse inheritors by project, category, and region</string>
@@ -145,4 +146,15 @@
     <string name="statistics_empty_message">No statistics data available</string>
     <string name="statistics_load_failed">Failed to load statistics</string>
     <string name="statistics_percentage_format">%.1f%%</string>
+    <string name="discovery_title">Discover</string>
+    <string name="discovery_subtitle">Explore, learning paths, and featured collections</string>
+    <string name="discovery_load_failed">Failed to load discovery page</string>
+    <string name="discovery_search_placeholder">Search heritage content</string>
+    <string name="discovery_explore_topics">Today\'s Explore</string>
+    <string name="discovery_learning_paths">Learning Paths</string>
+    <string name="discovery_featured_collections">Featured Collections</string>
+    <string name="discovery_region_atlas">Region Atlas</string>
+    <string name="discovery_timeline">Timeline</string>
+    <string name="discovery_view_all">View All</string>
+    <string name="discovery_items_count">%1$d items</string>
 </resources>

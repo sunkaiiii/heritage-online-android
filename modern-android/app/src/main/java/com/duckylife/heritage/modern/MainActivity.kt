@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Article
 import androidx.compose.material.icons.outlined.CollectionsBookmark
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +49,7 @@ import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
 import com.duckylife.heritage.modern.feature.articles.ArticlesNavHost
 import com.duckylife.heritage.modern.feature.directory.DirectoryRoute
+import com.duckylife.heritage.modern.feature.discovery.DiscoveryRoute
 import com.duckylife.heritage.modern.feature.inheritors.InheritorsRoute
 import com.duckylife.heritage.modern.feature.my.MyPage
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
@@ -156,11 +158,13 @@ private fun HeritageApp(
     var articlesInDetail by remember { mutableStateOf(false) }
     var directoryInDetail by remember { mutableStateOf(false) }
     var inheritorsInDetail by remember { mutableStateOf(false) }
+    var discoveryInDetail by remember { mutableStateOf(false) }
     var myPageDestination by remember { mutableStateOf<MyPageDestination?>(null) }
     val selectedDestinationInDetail = when (selectedDestination) {
         HomeDestination.Articles -> articlesInDetail
         HomeDestination.Directory -> directoryInDetail
         HomeDestination.Inheritors -> inheritorsInDetail
+        HomeDestination.Discovery -> discoveryInDetail
     }
     val shouldShowBottomBar = !showSettings && !showMyPage && !selectedDestinationInDetail
 
@@ -266,6 +270,12 @@ private fun HeritageApp(
                     .fillMaxSize()
                     .padding(contentPadding),
             )
+
+            HomeDestination.Discovery -> DiscoveryRoute(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+            )
         }
     }
 }
@@ -277,6 +287,7 @@ private enum class HomeDestination(
     Articles(R.string.nav_articles, Icons.AutoMirrored.Outlined.Article),
     Directory(R.string.nav_directory, Icons.Outlined.CollectionsBookmark),
     Inheritors(R.string.nav_inheritors, Icons.Outlined.Groups),
+    Discovery(R.string.nav_discovery, Icons.Outlined.Explore),
 }
 
 @Preview(showBackground = true)
