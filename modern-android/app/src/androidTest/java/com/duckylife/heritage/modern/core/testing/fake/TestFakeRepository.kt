@@ -8,10 +8,14 @@ import com.duckylife.heritage.modern.core.data.InheritorDetailLookup
 import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.TimelineV2Query
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
@@ -20,10 +24,23 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensio
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
+import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.core.network.dto.HomeFeedDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
+import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -43,6 +60,8 @@ class TestFakeRepository : HeritageRepository {
     )
 
     override suspend fun refreshHomeBanners(): List<HomeBannerDto> = homeBanners()
+
+    override suspend fun homeFeed(): HomeFeedDto = HomeFeedDto()
 
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> {
         pagedArticleQueries.add(query)
@@ -82,6 +101,8 @@ class TestFakeRepository : HeritageRepository {
 
     override suspend fun refreshArticleDetail(lookup: ArticleDetailLookup) =
         article(lookup.articleId ?: "a1")
+
+    override suspend fun articleContext(id: String) = DetailContextDto()
 
     override suspend fun directoryItems(query: DirectoryItemQuery): PagedResult<DirectoryItemSummaryDto> =
         PagedResult(items = listOf(
@@ -135,6 +156,8 @@ class TestFakeRepository : HeritageRepository {
     override suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup) =
         directoryItem(lookup.itemId ?: "d1")
 
+    override suspend fun directoryItemContext(id: String) = DetailContextDto()
+
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         PagedResult(items = listOf(
             InheritorSummaryDto(id = "i1", name = TestInheritorName, category = "传统美术"),
@@ -160,6 +183,23 @@ class TestFakeRepository : HeritageRepository {
 
     override suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup) =
         inheritor(lookup.inheritorId ?: "i1")
+
+    override suspend fun inheritorContext(id: String) = DetailContextDto()
+
+    override suspend fun searchV2(query: SearchV2Query) = SearchV2ResponseDto()
+    override suspend fun searchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> = emptyList()
+    override suspend fun timelineV2(query: TimelineV2Query) = TimelineV2ResponseDto()
+    override suspend fun timelineYears(): List<TimelineYearBucketDto> = emptyList()
+    override suspend fun exploreIndex() = ExploreIndexDto()
+    override suspend fun exploreTopics(type: String?, limit: Int): List<ExploreTopicInfoDto> = emptyList()
+    override suspend fun exploreTopic(type: String, key: String, limit: Int) = ExploreTopicV2Dto()
+    override suspend fun learningPaths(): List<LearningPathDto> = emptyList()
+    override suspend fun learningPathDetail(id: String, limit: Int) = LearningPathDetailDto()
+    override suspend fun regionAtlas() = RegionAtlasDto()
+    override suspend fun regionAtlasDetail(region: String, limit: Int) = RegionAtlasDetailDto()
+    override suspend fun featuredCollections(): List<FeaturedCollectionDto> = emptyList()
+    override suspend fun collection(id: String, limit: Int) = CollectionDto()
+    override suspend fun topicCollection(type: String, key: String, limit: Int) = CollectionDto()
 
     companion object {
         const val TestArticleTitle = "测试新闻"

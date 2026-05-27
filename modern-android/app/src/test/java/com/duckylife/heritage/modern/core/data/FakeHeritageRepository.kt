@@ -4,19 +4,36 @@ import androidx.paging.PagingData
 import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.TimelineV2Query
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
+import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.core.network.dto.HomeFeedDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
+import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -59,6 +76,11 @@ class FakeHeritageRepository(
     override suspend fun refreshHomeBanners(): List<HomeBannerDto> {
         failure?.let { throw it }
         return banners
+    }
+
+    override suspend fun homeFeed(): HomeFeedDto {
+        failure?.let { throw it }
+        return HomeFeedDto()
     }
 
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> {
@@ -108,6 +130,11 @@ class FakeHeritageRepository(
             !lookup.sourceUrl.isNullOrBlank() -> articleBySourceUrl(lookup.sourceUrl, lookup.category)
             else -> error("Missing article lookup key")
         }
+
+    override suspend fun articleContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
 
     override suspend fun directoryItems(
         query: DirectoryItemQuery,
@@ -166,6 +193,11 @@ class FakeHeritageRepository(
             else -> error("Missing directory lookup key")
         }
 
+    override suspend fun directoryItemContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
+
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> {
         failure?.let { throw it }
         return PagedResult(
@@ -200,4 +232,79 @@ class FakeHeritageRepository(
             !lookup.sourceId.isNullOrBlank() -> inheritorBySourceId(lookup.sourceId)
             else -> error("Missing inheritor lookup key")
         }
+
+    override suspend fun inheritorContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
+
+    override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto {
+        failure?.let { throw it }
+        return SearchV2ResponseDto()
+    }
+
+    override suspend fun searchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun timelineV2(query: TimelineV2Query): TimelineV2ResponseDto {
+        failure?.let { throw it }
+        return TimelineV2ResponseDto()
+    }
+
+    override suspend fun timelineYears(): List<TimelineYearBucketDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun exploreIndex(): ExploreIndexDto {
+        failure?.let { throw it }
+        return ExploreIndexDto()
+    }
+
+    override suspend fun exploreTopics(type: String?, limit: Int): List<ExploreTopicInfoDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun exploreTopic(type: String, key: String, limit: Int): ExploreTopicV2Dto {
+        failure?.let { throw it }
+        return ExploreTopicV2Dto()
+    }
+
+    override suspend fun learningPaths(): List<LearningPathDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun learningPathDetail(id: String, limit: Int): LearningPathDetailDto {
+        failure?.let { throw it }
+        return LearningPathDetailDto()
+    }
+
+    override suspend fun regionAtlas(): RegionAtlasDto {
+        failure?.let { throw it }
+        return RegionAtlasDto()
+    }
+
+    override suspend fun regionAtlasDetail(region: String, limit: Int): RegionAtlasDetailDto {
+        failure?.let { throw it }
+        return RegionAtlasDetailDto()
+    }
+
+    override suspend fun featuredCollections(): List<FeaturedCollectionDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun collection(id: String, limit: Int): CollectionDto {
+        failure?.let { throw it }
+        return CollectionDto()
+    }
+
+    override suspend fun topicCollection(type: String, key: String, limit: Int): CollectionDto {
+        failure?.let { throw it }
+        return CollectionDto()
+    }
 }

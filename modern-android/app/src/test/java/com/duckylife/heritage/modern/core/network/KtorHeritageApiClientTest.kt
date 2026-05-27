@@ -371,4 +371,377 @@ class KtorHeritageApiClientTest {
         assertEquals("region", request.url.parameters["dimension"])
         assertEquals("20", request.url.parameters["limit"])
     }
+
+    @Test
+    fun getHomeFeed_calls_api_home_feed_and_decodes() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "banners": [
+                        { "id": "b1", "sortOrder": 1 }
+                      ],
+                      "featured": [
+                        { "id": "f1", "type": "article", "title": "推荐" }
+                      ],
+                      "latest": [],
+                      "recommendations": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getHomeFeed()
+
+        assertEquals(1, result.banners.size)
+        assertEquals("b1", result.banners.first().id)
+        assertEquals(1, result.featured.size)
+        assertEquals("推荐", result.featured.first().title)
+        assertEquals(0, result.latest.size)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/home/feed", request.url.encodedPath)
+    }
+
+    @Test
+    fun getArticleContext_calls_context_endpoint_and_decodes_arrays() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "related": [
+                        { "id": "r1", "type": "article", "title": "关联" }
+                      ],
+                      "recommendations": [
+                        { "id": "rec1", "source": "semantic", "weight": 0.8, "title": "推荐" }
+                      ],
+                      "semanticRecommendations": [],
+                      "collections": [],
+                      "exploreTopics": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getArticleContext("art-1")
+
+        assertEquals(1, result.related.size)
+        assertEquals("关联", result.related.first().title)
+        assertEquals(1, result.recommendations.size)
+        assertEquals(0.8, result.recommendations.first().weight, 0.001)
+        assertEquals(0, result.semanticRecommendations.size)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/articles/art-1/context", request.url.encodedPath)
+    }
+
+    @Test
+    fun searchV2_sends_all_query_params() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "items": [
+                        { "id": "s1", "type": "article", "title": "搜索结果", "score": 0.95 }
+                      ],
+                      "page": 1,
+                      "pageSize": 10,
+                      "total": 1,
+                      "hasMore": false
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.searchV2(
+            SearchV2Query(
+                keywords = "陶瓷",
+                types = "article,directoryItem",
+                page = 1,
+                pageSize = 10,
+                region = "浙江",
+                category = "传统技艺",
+                year = 2020,
+                kind = DirectoryItemKind.NationalProject,
+                hasImage = true,
+            ),
+        )
+
+        assertEquals(1, result.items.size)
+        assertEquals("搜索结果", result.items.first().title)
+        assertEquals(0.95, result.items.first().score, 0.001)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/search/v2", request.url.encodedPath)
+        assertEquals("陶瓷", request.url.parameters["keywords"])
+        assertEquals("article,directoryItem", request.url.parameters["types"])
+        assertEquals("1", request.url.parameters["page"])
+        assertEquals("10", request.url.parameters["pageSize"])
+        assertEquals("浙江", request.url.parameters["region"])
+        assertEquals("传统技艺", request.url.parameters["category"])
+        assertEquals("2020", request.url.parameters["year"])
+        assertEquals("nationalProject", request.url.parameters["kind"])
+        assertEquals("true", request.url.parameters["hasImage"])
+    }
+
+    @Test
+    fun getTimelineV2_sends_filters() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "items": [
+                        { "id": "t1", "type": "article", "title": "时间线", "year": 2020 }
+                      ],
+                      "years": [
+                        { "year": 2020, "count": 5 }
+                      ],
+                      "page": 1,
+                      "pageSize": 20,
+                      "total": 1,
+                      "hasMore": false
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getTimelineV2(
+            TimelineV2Query(year = 2020, types = "article", region = "北京"),
+        )
+
+        assertEquals(1, result.items.size)
+        assertEquals("时间线", result.items.first().title)
+        assertEquals(1, result.years.size)
+        assertEquals(2020, result.years.first().year)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/timeline/v2", request.url.encodedPath)
+        assertEquals("2020", request.url.parameters["year"])
+        assertEquals("article", request.url.parameters["types"])
+        assertEquals("北京", request.url.parameters["region"])
+    }
+
+    @Test
+    fun getExploreTopic_encodes_type_key_and_limit() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "type": "category",
+                      "key": "传统技艺",
+                      "name": "传统技艺",
+                      "stats": [
+                        { "name": "项目数", "value": 120 }
+                      ],
+                      "sections": [
+                        {
+                          "heading": "代表性项目",
+                          "items": [
+                            { "id": "e1", "title": "景德镇陶瓷" }
+                          ]
+                        }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getExploreTopic("category", "传统技艺", limit = 10)
+
+        assertEquals("传统技艺", result.name)
+        assertEquals(1, result.stats.size)
+        assertEquals(120, result.stats.first().value)
+        assertEquals(1, result.sections.size)
+        assertEquals("景德镇陶瓷", result.sections.first().items.first().title)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/explore/topics/category/传统技艺", request.url.encodedPath)
+        assertEquals("10", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getLearningPathDetail_calls_expected_url() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "lp1",
+                      "name": "非遗入门",
+                      "steps": [
+                        {
+                          "id": "s1",
+                          "title": "第一步",
+                          "items": [
+                            { "id": "li1", "title": "学习项目" }
+                          ]
+                        }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getLearningPathDetail("lp1", limit = 8)
+
+        assertEquals("非遗入门", result.name)
+        assertEquals(1, result.steps.size)
+        assertEquals("学习项目", result.steps.first().items.first().title)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/explore/learning-paths/lp1", request.url.encodedPath)
+        assertEquals("8", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getRegionAtlasDetail_calls_expected_url_with_limit() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "region": "浙江省",
+                      "stats": {
+                        "total": 42,
+                        "breakdowns": [
+                          {
+                            "dimension": "category",
+                            "items": [
+                              { "key": "传统技艺", "name": "传统技艺", "value": 15 }
+                            ]
+                          }
+                        ]
+                      },
+                      "items": [
+                        { "id": "ra1", "title": "西湖龙井" }
+                      ]
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getRegionAtlasDetail("浙江省", limit = 5)
+
+        assertEquals("浙江省", result.region)
+        assertEquals(42L, result.stats?.total)
+        assertEquals(1, result.items.size)
+        assertEquals("西湖龙井", result.items.first().title)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/regions/浙江省/atlas", request.url.encodedPath)
+        assertEquals("5", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getCollection_calls_collection_id_with_limit() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "col1",
+                      "name": "精选集",
+                      "items": [
+                        { "id": "ci1", "type": "article", "title": "精选内容" }
+                      ],
+                      "total": 1,
+                      "hasMore": false
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getCollection("col1", limit = 5)
+
+        assertEquals("精选集", result.name)
+        assertEquals(1, result.items.size)
+        assertEquals("精选内容", result.items.first().title)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/collections/col1", request.url.encodedPath)
+        assertEquals("5", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getTopicCollection_calls_topic_path() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "id": "tc1",
+                      "name": "专题集",
+                      "items": [],
+                      "total": 0,
+                      "hasMore": false
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+        }
+        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getTopicCollection("category", "传统技艺", limit = 3)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/collections/topic/category/传统技艺", request.url.encodedPath)
+        assertEquals("3", request.url.parameters["limit"])
+    }
 }

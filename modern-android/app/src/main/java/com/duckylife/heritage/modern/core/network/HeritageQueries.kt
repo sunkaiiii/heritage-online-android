@@ -31,3 +31,26 @@ data class InheritorQuery(
     val year: Int? = null,
     val gender: String? = null,
 )
+
+data class SearchV2Query(
+    val keywords: String,
+    val types: String? = null,
+    val page: Int = 1,
+    val pageSize: Int = 20,
+    val region: String? = null,
+    val category: String? = null,
+    val year: Int? = null,
+    val kind: DirectoryItemKind? = null,
+    val hasImage: Boolean? = null,
+)
+
+data class TimelineV2Query(
+    val year: Int? = null,
+    val types: String? = null,
+    val page: Int = 1,
+    val pageSize: Int = 20,
+    val category: String? = null,
+    val region: String? = null,
+    val kind: DirectoryItemKind? = null,
+    val hasImage: Boolean? = null,
+)

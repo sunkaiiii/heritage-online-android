@@ -3,16 +3,31 @@ package com.duckylife.heritage.modern.core.network
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
+import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.core.network.dto.HomeFeedDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
+import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -33,6 +48,8 @@ import javax.net.ssl.X509TrustManager
 interface HeritageApiClient {
     suspend fun getHomeBanners(): List<HomeBannerDto>
 
+    suspend fun getHomeFeed(): HomeFeedDto
+
     suspend fun getArticles(query: ArticleQuery = ArticleQuery()): PagedResult<ArticleSummaryDto>
 
     suspend fun getArticle(id: String): ArticleDetailDto
@@ -46,6 +63,8 @@ interface HeritageApiClient {
         sourceUrl: String,
         category: ArticleCategory = ArticleCategory.News,
     ): ArticleDetailDto
+
+    suspend fun getArticleContext(id: String): DetailContextDto
 
     suspend fun getDirectoryItems(
         query: DirectoryItemQuery = DirectoryItemQuery(),
@@ -68,11 +87,43 @@ interface HeritageApiClient {
         kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
     ): DirectoryItemDetailDto
 
+    suspend fun getDirectoryItemContext(id: String): DetailContextDto
+
     suspend fun getInheritors(query: InheritorQuery = InheritorQuery()): PagedResult<InheritorSummaryDto>
 
     suspend fun getInheritor(id: String): InheritorDetailDto
 
     suspend fun getInheritorBySourceId(sourceId: String): InheritorDetailDto
+
+    suspend fun getInheritorContext(id: String): DetailContextDto
+
+    suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto
+
+    suspend fun getSearchSuggestions(prefix: String, limit: Int = 10): List<SearchSuggestionDto>
+
+    suspend fun getTimelineV2(query: TimelineV2Query): TimelineV2ResponseDto
+
+    suspend fun getTimelineYears(): List<TimelineYearBucketDto>
+
+    suspend fun getExploreIndex(): ExploreIndexDto
+
+    suspend fun getExploreTopics(type: String? = null, limit: Int = 20): List<ExploreTopicInfoDto>
+
+    suspend fun getExploreTopic(type: String, key: String, limit: Int = 6): ExploreTopicV2Dto
+
+    suspend fun getLearningPaths(): List<LearningPathDto>
+
+    suspend fun getLearningPathDetail(id: String, limit: Int = 6): LearningPathDetailDto
+
+    suspend fun getRegionAtlas(): RegionAtlasDto
+
+    suspend fun getRegionAtlasDetail(region: String, limit: Int = 6): RegionAtlasDetailDto
+
+    suspend fun getFeaturedCollections(): List<FeaturedCollectionDto>
+
+    suspend fun getCollection(id: String, limit: Int = 10): CollectionDto
+
+    suspend fun getTopicCollection(type: String, key: String, limit: Int = 10): CollectionDto
 }
 
 class KtorHeritageApiClient(
@@ -81,6 +132,9 @@ class KtorHeritageApiClient(
 ) : HeritageApiClient {
     override suspend fun getHomeBanners(): List<HomeBannerDto> =
         httpClient.get(endpoint("api/home-banners")).body()
+
+    override suspend fun getHomeFeed(): HomeFeedDto =
+        httpClient.get(endpoint("api/home/feed")).body()
 
     override suspend fun getArticles(query: ArticleQuery): PagedResult<ArticleSummaryDto> =
         httpClient.get(endpoint("api/articles")) {
@@ -110,6 +164,9 @@ class KtorHeritageApiClient(
             optionalParameter("category", category.wireName)
             optionalParameter("sourceUrl", sourceUrl)
         }.body()
+
+    override suspend fun getArticleContext(id: String): DetailContextDto =
+        httpClient.get(endpoint("api/articles/$id/context")).body()
 
     override suspend fun getDirectoryItems(
         query: DirectoryItemQuery,
@@ -154,6 +211,9 @@ class KtorHeritageApiClient(
             optionalParameter("kind", kind.wireName)
         }.body()
 
+    override suspend fun getDirectoryItemContext(id: String): DetailContextDto =
+        httpClient.get(endpoint("api/directory-items/$id/context")).body()
+
     override suspend fun getInheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         httpClient.get(endpoint("api/inheritors")) {
             optionalParameter("page", query.page)
@@ -170,6 +230,86 @@ class KtorHeritageApiClient(
 
     override suspend fun getInheritorBySourceId(sourceId: String): InheritorDetailDto =
         httpClient.get(endpoint("api/inheritors/source/$sourceId")).body()
+
+    override suspend fun getInheritorContext(id: String): DetailContextDto =
+        httpClient.get(endpoint("api/inheritors/$id/context")).body()
+
+    override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto =
+        httpClient.get(endpoint("api/search/v2")) {
+            optionalParameter("keywords", query.keywords)
+            optionalParameter("types", query.types)
+            optionalParameter("page", query.page)
+            optionalParameter("pageSize", query.pageSize)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+            optionalParameter("year", query.year)
+            optionalParameter("kind", query.kind?.wireName)
+            optionalParameter("hasImage", query.hasImage)
+        }.body()
+
+    override suspend fun getSearchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> =
+        httpClient.get(endpoint("api/search/suggestions")) {
+            optionalParameter("prefix", prefix)
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getTimelineV2(query: TimelineV2Query): TimelineV2ResponseDto =
+        httpClient.get(endpoint("api/timeline/v2")) {
+            optionalParameter("year", query.year)
+            optionalParameter("types", query.types)
+            optionalParameter("page", query.page)
+            optionalParameter("pageSize", query.pageSize)
+            optionalParameter("category", query.category)
+            optionalParameter("region", query.region)
+            optionalParameter("kind", query.kind?.wireName)
+            optionalParameter("hasImage", query.hasImage)
+        }.body()
+
+    override suspend fun getTimelineYears(): List<TimelineYearBucketDto> =
+        httpClient.get(endpoint("api/timeline/years")).body()
+
+    override suspend fun getExploreIndex(): ExploreIndexDto =
+        httpClient.get(endpoint("api/explore")).body()
+
+    override suspend fun getExploreTopics(type: String?, limit: Int): List<ExploreTopicInfoDto> =
+        httpClient.get(endpoint("api/explore/topics")) {
+            optionalParameter("type", type)
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getExploreTopic(type: String, key: String, limit: Int): ExploreTopicV2Dto =
+        httpClient.get(endpoint("api/explore/topics/$type/$key")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getLearningPaths(): List<LearningPathDto> =
+        httpClient.get(endpoint("api/explore/learning-paths")).body()
+
+    override suspend fun getLearningPathDetail(id: String, limit: Int): LearningPathDetailDto =
+        httpClient.get(endpoint("api/explore/learning-paths/$id")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getRegionAtlas(): RegionAtlasDto =
+        httpClient.get(endpoint("api/regions/atlas")).body()
+
+    override suspend fun getRegionAtlasDetail(region: String, limit: Int): RegionAtlasDetailDto =
+        httpClient.get(endpoint("api/regions/$region/atlas")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getFeaturedCollections(): List<FeaturedCollectionDto> =
+        httpClient.get(endpoint("api/collections/featured")).body()
+
+    override suspend fun getCollection(id: String, limit: Int): CollectionDto =
+        httpClient.get(endpoint("api/collections/$id")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getTopicCollection(type: String, key: String, limit: Int): CollectionDto =
+        httpClient.get(endpoint("api/collections/topic/$type/$key")) {
+            optionalParameter("limit", limit)
+        }.body()
 
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
 }

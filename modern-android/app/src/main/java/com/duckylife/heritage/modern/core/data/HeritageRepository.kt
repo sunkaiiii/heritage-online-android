@@ -8,19 +8,36 @@ import com.duckylife.heritage.modern.core.network.ArticleQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
 import com.duckylife.heritage.modern.core.network.HeritageApiClient
 import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.TimelineV2Query
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
+import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.core.network.dto.HomeFeedDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
+import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -52,6 +69,8 @@ interface HeritageRepository {
 
     suspend fun refreshHomeBanners(): List<HomeBannerDto>
 
+    suspend fun homeFeed(): HomeFeedDto
+
     suspend fun articles(query: ArticleQuery = ArticleQuery()): PagedResult<ArticleSummaryDto>
 
     fun pagedArticles(query: ArticleQuery = ArticleQuery()): Flow<PagingData<ArticleSummaryDto>>
@@ -65,6 +84,8 @@ interface HeritageRepository {
     fun cachedArticleDetail(lookup: ArticleDetailLookup): Flow<ArticleDetailDto?>
 
     suspend fun refreshArticleDetail(lookup: ArticleDetailLookup): ArticleDetailDto
+
+    suspend fun articleContext(id: String): DetailContextDto
 
     suspend fun directoryItems(
         query: DirectoryItemQuery = DirectoryItemQuery(),
@@ -90,6 +111,8 @@ interface HeritageRepository {
 
     suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup): DirectoryItemDetailDto
 
+    suspend fun directoryItemContext(id: String): DetailContextDto
+
     suspend fun inheritors(query: InheritorQuery = InheritorQuery()): PagedResult<InheritorSummaryDto>
 
     fun pagedInheritors(query: InheritorQuery = InheritorQuery()): Flow<PagingData<InheritorSummaryDto>>
@@ -101,6 +124,36 @@ interface HeritageRepository {
     fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?>
 
     suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup): InheritorDetailDto
+
+    suspend fun inheritorContext(id: String): DetailContextDto
+
+    suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto
+
+    suspend fun searchSuggestions(prefix: String, limit: Int = 10): List<SearchSuggestionDto>
+
+    suspend fun timelineV2(query: TimelineV2Query): TimelineV2ResponseDto
+
+    suspend fun timelineYears(): List<TimelineYearBucketDto>
+
+    suspend fun exploreIndex(): ExploreIndexDto
+
+    suspend fun exploreTopics(type: String? = null, limit: Int = 20): List<ExploreTopicInfoDto>
+
+    suspend fun exploreTopic(type: String, key: String, limit: Int = 6): ExploreTopicV2Dto
+
+    suspend fun learningPaths(): List<LearningPathDto>
+
+    suspend fun learningPathDetail(id: String, limit: Int = 6): LearningPathDetailDto
+
+    suspend fun regionAtlas(): RegionAtlasDto
+
+    suspend fun regionAtlasDetail(region: String, limit: Int = 6): RegionAtlasDetailDto
+
+    suspend fun featuredCollections(): List<FeaturedCollectionDto>
+
+    suspend fun collection(id: String, limit: Int = 10): CollectionDto
+
+    suspend fun topicCollection(type: String, key: String, limit: Int = 10): CollectionDto
 }
 
 class DefaultHeritageRepository @Inject constructor(
@@ -126,6 +179,9 @@ class DefaultHeritageRepository @Inject constructor(
         dao.upsertAll(dtos.map { it.toEntity(now) })
         return dtos.sortedBy { it.sortOrder }
     }
+
+    override suspend fun homeFeed(): HomeFeedDto =
+        apiClient.getHomeFeed()
 
     override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> =
         apiClient.getArticles(query)
@@ -202,6 +258,9 @@ class DefaultHeritageRepository @Inject constructor(
         return article
     }
 
+    override suspend fun articleContext(id: String): DetailContextDto =
+        apiClient.getArticleContext(id)
+
     override suspend fun directoryItems(
         query: DirectoryItemQuery,
     ): PagedResult<DirectoryItemSummaryDto> =
@@ -276,6 +335,9 @@ class DefaultHeritageRepository @Inject constructor(
         return detail
     }
 
+    override suspend fun directoryItemContext(id: String): DetailContextDto =
+        apiClient.getDirectoryItemContext(id)
+
     override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         apiClient.getInheritors(query)
 
@@ -314,4 +376,49 @@ class DefaultHeritageRepository @Inject constructor(
         )
         return detail
     }
+
+    override suspend fun inheritorContext(id: String): DetailContextDto =
+        apiClient.getInheritorContext(id)
+
+    override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto =
+        apiClient.searchV2(query)
+
+    override suspend fun searchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> =
+        apiClient.getSearchSuggestions(prefix, limit)
+
+    override suspend fun timelineV2(query: TimelineV2Query): TimelineV2ResponseDto =
+        apiClient.getTimelineV2(query)
+
+    override suspend fun timelineYears(): List<TimelineYearBucketDto> =
+        apiClient.getTimelineYears()
+
+    override suspend fun exploreIndex(): ExploreIndexDto =
+        apiClient.getExploreIndex()
+
+    override suspend fun exploreTopics(type: String?, limit: Int): List<ExploreTopicInfoDto> =
+        apiClient.getExploreTopics(type, limit)
+
+    override suspend fun exploreTopic(type: String, key: String, limit: Int): ExploreTopicV2Dto =
+        apiClient.getExploreTopic(type, key, limit)
+
+    override suspend fun learningPaths(): List<LearningPathDto> =
+        apiClient.getLearningPaths()
+
+    override suspend fun learningPathDetail(id: String, limit: Int): LearningPathDetailDto =
+        apiClient.getLearningPathDetail(id, limit)
+
+    override suspend fun regionAtlas(): RegionAtlasDto =
+        apiClient.getRegionAtlas()
+
+    override suspend fun regionAtlasDetail(region: String, limit: Int): RegionAtlasDetailDto =
+        apiClient.getRegionAtlasDetail(region, limit)
+
+    override suspend fun featuredCollections(): List<FeaturedCollectionDto> =
+        apiClient.getFeaturedCollections()
+
+    override suspend fun collection(id: String, limit: Int): CollectionDto =
+        apiClient.getCollection(id, limit)
+
+    override suspend fun topicCollection(type: String, key: String, limit: Int): CollectionDto =
+        apiClient.getTopicCollection(type, key, limit)
 }
