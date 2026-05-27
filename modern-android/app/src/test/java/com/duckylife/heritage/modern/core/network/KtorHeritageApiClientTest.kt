@@ -383,11 +383,13 @@ class KtorHeritageApiClientTest {
                       "banners": [
                         { "id": "b1", "sortOrder": 1 }
                       ],
-                      "featured": [
-                        { "id": "f1", "type": "article", "title": "推荐" }
+                      "latestNews": [
+                        { "id": "a1", "category": "news", "title": "最新新闻" }
                       ],
-                      "latest": [],
-                      "recommendations": []
+                      "latestSpecialTopics": [],
+                      "latestForumArticles": [],
+                      "featuredDirectoryItems": [],
+                      "featuredInheritors": []
                     }
                 """.trimIndent(),
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
@@ -402,9 +404,9 @@ class KtorHeritageApiClientTest {
 
         assertEquals(1, result.banners.size)
         assertEquals("b1", result.banners.first().id)
-        assertEquals(1, result.featured.size)
-        assertEquals("推荐", result.featured.first().title)
-        assertEquals(0, result.latest.size)
+        assertEquals(1, result.latestNews.size)
+        assertEquals("最新新闻", result.latestNews.first().title)
+        assertEquals(0, result.latestForumArticles.size)
 
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/home/feed", request.url.encodedPath)
@@ -458,7 +460,7 @@ class KtorHeritageApiClientTest {
                 content = """
                     {
                       "items": [
-                        { "id": "s1", "type": "article", "title": "搜索结果", "score": 0.95 }
+                        { "id": "s1", "type": "article", "title": "搜索结果", "score": 95 }
                       ],
                       "page": 1,
                       "pageSize": 10,
@@ -490,7 +492,7 @@ class KtorHeritageApiClientTest {
 
         assertEquals(1, result.items.size)
         assertEquals("搜索结果", result.items.first().title)
-        assertEquals(0.95, result.items.first().score, 0.001)
+        assertEquals(95, result.items.first().score)
 
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/search/v2", request.url.encodedPath)
@@ -516,9 +518,12 @@ class KtorHeritageApiClientTest {
                       "items": [
                         { "id": "t1", "type": "article", "title": "时间线", "year": 2020 }
                       ],
-                      "years": [
-                        { "year": 2020, "count": 5 }
-                      ],
+                      "facets": {
+                        "types": [{ "key": "article", "count": 5 }],
+                        "categories": [],
+                        "regions": [],
+                        "kinds": []
+                      },
                       "page": 1,
                       "pageSize": 20,
                       "total": 1,
@@ -539,8 +544,9 @@ class KtorHeritageApiClientTest {
 
         assertEquals(1, result.items.size)
         assertEquals("时间线", result.items.first().title)
-        assertEquals(1, result.years.size)
-        assertEquals(2020, result.years.first().year)
+        assertNotNull(result.facets)
+        assertEquals(1, result.facets!!.types.size)
+        assertEquals("article", result.facets!!.types.first().key)
 
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/timeline/v2", request.url.encodedPath)
@@ -557,15 +563,18 @@ class KtorHeritageApiClientTest {
             respond(
                 content = """
                     {
-                      "type": "category",
-                      "key": "传统技艺",
-                      "name": "传统技艺",
+                      "topic": {
+                        "type": "category",
+                        "key": "传统技艺",
+                        "title": "传统技艺"
+                      },
                       "stats": [
                         { "name": "项目数", "value": 120 }
                       ],
                       "sections": [
                         {
-                          "heading": "代表性项目",
+                          "id": "featured",
+                          "title": "代表性项目",
                           "items": [
                             { "id": "e1", "title": "景德镇陶瓷" }
                           ]
@@ -583,7 +592,7 @@ class KtorHeritageApiClientTest {
 
         val result = api.getExploreTopic("category", "传统技艺", limit = 10)
 
-        assertEquals("传统技艺", result.name)
+        assertEquals("传统技艺", result.topic?.title)
         assertEquals(1, result.stats.size)
         assertEquals(120, result.stats.first().value)
         assertEquals(1, result.sections.size)
@@ -603,7 +612,7 @@ class KtorHeritageApiClientTest {
                 content = """
                     {
                       "id": "lp1",
-                      "name": "非遗入门",
+                      "title": "非遗入门",
                       "steps": [
                         {
                           "id": "s1",
@@ -625,7 +634,7 @@ class KtorHeritageApiClientTest {
 
         val result = api.getLearningPathDetail("lp1", limit = 8)
 
-        assertEquals("非遗入门", result.name)
+        assertEquals("非遗入门", result.title)
         assertEquals(1, result.steps.size)
         assertEquals("学习项目", result.steps.first().items.first().title)
 
@@ -643,20 +652,23 @@ class KtorHeritageApiClientTest {
                 content = """
                     {
                       "region": "浙江省",
+                      "displayName": "浙江省",
                       "stats": {
-                        "total": 42,
-                        "breakdowns": [
-                          {
-                            "dimension": "category",
-                            "items": [
-                              { "key": "传统技艺", "name": "传统技艺", "value": 15 }
-                            ]
-                          }
-                        ]
+                        "directoryItemCount": 40,
+                        "inheritorCount": 2,
+                        "total": 42
                       },
-                      "items": [
+                      "categoryBreakdown": [
+                        { "key": "传统技艺", "count": 15 }
+                      ],
+                      "kindBreakdown": [],
+                      "featuredDirectoryItems": [
                         { "id": "ra1", "title": "西湖龙井" }
-                      ]
+                      ],
+                      "featuredInheritors": [],
+                      "relatedArticles": [],
+                      "timeline": [],
+                      "relatedRegions": []
                     }
                 """.trimIndent(),
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
@@ -671,8 +683,8 @@ class KtorHeritageApiClientTest {
 
         assertEquals("浙江省", result.region)
         assertEquals(42L, result.stats?.total)
-        assertEquals(1, result.items.size)
-        assertEquals("西湖龙井", result.items.first().title)
+        assertEquals(1, result.featuredDirectoryItems.size)
+        assertEquals("西湖龙井", result.featuredDirectoryItems.first().title)
 
         val request = requireNotNull(capturedRequest)
         assertEquals("/api/regions/浙江省/atlas", request.url.encodedPath)
@@ -688,12 +700,10 @@ class KtorHeritageApiClientTest {
                 content = """
                     {
                       "id": "col1",
-                      "name": "精选集",
+                      "title": "精选集",
                       "items": [
                         { "id": "ci1", "type": "article", "title": "精选内容" }
-                      ],
-                      "total": 1,
-                      "hasMore": false
+                      ]
                     }
                 """.trimIndent(),
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
@@ -706,7 +716,7 @@ class KtorHeritageApiClientTest {
 
         val result = api.getCollection("col1", limit = 5)
 
-        assertEquals("精选集", result.name)
+        assertEquals("精选集", result.title)
         assertEquals(1, result.items.size)
         assertEquals("精选内容", result.items.first().title)
 
@@ -724,10 +734,8 @@ class KtorHeritageApiClientTest {
                 content = """
                     {
                       "id": "tc1",
-                      "name": "专题集",
-                      "items": [],
-                      "total": 0,
-                      "hasMore": false
+                      "title": "专题集",
+                      "items": []
                     }
                 """.trimIndent(),
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),

@@ -38,14 +38,14 @@ class HeritageDtoSerializationTest {
               ],
               "graph": {
                 "nodes": [
-                  { "id": "n1", "label": "节点1", "type": "article" }
+                  { "id": "n1", "title": "节点1", "type": "article" }
                 ],
                 "edges": [
-                  { "sourceId": "n1", "targetId": "n2", "relationType": "related" }
+                  { "from": "n1", "to": "n2", "relationType": "related" }
                 ]
               },
               "collections": [
-                { "id": "c1", "name": "合集", "items": [{ "id": "i1", "title": "内容" }] }
+                { "id": "c1", "title": "合集", "items": [{ "id": "i1", "title": "内容" }] }
               ],
               "recommendations": [
                 { "id": "rec1", "source": "semantic", "weight": 0.9, "title": "推荐" }
@@ -84,13 +84,13 @@ class HeritageDtoSerializationTest {
                   "category": "传统技艺",
                   "kind": "nationalProject",
                   "publishedYear": 2020,
-                  "score": 0.95,
+                  "score": 95,
                   "coverImage": { "displayUrl": "https://example.test/img.jpg" }
                 }
               ],
               "facets": {
                 "categories": [
-                  { "key": "传统技艺", "name": "传统技艺", "count": 50 }
+                  { "key": "传统技艺", "count": 50 }
                 ],
                 "regions": [],
                 "kinds": [],
@@ -106,7 +106,7 @@ class HeritageDtoSerializationTest {
 
         assertEquals(1, dto.items.size)
         assertEquals("搜索结果", dto.items.first().title)
-        assertEquals(0.95, dto.items.first().score, 0.001)
+        assertEquals(95, dto.items.first().score)
         assertEquals("浙江", dto.items.first().region)
         assertNotNull(dto.facets)
         assertEquals(1, dto.facets!!.categories.size)
@@ -133,23 +133,27 @@ class HeritageDtoSerializationTest {
         val dto = json.decodeFromString<ExploreTopicV2Dto>(
             """
             {
-              "type": "category",
-              "key": "传统技艺",
-              "name": "传统技艺",
-              "description": "描述",
+              "topic": {
+                "type": "category",
+                "key": "传统技艺",
+                "title": "传统技艺",
+                "subtitle": "描述"
+              },
               "stats": [
                 { "name": "项目数", "value": 120 }
               ],
               "sections": [
                 {
-                  "heading": "代表性项目",
+                  "id": "sec1",
+                  "title": "代表性项目",
                   "items": [
                     { "id": "e1", "type": "directoryItem", "title": "景德镇陶瓷" },
                     { "id": "e2", "type": "directoryItem", "title": "宜兴紫砂" }
                   ]
                 },
                 {
-                  "heading": "传承人",
+                  "id": "sec2",
+                  "title": "传承人",
                   "items": [
                     { "id": "h1", "type": "inheritor", "title": "传承人张三" }
                   ]
@@ -159,11 +163,12 @@ class HeritageDtoSerializationTest {
             """.trimIndent(),
         )
 
-        assertEquals("传统技艺", dto.name)
+        assertNotNull(dto.topic)
+        assertEquals("传统技艺", dto.topic!!.title)
         assertEquals(1, dto.stats.size)
         assertEquals(120, dto.stats.first().value)
         assertEquals(2, dto.sections.size)
-        assertEquals("代表性项目", dto.sections.first().heading)
+        assertEquals("代表性项目", dto.sections.first().title)
         assertEquals(2, dto.sections.first().items.size)
         assertEquals("景德镇陶瓷", dto.sections.first().items.first().title)
         assertEquals(1, dto.sections[1].items.size)
@@ -175,10 +180,26 @@ class HeritageDtoSerializationTest {
             """
             {
               "regions": [
-                { "region": "浙江省", "count": 42 },
-                { "region": "江苏省", "count": 38 }
+                {
+                  "region": "浙江省",
+                  "displayName": "浙江",
+                  "directoryItemCount": 30,
+                  "inheritorCount": 12,
+                  "total": 42
+                },
+                {
+                  "region": "江苏省",
+                  "displayName": "江苏",
+                  "directoryItemCount": 28,
+                  "inheritorCount": 10,
+                  "total": 38
+                }
               ],
-              "totals": { "regions": 31, "items": 1500 },
+              "totals": {
+                "directoryItemCount": 1000,
+                "inheritorCount": 500,
+                "regionCount": 31
+              },
               "generatedAt": "2026-05-20T10:00:00Z"
             }
             """.trimIndent(),
@@ -186,10 +207,13 @@ class HeritageDtoSerializationTest {
 
         assertEquals(2, dto.regions.size)
         assertEquals("浙江省", dto.regions.first().region)
-        assertEquals(42, dto.regions.first().count)
+        assertEquals(42, dto.regions.first().total)
+        assertEquals(30, dto.regions.first().directoryItemCount)
+        assertEquals(12, dto.regions.first().inheritorCount)
         assertNotNull(dto.totals)
-        assertEquals(31, dto.totals!!.regions)
-        assertEquals(1500, dto.totals!!.items)
+        assertEquals(31, dto.totals!!.regionCount)
+        assertEquals(1000, dto.totals!!.directoryItemCount)
+        assertEquals(500, dto.totals!!.inheritorCount)
         assertNotNull(dto.generatedAt)
     }
 
@@ -199,24 +223,26 @@ class HeritageDtoSerializationTest {
             """
             {
               "id": "col1",
-              "name": "精选集",
-              "description": "描述",
+              "title": "精选集",
+              "subtitle": "描述",
+              "type": "curated",
+              "tags": ["精选", "推荐"],
               "items": [
                 { "id": "ci1", "type": "article", "title": "内容1" },
                 { "id": "ci2", "type": "directoryItem", "title": "内容2" }
               ],
-              "total": 2,
-              "hasMore": false
+              "generatedAt": "2026-05-20T10:00:00Z"
             }
             """.trimIndent(),
         )
 
-        assertEquals("精选集", dto.name)
+        assertEquals("精选集", dto.title)
+        assertEquals("curated", dto.type)
+        assertEquals(2, dto.tags.size)
         assertEquals(2, dto.items.size)
         assertEquals("内容1", dto.items.first().title)
         assertEquals("内容2", dto.items[1].title)
-        assertEquals(2, dto.total)
-        assertFalse(dto.hasMore)
+        assertNotNull(dto.generatedAt)
     }
 
     @Test
@@ -225,12 +251,17 @@ class HeritageDtoSerializationTest {
             """
             {
               "id": "rec1",
+              "type": "directoryItem",
+              "title": "推荐项目",
+              "subtitle": "副标题",
               "source": "semantic",
               "relationType": "similar",
               "reason": "同属传统技艺",
               "weight": 0.85,
-              "title": "推荐项目",
-              "summary": "摘要",
+              "category": "传统技艺",
+              "region": "浙江",
+              "publishedAt": "2024-01-01",
+              "publishedYear": 2024,
               "coverImage": { "displayUrl": "https://example.test/img.jpg" },
               "sourceUrl": "https://example.test/source"
             }
@@ -238,11 +269,17 @@ class HeritageDtoSerializationTest {
         )
 
         assertEquals("rec1", dto.id)
+        assertEquals("directoryItem", dto.type)
+        assertEquals("推荐项目", dto.title)
+        assertEquals("副标题", dto.subtitle)
         assertEquals("semantic", dto.source)
         assertEquals("similar", dto.relationType)
         assertEquals("同属传统技艺", dto.reason)
         assertEquals(0.85, dto.weight, 0.001)
-        assertEquals("推荐项目", dto.title)
+        assertEquals("传统技艺", dto.category)
+        assertEquals("浙江", dto.region)
+        assertEquals("2024-01-01", dto.publishedAt)
+        assertEquals(2024, dto.publishedYear)
         assertNotNull(dto.coverImage)
         assertEquals("https://example.test/img.jpg", dto.coverImage!!.displayUrl)
     }

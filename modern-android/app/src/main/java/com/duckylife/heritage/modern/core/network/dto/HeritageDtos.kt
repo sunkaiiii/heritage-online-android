@@ -265,20 +265,21 @@ data class ProblemDetailsDto(
 
 @Serializable
 data class HomeFeedSummaryDto(
-    val id: String? = null,
-    val type: String? = null,
-    val title: String? = null,
-    val summary: String? = null,
-    val coverImage: MediaAssetDto? = null,
-    val sourceUrl: String? = null,
+    val totalArticles: Long = 0,
+    val totalDirectoryItems: Long = 0,
+    val totalInheritors: Long = 0,
+    val directoryKindCounts: Map<String, Long> = emptyMap(),
 )
 
 @Serializable
 data class HomeFeedDto(
     val banners: List<HomeBannerDto> = emptyList(),
-    val featured: List<HomeFeedSummaryDto> = emptyList(),
-    val latest: List<HomeFeedSummaryDto> = emptyList(),
-    val recommendations: List<RecommendationDto> = emptyList(),
+    val latestNews: List<ArticleSummaryDto> = emptyList(),
+    val latestSpecialTopics: List<ArticleSummaryDto> = emptyList(),
+    val latestForumArticles: List<ArticleSummaryDto> = emptyList(),
+    val featuredDirectoryItems: List<DirectoryItemSummaryDto> = emptyList(),
+    val featuredInheritors: List<InheritorSummaryDto> = emptyList(),
+    val summary: HomeFeedSummaryDto? = null,
 )
 
 // ---------------------------------------------------------------------------
@@ -288,12 +289,17 @@ data class HomeFeedDto(
 @Serializable
 data class RecommendationDto(
     val id: String? = null,
+    val type: String? = null,
+    val title: String? = null,
+    val subtitle: String? = null,
     val source: String? = null,
     val relationType: String? = null,
     val reason: String? = null,
     val weight: Double = 0.0,
-    val title: String? = null,
-    val summary: String? = null,
+    val category: String? = null,
+    val region: String? = null,
+    val publishedAt: String? = null,
+    val publishedYear: Int? = null,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
 )
@@ -301,17 +307,24 @@ data class RecommendationDto(
 @Serializable
 data class GraphNodeDto(
     val id: String? = null,
-    val label: String? = null,
     val type: String? = null,
-    val properties: Map<String, String> = emptyMap(),
+    val title: String? = null,
+    val category: String? = null,
+    val region: String? = null,
+    val sourceUrl: String? = null,
+    val subtitle: String? = null,
+    val coverImage: MediaAssetDto? = null,
 )
 
 @Serializable
 data class GraphEdgeDto(
-    val sourceId: String? = null,
-    val targetId: String? = null,
+    @SerialName("from") val fromId: String? = null,
+    @SerialName("to") val toId: String? = null,
+    val label: String? = null,
     val relationType: String? = null,
-    val properties: Map<String, String> = emptyMap(),
+    val reason: String? = null,
+    val source: String? = null,
+    val weight: Double = 0.0,
 )
 
 @Serializable
@@ -325,16 +338,16 @@ data class RelatedSummaryDto(
     val id: String? = null,
     val type: String? = null,
     val title: String? = null,
-    val summary: String? = null,
-    val coverImage: MediaAssetDto? = null,
+    val category: String? = null,
+    val kind: String? = null,
+    val region: String? = null,
     val sourceUrl: String? = null,
 )
 
 @Serializable
 data class ContextCollectionDto(
     val id: String? = null,
-    val name: String? = null,
-    val description: String? = null,
+    val title: String? = null,
     val items: List<CollectionItemDto> = emptyList(),
 )
 
@@ -349,29 +362,33 @@ data class DetailContextDto(
 )
 
 // ---------------------------------------------------------------------------
-// Search v2 / Timeline v2
+// Shared facet / link types
 // ---------------------------------------------------------------------------
 
 @Serializable
-data class SearchFacetItemDto(
+data class FacetBucketDto(
     val key: String? = null,
-    val name: String? = null,
     val count: Long = 0,
 )
 
 @Serializable
-data class SearchFacetDto(
-    val dimension: String? = null,
-    val items: List<SearchFacetItemDto> = emptyList(),
+data class ExploreTopicLinkDto(
+    val type: String? = null,
+    val key: String? = null,
+    val title: String? = null,
 )
+
+// ---------------------------------------------------------------------------
+// Search v2
+// ---------------------------------------------------------------------------
 
 @Serializable
 data class SearchFacetsDto(
-    val categories: List<SearchFacetItemDto> = emptyList(),
-    val regions: List<SearchFacetItemDto> = emptyList(),
-    val kinds: List<SearchFacetItemDto> = emptyList(),
-    val years: List<SearchFacetItemDto> = emptyList(),
-    val facets: List<SearchFacetDto> = emptyList(),
+    val types: List<FacetBucketDto> = emptyList(),
+    val categories: List<FacetBucketDto> = emptyList(),
+    val regions: List<FacetBucketDto> = emptyList(),
+    val kinds: List<FacetBucketDto> = emptyList(),
+    val years: List<FacetBucketDto> = emptyList(),
 )
 
 @Serializable
@@ -380,30 +397,45 @@ data class SearchResultItemDto(
     val type: String? = null,
     val title: String? = null,
     val summary: String? = null,
-    val region: String? = null,
     val category: String? = null,
     val kind: String? = null,
+    val region: String? = null,
+    val publishedAt: String? = null,
     val publishedYear: Int? = null,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
-    val score: Double = 0.0,
+    val highlights: List<String> = emptyList(),
+    val matchedFields: List<String> = emptyList(),
+    val score: Int = 0,
 )
 
 @Serializable
 data class SearchV2ResponseDto(
     val items: List<SearchResultItemDto> = emptyList(),
-    val facets: SearchFacetsDto? = null,
     val page: Int = 1,
     val pageSize: Int = 20,
-    val total: Long = 0,
     val hasMore: Boolean = false,
+    val total: Long = 0,
+    val facets: SearchFacetsDto? = null,
+    val query: String = "",
 )
 
 @Serializable
 data class SearchSuggestionDto(
     val text: String? = null,
     val type: String? = null,
-    val count: Long = 0,
+)
+
+// ---------------------------------------------------------------------------
+// Timeline v2
+// ---------------------------------------------------------------------------
+
+@Serializable
+data class TimelineV2FacetsDto(
+    val types: List<FacetBucketDto> = emptyList(),
+    val categories: List<FacetBucketDto> = emptyList(),
+    val regions: List<FacetBucketDto> = emptyList(),
+    val kinds: List<FacetBucketDto> = emptyList(),
 )
 
 @Serializable
@@ -412,7 +444,10 @@ data class TimelineItemDto(
     val type: String? = null,
     val title: String? = null,
     val summary: String? = null,
-    val publishedAt: String? = null,
+    val category: String? = null,
+    val kind: String? = null,
+    val region: String? = null,
+    val date: String? = null,
     val year: Int? = null,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
@@ -421,17 +456,20 @@ data class TimelineItemDto(
 @Serializable
 data class TimelineYearBucketDto(
     val year: Int = 0,
-    val count: Long = 0,
+    val total: Long = 0,
+    val articleCount: Long = 0,
+    val directoryItemCount: Long = 0,
+    val inheritorCount: Long = 0,
 )
 
 @Serializable
 data class TimelineV2ResponseDto(
     val items: List<TimelineItemDto> = emptyList(),
-    val years: List<TimelineYearBucketDto> = emptyList(),
     val page: Int = 1,
     val pageSize: Int = 20,
-    val total: Long = 0,
     val hasMore: Boolean = false,
+    val total: Long = 0,
+    val facets: TimelineV2FacetsDto? = null,
 )
 
 // ---------------------------------------------------------------------------
@@ -442,9 +480,8 @@ data class TimelineV2ResponseDto(
 data class ExploreTopicInfoDto(
     val type: String? = null,
     val key: String? = null,
-    val name: String? = null,
-    val description: String? = null,
-    val itemCount: Long = 0,
+    val title: String? = null,
+    val subtitle: String? = null,
 )
 
 @Serializable
@@ -453,13 +490,20 @@ data class ExploreTopicItemDto(
     val type: String? = null,
     val title: String? = null,
     val summary: String? = null,
+    val category: String? = null,
+    val region: String? = null,
+    val kind: String? = null,
+    val year: Int? = null,
+    val count: Long = 0,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
 )
 
 @Serializable
 data class ExploreTopicSectionDto(
-    val heading: String? = null,
+    val id: String? = null,
+    val title: String? = null,
+    val subtitle: String? = null,
     val items: List<ExploreTopicItemDto> = emptyList(),
 )
 
@@ -471,46 +515,54 @@ data class ExploreTopicStatDto(
 
 @Serializable
 data class ExploreTopicV2Dto(
-    val type: String? = null,
-    val key: String? = null,
-    val name: String? = null,
-    val description: String? = null,
+    val topic: ExploreTopicInfoDto? = null,
     val stats: List<ExploreTopicStatDto> = emptyList(),
     val sections: List<ExploreTopicSectionDto> = emptyList(),
+    val relatedTopics: List<ExploreTopicLinkDto> = emptyList(),
+    val timeline: List<ExploreTopicItemDto> = emptyList(),
+    val generatedAt: String? = null,
 )
 
 @Serializable
 data class ExploreIndexDto(
-    val topics: List<ExploreTopicInfoDto> = emptyList(),
-    val learningPaths: List<LearningPathDto> = emptyList(),
-    val featuredCollections: List<FeaturedCollectionDto> = emptyList(),
+    val regions: List<ExploreTopicInfoDto> = emptyList(),
+    val categories: List<ExploreTopicInfoDto> = emptyList(),
+    val years: List<ExploreTopicInfoDto> = emptyList(),
 )
 
 @Serializable
 data class LearningPathStepDto(
     val id: String? = null,
     val title: String? = null,
-    val description: String? = null,
+    val subtitle: String? = null,
+    val topic: ExploreTopicInfoDto? = null,
     val items: List<ExploreTopicItemDto> = emptyList(),
 )
 
 @Serializable
 data class LearningPathDto(
     val id: String? = null,
-    val name: String? = null,
+    val title: String? = null,
+    val subtitle: String? = null,
+    val topics: List<ExploreTopicLinkDto> = emptyList(),
     val description: String? = null,
-    val coverImage: MediaAssetDto? = null,
+    val coverImage: String? = null,
+    val estimatedItemCount: Int = 0,
     val stepCount: Int = 0,
-    val itemCount: Long = 0,
+    val tags: List<String> = emptyList(),
 )
 
 @Serializable
 data class LearningPathDetailDto(
     val id: String? = null,
-    val name: String? = null,
+    val title: String? = null,
+    val subtitle: String? = null,
     val description: String? = null,
-    val coverImage: MediaAssetDto? = null,
+    val tags: List<String> = emptyList(),
     val steps: List<LearningPathStepDto> = emptyList(),
+    val featuredItems: List<ExploreTopicItemDto> = emptyList(),
+    val relatedTopics: List<ExploreTopicLinkDto> = emptyList(),
+    val generatedAt: String? = null,
 )
 
 // ---------------------------------------------------------------------------
@@ -520,14 +572,20 @@ data class LearningPathDetailDto(
 @Serializable
 data class RegionAtlasItemDto(
     val region: String? = null,
-    val count: Long = 0,
-    val highlightImage: MediaAssetDto? = null,
+    val displayName: String? = null,
+    val directoryItemCount: Long = 0,
+    val inheritorCount: Long = 0,
+    val total: Long = 0,
+    val topCategories: List<FacetBucketDto> = emptyList(),
+    val topKinds: List<FacetBucketDto> = emptyList(),
+    val coverImage: MediaAssetDto? = null,
 )
 
 @Serializable
 data class RegionAtlasTotalsDto(
-    val regions: Int = 0,
-    val items: Long = 0,
+    val directoryItemCount: Long = 0,
+    val inheritorCount: Long = 0,
+    val regionCount: Int = 0,
 )
 
 @Serializable
@@ -538,22 +596,25 @@ data class RegionAtlasDto(
 )
 
 @Serializable
-data class RegionAtlasBreakdownDto(
-    val dimension: String? = null,
-    val items: List<DirectoryStatisticItemDto> = emptyList(),
-)
-
-@Serializable
-data class RegionAtlasStatsDto(
+data class RegionAtlasDetailStatsDto(
+    val directoryItemCount: Long = 0,
+    val inheritorCount: Long = 0,
     val total: Long = 0,
-    val breakdowns: List<RegionAtlasBreakdownDto> = emptyList(),
 )
 
 @Serializable
 data class RegionAtlasDetailDto(
     val region: String? = null,
-    val stats: RegionAtlasStatsDto? = null,
-    val items: List<ExploreTopicItemDto> = emptyList(),
+    val displayName: String? = null,
+    val stats: RegionAtlasDetailStatsDto? = null,
+    val categoryBreakdown: List<FacetBucketDto> = emptyList(),
+    val kindBreakdown: List<FacetBucketDto> = emptyList(),
+    val featuredDirectoryItems: List<DirectoryItemSummaryDto> = emptyList(),
+    val featuredInheritors: List<InheritorSummaryDto> = emptyList(),
+    val relatedArticles: List<ArticleSummaryDto> = emptyList(),
+    val timeline: List<ExploreTopicItemDto> = emptyList(),
+    val relatedRegions: List<ExploreTopicLinkDto> = emptyList(),
+    val generatedAt: String? = null,
 )
 
 // ---------------------------------------------------------------------------
@@ -566,6 +627,10 @@ data class CollectionItemDto(
     val type: String? = null,
     val title: String? = null,
     val summary: String? = null,
+    val category: String? = null,
+    val region: String? = null,
+    val publishedAt: String? = null,
+    val publishedYear: Int? = null,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
 )
@@ -573,19 +638,18 @@ data class CollectionItemDto(
 @Serializable
 data class FeaturedCollectionDto(
     val id: String? = null,
-    val name: String? = null,
-    val description: String? = null,
-    val coverImage: MediaAssetDto? = null,
-    val itemCount: Long = 0,
+    val title: String? = null,
+    val subtitle: String? = null,
+    val itemCount: Int = 0,
 )
 
 @Serializable
 data class CollectionDto(
     val id: String? = null,
-    val name: String? = null,
-    val description: String? = null,
-    val coverImage: MediaAssetDto? = null,
+    val title: String? = null,
+    val subtitle: String? = null,
+    val type: String? = null,
+    val tags: List<String> = emptyList(),
+    val generatedAt: String? = null,
     val items: List<CollectionItemDto> = emptyList(),
-    val total: Long = 0,
-    val hasMore: Boolean = false,
 )
