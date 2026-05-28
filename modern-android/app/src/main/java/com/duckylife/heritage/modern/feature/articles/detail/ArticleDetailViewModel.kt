@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import kotlinx.serialization.encodeToString
 
 @HiltViewModel(assistedFactory = ArticleDetailViewModel.Factory::class)
@@ -87,7 +88,7 @@ class ArticleDetailViewModel @AssistedInject constructor(
                     errorKind = null,
                 )
             }
-            runCatching {
+            runCatchingCancellable {
                 repository.refreshArticleDetail(lookup)
             }.onSuccess { article ->
                 _uiState.update {
@@ -119,7 +120,7 @@ class ArticleDetailViewModel @AssistedInject constructor(
         if (articleId.isNullOrBlank()) return
         _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
         viewModelScope.launch {
-            runCatching { repository.articleContext(articleId) }
+            runCatchingCancellable { repository.articleContext(articleId) }
                 .onSuccess { ctx ->
                     _uiState.update { it.copy(contextLoading = false, context = ctx) }
                 }

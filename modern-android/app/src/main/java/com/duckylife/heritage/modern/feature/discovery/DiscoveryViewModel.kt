@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 
 @HiltViewModel
 class DiscoveryViewModel @Inject constructor(
@@ -33,19 +34,19 @@ class DiscoveryViewModel @Inject constructor(
             try {
                 coroutineScope {
                     val exploreIndexDeferred = async {
-                        runCatching { repository.exploreIndex() }
+                        runCatchingCancellable { repository.exploreIndex() }
                     }
                     val topicsDeferred = async {
-                        runCatching { repository.exploreTopics(type = "all", limit = 12) }
+                        runCatchingCancellable { repository.exploreTopics(type = "all", limit = 12) }
                     }
                     val learningPathsDeferred = async {
-                        runCatching { repository.learningPaths() }
+                        runCatchingCancellable { repository.learningPaths() }
                     }
                     val featuredCollectionsDeferred = async {
-                        runCatching { repository.featuredCollections() }
+                        runCatchingCancellable { repository.featuredCollections() }
                     }
                     val regionAtlasDeferred = async {
-                        runCatching { repository.regionAtlas() }
+                        runCatchingCancellable { repository.regionAtlas() }
                     }
 
                     val exploreIndex = exploreIndexDeferred.await().getOrNull()

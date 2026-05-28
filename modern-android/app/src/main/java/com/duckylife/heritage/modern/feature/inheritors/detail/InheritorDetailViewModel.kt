@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import kotlinx.serialization.encodeToString
 
 @HiltViewModel(assistedFactory = InheritorDetailViewModel.Factory::class)
@@ -80,7 +81,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
                     errorKind = null,
                 )
             }
-            runCatching {
+            runCatchingCancellable {
                 repository.refreshInheritorDetail(lookup)
             }.onSuccess { item ->
                 _uiState.update {
@@ -112,7 +113,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
         if (inheritorId.isNullOrBlank()) return
         _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
         viewModelScope.launch {
-            runCatching { repository.inheritorContext(inheritorId) }
+            runCatchingCancellable { repository.inheritorContext(inheritorId) }
                 .onSuccess { ctx ->
                     _uiState.update { it.copy(contextLoading = false, context = ctx) }
                 }

@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import javax.inject.Inject
 
 private const val SEARCH_DEBOUNCE_MS = 350L
@@ -78,7 +79,7 @@ class SearchViewModel @Inject constructor(
         }
 
         searchJob = viewModelScope.launch {
-            runCatching { performSearch(query, page = 1) }
+            runCatchingCancellable { performSearch(query, page = 1) }
                 .onSuccess { response ->
                     _uiState.update {
                         it.copy(
@@ -110,7 +111,7 @@ class SearchViewModel @Inject constructor(
         _uiState.update { it.copy(isLoadingMore = true) }
 
         viewModelScope.launch {
-            runCatching { performSearch(state.query.trim(), page = nextPage) }
+            runCatchingCancellable { performSearch(state.query.trim(), page = nextPage) }
                 .onSuccess { response ->
                     _uiState.update {
                         it.copy(
@@ -197,7 +198,7 @@ class SearchViewModel @Inject constructor(
         _uiState.update { it.copy(isLoadingSuggestions = true) }
 
         suggestionJob = viewModelScope.launch {
-            runCatching { repository.searchSuggestions(prefix) }
+            runCatchingCancellable { repository.searchSuggestions(prefix) }
                 .onSuccess { suggestions ->
                     _uiState.update {
                         it.copy(

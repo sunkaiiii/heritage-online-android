@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import kotlinx.serialization.encodeToString
 
 @HiltViewModel(assistedFactory = DirectoryDetailViewModel.Factory::class)
@@ -84,7 +85,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                     errorKind = null,
                 )
             }
-            runCatching {
+            runCatchingCancellable {
                 repository.refreshDirectoryDetail(lookup)
             }.onSuccess { item ->
                 _uiState.update {
@@ -116,7 +117,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
         if (itemId.isNullOrBlank()) return
         _uiState.update { it.copy(contextLoading = true, contextErrorKind = null) }
         viewModelScope.launch {
-            runCatching { repository.directoryItemContext(itemId) }
+            runCatchingCancellable { repository.directoryItemContext(itemId) }
                 .onSuccess { ctx ->
                     _uiState.update { it.copy(contextLoading = false, context = ctx) }
                 }

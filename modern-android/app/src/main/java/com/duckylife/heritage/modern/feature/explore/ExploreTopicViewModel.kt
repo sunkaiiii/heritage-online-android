@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 
 @HiltViewModel(assistedFactory = ExploreTopicViewModel.Factory::class)
 class ExploreTopicViewModel @AssistedInject constructor(
@@ -31,7 +32,7 @@ class ExploreTopicViewModel @AssistedInject constructor(
     fun loadTopic() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching { repository.exploreTopic(type, key) }
+            runCatchingCancellable { repository.exploreTopic(type, key) }
                 .onSuccess { topic ->
                     _uiState.update { it.copy(isLoading = false, topic = topic) }
                 }

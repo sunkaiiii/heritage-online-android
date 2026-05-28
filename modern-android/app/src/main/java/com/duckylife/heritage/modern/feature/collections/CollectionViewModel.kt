@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 
 @HiltViewModel(assistedFactory = CollectionViewModel.Factory::class)
 class CollectionViewModel @AssistedInject constructor(
@@ -32,7 +33,7 @@ class CollectionViewModel @AssistedInject constructor(
     fun loadCollection() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching {
+            runCatchingCancellable {
                 if (!id.isNullOrBlank()) {
                     repository.collection(id)
                 } else if (!type.isNullOrBlank() && !topicKey.isNullOrBlank()) {

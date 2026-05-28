@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.regions
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +32,7 @@ class RegionViewModel @Inject constructor(
     fun loadAtlas() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching { repository.regionAtlas() }
+            runCatchingCancellable { repository.regionAtlas() }
                 .onSuccess { atlas ->
                     _uiState.update { it.copy(isLoading = false, atlas = atlas) }
                 }
@@ -57,11 +59,12 @@ class RegionDetailViewModel @AssistedInject constructor(
     fun loadDetail() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching { repository.regionAtlasDetail(region) }
+            runCatchingCancellable { repository.regionAtlasDetail(region) }
                 .onSuccess { detail ->
                     _uiState.update { it.copy(isLoading = false, detail = detail) }
                 }
                 .onFailure { e ->
+                    Log.e("RegionDetailVM", "loadDetail failed for region=$region", e)
                     _uiState.update { it.copy(isLoading = false, errorKind = e.toUiError().kind) }
                 }
         }

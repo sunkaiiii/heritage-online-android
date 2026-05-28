@@ -54,7 +54,7 @@ data class ExploreTopicItemDto(
     val region: String? = null,
     val kind: String? = null,
     val year: Int? = null,
-    val count: Long = 0,
+    val count: Long? = null,
     val coverImage: MediaAssetDto? = null,
     val sourceUrl: String? = null,
 )

@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 
 private const val KEY_ARTICLE_CATEGORY = "article_category"
 private const val KEY_ARTICLE_SEARCH = "article_search"
@@ -89,7 +90,7 @@ class ArticlesViewModel @Inject constructor(
     fun refreshBanners() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoadingBanners = it.banners.isEmpty(), bannerErrorKind = null) }
-            runCatching {
+            runCatchingCancellable {
                 repository.homeBanners()
             }.onSuccess { banners ->
                 _uiState.update {

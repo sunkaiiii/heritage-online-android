@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.learning
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 
 @HiltViewModel(assistedFactory = LearningPathViewModel.Factory::class)
 class LearningPathViewModel @AssistedInject constructor(
@@ -30,11 +32,12 @@ class LearningPathViewModel @AssistedInject constructor(
     fun loadPath() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching { repository.learningPathDetail(id) }
+            runCatchingCancellable { repository.learningPathDetail(id) }
                 .onSuccess { path ->
                     _uiState.update { it.copy(isLoading = false, path = path) }
                 }
                 .onFailure { e ->
+                    Log.e("LearningPathVM", "loadPath failed for id=$id", e)
                     _uiState.update { it.copy(isLoading = false, errorKind = e.toUiError().kind) }
                 }
         }

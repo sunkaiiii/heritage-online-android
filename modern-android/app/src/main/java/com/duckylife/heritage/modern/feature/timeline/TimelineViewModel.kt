@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import javax.inject.Inject
 
 private const val PAGE_SIZE = 20
@@ -62,7 +63,7 @@ class TimelineViewModel @Inject constructor(
     private fun loadYears() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatching { repository.timelineYears() }
+            runCatchingCancellable { repository.timelineYears() }
                 .onSuccess { years ->
                     _uiState.update { it.copy(isLoading = false, years = years) }
                 }
@@ -84,7 +85,7 @@ class TimelineViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            runCatching {
+            runCatchingCancellable {
                 repository.timelineV2(
                     TimelineV2Query(
                         year = year,
