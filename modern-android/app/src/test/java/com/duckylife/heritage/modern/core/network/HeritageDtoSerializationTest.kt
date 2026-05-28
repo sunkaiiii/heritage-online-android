@@ -16,6 +16,7 @@ import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -356,6 +357,113 @@ class HeritageDtoSerializationTest {
         assertEquals(1, dto.relatedTopics.size)
         assertEquals("传统美术", dto.relatedTopics.first().title)
         assertNotNull(dto.generatedAt)
+    }
+
+    @Test
+    fun learningPathDetailDto_parsesBackendShapeWithNullCount() {
+        val dto = json.decodeFromString<LearningPathDetailDto>(
+            """
+            {
+              "id": "mixed-starter",
+              "title": "随便看看",
+              "subtitle": "浏览热门地区、类别与年份",
+              "description": "从热门地区、类别和最新年份入手，快速了解非遗文化概貌",
+              "tags": ["入门", "综合"],
+              "steps": [
+                {
+                  "id": "hot-region",
+                  "title": "热门地区",
+                  "subtitle": "浙江",
+                  "topic": { "type": "region", "key": "浙江", "title": "热门地区" },
+                  "items": [
+                    {
+                      "type": "directoryItem",
+                      "id": "6a13f2039e6a99b63880301f",
+                      "title": "Page Test 0",
+                      "summary": null,
+                      "category": "test",
+                      "region": "浙江",
+                      "kind": "nationalProject",
+                      "year": 2024,
+                      "count": null,
+                      "coverImage": null,
+                      "sourceUrl": "http://test/page_0"
+                    }
+                  ]
+                }
+              ],
+              "featuredItems": [
+                {
+                  "id": "fi1",
+                  "type": "directoryItem",
+                  "title": "精选内容",
+                  "count": null,
+                  "coverImage": null
+                }
+              ],
+              "relatedTopics": [
+                { "type": "region", "key": "江苏", "title": "江苏" }
+              ]
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("mixed-starter", dto.id)
+        assertEquals("随便看看", dto.title)
+        assertEquals(1, dto.steps.size)
+        val item = dto.steps.first().items.first()
+        assertEquals("Page Test 0", item.title)
+        assertNull(item.count)
+        assertNull(item.coverImage)
+        assertEquals("test", item.category)
+        assertEquals("浙江", item.region)
+        assertEquals("nationalProject", item.kind)
+        assertEquals(2024, item.year)
+
+        val featured = dto.featuredItems.first()
+        assertNull(featured.count)
+        assertNull(featured.coverImage)
+    }
+
+    @Test
+    fun regionAtlasDetailDto_parsesBackendShapeWithNullFacetCount() {
+        val dto = json.decodeFromString<RegionAtlasDetailDto>(
+            """
+            {
+              "region": "山西",
+              "displayName": "山西",
+              "stats": {
+                "directoryItemCount": 41,
+                "inheritorCount": 197,
+                "total": 238
+              },
+              "categoryBreakdown": [
+                { "key": "传统音乐", "name": "传统音乐", "value": 18 }
+              ],
+              "kindBreakdown": [
+                { "key": "nationalProject", "name": "nationalProject", "value": 40 }
+              ],
+              "featuredDirectoryItems": [
+                { "id": "ra1", "kind": "nationalProject", "title": "项目1", "region": "山西省" }
+              ],
+              "featuredInheritors": [],
+              "relatedArticles": [],
+              "relatedRegions": []
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("山西", dto.region)
+        assertEquals("山西", dto.displayName)
+        assertEquals(41, dto.stats!!.directoryItemCount)
+        assertEquals(197, dto.stats!!.inheritorCount)
+        assertEquals(238, dto.stats!!.total)
+        assertEquals(1, dto.categoryBreakdown.size)
+        assertEquals("传统音乐", dto.categoryBreakdown.first().key)
+        assertEquals(1, dto.kindBreakdown.size)
+        assertEquals("nationalProject", dto.kindBreakdown.first().key)
+        assertEquals(1, dto.featuredDirectoryItems.size)
+        assertEquals("项目1", dto.featuredDirectoryItems.first().title)
     }
 
     @Test
