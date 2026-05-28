@@ -1,6 +1,5 @@
 package com.duckylife.heritage.modern.feature.regions
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
@@ -64,7 +63,6 @@ class RegionDetailViewModel @AssistedInject constructor(
                     _uiState.update { it.copy(isLoading = false, detail = detail) }
                 }
                 .onFailure { e ->
-                    Log.e("RegionDetailVM", "loadDetail failed for region=$region", e)
                     _uiState.update { it.copy(isLoading = false, errorKind = e.toUiError().kind) }
                 }
         }

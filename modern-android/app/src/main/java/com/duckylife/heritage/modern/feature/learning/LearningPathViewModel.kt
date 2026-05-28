@@ -1,6 +1,5 @@
 package com.duckylife.heritage.modern.feature.learning
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
@@ -37,7 +36,6 @@ class LearningPathViewModel @AssistedInject constructor(
                     _uiState.update { it.copy(isLoading = false, path = path) }
                 }
                 .onFailure { e ->
-                    Log.e("LearningPathVM", "loadPath failed for id=$id", e)
                     _uiState.update { it.copy(isLoading = false, errorKind = e.toUiError().kind) }
                 }
         }

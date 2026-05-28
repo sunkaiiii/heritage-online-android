@@ -54,6 +54,9 @@ class FakeHeritageRepository(
     private val inheritorDetails: Map<String, InheritorDetailDto> = emptyMap(),
     private val inheritorDetailsBySourceId: Map<String, InheritorDetailDto> = emptyMap(),
     private val cachedInheritorDetails: Map<InheritorDetailLookup, InheritorDetailDto?> = emptyMap(),
+    private val searchV2Response: SearchV2ResponseDto = SearchV2ResponseDto(),
+    private val timelineV2Response: TimelineV2ResponseDto = TimelineV2ResponseDto(),
+    private val timelineYearsList: List<TimelineYearBucketDto> = emptyList(),
     private val failure: Throwable? = null,
 ) : HeritageRepository {
     val pagedArticleQueries = mutableListOf<ArticleQuery>()
@@ -240,7 +243,7 @@ class FakeHeritageRepository(
 
     override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto {
         failure?.let { throw it }
-        return SearchV2ResponseDto()
+        return searchV2Response
     }
 
     override suspend fun searchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> {
@@ -250,12 +253,12 @@ class FakeHeritageRepository(
 
     override suspend fun timelineV2(query: TimelineV2Query): TimelineV2ResponseDto {
         failure?.let { throw it }
-        return TimelineV2ResponseDto()
+        return timelineV2Response
     }
 
     override suspend fun timelineYears(): List<TimelineYearBucketDto> {
         failure?.let { throw it }
-        return emptyList()
+        return timelineYearsList
     }
 
     override suspend fun exploreIndex(): ExploreIndexDto {
