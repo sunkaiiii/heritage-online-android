@@ -478,7 +478,7 @@ private fun TimelineCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "按年份浏览非遗内容",
+                    text = stringResource(R.string.discovery_timeline_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )

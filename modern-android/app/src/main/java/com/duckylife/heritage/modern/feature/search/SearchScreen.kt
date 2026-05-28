@@ -406,7 +406,7 @@ private fun ActiveFiltersRow(
             FilterChip(
                 selected = true,
                 onClick = onClearHasImage,
-                label = { Text(if (uiState.hasImageFilter) "有图" else "无图") },
+                label = { Text(stringResource(if (uiState.hasImageFilter) R.string.filter_has_image else R.string.filter_no_image)) },
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.Close,

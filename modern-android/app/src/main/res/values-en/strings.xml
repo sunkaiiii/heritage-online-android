@@ -155,6 +155,7 @@
     <string name="discovery_featured_collections">Featured Collections</string>
     <string name="discovery_region_atlas">Region Atlas</string>
     <string name="discovery_timeline">Timeline</string>
+    <string name="discovery_timeline_subtitle">Browse heritage by year</string>
     <string name="discovery_view_all">View All</string>
     <string name="discovery_items_count">%1$d items</string>
     <string name="search_results_count">%1$d results</string>
@@ -166,11 +167,15 @@
     <string name="search_empty_message">Try different keywords or adjust filters</string>
     <string name="search_filter_type">Type</string>
     <string name="search_filter_kind">Kind</string>
+    <string name="filter_has_image">Has image</string>
+    <string name="filter_no_image">No image</string>
     <string name="explore_related_topics">Related Topics</string>
     <string name="learning_steps_title">Learning Steps</string>
     <string name="learning_featured_items">Featured Items</string>
     <string name="timeline_select_year">Select a year to start browsing</string>
     <string name="region_total_directory">Directory Items</string>
+    <string name="region_items_format">%1$d items</string>
+    <string name="region_inheritors_format">%1$d inheritors</string>
     <string name="region_total_inheritors">Inheritors</string>
     <string name="region_total">Total</string>
     <string name="region_kind_breakdown">By Kind</string>

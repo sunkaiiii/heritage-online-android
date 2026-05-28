@@ -155,6 +155,7 @@
     <string name="discovery_featured_collections">精选合集</string>
     <string name="discovery_region_atlas">地区图谱</string>
     <string name="discovery_timeline">时间线</string>
+    <string name="discovery_timeline_subtitle">按年份浏览非遗内容</string>
     <string name="discovery_view_all">查看全部</string>
     <string name="discovery_items_count">%1$d 项</string>
     <string name="search_results_count">%1$d 条结果</string>
@@ -166,11 +167,15 @@
     <string name="search_empty_message">尝试修改关键词或调整筛选条件</string>
     <string name="search_filter_type">类型</string>
     <string name="search_filter_kind">种类</string>
+    <string name="filter_has_image">有图</string>
+    <string name="filter_no_image">无图</string>
     <string name="explore_related_topics">相关主题</string>
     <string name="learning_steps_title">学习步骤</string>
     <string name="learning_featured_items">精选内容</string>
     <string name="timeline_select_year">请选择一个年份开始浏览</string>
     <string name="region_total_directory">名录项目</string>
+    <string name="region_items_format">%1$d 项</string>
+    <string name="region_inheritors_format">%1$d 人</string>
     <string name="region_total_inheritors">传承人</string>
     <string name="region_total">总计</string>
     <string name="region_kind_breakdown">种类分布</string>

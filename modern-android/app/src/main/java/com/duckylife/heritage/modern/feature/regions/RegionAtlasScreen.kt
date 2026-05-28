@@ -215,8 +215,8 @@ private fun RegionCard(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                HeritageMetaChip(text = "${region.directoryItemCount} 项")
-                HeritageMetaChip(text = "${region.inheritorCount} 人")
+                HeritageMetaChip(text = stringResource(R.string.region_items_format, region.directoryItemCount))
+                HeritageMetaChip(text = stringResource(R.string.region_inheritors_format, region.inheritorCount))
             }
             if (region.topCategories.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(6.dp))
