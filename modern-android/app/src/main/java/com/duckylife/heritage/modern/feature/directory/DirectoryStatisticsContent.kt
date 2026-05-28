@@ -130,7 +130,9 @@ private fun StatisticsOverviewCard(
 ) {
     HeritageContentCard {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -258,7 +260,7 @@ private fun CategoryCardGrid(
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         items.forEachIndexed { index, item ->

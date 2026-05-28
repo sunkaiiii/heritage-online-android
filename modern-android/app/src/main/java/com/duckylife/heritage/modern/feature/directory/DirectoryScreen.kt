@@ -30,6 +30,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -521,15 +523,17 @@ private fun DirectoryTabToggle(
     onTabSelected: (DirectoryTab) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    TabRow(
+        selectedTabIndex = DirectoryTab.entries.indexOf(selectedTab),
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        DirectoryTab.entries.forEach { tab ->
-            FilterChip(
+        DirectoryTab.entries.forEachIndexed { index, tab ->
+            Tab(
                 selected = tab == selectedTab,
                 onClick = { onTabSelected(tab) },
-                label = { Text(stringResource(tab.labelRes)) },
+                text = { Text(stringResource(tab.labelRes)) },
             )
         }
     }
