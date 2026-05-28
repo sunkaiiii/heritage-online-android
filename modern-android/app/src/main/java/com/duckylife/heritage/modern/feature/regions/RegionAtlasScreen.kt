@@ -228,6 +228,16 @@ private fun RegionCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+            if (region.topKinds.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = region.topKinds.take(2).mapNotNull { it.key }.joinToString("、"),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

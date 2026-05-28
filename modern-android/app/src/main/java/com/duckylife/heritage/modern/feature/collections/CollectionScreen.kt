@@ -144,16 +144,20 @@ private fun CollectionContent(
             }
         }
 
-        if (collection.tags.isNotEmpty()) {
-            item {
-                FlowRow(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    collection.tags.forEach { tag ->
-                        HeritageMetaChip(text = tag)
-                    }
+        item {
+            FlowRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                if (!collection.type.isNullOrBlank()) {
+                    HeritageMetaChip(text = collection.type)
+                }
+                collection.tags.forEach { tag ->
+                    HeritageMetaChip(text = tag)
+                }
+                if (!collection.generatedAt.isNullOrBlank()) {
+                    HeritageMetaChip(text = collection.generatedAt)
                 }
             }
         }
