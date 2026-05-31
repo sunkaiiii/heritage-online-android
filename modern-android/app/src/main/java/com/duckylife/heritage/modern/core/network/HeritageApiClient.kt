@@ -3,7 +3,12 @@ package com.duckylife.heritage.modern.core.network
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationQueryDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
 import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
@@ -11,6 +16,11 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryDeepDiveDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
@@ -26,6 +36,12 @@ import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
 import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
 import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyIndexDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyKindDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import io.ktor.client.HttpClient
@@ -124,6 +140,63 @@ interface HeritageApiClient {
     suspend fun getCollection(id: String, limit: Int = 10): CollectionDto
 
     suspend fun getTopicCollection(type: String, key: String, limit: Int = 10): CollectionDto
+
+    // Discovery v2
+    suspend fun getDiscoveryToday(): DiscoveryTodayDto
+
+    suspend fun getDiscoveryRandom(type: SearchResultType): DiscoveryItemDto
+
+    suspend fun getDiscoveryTrending(limit: Int = 10): DiscoveryTrendingDto
+
+    suspend fun getDiscoveryWeekly(): DiscoveryWeeklyDto
+
+    suspend fun getDiscoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto
+
+    suspend fun getDiscoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto
+
+    // Data Stories
+    suspend fun getRegionStory(region: String): DataStoryDto
+
+    suspend fun getCategoryStory(category: String): DataStoryDto
+
+    suspend fun getYearStory(year: Int): DataStoryDto
+
+    // Taxonomy
+    suspend fun getTaxonomyCategories(limit: Int = 50): TaxonomyIndexDto<TaxonomyTopicDto>
+
+    suspend fun getTaxonomyRegions(
+        limit: Int = 50,
+        sort: TaxonomyRegionSort = TaxonomyRegionSort.Total,
+    ): TaxonomyIndexDto<TaxonomyTopicDto>
+
+    suspend fun getTaxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto>
+
+    suspend fun getTaxonomyCategoryDetail(category: String, limit: Int = 6): TaxonomyCategoryDetailDto
+
+    suspend fun getTaxonomyRegionDetail(region: String, limit: Int = 6): TaxonomyRegionDetailDto
+
+    // Compare
+    suspend fun compareRegions(left: String, right: String, limit: Int = 6): CompareResultDto
+
+    suspend fun compareCategories(left: String, right: String, limit: Int = 6): CompareResultDto
+
+    suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int = 6,
+    ): CompareResultDto
+
+    // Content Digest
+    suspend fun getArticleDigest(id: String): ContentDigestDto
+
+    suspend fun getDirectoryItemDigest(id: String): ContentDigestDto
+
+    suspend fun getInheritorDigest(id: String): ContentDigestDto
+
+    // Blended Recommendations
+    suspend fun getBlendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto
 }
 
 class KtorHeritageApiClient(
@@ -315,6 +388,139 @@ class KtorHeritageApiClient(
     override suspend fun getTopicCollection(type: String, key: String, limit: Int): CollectionDto =
         httpClient.get(endpoint("api/collections/topic/${pathSegment(type)}/${pathSegment(key)}")) {
             optionalParameter("limit", limit)
+        }.body()
+
+    // Discovery v2
+    override suspend fun getDiscoveryToday(): DiscoveryTodayDto =
+        httpClient.get(endpoint("api/discovery/today")).body()
+
+    override suspend fun getDiscoveryRandom(type: SearchResultType): DiscoveryItemDto =
+        httpClient.get(endpoint("api/discovery/random")) {
+            optionalParameter("type", type.wireName)
+        }.body()
+
+    override suspend fun getDiscoveryTrending(limit: Int): DiscoveryTrendingDto =
+        httpClient.get(endpoint("api/discovery/trending")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getDiscoveryWeekly(): DiscoveryWeeklyDto =
+        httpClient.get(endpoint("api/discovery/weekly")).body()
+
+    override suspend fun getDiscoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto =
+        httpClient.get(endpoint("api/discovery/serendipity")) {
+            optionalParameter("type", query.type.wireName)
+            optionalParameter("hasImage", query.hasImage)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+        }.body()
+
+    override suspend fun getDiscoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto =
+        httpClient.get(endpoint("api/discovery/deep-dive")) {
+            optionalParameter("seedType", query.seedType.wireName)
+            optionalParameter("seedId", query.seedId)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    // Data Stories
+    override suspend fun getRegionStory(region: String): DataStoryDto =
+        httpClient.get(endpoint("api/stories/regions/${pathSegment(region)}")).body()
+
+    override suspend fun getCategoryStory(category: String): DataStoryDto =
+        httpClient.get(endpoint("api/stories/categories/${pathSegment(category)}")).body()
+
+    override suspend fun getYearStory(year: Int): DataStoryDto =
+        httpClient.get(endpoint("api/stories/years/$year")).body()
+
+    // Taxonomy
+    override suspend fun getTaxonomyCategories(limit: Int): TaxonomyIndexDto<TaxonomyTopicDto> =
+        httpClient.get(endpoint("api/taxonomy/categories")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getTaxonomyRegions(
+        limit: Int,
+        sort: TaxonomyRegionSort,
+    ): TaxonomyIndexDto<TaxonomyTopicDto> =
+        httpClient.get(endpoint("api/taxonomy/regions")) {
+            optionalParameter("limit", limit)
+            optionalParameter("sort", sort.wireName)
+        }.body()
+
+    override suspend fun getTaxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto> =
+        httpClient.get(endpoint("api/taxonomy/kinds")).body()
+
+    override suspend fun getTaxonomyCategoryDetail(
+        category: String,
+        limit: Int,
+    ): TaxonomyCategoryDetailDto =
+        httpClient.get(endpoint("api/taxonomy/category/${pathSegment(category)}")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getTaxonomyRegionDetail(
+        region: String,
+        limit: Int,
+    ): TaxonomyRegionDetailDto =
+        httpClient.get(endpoint("api/taxonomy/region/${pathSegment(region)}")) {
+            optionalParameter("limit", limit)
+        }.body()
+
+    // Compare
+    override suspend fun compareRegions(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto =
+        httpClient.get(endpoint("api/compare/regions")) {
+            optionalParameter("left", left)
+            optionalParameter("right", right)
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun compareCategories(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto =
+        httpClient.get(endpoint("api/compare/categories")) {
+            optionalParameter("left", left)
+            optionalParameter("right", right)
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int,
+    ): CompareResultDto =
+        httpClient.get(endpoint("api/compare/kinds")) {
+            optionalParameter("left", left.wireName)
+            optionalParameter("right", right.wireName)
+            optionalParameter("limit", limit)
+        }.body()
+
+    // Content Digest
+    override suspend fun getArticleDigest(id: String): ContentDigestDto =
+        httpClient.get(endpoint("api/articles/$id/digest")).body()
+
+    override suspend fun getDirectoryItemDigest(id: String): ContentDigestDto =
+        httpClient.get(endpoint("api/directory-items/$id/digest")).body()
+
+    override suspend fun getInheritorDigest(id: String): ContentDigestDto =
+        httpClient.get(endpoint("api/inheritors/$id/digest")).body()
+
+    // Blended Recommendations
+    override suspend fun getBlendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto =
+        httpClient.get(endpoint("api/recommendations/blended/${query.type.wireName}/${query.id}")) {
+            optionalParameter("limit", query.limit)
+            optionalParameter("ruleWeight", query.ruleWeight)
+            optionalParameter("semanticWeight", query.semanticWeight)
+            optionalParameter("sameCategoryWeight", query.sameCategoryWeight)
+            optionalParameter("sameRegionWeight", query.sameRegionWeight)
+            optionalParameter("diversify", query.diversify)
         }.body()
 
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"

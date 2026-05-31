@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.DirectoryDetailLookup
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -97,6 +99,8 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                 }
                 recordViewedIfNew(item)
                 loadContext(item.id)
+                loadDigest(item.id)
+                loadBlended(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -124,6 +128,44 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                 .onFailure { e ->
                     _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
                 }
+        }
+    }
+
+    private fun loadDigest(itemId: String?) {
+        if (itemId.isNullOrBlank()) return
+        _uiState.update { it.copy(digestLoading = true, digestErrorKind = null) }
+        viewModelScope.launch {
+            runCatchingCancellable { repository.directoryItemDigest(itemId) }
+                .onSuccess { digest ->
+                    _uiState.update { it.copy(digestLoading = false, digest = digest) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(digestLoading = false, digestErrorKind = e.toUiError().kind) }
+                }
+        }
+    }
+
+    fun retryDigest() {
+        val id = _uiState.value.item?.id ?: return
+        loadDigest(id)
+    }
+
+    private fun loadBlended(itemId: String?) {
+        if (itemId.isNullOrBlank()) return
+        _uiState.update { it.copy(blendedLoading = true) }
+        viewModelScope.launch {
+            runCatchingCancellable {
+                repository.blendedRecommendations(
+                    BlendedRecommendationQuery(
+                        type = SearchResultType.DirectoryItem,
+                        id = itemId,
+                    ),
+                )
+            }.onSuccess { response ->
+                _uiState.update { it.copy(blendedLoading = false, blendedRecommendations = response) }
+            }.onFailure {
+                _uiState.update { it.copy(blendedLoading = false) }
+            }
         }
     }
 

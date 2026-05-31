@@ -189,4 +189,87 @@
     <string name="context_collections">合集</string>
     <string name="context_explore_topics">探索主题</string>
     <string name="context_graph">关系图谱</string>
+
+    <!-- Discovery v2 -->
+    <string name="discovery_trending_title">正在被看见</string>
+    <string name="discovery_weekly_title">本周非遗包</string>
+    <string name="discovery_today_title">今日发现</string>
+    <string name="discovery_serendipity">随便看看</string>
+    <string name="discovery_serendipity_loading">正在探索…</string>
+    <string name="discovery_taxonomy">主题库</string>
+    <string name="discovery_stories">数据故事</string>
+    <string name="discovery_deep_dive">深挖</string>
+
+    <!-- Deep Dive -->
+    <string name="deep_dive_title">深挖</string>
+    <string name="deep_dive_related">相关发现</string>
+    <string name="deep_dive_again">继续深挖</string>
+    <string name="deep_dive_loading">深挖内容加载中…</string>
+
+    <!-- Data Stories -->
+    <string name="story_loading">故事加载中…</string>
+    <string name="story_reading_time">%1$d 分钟阅读</string>
+    <string name="story_related_topics">相关主题</string>
+
+    <!-- Taxonomy -->
+    <string name="taxonomy_title">主题库</string>
+    <string name="taxonomy_subtitle">按分类、地区与种类浏览非遗主题</string>
+    <string name="taxonomy_tab_categories">分类</string>
+    <string name="taxonomy_tab_regions">地区</string>
+    <string name="taxonomy_tab_kinds">种类</string>
+    <string name="taxonomy_load_failed">主题库加载失败</string>
+    <string name="taxonomy_detail_load_failed">主题详情加载失败</string>
+    <string name="taxonomy_stat_directory_items">名录项目</string>
+    <string name="taxonomy_stat_inheritors">传承人</string>
+    <string name="taxonomy_stat_articles">文章</string>
+    <string name="taxonomy_stat_total">总计</string>
+    <string name="taxonomy_top_regions">热门地区</string>
+    <string name="taxonomy_top_categories">热门分类</string>
+    <string name="taxonomy_related_categories">相关分类</string>
+    <string name="taxonomy_related_regions">相关地区</string>
+    <string name="taxonomy_articles">相关文章</string>
+    <string name="taxonomy_directory_items">相关名录</string>
+    <string name="taxonomy_inheritors">相关传承人</string>
+    <string name="taxonomy_recommended_collections">推荐合集</string>
+    <string name="taxonomy_view_story">查看故事</string>
+    <string name="taxonomy_compare">发起对比</string>
+
+    <!-- Compare -->
+    <string name="compare_title">主题对比</string>
+    <string name="compare_subtitle">比较两个地区、分类或种类的差异</string>
+    <string name="compare_type_region">地区</string>
+    <string name="compare_type_category">分类</string>
+    <string name="compare_type_kind">种类</string>
+    <string name="compare_left_label">左侧</string>
+    <string name="compare_right_label">右侧</string>
+    <string name="compare_start">开始对比</string>
+    <string name="compare_same_error">请选择不同的对比对象</string>
+    <string name="compare_empty_input">请输入对比对象</string>
+    <string name="compare_invalid_kind">请输入有效的种类名称</string>
+    <string name="compare_winner">领先</string>
+    <string name="compare_shared">共有</string>
+    <string name="compare_unique_left">左侧独有</string>
+    <string name="compare_unique_right">右侧独有</string>
+    <string name="compare_featured_left">左侧精选</string>
+    <string name="compare_featured_right">右侧精选</string>
+    <string name="compare_load_failed">对比加载失败</string>
+    <string name="compare_metric_directory_items">名录项目</string>
+    <string name="compare_metric_inheritors">传承人</string>
+    <string name="compare_metric_articles">文章</string>
+    <string name="compare_metric_total">总计</string>
+
+    <!-- Content Digest -->
+    <string name="digest_title">速览</string>
+    <string name="digest_highlights">要点</string>
+    <string name="digest_key_facts">关键信息</string>
+    <string name="digest_keywords">关键词</string>
+    <string name="digest_reading_time">%1$d 分钟</string>
+    <string name="digest_show_more">展开</string>
+    <string name="digest_show_less">收起</string>
+
+    <!-- Blended Recommendations -->
+    <string name="blended_title">综合推荐</string>
+    <string name="blended_reasons">推荐理由</string>
+    <string name="blended_show_more_reasons">更多理由</string>
+    <string name="blended_score">评分</string>
 </resources>

@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.InheritorDetailLookup
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -93,6 +95,8 @@ class InheritorDetailViewModel @AssistedInject constructor(
                 }
                 recordViewedIfNew(item)
                 loadContext(item.id)
+                loadDigest(item.id)
+                loadBlended(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -120,6 +124,44 @@ class InheritorDetailViewModel @AssistedInject constructor(
                 .onFailure { e ->
                     _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
                 }
+        }
+    }
+
+    private fun loadDigest(inheritorId: String?) {
+        if (inheritorId.isNullOrBlank()) return
+        _uiState.update { it.copy(digestLoading = true, digestErrorKind = null) }
+        viewModelScope.launch {
+            runCatchingCancellable { repository.inheritorDigest(inheritorId) }
+                .onSuccess { digest ->
+                    _uiState.update { it.copy(digestLoading = false, digest = digest) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(digestLoading = false, digestErrorKind = e.toUiError().kind) }
+                }
+        }
+    }
+
+    fun retryDigest() {
+        val id = _uiState.value.item?.id ?: return
+        loadDigest(id)
+    }
+
+    private fun loadBlended(inheritorId: String?) {
+        if (inheritorId.isNullOrBlank()) return
+        _uiState.update { it.copy(blendedLoading = true) }
+        viewModelScope.launch {
+            runCatchingCancellable {
+                repository.blendedRecommendations(
+                    BlendedRecommendationQuery(
+                        type = SearchResultType.Inheritor,
+                        id = inheritorId,
+                    ),
+                )
+            }.onSuccess { response ->
+                _uiState.update { it.copy(blendedLoading = false, blendedRecommendations = response) }
+            }.onFailure {
+                _uiState.update { it.copy(blendedLoading = false) }
+            }
         }
     }
 

@@ -3,6 +3,8 @@ package com.duckylife.heritage.modern.feature.discovery
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.network.DiscoverySerendipityQuery
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,18 +50,33 @@ class DiscoveryViewModel @Inject constructor(
                     val regionAtlasDeferred = async {
                         runCatchingCancellable { repository.regionAtlas() }
                     }
+                    val todayDeferred = async {
+                        runCatchingCancellable { repository.discoveryToday() }
+                    }
+                    val trendingDeferred = async {
+                        runCatchingCancellable { repository.discoveryTrending(limit = 10) }
+                    }
+                    val weeklyDeferred = async {
+                        runCatchingCancellable { repository.discoveryWeekly() }
+                    }
 
                     val exploreIndex = exploreIndexDeferred.await().getOrNull()
                     val topics = topicsDeferred.await().getOrNull() ?: emptyList()
                     val learningPaths = learningPathsDeferred.await().getOrNull() ?: emptyList()
                     val featuredCollections = featuredCollectionsDeferred.await().getOrNull() ?: emptyList()
                     val regionAtlas = regionAtlasDeferred.await().getOrNull()
+                    val today = todayDeferred.await().getOrNull()
+                    val trending = trendingDeferred.await().getOrNull()
+                    val weekly = weeklyDeferred.await().getOrNull()
 
                     val hasAnyData = exploreIndex != null ||
                         topics.isNotEmpty() ||
                         learningPaths.isNotEmpty() ||
                         featuredCollections.isNotEmpty() ||
-                        regionAtlas != null
+                        regionAtlas != null ||
+                        today != null ||
+                        trending != null ||
+                        weekly != null
 
                     if (hasAnyData) {
                         _uiState.update {
@@ -71,6 +88,9 @@ class DiscoveryViewModel @Inject constructor(
                                 learningPaths = learningPaths,
                                 featuredCollections = featuredCollections,
                                 regionAtlas = regionAtlas,
+                                today = today,
+                                trending = trending,
+                                weekly = weekly,
                             )
                         }
                     } else {
@@ -94,5 +114,24 @@ class DiscoveryViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun serendipity() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(serendipityLoading = true) }
+            runCatchingCancellable {
+                repository.discoverySerendipity(DiscoverySerendipityQuery())
+            }.onSuccess { item ->
+                _uiState.update {
+                    it.copy(serendipityItem = item, serendipityLoading = false)
+                }
+            }.onFailure {
+                _uiState.update { it.copy(serendipityLoading = false) }
+            }
+        }
+    }
+
+    fun clearSerendipity() {
+        _uiState.update { it.copy(serendipityItem = null) }
     }
 }

@@ -58,3 +58,39 @@ data class TimelineV2Query(
     val kind: DirectoryItemKind? = null,
     val hasImage: Boolean? = null,
 )
+
+enum class TaxonomyRegionSort(val wireName: String) {
+    Total("total"),
+    DirectoryItem("directoryItem"),
+    Inheritor("inheritor"),
+}
+
+enum class CompareType(val wireName: String) {
+    Region("region"),
+    Category("category"),
+    Kind("kind"),
+}
+
+data class DiscoverySerendipityQuery(
+    val type: SearchResultType = SearchResultType.DirectoryItem,
+    val hasImage: Boolean? = null,
+    val region: String? = null,
+    val category: String? = null,
+)
+
+data class DiscoveryDeepDiveQuery(
+    val seedType: SearchResultType,
+    val seedId: String,
+    val limit: Int = 10,
+)
+
+data class BlendedRecommendationQuery(
+    val type: SearchResultType,
+    val id: String,
+    val limit: Int = 10,
+    val ruleWeight: Double = 1.0,
+    val semanticWeight: Double = 1.0,
+    val sameCategoryWeight: Double = 1.0,
+    val sameRegionWeight: Double = 1.0,
+    val diversify: Boolean = true,
+)

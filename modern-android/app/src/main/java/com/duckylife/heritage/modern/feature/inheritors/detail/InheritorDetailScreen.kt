@@ -114,6 +114,7 @@ fun InheritorDetailRoute(
         onRelatedProjectSelected = onRelatedProjectSelected,
         onRelatedInheritorSelected = onRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
+        onDigestRetry = viewModel::retryDigest,
         modifier = modifier,
     )
 }
@@ -128,6 +129,7 @@ fun InheritorDetailScreen(
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onContextRetry: () -> Unit = {},
+    onDigestRetry: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -229,6 +231,11 @@ fun InheritorDetailScreen(
                     context = uiState.context,
                     contextErrorKind = uiState.contextErrorKind,
                     onContextRetry = onContextRetry,
+                    digest = uiState.digest,
+                    digestLoading = uiState.digestLoading,
+                    digestErrorKind = uiState.digestErrorKind,
+                    onDigestRetry = onDigestRetry,
+                    blendedRecommendations = uiState.blendedRecommendations,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -261,6 +268,13 @@ private fun InheritorDetailContent(
     context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
     contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
     onContextRetry: () -> Unit = {},
+    // Content Digest
+    digest: com.duckylife.heritage.modern.core.network.dto.ContentDigestDto? = null,
+    digestLoading: Boolean = false,
+    digestErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    onDigestRetry: () -> Unit = {},
+    // Blended Recommendations
+    blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
@@ -305,6 +319,44 @@ private fun InheritorDetailContent(
             InheritorFacts(item)
         }
 
+        // Content Digest 速览
+        if (digest != null) {
+            item {
+                com.duckylife.heritage.modern.ui.component.DigestCard(digest = digest)
+            }
+        } else if (digestLoading) {
+            item {
+                HeritageContentCard {
+                    Text(
+                        text = stringResource(R.string.context_loading),
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        } else if (digestErrorKind != null) {
+            item {
+                HeritageContentCard {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(digestErrorKind.fallbackResId()),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f),
+                        )
+                        TextButton(onClick = onDigestRetry) {
+                            Text(stringResource(R.string.action_retry))
+                        }
+                    }
+                }
+            }
+        }
+
         if (!item.description.isNullOrBlank()) {
             item {
                 Text(
@@ -338,6 +390,16 @@ private fun InheritorDetailContent(
             references = item.relatedInheritors,
             onReferenceSelected = onRelatedInheritorSelected,
         )
+
+        // Blended Recommendations
+        if (blendedRecommendations != null && blendedRecommendations.items.isNotEmpty()) {
+            item {
+                com.duckylife.heritage.modern.ui.component.BlendedRecommendationsSection(
+                    recommendations = blendedRecommendations,
+                    onItemClick = {},
+                )
+            }
+        }
 
         item {
             DetailContextSection(

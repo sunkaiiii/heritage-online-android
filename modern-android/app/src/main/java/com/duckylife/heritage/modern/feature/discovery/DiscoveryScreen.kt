@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,11 +43,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.ui.component.DiscoveryItemCard
+import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
@@ -62,6 +71,12 @@ fun DiscoveryRoute(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onTrendingItemClick: (DiscoveryItemDto) -> Unit,
+    onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
+    onTodayItemClick: (DiscoveryItemDto) -> Unit,
+    onDeepDiveClick: (DiscoveryItemDto) -> Unit,
+    onTaxonomyClick: () -> Unit,
+    onStoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DiscoveryViewModel = hiltViewModel(),
 ) {
@@ -75,6 +90,13 @@ fun DiscoveryRoute(
         onCollectionClick = onCollectionClick,
         onRegionAtlasClick = onRegionAtlasClick,
         onTimelineClick = onTimelineClick,
+        onSerendipityClick = viewModel::serendipity,
+        onTrendingItemClick = onTrendingItemClick,
+        onWeeklyItemClick = onWeeklyItemClick,
+        onTodayItemClick = onTodayItemClick,
+        onDeepDiveClick = onDeepDiveClick,
+        onTaxonomyClick = onTaxonomyClick,
+        onStoriesClick = onStoriesClick,
         modifier = modifier,
     )
 }
@@ -90,6 +112,13 @@ fun DiscoveryScreen(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onSerendipityClick: () -> Unit,
+    onTrendingItemClick: (DiscoveryItemDto) -> Unit,
+    onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
+    onTodayItemClick: (DiscoveryItemDto) -> Unit,
+    onDeepDiveClick: (DiscoveryItemDto) -> Unit,
+    onTaxonomyClick: () -> Unit,
+    onStoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
@@ -114,6 +143,13 @@ fun DiscoveryScreen(
                     onCollectionClick = onCollectionClick,
                     onRegionAtlasClick = onRegionAtlasClick,
                     onTimelineClick = onTimelineClick,
+                    onSerendipityClick = onSerendipityClick,
+                    onTrendingItemClick = onTrendingItemClick,
+                    onWeeklyItemClick = onWeeklyItemClick,
+                    onTodayItemClick = onTodayItemClick,
+                    onDeepDiveClick = onDeepDiveClick,
+                    onTaxonomyClick = onTaxonomyClick,
+                    onStoriesClick = onStoriesClick,
                 )
             }
         }
@@ -130,6 +166,13 @@ private fun DiscoveryContent(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onSerendipityClick: () -> Unit,
+    onTrendingItemClick: (DiscoveryItemDto) -> Unit,
+    onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
+    onTodayItemClick: (DiscoveryItemDto) -> Unit,
+    onDeepDiveClick: (DiscoveryItemDto) -> Unit,
+    onTaxonomyClick: () -> Unit,
+    onStoriesClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -146,6 +189,84 @@ private fun DiscoveryContent(
         item {
             DiscoverySearchBar(
                 onSearchSubmit = onSearchSubmit,
+            )
+        }
+
+        // 随便看看按钮
+        item {
+            FilledTonalButton(
+                onClick = onSerendipityClick,
+                modifier = Modifier.padding(horizontal = 16.dp),
+                enabled = !uiState.serendipityLoading,
+            ) {
+                Text(
+                    text = if (uiState.serendipityLoading) {
+                        stringResource(R.string.discovery_serendipity_loading)
+                    } else {
+                        stringResource(R.string.discovery_serendipity)
+                    },
+                )
+            }
+        }
+
+        // Serendipity 结果（如果有的话）
+        if (uiState.serendipityItem != null) {
+            item {
+                SerendipityResultCard(
+                    item = uiState.serendipityItem,
+                    onItemClick = onTodayItemClick,
+                    onDeepDiveClick = onDeepDiveClick,
+                )
+            }
+        }
+
+        // 今日发现
+        if (uiState.today != null) {
+            item {
+                TodaySection(
+                    today = uiState.today,
+                    onItemClick = onTodayItemClick,
+                )
+            }
+        }
+
+        // 正在被看见 Trending
+        if (uiState.trending != null && uiState.trending.items.isNotEmpty()) {
+            item {
+                TrendingSection(
+                    trending = uiState.trending,
+                    onItemClick = onTrendingItemClick,
+                )
+            }
+        }
+
+        // 本周非遗包 Weekly
+        if (uiState.weekly != null && uiState.weekly.sections.isNotEmpty()) {
+            item {
+                WeeklySection(
+                    weekly = uiState.weekly,
+                    onItemClick = onWeeklyItemClick,
+                )
+            }
+        }
+
+        // 主题库入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.discovery_taxonomy),
+                subtitle = stringResource(R.string.discovery_taxonomy),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                onClick = onTaxonomyClick,
+            )
+        }
+
+        // 数据故事入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.discovery_stories),
+                subtitle = stringResource(R.string.discovery_stories),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                onClick = onStoriesClick,
             )
         }
 
@@ -481,6 +602,211 @@ private fun TimelineCard(
                     text = stringResource(R.string.discovery_timeline_subtitle),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+            }
+            TextButton(onClick = onClick) {
+                Text(text = stringResource(R.string.discovery_view_all))
+            }
+        }
+    }
+}
+
+// Serendipity 结果卡片
+@Composable
+private fun SerendipityResultCard(
+    item: DiscoveryItemDto,
+    onItemClick: (DiscoveryItemDto) -> Unit,
+    onDeepDiveClick: (DiscoveryItemDto) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(
+        onClick = { onItemClick(item) },
+        modifier = modifier.padding(horizontal = 16.dp),
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = stringResource(R.string.discovery_serendipity),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            if (!item.summary.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = item.summary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (!item.category.isNullOrBlank()) {
+                    HeritageMetaChip(text = item.category)
+                }
+                if (!item.region.isNullOrBlank()) {
+                    HeritageMetaChip(text = item.region)
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = { onDeepDiveClick(item) }) {
+                Text(text = stringResource(R.string.discovery_deep_dive))
+            }
+        }
+    }
+}
+
+// 今日发现
+@Composable
+private fun TodaySection(
+    today: DiscoveryTodayDto,
+    onItemClick: (DiscoveryItemDto) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        HeritageSectionHeader(
+            title = stringResource(R.string.discovery_today_title),
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        if (today.featuredDirectoryItem != null) {
+            DiscoveryItemRow(
+                item = today.featuredDirectoryItem,
+                onClick = { onItemClick(today.featuredDirectoryItem) },
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        if (today.featuredInheritor != null) {
+            DiscoveryItemRow(
+                item = today.featuredInheritor,
+                onClick = { onItemClick(today.featuredInheritor) },
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        if (today.articles.isNotEmpty()) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(today.articles) { article ->
+                    DiscoveryItemCard(
+                        item = article,
+                        onClick = { onItemClick(article) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+// 正在被看见 Trending
+@Composable
+private fun TrendingSection(
+    trending: DiscoveryTrendingDto,
+    onItemClick: (DiscoveryItemDto) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        HeritageSectionHeader(
+            title = stringResource(R.string.discovery_trending_title),
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(trending.items) { item ->
+                DiscoveryItemCard(
+                    item = item,
+                    onClick = { onItemClick(item) },
+                )
+            }
+        }
+    }
+}
+
+// 本周非遗包 Weekly
+@Composable
+private fun WeeklySection(
+    weekly: DiscoveryWeeklyDto,
+    onItemClick: (DiscoveryItemDto) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        HeritageSectionHeader(
+            title = stringResource(R.string.discovery_weekly_title),
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        weekly.sections.take(2).forEach { section ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = section.title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+            if (!section.subtitle.isNullOrBlank()) {
+                Text(
+                    text = section.subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(section.items.take(5)) { item ->
+                    DiscoveryItemCard(
+                        item = item,
+                        onClick = { onItemClick(item) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+// 通用入口卡片（主题库、数据故事）
+@Composable
+private fun DiscoveryEntryCard(
+    title: String,
+    subtitle: String,
+    containerColor: androidx.compose.ui.graphics.Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clickable(onClick = onClick),
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor,
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                 )
             }
             TextButton(onClick = onClick) {

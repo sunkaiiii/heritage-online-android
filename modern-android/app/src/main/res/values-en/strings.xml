@@ -189,4 +189,87 @@
     <string name="context_collections">Collections</string>
     <string name="context_explore_topics">Explore Topics</string>
     <string name="context_graph">Knowledge Graph</string>
+
+    <!-- Discovery v2 -->
+    <string name="discovery_trending_title">Trending</string>
+    <string name="discovery_weekly_title">This Week</string>
+    <string name="discovery_today_title">Today</string>
+    <string name="discovery_serendipity">Surprise Me</string>
+    <string name="discovery_serendipity_loading">Exploring…</string>
+    <string name="discovery_taxonomy">Topics</string>
+    <string name="discovery_stories">Data Stories</string>
+    <string name="discovery_deep_dive">Deep Dive</string>
+
+    <!-- Deep Dive -->
+    <string name="deep_dive_title">Deep Dive</string>
+    <string name="deep_dive_related">Related Discoveries</string>
+    <string name="deep_dive_again">Dig Deeper</string>
+    <string name="deep_dive_loading">Loading deep dive…</string>
+
+    <!-- Data Stories -->
+    <string name="story_loading">Loading story…</string>
+    <string name="story_reading_time">%1$d min read</string>
+    <string name="story_related_topics">Related Topics</string>
+
+    <!-- Taxonomy -->
+    <string name="taxonomy_title">Topics</string>
+    <string name="taxonomy_subtitle">Browse heritage topics by category, region, and kind</string>
+    <string name="taxonomy_tab_categories">Categories</string>
+    <string name="taxonomy_tab_regions">Regions</string>
+    <string name="taxonomy_tab_kinds">Kinds</string>
+    <string name="taxonomy_load_failed">Failed to load topics</string>
+    <string name="taxonomy_detail_load_failed">Failed to load topic detail</string>
+    <string name="taxonomy_stat_directory_items">Directory Items</string>
+    <string name="taxonomy_stat_inheritors">Inheritors</string>
+    <string name="taxonomy_stat_articles">Articles</string>
+    <string name="taxonomy_stat_total">Total</string>
+    <string name="taxonomy_top_regions">Top Regions</string>
+    <string name="taxonomy_top_categories">Top Categories</string>
+    <string name="taxonomy_related_categories">Related Categories</string>
+    <string name="taxonomy_related_regions">Related Regions</string>
+    <string name="taxonomy_articles">Articles</string>
+    <string name="taxonomy_directory_items">Directory Items</string>
+    <string name="taxonomy_inheritors">Inheritors</string>
+    <string name="taxonomy_recommended_collections">Recommended Collections</string>
+    <string name="taxonomy_view_story">View Story</string>
+    <string name="taxonomy_compare">Compare</string>
+
+    <!-- Compare -->
+    <string name="compare_title">Compare</string>
+    <string name="compare_subtitle">Compare differences between regions, categories, or kinds</string>
+    <string name="compare_type_region">Region</string>
+    <string name="compare_type_category">Category</string>
+    <string name="compare_type_kind">Kind</string>
+    <string name="compare_left_label">Left</string>
+    <string name="compare_right_label">Right</string>
+    <string name="compare_start">Compare</string>
+    <string name="compare_same_error">Please select different items</string>
+    <string name="compare_empty_input">Please enter items to compare</string>
+    <string name="compare_invalid_kind">Please enter a valid kind name</string>
+    <string name="compare_winner">Leading</string>
+    <string name="compare_shared">Shared</string>
+    <string name="compare_unique_left">Left Only</string>
+    <string name="compare_unique_right">Right Only</string>
+    <string name="compare_featured_left">Left Featured</string>
+    <string name="compare_featured_right">Right Featured</string>
+    <string name="compare_load_failed">Failed to load comparison</string>
+    <string name="compare_metric_directory_items">Directory Items</string>
+    <string name="compare_metric_inheritors">Inheritors</string>
+    <string name="compare_metric_articles">Articles</string>
+    <string name="compare_metric_total">Total</string>
+
+    <!-- Content Digest -->
+    <string name="digest_title">Quick Read</string>
+    <string name="digest_highlights">Highlights</string>
+    <string name="digest_key_facts">Key Facts</string>
+    <string name="digest_keywords">Keywords</string>
+    <string name="digest_reading_time">%1$d min</string>
+    <string name="digest_show_more">Show More</string>
+    <string name="digest_show_less">Show Less</string>
+
+    <!-- Blended Recommendations -->
+    <string name="blended_title">Recommended</string>
+    <string name="blended_reasons">Why</string>
+    <string name="blended_show_more_reasons">More reasons</string>
+    <string name="blended_score">Score</string>
 </resources>

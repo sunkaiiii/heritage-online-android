@@ -10,10 +10,18 @@ import com.duckylife.heritage.modern.core.network.HeritageApiClient
 import com.duckylife.heritage.modern.core.network.InheritorQuery
 import com.duckylife.heritage.modern.core.network.SearchV2Query
 import com.duckylife.heritage.modern.core.network.TimelineV2Query
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
+import com.duckylife.heritage.modern.core.network.DiscoveryDeepDiveQuery
+import com.duckylife.heritage.modern.core.network.DiscoverySerendipityQuery
+import com.duckylife.heritage.modern.core.network.TaxonomyRegionSort
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
 import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
@@ -21,6 +29,11 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryDeepDiveDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
@@ -36,6 +49,12 @@ import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
 import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
 import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyIndexDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyKindDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.coroutines.flow.Flow
@@ -154,6 +173,63 @@ interface HeritageRepository {
     suspend fun collection(id: String, limit: Int = 10): CollectionDto
 
     suspend fun topicCollection(type: String, key: String, limit: Int = 10): CollectionDto
+
+    // Discovery v2
+    suspend fun discoveryToday(): DiscoveryTodayDto
+
+    suspend fun discoveryRandom(type: SearchResultType): DiscoveryItemDto
+
+    suspend fun discoveryTrending(limit: Int = 10): DiscoveryTrendingDto
+
+    suspend fun discoveryWeekly(): DiscoveryWeeklyDto
+
+    suspend fun discoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto
+
+    suspend fun discoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto
+
+    // Data Stories
+    suspend fun regionStory(region: String): DataStoryDto
+
+    suspend fun categoryStory(category: String): DataStoryDto
+
+    suspend fun yearStory(year: Int): DataStoryDto
+
+    // Taxonomy
+    suspend fun taxonomyCategories(limit: Int = 50): TaxonomyIndexDto<TaxonomyTopicDto>
+
+    suspend fun taxonomyRegions(
+        limit: Int = 50,
+        sort: TaxonomyRegionSort = TaxonomyRegionSort.Total,
+    ): TaxonomyIndexDto<TaxonomyTopicDto>
+
+    suspend fun taxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto>
+
+    suspend fun taxonomyCategoryDetail(category: String, limit: Int = 6): TaxonomyCategoryDetailDto
+
+    suspend fun taxonomyRegionDetail(region: String, limit: Int = 6): TaxonomyRegionDetailDto
+
+    // Compare
+    suspend fun compareRegions(left: String, right: String, limit: Int = 6): CompareResultDto
+
+    suspend fun compareCategories(left: String, right: String, limit: Int = 6): CompareResultDto
+
+    suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int = 6,
+    ): CompareResultDto
+
+    // Content Digest
+    suspend fun articleDigest(id: String): ContentDigestDto
+
+    suspend fun directoryItemDigest(id: String): ContentDigestDto
+
+    suspend fun inheritorDigest(id: String): ContentDigestDto
+
+    // Blended Recommendations
+    suspend fun blendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto
 }
 
 class DefaultHeritageRepository @Inject constructor(
@@ -421,4 +497,96 @@ class DefaultHeritageRepository @Inject constructor(
 
     override suspend fun topicCollection(type: String, key: String, limit: Int): CollectionDto =
         apiClient.getTopicCollection(type, key, limit)
+
+    // Discovery v2
+    override suspend fun discoveryToday(): DiscoveryTodayDto =
+        apiClient.getDiscoveryToday()
+
+    override suspend fun discoveryRandom(type: SearchResultType): DiscoveryItemDto =
+        apiClient.getDiscoveryRandom(type)
+
+    override suspend fun discoveryTrending(limit: Int): DiscoveryTrendingDto =
+        apiClient.getDiscoveryTrending(limit)
+
+    override suspend fun discoveryWeekly(): DiscoveryWeeklyDto =
+        apiClient.getDiscoveryWeekly()
+
+    override suspend fun discoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto =
+        apiClient.getDiscoverySerendipity(query)
+
+    override suspend fun discoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto =
+        apiClient.getDiscoveryDeepDive(query)
+
+    // Data Stories
+    override suspend fun regionStory(region: String): DataStoryDto =
+        apiClient.getRegionStory(region)
+
+    override suspend fun categoryStory(category: String): DataStoryDto =
+        apiClient.getCategoryStory(category)
+
+    override suspend fun yearStory(year: Int): DataStoryDto =
+        apiClient.getYearStory(year)
+
+    // Taxonomy
+    override suspend fun taxonomyCategories(limit: Int): TaxonomyIndexDto<TaxonomyTopicDto> =
+        apiClient.getTaxonomyCategories(limit)
+
+    override suspend fun taxonomyRegions(
+        limit: Int,
+        sort: TaxonomyRegionSort,
+    ): TaxonomyIndexDto<TaxonomyTopicDto> =
+        apiClient.getTaxonomyRegions(limit, sort)
+
+    override suspend fun taxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto> =
+        apiClient.getTaxonomyKinds()
+
+    override suspend fun taxonomyCategoryDetail(
+        category: String,
+        limit: Int,
+    ): TaxonomyCategoryDetailDto =
+        apiClient.getTaxonomyCategoryDetail(category, limit)
+
+    override suspend fun taxonomyRegionDetail(
+        region: String,
+        limit: Int,
+    ): TaxonomyRegionDetailDto =
+        apiClient.getTaxonomyRegionDetail(region, limit)
+
+    // Compare
+    override suspend fun compareRegions(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto =
+        apiClient.compareRegions(left, right, limit)
+
+    override suspend fun compareCategories(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto =
+        apiClient.compareCategories(left, right, limit)
+
+    override suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int,
+    ): CompareResultDto =
+        apiClient.compareKinds(left, right, limit)
+
+    // Content Digest
+    override suspend fun articleDigest(id: String): ContentDigestDto =
+        apiClient.getArticleDigest(id)
+
+    override suspend fun directoryItemDigest(id: String): ContentDigestDto =
+        apiClient.getDirectoryItemDigest(id)
+
+    override suspend fun inheritorDigest(id: String): ContentDigestDto =
+        apiClient.getInheritorDigest(id)
+
+    // Blended Recommendations
+    override suspend fun blendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto =
+        apiClient.getBlendedRecommendations(query)
 }

@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -100,6 +102,8 @@ class ArticleDetailViewModel @AssistedInject constructor(
                 }
                 recordViewedIfNew(article)
                 loadContext(article.id)
+                loadDigest(article.id)
+                loadBlended(article.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -127,6 +131,44 @@ class ArticleDetailViewModel @AssistedInject constructor(
                 .onFailure { e ->
                     _uiState.update { it.copy(contextLoading = false, contextErrorKind = e.toUiError().kind) }
                 }
+        }
+    }
+
+    private fun loadDigest(articleId: String?) {
+        if (articleId.isNullOrBlank()) return
+        _uiState.update { it.copy(digestLoading = true, digestErrorKind = null) }
+        viewModelScope.launch {
+            runCatchingCancellable { repository.articleDigest(articleId) }
+                .onSuccess { digest ->
+                    _uiState.update { it.copy(digestLoading = false, digest = digest) }
+                }
+                .onFailure { e ->
+                    _uiState.update { it.copy(digestLoading = false, digestErrorKind = e.toUiError().kind) }
+                }
+        }
+    }
+
+    fun retryDigest() {
+        val id = _uiState.value.article?.id ?: return
+        loadDigest(id)
+    }
+
+    private fun loadBlended(articleId: String?) {
+        if (articleId.isNullOrBlank()) return
+        _uiState.update { it.copy(blendedLoading = true) }
+        viewModelScope.launch {
+            runCatchingCancellable {
+                repository.blendedRecommendations(
+                    BlendedRecommendationQuery(
+                        type = SearchResultType.Article,
+                        id = articleId,
+                    ),
+                )
+            }.onSuccess { response ->
+                _uiState.update { it.copy(blendedLoading = false, blendedRecommendations = response) }
+            }.onFailure {
+                _uiState.update { it.copy(blendedLoading = false) }
+            }
         }
     }
 

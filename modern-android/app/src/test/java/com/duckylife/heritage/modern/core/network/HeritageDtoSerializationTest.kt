@@ -1,7 +1,15 @@
 package com.duckylife.heritage.modern.core.network
 
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
 import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryDeepDiveDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
 import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
@@ -10,6 +18,11 @@ import com.duckylife.heritage.modern.core.network.dto.RecommendationDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
 import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyIndexDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyKindDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.serialization.json.Json
@@ -723,4 +736,567 @@ class HeritageDtoSerializationTest {
         assertEquals("https://example.test/img.jpg", dto.coverImage!!.displayUrl)
         assertEquals("https://example.test/source", dto.sourceUrl)
     }
+
+    // region Discovery v2 DTOs
+
+    @Test
+    fun discoveryTodayDto_parsesBackendShape() {
+        val dto = json.decodeFromString<DiscoveryTodayDto>(
+            """
+            {
+              "featuredDirectoryItem": {
+                "id": "d1",
+                "type": "directoryItem",
+                "title": "今日推荐名录",
+                "summary": "摘要",
+                "category": "传统技艺",
+                "kind": "nationalProject",
+                "region": "浙江",
+                "coverImage": { "displayUrl": "https://example.test/img.jpg" },
+                "sourceUrl": "https://example.test/source"
+              },
+              "featuredInheritor": {
+                "id": "i1",
+                "type": "inheritor",
+                "title": "今日推荐传承人"
+              },
+              "articles": [
+                { "id": "a1", "type": "article", "title": "今日文章" }
+              ],
+              "date": "2026-05-31"
+            }
+            """.trimIndent(),
+        )
+
+        assertNotNull(dto.featuredDirectoryItem)
+        assertEquals("d1", dto.featuredDirectoryItem!!.id)
+        assertEquals("directoryItem", dto.featuredDirectoryItem!!.type)
+        assertEquals("今日推荐名录", dto.featuredDirectoryItem!!.title)
+        assertEquals("传统技艺", dto.featuredDirectoryItem!!.category)
+        assertEquals("nationalProject", dto.featuredDirectoryItem!!.kind)
+        assertEquals("浙江", dto.featuredDirectoryItem!!.region)
+        assertNotNull(dto.featuredDirectoryItem!!.coverImage)
+
+        assertNotNull(dto.featuredInheritor)
+        assertEquals("i1", dto.featuredInheritor!!.id)
+        assertEquals("今日推荐传承人", dto.featuredInheritor!!.title)
+
+        assertEquals(1, dto.articles.size)
+        assertEquals("今日文章", dto.articles.first().title)
+        assertEquals("2026-05-31", dto.date)
+    }
+
+    @Test
+    fun discoveryTrendingDto_parsesBackendShape() {
+        val dto = json.decodeFromString<DiscoveryTrendingDto>(
+            """
+            {
+              "items": [
+                { "id": "t1", "type": "article", "title": "热门文章" },
+                { "id": "t2", "type": "directoryItem", "title": "热门名录" }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(2, dto.items.size)
+        assertEquals("热门文章", dto.items.first().title)
+        assertEquals("热门名录", dto.items[1].title)
+        assertNotNull(dto.generatedAt)
+    }
+
+    @Test
+    fun discoveryWeeklyDto_parsesBackendShape() {
+        val dto = json.decodeFromString<DiscoveryWeeklyDto>(
+            """
+            {
+              "weekId": "2026-W22",
+              "sections": [
+                {
+                  "id": "s1",
+                  "title": "本周精选",
+                  "subtitle": "不容错过的内容",
+                  "items": [
+                    { "id": "w1", "type": "article", "title": "本周文章" }
+                  ]
+                }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("2026-W22", dto.weekId)
+        assertEquals(1, dto.sections.size)
+        assertEquals("本周精选", dto.sections.first().title)
+        assertEquals("不容错过的内容", dto.sections.first().subtitle)
+        assertEquals(1, dto.sections.first().items.size)
+        assertEquals("本周文章", dto.sections.first().items.first().title)
+        assertNotNull(dto.generatedAt)
+    }
+
+    @Test
+    fun discoveryDeepDiveDto_parsesBackendShape() {
+        val dto = json.decodeFromString<DiscoveryDeepDiveDto>(
+            """
+            {
+              "seed": { "id": "s1", "type": "article", "title": "种子文章" },
+              "related": [
+                { "id": "r1", "type": "directoryItem", "title": "相关名录" },
+                { "id": "r2", "type": "inheritor", "title": "相关传承人" }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertNotNull(dto.seed)
+        assertEquals("s1", dto.seed!!.id)
+        assertEquals("种子文章", dto.seed!!.title)
+        assertEquals(2, dto.related.size)
+        assertEquals("相关名录", dto.related.first().title)
+        assertEquals("相关传承人", dto.related[1].title)
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
+
+    // region Data Story DTOs
+
+    @Test
+    fun dataStoryDto_parsesBackendShape() {
+        val dto = json.decodeFromString<DataStoryDto>(
+            """
+            {
+              "id": "story-1",
+              "title": "浙江非遗故事",
+              "subtitle": "文化大省的非遗之路",
+              "heroImage": { "displayUrl": "https://example.test/hero.jpg" },
+              "sections": [
+                {
+                  "id": "intro",
+                  "title": "简介",
+                  "type": "intro",
+                  "body": "浙江是中国非遗大省..."
+                },
+                {
+                  "id": "items",
+                  "title": "代表性项目",
+                  "type": "items",
+                  "items": [
+                    { "type": "directoryItem", "id": "d1", "title": "龙泉青瓷", "summary": "摘要" }
+                  ]
+                }
+              ],
+              "relatedTopics": [
+                { "type": "category", "key": "传统技艺", "title": "传统技艺" }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("story-1", dto.id)
+        assertEquals("浙江非遗故事", dto.title)
+        assertEquals("文化大省的非遗之路", dto.subtitle)
+        assertNotNull(dto.heroImage)
+        assertEquals(2, dto.sections.size)
+        assertEquals("intro", dto.sections.first().type)
+        assertEquals("浙江是中国非遗大省...", dto.sections.first().body)
+        assertEquals("items", dto.sections[1].type)
+        assertEquals(1, dto.sections[1].items.size)
+        assertEquals("龙泉青瓷", dto.sections[1].items.first().title)
+        assertEquals(1, dto.relatedTopics.size)
+        assertEquals("传统技艺", dto.relatedTopics.first().title)
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
+
+    // region Taxonomy DTOs
+
+    @Test
+    fun taxonomyIndexDto_parsesTopicDtoBackendShape() {
+        val dto = json.decodeFromString<TaxonomyIndexDto<TaxonomyTopicDto>>(
+            """
+            {
+              "items": [
+                {
+                  "type": "category",
+                  "key": "传统技艺",
+                  "title": "传统技艺",
+                  "subtitle": "描述",
+                  "directoryItemCount": 120,
+                  "inheritorCount": 50,
+                  "articleCount": 30,
+                  "total": 200,
+                  "topRegions": [
+                    { "region": "浙江", "count": 15 }
+                  ],
+                  "topCategories": [
+                    { "category": "陶瓷", "count": 10 }
+                  ],
+                  "coverImage": { "displayUrl": "https://example.test/img.jpg" }
+                }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(1, dto.items.size)
+        val topic = dto.items.first()
+        assertEquals("category", topic.type)
+        assertEquals("传统技艺", topic.key)
+        assertEquals("传统技艺", topic.title)
+        assertEquals("描述", topic.subtitle)
+        assertEquals(120, topic.directoryItemCount)
+        assertEquals(50, topic.inheritorCount)
+        assertEquals(30, topic.articleCount)
+        assertEquals(200, topic.total)
+        assertEquals(1, topic.topRegions.size)
+        assertEquals("浙江", topic.topRegions.first().region)
+        assertEquals(1, topic.topCategories.size)
+        assertEquals("陶瓷", topic.topCategories.first().category)
+        assertNotNull(topic.coverImage)
+        assertNotNull(dto.generatedAt)
+    }
+
+    @Test
+    fun taxonomyIndexDto_parsesKindDtoBackendShape() {
+        val dto = json.decodeFromString<TaxonomyIndexDto<TaxonomyKindDto>>(
+            """
+            {
+              "items": [
+                {
+                  "key": "nationalProject",
+                  "title": "国家级项目",
+                  "directoryItemCount": 950,
+                  "inheritorCount": 300,
+                  "total": 1250
+                }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(1, dto.items.size)
+        val kind = dto.items.first()
+        assertEquals("nationalProject", kind.key)
+        assertEquals("国家级项目", kind.title)
+        assertEquals(950, kind.directoryItemCount)
+        assertEquals(300, kind.inheritorCount)
+        assertEquals(1250, kind.total)
+    }
+
+    @Test
+    fun taxonomyCategoryDetailDto_parsesBackendShape() {
+        val dto = json.decodeFromString<TaxonomyCategoryDetailDto>(
+            """
+            {
+              "topic": {
+                "type": "category",
+                "key": "传统技艺",
+                "title": "传统技艺",
+                "directoryItemCount": 120,
+                "inheritorCount": 50,
+                "total": 170
+              },
+              "stats": {
+                "directoryItemCount": 120,
+                "inheritorCount": 50,
+                "articleCount": 30,
+                "total": 200
+              },
+              "topRegions": [
+                { "region": "浙江", "count": 15 }
+              ],
+              "articles": [
+                { "id": "a1", "title": "相关文章" }
+              ],
+              "directoryItems": [
+                { "id": "d1", "title": "相关名录" }
+              ],
+              "inheritors": [
+                { "id": "i1", "name": "相关传承人" }
+              ],
+              "relatedCategories": ["传统美术", "民俗"],
+              "recommendedCollections": [
+                { "id": "c1", "title": "推荐合集" }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("传统技艺", dto.topic.key)
+        assertEquals(120, dto.stats.directoryItemCount)
+        assertEquals(50, dto.stats.inheritorCount)
+        assertEquals(30, dto.stats.articleCount)
+        assertEquals(200, dto.stats.total)
+        assertEquals(1, dto.topRegions.size)
+        assertEquals("浙江", dto.topRegions.first().region)
+        assertEquals(1, dto.articles.size)
+        assertEquals("相关文章", dto.articles.first().title)
+        assertEquals(1, dto.directoryItems.size)
+        assertEquals("相关名录", dto.directoryItems.first().title)
+        assertEquals(1, dto.inheritors.size)
+        assertEquals("相关传承人", dto.inheritors.first().name)
+        assertEquals(2, dto.relatedCategories.size)
+        assertEquals("传统美术", dto.relatedCategories.first())
+        assertEquals(1, dto.recommendedCollections.size)
+        assertNotNull(dto.generatedAt)
+    }
+
+    @Test
+    fun taxonomyRegionDetailDto_parsesBackendShape() {
+        val dto = json.decodeFromString<TaxonomyRegionDetailDto>(
+            """
+            {
+              "topic": {
+                "type": "region",
+                "key": "浙江省",
+                "title": "浙江省",
+                "directoryItemCount": 40,
+                "inheritorCount": 2,
+                "total": 42
+              },
+              "stats": {
+                "directoryItemCount": 40,
+                "inheritorCount": 2,
+                "articleCount": 10,
+                "total": 52
+              },
+              "topCategories": [
+                { "category": "传统技艺", "count": 15 }
+              ],
+              "articles": [
+                { "id": "a1", "title": "浙江文章" }
+              ],
+              "directoryItems": [
+                { "id": "d1", "title": "浙江名录" }
+              ],
+              "inheritors": [
+                { "id": "i1", "name": "浙江传承人" }
+              ],
+              "relatedRegions": ["江苏省", "安徽省"],
+              "recommendedCollections": [],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("浙江省", dto.topic.key)
+        assertEquals(40, dto.stats.directoryItemCount)
+        assertEquals(2, dto.stats.inheritorCount)
+        assertEquals(1, dto.topCategories.size)
+        assertEquals("传统技艺", dto.topCategories.first().category)
+        assertEquals(1, dto.articles.size)
+        assertEquals(1, dto.directoryItems.size)
+        assertEquals(1, dto.inheritors.size)
+        assertEquals(2, dto.relatedRegions.size)
+        assertEquals("江苏省", dto.relatedRegions.first())
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
+
+    // region Compare DTOs
+
+    @Test
+    fun compareResultDto_parsesBackendShape() {
+        val dto = json.decodeFromString<CompareResultDto>(
+            """
+            {
+              "left": {
+                "key": "浙江",
+                "title": "浙江",
+                "directoryItemCount": 40,
+                "inheritorCount": 2,
+                "articleCount": 10,
+                "total": 52,
+                "topCategories": [
+                  { "category": "传统技艺", "count": 15 }
+                ],
+                "topRegions": []
+              },
+              "right": {
+                "key": "江苏",
+                "title": "江苏",
+                "directoryItemCount": 28,
+                "inheritorCount": 10,
+                "articleCount": 8,
+                "total": 46,
+                "topCategories": [],
+                "topRegions": []
+              },
+              "summary": {
+                "winnerByDirectoryItems": "浙江",
+                "winnerByInheritors": "江苏",
+                "winnerByArticles": "浙江",
+                "winnerByTotal": "浙江"
+              },
+              "sharedCategories": ["传统技艺", "传统美术"],
+              "leftUniqueCategories": ["民俗"],
+              "rightUniqueCategories": ["传统医药"],
+              "sharedRegions": [],
+              "leftUniqueRegions": [],
+              "rightUniqueRegions": [],
+              "leftFeaturedItems": [
+                { "id": "d1", "title": "浙江项目" }
+              ],
+              "rightFeaturedItems": [
+                { "id": "d2", "title": "江苏项目" }
+              ],
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("浙江", dto.left.key)
+        assertEquals(40, dto.left.directoryItemCount)
+        assertEquals(2, dto.left.inheritorCount)
+        assertEquals("江苏", dto.right.key)
+        assertEquals(28, dto.right.directoryItemCount)
+        assertEquals(10, dto.right.inheritorCount)
+
+        assertEquals("浙江", dto.summary.winnerByDirectoryItems)
+        assertEquals("江苏", dto.summary.winnerByInheritors)
+        assertEquals("浙江", dto.summary.winnerByArticles)
+        assertEquals("浙江", dto.summary.winnerByTotal)
+
+        assertEquals(2, dto.sharedCategories.size)
+        assertEquals("传统技艺", dto.sharedCategories.first())
+        assertEquals(1, dto.leftUniqueCategories.size)
+        assertEquals("民俗", dto.leftUniqueCategories.first())
+        assertEquals(1, dto.rightUniqueCategories.size)
+        assertEquals("传统医药", dto.rightUniqueCategories.first())
+
+        assertEquals(1, dto.leftFeaturedItems.size)
+        assertEquals("浙江项目", dto.leftFeaturedItems.first().title)
+        assertEquals(1, dto.rightFeaturedItems.size)
+        assertEquals("江苏项目", dto.rightFeaturedItems.first().title)
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
+
+    // region Content Digest DTOs
+
+    @Test
+    fun contentDigestDto_parsesBackendShape() {
+        val dto = json.decodeFromString<ContentDigestDto>(
+            """
+            {
+              "type": "article",
+              "id": "a1",
+              "title": "非遗新闻速览",
+              "quickRead": "这是一篇关于非遗的新闻...",
+              "highlights": ["要点1", "要点2"],
+              "keyFacts": [
+                { "label": "发布时间", "value": "2026-05-31" },
+                { "label": "来源", "value": "人民日报" }
+              ],
+              "keywords": ["非遗", "传统文化"],
+              "readingTimeMinutes": 3,
+              "sourceUrl": "https://example.test/source",
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals("article", dto.type)
+        assertEquals("a1", dto.id)
+        assertEquals("非遗新闻速览", dto.title)
+        assertEquals("这是一篇关于非遗的新闻...", dto.quickRead)
+        assertEquals(2, dto.highlights.size)
+        assertEquals("要点1", dto.highlights.first())
+        assertEquals(2, dto.keyFacts.size)
+        assertEquals("发布时间", dto.keyFacts.first().label)
+        assertEquals("2026-05-31", dto.keyFacts.first().value)
+        assertEquals(2, dto.keywords.size)
+        assertEquals("非遗", dto.keywords.first())
+        assertEquals(3, dto.readingTimeMinutes)
+        assertEquals("https://example.test/source", dto.sourceUrl)
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
+
+    // region Blended Recommendation DTOs
+
+    @Test
+    fun blendedRecommendationResponseDto_parsesBackendShape() {
+        val dto = json.decodeFromString<BlendedRecommendationResponseDto>(
+            """
+            {
+              "items": [
+                {
+                  "id": "r1",
+                  "type": "directoryItem",
+                  "title": "推荐项目",
+                  "subtitle": "副标题",
+                  "score": 0.85,
+                  "reasons": ["同属传统技艺", "同在浙江"],
+                  "scoreBreakdown": {
+                    "explicit": 0.3,
+                    "inferred": 0.2,
+                    "embedding": 0.15,
+                    "sameCategory": 0.1,
+                    "sameRegion": 0.1
+                  },
+                  "category": "传统技艺",
+                  "region": "浙江",
+                  "coverImage": { "displayUrl": "https://example.test/img.jpg" },
+                  "sourceUrl": "https://example.test/source"
+                }
+              ],
+              "query": {
+                "type": "directoryItem",
+                "id": "seed-1",
+                "limit": 10,
+                "ruleWeight": 1.0,
+                "semanticWeight": 0.8,
+                "sameCategoryWeight": 0.5,
+                "sameRegionWeight": 0.3,
+                "diversify": true
+              },
+              "generatedAt": "2026-05-31T10:00:00Z"
+            }
+            """.trimIndent(),
+        )
+
+        assertEquals(1, dto.items.size)
+        val item = dto.items.first()
+        assertEquals("r1", item.id)
+        assertEquals("directoryItem", item.type)
+        assertEquals("推荐项目", item.title)
+        assertEquals("副标题", item.subtitle)
+        assertEquals(0.85, item.score, 0.001)
+        assertEquals(2, item.reasons.size)
+        assertEquals("同属传统技艺", item.reasons.first())
+        assertEquals(0.3, item.scoreBreakdown.explicit, 0.001)
+        assertEquals(0.2, item.scoreBreakdown.inferred, 0.001)
+        assertEquals(0.15, item.scoreBreakdown.embedding, 0.001)
+        assertEquals(0.1, item.scoreBreakdown.sameCategory, 0.001)
+        assertEquals(0.1, item.scoreBreakdown.sameRegion, 0.001)
+        assertEquals("传统技艺", item.category)
+        assertEquals("浙江", item.region)
+        assertNotNull(item.coverImage)
+        assertEquals("https://example.test/source", item.sourceUrl)
+
+        assertEquals("directoryItem", dto.query.type)
+        assertEquals("seed-1", dto.query.id)
+        assertEquals(10, dto.query.limit)
+        assertEquals(1.0, dto.query.ruleWeight, 0.001)
+        assertEquals(0.8, dto.query.semanticWeight, 0.001)
+        assertEquals(0.5, dto.query.sameCategoryWeight, 0.001)
+        assertEquals(0.3, dto.query.sameRegionWeight, 0.001)
+        assertTrue(dto.query.diversify)
+        assertNotNull(dto.generatedAt)
+    }
+
+    // endregion
 }

@@ -15,15 +15,21 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.compare.CompareRoute
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
+import com.duckylife.heritage.modern.feature.discovery.deepdive.DeepDiveRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
 import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
 import com.duckylife.heritage.modern.feature.regions.RegionAtlasRoute
 import com.duckylife.heritage.modern.feature.regions.RegionDetailRoute
 import com.duckylife.heritage.modern.feature.search.SearchRoute
+import com.duckylife.heritage.modern.feature.stories.StoryRoute
+import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyDetailRoute
+import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyRoute
 import com.duckylife.heritage.modern.feature.timeline.TimelineRoute
 
 // ---------------------------------------------------------------------------
@@ -49,6 +55,24 @@ private data object RegionAtlasPage
 private data class RegionDetailPage(val region: String)
 
 private data object TimelinePage
+
+private data object TaxonomyPage
+
+private data class TaxonomyDetailPage(val type: String, val key: String)
+
+private data class ComparePage(
+    val type: String? = null,
+    val left: String? = null,
+    val right: String? = null,
+)
+
+private data class StoryPage(
+    val region: String? = null,
+    val category: String? = null,
+    val year: Int? = null,
+)
+
+private data class DeepDivePage(val seedType: String, val seedId: String)
 
 private data class DiscoveryArticleDetail(
     val id: String? = null,
@@ -83,6 +107,11 @@ private fun serializeDiscovery(stack: List<Any>): String =
             is RegionAtlasPage -> "RA"
             is RegionDetailPage -> "RD|${entry.region}"
             is TimelinePage -> "T"
+            is TaxonomyPage -> "TX"
+            is TaxonomyDetailPage -> "TXD|${entry.type}|${entry.key}"
+            is ComparePage -> "CMP|${entry.type.orEmpty()}|${entry.left.orEmpty()}|${entry.right.orEmpty()}"
+            is StoryPage -> "ST|${entry.region.orEmpty()}|${entry.category.orEmpty()}|${entry.year ?: ""}"
+            is DeepDivePage -> "DDP|${entry.seedType}|${entry.seedId}"
             is DiscoveryArticleDetail -> "DA|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
             is DiscoveryDirectoryDetail -> "DD|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
             is DiscoveryInheritorDetail -> "DI|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
@@ -110,6 +139,25 @@ private fun deserializeDiscovery(str: String): List<Any> =
             "RA" -> RegionAtlasPage
             "RD" -> RegionDetailPage(region = parts.getOrNull(1).orEmpty())
             "T" -> TimelinePage
+            "TX" -> TaxonomyPage
+            "TXD" -> TaxonomyDetailPage(
+                type = parts.getOrNull(1).orEmpty(),
+                key = parts.getOrNull(2).orEmpty(),
+            )
+            "CMP" -> ComparePage(
+                type = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                left = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+                right = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
+            )
+            "ST" -> StoryPage(
+                region = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
+                category = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
+                year = parts.getOrNull(3)?.takeIf { it.isNotEmpty() }?.toIntOrNull(),
+            )
+            "DDP" -> DeepDivePage(
+                seedType = parts.getOrNull(1).orEmpty(),
+                seedId = parts.getOrNull(2).orEmpty(),
+            )
             "DA" -> DiscoveryArticleDetail(
                 id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
                 sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
@@ -128,6 +176,23 @@ private fun deserializeDiscovery(str: String): List<Any> =
             else -> DiscoveryIndex
         }
     }
+
+// ---------------------------------------------------------------------------
+// Helper: type-based routing for DiscoveryItemDto
+// ---------------------------------------------------------------------------
+
+private fun navigateToDiscoveryItem(
+    item: DiscoveryItemDto,
+    backStack: MutableList<Any>,
+) {
+    val id = item.id
+    if (id.isNullOrBlank()) return
+    when (item.type) {
+        "directoryItem" -> backStack.add(DiscoveryDirectoryDetail(id = id))
+        "inheritor" -> backStack.add(DiscoveryInheritorDetail(id = id))
+        else -> backStack.add(DiscoveryArticleDetail(id = id))
+    }
+}
 
 // ---------------------------------------------------------------------------
 // NavHost
@@ -183,6 +248,20 @@ fun DiscoveryNavHost(
                         },
                         onTimelineClick = {
                             backStack.add(TimelinePage)
+                        },
+                        onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onDeepDiveClick = { item ->
+                            if (!item.id.isNullOrBlank()) {
+                                backStack.add(DeepDivePage(seedType = item.type, seedId = item.id))
+                            }
+                        },
+                        onTaxonomyClick = {
+                            backStack.add(TaxonomyPage)
+                        },
+                        onStoriesClick = {
+                            backStack.add(StoryPage())
                         },
                         modifier = modifier,
                     )
@@ -389,6 +468,89 @@ fun DiscoveryNavHost(
                     )
                 }
 
+                // ---- Taxonomy ----
+                is TaxonomyPage -> NavEntry(key) {
+                    TaxonomyRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(TaxonomyDetailPage(type = type, key = topicKey))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Taxonomy Detail ----
+                is TaxonomyDetailPage -> NavEntry(key) {
+                    TaxonomyDetailRoute(
+                        type = key.type,
+                        key = key.key,
+                        onBack = { backStack.removeLastOrNull() },
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryInheritorDetail(id = id))
+                        },
+                        onRelatedTopicClick = { type, topicKey ->
+                            backStack.add(TaxonomyDetailPage(type = type, key = topicKey))
+                        },
+                        onViewStory = {
+                            when (key.type) {
+                                "category" -> backStack.add(StoryPage(category = key.key))
+                                "region" -> backStack.add(StoryPage(region = key.key))
+                            }
+                        },
+                        onCompare = {
+                            when (key.type) {
+                                "category" -> backStack.add(ComparePage(type = "category", left = key.key))
+                                "region" -> backStack.add(ComparePage(type = "region", left = key.key))
+                            }
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Compare ----
+                is ComparePage -> NavEntry(key) {
+                    CompareRoute(
+                        initialType = key.type,
+                        initialLeft = key.left,
+                        initialRight = key.right,
+                        onBack = { backStack.removeLastOrNull() },
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Story ----
+                is StoryPage -> NavEntry(key) {
+                    StoryRoute(
+                        region = key.region,
+                        category = key.category,
+                        year = key.year,
+                        onBack = { backStack.removeLastOrNull() },
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(ExploreTopicDetail(type = type, key = topicKey))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Deep Dive ----
+                is DeepDivePage -> NavEntry(key) {
+                    DeepDiveRoute(
+                        seedType = key.seedType,
+                        seedId = key.seedId,
+                        onBack = { backStack.removeLastOrNull() },
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
                 else -> NavEntry(Unit) {
                     DiscoveryRoute(
                         onSearchSubmit = { query ->
@@ -414,6 +576,20 @@ fun DiscoveryNavHost(
                         },
                         onTimelineClick = {
                             backStack.add(TimelinePage)
+                        },
+                        onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onDeepDiveClick = { item ->
+                            if (!item.id.isNullOrBlank()) {
+                                backStack.add(DeepDivePage(seedType = item.type, seedId = item.id))
+                            }
+                        },
+                        onTaxonomyClick = {
+                            backStack.add(TaxonomyPage)
+                        },
+                        onStoriesClick = {
+                            backStack.add(StoryPage())
                         },
                         modifier = modifier,
                     )

@@ -2,14 +2,22 @@ package com.duckylife.heritage.modern.core.data
 
 import androidx.paging.PagingData
 import com.duckylife.heritage.modern.core.network.ArticleQuery
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
+import com.duckylife.heritage.modern.core.network.DiscoveryDeepDiveQuery
+import com.duckylife.heritage.modern.core.network.DiscoverySerendipityQuery
 import com.duckylife.heritage.modern.core.network.InheritorQuery
 import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.TaxonomyRegionSort
 import com.duckylife.heritage.modern.core.network.TimelineV2Query
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
 import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
@@ -17,6 +25,11 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryDeepDiveDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
@@ -30,8 +43,14 @@ import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.PagedResult
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
 import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyIndexDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyKindDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import kotlinx.coroutines.flow.Flow
@@ -309,5 +328,139 @@ class FakeHeritageRepository(
     override suspend fun topicCollection(type: String, key: String, limit: Int): CollectionDto {
         failure?.let { throw it }
         return CollectionDto()
+    }
+
+    // Discovery v2
+    override suspend fun discoveryToday(): DiscoveryTodayDto {
+        failure?.let { throw it }
+        return DiscoveryTodayDto()
+    }
+
+    override suspend fun discoveryRandom(type: SearchResultType): DiscoveryItemDto {
+        failure?.let { throw it }
+        return DiscoveryItemDto()
+    }
+
+    override suspend fun discoveryTrending(limit: Int): DiscoveryTrendingDto {
+        failure?.let { throw it }
+        return DiscoveryTrendingDto()
+    }
+
+    override suspend fun discoveryWeekly(): DiscoveryWeeklyDto {
+        failure?.let { throw it }
+        return DiscoveryWeeklyDto()
+    }
+
+    override suspend fun discoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto {
+        failure?.let { throw it }
+        return DiscoveryItemDto()
+    }
+
+    override suspend fun discoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto {
+        failure?.let { throw it }
+        return DiscoveryDeepDiveDto()
+    }
+
+    // Data Stories
+    override suspend fun regionStory(region: String): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    override suspend fun categoryStory(category: String): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    override suspend fun yearStory(year: Int): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    // Taxonomy
+    override suspend fun taxonomyCategories(limit: Int): TaxonomyIndexDto<TaxonomyTopicDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyRegions(
+        limit: Int,
+        sort: TaxonomyRegionSort,
+    ): TaxonomyIndexDto<TaxonomyTopicDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyCategoryDetail(
+        category: String,
+        limit: Int,
+    ): TaxonomyCategoryDetailDto {
+        failure?.let { throw it }
+        return TaxonomyCategoryDetailDto()
+    }
+
+    override suspend fun taxonomyRegionDetail(
+        region: String,
+        limit: Int,
+    ): TaxonomyRegionDetailDto {
+        failure?.let { throw it }
+        return TaxonomyRegionDetailDto()
+    }
+
+    // Compare
+    override suspend fun compareRegions(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    override suspend fun compareCategories(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    override suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    // Content Digest
+    override suspend fun articleDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    override suspend fun directoryItemDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    override suspend fun inheritorDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    // Blended Recommendations
+    override suspend fun blendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto {
+        failure?.let { throw it }
+        return BlendedRecommendationResponseDto()
     }
 }
