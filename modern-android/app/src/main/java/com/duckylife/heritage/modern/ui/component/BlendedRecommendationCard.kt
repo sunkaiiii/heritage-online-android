@@ -141,10 +141,11 @@ fun BlendedRecommendationCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 if (item.type.isNotBlank()) {
-                    HeritageMetaChip(text = localizedTypeChip(item.type))
+                    HeritageMetaChip(text = com.duckylife.heritage.modern.ui.text.localizedContentType(item.type))
                 }
-                if (!item.category.isNullOrBlank()) {
-                    HeritageMetaChip(text = item.category)
+                val localizedCategory = com.duckylife.heritage.modern.ui.text.localizedArticleCategory(item.category)
+                if (localizedCategory != null) {
+                    HeritageMetaChip(text = localizedCategory)
                 }
                 if (!item.region.isNullOrBlank()) {
                     HeritageMetaChip(text = item.region)
@@ -257,12 +258,3 @@ private fun ScoreBreakdownBar(
         }
     }
 }
-
-@Composable
-private fun localizedTypeChip(type: String): String =
-    when (type) {
-        "article" -> stringResource(R.string.search_type_article)
-        "directoryItem" -> stringResource(R.string.search_type_directory)
-        "inheritor" -> stringResource(R.string.search_type_inheritor)
-        else -> type
-    }

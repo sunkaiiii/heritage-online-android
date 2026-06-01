@@ -76,4 +76,58 @@ class ReadingPathRepositoryTest {
         assertEquals("evt2", path.first().id)
         assertEquals("evt1", path.last().id)
     }
+
+    @Test
+    fun `record preserves metadata fields`() = runTest {
+        val dao = FakeReadingPathDao()
+        val repo = DefaultReadingPathRepository(dao)
+
+        val event = ReadingPathEvent(
+            id = "evt1",
+            fromType = "directoryItem",
+            fromId = "d1",
+            fromTitle = "Source Directory",
+            toType = "article",
+            toId = "a1",
+            toTitle = "Target Article",
+            source = "blendedRecommendation",
+            toCategory = "news",
+            toKind = null,
+            toSourceId = "src1",
+            toSourceUrl = "https://example.test/article",
+            toSubtitle = "Article subtitle",
+            toImageUrl = "https://example.test/image.jpg",
+            createdAt = 1000L,
+        )
+        repo.record(event)
+
+        val path = repo.observeRecentPath().first()
+        assertEquals(1, path.size)
+        val saved = path.first()
+        assertEquals("directoryItem", saved.fromType)
+        assertEquals("d1", saved.fromId)
+        assertEquals("Source Directory", saved.fromTitle)
+        assertEquals("article", saved.toType)
+        assertEquals("a1", saved.toId)
+        assertEquals("Target Article", saved.toTitle)
+        assertEquals("blendedRecommendation", saved.source)
+        assertEquals("news", saved.toCategory)
+        assertEquals("src1", saved.toSourceId)
+        assertEquals("https://example.test/article", saved.toSourceUrl)
+        assertEquals("Article subtitle", saved.toSubtitle)
+        assertEquals("https://example.test/image.jpg", saved.toImageUrl)
+    }
+
+    @Test
+    fun `upsert replaces existing event with same id`() = runTest {
+        val dao = FakeReadingPathDao()
+        val repo = DefaultReadingPathRepository(dao)
+
+        repo.record(ReadingPathEvent(id = "evt1", toType = "article", toId = "a1", source = "list", createdAt = 1000L))
+        repo.record(ReadingPathEvent(id = "evt1", toType = "directoryItem", toId = "d1", source = "blended", createdAt = 2000L))
+
+        val path = repo.observeRecentPath().first()
+        assertEquals(1, path.size)
+        assertEquals("directoryItem", path.first().toType)
+    }
 }

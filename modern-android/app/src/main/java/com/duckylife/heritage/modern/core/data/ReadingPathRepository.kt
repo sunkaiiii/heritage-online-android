@@ -11,7 +11,7 @@ import javax.inject.Inject
  * 阅读路径事件的领域模型。
  */
 data class ReadingPathEvent(
-    val id: String,
+    val id: String = UUID.randomUUID().toString(),
     val fromType: String? = null,
     val fromId: String? = null,
     val fromTitle: String? = null,
@@ -19,7 +19,28 @@ data class ReadingPathEvent(
     val toId: String,
     val toTitle: String? = null,
     val source: String,
-    val createdAt: Long,
+    val toCategory: String? = null,
+    val toKind: String? = null,
+    val toSourceId: String? = null,
+    val toSourceUrl: String? = null,
+    val toSubtitle: String? = null,
+    val toImageUrl: String? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+/**
+ * 阅读路径内容引用，用于构造 from/to。
+ */
+data class ReadingPathContentRef(
+    val type: String,
+    val id: String,
+    val title: String,
+    val category: String? = null,
+    val kind: String? = null,
+    val sourceId: String? = null,
+    val sourceUrl: String? = null,
+    val subtitle: String? = null,
+    val imageUrl: String? = null,
 )
 
 /**
@@ -61,6 +82,12 @@ private fun ReadingPathEventEntity.toDomain(): ReadingPathEvent = ReadingPathEve
     toId = toId,
     toTitle = toTitle,
     source = source,
+    toCategory = toCategory,
+    toKind = toKind,
+    toSourceId = toSourceId,
+    toSourceUrl = toSourceUrl,
+    toSubtitle = toSubtitle,
+    toImageUrl = toImageUrl,
     createdAt = createdAt,
 )
 
@@ -73,5 +100,11 @@ private fun ReadingPathEvent.toEntity(): ReadingPathEventEntity = ReadingPathEve
     toId = toId,
     toTitle = toTitle,
     source = source,
+    toCategory = toCategory,
+    toKind = toKind,
+    toSourceId = toSourceId,
+    toSourceUrl = toSourceUrl,
+    toSubtitle = toSubtitle,
+    toImageUrl = toImageUrl,
     createdAt = createdAt,
 )

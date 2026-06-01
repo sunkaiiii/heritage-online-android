@@ -98,11 +98,12 @@ fun DiscoveryItemCard(
                 Spacer(modifier = Modifier.height(6.dp))
                 Row {
                     if (item.type.isNotBlank()) {
-                        HeritageMetaChip(text = localizedTypeChip(item.type))
+                        HeritageMetaChip(text = com.duckylife.heritage.modern.ui.text.localizedContentType(item.type))
                     }
-                    if (!item.category.isNullOrBlank()) {
+                    val localizedCat = com.duckylife.heritage.modern.ui.text.localizedArticleCategory(item.category)
+                    if (localizedCat != null) {
                         Spacer(modifier = Modifier.width(4.dp))
-                        HeritageMetaChip(text = item.category)
+                        HeritageMetaChip(text = localizedCat)
                     }
                     if (!item.region.isNullOrBlank()) {
                         Spacer(modifier = Modifier.width(4.dp))
@@ -182,11 +183,12 @@ fun DiscoveryItemRow(
                 Spacer(modifier = Modifier.height(6.dp))
                 Row {
                     if (item.type.isNotBlank()) {
-                        HeritageMetaChip(text = localizedTypeChip(item.type))
+                        HeritageMetaChip(text = com.duckylife.heritage.modern.ui.text.localizedContentType(item.type))
                     }
-                    if (!item.category.isNullOrBlank()) {
+                    val localizedCat = com.duckylife.heritage.modern.ui.text.localizedArticleCategory(item.category)
+                    if (localizedCat != null) {
                         Spacer(modifier = Modifier.width(4.dp))
-                        HeritageMetaChip(text = item.category)
+                        HeritageMetaChip(text = localizedCat)
                     }
                     if (!item.region.isNullOrBlank()) {
                         Spacer(modifier = Modifier.width(4.dp))
@@ -198,12 +200,3 @@ fun DiscoveryItemRow(
     }
 }
 
-// 本地化 type chip 显示文本
-@Composable
-private fun localizedTypeChip(type: String): String =
-    when (type) {
-        "article" -> stringResource(R.string.search_type_article)
-        "directoryItem" -> stringResource(R.string.search_type_directory)
-        "inheritor" -> stringResource(R.string.search_type_inheritor)
-        else -> type
-    }

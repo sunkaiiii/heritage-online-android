@@ -87,8 +87,9 @@ fun ArticleDetailRoute(
     category: ArticleCategory,
     onBack: () -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit,
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
+    readingPathRecorder: com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
     val viewModel: ArticleDetailViewModel = hiltViewModel<ArticleDetailViewModel, ArticleDetailViewModel.Factory>(
         key = "article-detail-${articleId.orEmpty()}-${sourceId.orEmpty()}-${sourceUrl.orEmpty()}-${category.wireName}",
@@ -102,6 +103,28 @@ fun ArticleDetailRoute(
         },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // 包装 onExploreTargetClick，记录阅读路径
+    val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
+        val article = uiState.article
+        if (article != null) {
+            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "article",
+                id = article.id ?: articleId.orEmpty(),
+                title = article.title.orEmpty(),
+                category = article.category.wireName,
+                sourceId = sourceId,
+                sourceUrl = sourceUrl,
+            )
+            readingPathRecorder.record(
+                from = from,
+                to = click.toReadingPathContentRef(),
+                source = click.source.wireName,
+            )
+        }
+        onExploreTargetClick(click)
+    }
+
     ArticleDetailScreen(
         uiState = uiState,
         onBack = onBack,
@@ -110,7 +133,7 @@ fun ArticleDetailRoute(
         onRelatedArticleSelected = onRelatedArticleSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
-        onContextTargetSelected = onContextTargetSelected,
+        onExploreTargetClick = wrappedExploreTargetClick,
         modifier = modifier,
     )
 }
@@ -125,7 +148,7 @@ fun ArticleDetailScreen(
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -229,7 +252,7 @@ fun ArticleDetailScreen(
                     digestErrorKind = uiState.digestErrorKind,
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
-                    onContextTargetSelected = onContextTargetSelected,
+                    onExploreTargetClick = onExploreTargetClick,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -268,7 +291,7 @@ private fun ArticleDetailContent(
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
     blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
@@ -368,7 +391,7 @@ private fun ArticleDetailContent(
                 contextLoading = contextLoading,
                 contextErrorKind = contextErrorKind,
                 onContextRetry = onContextRetry,
-                onContextTargetSelected = onContextTargetSelected,
+                onExploreTargetClick = onExploreTargetClick,
             )
         }
     }

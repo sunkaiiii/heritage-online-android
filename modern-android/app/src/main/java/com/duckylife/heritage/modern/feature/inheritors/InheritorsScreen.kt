@@ -156,8 +156,8 @@ fun InheritorsRoute(
                         onRelatedInheritorSelected = { reference ->
                             reference.toInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateInheritorContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateInheritorContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -178,8 +178,8 @@ fun InheritorsRoute(
                         onRelatedInheritorSelected = { reference ->
                             reference.toInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateInheritorContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateInheritorContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -195,8 +195,8 @@ fun InheritorsRoute(
                         onRelatedArticleSelected = { reference, category ->
                             reference.toInheritorTabArticleDetail(category)?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateInheritorContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateInheritorContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )

@@ -99,8 +99,9 @@ fun DirectoryDetailRoute(
     onBack: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit,
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
+    readingPathRecorder: com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
     val viewModel: DirectoryDetailViewModel = hiltViewModel<DirectoryDetailViewModel, DirectoryDetailViewModel.Factory>(
         key = "directory-detail-${itemId.orEmpty()}-${sourceId.orEmpty()}-${kind.wireName}",
@@ -113,6 +114,27 @@ fun DirectoryDetailRoute(
         },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // 包装 onExploreTargetClick，记录阅读路径
+    val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
+        val item = uiState.item
+        if (item != null) {
+            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "directoryItem",
+                id = item.id ?: itemId.orEmpty(),
+                title = item.title.orEmpty(),
+                kind = item.kind.wireName,
+                sourceId = sourceId,
+            )
+            readingPathRecorder.record(
+                from = from,
+                to = click.toReadingPathContentRef(),
+                source = click.source.wireName,
+            )
+        }
+        onExploreTargetClick(click)
+    }
+
     DirectoryDetailScreen(
         uiState = uiState,
         onBack = onBack,
@@ -122,7 +144,7 @@ fun DirectoryDetailRoute(
         onRelatedInheritorSelected = onRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
-        onContextTargetSelected = onContextTargetSelected,
+        onExploreTargetClick = wrappedExploreTargetClick,
         modifier = modifier,
     )
 }
@@ -138,7 +160,7 @@ fun DirectoryDetailScreen(
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -245,7 +267,7 @@ fun DirectoryDetailScreen(
                     digestErrorKind = uiState.digestErrorKind,
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
-                    onContextTargetSelected = onContextTargetSelected,
+                    onExploreTargetClick = onExploreTargetClick,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -285,7 +307,7 @@ private fun DirectoryDetailContent(
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
     blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
@@ -401,7 +423,7 @@ private fun DirectoryDetailContent(
                 contextLoading = contextLoading,
                 contextErrorKind = contextErrorKind,
                 onContextRetry = onContextRetry,
-                onContextTargetSelected = onContextTargetSelected,
+                onExploreTargetClick = onExploreTargetClick,
             )
         }
     }

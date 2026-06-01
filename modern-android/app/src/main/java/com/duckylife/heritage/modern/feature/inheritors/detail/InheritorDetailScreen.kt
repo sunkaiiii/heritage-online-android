@@ -94,8 +94,9 @@ fun InheritorDetailRoute(
     onBack: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit,
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
+    readingPathRecorder: com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
     val viewModel: InheritorDetailViewModel = hiltViewModel<InheritorDetailViewModel, InheritorDetailViewModel.Factory>(
         key = "inheritor-detail-${inheritorId.orEmpty()}-${sourceId.orEmpty()}",
@@ -107,6 +108,26 @@ fun InheritorDetailRoute(
         },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // 包装 onExploreTargetClick，记录阅读路径
+    val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
+        val item = uiState.item
+        if (item != null) {
+            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "inheritor",
+                id = item.id ?: inheritorId.orEmpty(),
+                title = item.name.orEmpty(),
+                sourceId = sourceId,
+            )
+            readingPathRecorder.record(
+                from = from,
+                to = click.toReadingPathContentRef(),
+                source = click.source.wireName,
+            )
+        }
+        onExploreTargetClick(click)
+    }
+
     InheritorDetailScreen(
         uiState = uiState,
         onBack = onBack,
@@ -116,7 +137,7 @@ fun InheritorDetailRoute(
         onRelatedInheritorSelected = onRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
-        onContextTargetSelected = onContextTargetSelected,
+        onExploreTargetClick = wrappedExploreTargetClick,
         modifier = modifier,
     )
 }
@@ -132,7 +153,7 @@ fun InheritorDetailScreen(
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -239,7 +260,7 @@ fun InheritorDetailScreen(
                     digestErrorKind = uiState.digestErrorKind,
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
-                    onContextTargetSelected = onContextTargetSelected,
+                    onExploreTargetClick = onExploreTargetClick,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -279,7 +300,7 @@ private fun InheritorDetailContent(
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
     blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
@@ -370,7 +391,7 @@ private fun InheritorDetailContent(
                 contextLoading = contextLoading,
                 contextErrorKind = contextErrorKind,
                 onContextRetry = onContextRetry,
-                onContextTargetSelected = onContextTargetSelected,
+                onExploreTargetClick = onExploreTargetClick,
             )
         }
     }

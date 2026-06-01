@@ -42,7 +42,7 @@ import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
         ReadingPathEventEntity::class,
         SavedContentEntity::class,
     ],
-    version = 9,
+    version = 10,
     exportSchema = true,
 )
 abstract class HeritageDatabase : RoomDatabase() {

@@ -299,8 +299,8 @@ fun DiscoveryNavHost(
                                 ),
                             )
                         },
-                        onContextTargetSelected = { target ->
-                            navigateToDetailContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -328,8 +328,8 @@ fun DiscoveryNavHost(
                                 ),
                             )
                         },
-                        onContextTargetSelected = { target ->
-                            navigateToDetailContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -355,8 +355,8 @@ fun DiscoveryNavHost(
                                 ),
                             )
                         },
-                        onContextTargetSelected = { target ->
-                            navigateToDetailContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )

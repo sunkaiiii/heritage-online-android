@@ -293,18 +293,20 @@ fun MyPage(
                             when (event.toType) {
                                 "article" -> onNavigate(MyPageDestination.Article(
                                     articleId = event.toId,
-                                    sourceId = null,
-                                    sourceUrl = null,
-                                    category = ArticleCategory.News,
+                                    sourceId = event.toSourceId,
+                                    sourceUrl = event.toSourceUrl,
+                                    category = ArticleCategory.entries.firstOrNull { it.wireName == event.toCategory }
+                                        ?: ArticleCategory.News,
                                 ))
                                 "directoryItem" -> onNavigate(MyPageDestination.Directory(
                                     itemId = event.toId,
-                                    sourceId = null,
-                                    kind = DirectoryItemKind.NationalProject,
+                                    sourceId = event.toSourceId,
+                                    kind = DirectoryItemKind.entries.firstOrNull { it.wireName == event.toKind }
+                                        ?: DirectoryItemKind.NationalProject,
                                 ))
                                 "inheritor" -> onNavigate(MyPageDestination.Inheritor(
                                     inheritorId = event.toId,
-                                    sourceId = null,
+                                    sourceId = event.toSourceId,
                                 ))
                             }
                         },
@@ -460,23 +462,11 @@ private fun ReadingPathRow(
 
 @Composable
 private fun localizedTypeLabel(type: String): String =
-    when (type) {
-        "article" -> stringResource(R.string.search_type_article)
-        "directoryItem" -> stringResource(R.string.search_type_directory)
-        "inheritor" -> stringResource(R.string.search_type_inheritor)
-        else -> type
-    }
+    com.duckylife.heritage.modern.ui.text.localizedContentType(type)
 
 @Composable
 private fun localizedSourceLabel(source: String): String =
-    when (source) {
-        "context_related" -> stringResource(R.string.reading_path_source_context_related)
-        "blended" -> stringResource(R.string.reading_path_source_blended)
-        "collection" -> stringResource(R.string.reading_path_source_collection)
-        "topic" -> stringResource(R.string.reading_path_source_topic)
-        "list" -> stringResource(R.string.reading_path_source_list)
-        else -> source
-    }
+    com.duckylife.heritage.modern.ui.text.localizedReadingPathSource(source)
 
 @Composable
 private fun SavedContentRow(

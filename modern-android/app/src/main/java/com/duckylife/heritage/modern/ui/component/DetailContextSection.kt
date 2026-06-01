@@ -47,7 +47,7 @@ fun DetailContextSection(
     isLoading: Boolean,
     errorKind: ErrorKind?,
     onRetry: () -> Unit,
-    onItemClick: (String, String?) -> Unit, // (id, type)
+    onItemClick: (id: String, type: String?, source: String) -> Unit, // (id, type, source)
     onCollectionClick: (String) -> Unit,
     onTopicClick: (String, String) -> Unit, // (type, key)
     modifier: Modifier = Modifier,
@@ -71,7 +71,7 @@ fun DetailContextSection(
         if (context.related.isNotEmpty()) {
             ContextRelatedSection(
                 related = context.related,
-                onItemClick = onItemClick,
+                onItemClick = { id, type -> onItemClick(id, type, "related") },
             )
         }
 
@@ -79,7 +79,7 @@ fun DetailContextSection(
             ContextRecommendationsSection(
                 title = stringResource(R.string.context_recommendations),
                 recommendations = context.recommendations,
-                onItemClick = onItemClick,
+                onItemClick = { id, type -> onItemClick(id, type, "recommendation") },
             )
         }
 
@@ -87,7 +87,7 @@ fun DetailContextSection(
             ContextRecommendationsSection(
                 title = stringResource(R.string.context_semantic_recommendations),
                 recommendations = context.semanticRecommendations,
-                onItemClick = onItemClick,
+                onItemClick = { id, type -> onItemClick(id, type, "semanticRecommendation") },
             )
         }
 
@@ -195,9 +195,14 @@ private fun ContextRelatedRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val metaParts = listOfNotNull(
+        com.duckylife.heritage.modern.ui.text.localizedArticleCategory(item.category),
+        item.region,
+        com.duckylife.heritage.modern.ui.text.localizedDirectoryKind(item.kind),
+    )
     HeritageReferenceCard(
         title = item.title.orEmpty(),
-        meta = listOfNotNull(item.category, item.region, item.kind).joinToString(" · "),
+        meta = metaParts.joinToString(" · "),
         onClick = onClick,
         modifier = modifier.padding(vertical = 4.dp),
     )
@@ -263,9 +268,10 @@ private fun RecommendationCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            if (!recommendation.category.isNullOrBlank()) {
+            val localizedCat = com.duckylife.heritage.modern.ui.text.localizedArticleCategory(recommendation.category)
+            if (localizedCat != null) {
                 Spacer(modifier = Modifier.height(6.dp))
-                HeritageMetaChip(text = recommendation.category)
+                HeritageMetaChip(text = localizedCat)
             }
         }
     }
@@ -362,7 +368,7 @@ private fun ContextTopicsSection(
 @Composable
 private fun ContextGraphSection(
     graph: GraphDto,
-    onItemClick: (String, String?) -> Unit,
+    onItemClick: (id: String, type: String?, source: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val nodeMap = graph.nodes.associateBy { it.id }
@@ -381,12 +387,12 @@ private fun ContextGraphSection(
                     source = edge.source,
                     onFromClick = {
                         if (!fromNode.id.isNullOrBlank()) {
-                            onItemClick(fromNode.id, fromNode.type)
+                            onItemClick(fromNode.id, fromNode.type, "graph")
                         }
                     },
                     onToClick = {
                         if (!toNode.id.isNullOrBlank()) {
-                            onItemClick(toNode.id, toNode.type)
+                            onItemClick(toNode.id, toNode.type, "graph")
                         }
                     },
                 )

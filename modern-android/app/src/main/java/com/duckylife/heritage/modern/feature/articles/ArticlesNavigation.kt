@@ -194,8 +194,8 @@ fun ArticlesNavHost(
                         onRelatedArticleSelected = { reference, category ->
                             reference.toArticleDetail(category)?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -213,8 +213,8 @@ fun ArticlesNavHost(
                         onRelatedInheritorSelected = { reference ->
                             reference.toArticleTabInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -231,8 +231,8 @@ fun ArticlesNavHost(
                         onRelatedInheritorSelected = { reference ->
                             reference.toArticleTabInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )

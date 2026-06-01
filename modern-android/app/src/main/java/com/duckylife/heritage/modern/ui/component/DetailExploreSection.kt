@@ -20,6 +20,8 @@ import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationRespo
 import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
+import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
 import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
@@ -46,12 +48,14 @@ fun DetailExploreSection(
     contextErrorKind: ErrorKind?,
     onContextRetry: () -> Unit,
     // Navigation
-    onContextTargetSelected: (DetailContextTarget) -> Unit,
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     // 空壳隐藏：如果所有区块都没有数据、没有 loading、没有 error，则不显示
     val hasDigestBlock = digest != null || digestLoading || digestErrorKind != null
-    val hasBlendedBlock = blendedRecommendations?.items?.isNotEmpty() == true
+    val validBlendedItems = blendedRecommendations?.items.orEmpty()
+        .filter { contextItemTarget(it.id, it.type) != null }
+    val hasBlendedBlock = validBlendedItems.isNotEmpty()
     val hasContextBlock = context != null || contextLoading || contextErrorKind != null
     if (!hasDigestBlock && !hasBlendedBlock && !hasContextBlock) return
 
@@ -84,11 +88,23 @@ fun DetailExploreSection(
         }
 
         // 2. 综合推荐
-        if (blendedRecommendations != null && blendedRecommendations.items.isNotEmpty()) {
+        if (validBlendedItems.isNotEmpty()) {
             BlendedRecommendationsSection(
                 recommendations = blendedRecommendations,
                 onItemClick = { item ->
-                    contextItemTarget(item.id, item.type)?.let(onContextTargetSelected)
+                    contextItemTarget(item.id, item.type)?.let { target ->
+                        onExploreTargetClick(
+                            DetailExploreTargetClick(
+                                target = target,
+                                source = DetailExploreSource.BlendedRecommendation,
+                                title = item.title,
+                                subtitle = item.subtitle,
+                                category = item.category,
+                                region = item.region,
+                                imageUrl = item.coverImage?.displayUrl,
+                            ),
+                        )
+                    }
                 },
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -100,14 +116,37 @@ fun DetailExploreSection(
             isLoading = contextLoading,
             errorKind = contextErrorKind,
             onRetry = onContextRetry,
-            onItemClick = { id, type ->
-                contextItemTarget(id, type)?.let(onContextTargetSelected)
+            onItemClick = { id, type, source ->
+                contextItemTarget(id, type)?.let { target ->
+                    val exploreSource = when (source) {
+                        "recommendation" -> DetailExploreSource.Recommendation
+                        "semanticRecommendation" -> DetailExploreSource.SemanticRecommendation
+                        "graph" -> DetailExploreSource.Graph
+                        else -> DetailExploreSource.Related
+                    }
+                    onExploreTargetClick(
+                        DetailExploreTargetClick(
+                            target = target,
+                            source = exploreSource,
+                        ),
+                    )
+                }
             },
             onCollectionClick = { collectionId ->
-                onContextTargetSelected(DetailContextTarget.Collection(collectionId))
+                onExploreTargetClick(
+                    DetailExploreTargetClick(
+                        target = DetailContextTarget.Collection(collectionId),
+                        source = DetailExploreSource.Collection,
+                    ),
+                )
             },
             onTopicClick = { type, key ->
-                onContextTargetSelected(DetailContextTarget.Topic(type, key))
+                onExploreTargetClick(
+                    DetailExploreTargetClick(
+                        target = DetailContextTarget.Topic(type, key),
+                        source = DetailExploreSource.ExploreTopic,
+                    ),
+                )
             },
         )
     }

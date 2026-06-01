@@ -160,8 +160,8 @@ fun DirectoryRoute(
                         onRelatedInheritorSelected = { reference ->
                             reference.toInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateDirectoryContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateDirectoryContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -181,8 +181,8 @@ fun DirectoryRoute(
                         onRelatedInheritorSelected = { reference ->
                             reference.toInheritorDetail()?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateDirectoryContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateDirectoryContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
@@ -198,8 +198,8 @@ fun DirectoryRoute(
                         onRelatedArticleSelected = { reference, category ->
                             reference.toDirectoryTabArticleDetail(category)?.let(backStack::add)
                         },
-                        onContextTargetSelected = { target ->
-                            navigateDirectoryContextTarget(target, backStack)
+                        onExploreTargetClick = { click ->
+                            navigateDirectoryContextTarget(click.target, backStack)
                         },
                         modifier = modifier,
                     )
