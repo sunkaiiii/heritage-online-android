@@ -117,6 +117,15 @@
     <string name="my_title">My</string>
     <string name="favorites_tab">Favorites</string>
     <string name="recent_tab">Recent</string>
+    <string name="reading_path_tab">Reading Path</string>
+    <string name="reading_path_empty">Your exploration path will appear here as you browse details</string>
+    <string name="reading_path_clear">Clear reading path</string>
+    <string name="reading_path_clear_confirm">Clear all reading path records?</string>
+    <string name="reading_path_source_context_related">Related</string>
+    <string name="reading_path_source_blended">Recommended</string>
+    <string name="reading_path_source_collection">Collection</string>
+    <string name="reading_path_source_topic">Explore topic</string>
+    <string name="reading_path_source_list">List</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_unfavorite">Unfavorite</string>
     <string name="favorites_empty_message">No favorites yet.</string>
@@ -188,7 +197,9 @@
     <string name="context_semantic_recommendations">Semantic Recommendations</string>
     <string name="context_collections">Collections</string>
     <string name="context_explore_topics">Explore Topics</string>
-    <string name="context_graph">Knowledge Graph</string>
+    <string name="context_graph">Connection clues</string>
+    <string name="context_partial_unavailable">Some related content is temporarily unavailable</string>
+    <string name="context_graph_source_format">Source: %1$s</string>
 
     <!-- Discovery v2 -->
     <string name="discovery_trending_title">Trending</string>
@@ -274,9 +285,15 @@
     <string name="digest_show_more">Show More</string>
     <string name="digest_show_less">Show Less</string>
 
+    <!-- Detail Explore Section -->
+    <string name="detail_explore_title">Keep exploring</string>
+    <string name="detail_explore_subtitle">Continue through summaries, recommendations, and connections</string>
+
     <!-- Blended Recommendations -->
     <string name="blended_title">Recommended</string>
+    <string name="blended_subtitle">Suggested from relationships and semantic signals</string>
     <string name="blended_reasons">Why</string>
     <string name="blended_show_more_reasons">More reasons</string>
     <string name="blended_score">Score</string>
+    <string name="action_open_detail">Open detail</string>
 </resources>

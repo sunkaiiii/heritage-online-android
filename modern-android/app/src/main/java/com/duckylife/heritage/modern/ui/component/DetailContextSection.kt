@@ -378,6 +378,7 @@ private fun ContextGraphSection(
                     toTitle = toNode.title.orEmpty(),
                     label = edge.label,
                     reason = edge.reason,
+                    source = edge.source,
                     onFromClick = {
                         if (!fromNode.id.isNullOrBlank()) {
                             onItemClick(fromNode.id, fromNode.type)
@@ -400,6 +401,7 @@ private fun GraphEdgeRow(
     toTitle: String,
     label: String?,
     reason: String?,
+    source: String?,
     onFromClick: () -> Unit,
     onToClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -414,10 +416,8 @@ private fun GraphEdgeRow(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable(onClick = onToClick),
-            ) {
+            // from -> to 行（分别可点击，整行不 clickable）
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = fromTitle,
                     style = MaterialTheme.typography.bodyMedium,
@@ -439,16 +439,14 @@ private fun GraphEdgeRow(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f, fill = false),
+                    modifier = Modifier
+                        .clickable(onClick = onToClick)
+                        .weight(1f, fill = false),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
+            // 关系标签
             if (!label.isNullOrBlank()) {
                 Text(
                     text = label,
@@ -456,6 +454,7 @@ private fun GraphEdgeRow(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+            // 关系原因
             if (!reason.isNullOrBlank()) {
                 Text(
                     text = reason,
@@ -463,6 +462,14 @@ private fun GraphEdgeRow(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
+                )
+            }
+            // 来源
+            if (!source.isNullOrBlank()) {
+                Text(
+                    text = stringResource(R.string.context_graph_source_format, source),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

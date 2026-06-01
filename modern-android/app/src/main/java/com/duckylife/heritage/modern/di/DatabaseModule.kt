@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.duckylife.heritage.modern.core.database.HeritageDatabase
 import com.duckylife.heritage.modern.core.database.HeritageMigrations
+import com.duckylife.heritage.modern.core.data.DefaultReadingPathRepository
+import com.duckylife.heritage.modern.core.data.ReadingPathRepository
+import com.duckylife.heritage.modern.core.database.dao.ReadingPathDao
 import com.duckylife.heritage.modern.core.saved.RoomSavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import dagger.Binds
@@ -29,6 +32,10 @@ object DatabaseModule {
         )
             .addMigrations(*HeritageMigrations.ALL)
             .build()
+
+    @Provides
+    fun provideReadingPathDao(database: HeritageDatabase): ReadingPathDao =
+        database.readingPathDao()
 }
 
 @Module
@@ -39,4 +46,14 @@ abstract class SavedContentModule {
     abstract fun bindSavedContentRepository(
         impl: RoomSavedContentRepository,
     ): SavedContentRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ReadingPathModule {
+    @Binds
+    @Singleton
+    abstract fun bindReadingPathRepository(
+        impl: DefaultReadingPathRepository,
+    ): ReadingPathRepository
 }

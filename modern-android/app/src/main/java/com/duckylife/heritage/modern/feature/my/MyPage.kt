@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.my
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.data.ReadingPathEvent
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
@@ -54,8 +57,10 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.network.HeritageJson
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
+import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import androidx.compose.ui.tooling.preview.Preview
@@ -143,11 +148,14 @@ fun MyPage(
     onNavigate: (MyPageDestination) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyPageViewModel = hiltViewModel(),
+    readingPathViewModel: ReadingPathViewModel = hiltViewModel(),
 ) {
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val recentlyViewed by viewModel.recentlyViewed.collectAsStateWithLifecycle()
+    val readingPathEvents by readingPathViewModel.events.collectAsStateWithLifecycle()
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var showClearRecentDialog by remember { mutableStateOf(false) }
+    var showClearReadingPathDialog by remember { mutableStateOf(false) }
     val imageLoader = rememberHeritageImageLoader()
 
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
@@ -183,62 +191,122 @@ fun MyPage(
                     onClick = { selectedTab = 1 },
                     text = { Text(stringResource(R.string.recent_tab)) },
                 )
+                Tab(
+                    selected = selectedTab == 2,
+                    onClick = { selectedTab = 2 },
+                    text = { Text(stringResource(R.string.reading_path_tab)) },
+                )
             }
 
-            val items = if (selectedTab == 0) favorites else recentlyViewed
-            val emptyMessage = if (selectedTab == 0) {
-                stringResource(R.string.favorites_empty_message)
-            } else {
-                stringResource(R.string.recent_empty_message)
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                // 最近浏览非空时显示"清空最近浏览"
-                if (selectedTab == 1 && items.isNotEmpty()) {
-                    item {
-                        TextButton(onClick = { showClearRecentDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Outlined.ClearAll,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
+            when (selectedTab) {
+                0 -> {
+                    // 收藏
+                    val emptyMessage = stringResource(R.string.favorites_empty_message)
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        if (favorites.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(220.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = emptyMessage,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                        items(favorites, key = { it.contentKey }) { entity ->
+                            SavedContentRow(
+                                entity = entity,
+                                imageLoader = imageLoader,
+                                isFavoriteTab = true,
+                                onClick = {
+                                    val dest = entity.toDestination() ?: return@SavedContentRow
+                                    onNavigate(dest)
+                                },
+                                onRemove = { viewModel.unfavorite(entity) },
                             )
-                            Spacer(modifier = Modifier.size(6.dp))
-                            Text(stringResource(R.string.action_clear_recent))
                         }
                     }
                 }
-                if (items.isEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(220.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = emptyMessage,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                1 -> {
+                    // 最近浏览
+                    val emptyMessage = stringResource(R.string.recent_empty_message)
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        if (recentlyViewed.isNotEmpty()) {
+                            item {
+                                TextButton(onClick = { showClearRecentDialog = true }) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ClearAll,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                    )
+                                    Spacer(modifier = Modifier.size(6.dp))
+                                    Text(stringResource(R.string.action_clear_recent))
+                                }
+                            }
+                        }
+                        if (recentlyViewed.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(220.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        text = emptyMessage,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                        items(recentlyViewed, key = { it.contentKey }) { entity ->
+                            SavedContentRow(
+                                entity = entity,
+                                imageLoader = imageLoader,
+                                isFavoriteTab = false,
+                                onClick = {
+                                    val dest = entity.toDestination() ?: return@SavedContentRow
+                                    onNavigate(dest)
+                                },
+                                onRemove = { viewModel.removeRecent(entity) },
                             )
                         }
                     }
                 }
-                items(items, key = { it.contentKey }) { entity ->
-                    SavedContentRow(
-                        entity = entity,
-                        imageLoader = imageLoader,
-                        isFavoriteTab = selectedTab == 0,
-                        onClick = {
-                            val dest = entity.toDestination() ?: return@SavedContentRow
-                            onNavigate(dest)
-                        },
-                        onRemove = {
-                            if (selectedTab == 0) viewModel.unfavorite(entity)
-                            else viewModel.removeRecent(entity)
+                2 -> {
+                    // 阅读路径
+                    ReadingPathContent(
+                        events = readingPathEvents,
+                        onClear = { showClearReadingPathDialog = true },
+                        onItemClick = { event ->
+                            when (event.toType) {
+                                "article" -> onNavigate(MyPageDestination.Article(
+                                    articleId = event.toId,
+                                    sourceId = null,
+                                    sourceUrl = null,
+                                    category = ArticleCategory.News,
+                                ))
+                                "directoryItem" -> onNavigate(MyPageDestination.Directory(
+                                    itemId = event.toId,
+                                    sourceId = null,
+                                    kind = DirectoryItemKind.NationalProject,
+                                ))
+                                "inheritor" -> onNavigate(MyPageDestination.Inheritor(
+                                    inheritorId = event.toId,
+                                    sourceId = null,
+                                ))
+                            }
                         },
                     )
                 }
@@ -264,7 +332,151 @@ fun MyPage(
             },
         )
     }
+
+    if (showClearReadingPathDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearReadingPathDialog = false },
+            title = { Text(stringResource(R.string.reading_path_clear)) },
+            text = { Text(stringResource(R.string.reading_path_clear_confirm)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    readingPathViewModel.clearAll()
+                    showClearReadingPathDialog = false
+                }) { Text(stringResource(R.string.confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearReadingPathDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
+    }
 }
+
+@Composable
+private fun ReadingPathContent(
+    events: List<ReadingPathEvent>,
+    onClear: () -> Unit,
+    onItemClick: (ReadingPathEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        if (events.isNotEmpty()) {
+            item {
+                TextButton(onClick = onClear) {
+                    Icon(
+                        imageVector = Icons.Outlined.ClearAll,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(stringResource(R.string.reading_path_clear))
+                }
+            }
+        }
+        if (events.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(220.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.reading_path_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        items(events) { event ->
+            ReadingPathRow(
+                event = event,
+                onClick = { onItemClick(event) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ReadingPathRow(
+    event: ReadingPathEvent,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(
+        onClick = onClick,
+        modifier = modifier,
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // 左侧竖线 + 圆点
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .height(24.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
+                )
+            }
+            // 内容
+            Column(modifier = Modifier.weight(1f)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HeritageMetaChip(text = localizedTypeLabel(event.toType))
+                    if (!event.source.isNullOrBlank()) {
+                        HeritageMetaChip(text = localizedSourceLabel(event.source))
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = event.toTitle.orEmpty().ifBlank { event.toId },
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun localizedTypeLabel(type: String): String =
+    when (type) {
+        "article" -> stringResource(R.string.search_type_article)
+        "directoryItem" -> stringResource(R.string.search_type_directory)
+        "inheritor" -> stringResource(R.string.search_type_inheritor)
+        else -> type
+    }
+
+@Composable
+private fun localizedSourceLabel(source: String): String =
+    when (source) {
+        "context_related" -> stringResource(R.string.reading_path_source_context_related)
+        "blended" -> stringResource(R.string.reading_path_source_blended)
+        "collection" -> stringResource(R.string.reading_path_source_collection)
+        "topic" -> stringResource(R.string.reading_path_source_topic)
+        "list" -> stringResource(R.string.reading_path_source_list)
+        else -> source
+    }
 
 @Composable
 private fun SavedContentRow(

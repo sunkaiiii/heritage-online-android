@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationItemDto
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
+import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 
 @Composable
 fun BlendedRecommendationsSection(
@@ -48,17 +51,29 @@ fun BlendedRecommendationsSection(
 ) {
     if (recommendations == null || recommendations.items.isEmpty()) return
 
+    // 过滤掉空 id 或未知 type 的项
+    val validItems = recommendations.items.filter { item ->
+        contextItemTarget(item.id, item.type) != null
+    }
+    if (validItems.isEmpty()) return
+
     Column(modifier = modifier.fillMaxWidth()) {
         HeritageSectionHeader(
             title = stringResource(R.string.blended_title),
             modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Text(
+            text = stringResource(R.string.blended_subtitle),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
         )
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(recommendations.items) { item ->
+            items(validItems) { item ->
                 BlendedRecommendationCard(
                     item = item,
                     onClick = { onItemClick(item) },
@@ -79,7 +94,7 @@ fun BlendedRecommendationCard(
 
     Card(
         modifier = modifier
-            .width(220.dp)
+            .width(240.dp)
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -91,14 +106,24 @@ fun BlendedRecommendationCard(
                 .animateContentSize(),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            // 标题
-            Text(
-                text = item.title,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
+            // 标题行 + 进入 icon
+            Row(
+                verticalAlignment = Alignment.Top,
+            ) {
+                Text(
+                    text = item.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                    contentDescription = stringResource(R.string.action_open_detail),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             // 副标题
             if (!item.subtitle.isNullOrBlank()) {
@@ -111,15 +136,17 @@ fun BlendedRecommendationCard(
                 )
             }
 
-            // 分类/地区 chips
+            // 类型 + 分类 + 地区 chips
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
+                if (item.type.isNotBlank()) {
+                    HeritageMetaChip(text = localizedTypeChip(item.type))
+                }
                 if (!item.category.isNullOrBlank()) {
                     HeritageMetaChip(text = item.category)
                 }
                 if (!item.region.isNullOrBlank()) {
-                    Spacer(modifier = Modifier.width(4.dp))
                     HeritageMetaChip(text = item.region)
                 }
             }
@@ -230,3 +257,12 @@ private fun ScoreBreakdownBar(
         }
     }
 }
+
+@Composable
+private fun localizedTypeChip(type: String): String =
+    when (type) {
+        "article" -> stringResource(R.string.search_type_article)
+        "directoryItem" -> stringResource(R.string.search_type_directory)
+        "inheritor" -> stringResource(R.string.search_type_inheritor)
+        else -> type
+    }

@@ -117,6 +117,15 @@
     <string name="my_title">我的</string>
     <string name="favorites_tab">收藏</string>
     <string name="recent_tab">最近浏览</string>
+    <string name="reading_path_tab">阅读路径</string>
+    <string name="reading_path_empty">你浏览详情后会在这里形成探索路径</string>
+    <string name="reading_path_clear">清空阅读路径</string>
+    <string name="reading_path_clear_confirm">确认清空所有阅读路径记录？</string>
+    <string name="reading_path_source_context_related">相关内容</string>
+    <string name="reading_path_source_blended">综合推荐</string>
+    <string name="reading_path_source_collection">合集</string>
+    <string name="reading_path_source_topic">探索主题</string>
+    <string name="reading_path_source_list">列表</string>
     <string name="action_favorite">收藏</string>
     <string name="action_unfavorite">取消收藏</string>
     <string name="favorites_empty_message">还没有收藏内容。</string>
@@ -188,7 +197,9 @@
     <string name="context_semantic_recommendations">语义推荐</string>
     <string name="context_collections">合集</string>
     <string name="context_explore_topics">探索主题</string>
-    <string name="context_graph">关系图谱</string>
+    <string name="context_graph">关系线索</string>
+    <string name="context_partial_unavailable">部分关联内容暂时不可用</string>
+    <string name="context_graph_source_format">来源：%1$s</string>
 
     <!-- Discovery v2 -->
     <string name="discovery_trending_title">正在被看见</string>
@@ -274,9 +285,15 @@
     <string name="digest_show_more">展开</string>
     <string name="digest_show_less">收起</string>
 
+    <!-- Detail Explore Section -->
+    <string name="detail_explore_title">继续探索</string>
+    <string name="detail_explore_subtitle">从摘要、推荐与关系线索继续了解这项非遗内容</string>
+
     <!-- Blended Recommendations -->
     <string name="blended_title">综合推荐</string>
+    <string name="blended_subtitle">根据内容关系与语义线索推荐</string>
     <string name="blended_reasons">推荐理由</string>
     <string name="blended_show_more_reasons">更多理由</string>
     <string name="blended_score">评分</string>
+    <string name="action_open_detail">查看详情</string>
 </resources>

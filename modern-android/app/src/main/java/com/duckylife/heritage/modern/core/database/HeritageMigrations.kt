@@ -27,5 +27,25 @@ object HeritageMigrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_7_8)
+    val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS reading_path_events (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    fromType TEXT,
+                    fromId TEXT,
+                    fromTitle TEXT,
+                    toType TEXT NOT NULL,
+                    toId TEXT NOT NULL,
+                    toTitle TEXT,
+                    source TEXT NOT NULL,
+                    createdAt INTEGER NOT NULL
+                )
+                """.trimIndent(),
+            )
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(MIGRATION_7_8, MIGRATION_8_9)
 }

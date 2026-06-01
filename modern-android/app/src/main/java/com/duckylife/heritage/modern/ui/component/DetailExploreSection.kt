@@ -2,7 +2,6 @@ package com.duckylife.heritage.modern.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,7 +49,25 @@ fun DetailExploreSection(
     onContextTargetSelected: (DetailContextTarget) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // 空壳隐藏：如果所有区块都没有数据、没有 loading、没有 error，则不显示
+    val hasDigestBlock = digest != null || digestLoading || digestErrorKind != null
+    val hasBlendedBlock = blendedRecommendations?.items?.isNotEmpty() == true
+    val hasContextBlock = context != null || contextLoading || contextErrorKind != null
+    if (!hasDigestBlock && !hasBlendedBlock && !hasContextBlock) return
+
     Column(modifier = modifier.fillMaxWidth()) {
+        // 总标题
+        HeritageSectionHeader(
+            title = stringResource(R.string.detail_explore_title),
+            modifier = Modifier.padding(bottom = 4.dp),
+        )
+        Text(
+            text = stringResource(R.string.detail_explore_subtitle),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 16.dp),
+        )
+
         // 1. Digest 速览
         if (digest != null) {
             DigestCard(digest = digest)
