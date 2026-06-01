@@ -16,6 +16,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.HeritageJson
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
 import com.duckylife.heritage.modern.feature.compare.CompareRoute
@@ -27,6 +28,7 @@ import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
 import com.duckylife.heritage.modern.feature.regions.RegionAtlasRoute
 import com.duckylife.heritage.modern.feature.regions.RegionDetailRoute
 import com.duckylife.heritage.modern.feature.search.SearchRoute
+import com.duckylife.heritage.modern.feature.stories.StoriesIndexRoute
 import com.duckylife.heritage.modern.feature.stories.StoryRoute
 import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyDetailRoute
 import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyRoute
@@ -66,6 +68,8 @@ private data class ComparePage(
     val right: String? = null,
 )
 
+private data object StoriesIndexPage
+
 private data class StoryPage(
     val region: String? = null,
     val category: String? = null,
@@ -93,88 +97,90 @@ private data class DiscoveryInheritorDetail(
 )
 
 // ---------------------------------------------------------------------------
-// Serialize / Deserialize
+// Serializable route state (safe for process restore)
 // ---------------------------------------------------------------------------
 
+@kotlinx.serialization.Serializable
+private sealed interface RouteState {
+    @kotlinx.serialization.Serializable data object Index : RouteState
+    @kotlinx.serialization.Serializable data class Search(val query: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class ExploreTopic(val type: String = "", val key: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class LearningPath(val id: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class Collection(val id: String? = null, val type: String? = null, val key: String? = null) : RouteState
+    @kotlinx.serialization.Serializable data object RegionAtlas : RouteState
+    @kotlinx.serialization.Serializable data class RegionDetail(val region: String = "") : RouteState
+    @kotlinx.serialization.Serializable data object Timeline : RouteState
+    @kotlinx.serialization.Serializable data object Taxonomy : RouteState
+    @kotlinx.serialization.Serializable data class TaxonomyDetail(val type: String = "", val key: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class Compare(val type: String? = null, val left: String? = null, val right: String? = null) : RouteState
+    @kotlinx.serialization.Serializable data object StoriesIndex : RouteState
+    @kotlinx.serialization.Serializable data class Story(val region: String? = null, val category: String? = null, val year: Int? = null) : RouteState
+    @kotlinx.serialization.Serializable data class DeepDive(val seedType: String = "", val seedId: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class ArticleDetail(val id: String? = null, val sourceId: String? = null, val sourceUrl: String? = null, val category: String = "news") : RouteState
+    @kotlinx.serialization.Serializable data class DirectoryDetail(val id: String? = null, val sourceId: String? = null, val kind: String = "nationalProject") : RouteState
+    @kotlinx.serialization.Serializable data class InheritorDetail(val id: String? = null, val sourceId: String? = null) : RouteState
+}
+
+private fun Any.toRouteState(): RouteState = when (this) {
+    is DiscoveryIndex -> RouteState.Index
+    is SearchResults -> RouteState.Search(query)
+    is ExploreTopicDetail -> RouteState.ExploreTopic(type, key)
+    is LearningPathDetail -> RouteState.LearningPath(id)
+    is CollectionDetail -> RouteState.Collection(id, type, key)
+    is RegionAtlasPage -> RouteState.RegionAtlas
+    is RegionDetailPage -> RouteState.RegionDetail(region)
+    is TimelinePage -> RouteState.Timeline
+    is TaxonomyPage -> RouteState.Taxonomy
+    is TaxonomyDetailPage -> RouteState.TaxonomyDetail(type, key)
+    is ComparePage -> RouteState.Compare(type, left, right)
+    is StoriesIndexPage -> RouteState.StoriesIndex
+    is StoryPage -> RouteState.Story(region, category, year)
+    is DeepDivePage -> RouteState.DeepDive(seedType, seedId)
+    is DiscoveryArticleDetail -> RouteState.ArticleDetail(id, sourceId, sourceUrl, category.wireName)
+    is DiscoveryDirectoryDetail -> RouteState.DirectoryDetail(id, sourceId, kind.wireName)
+    is DiscoveryInheritorDetail -> RouteState.InheritorDetail(id, sourceId)
+    else -> RouteState.Index
+}
+
+private fun RouteState.toRouteKey(): Any = when (this) {
+    is RouteState.Index -> DiscoveryIndex
+    is RouteState.Search -> SearchResults(query)
+    is RouteState.ExploreTopic -> ExploreTopicDetail(type, key)
+    is RouteState.LearningPath -> LearningPathDetail(id)
+    is RouteState.Collection -> CollectionDetail(id, type, key)
+    is RouteState.RegionAtlas -> RegionAtlasPage
+    is RouteState.RegionDetail -> RegionDetailPage(region)
+    is RouteState.Timeline -> TimelinePage
+    is RouteState.Taxonomy -> TaxonomyPage
+    is RouteState.TaxonomyDetail -> TaxonomyDetailPage(type, key)
+    is RouteState.Compare -> ComparePage(type, left, right)
+    is RouteState.StoriesIndex -> StoriesIndexPage
+    is RouteState.Story -> StoryPage(region, category, year)
+    is RouteState.DeepDive -> DeepDivePage(seedType, seedId)
+    is RouteState.ArticleDetail -> DiscoveryArticleDetail(
+        id = id, sourceId = sourceId, sourceUrl = sourceUrl,
+        category = ArticleCategory.entries.firstOrNull { it.wireName == category } ?: ArticleCategory.News,
+    )
+    is RouteState.DirectoryDetail -> DiscoveryDirectoryDetail(
+        id = id, sourceId = sourceId,
+        kind = DirectoryItemKind.entries.firstOrNull { it.wireName == kind } ?: DirectoryItemKind.NationalProject,
+    )
+    is RouteState.InheritorDetail -> DiscoveryInheritorDetail(id = id, sourceId = sourceId)
+}
+
 private fun serializeDiscovery(stack: List<Any>): String =
-    stack.joinToString("\n") { entry ->
-        when (entry) {
-            is DiscoveryIndex -> "I"
-            is SearchResults -> "S|${entry.query}"
-            is ExploreTopicDetail -> "ET|${entry.type}|${entry.key}"
-            is LearningPathDetail -> "LP|${entry.id}"
-            is CollectionDetail -> "C|${entry.id.orEmpty()}|${entry.type.orEmpty()}|${entry.key.orEmpty()}"
-            is RegionAtlasPage -> "RA"
-            is RegionDetailPage -> "RD|${entry.region}"
-            is TimelinePage -> "T"
-            is TaxonomyPage -> "TX"
-            is TaxonomyDetailPage -> "TXD|${entry.type}|${entry.key}"
-            is ComparePage -> "CMP|${entry.type.orEmpty()}|${entry.left.orEmpty()}|${entry.right.orEmpty()}"
-            is StoryPage -> "ST|${entry.region.orEmpty()}|${entry.category.orEmpty()}|${entry.year ?: ""}"
-            is DeepDivePage -> "DDP|${entry.seedType}|${entry.seedId}"
-            is DiscoveryArticleDetail -> "DA|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
-            is DiscoveryDirectoryDetail -> "DD|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
-            is DiscoveryInheritorDetail -> "DI|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
-            else -> "I"
-        }
+    try {
+        HeritageJson.encodeToString(stack.map { it.toRouteState() })
+    } catch (_: Exception) {
+        "I"
     }
 
 private fun deserializeDiscovery(str: String): List<Any> =
-    if (str.isBlank()) listOf(DiscoveryIndex)
-    else str.split("\n").mapNotNull { item ->
-        val parts = item.split("|")
-        when (parts[0]) {
-            "I" -> DiscoveryIndex
-            "S" -> SearchResults(query = parts.getOrNull(1).orEmpty())
-            "ET" -> ExploreTopicDetail(
-                type = parts.getOrNull(1).orEmpty(),
-                key = parts.getOrNull(2).orEmpty(),
-            )
-            "LP" -> LearningPathDetail(id = parts.getOrNull(1).orEmpty())
-            "C" -> CollectionDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                type = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                key = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-            )
-            "RA" -> RegionAtlasPage
-            "RD" -> RegionDetailPage(region = parts.getOrNull(1).orEmpty())
-            "T" -> TimelinePage
-            "TX" -> TaxonomyPage
-            "TXD" -> TaxonomyDetailPage(
-                type = parts.getOrNull(1).orEmpty(),
-                key = parts.getOrNull(2).orEmpty(),
-            )
-            "CMP" -> ComparePage(
-                type = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                left = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                right = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-            )
-            "ST" -> StoryPage(
-                region = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                category = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                year = parts.getOrNull(3)?.takeIf { it.isNotEmpty() }?.toIntOrNull(),
-            )
-            "DDP" -> DeepDivePage(
-                seedType = parts.getOrNull(1).orEmpty(),
-                seedId = parts.getOrNull(2).orEmpty(),
-            )
-            "DA" -> DiscoveryArticleDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                sourceUrl = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-                category = ArticleCategory.entries.firstOrNull { it.wireName == parts.getOrNull(4) } ?: ArticleCategory.News,
-            )
-            "DD" -> DiscoveryDirectoryDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                kind = DirectoryItemKind.entries.firstOrNull { it.wireName == parts.getOrNull(3) } ?: DirectoryItemKind.NationalProject,
-            )
-            "DI" -> DiscoveryInheritorDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-            )
-            else -> DiscoveryIndex
-        }
+    try {
+        if (str.isBlank()) listOf(DiscoveryIndex)
+        else HeritageJson.decodeFromString<List<RouteState>>(str).map { it.toRouteKey() }
+    } catch (_: Exception) {
+        listOf(DiscoveryIndex)
     }
 
 // ---------------------------------------------------------------------------
@@ -261,7 +267,7 @@ fun DiscoveryNavHost(
                             backStack.add(TaxonomyPage)
                         },
                         onStoriesClick = {
-                            backStack.add(StoryPage())
+                            backStack.add(StoriesIndexPage)
                         },
                         modifier = modifier,
                     )
@@ -473,7 +479,12 @@ fun DiscoveryNavHost(
                     TaxonomyRoute(
                         onBack = { backStack.removeLastOrNull() },
                         onTopicClick = { type, topicKey ->
-                            backStack.add(TaxonomyDetailPage(type = type, key = topicKey))
+                            if (type == "kind") {
+                                // Kind 没有详情 API，直接进入对比页
+                                backStack.add(ComparePage(type = "kind", left = topicKey))
+                            } else {
+                                backStack.add(TaxonomyDetailPage(type = type, key = topicKey))
+                            }
                         },
                         modifier = modifier,
                     )
@@ -509,6 +520,9 @@ fun DiscoveryNavHost(
                                 "region" -> backStack.add(ComparePage(type = "region", left = key.key))
                             }
                         },
+                        onCollectionSelected = { collectionId ->
+                            backStack.add(CollectionDetail(id = collectionId))
+                        },
                         modifier = modifier,
                     )
                 }
@@ -521,6 +535,23 @@ fun DiscoveryNavHost(
                         initialRight = key.right,
                         onBack = { backStack.removeLastOrNull() },
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Stories Index ----
+                is StoriesIndexPage -> NavEntry(key) {
+                    StoriesIndexRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        onRegionStoryClick = { region ->
+                            backStack.add(StoryPage(region = region))
+                        },
+                        onCategoryStoryClick = { category ->
+                            backStack.add(StoryPage(category = category))
+                        },
+                        onYearStoryClick = { year ->
+                            backStack.add(StoryPage(year = year))
+                        },
                         modifier = modifier,
                     )
                 }
@@ -589,7 +620,7 @@ fun DiscoveryNavHost(
                             backStack.add(TaxonomyPage)
                         },
                         onStoriesClick = {
-                            backStack.add(StoryPage())
+                            backStack.add(StoriesIndexPage)
                         },
                         modifier = modifier,
                     )

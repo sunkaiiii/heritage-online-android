@@ -197,7 +197,9 @@
     <string name="discovery_serendipity">随便看看</string>
     <string name="discovery_serendipity_loading">正在探索…</string>
     <string name="discovery_taxonomy">主题库</string>
+    <string name="discovery_taxonomy_subtitle">按分类、地区与种类浏览非遗主题</string>
     <string name="discovery_stories">数据故事</string>
+    <string name="discovery_stories_subtitle">按地区、分类或年份探索非遗故事</string>
     <string name="discovery_deep_dive">深挖</string>
 
     <!-- Deep Dive -->
@@ -207,6 +209,10 @@
     <string name="deep_dive_loading">深挖内容加载中…</string>
 
     <!-- Data Stories -->
+    <string name="story_index_subtitle">按地区、分类或年份探索非遗故事</string>
+    <string name="story_index_by_region">按地区阅读</string>
+    <string name="story_index_by_category">按分类阅读</string>
+    <string name="story_index_by_year">按年份阅读</string>
     <string name="story_loading">故事加载中…</string>
     <string name="story_reading_time">%1$d 分钟阅读</string>
     <string name="story_related_topics">相关主题</string>

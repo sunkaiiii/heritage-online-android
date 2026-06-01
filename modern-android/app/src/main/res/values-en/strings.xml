@@ -197,7 +197,9 @@
     <string name="discovery_serendipity">Surprise Me</string>
     <string name="discovery_serendipity_loading">Exploring…</string>
     <string name="discovery_taxonomy">Topics</string>
+    <string name="discovery_taxonomy_subtitle">Browse heritage topics by category, region, and kind</string>
     <string name="discovery_stories">Data Stories</string>
+    <string name="discovery_stories_subtitle">Explore heritage stories by region, category, or year</string>
     <string name="discovery_deep_dive">Deep Dive</string>
 
     <!-- Deep Dive -->
@@ -207,6 +209,10 @@
     <string name="deep_dive_loading">Loading deep dive…</string>
 
     <!-- Data Stories -->
+    <string name="story_index_subtitle">Explore heritage stories by region, category, or year</string>
+    <string name="story_index_by_region">By Region</string>
+    <string name="story_index_by_category">By Category</string>
+    <string name="story_index_by_year">By Year</string>
     <string name="story_loading">Loading story…</string>
     <string name="story_reading_time">%1$d min read</string>
     <string name="story_related_topics">Related Topics</string>

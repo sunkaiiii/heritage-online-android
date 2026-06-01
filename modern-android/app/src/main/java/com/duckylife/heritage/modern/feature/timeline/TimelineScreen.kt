@@ -185,7 +185,7 @@ private fun YearSelector(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(years) { bucket ->
-            val year = bucket.year ?: return@items
+            val year = bucket.year
             FilterChip(
                 selected = year == selectedYear,
                 onClick = {

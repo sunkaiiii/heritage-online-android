@@ -56,6 +56,7 @@ fun TaxonomyDetailRoute(
     onRelatedTopicClick: (String, String) -> Unit,
     onViewStory: () -> Unit,
     onCompare: () -> Unit,
+    onCollectionSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: TaxonomyDetailViewModel = hiltViewModel<TaxonomyDetailViewModel, TaxonomyDetailViewModel.Factory>(
         key = "taxonomy-detail-$type-$key",
@@ -73,6 +74,7 @@ fun TaxonomyDetailRoute(
         onRelatedTopicClick = onRelatedTopicClick,
         onViewStory = onViewStory,
         onCompare = onCompare,
+        onCollectionSelected = onCollectionSelected,
         modifier = modifier,
     )
 }
@@ -89,6 +91,7 @@ fun TaxonomyDetailScreen(
     onRelatedTopicClick: (String, String) -> Unit,
     onViewStory: () -> Unit,
     onCompare: () -> Unit,
+    onCollectionSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
@@ -114,6 +117,7 @@ fun TaxonomyDetailScreen(
                         onRelatedTopicClick = onRelatedTopicClick,
                         onViewStory = onViewStory,
                         onCompare = onCompare,
+                        onCollectionSelected = onCollectionSelected,
                     )
                 }
                 uiState.regionDetail != null -> {
@@ -126,6 +130,7 @@ fun TaxonomyDetailScreen(
                         onRelatedTopicClick = onRelatedTopicClick,
                         onViewStory = onViewStory,
                         onCompare = onCompare,
+                        onCollectionSelected = onCollectionSelected,
                     )
                 }
             }
@@ -144,6 +149,7 @@ private fun CategoryDetailContent(
     onRelatedTopicClick: (String, String) -> Unit,
     onViewStory: () -> Unit,
     onCompare: () -> Unit,
+    onCollectionSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -309,6 +315,36 @@ private fun CategoryDetailContent(
             }
         }
 
+        // Recommended collections
+        if (detail.recommendedCollections.isNotEmpty()) {
+            item {
+                HeritageSectionHeader(
+                    title = stringResource(R.string.taxonomy_recommended_collections),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    detail.recommendedCollections.forEach { collection ->
+                        HeritageReferenceCard(
+                            title = collection.title.orEmpty(),
+                            onClick = {
+                                if (!collection.id.isNullOrBlank()) {
+                                    onCollectionSelected(collection.id)
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                }
+            }
+        }
+
         // Action buttons
         item {
             Row(
@@ -345,6 +381,7 @@ private fun RegionDetailContent(
     onRelatedTopicClick: (String, String) -> Unit,
     onViewStory: () -> Unit,
     onCompare: () -> Unit,
+    onCollectionSelected: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -504,6 +541,36 @@ private fun RegionDetailContent(
                             selected = false,
                             onClick = { onRelatedTopicClick("region", region) },
                             label = { Text(region) },
+                        )
+                    }
+                }
+            }
+        }
+
+        // Recommended collections
+        if (detail.recommendedCollections.isNotEmpty()) {
+            item {
+                HeritageSectionHeader(
+                    title = stringResource(R.string.taxonomy_recommended_collections),
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    detail.recommendedCollections.forEach { collection ->
+                        HeritageReferenceCard(
+                            title = collection.title.orEmpty(),
+                            onClick = {
+                                if (!collection.id.isNullOrBlank()) {
+                                    onCollectionSelected(collection.id)
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
                         )
                     }
                 }

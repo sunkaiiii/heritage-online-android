@@ -381,7 +381,7 @@ class KtorHeritageApiClient(
         httpClient.get(endpoint("api/collections/featured")).body()
 
     override suspend fun getCollection(id: String, limit: Int): CollectionDto =
-        httpClient.get(endpoint("api/collections/$id")) {
+        httpClient.get(endpoint("api/collections/${pathSegment(id)}")) {
             optionalParameter("limit", limit)
         }.body()
 
@@ -502,19 +502,19 @@ class KtorHeritageApiClient(
 
     // Content Digest
     override suspend fun getArticleDigest(id: String): ContentDigestDto =
-        httpClient.get(endpoint("api/articles/$id/digest")).body()
+        httpClient.get(endpoint("api/articles/${pathSegment(id)}/digest")).body()
 
     override suspend fun getDirectoryItemDigest(id: String): ContentDigestDto =
-        httpClient.get(endpoint("api/directory-items/$id/digest")).body()
+        httpClient.get(endpoint("api/directory-items/${pathSegment(id)}/digest")).body()
 
     override suspend fun getInheritorDigest(id: String): ContentDigestDto =
-        httpClient.get(endpoint("api/inheritors/$id/digest")).body()
+        httpClient.get(endpoint("api/inheritors/${pathSegment(id)}/digest")).body()
 
     // Blended Recommendations
     override suspend fun getBlendedRecommendations(
         query: BlendedRecommendationQuery,
     ): BlendedRecommendationResponseDto =
-        httpClient.get(endpoint("api/recommendations/blended/${query.type.wireName}/${query.id}")) {
+        httpClient.get(endpoint("api/recommendations/blended/${pathSegment(query.type.wireName)}/${pathSegment(query.id)}")) {
             optionalParameter("limit", query.limit)
             optionalParameter("ruleWeight", query.ruleWeight)
             optionalParameter("semanticWeight", query.semanticWeight)

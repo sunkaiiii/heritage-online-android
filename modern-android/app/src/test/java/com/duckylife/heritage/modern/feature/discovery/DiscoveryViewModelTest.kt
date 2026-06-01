@@ -2,15 +2,7 @@ package com.duckylife.heritage.modern.feature.discovery
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
-import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
-import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
-import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
-import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
-import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
-import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
-import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
-import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -36,14 +28,15 @@ class DiscoveryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.errorKind)
-        // Default DTOs are non-null, so hasAnyData is true
-        assertNotNull(state.today)
-        assertNotNull(state.trending)
-        assertNotNull(state.weekly)
-        assertNotNull(state.exploreIndex)
-        assertNotNull(state.regionAtlas)
+        assertFalse(state.isAnyLoading)
+        // Section-level: today, trending, weekly should have data
+        assertTrue(state.today.hasData)
+        assertTrue(state.trending.hasData)
+        assertTrue(state.weekly.hasData)
+        // Classic section should have data
+        assertTrue(state.classic.hasData)
+        assertNotNull(state.classic.data?.exploreIndex)
+        assertNotNull(state.classic.data?.regionAtlas)
     }
 
     @Test
@@ -93,28 +86,31 @@ class DiscoveryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.errorKind)
-        // Topics and learningPaths failed, but other data loaded
-        assertTrue(state.topics.isEmpty())
-        assertTrue(state.learningPaths.isEmpty())
-        // These should still be non-null from the default DTOs
-        assertNotNull(state.today)
-        assertNotNull(state.trending)
-        assertNotNull(state.weekly)
-        assertNotNull(state.exploreIndex)
+        // Today, trending, weekly should still have data
+        assertTrue(state.today.hasData)
+        assertTrue(state.trending.hasData)
+        assertTrue(state.weekly.hasData)
+        // Classic section should still load (some sub-items failed but atlas/exploreIndex succeeded)
+        assertTrue(state.classic.hasData)
+        // Topics and learningPaths failed
+        assertTrue(state.classic.data?.topics?.isEmpty() ?: true)
+        assertTrue(state.classic.data?.learningPaths?.isEmpty() ?: true)
     }
 
     @Test
-    fun `all failure sets errorKind`() = runTest {
+    fun `all failure sets errorKind on sections`() = runTest {
         val repo = FakeHeritageRepository(failure = IllegalStateException("server down"))
         val viewModel = DiscoveryViewModel(repository = repo)
 
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNotNull(state.errorKind)
+        // All sections should have errors
+        assertTrue(state.today.hasError)
+        assertTrue(state.trending.hasError)
+        assertTrue(state.weekly.hasError)
+        assertTrue(state.classic.hasError)
+        assertTrue(state.isAllFailed)
     }
 
     @Test
@@ -129,7 +125,8 @@ class DiscoveryViewModelTest {
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertNull(state.errorKind)
+        assertTrue(state.today.hasData)
+        assertTrue(state.trending.hasData)
+        assertTrue(state.weekly.hasData)
     }
 }

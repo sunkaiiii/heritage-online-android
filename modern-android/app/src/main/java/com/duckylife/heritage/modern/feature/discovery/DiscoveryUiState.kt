@@ -9,20 +9,28 @@ import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
-import com.duckylife.heritage.modern.ui.error.ErrorKind
 
-data class DiscoveryUiState(
-    val isLoading: Boolean = false,
-    val errorKind: ErrorKind? = null,
+data class DiscoveryClassicData(
     val exploreIndex: ExploreIndexDto? = null,
     val topics: List<ExploreTopicInfoDto> = emptyList(),
     val learningPaths: List<LearningPathDto> = emptyList(),
     val featuredCollections: List<FeaturedCollectionDto> = emptyList(),
     val regionAtlas: RegionAtlasDto? = null,
-    // Discovery v2
-    val today: DiscoveryTodayDto? = null,
-    val trending: DiscoveryTrendingDto? = null,
-    val weekly: DiscoveryWeeklyDto? = null,
+)
+
+data class DiscoveryUiState(
+    // Discovery v2 sections (high priority)
+    val today: DiscoverySectionState<DiscoveryTodayDto> = DiscoverySectionState(),
+    val trending: DiscoverySectionState<DiscoveryTrendingDto> = DiscoverySectionState(),
+    val weekly: DiscoverySectionState<DiscoveryWeeklyDto> = DiscoverySectionState(),
+    // Classic sections (lower priority)
+    val classic: DiscoverySectionState<DiscoveryClassicData> = DiscoverySectionState(),
+    // Serendipity
     val serendipityItem: DiscoveryItemDto? = null,
     val serendipityLoading: Boolean = false,
-)
+) {
+    val isAnyLoading: Boolean
+        get() = today.isLoading || trending.isLoading || weekly.isLoading || classic.isLoading
+    val isAllFailed: Boolean
+        get() = today.hasError && trending.hasError && weekly.hasError && classic.hasError
+}

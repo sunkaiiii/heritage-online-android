@@ -94,6 +94,10 @@ fun DiscoveryRoute(
         onTrendingItemClick = onTrendingItemClick,
         onWeeklyItemClick = onWeeklyItemClick,
         onTodayItemClick = onTodayItemClick,
+        onRetryToday = viewModel::loadToday,
+        onRetryTrending = viewModel::loadTrending,
+        onRetryWeekly = viewModel::loadWeekly,
+        onRetryClassic = viewModel::loadClassic,
         onDeepDiveClick = onDeepDiveClick,
         onTaxonomyClick = onTaxonomyClick,
         onStoriesClick = onStoriesClick,
@@ -119,17 +123,22 @@ fun DiscoveryScreen(
     onDeepDiveClick: (DiscoveryItemDto) -> Unit,
     onTaxonomyClick: () -> Unit,
     onStoriesClick: () -> Unit,
+    onRetryToday: () -> Unit = {},
+    onRetryTrending: () -> Unit = {},
+    onRetryWeekly: () -> Unit = {},
+    onRetryClassic: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
-            if (uiState.isLoading && uiState.topics.isEmpty()) {
+            // 全页 loading 仅在所有区块都在加载且没有任何数据时显示
+            if (uiState.isAnyLoading && !uiState.today.hasData && !uiState.trending.hasData && !uiState.weekly.hasData && !uiState.classic.hasData) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                 )
-            } else if (uiState.errorKind != null && uiState.topics.isEmpty()) {
+            } else if (uiState.isAllFailed) {
                 DiscoveryErrorContent(
-                    errorKind = uiState.errorKind,
+                    errorKind = uiState.today.errorKind ?: uiState.trending.errorKind ?: uiState.weekly.errorKind ?: ErrorKind.Unknown,
                     onRetry = onRefresh,
                     modifier = Modifier.align(Alignment.Center),
                 )
@@ -150,6 +159,10 @@ fun DiscoveryScreen(
                     onDeepDiveClick = onDeepDiveClick,
                     onTaxonomyClick = onTaxonomyClick,
                     onStoriesClick = onStoriesClick,
+                    onRetryToday = onRetryToday,
+                    onRetryTrending = onRetryTrending,
+                    onRetryWeekly = onRetryWeekly,
+                    onRetryClassic = onRetryClassic,
                 )
             }
         }
@@ -173,6 +186,10 @@ private fun DiscoveryContent(
     onDeepDiveClick: (DiscoveryItemDto) -> Unit,
     onTaxonomyClick: () -> Unit,
     onStoriesClick: () -> Unit,
+    onRetryToday: () -> Unit,
+    onRetryTrending: () -> Unit,
+    onRetryWeekly: () -> Unit,
+    onRetryClassic: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -209,7 +226,7 @@ private fun DiscoveryContent(
             }
         }
 
-        // Serendipity 结果（如果有的话）
+        // Serendipity 结果
         if (uiState.serendipityItem != null) {
             item {
                 SerendipityResultCard(
@@ -221,40 +238,51 @@ private fun DiscoveryContent(
         }
 
         // 今日发现
-        if (uiState.today != null) {
-            item {
-                TodaySection(
-                    today = uiState.today,
-                    onItemClick = onTodayItemClick,
-                )
-            }
+        item {
+            SectionContainer(
+                section = uiState.today,
+                onRetry = onRetryToday,
+                loadingContent = { SectionLoadingPlaceholder() },
+                errorContent = { errorKind -> SectionErrorRow(errorKind = errorKind, onRetry = onRetryToday) },
+                content = { today -> TodaySection(today = today, onItemClick = onTodayItemClick) },
+            )
         }
 
         // 正在被看见 Trending
-        if (uiState.trending != null && uiState.trending.items.isNotEmpty()) {
-            item {
-                TrendingSection(
-                    trending = uiState.trending,
-                    onItemClick = onTrendingItemClick,
-                )
-            }
+        item {
+            SectionContainer(
+                section = uiState.trending,
+                onRetry = onRetryTrending,
+                loadingContent = { SectionLoadingPlaceholder() },
+                errorContent = { errorKind -> SectionErrorRow(errorKind = errorKind, onRetry = onRetryTrending) },
+                content = { trending ->
+                    if (trending.items.isNotEmpty()) {
+                        TrendingSection(trending = trending, onItemClick = onTrendingItemClick)
+                    }
+                },
+            )
         }
 
         // 本周非遗包 Weekly
-        if (uiState.weekly != null && uiState.weekly.sections.isNotEmpty()) {
-            item {
-                WeeklySection(
-                    weekly = uiState.weekly,
-                    onItemClick = onWeeklyItemClick,
-                )
-            }
+        item {
+            SectionContainer(
+                section = uiState.weekly,
+                onRetry = onRetryWeekly,
+                loadingContent = { SectionLoadingPlaceholder() },
+                errorContent = { errorKind -> SectionErrorRow(errorKind = errorKind, onRetry = onRetryWeekly) },
+                content = { weekly ->
+                    if (weekly.sections.isNotEmpty()) {
+                        WeeklySection(weekly = weekly, onItemClick = onWeeklyItemClick)
+                    }
+                },
+            )
         }
 
         // 主题库入口
         item {
             DiscoveryEntryCard(
                 title = stringResource(R.string.discovery_taxonomy),
-                subtitle = stringResource(R.string.discovery_taxonomy),
+                subtitle = stringResource(R.string.discovery_taxonomy_subtitle),
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 onClick = onTaxonomyClick,
             )
@@ -264,46 +292,29 @@ private fun DiscoveryContent(
         item {
             DiscoveryEntryCard(
                 title = stringResource(R.string.discovery_stories),
-                subtitle = stringResource(R.string.discovery_stories),
+                subtitle = stringResource(R.string.discovery_stories_subtitle),
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 onClick = onStoriesClick,
             )
         }
 
-        if (uiState.topics.isNotEmpty()) {
-            item {
-                ExploreTopicsSection(
-                    topics = uiState.topics,
-                    onTopicClick = onTopicClick,
-                )
-            }
-        }
-
-        if (uiState.learningPaths.isNotEmpty()) {
-            item {
-                LearningPathsSection(
-                    paths = uiState.learningPaths,
-                    onPathClick = onLearningPathClick,
-                )
-            }
-        }
-
-        if (uiState.featuredCollections.isNotEmpty()) {
-            item {
-                FeaturedCollectionsSection(
-                    collections = uiState.featuredCollections,
-                    onCollectionClick = onCollectionClick,
-                )
-            }
-        }
-
-        if (uiState.regionAtlas != null) {
-            item {
-                RegionAtlasCard(
-                    atlas = uiState.regionAtlas,
-                    onClick = onRegionAtlasClick,
-                )
-            }
+        // 经典区块（探索主题、学习路径、精选合集、地区图谱）
+        item {
+            SectionContainer(
+                section = uiState.classic,
+                onRetry = onRetryClassic,
+                loadingContent = { SectionLoadingPlaceholder() },
+                errorContent = { errorKind -> SectionErrorRow(errorKind = errorKind, onRetry = onRetryClassic) },
+                content = { classic ->
+                    ClassicSections(
+                        classic = classic,
+                        onTopicClick = onTopicClick,
+                        onLearningPathClick = onLearningPathClick,
+                        onCollectionClick = onCollectionClick,
+                        onRegionAtlasClick = onRegionAtlasClick,
+                    )
+                },
+            )
         }
 
         item {
@@ -808,10 +819,117 @@ private fun DiscoveryEntryCard(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
+                if (subtitle.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
             TextButton(onClick = onClick) {
                 Text(text = stringResource(R.string.discovery_view_all))
             }
+        }
+    }
+}
+
+// 区块容器：根据 section state 决定显示 loading / error / content
+@Composable
+private fun <T> SectionContainer(
+    section: DiscoverySectionState<T>,
+    onRetry: () -> Unit,
+    loadingContent: @Composable () -> Unit,
+    errorContent: @Composable (ErrorKind) -> Unit,
+    content: @Composable (T) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        when {
+            section.isLoading && !section.hasData -> loadingContent()
+            section.hasError -> errorContent(section.errorKind!!)
+            section.hasData -> content(section.data!!)
+        }
+    }
+}
+
+@Composable
+private fun SectionLoadingPlaceholder(modifier: Modifier = Modifier) {
+    HeritageContentCard(modifier = modifier.padding(horizontal = 16.dp)) {
+        Text(
+            text = stringResource(R.string.context_loading),
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun SectionErrorRow(
+    errorKind: ErrorKind,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(modifier = modifier.padding(horizontal = 16.dp)) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(errorKind.fallbackResId()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = onRetry) {
+                Text(stringResource(R.string.action_retry))
+            }
+        }
+    }
+}
+
+// 经典区块组合
+@Composable
+private fun ClassicSections(
+    classic: DiscoveryClassicData,
+    onTopicClick: (ExploreTopicInfoDto) -> Unit,
+    onLearningPathClick: (LearningPathDto) -> Unit,
+    onCollectionClick: (FeaturedCollectionDto) -> Unit,
+    onRegionAtlasClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        if (classic.topics.isNotEmpty()) {
+            ExploreTopicsSection(
+                topics = classic.topics,
+                onTopicClick = onTopicClick,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        if (classic.learningPaths.isNotEmpty()) {
+            LearningPathsSection(
+                paths = classic.learningPaths,
+                onPathClick = onLearningPathClick,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        if (classic.featuredCollections.isNotEmpty()) {
+            FeaturedCollectionsSection(
+                collections = classic.featuredCollections,
+                onCollectionClick = onCollectionClick,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        if (classic.regionAtlas != null) {
+            RegionAtlasCard(
+                atlas = classic.regionAtlas,
+                onClick = onRegionAtlasClick,
+            )
         }
     }
 }

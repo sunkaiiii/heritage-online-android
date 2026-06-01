@@ -333,9 +333,10 @@ private fun CompareResultContent(
                 )
             }
             items(result.leftFeaturedItems) { item ->
+                val discoveryItem = item.toDiscoveryItem()
                 DiscoveryItemRow(
-                    item = item.toDiscoveryItem(),
-                    onClick = { item.toDiscoveryItem()?.let(onItemClick) },
+                    item = discoveryItem,
+                    onClick = { onItemClick(discoveryItem) },
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
@@ -350,9 +351,10 @@ private fun CompareResultContent(
                 )
             }
             items(result.rightFeaturedItems) { item ->
+                val discoveryItem = item.toDiscoveryItem()
                 DiscoveryItemRow(
-                    item = item.toDiscoveryItem(),
-                    onClick = { item.toDiscoveryItem()?.let(onItemClick) },
+                    item = discoveryItem,
+                    onClick = { onItemClick(discoveryItem) },
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
