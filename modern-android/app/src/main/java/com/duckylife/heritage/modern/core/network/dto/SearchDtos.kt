@@ -12,7 +12,12 @@ enum class SearchResultType(val wireName: String) {
     DirectoryItem("directoryItem"),
 
     @SerialName("inheritor")
-    Inheritor("inheritor"),
+    Inheritor("inheritor");
+
+    companion object {
+        fun fromWireName(value: String?): SearchResultType? =
+            entries.firstOrNull { it.wireName == value }
+    }
 }
 
 @Serializable

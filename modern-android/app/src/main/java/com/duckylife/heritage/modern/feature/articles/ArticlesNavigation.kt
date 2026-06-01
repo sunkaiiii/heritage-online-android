@@ -15,9 +15,17 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
+import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.contextItemTarget
+import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
+import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
+import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
 
+// 路由 key
 private data object ArticlesList
 
 private data class ArticleDetail(
@@ -27,29 +35,105 @@ private data class ArticleDetail(
     val category: ArticleCategory = ArticleCategory.News,
 )
 
+// 跨内容类型路由（从 Context 点击进入）
+private data class ArticleTabDirectoryDetail(
+    val id: String? = null,
+    val sourceId: String? = null,
+    val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+)
+
+private data class ArticleTabInheritorDetail(
+    val id: String? = null,
+    val sourceId: String? = null,
+)
+
+private data class ArticleTabCollectionDetail(val id: String)
+
+private data class ArticleTabTopicDetail(val type: String, val key: String)
+
+// 序列化（JSON 安全）
+@kotlinx.serialization.Serializable
+private sealed interface ArticleRouteState {
+    @kotlinx.serialization.Serializable data object List : ArticleRouteState
+    @kotlinx.serialization.Serializable data class Detail(
+        val id: String? = null,
+        val sourceId: String? = null,
+        val sourceUrl: String? = null,
+        val category: String = "news",
+    ) : ArticleRouteState
+    @kotlinx.serialization.Serializable data class DirDetail(
+        val id: String? = null,
+        val sourceId: String? = null,
+        val kind: String = "nationalProject",
+    ) : ArticleRouteState
+    @kotlinx.serialization.Serializable data class InhDetail(
+        val id: String? = null,
+        val sourceId: String? = null,
+    ) : ArticleRouteState
+    @kotlinx.serialization.Serializable data class CollDetail(val id: String = "") : ArticleRouteState
+    @kotlinx.serialization.Serializable data class TopicDetail(
+        @kotlinx.serialization.SerialName("topicType") val type: String = "",
+        val key: String = "",
+    ) : ArticleRouteState
+}
+
+private fun Any.toArticleRouteState(): ArticleRouteState = when (this) {
+    is ArticlesList -> ArticleRouteState.List
+    is ArticleDetail -> ArticleRouteState.Detail(id, sourceId, sourceUrl, category.wireName)
+    is ArticleTabDirectoryDetail -> ArticleRouteState.DirDetail(id, sourceId, kind.wireName)
+    is ArticleTabInheritorDetail -> ArticleRouteState.InhDetail(id, sourceId)
+    is ArticleTabCollectionDetail -> ArticleRouteState.CollDetail(id)
+    is ArticleTabTopicDetail -> ArticleRouteState.TopicDetail(type, key)
+    else -> ArticleRouteState.List
+}
+
+private fun ArticleRouteState.toRouteKey(): Any = when (this) {
+    is ArticleRouteState.List -> ArticlesList
+    is ArticleRouteState.Detail -> ArticleDetail(
+        id = id, sourceId = sourceId, sourceUrl = sourceUrl,
+        category = ArticleCategory.entries.firstOrNull { it.wireName == category } ?: ArticleCategory.News,
+    )
+    is ArticleRouteState.DirDetail -> ArticleTabDirectoryDetail(
+        id = id, sourceId = sourceId,
+        kind = DirectoryItemKind.entries.firstOrNull { it.wireName == kind } ?: DirectoryItemKind.NationalProject,
+    )
+    is ArticleRouteState.InhDetail -> ArticleTabInheritorDetail(id = id, sourceId = sourceId)
+    is ArticleRouteState.CollDetail -> ArticleTabCollectionDetail(id = id)
+    is ArticleRouteState.TopicDetail -> ArticleTabTopicDetail(type = type, key = key)
+}
+
 private fun serializeArticles(stack: List<Any>): String =
-    stack.joinToString("\n") { entry ->
-        when (entry) {
-            ArticlesList -> "L"
-            is ArticleDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
-            else -> "L"
-        }
-    }
+    try {
+        com.duckylife.heritage.modern.core.network.HeritageJson.encodeToString(stack.map { it.toArticleRouteState() })
+    } catch (_: Exception) { "[]" }
 
 private fun deserializeArticles(str: String): List<Any> =
-    if (str.isBlank()) listOf(ArticlesList)
-    else str.split("\n").mapNotNull { item ->
-        val parts = item.split("|")
-        when (parts[0]) {
-            "D" -> ArticleDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                sourceUrl = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-                category = ArticleCategory.entries.firstOrNull { it.wireName == parts.getOrNull(4) } ?: ArticleCategory.News,
-            )
-            else -> ArticlesList
+    try {
+        if (str.isBlank()) listOf(ArticlesList)
+        else {
+            val states = com.duckylife.heritage.modern.core.network.HeritageJson.decodeFromString<List<ArticleRouteState>>(str)
+            if (states.isEmpty()) listOf(ArticlesList) else states.map { it.toRouteKey() }
         }
+    } catch (_: Exception) { listOf(ArticlesList) }
+
+// Context 目标导航 helper
+private fun navigateContextTarget(
+    target: DetailContextTarget,
+    backStack: MutableList<Any>,
+) {
+    when (target) {
+        is DetailContextTarget.Article ->
+            backStack.add(ArticleDetail(id = target.id))
+        is DetailContextTarget.DirectoryItem ->
+            backStack.add(ArticleTabDirectoryDetail(id = target.id))
+        is DetailContextTarget.Inheritor ->
+            backStack.add(ArticleTabInheritorDetail(id = target.id))
+        is DetailContextTarget.Collection ->
+            backStack.add(ArticleTabCollectionDetail(id = target.id))
+        is DetailContextTarget.Topic ->
+            backStack.add(ArticleTabTopicDetail(type = target.type, key = target.key))
     }
+}
 
 @Composable
 fun ArticlesNavHost(
@@ -59,12 +143,12 @@ fun ArticlesNavHost(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var savedStack by rememberSaveable { mutableStateOf("L") }
+    var savedStack by rememberSaveable { mutableStateOf("") }
     val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeArticles(savedStack)) } }
     LaunchedEffect(backStack.size) {
         savedStack = serializeArticles(backStack.toList())
     }
-    val isInDetail = backStack.lastOrNull() is ArticleDetail
+    val isInDetail = backStack.lastOrNull() !is ArticlesList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }
@@ -89,9 +173,11 @@ fun ArticlesNavHost(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
-        entryProvider = { key ->
+        entryProvider = entryProvider@{ entryKey ->
+            val key = entryKey
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             when (key) {
-                ArticlesList -> NavEntry(key) {
+                is ArticlesList -> NavEntry(entryKey) {
                     ArticlesRoute(
                         onSettingsSelected = onSettingsSelected,
                         onArticleSelected = { articleId ->
@@ -101,7 +187,7 @@ fun ArticlesNavHost(
                     )
                 }
 
-                is ArticleDetail -> NavEntry(key) {
+                is ArticleDetail -> NavEntry(entryKey) {
                     ArticleDetailRoute(
                         articleId = key.id,
                         sourceId = key.sourceId,
@@ -110,6 +196,86 @@ fun ArticlesNavHost(
                         onBack = { backStack.removeLastOrNull() },
                         onRelatedArticleSelected = { reference, category ->
                             reference.toArticleDetail(category)?.let(backStack::add)
+                        },
+                        onContextTargetSelected = { target ->
+                            navigateContextTarget(target, backStack)
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is ArticleTabDirectoryDetail -> NavEntry(entryKey) {
+                    DirectoryDetailRoute(
+                        itemId = key.id,
+                        sourceId = key.sourceId,
+                        kind = key.kind,
+                        onBack = { backStack.removeLastOrNull() },
+                        onRelatedProjectSelected = { reference, kind ->
+                            reference.toDirectoryDetail(kind)?.let(backStack::add)
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            reference.toArticleTabInheritorDetail()?.let(backStack::add)
+                        },
+                        onContextTargetSelected = { target ->
+                            navigateContextTarget(target, backStack)
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is ArticleTabInheritorDetail -> NavEntry(entryKey) {
+                    InheritorDetailRoute(
+                        inheritorId = key.id,
+                        sourceId = key.sourceId,
+                        onBack = { backStack.removeLastOrNull() },
+                        onRelatedProjectSelected = { reference ->
+                            reference.toDirectoryDetail()?.let(backStack::add)
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            reference.toArticleTabInheritorDetail()?.let(backStack::add)
+                        },
+                        onContextTargetSelected = { target ->
+                            navigateContextTarget(target, backStack)
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is ArticleTabCollectionDetail -> NavEntry(entryKey) {
+                    CollectionRoute(
+                        id = key.id,
+                        type = null,
+                        topicKey = null,
+                        onBack = { backStack.removeLastOrNull() },
+                        onArticleSelected = { id ->
+                            backStack.add(ArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(ArticleTabDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(ArticleTabInheritorDetail(id = id))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is ArticleTabTopicDetail -> NavEntry(entryKey) {
+                    ExploreTopicRoute(
+                        type = key.type,
+                        key = key.key,
+                        onBack = { backStack.removeLastOrNull() },
+                        onArticleSelected = { id ->
+                            backStack.add(ArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(ArticleTabDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(ArticleTabInheritorDetail(id = id))
+                        },
+                        onRelatedTopicSelected = { type, topicKey ->
+                            backStack.add(ArticleTabTopicDetail(type = type, key = topicKey))
                         },
                         modifier = modifier,
                     )
@@ -143,3 +309,21 @@ private fun ArticleReferenceDto.toArticleDetail(category: ArticleCategory): Arti
 
         else -> null
     }
+
+private fun com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto.toDirectoryDetail(
+    fallbackKind: DirectoryItemKind = DirectoryItemKind.NationalProject,
+): ArticleTabDirectoryDetail? {
+    if (sourceId.isNullOrBlank()) return null
+    return ArticleTabDirectoryDetail(
+        sourceId = sourceId,
+        kind = DirectoryItemKind.entries.firstOrNull { it.wireName.equals(kind, ignoreCase = true) } ?: fallbackKind,
+    )
+}
+
+private fun com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto.toArticleTabInheritorDetail(): ArticleTabInheritorDetail? {
+    if (sourceId.isNullOrBlank()) return null
+    return ArticleTabInheritorDetail(sourceId = sourceId)
+}
+
+private fun com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto.toDirectoryItemKindOrNull(): DirectoryItemKind? =
+    DirectoryItemKind.entries.firstOrNull { it.wireName.equals(kind, ignoreCase = true) }

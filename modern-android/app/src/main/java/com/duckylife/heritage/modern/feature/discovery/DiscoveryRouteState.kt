@@ -4,7 +4,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 
 // ---------------------------------------------------------------------------
-// Route keys — typed sealed interface replacing List<Any>
+// 路由 key：用强类型替代 List<Any> 的临时字符串状态
 // ---------------------------------------------------------------------------
 
 internal sealed interface DiscoveryRouteKey {
@@ -42,12 +42,12 @@ internal sealed interface DiscoveryRouteKey {
 }
 
 // ---------------------------------------------------------------------------
-// Serializable wire format
+// 可持久化的路由状态
 // ---------------------------------------------------------------------------
 
 @kotlinx.serialization.Serializable
 internal sealed interface RouteState {
-    // Discriminator field is "type" — avoid using "type" as a field name in subtypes
+    // 鉴别器字段为 "type" — 子类型中避免使用 "type" 作为字段名
     @kotlinx.serialization.Serializable data object Index : RouteState
     @kotlinx.serialization.Serializable data class Search(val query: String = "") : RouteState
     @kotlinx.serialization.Serializable data class ExploreTopic(@kotlinx.serialization.SerialName("topicType") val type: String = "", val key: String = "") : RouteState
@@ -68,7 +68,7 @@ internal sealed interface RouteState {
 }
 
 // ---------------------------------------------------------------------------
-// Mapping: RouteKey <-> RouteState
+// 路由 key 与可持久化状态之间的转换
 // ---------------------------------------------------------------------------
 
 internal fun DiscoveryRouteKey.toRouteState(): RouteState = when (this) {

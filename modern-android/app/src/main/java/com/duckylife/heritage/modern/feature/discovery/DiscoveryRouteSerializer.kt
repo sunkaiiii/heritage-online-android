@@ -6,7 +6,7 @@ internal fun serializeDiscoveryRoutes(stack: List<DiscoveryRouteKey>): String =
     try {
         HeritageJson.encodeToString(stack.map { it.toRouteState() })
     } catch (_: Exception) {
-        // Fallback: return empty JSON array so deserializer returns empty list -> DiscoveryIndex
+        // 降级：返回空 JSON 数组，反序列化后回到首页
         "[]"
     }
 

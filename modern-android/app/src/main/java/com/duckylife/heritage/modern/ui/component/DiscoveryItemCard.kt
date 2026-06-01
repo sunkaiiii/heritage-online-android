@@ -18,10 +18,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
+import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
@@ -200,8 +202,8 @@ fun DiscoveryItemRow(
 @Composable
 private fun localizedTypeChip(type: String): String =
     when (type) {
-        "article" -> "文章"
-        "directoryItem" -> "名录"
-        "inheritor" -> "传承人"
+        "article" -> stringResource(R.string.search_type_article)
+        "directoryItem" -> stringResource(R.string.search_type_directory)
+        "inheritor" -> stringResource(R.string.search_type_inheritor)
         else -> type
     }

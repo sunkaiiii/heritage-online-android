@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.detail
 
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationItemDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 
 sealed interface DetailContextTarget {
     data class Article(val id: String) : DetailContextTarget
@@ -11,11 +12,11 @@ sealed interface DetailContextTarget {
 }
 
 fun contextItemTarget(id: String, type: String?): DetailContextTarget? =
-    when (type) {
-        "article" -> DetailContextTarget.Article(id)
-        "directoryItem" -> DetailContextTarget.DirectoryItem(id)
-        "inheritor" -> DetailContextTarget.Inheritor(id)
-        else -> null
+    when (SearchResultType.fromWireName(type)) {
+        SearchResultType.Article -> DetailContextTarget.Article(id)
+        SearchResultType.DirectoryItem -> DetailContextTarget.DirectoryItem(id)
+        SearchResultType.Inheritor -> DetailContextTarget.Inheritor(id)
+        null -> null
     }
 
 fun BlendedRecommendationItemDto.toDetailContextTarget(): DetailContextTarget? =

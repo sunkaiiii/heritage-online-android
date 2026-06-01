@@ -35,11 +35,11 @@ import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyDetailRoute
 import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyRoute
 import com.duckylife.heritage.modern.feature.timeline.TimelineRoute
 
-// Smart-cast helper for NavDisplay key (which is Any)
+// NavDisplay key 的智能转换辅助函数
 private fun Any.asRouteKey(): DiscoveryRouteKey? = this as? DiscoveryRouteKey
 
 // ---------------------------------------------------------------------------
-// Helpers
+// 辅助函数
 // ---------------------------------------------------------------------------
 
 private fun navigateToDiscoveryItem(
@@ -52,7 +52,7 @@ private fun navigateToDiscoveryItem(
         "article" -> backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
         "directoryItem" -> backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
         "inheritor" -> backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
-        else -> return // unknown type — don't navigate
+        else -> return // 未知类型不导航，避免错误跳转
     }
 }
 
