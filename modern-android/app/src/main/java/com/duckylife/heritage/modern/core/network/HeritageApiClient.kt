@@ -219,13 +219,13 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getArticle(id: String): ArticleDetailDto =
-        httpClient.get(endpoint("api/articles/$id")).body()
+        httpClient.get(endpoint("api/articles/${pathSegment(id)}")).body()
 
     override suspend fun getArticleBySourceId(
         sourceId: String,
         category: ArticleCategory,
     ): ArticleDetailDto =
-        httpClient.get(endpoint("api/articles/source/$sourceId")) {
+        httpClient.get(endpoint("api/articles/source/${pathSegment(sourceId)}")) {
             optionalParameter("category", category.wireName)
         }.body()
 
@@ -239,7 +239,7 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getArticleContext(id: String): DetailContextDto =
-        httpClient.get(endpoint("api/articles/$id/context")).body()
+        httpClient.get(endpoint("api/articles/${pathSegment(id)}/context")).body()
 
     override suspend fun getDirectoryItems(
         query: DirectoryItemQuery,
@@ -274,18 +274,18 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getDirectoryItem(id: String): DirectoryItemDetailDto =
-        httpClient.get(endpoint("api/directory-items/$id")).body()
+        httpClient.get(endpoint("api/directory-items/${pathSegment(id)}")).body()
 
     override suspend fun getDirectoryItemBySourceId(
         sourceId: String,
         kind: DirectoryItemKind,
     ): DirectoryItemDetailDto =
-        httpClient.get(endpoint("api/directory-items/source/$sourceId")) {
+        httpClient.get(endpoint("api/directory-items/source/${pathSegment(sourceId)}")) {
             optionalParameter("kind", kind.wireName)
         }.body()
 
     override suspend fun getDirectoryItemContext(id: String): DetailContextDto =
-        httpClient.get(endpoint("api/directory-items/$id/context")).body()
+        httpClient.get(endpoint("api/directory-items/${pathSegment(id)}/context")).body()
 
     override suspend fun getInheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> =
         httpClient.get(endpoint("api/inheritors")) {
@@ -299,13 +299,13 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getInheritor(id: String): InheritorDetailDto =
-        httpClient.get(endpoint("api/inheritors/$id")).body()
+        httpClient.get(endpoint("api/inheritors/${pathSegment(id)}")).body()
 
     override suspend fun getInheritorBySourceId(sourceId: String): InheritorDetailDto =
-        httpClient.get(endpoint("api/inheritors/source/$sourceId")).body()
+        httpClient.get(endpoint("api/inheritors/source/${pathSegment(sourceId)}")).body()
 
     override suspend fun getInheritorContext(id: String): DetailContextDto =
-        httpClient.get(endpoint("api/inheritors/$id/context")).body()
+        httpClient.get(endpoint("api/inheritors/${pathSegment(id)}/context")).body()
 
     override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto =
         httpClient.get(endpoint("api/search/v2")) {
@@ -365,7 +365,7 @@ class KtorHeritageApiClient(
         httpClient.get(endpoint("api/explore/learning-paths")).body()
 
     override suspend fun getLearningPathDetail(id: String, limit: Int): LearningPathDetailDto =
-        httpClient.get(endpoint("api/explore/learning-paths/$id")) {
+        httpClient.get(endpoint("api/explore/learning-paths/${pathSegment(id)}")) {
             optionalParameter("limit", limit)
         }.body()
 

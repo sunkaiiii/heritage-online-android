@@ -214,6 +214,7 @@
     <string name="story_index_by_category">按分类阅读</string>
     <string name="story_index_by_year">按年份阅读</string>
     <string name="story_loading">故事加载中…</string>
+    <string name="story_index_empty">暂无可用的故事入口</string>
     <string name="story_reading_time">%1$d 分钟阅读</string>
     <string name="story_related_topics">相关主题</string>
 

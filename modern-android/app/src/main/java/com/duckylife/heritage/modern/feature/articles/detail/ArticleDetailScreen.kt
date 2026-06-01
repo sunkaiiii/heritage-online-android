@@ -87,6 +87,7 @@ fun ArticleDetailRoute(
     category: ArticleCategory,
     onBack: () -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val viewModel: ArticleDetailViewModel = hiltViewModel<ArticleDetailViewModel, ArticleDetailViewModel.Factory>(
@@ -109,6 +110,7 @@ fun ArticleDetailRoute(
         onRelatedArticleSelected = onRelatedArticleSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
+        onContextTargetSelected = onContextTargetSelected,
         modifier = modifier,
     )
 }
@@ -123,6 +125,7 @@ fun ArticleDetailScreen(
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -226,6 +229,7 @@ fun ArticleDetailScreen(
                     digestErrorKind = uiState.digestErrorKind,
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
+                    onContextTargetSelected = onContextTargetSelected,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -264,7 +268,7 @@ private fun ArticleDetailContent(
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
     blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onBlendedItemClick: (com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationItemDto) -> Unit = {},
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
@@ -395,7 +399,10 @@ private fun ArticleDetailContent(
             item {
                 com.duckylife.heritage.modern.ui.component.BlendedRecommendationsSection(
                     recommendations = blendedRecommendations,
-                    onItemClick = onBlendedItemClick,
+                    onItemClick = { item ->
+                        com.duckylife.heritage.modern.feature.detail.contextItemTarget(item.id, item.type)
+                            ?.let(onContextTargetSelected)
+                    },
                 )
             }
         }
@@ -406,9 +413,16 @@ private fun ArticleDetailContent(
                 isLoading = contextLoading,
                 errorKind = contextErrorKind,
                 onRetry = onContextRetry,
-                onItemClick = { _, _ -> },
-                onCollectionClick = {},
-                onTopicClick = { _, _ -> },
+                onItemClick = { id, type ->
+                    com.duckylife.heritage.modern.feature.detail.contextItemTarget(id, type)
+                        ?.let(onContextTargetSelected)
+                },
+                onCollectionClick = { collectionId ->
+                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Collection(collectionId))
+                },
+                onTopicClick = { type, key ->
+                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Topic(type, key))
+                },
             )
         }
     }

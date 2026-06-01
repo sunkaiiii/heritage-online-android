@@ -42,13 +42,26 @@ class StoriesIndexViewModel @Inject constructor(
                         runCatchingCancellable { repository.timelineYears() }
                     }
 
-                    val regions = regionsDeferred.await().getOrNull()?.items ?: emptyList()
-                    val categories = categoriesDeferred.await().getOrNull()?.items ?: emptyList()
-                    val years = yearsDeferred.await().getOrNull()?.take(10) ?: emptyList()
+                    val regionsResult = regionsDeferred.await()
+                    val categoriesResult = categoriesDeferred.await()
+                    val yearsResult = yearsDeferred.await()
 
-                    val hasAnyData = regions.isNotEmpty() || categories.isNotEmpty() || years.isNotEmpty()
+                    val regions = regionsResult.getOrNull()?.items ?: emptyList()
+                    val categories = categoriesResult.getOrNull()?.items ?: emptyList()
+                    val years = yearsResult.getOrNull()?.take(10) ?: emptyList()
 
-                    if (hasAnyData) {
+                    // Check if any API threw an exception
+                    val firstError = regionsResult.exceptionOrNull()
+                        ?: categoriesResult.exceptionOrNull()
+                        ?: yearsResult.exceptionOrNull()
+
+                    if (firstError != null && regions.isEmpty() && categories.isEmpty() && years.isEmpty()) {
+                        // All failed
+                        _uiState.update {
+                            it.copy(isLoading = false, errorKind = firstError.toUiError().kind)
+                        }
+                    } else {
+                        // Some or all succeeded (empty data is valid — not an error)
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
@@ -56,16 +69,6 @@ class StoriesIndexViewModel @Inject constructor(
                                 regions = regions,
                                 categories = categories,
                                 years = years,
-                            )
-                        }
-                    } else {
-                        val firstError = regionsDeferred.await().exceptionOrNull()
-                            ?: categoriesDeferred.await().exceptionOrNull()
-                            ?: yearsDeferred.await().exceptionOrNull()
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                errorKind = (firstError ?: Exception("Unknown error")).toUiError().kind,
                             )
                         }
                     }

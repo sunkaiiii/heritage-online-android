@@ -10,4 +10,8 @@ data class StoriesIndexUiState(
     val regions: List<TaxonomyTopicDto> = emptyList(),
     val categories: List<TaxonomyTopicDto> = emptyList(),
     val years: List<TimelineYearBucketDto> = emptyList(),
-)
+) {
+    val isEmpty: Boolean
+        get() = !isLoading && errorKind == null &&
+            regions.isEmpty() && categories.isEmpty() && years.isEmpty()
+}

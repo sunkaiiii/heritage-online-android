@@ -214,6 +214,7 @@
     <string name="story_index_by_category">By Category</string>
     <string name="story_index_by_year">By Year</string>
     <string name="story_loading">Loading story…</string>
+    <string name="story_index_empty">No story entries available yet</string>
     <string name="story_reading_time">%1$d min read</string>
     <string name="story_related_topics">Related Topics</string>
 

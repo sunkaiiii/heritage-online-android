@@ -99,6 +99,7 @@ fun DirectoryDetailRoute(
     onBack: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val viewModel: DirectoryDetailViewModel = hiltViewModel<DirectoryDetailViewModel, DirectoryDetailViewModel.Factory>(
@@ -121,6 +122,7 @@ fun DirectoryDetailRoute(
         onRelatedInheritorSelected = onRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
+        onContextTargetSelected = onContextTargetSelected,
         modifier = modifier,
     )
 }
@@ -136,6 +138,7 @@ fun DirectoryDetailScreen(
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -242,6 +245,7 @@ fun DirectoryDetailScreen(
                     digestErrorKind = uiState.digestErrorKind,
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
+                    onContextTargetSelected = onContextTargetSelected,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -281,6 +285,7 @@ private fun DirectoryDetailContent(
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
     blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
@@ -427,7 +432,10 @@ private fun DirectoryDetailContent(
             item {
                 com.duckylife.heritage.modern.ui.component.BlendedRecommendationsSection(
                     recommendations = blendedRecommendations,
-                    onItemClick = {},
+                    onItemClick = { item ->
+                        com.duckylife.heritage.modern.feature.detail.contextItemTarget(item.id, item.type)
+                            ?.let(onContextTargetSelected)
+                    },
                 )
             }
         }
@@ -438,9 +446,16 @@ private fun DirectoryDetailContent(
                 isLoading = contextLoading,
                 errorKind = contextErrorKind,
                 onRetry = onContextRetry,
-                onItemClick = { _, _ -> },
-                onCollectionClick = {},
-                onTopicClick = { _, _ -> },
+                onItemClick = { id, type ->
+                    com.duckylife.heritage.modern.feature.detail.contextItemTarget(id, type)
+                        ?.let(onContextTargetSelected)
+                },
+                onCollectionClick = { collectionId ->
+                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Collection(collectionId))
+                },
+                onTopicClick = { type, key ->
+                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Topic(type, key))
+                },
             )
         }
     }

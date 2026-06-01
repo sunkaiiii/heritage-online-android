@@ -18,7 +18,11 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -31,6 +35,9 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -46,6 +53,7 @@ import com.duckylife.heritage.modern.core.network.dto.CompareSideDto
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.feature.directory.labelRes
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.component.MetricPillRow
@@ -150,29 +158,40 @@ fun CompareScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 左侧输入
-            OutlinedTextField(
-                value = uiState.leftInput,
-                onValueChange = onLeftChange,
-                label = { Text(stringResource(R.string.compare_left_label)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            )
+            // 输入区域（Kind 模式用 Dropdown，其他用文本框）
+            if (uiState.selectedType == CompareType.Kind) {
+                KindDropdownSelector(
+                    selectedLeft = uiState.leftInput,
+                    selectedRight = uiState.rightInput,
+                    onLeftChange = onLeftChange,
+                    onRightChange = onRightChange,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            } else {
+                // 左侧输入
+                OutlinedTextField(
+                    value = uiState.leftInput,
+                    onValueChange = onLeftChange,
+                    label = { Text(stringResource(R.string.compare_left_label)) },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // 右侧输入
-            OutlinedTextField(
-                value = uiState.rightInput,
-                onValueChange = onRightChange,
-                label = { Text(stringResource(R.string.compare_right_label)) },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            )
+                // 右侧输入
+                OutlinedTextField(
+                    value = uiState.rightInput,
+                    onValueChange = onRightChange,
+                    label = { Text(stringResource(R.string.compare_right_label)) },
+                    singleLine = true,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                )
+            }
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -231,6 +250,88 @@ fun CompareScreen(
                             onItemClick = onItemClick,
                         )
                     }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun KindDropdownSelector(
+    selectedLeft: String,
+    selectedRight: String,
+    onLeftChange: (String) -> Unit,
+    onRightChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val kinds = com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind.entries
+    var leftExpanded by remember { mutableStateOf(false) }
+    var rightExpanded by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        // 左侧 Dropdown
+        ExposedDropdownMenuBox(
+            expanded = leftExpanded,
+            onExpandedChange = { leftExpanded = it },
+        ) {
+            OutlinedTextField(
+                value = kinds.firstOrNull { it.wireName == selectedLeft }?.let { matched ->
+                    stringResource(matched.labelRes)
+                } ?: selectedLeft,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(stringResource(R.string.compare_left_label)) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = leftExpanded) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+            )
+            ExposedDropdownMenu(
+                expanded = leftExpanded,
+                onDismissRequest = { leftExpanded = false },
+            ) {
+                kinds.forEach { kind ->
+                    DropdownMenuItem(
+                        text = { Text(stringResource(kind.labelRes)) },
+                        onClick = {
+                            onLeftChange(kind.wireName)
+                            leftExpanded = false
+                        },
+                    )
+                }
+            }
+        }
+
+        // 右侧 Dropdown
+        ExposedDropdownMenuBox(
+            expanded = rightExpanded,
+            onExpandedChange = { rightExpanded = it },
+        ) {
+            OutlinedTextField(
+                value = kinds.firstOrNull { it.wireName == selectedRight }?.let { matched ->
+                    stringResource(matched.labelRes)
+                } ?: selectedRight,
+                onValueChange = {},
+                readOnly = true,
+                label = { Text(stringResource(R.string.compare_right_label)) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = rightExpanded) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+            )
+            ExposedDropdownMenu(
+                expanded = rightExpanded,
+                onDismissRequest = { rightExpanded = false },
+            ) {
+                kinds.forEach { kind ->
+                    DropdownMenuItem(
+                        text = { Text(stringResource(kind.labelRes)) },
+                        onClick = {
+                            onRightChange(kind.wireName)
+                            rightExpanded = false
+                        },
+                    )
                 }
             }
         }

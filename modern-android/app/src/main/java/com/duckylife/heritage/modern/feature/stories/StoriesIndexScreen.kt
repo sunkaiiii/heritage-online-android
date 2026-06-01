@@ -88,6 +88,12 @@ fun StoriesIndexScreen(
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
+                uiState.isEmpty -> {
+                    StoriesIndexEmptyContent(
+                        onBack = onBack,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
                 else -> {
                     StoriesIndexContent(
                         uiState = uiState,
@@ -309,6 +315,28 @@ private fun StoriesIndexErrorContent(
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
+        }
+    }
+}
+
+@Composable
+private fun StoriesIndexEmptyContent(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.story_index_empty),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = onBack) {
+            Text(text = stringResource(R.string.action_back))
         }
     }
 }
