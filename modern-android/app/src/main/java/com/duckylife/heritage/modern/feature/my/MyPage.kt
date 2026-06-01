@@ -290,24 +290,8 @@ fun MyPage(
                         events = readingPathEvents,
                         onClear = { showClearReadingPathDialog = true },
                         onItemClick = { event ->
-                            when (event.toType) {
-                                "article" -> onNavigate(MyPageDestination.Article(
-                                    articleId = event.toId,
-                                    sourceId = event.toSourceId,
-                                    sourceUrl = event.toSourceUrl,
-                                    category = ArticleCategory.entries.firstOrNull { it.wireName == event.toCategory }
-                                        ?: ArticleCategory.News,
-                                ))
-                                "directoryItem" -> onNavigate(MyPageDestination.Directory(
-                                    itemId = event.toId,
-                                    sourceId = event.toSourceId,
-                                    kind = DirectoryItemKind.entries.firstOrNull { it.wireName == event.toKind }
-                                        ?: DirectoryItemKind.NationalProject,
-                                ))
-                                "inheritor" -> onNavigate(MyPageDestination.Inheritor(
-                                    inheritorId = event.toId,
-                                    sourceId = event.toSourceId,
-                                ))
+                            event.toMyPageDestination()?.let { destination ->
+                                onNavigate(destination)
                             }
                         },
                     )

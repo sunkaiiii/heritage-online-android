@@ -48,6 +48,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import com.duckylife.heritage.modern.core.data.ReadingPathContentRef
+import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
+import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
+import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,12 +69,17 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
+import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.preview.ImagePreviewOverlay
@@ -87,9 +96,9 @@ fun ArticleDetailRoute(
     category: ArticleCategory,
     onBack: () -> Unit,
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit,
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
-    readingPathRecorder: com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel = hiltViewModel(),
+    readingPathRecorder: ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
     val viewModel: ArticleDetailViewModel = hiltViewModel<ArticleDetailViewModel, ArticleDetailViewModel.Factory>(
         key = "article-detail-${articleId.orEmpty()}-${sourceId.orEmpty()}-${sourceUrl.orEmpty()}-${category.wireName}",
@@ -105,9 +114,9 @@ fun ArticleDetailRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // 包装回调，记录阅读路径
-    fun currentFromRef(): com.duckylife.heritage.modern.core.data.ReadingPathContentRef? {
+    fun currentFromRef(): ReadingPathContentRef? {
         val article = uiState.article ?: return null
-        return com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+        return ReadingPathContentRef(
             type = "article",
             id = article.id ?: articleId.orEmpty(),
             title = article.title.orEmpty(),
@@ -117,7 +126,7 @@ fun ArticleDetailRoute(
         )
     }
 
-    val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
+    val wrappedExploreTargetClick: (DetailExploreTargetClick) -> Unit = { click ->
         currentFromRef()?.let { from ->
             readingPathRecorder.record(
                 from = from,
@@ -130,7 +139,7 @@ fun ArticleDetailRoute(
 
     val wrappedRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit = { reference, cat ->
         currentFromRef()?.let { from ->
-            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            val to = ReadingPathContentRef(
                 type = "article",
                 id = reference.sourceId.orEmpty(),
                 title = reference.title.orEmpty(),
@@ -138,7 +147,7 @@ fun ArticleDetailRoute(
                 sourceId = reference.sourceId,
                 sourceUrl = reference.detailUrl,
             )
-            readingPathRecorder.record(from = from, to = to, source = "related")
+            readingPathRecorder.record(from = from, to = to, source = DetailExploreSource.Related.wireName)
         }
         onRelatedArticleSelected(reference, cat)
     }
@@ -166,7 +175,7 @@ fun ArticleDetailScreen(
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -299,17 +308,17 @@ private fun ArticleDetailContent(
     onRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit,
     onPreviewImage: (Int) -> Unit,
     contextLoading: Boolean = false,
-    context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
-    contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    context: DetailContextDto? = null,
+    contextErrorKind: ErrorKind? = null,
     onContextRetry: () -> Unit = {},
     // Content Digest
-    digest: com.duckylife.heritage.modern.core.network.dto.ContentDigestDto? = null,
+    digest: ContentDigestDto? = null,
     digestLoading: Boolean = false,
-    digestErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    digestErrorKind: ErrorKind? = null,
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
-    blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
+    blendedRecommendations: BlendedRecommendationResponseDto? = null,
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedArticle = stringResource(R.string.unnamed_article)
@@ -399,7 +408,7 @@ private fun ArticleDetailContent(
 
         // 探索区块：Digest -> Blended -> Context
         item {
-            com.duckylife.heritage.modern.ui.component.DetailExploreSection(
+            DetailExploreSection(
                 digest = digest,
                 digestLoading = digestLoading,
                 digestErrorKind = digestErrorKind,

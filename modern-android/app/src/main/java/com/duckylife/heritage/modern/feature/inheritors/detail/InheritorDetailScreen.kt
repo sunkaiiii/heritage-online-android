@@ -67,11 +67,19 @@ import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
+import com.duckylife.heritage.modern.core.data.ReadingPathContentRef
+import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
+import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
+import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
+import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
 import com.duckylife.heritage.modern.ui.component.HeritageFact
@@ -79,6 +87,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageFactCard
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritageReferenceCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
+import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.preview.ImagePreviewOverlay
 import com.duckylife.heritage.modern.ui.preview.buildPreviewUrls
@@ -94,9 +103,9 @@ fun InheritorDetailRoute(
     onBack: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit,
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit,
     modifier: Modifier = Modifier,
-    readingPathRecorder: com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel = hiltViewModel(),
+    readingPathRecorder: ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
     val viewModel: InheritorDetailViewModel = hiltViewModel<InheritorDetailViewModel, InheritorDetailViewModel.Factory>(
         key = "inheritor-detail-${inheritorId.orEmpty()}-${sourceId.orEmpty()}",
@@ -110,9 +119,9 @@ fun InheritorDetailRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     // 包装回调，记录阅读路径
-    fun currentFromRef(): com.duckylife.heritage.modern.core.data.ReadingPathContentRef? {
+    fun currentFromRef(): ReadingPathContentRef? {
         val item = uiState.item ?: return null
-        return com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+        return ReadingPathContentRef(
             type = "inheritor",
             id = item.id ?: inheritorId.orEmpty(),
             title = item.name.orEmpty(),
@@ -120,7 +129,7 @@ fun InheritorDetailRoute(
         )
     }
 
-    val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
+    val wrappedExploreTargetClick: (DetailExploreTargetClick) -> Unit = { click ->
         currentFromRef()?.let { from ->
             readingPathRecorder.record(
                 from = from,
@@ -133,26 +142,27 @@ fun InheritorDetailRoute(
 
     val wrappedRelatedProjectSelected: (DirectoryReferenceDto) -> Unit = { reference ->
         currentFromRef()?.let { from ->
-            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            val to = ReadingPathContentRef(
                 type = "directoryItem",
                 id = reference.sourceId.orEmpty(),
                 title = reference.title.orEmpty(),
+                kind = reference.kind,
                 sourceId = reference.sourceId,
             )
-            readingPathRecorder.record(from = from, to = to, source = "related")
+            readingPathRecorder.record(from = from, to = to, source = DetailExploreSource.Related.wireName)
         }
         onRelatedProjectSelected(reference)
     }
 
     val wrappedRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit = { reference ->
         currentFromRef()?.let { from ->
-            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            val to = ReadingPathContentRef(
                 type = "inheritor",
                 id = reference.sourceId.orEmpty(),
                 title = reference.title.orEmpty(),
                 sourceId = reference.sourceId,
             )
-            readingPathRecorder.record(from = from, to = to, source = "related")
+            readingPathRecorder.record(from = from, to = to, source = DetailExploreSource.Related.wireName)
         }
         onRelatedInheritorSelected(reference)
     }
@@ -182,7 +192,7 @@ fun InheritorDetailScreen(
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -319,17 +329,17 @@ private fun InheritorDetailContent(
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onPreviewImage: (Int) -> Unit,
     contextLoading: Boolean = false,
-    context: com.duckylife.heritage.modern.core.network.dto.DetailContextDto? = null,
-    contextErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    context: DetailContextDto? = null,
+    contextErrorKind: ErrorKind? = null,
     onContextRetry: () -> Unit = {},
     // Content Digest
-    digest: com.duckylife.heritage.modern.core.network.dto.ContentDigestDto? = null,
+    digest: ContentDigestDto? = null,
     digestLoading: Boolean = false,
-    digestErrorKind: com.duckylife.heritage.modern.ui.error.ErrorKind? = null,
+    digestErrorKind: ErrorKind? = null,
     onDigestRetry: () -> Unit = {},
     // Blended Recommendations
-    blendedRecommendations: com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto? = null,
-    onExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = {},
+    blendedRecommendations: BlendedRecommendationResponseDto? = null,
+    onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
@@ -410,7 +420,7 @@ private fun InheritorDetailContent(
 
         // 探索区块：Digest -> Blended -> Context
         item {
-            com.duckylife.heritage.modern.ui.component.DetailExploreSection(
+            DetailExploreSection(
                 digest = digest,
                 digestLoading = digestLoading,
                 digestErrorKind = digestErrorKind,
