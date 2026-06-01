@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -73,8 +72,8 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.detail.DetailContextRouteMapper
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
-import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
@@ -89,73 +88,6 @@ import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
-private data object InheritorsList
-
-private data class InheritorDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-)
-
-private data class InheritorDirectoryDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-    val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
-)
-
-// 跨内容类型路由（从 Context 点击进入）
-private data class InheritorTabArticleDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-    val sourceUrl: String? = null,
-    val category: ArticleCategory = ArticleCategory.News,
-)
-
-private data class InheritorTabCollectionDetail(val id: String)
-
-private data class InheritorTabTopicDetail(val type: String, val key: String)
-
-private fun serializeInheritors(stack: List<Any>): String =
-    stack.joinToString("\n") { entry ->
-        when (entry) {
-            InheritorsList -> "L"
-            is InheritorDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
-            is InheritorDirectoryDetail -> "P|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
-            is InheritorTabArticleDetail -> "A|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
-            is InheritorTabCollectionDetail -> "C|${entry.id}"
-            is InheritorTabTopicDetail -> "T|${entry.type}|${entry.key}"
-            else -> "L"
-        }
-    }
-
-private fun deserializeInheritors(str: String): List<Any> =
-    if (str.isBlank()) listOf(InheritorsList)
-    else str.split("\n").mapNotNull { item ->
-        val parts = item.split("|")
-        when (parts[0]) {
-            "D" -> InheritorDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-            )
-            "P" -> InheritorDirectoryDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                kind = DirectoryItemKind.entries.firstOrNull { it.wireName == parts.getOrNull(3) } ?: DirectoryItemKind.NationalProject,
-            )
-            "A" -> InheritorTabArticleDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                sourceUrl = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-                category = ArticleCategory.entries.firstOrNull { it.wireName == parts.getOrNull(4) } ?: ArticleCategory.News,
-            )
-            "C" -> InheritorTabCollectionDetail(id = parts.getOrNull(1).orEmpty())
-            "T" -> InheritorTabTopicDetail(
-                type = parts.getOrNull(1).orEmpty(),
-                key = parts.getOrNull(2).orEmpty(),
-            )
-            else -> InheritorsList
-        }
-    }
-
 @Composable
 fun InheritorsRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
@@ -163,21 +95,23 @@ fun InheritorsRoute(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var savedStack by rememberSaveable { mutableStateOf("L") }
-    val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeInheritors(savedStack)) } }
-    LaunchedEffect(backStack.size) {
-        savedStack = serializeInheritors(backStack.toList())
+    var savedStack by rememberSaveable { mutableStateOf("") }
+    val backStack = remember {
+        mutableStateListOf<Any>().also { it.addAll(deserializeInheritorsRoutes(savedStack)) }
     }
-    val isInDetail = backStack.lastOrNull() != InheritorsList
+    LaunchedEffect(backStack.size) {
+        savedStack = serializeInheritorsRoutes(backStack.filterIsInstance<InheritorsRouteKey>())
+    }
+    val isInDetail = backStack.lastOrNull() !is InheritorsRouteKey.InheritorsList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }
     LaunchedEffect(pendingNavigation) {
         val dest = pendingNavigation ?: return@LaunchedEffect
         backStack.clear()
-        backStack.add(InheritorsList)
+        backStack.add(InheritorsRouteKey.InheritorsList)
         backStack.add(
-            InheritorDetail(
+            InheritorsRouteKey.InheritorDetail(
                 id = dest.inheritorId,
                 sourceId = dest.sourceId,
             ),
@@ -191,13 +125,15 @@ fun InheritorsRoute(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
-        entryProvider = { key ->
+        entryProvider = { entryKey ->
+            val key = entryKey
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             when (key) {
-                InheritorsList -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorsList -> NavEntry(entryKey) {
                     InheritorsListRoute(
                         onInheritorSelected = { inheritor ->
                             backStack.add(
-                                InheritorDetail(
+                                InheritorsRouteKey.InheritorDetail(
                                     id = inheritor.id,
                                 ),
                             )
@@ -206,7 +142,7 @@ fun InheritorsRoute(
                     )
                 }
 
-                is InheritorDetail -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorDetail -> NavEntry(entryKey) {
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
@@ -227,7 +163,7 @@ fun InheritorsRoute(
                     )
                 }
 
-                is InheritorDirectoryDetail -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorDirectoryDetail -> NavEntry(entryKey) {
                     DirectoryDetailRoute(
                         itemId = key.id,
                         sourceId = key.sourceId,
@@ -249,14 +185,16 @@ fun InheritorsRoute(
                     )
                 }
 
-                is InheritorTabArticleDetail -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorTabArticleDetail -> NavEntry(entryKey) {
                     ArticleDetailRoute(
                         articleId = key.id,
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
                         onBack = { backStack.removeLastOrNull() },
-                        onRelatedArticleSelected = { _, _ -> },
+                        onRelatedArticleSelected = { reference, category ->
+                            reference.toInheritorTabArticleDetail(category)?.let(backStack::add)
+                        },
                         onContextTargetSelected = { target ->
                             navigateInheritorContextTarget(target, backStack)
                         },
@@ -264,41 +202,41 @@ fun InheritorsRoute(
                     )
                 }
 
-                is InheritorTabCollectionDetail -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorTabCollectionDetail -> NavEntry(entryKey) {
                     CollectionRoute(
                         id = key.id,
                         type = null,
                         topicKey = null,
                         onBack = { backStack.removeLastOrNull() },
                         onArticleSelected = { id ->
-                            backStack.add(InheritorTabArticleDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorTabArticleDetail(id = id))
                         },
                         onDirectoryItemSelected = { id ->
-                            backStack.add(InheritorDirectoryDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorDirectoryDetail(id = id))
                         },
                         onInheritorSelected = { id ->
-                            backStack.add(InheritorDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorDetail(id = id))
                         },
                         modifier = modifier,
                     )
                 }
 
-                is InheritorTabTopicDetail -> NavEntry(key) {
+                is InheritorsRouteKey.InheritorTabTopicDetail -> NavEntry(entryKey) {
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
                         onBack = { backStack.removeLastOrNull() },
                         onArticleSelected = { id ->
-                            backStack.add(InheritorTabArticleDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorTabArticleDetail(id = id))
                         },
                         onDirectoryItemSelected = { id ->
-                            backStack.add(InheritorDirectoryDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorDirectoryDetail(id = id))
                         },
                         onInheritorSelected = { id ->
-                            backStack.add(InheritorDetail(id = id))
+                            backStack.add(InheritorsRouteKey.InheritorDetail(id = id))
                         },
                         onRelatedTopicSelected = { type, topicKey ->
-                            backStack.add(InheritorTabTopicDetail(type = type, key = topicKey))
+                            backStack.add(InheritorsRouteKey.InheritorTabTopicDetail(type = type, key = topicKey))
                         },
                         modifier = modifier,
                     )
@@ -308,7 +246,7 @@ fun InheritorsRoute(
                     InheritorsListRoute(
                         onInheritorSelected = { inheritor ->
                             backStack.add(
-                                InheritorDetail(
+                                InheritorsRouteKey.InheritorDetail(
                                     id = inheritor.id,
                                 ),
                             )
@@ -321,43 +259,55 @@ fun InheritorsRoute(
     )
 }
 
-// Context 目标导航 helper
+// Context 目标导航 mapper
+private val inheritorContextMapper = DetailContextRouteMapper<Any>(
+    article = { InheritorsRouteKey.InheritorTabArticleDetail(id = it) },
+    directoryItem = { InheritorsRouteKey.InheritorDirectoryDetail(id = it) },
+    inheritor = { InheritorsRouteKey.InheritorDetail(id = it) },
+    collection = { InheritorsRouteKey.InheritorTabCollectionDetail(id = it) },
+    topic = { type, key -> InheritorsRouteKey.InheritorTabTopicDetail(type = type, key = key) },
+)
+
 private fun navigateInheritorContextTarget(
     target: DetailContextTarget,
     backStack: MutableList<Any>,
 ) {
-    when (target) {
-        is DetailContextTarget.Article ->
-            backStack.add(InheritorTabArticleDetail(id = target.id))
-        is DetailContextTarget.DirectoryItem ->
-            backStack.add(InheritorDirectoryDetail(id = target.id))
-        is DetailContextTarget.Inheritor ->
-            backStack.add(InheritorDetail(id = target.id))
-        is DetailContextTarget.Collection ->
-            backStack.add(InheritorTabCollectionDetail(id = target.id))
-        is DetailContextTarget.Topic ->
-            backStack.add(InheritorTabTopicDetail(type = target.type, key = target.key))
-    }
+    backStack.add(inheritorContextMapper.map(target))
 }
 
 private fun DirectoryReferenceDto.toDirectoryDetail(
     fallbackKind: DirectoryItemKind = DirectoryItemKind.NationalProject,
-): InheritorDirectoryDetail? {
+): InheritorsRouteKey.InheritorDirectoryDetail? {
     if (sourceId.isNullOrBlank() || isInheritorReference) {
         return null
     }
-    return InheritorDirectoryDetail(
+    return InheritorsRouteKey.InheritorDirectoryDetail(
         sourceId = sourceId,
         kind = kind.toDirectoryItemKindOrNull() ?: fallbackKind,
     )
 }
 
-private fun DirectoryReferenceDto.toInheritorDetail(): InheritorDetail? {
+private fun DirectoryReferenceDto.toInheritorDetail(): InheritorsRouteKey.InheritorDetail? {
     if (sourceId.isNullOrBlank()) {
         return null
     }
-    return InheritorDetail(sourceId = sourceId)
+    return InheritorsRouteKey.InheritorDetail(sourceId = sourceId)
 }
+
+private fun com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto.toInheritorTabArticleDetail(
+    category: ArticleCategory,
+): InheritorsRouteKey.InheritorTabArticleDetail? =
+    when {
+        !sourceId.isNullOrBlank() -> InheritorsRouteKey.InheritorTabArticleDetail(
+            sourceId = sourceId,
+            category = category,
+        )
+        !detailUrl.isNullOrBlank() -> InheritorsRouteKey.InheritorTabArticleDetail(
+            sourceUrl = detailUrl,
+            category = category,
+        )
+        else -> null
+    }
 
 private fun String?.toDirectoryItemKindOrNull(): DirectoryItemKind? =
     DirectoryItemKind.entries.firstOrNull { it.wireName == this }

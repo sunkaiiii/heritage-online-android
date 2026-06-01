@@ -94,7 +94,7 @@ fun InheritorDetailRoute(
     onBack: () -> Unit,
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
-    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit = {},
+    onContextTargetSelected: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: InheritorDetailViewModel = hiltViewModel<InheritorDetailViewModel, InheritorDetailViewModel.Factory>(
@@ -324,44 +324,6 @@ private fun InheritorDetailContent(
             InheritorFacts(item)
         }
 
-        // Content Digest 速览
-        if (digest != null) {
-            item {
-                com.duckylife.heritage.modern.ui.component.DigestCard(digest = digest)
-            }
-        } else if (digestLoading) {
-            item {
-                HeritageContentCard {
-                    Text(
-                        text = stringResource(R.string.context_loading),
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        } else if (digestErrorKind != null) {
-            item {
-                HeritageContentCard {
-                    Row(
-                        modifier = Modifier.padding(14.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = stringResource(digestErrorKind.fallbackResId()),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f),
-                        )
-                        TextButton(onClick = onDigestRetry) {
-                            Text(stringResource(R.string.action_retry))
-                        }
-                    }
-                }
-            }
-        }
-
         if (!item.description.isNullOrBlank()) {
             item {
                 Text(
@@ -396,35 +358,19 @@ private fun InheritorDetailContent(
             onReferenceSelected = onRelatedInheritorSelected,
         )
 
-        // Blended Recommendations
-        if (blendedRecommendations != null && blendedRecommendations.items.isNotEmpty()) {
-            item {
-                com.duckylife.heritage.modern.ui.component.BlendedRecommendationsSection(
-                    recommendations = blendedRecommendations,
-                    onItemClick = { item ->
-                        com.duckylife.heritage.modern.feature.detail.contextItemTarget(item.id, item.type)
-                            ?.let(onContextTargetSelected)
-                    },
-                )
-            }
-        }
-
+        // 探索区块：Digest -> Blended -> Context
         item {
-            DetailContextSection(
+            com.duckylife.heritage.modern.ui.component.DetailExploreSection(
+                digest = digest,
+                digestLoading = digestLoading,
+                digestErrorKind = digestErrorKind,
+                onDigestRetry = onDigestRetry,
+                blendedRecommendations = blendedRecommendations,
                 context = context,
-                isLoading = contextLoading,
-                errorKind = contextErrorKind,
-                onRetry = onContextRetry,
-                onItemClick = { id, type ->
-                    com.duckylife.heritage.modern.feature.detail.contextItemTarget(id, type)
-                        ?.let(onContextTargetSelected)
-                },
-                onCollectionClick = { collectionId ->
-                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Collection(collectionId))
-                },
-                onTopicClick = { type, key ->
-                    onContextTargetSelected(com.duckylife.heritage.modern.feature.detail.DetailContextTarget.Topic(type, key))
-                },
+                contextLoading = contextLoading,
+                contextErrorKind = contextErrorKind,
+                onContextRetry = onContextRetry,
+                onContextTargetSelected = onContextTargetSelected,
             )
         }
     }

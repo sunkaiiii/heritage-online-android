@@ -38,10 +38,15 @@ class DetailContextNavigationTest {
     }
 
     @Test
-    fun `blank id is passed through`() {
-        // contextItemTarget doesn't validate blank strings
+    fun `blank id returns null`() {
         val target = contextItemTarget("", "article")
-        assertEquals(DetailContextTarget.Article(""), target)
+        assertNull(target)
+    }
+
+    @Test
+    fun `null id returns null`() {
+        val target = contextItemTarget(null, "article")
+        assertNull(target)
     }
 
     @Test
@@ -73,9 +78,9 @@ class DetailContextNavigationTest {
     }
 
     @Test
-    fun `blended recommendation item with blank id is passed through`() {
+    fun `blended recommendation item with blank id returns null`() {
         val item = BlendedRecommendationItemDto(id = "", type = "article", title = "Test")
         val target = item.toDetailContextTarget()
-        assertEquals(DetailContextTarget.Article(""), target)
+        assertNull(target)
     }
 }

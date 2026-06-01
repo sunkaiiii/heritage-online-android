@@ -20,7 +20,6 @@ import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
 import com.duckylife.heritage.modern.feature.compare.CompareRoute
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
-import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.discovery.deepdive.DeepDiveRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute

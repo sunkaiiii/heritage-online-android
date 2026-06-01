@@ -11,13 +11,15 @@ sealed interface DetailContextTarget {
     data class Topic(val type: String, val key: String) : DetailContextTarget
 }
 
-fun contextItemTarget(id: String, type: String?): DetailContextTarget? =
-    when (SearchResultType.fromWireName(type)) {
-        SearchResultType.Article -> DetailContextTarget.Article(id)
-        SearchResultType.DirectoryItem -> DetailContextTarget.DirectoryItem(id)
-        SearchResultType.Inheritor -> DetailContextTarget.Inheritor(id)
+fun contextItemTarget(id: String?, type: String?): DetailContextTarget? {
+    val safeId = id?.takeIf { it.isNotBlank() } ?: return null
+    return when (SearchResultType.fromWireName(type)) {
+        SearchResultType.Article -> DetailContextTarget.Article(safeId)
+        SearchResultType.DirectoryItem -> DetailContextTarget.DirectoryItem(safeId)
+        SearchResultType.Inheritor -> DetailContextTarget.Inheritor(safeId)
         null -> null
     }
+}
 
 fun BlendedRecommendationItemDto.toDetailContextTarget(): DetailContextTarget? =
     contextItemTarget(id, type)

@@ -18,8 +18,8 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.detail.DetailContextRouteMapper
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
-import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
@@ -116,23 +116,20 @@ private fun deserializeArticles(str: String): List<Any> =
         }
     } catch (_: Exception) { listOf(ArticlesList) }
 
-// Context 目标导航 helper
+// Context 目标导航 mapper
+private val articleContextMapper = DetailContextRouteMapper<Any>(
+    article = { ArticleDetail(id = it) },
+    directoryItem = { ArticleTabDirectoryDetail(id = it) },
+    inheritor = { ArticleTabInheritorDetail(id = it) },
+    collection = { ArticleTabCollectionDetail(id = it) },
+    topic = { type, key -> ArticleTabTopicDetail(type = type, key = key) },
+)
+
 private fun navigateContextTarget(
     target: DetailContextTarget,
     backStack: MutableList<Any>,
 ) {
-    when (target) {
-        is DetailContextTarget.Article ->
-            backStack.add(ArticleDetail(id = target.id))
-        is DetailContextTarget.DirectoryItem ->
-            backStack.add(ArticleTabDirectoryDetail(id = target.id))
-        is DetailContextTarget.Inheritor ->
-            backStack.add(ArticleTabInheritorDetail(id = target.id))
-        is DetailContextTarget.Collection ->
-            backStack.add(ArticleTabCollectionDetail(id = target.id))
-        is DetailContextTarget.Topic ->
-            backStack.add(ArticleTabTopicDetail(type = target.type, key = target.key))
-    }
+    backStack.add(articleContextMapper.map(target))
 }
 
 @Composable

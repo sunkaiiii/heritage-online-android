@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -74,8 +73,8 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.detail.DetailContextRouteMapper
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
-import com.duckylife.heritage.modern.feature.detail.contextItemTarget
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
@@ -90,73 +89,6 @@ import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
-private data object DirectoryList
-
-private data class DirectoryDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-    val kind: DirectoryItemKind = DirectoryItemKind.NationalProject,
-)
-
-private data class DirectoryInheritorDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-)
-
-// 跨内容类型路由（从 Context 点击进入）
-private data class DirectoryTabArticleDetail(
-    val id: String? = null,
-    val sourceId: String? = null,
-    val sourceUrl: String? = null,
-    val category: ArticleCategory = ArticleCategory.News,
-)
-
-private data class DirectoryTabCollectionDetail(val id: String)
-
-private data class DirectoryTabTopicDetail(val type: String, val key: String)
-
-private fun serializeDirectory(stack: List<Any>): String =
-    stack.joinToString("\n") { entry ->
-        when (entry) {
-            DirectoryList -> "L"
-            is DirectoryDetail -> "D|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.kind.wireName}"
-            is DirectoryInheritorDetail -> "I|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}"
-            is DirectoryTabArticleDetail -> "A|${entry.id.orEmpty()}|${entry.sourceId.orEmpty()}|${entry.sourceUrl.orEmpty()}|${entry.category.wireName}"
-            is DirectoryTabCollectionDetail -> "C|${entry.id}"
-            is DirectoryTabTopicDetail -> "T|${entry.type}|${entry.key}"
-            else -> "L"
-        }
-    }
-
-private fun deserializeDirectory(str: String): List<Any> =
-    if (str.isBlank()) listOf(DirectoryList)
-    else str.split("\n").mapNotNull { item ->
-        val parts = item.split("|")
-        when (parts[0]) {
-            "D" -> DirectoryDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                kind = DirectoryItemKind.entries.firstOrNull { it.wireName == parts.getOrNull(3) } ?: DirectoryItemKind.NationalProject,
-            )
-            "I" -> DirectoryInheritorDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-            )
-            "A" -> DirectoryTabArticleDetail(
-                id = parts.getOrNull(1)?.takeIf { it.isNotEmpty() },
-                sourceId = parts.getOrNull(2)?.takeIf { it.isNotEmpty() },
-                sourceUrl = parts.getOrNull(3)?.takeIf { it.isNotEmpty() },
-                category = ArticleCategory.entries.firstOrNull { it.wireName == parts.getOrNull(4) } ?: ArticleCategory.News,
-            )
-            "C" -> DirectoryTabCollectionDetail(id = parts.getOrNull(1).orEmpty())
-            "T" -> DirectoryTabTopicDetail(
-                type = parts.getOrNull(1).orEmpty(),
-                key = parts.getOrNull(2).orEmpty(),
-            )
-            else -> DirectoryList
-        }
-    }
-
 @Composable
 fun DirectoryRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
@@ -164,21 +96,23 @@ fun DirectoryRoute(
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var savedStack by rememberSaveable { mutableStateOf("L") }
-    val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeDirectory(savedStack)) } }
-    LaunchedEffect(backStack.size) {
-        savedStack = serializeDirectory(backStack.toList())
+    var savedStack by rememberSaveable { mutableStateOf("") }
+    val backStack = remember {
+        mutableStateListOf<Any>().also { it.addAll(deserializeDirectoryRoutes(savedStack)) }
     }
-    val isInDetail = backStack.lastOrNull() != DirectoryList
+    LaunchedEffect(backStack.size) {
+        savedStack = serializeDirectoryRoutes(backStack.filterIsInstance<DirectoryRouteKey>())
+    }
+    val isInDetail = backStack.lastOrNull() !is DirectoryRouteKey.DirectoryList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }
     LaunchedEffect(pendingNavigation) {
         val dest = pendingNavigation ?: return@LaunchedEffect
         backStack.clear()
-        backStack.add(DirectoryList)
+        backStack.add(DirectoryRouteKey.DirectoryList)
         backStack.add(
-            DirectoryDetail(
+            DirectoryRouteKey.DirectoryDetail(
                 id = dest.itemId,
                 sourceId = dest.sourceId,
                 kind = dest.kind,
@@ -193,13 +127,15 @@ fun DirectoryRoute(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
-        entryProvider = { key ->
+        entryProvider = { entryKey ->
+            val key = entryKey
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             when (key) {
-                DirectoryList -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryList -> NavEntry(entryKey) {
                     DirectoryListRoute(
                         onItemSelected = { item ->
                             backStack.add(
-                                DirectoryDetail(
+                                DirectoryRouteKey.DirectoryDetail(
                                     id = item.id,
                                     kind = item.kind,
                                 ),
@@ -209,7 +145,7 @@ fun DirectoryRoute(
                     )
                 }
 
-                is DirectoryDetail -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryDetail -> NavEntry(entryKey) {
                     DirectoryDetailRoute(
                         itemId = key.id,
                         sourceId = key.sourceId,
@@ -231,7 +167,7 @@ fun DirectoryRoute(
                     )
                 }
 
-                is DirectoryInheritorDetail -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryInheritorDetail -> NavEntry(entryKey) {
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
@@ -252,14 +188,16 @@ fun DirectoryRoute(
                     )
                 }
 
-                is DirectoryTabArticleDetail -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryTabArticleDetail -> NavEntry(entryKey) {
                     ArticleDetailRoute(
                         articleId = key.id,
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
                         onBack = { backStack.removeLastOrNull() },
-                        onRelatedArticleSelected = { _, _ -> },
+                        onRelatedArticleSelected = { reference, category ->
+                            reference.toDirectoryTabArticleDetail(category)?.let(backStack::add)
+                        },
                         onContextTargetSelected = { target ->
                             navigateDirectoryContextTarget(target, backStack)
                         },
@@ -267,41 +205,41 @@ fun DirectoryRoute(
                     )
                 }
 
-                is DirectoryTabCollectionDetail -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryTabCollectionDetail -> NavEntry(entryKey) {
                     CollectionRoute(
                         id = key.id,
                         type = null,
                         topicKey = null,
                         onBack = { backStack.removeLastOrNull() },
                         onArticleSelected = { id ->
-                            backStack.add(DirectoryTabArticleDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryTabArticleDetail(id = id))
                         },
                         onDirectoryItemSelected = { id ->
-                            backStack.add(DirectoryDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryDetail(id = id))
                         },
                         onInheritorSelected = { id ->
-                            backStack.add(DirectoryInheritorDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryInheritorDetail(id = id))
                         },
                         modifier = modifier,
                     )
                 }
 
-                is DirectoryTabTopicDetail -> NavEntry(key) {
+                is DirectoryRouteKey.DirectoryTabTopicDetail -> NavEntry(entryKey) {
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
                         onBack = { backStack.removeLastOrNull() },
                         onArticleSelected = { id ->
-                            backStack.add(DirectoryTabArticleDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryTabArticleDetail(id = id))
                         },
                         onDirectoryItemSelected = { id ->
-                            backStack.add(DirectoryDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryDetail(id = id))
                         },
                         onInheritorSelected = { id ->
-                            backStack.add(DirectoryInheritorDetail(id = id))
+                            backStack.add(DirectoryRouteKey.DirectoryInheritorDetail(id = id))
                         },
                         onRelatedTopicSelected = { type, topicKey ->
-                            backStack.add(DirectoryTabTopicDetail(type = type, key = topicKey))
+                            backStack.add(DirectoryRouteKey.DirectoryTabTopicDetail(type = type, key = topicKey))
                         },
                         modifier = modifier,
                     )
@@ -311,7 +249,7 @@ fun DirectoryRoute(
                     DirectoryListRoute(
                         onItemSelected = { item ->
                             backStack.add(
-                                DirectoryDetail(
+                                DirectoryRouteKey.DirectoryDetail(
                                     id = item.id,
                                     kind = item.kind,
                                 ),
@@ -325,41 +263,53 @@ fun DirectoryRoute(
     )
 }
 
-// Context 目标导航 helper
+// Context 目标导航 mapper
+private val directoryContextMapper = DetailContextRouteMapper<Any>(
+    article = { DirectoryRouteKey.DirectoryTabArticleDetail(id = it) },
+    directoryItem = { DirectoryRouteKey.DirectoryDetail(id = it) },
+    inheritor = { DirectoryRouteKey.DirectoryInheritorDetail(id = it) },
+    collection = { DirectoryRouteKey.DirectoryTabCollectionDetail(id = it) },
+    topic = { type, key -> DirectoryRouteKey.DirectoryTabTopicDetail(type = type, key = key) },
+)
+
 private fun navigateDirectoryContextTarget(
     target: DetailContextTarget,
     backStack: MutableList<Any>,
 ) {
-    when (target) {
-        is DetailContextTarget.Article ->
-            backStack.add(DirectoryTabArticleDetail(id = target.id))
-        is DetailContextTarget.DirectoryItem ->
-            backStack.add(DirectoryDetail(id = target.id))
-        is DetailContextTarget.Inheritor ->
-            backStack.add(DirectoryInheritorDetail(id = target.id))
-        is DetailContextTarget.Collection ->
-            backStack.add(DirectoryTabCollectionDetail(id = target.id))
-        is DetailContextTarget.Topic ->
-            backStack.add(DirectoryTabTopicDetail(type = target.type, key = target.key))
-    }
+    backStack.add(directoryContextMapper.map(target))
 }
 
-private fun DirectoryReferenceDto.toDirectoryDetail(fallbackKind: DirectoryItemKind): DirectoryDetail? {
+private fun DirectoryReferenceDto.toDirectoryDetail(fallbackKind: DirectoryItemKind): DirectoryRouteKey.DirectoryDetail? {
     if (sourceId.isNullOrBlank() || isInheritorReference) {
         return null
     }
-    return DirectoryDetail(
+    return DirectoryRouteKey.DirectoryDetail(
         sourceId = sourceId,
         kind = kind.toDirectoryItemKindOrNull() ?: fallbackKind,
     )
 }
 
-private fun DirectoryReferenceDto.toInheritorDetail(): DirectoryInheritorDetail? {
+private fun DirectoryReferenceDto.toInheritorDetail(): DirectoryRouteKey.DirectoryInheritorDetail? {
     if (sourceId.isNullOrBlank()) {
         return null
     }
-    return DirectoryInheritorDetail(sourceId = sourceId)
+    return DirectoryRouteKey.DirectoryInheritorDetail(sourceId = sourceId)
 }
+
+private fun com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto.toDirectoryTabArticleDetail(
+    category: ArticleCategory,
+): DirectoryRouteKey.DirectoryTabArticleDetail? =
+    when {
+        !sourceId.isNullOrBlank() -> DirectoryRouteKey.DirectoryTabArticleDetail(
+            sourceId = sourceId,
+            category = category,
+        )
+        !detailUrl.isNullOrBlank() -> DirectoryRouteKey.DirectoryTabArticleDetail(
+            sourceUrl = detailUrl,
+            category = category,
+        )
+        else -> null
+    }
 
 private fun String?.toDirectoryItemKindOrNull(): DirectoryItemKind? =
     DirectoryItemKind.entries.firstOrNull { it.wireName == this }
