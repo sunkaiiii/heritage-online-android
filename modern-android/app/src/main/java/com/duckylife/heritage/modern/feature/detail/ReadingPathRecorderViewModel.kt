@@ -28,6 +28,9 @@ class ReadingPathRecorderViewModel @Inject constructor(
      * @param source 跳转来源区块（如 blendedRecommendation、related、collection 等）
      */
     fun record(from: ReadingPathContentRef, to: ReadingPathContentRef, source: String) {
+        // 跳过 collection 和 topic，因为 MyPage 无法回跳这两类
+        if (to.type == "collection" || to.type == "topic") return
+
         viewModelScope.launch {
             try {
                 // 生成稳定 id：同一条路径再次发生时更新 createdAt

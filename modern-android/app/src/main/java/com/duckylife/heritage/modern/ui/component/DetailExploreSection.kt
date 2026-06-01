@@ -116,9 +116,9 @@ fun DetailExploreSection(
             isLoading = contextLoading,
             errorKind = contextErrorKind,
             onRetry = onContextRetry,
-            onItemClick = { id, type, source ->
-                contextItemTarget(id, type)?.let { target ->
-                    val exploreSource = when (source) {
+            onItemClick = { event ->
+                contextItemTarget(event.id, event.type)?.let { target ->
+                    val exploreSource = when (event.source) {
                         "recommendation" -> DetailExploreSource.Recommendation
                         "semanticRecommendation" -> DetailExploreSource.SemanticRecommendation
                         "graph" -> DetailExploreSource.Graph
@@ -128,6 +128,11 @@ fun DetailExploreSection(
                         DetailExploreTargetClick(
                             target = target,
                             source = exploreSource,
+                            title = event.title,
+                            category = event.category,
+                            kind = event.kind,
+                            sourceId = event.sourceId,
+                            sourceUrl = event.sourceUrl,
                         ),
                     )
                 }

@@ -121,10 +121,6 @@
     <string name="reading_path_empty">你浏览详情后会在这里形成探索路径</string>
     <string name="reading_path_clear">清空阅读路径</string>
     <string name="reading_path_clear_confirm">确认清空所有阅读路径记录？</string>
-    <string name="reading_path_source_context_related">相关内容</string>
-    <string name="reading_path_source_blended">综合推荐</string>
-    <string name="reading_path_source_collection">合集</string>
-    <string name="reading_path_source_topic">探索主题</string>
     <string name="reading_path_source_list">列表</string>
     <string name="action_favorite">收藏</string>
     <string name="action_unfavorite">取消收藏</string>

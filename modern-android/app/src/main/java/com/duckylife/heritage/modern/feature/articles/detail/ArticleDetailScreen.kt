@@ -104,18 +104,21 @@ fun ArticleDetailRoute(
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // 包装 onExploreTargetClick，记录阅读路径
+    // 包装回调，记录阅读路径
+    fun currentFromRef(): com.duckylife.heritage.modern.core.data.ReadingPathContentRef? {
+        val article = uiState.article ?: return null
+        return com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            type = "article",
+            id = article.id ?: articleId.orEmpty(),
+            title = article.title.orEmpty(),
+            category = article.category.wireName,
+            sourceId = sourceId,
+            sourceUrl = sourceUrl,
+        )
+    }
+
     val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
-        val article = uiState.article
-        if (article != null) {
-            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
-                type = "article",
-                id = article.id ?: articleId.orEmpty(),
-                title = article.title.orEmpty(),
-                category = article.category.wireName,
-                sourceId = sourceId,
-                sourceUrl = sourceUrl,
-            )
+        currentFromRef()?.let { from ->
             readingPathRecorder.record(
                 from = from,
                 to = click.toReadingPathContentRef(),
@@ -125,12 +128,27 @@ fun ArticleDetailRoute(
         onExploreTargetClick(click)
     }
 
+    val wrappedRelatedArticleSelected: (ArticleReferenceDto, ArticleCategory) -> Unit = { reference, cat ->
+        currentFromRef()?.let { from ->
+            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "article",
+                id = reference.sourceId.orEmpty(),
+                title = reference.title.orEmpty(),
+                category = cat.wireName,
+                sourceId = reference.sourceId,
+                sourceUrl = reference.detailUrl,
+            )
+            readingPathRecorder.record(from = from, to = to, source = "related")
+        }
+        onRelatedArticleSelected(reference, cat)
+    }
+
     ArticleDetailScreen(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
-        onRelatedArticleSelected = onRelatedArticleSelected,
+        onRelatedArticleSelected = wrappedRelatedArticleSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
         onExploreTargetClick = wrappedExploreTargetClick,

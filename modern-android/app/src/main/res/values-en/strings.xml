@@ -121,10 +121,6 @@
     <string name="reading_path_empty">Your exploration path will appear here as you browse details</string>
     <string name="reading_path_clear">Clear reading path</string>
     <string name="reading_path_clear_confirm">Clear all reading path records?</string>
-    <string name="reading_path_source_context_related">Related</string>
-    <string name="reading_path_source_blended">Recommended</string>
-    <string name="reading_path_source_collection">Collection</string>
-    <string name="reading_path_source_topic">Explore topic</string>
     <string name="reading_path_source_list">List</string>
     <string name="action_favorite">Favorite</string>
     <string name="action_unfavorite">Unfavorite</string>

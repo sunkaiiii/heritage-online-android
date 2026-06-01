@@ -41,13 +41,27 @@ import com.duckylife.heritage.modern.core.network.dto.RelatedSummaryDto
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 
+/**
+ * Context 区块点击事件，携带来源和元数据。
+ */
+data class ContextItemClickEvent(
+    val id: String,
+    val type: String?,
+    val source: String,
+    val title: String? = null,
+    val category: String? = null,
+    val kind: String? = null,
+    val sourceId: String? = null,
+    val sourceUrl: String? = null,
+)
+
 @Composable
 fun DetailContextSection(
     context: DetailContextDto?,
     isLoading: Boolean,
     errorKind: ErrorKind?,
     onRetry: () -> Unit,
-    onItemClick: (id: String, type: String?, source: String) -> Unit, // (id, type, source)
+    onItemClick: (ContextItemClickEvent) -> Unit,
     onCollectionClick: (String) -> Unit,
     onTopicClick: (String, String) -> Unit, // (type, key)
     modifier: Modifier = Modifier,
@@ -71,7 +85,18 @@ fun DetailContextSection(
         if (context.related.isNotEmpty()) {
             ContextRelatedSection(
                 related = context.related,
-                onItemClick = { id, type -> onItemClick(id, type, "related") },
+                onItemClick = { item ->
+                    onItemClick(
+                        ContextItemClickEvent(
+                            id = item.id.orEmpty(),
+                            type = item.type,
+                            source = "related",
+                            title = item.title,
+                            category = item.category,
+                            kind = item.kind,
+                        ),
+                    )
+                },
             )
         }
 
@@ -79,7 +104,17 @@ fun DetailContextSection(
             ContextRecommendationsSection(
                 title = stringResource(R.string.context_recommendations),
                 recommendations = context.recommendations,
-                onItemClick = { id, type -> onItemClick(id, type, "recommendation") },
+                onItemClick = { rec ->
+                    onItemClick(
+                        ContextItemClickEvent(
+                            id = rec.id.orEmpty(),
+                            type = rec.type,
+                            source = "recommendation",
+                            title = rec.title,
+                            category = rec.category,
+                        ),
+                    )
+                },
             )
         }
 
@@ -87,7 +122,17 @@ fun DetailContextSection(
             ContextRecommendationsSection(
                 title = stringResource(R.string.context_semantic_recommendations),
                 recommendations = context.semanticRecommendations,
-                onItemClick = { id, type -> onItemClick(id, type, "semanticRecommendation") },
+                onItemClick = { rec ->
+                    onItemClick(
+                        ContextItemClickEvent(
+                            id = rec.id.orEmpty(),
+                            type = rec.type,
+                            source = "semanticRecommendation",
+                            title = rec.title,
+                            category = rec.category,
+                        ),
+                    )
+                },
             )
         }
 
@@ -170,7 +215,7 @@ private fun ContextErrorRow(
 @Composable
 private fun ContextRelatedSection(
     related: List<RelatedSummaryDto>,
-    onItemClick: (String, String?) -> Unit,
+    onItemClick: (RelatedSummaryDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
@@ -181,7 +226,7 @@ private fun ContextRelatedSection(
                 item = item,
                 onClick = {
                     if (!item.id.isNullOrBlank()) {
-                        onItemClick(item.id, item.type)
+                        onItemClick(item)
                     }
                 },
             )
@@ -212,7 +257,7 @@ private fun ContextRelatedRow(
 private fun ContextRecommendationsSection(
     title: String,
     recommendations: List<RecommendationDto>,
-    onItemClick: (String, String?) -> Unit,
+    onItemClick: (RecommendationDto) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
@@ -227,7 +272,7 @@ private fun ContextRecommendationsSection(
                     recommendation = rec,
                     onClick = {
                         if (!rec.id.isNullOrBlank()) {
-                            onItemClick(rec.id, rec.type)
+                            onItemClick(rec)
                         }
                     },
                 )
@@ -368,7 +413,7 @@ private fun ContextTopicsSection(
 @Composable
 private fun ContextGraphSection(
     graph: GraphDto,
-    onItemClick: (id: String, type: String?, source: String) -> Unit,
+    onItemClick: (ContextItemClickEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val nodeMap = graph.nodes.associateBy { it.id }
@@ -387,12 +432,26 @@ private fun ContextGraphSection(
                     source = edge.source,
                     onFromClick = {
                         if (!fromNode.id.isNullOrBlank()) {
-                            onItemClick(fromNode.id, fromNode.type, "graph")
+                            onItemClick(
+                                ContextItemClickEvent(
+                                    id = fromNode.id.orEmpty(),
+                                    type = fromNode.type,
+                                    source = "graph",
+                                    title = fromNode.title,
+                                ),
+                            )
                         }
                     },
                     onToClick = {
                         if (!toNode.id.isNullOrBlank()) {
-                            onItemClick(toNode.id, toNode.type, "graph")
+                            onItemClick(
+                                ContextItemClickEvent(
+                                    id = toNode.id.orEmpty(),
+                                    type = toNode.type,
+                                    source = "graph",
+                                    title = toNode.title,
+                                ),
+                            )
                         }
                     },
                 )

@@ -115,17 +115,20 @@ fun DirectoryDetailRoute(
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // 包装 onExploreTargetClick，记录阅读路径
+    // 包装回调，记录阅读路径
+    fun currentFromRef(): com.duckylife.heritage.modern.core.data.ReadingPathContentRef? {
+        val item = uiState.item ?: return null
+        return com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            type = "directoryItem",
+            id = item.id ?: itemId.orEmpty(),
+            title = item.title.orEmpty(),
+            kind = item.kind.wireName,
+            sourceId = sourceId,
+        )
+    }
+
     val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
-        val item = uiState.item
-        if (item != null) {
-            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
-                type = "directoryItem",
-                id = item.id ?: itemId.orEmpty(),
-                title = item.title.orEmpty(),
-                kind = item.kind.wireName,
-                sourceId = sourceId,
-            )
+        currentFromRef()?.let { from ->
             readingPathRecorder.record(
                 from = from,
                 to = click.toReadingPathContentRef(),
@@ -135,13 +138,40 @@ fun DirectoryDetailRoute(
         onExploreTargetClick(click)
     }
 
+    val wrappedRelatedProjectSelected: (DirectoryReferenceDto, DirectoryItemKind) -> Unit = { reference, refKind ->
+        currentFromRef()?.let { from ->
+            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "directoryItem",
+                id = reference.sourceId.orEmpty(),
+                title = reference.title.orEmpty(),
+                kind = refKind.wireName,
+                sourceId = reference.sourceId,
+            )
+            readingPathRecorder.record(from = from, to = to, source = "related")
+        }
+        onRelatedProjectSelected(reference, refKind)
+    }
+
+    val wrappedRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit = { reference ->
+        currentFromRef()?.let { from ->
+            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "inheritor",
+                id = reference.sourceId.orEmpty(),
+                title = reference.title.orEmpty(),
+                sourceId = reference.sourceId,
+            )
+            readingPathRecorder.record(from = from, to = to, source = "related")
+        }
+        onRelatedInheritorSelected(reference)
+    }
+
     DirectoryDetailScreen(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
-        onRelatedProjectSelected = onRelatedProjectSelected,
-        onRelatedInheritorSelected = onRelatedInheritorSelected,
+        onRelatedProjectSelected = wrappedRelatedProjectSelected,
+        onRelatedInheritorSelected = wrappedRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
         onExploreTargetClick = wrappedExploreTargetClick,

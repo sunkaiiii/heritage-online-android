@@ -37,7 +37,7 @@ class ReadingPathRepositoryTest {
             toType = "article",
             toId = "a1",
             toTitle = "Test Article",
-            source = "context_related",
+            source = "related",
             createdAt = 1000L,
         )
         repo.record(event)
@@ -54,7 +54,7 @@ class ReadingPathRepositoryTest {
         val repo = DefaultReadingPathRepository(dao)
 
         repo.record(ReadingPathEvent(id = "evt1", toType = "article", toId = "a1", source = "list", createdAt = 1000L))
-        repo.record(ReadingPathEvent(id = "evt2", toType = "directoryItem", toId = "d1", source = "blended", createdAt = 2000L))
+        repo.record(ReadingPathEvent(id = "evt2", toType = "directoryItem", toId = "d1", source = "blendedRecommendation", createdAt = 2000L))
 
         repo.clear()
 
@@ -68,7 +68,7 @@ class ReadingPathRepositoryTest {
         val repo = DefaultReadingPathRepository(dao)
 
         repo.record(ReadingPathEvent(id = "evt1", toType = "article", toId = "a1", source = "list", createdAt = 1000L))
-        repo.record(ReadingPathEvent(id = "evt2", toType = "directoryItem", toId = "d1", source = "blended", createdAt = 2000L))
+        repo.record(ReadingPathEvent(id = "evt2", toType = "directoryItem", toId = "d1", source = "blendedRecommendation", createdAt = 2000L))
 
         val path = repo.observeRecentPath().first()
         assertEquals(2, path.size)

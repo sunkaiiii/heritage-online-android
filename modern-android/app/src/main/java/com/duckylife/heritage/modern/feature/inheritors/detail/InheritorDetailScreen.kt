@@ -109,16 +109,19 @@ fun InheritorDetailRoute(
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // 包装 onExploreTargetClick，记录阅读路径
+    // 包装回调，记录阅读路径
+    fun currentFromRef(): com.duckylife.heritage.modern.core.data.ReadingPathContentRef? {
+        val item = uiState.item ?: return null
+        return com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+            type = "inheritor",
+            id = item.id ?: inheritorId.orEmpty(),
+            title = item.name.orEmpty(),
+            sourceId = sourceId,
+        )
+    }
+
     val wrappedExploreTargetClick: (com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick) -> Unit = { click ->
-        val item = uiState.item
-        if (item != null) {
-            val from = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
-                type = "inheritor",
-                id = item.id ?: inheritorId.orEmpty(),
-                title = item.name.orEmpty(),
-                sourceId = sourceId,
-            )
+        currentFromRef()?.let { from ->
             readingPathRecorder.record(
                 from = from,
                 to = click.toReadingPathContentRef(),
@@ -128,13 +131,39 @@ fun InheritorDetailRoute(
         onExploreTargetClick(click)
     }
 
+    val wrappedRelatedProjectSelected: (DirectoryReferenceDto) -> Unit = { reference ->
+        currentFromRef()?.let { from ->
+            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "directoryItem",
+                id = reference.sourceId.orEmpty(),
+                title = reference.title.orEmpty(),
+                sourceId = reference.sourceId,
+            )
+            readingPathRecorder.record(from = from, to = to, source = "related")
+        }
+        onRelatedProjectSelected(reference)
+    }
+
+    val wrappedRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit = { reference ->
+        currentFromRef()?.let { from ->
+            val to = com.duckylife.heritage.modern.core.data.ReadingPathContentRef(
+                type = "inheritor",
+                id = reference.sourceId.orEmpty(),
+                title = reference.title.orEmpty(),
+                sourceId = reference.sourceId,
+            )
+            readingPathRecorder.record(from = from, to = to, source = "related")
+        }
+        onRelatedInheritorSelected(reference)
+    }
+
     InheritorDetailScreen(
         uiState = uiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
-        onRelatedProjectSelected = onRelatedProjectSelected,
-        onRelatedInheritorSelected = onRelatedInheritorSelected,
+        onRelatedProjectSelected = wrappedRelatedProjectSelected,
+        onRelatedInheritorSelected = wrappedRelatedInheritorSelected,
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
         onExploreTargetClick = wrappedExploreTargetClick,
