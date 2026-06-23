@@ -34,6 +34,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.HeritageUrlResolver
 
 @Composable
 fun HeritagePageBackground(
@@ -181,15 +183,17 @@ fun HeritageListImage(
     contentDescription: String? = null,
     fallbackText: String,
     modifier: Modifier = Modifier,
+    resolver: HeritageUrlResolver = rememberHeritageUrlResolver(),
 ) {
-    if (imageUrl.isNullOrBlank()) {
+    val resolvedUrl = resolver.resolve(imageUrl)
+    if (resolvedUrl.isNullOrBlank()) {
         HeritageImagePlaceholder(
             text = fallbackText,
             modifier = modifier,
         )
     } else {
         AsyncImage(
-            model = imageUrl,
+            model = resolvedUrl,
             contentDescription = contentDescription,
             imageLoader = imageLoader,
             modifier = modifier,
@@ -248,15 +252,17 @@ fun HeritageDetailImage(
     fallbackText: String,
     contentScale: ContentScale = ContentScale.Crop,
     modifier: Modifier = Modifier,
+    resolver: HeritageUrlResolver = rememberHeritageUrlResolver(),
 ) {
-    if (imageUrl.isNullOrBlank()) {
+    val resolvedUrl = resolver.resolve(imageUrl)
+    if (resolvedUrl.isNullOrBlank()) {
         HeritageImagePlaceholder(
             text = fallbackText,
             modifier = modifier,
         )
     } else {
         AsyncImage(
-            model = imageUrl,
+            model = resolvedUrl,
             contentDescription = contentDescription,
             imageLoader = imageLoader,
             modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh),

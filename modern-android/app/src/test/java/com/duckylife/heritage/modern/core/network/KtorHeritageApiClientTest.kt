@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -21,6 +22,16 @@ import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class KtorHeritageApiClientTest {
+
+    private val fakeProfileRepository = FakeLocalProfileRepository()
+
+    private fun createApiClient(httpClient: HttpClient, baseUrl: String): KtorHeritageApiClient =
+        KtorHeritageApiClient(
+            httpClient = httpClient,
+            baseUrl = baseUrl,
+            profileRepository = fakeProfileRepository,
+        )
+
     @Test
     fun getArticlesDecodesPagedResultAndAppliesQuery() = runTest {
         var capturedRequest: HttpRequestData? = null
@@ -57,10 +68,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getArticles(
             ArticleQuery(
@@ -111,10 +119,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getArticles()
 
@@ -174,10 +179,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val article = api.getArticle("article-1")
 
@@ -217,10 +219,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val article = api.getArticleBySourceId(
             sourceId = "31566",
@@ -255,10 +254,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val article = api.getArticleBySourceUrl(
             sourceUrl = sourceUrl,
@@ -308,10 +304,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDirectoryStatisticsOverview(DirectoryItemKind.NationalProject)
 
@@ -350,10 +343,7 @@ class KtorHeritageApiClientTest {
                 json(HeritageJson)
             }
         }
-        val api = KtorHeritageApiClient(
-            httpClient = client,
-            baseUrl = "https://example.test",
-        )
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDirectoryStatisticsBreakdown(
             kind = DirectoryItemKind.NationalProject,
@@ -399,7 +389,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getHomeFeed()
 
@@ -438,7 +428,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getArticleContext("art-1")
 
@@ -475,7 +465,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.searchV2(
             SearchV2Query(
@@ -521,7 +511,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.searchV2(SearchV2Query(keywords = "测试", types = emptySet()))
 
@@ -558,7 +548,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getTimelineV2(
             TimelineV2Query(
@@ -596,7 +586,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTimelineV2(TimelineV2Query(types = emptySet()))
 
@@ -637,7 +627,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getExploreTopic("category", "传统技艺", limit = 10)
 
@@ -688,7 +678,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getRegionAtlasDetail("浙江省", limit = 5)
 
@@ -723,7 +713,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTopicCollection("category", "传统技艺", limit = 3)
 
@@ -761,7 +751,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getLearningPathDetail("lp1", limit = 8)
 
@@ -795,7 +785,7 @@ class KtorHeritageApiClientTest {
         val client = HttpClient(engine) {
             install(ContentNegotiation) { json(HeritageJson) }
         }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getCollection("col1", limit = 5)
 
@@ -821,7 +811,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDiscoveryToday()
 
@@ -841,7 +831,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getDiscoveryTrending(limit = 15)
 
@@ -861,7 +851,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDiscoveryWeekly()
 
@@ -881,7 +871,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDiscoverySerendipity(
             DiscoverySerendipityQuery(
@@ -912,7 +902,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getDiscoveryDeepDive(
             DiscoveryDeepDiveQuery(
@@ -944,7 +934,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getRegionStory("浙江省")
 
@@ -964,7 +954,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getCategoryStory("传统技艺")
 
@@ -984,7 +974,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getYearStory(2024)
 
@@ -1008,7 +998,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTaxonomyCategories(limit = 30)
 
@@ -1028,7 +1018,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTaxonomyRegions(limit = 20, sort = TaxonomyRegionSort.Inheritor)
 
@@ -1049,7 +1039,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTaxonomyKinds()
 
@@ -1068,7 +1058,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTaxonomyCategoryDetail("传统技艺", limit = 10)
 
@@ -1088,7 +1078,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getTaxonomyRegionDetail("浙江省", limit = 8)
 
@@ -1112,7 +1102,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.compareRegions("浙江", "江苏", limit = 5)
 
@@ -1134,7 +1124,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.compareCategories("传统技艺", "传统美术")
 
@@ -1155,7 +1145,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.compareKinds(DirectoryItemKind.NationalProject, DirectoryItemKind.UnescoEntry, limit = 3)
 
@@ -1181,7 +1171,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getArticleDigest("a1")
 
@@ -1201,7 +1191,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getDirectoryItemDigest("d1")
 
@@ -1221,7 +1211,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         val result = api.getInheritorDigest("i1")
 
@@ -1245,7 +1235,7 @@ class KtorHeritageApiClientTest {
             )
         }
         val client = HttpClient(engine) { install(ContentNegotiation) { json(HeritageJson) } }
-        val api = KtorHeritageApiClient(httpClient = client, baseUrl = "https://example.test")
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
 
         api.getBlendedRecommendations(
             BlendedRecommendationQuery(
@@ -1268,6 +1258,28 @@ class KtorHeritageApiClientTest {
         assertEquals("0.3", request.url.parameters["sameCategoryWeight"])
         assertEquals("0.2", request.url.parameters["sameRegionWeight"])
         assertEquals("false", request.url.parameters["diversify"])
+    }
+
+    @Test
+    fun profileHeaderIsSentOnEveryRequest() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """{"items":[],"page":1,"pageSize":20,"hasMore":false,"total":0}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+            install(profileHeaderPlugin(fakeProfileRepository))
+        }
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getArticles()
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
     }
 
     // endregion

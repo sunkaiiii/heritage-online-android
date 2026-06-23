@@ -152,4 +152,6 @@ class FakeHeritageApiClient : HeritageApiClient {
     override suspend fun getBlendedRecommendations(
         query: BlendedRecommendationQuery,
     ) = BlendedRecommendationResponseDto()
+
+    override suspend fun currentProfileId(): String = "android_test_profile"
 }

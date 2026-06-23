@@ -129,27 +129,46 @@ The base URL and HTTPS trust settings are injected at build time via `BuildConfi
 | `HERITAGE_API_BASE_URL` | `-PheritageApiBaseUrl=...` | `https://tuantuan.myds.me:28887` |
 | `HERITAGE_TRUST_SELF_SIGNED_CERTS` | `-PheritageTrustSelfSigned=...` | `true` (debug) / `false` (release) |
 
-### Emulator (default)
+### Emulator / 本地开发
 
-The Android emulator maps the host machine's `localhost` to `10.0.2.2`.
-No extra configuration is needed when the backend is running on the same machine.
+Android 模拟器将宿主机的 `localhost` 映射为 `10.0.2.2`。当后端运行在本机时，可通过 Gradle property 显式指定：
 
-### Physical device
+```bash
+./gradlew :app:assembleDebug -PheritageApiBaseUrl=https://10.0.2.2:5078
+```
 
-Use your machine's LAN IP so the device can reach the backend:
+不要把 `localhost`、`127.0.0.1` 或内网 IP 写入仓库；这些地址仅在构建命令或本机 `~/.gradle/gradle.properties` 中作为覆盖值使用。
+
+### 局域网真机
+
+使用本机局域网 IP，让真机访问同一网络下的后端：
 
 ```bash
 ./gradlew :app:assembleDebug -PheritageApiBaseUrl=https://192.168.x.x:5078
 ```
 
-### Self-signed certificates
+### 公开 HTTPS 服务（推荐用于发布）
 
-Debug builds trust self-signed certificates by default.
-Release builds do not. To force trust in a release build:
+发布构建必须通过公开可信证书访问后端。在 `~/.gradle/gradle.properties` 或 CI 中配置：
 
-```bash
-./gradlew :app:assembleRelease -PheritageTrustSelfSigned=true
+```properties
+heritageApiBaseUrl=https://your-public-domain/
+heritageTrustSelfSigned=false
 ```
 
-When `HERITAGE_TRUST_SELF_SIGNED_CERTS` is false, the OkHttp engine
-will reject any certificate that is not trusted by the system trust store.
+```bash
+./gradlew :app:assembleRelease
+```
+
+Release 构建会校验：基地址必须是 `https://`，且 `heritageTrustSelfSigned` 必须为 `false`。若使用 `http://` 或启用 trust-all，构建/启动将明确失败，不会静默发送明文请求。
+
+### 自签名证书
+
+Debug 构建默认信任自签名证书，方便本地后端调试。Release 构建默认不信任自签名证书；**不要**为了绕过证书问题在 release 中启用 trust-all。
+
+```bash
+# 仅 debug 可用
+./gradlew :app:assembleDebug -PheritageTrustSelfSigned=true
+```
+
+当 `HERITAGE_TRUST_SELF_SIGNED_CERTS` 为 `false` 时，OkHttp 引擎会拒绝系统信任库之外的证书。

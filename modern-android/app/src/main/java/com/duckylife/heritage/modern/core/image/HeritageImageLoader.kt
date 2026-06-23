@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import coil3.ImageLoader
+import com.duckylife.heritage.modern.BuildConfig
+import com.duckylife.heritage.modern.core.network.HeritageUrlResolver
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
@@ -17,6 +19,11 @@ fun rememberHeritageImageLoader(): ImageLoader {
             .fromApplication(context, ImageLoaderEntryPoint::class.java)
             .imageLoader()
     }
+}
+
+@Composable
+fun rememberHeritageUrlResolver(): HeritageUrlResolver {
+    return remember { HeritageUrlResolver(BuildConfig.HERITAGE_API_BASE_URL) }
 }
 
 @EntryPoint

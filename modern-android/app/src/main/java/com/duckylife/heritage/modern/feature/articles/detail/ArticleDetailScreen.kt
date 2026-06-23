@@ -64,6 +64,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.resolvedPreviewUrl
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
@@ -179,14 +181,19 @@ fun ArticleDetailScreen(
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
+    val resolver = rememberHeritageUrlResolver()
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
 
-    val previewUrls = remember(uiState.article) {
+    val previewUrls = remember(uiState.article, resolver) {
         uiState.article?.let { article ->
-            buildPreviewUrls(coverImage = article.coverImage, contentBlocks = article.contentBlocks)
+            buildPreviewUrls(
+                resolver = resolver,
+                coverImage = article.coverImage,
+                contentBlocks = article.contentBlocks,
+            )
         } ?: emptyList()
     }
     var showPreview by remember { mutableStateOf(false) }
@@ -321,6 +328,7 @@ private fun ArticleDetailContent(
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val resolver = rememberHeritageUrlResolver()
     val unnamedArticle = stringResource(R.string.unnamed_article)
 
     LazyColumn(
@@ -353,7 +361,7 @@ private fun ArticleDetailContent(
                 unnamedArticle = unnamedArticle,
                 imageLoader = imageLoader,
                 onOpenSource = onOpenSource,
-                onCoverImageClick = article.coverImage?.previewUrl()?.let { { onPreviewImage(0) } },
+                onCoverImageClick = article.coverImage?.resolvedPreviewUrl(resolver)?.let { { onPreviewImage(0) } },
             )
         }
 
@@ -367,12 +375,12 @@ private fun ArticleDetailContent(
             }
         }
 
-        var imageBlockIndex = if (article.coverImage?.previewUrl() != null) 1 else 0
+        var imageBlockIndex = if (article.coverImage?.resolvedPreviewUrl(resolver) != null) 1 else 0
         items(article.contentBlocks) { block ->
             ContentBlock(
                 block = block,
                 imageLoader = imageLoader,
-                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.previewUrl() != null) {
+                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.resolvedPreviewUrl(resolver) != null) {
                     val idx = imageBlockIndex++
                     { onPreviewImage(idx) }
                 } else null,

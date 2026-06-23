@@ -67,6 +67,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.resolvedPreviewUrl
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
@@ -203,14 +205,20 @@ fun DirectoryDetailScreen(
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
+    val resolver = rememberHeritageUrlResolver()
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
 
-    val previewUrls = remember(uiState.item) {
+    val previewUrls = remember(uiState.item, resolver) {
         uiState.item?.let { item ->
-            buildPreviewUrls(coverImage = item.coverImage, gallery = item.gallery, contentBlocks = item.contentBlocks)
+            buildPreviewUrls(
+                resolver = resolver,
+                coverImage = item.coverImage,
+                gallery = item.gallery,
+                contentBlocks = item.contentBlocks,
+            )
         } ?: emptyList()
     }
     var showPreview by remember { mutableStateOf(false) }
@@ -349,6 +357,7 @@ private fun DirectoryDetailContent(
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val resolver = rememberHeritageUrlResolver()
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
     val relatedProjectsTitle = stringResource(R.string.directory_related_projects_title)
     val relatedInheritorsTitle = stringResource(R.string.directory_related_inheritors_title)
@@ -384,7 +393,7 @@ private fun DirectoryDetailContent(
                 unnamedItem = unnamedItem,
                 imageLoader = imageLoader,
                 onOpenSource = onOpenSource,
-                onCoverImageClick = item.coverImage?.previewUrl()?.let { { onPreviewImage(0) } },
+                onCoverImageClick = item.coverImage?.resolvedPreviewUrl(resolver)?.let { { onPreviewImage(0) } },
             )
         }
 
@@ -408,7 +417,7 @@ private fun DirectoryDetailContent(
                 SectionTitle(text = stringResource(R.string.directory_gallery_title))
             }
             item {
-                val galleryOffset = if (item.coverImage?.previewUrl() != null) 1 else 0
+                val galleryOffset = if (item.coverImage?.resolvedPreviewUrl(resolver) != null) 1 else 0
                 GalleryStrip(
                     images = item.gallery,
                     imageLoader = imageLoader,
@@ -419,13 +428,13 @@ private fun DirectoryDetailContent(
             }
         }
 
-        var imageBlockIndex = if (item.coverImage?.previewUrl() != null) 1 else 0
-        imageBlockIndex += item.gallery.count { it.previewUrl() != null }
+        var imageBlockIndex = if (item.coverImage?.resolvedPreviewUrl(resolver) != null) 1 else 0
+        imageBlockIndex += item.gallery.count { it.resolvedPreviewUrl(resolver) != null }
         items(item.contentBlocks) { block ->
             ContentBlock(
                 block = block,
                 imageLoader = imageLoader,
-                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.previewUrl() != null) {
+                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.resolvedPreviewUrl(resolver) != null) {
                     val idx = imageBlockIndex++
                     { onPreviewImage(idx) }
                 } else null,

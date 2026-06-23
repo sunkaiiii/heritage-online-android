@@ -44,14 +44,17 @@ import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
 import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
+import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.ContentType
 import io.ktor.serialization.kotlinx.json.json
@@ -197,11 +200,17 @@ interface HeritageApiClient {
     suspend fun getBlendedRecommendations(
         query: BlendedRecommendationQuery,
     ): BlendedRecommendationResponseDto
+
+    /**
+     * 返回当前设备 profile ID，供需要以 query 参数传入 `profileId` 的接口使用。
+     */
+    suspend fun currentProfileId(): String
 }
 
 class KtorHeritageApiClient(
     private val httpClient: HttpClient,
     private val baseUrl: String,
+    private val profileRepository: LocalProfileRepository,
 ) : HeritageApiClient {
     override suspend fun getHomeBanners(): List<HomeBannerDto> =
         httpClient.get(endpoint("api/home-banners")).body()
@@ -523,6 +532,8 @@ class KtorHeritageApiClient(
             optionalParameter("diversify", query.diversify)
         }.body()
 
+    override suspend fun currentProfileId(): String = profileRepository.currentProfileId()
+
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
 
     private fun pathSegment(value: String): String =
@@ -532,6 +543,7 @@ class KtorHeritageApiClient(
 
 fun createHeritageHttpClient(
     config: HeritageApiConfig,
+    profileRepository: LocalProfileRepository? = null,
 ): HttpClient = HttpClient(OkHttp) {
     expectSuccess = true
 
@@ -550,6 +562,10 @@ fun createHeritageHttpClient(
         json(HeritageJson)
     }
 
+    if (profileRepository != null) {
+        install(profileHeaderPlugin(profileRepository))
+    }
+
     defaultRequest {
         accept(ContentType.Application.Json)
     }
@@ -557,10 +573,26 @@ fun createHeritageHttpClient(
 
 fun createHeritageApiClient(
     config: HeritageApiConfig,
+    profileRepository: LocalProfileRepository,
 ): HeritageApiClient = KtorHeritageApiClient(
-    httpClient = createHeritageHttpClient(config),
+    httpClient = createHeritageHttpClient(config, profileRepository),
     baseUrl = config.baseUrl,
+    profileRepository = profileRepository,
 )
+
+/**
+ * 为所有请求附加 `X-Heritage-Profile-Id` header 的 Ktor 插件。
+ *
+ * 该插件是 suspend 的，首次请求时会触发 [LocalProfileRepository.currentProfileId] 的生成/读取。
+ */
+fun profileHeaderPlugin(profileRepository: LocalProfileRepository) = createClientPlugin("ProfileHeader") {
+    onRequest { request, _ ->
+        val profileId = profileRepository.currentProfileId()
+        if (!request.headers.contains("X-Heritage-Profile-Id")) {
+            request.header("X-Heritage-Profile-Id", profileId)
+        }
+    }
+}
 
 private fun HttpRequestBuilder.optionalParameter(name: String, value: Any?) {
     if (value != null) {

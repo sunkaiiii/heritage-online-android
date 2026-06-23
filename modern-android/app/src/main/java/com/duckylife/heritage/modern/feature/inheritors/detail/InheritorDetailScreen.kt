@@ -65,6 +65,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.resolvedPreviewUrl
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockDto
 import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
@@ -196,14 +198,19 @@ fun InheritorDetailScreen(
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
+    val resolver = rememberHeritageUrlResolver()
     val uriHandler = LocalUriHandler.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val sourceOpenFailedMessage = stringResource(R.string.source_open_failed)
 
-    val previewUrls = remember(uiState.item) {
+    val previewUrls = remember(uiState.item, resolver) {
         uiState.item?.let { item ->
-            buildPreviewUrls(coverImage = item.coverImage, contentBlocks = item.contentBlocks)
+            buildPreviewUrls(
+                resolver = resolver,
+                coverImage = item.coverImage,
+                contentBlocks = item.contentBlocks,
+            )
         } ?: emptyList()
     }
     var showPreview by remember { mutableStateOf(false) }
@@ -342,6 +349,7 @@ private fun InheritorDetailContent(
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val resolver = rememberHeritageUrlResolver()
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
     val relatedProjectsTitle = stringResource(R.string.inheritor_related_projects_title)
     val relatedInheritorsTitle = stringResource(R.string.inheritor_related_inheritors_title)
@@ -376,7 +384,7 @@ private fun InheritorDetailContent(
                 unnamedInheritor = unnamedInheritor,
                 imageLoader = imageLoader,
                 onOpenSource = onOpenSource,
-                onCoverImageClick = item.coverImage?.previewUrl()?.let { { onPreviewImage(0) } },
+                onCoverImageClick = item.coverImage?.resolvedPreviewUrl(resolver)?.let { { onPreviewImage(0) } },
             )
         }
 
@@ -395,12 +403,12 @@ private fun InheritorDetailContent(
             }
         }
 
-        var imageBlockIndex = if (item.coverImage?.previewUrl() != null) 1 else 0
+        var imageBlockIndex = if (item.coverImage?.resolvedPreviewUrl(resolver) != null) 1 else 0
         items(item.contentBlocks) { block ->
             ContentBlock(
                 block = block,
                 imageLoader = imageLoader,
-                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.previewUrl() != null) {
+                onImageClick = if (block.type == ArticleContentBlockType.Image && block.image?.resolvedPreviewUrl(resolver) != null) {
                     val idx = imageBlockIndex++
                     { onPreviewImage(idx) }
                 } else null,

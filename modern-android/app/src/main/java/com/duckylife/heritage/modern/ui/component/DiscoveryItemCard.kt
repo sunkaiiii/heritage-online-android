@@ -27,9 +27,9 @@ import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
-
-private fun MediaAssetDto?.bestUrl(): String? =
-    this?.let { displayUrl ?: thumbnailUrl ?: originalUrl ?: sourceUrl }
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.HeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.resolvedBestUrl
 
 @Composable
 fun DiscoveryItemCard(
@@ -38,8 +38,9 @@ fun DiscoveryItemCard(
     modifier: Modifier = Modifier,
     showImageSlot: Boolean = true,
     imageLoader: ImageLoader = rememberHeritageImageLoader(),
+    resolver: HeritageUrlResolver = rememberHeritageUrlResolver(),
 ) {
-    val imageUrl = item.coverImage.bestUrl()
+    val imageUrl = item.coverImage.resolvedBestUrl(resolver)
 
     HeritageContentCard(
         onClick = onClick,
@@ -122,8 +123,9 @@ fun DiscoveryItemRow(
     modifier: Modifier = Modifier,
     showImageSlot: Boolean = true,
     imageLoader: ImageLoader = rememberHeritageImageLoader(),
+    resolver: HeritageUrlResolver = rememberHeritageUrlResolver(),
 ) {
-    val imageUrl = item.coverImage.bestUrl()
+    val imageUrl = item.coverImage.resolvedBestUrl(resolver)
 
     HeritageContentCard(
         onClick = onClick,

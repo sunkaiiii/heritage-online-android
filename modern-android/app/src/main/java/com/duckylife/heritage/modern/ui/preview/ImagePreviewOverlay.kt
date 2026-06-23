@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.image.rememberHeritageUrlResolver
+import com.duckylife.heritage.modern.core.network.HeritageUrlResolver
 import com.github.panpf.zoomimage.CoilZoomAsyncImage
 
 @Composable
@@ -35,13 +38,17 @@ fun ImagePreviewOverlay(
     imageLoader: ImageLoader,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    resolver: HeritageUrlResolver = rememberHeritageUrlResolver(),
 ) {
-    if (imageUrls.isEmpty()) return
+    val resolvedUrls = remember(imageUrls, resolver) {
+        imageUrls.mapNotNull { resolver.resolve(it) }
+    }
+    if (resolvedUrls.isEmpty()) return
 
     BackHandler(onBack = onDismiss)
 
-    val pagerState = rememberPagerState(initialPage = initialIndex.coerceIn(0, (imageUrls.size - 1).coerceAtLeast(0))) {
-        imageUrls.size
+    val pagerState = rememberPagerState(initialPage = initialIndex.coerceIn(0, (resolvedUrls.size - 1).coerceAtLeast(0))) {
+        resolvedUrls.size
     }
 
     Box(
@@ -58,7 +65,7 @@ fun ImagePreviewOverlay(
                 contentAlignment = Alignment.Center,
             ) {
                 CoilZoomAsyncImage(
-                    model = imageUrls[page],
+                    model = resolvedUrls[page],
                     imageLoader = imageLoader,
                     contentDescription = stringResource(R.string.preview_image),
                     modifier = Modifier.fillMaxSize(),
@@ -85,7 +92,7 @@ fun ImagePreviewOverlay(
                 text = stringResource(
                     R.string.preview_page_indicator,
                     pagerState.currentPage + 1,
-                    imageUrls.size,
+                    resolvedUrls.size,
                 ),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White,

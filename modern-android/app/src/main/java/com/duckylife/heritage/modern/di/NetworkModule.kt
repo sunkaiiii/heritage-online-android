@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.network.HeritageApiClient
 import com.duckylife.heritage.modern.core.network.HeritageApiConfig
 import com.duckylife.heritage.modern.core.network.KtorHeritageApiClient
 import com.duckylife.heritage.modern.core.network.createHeritageHttpClient
+import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,14 +26,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttpClient(config: HeritageApiConfig): HttpClient =
-        createHeritageHttpClient(config)
+    fun provideHttpClient(
+        config: HeritageApiConfig,
+        profileRepository: LocalProfileRepository,
+    ): HttpClient =
+        createHeritageHttpClient(config, profileRepository)
 
     @Provides
     @Singleton
     fun provideHeritageApiClient(
         httpClient: HttpClient,
         config: HeritageApiConfig,
+        profileRepository: LocalProfileRepository,
     ): HeritageApiClient =
-        KtorHeritageApiClient(httpClient = httpClient, baseUrl = config.baseUrl)
+        KtorHeritageApiClient(
+            httpClient = httpClient,
+            baseUrl = config.baseUrl,
+            profileRepository = profileRepository,
+        )
 }
