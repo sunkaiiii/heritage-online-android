@@ -154,8 +154,11 @@ dependencies {
 
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.room.compiler)
+    // 显式提供支持 metadata 2.4.0 的 kotlin-metadata-jvm，避免 Hilt 因依赖库使用 Kotlin 2.4.0 编译而报错。
+    ksp(libs.kotlin.metadata.jvm)
     kspAndroidTest(libs.hilt.compiler)
     kspAndroidTest(libs.androidx.room.compiler)
+    kspAndroidTest(libs.kotlin.metadata.jvm)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
