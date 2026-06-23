@@ -13,7 +13,7 @@ android {
     compileSdk = 36
 
     val apiBaseUrl = project.findProperty("heritageApiBaseUrl") as? String
-        ?: "https://10.0.2.2:5078"
+        ?: "https://tuantuan.myds.me:28887"
 
     defaultConfig {
         applicationId = "com.duckylife.heritage.modern"

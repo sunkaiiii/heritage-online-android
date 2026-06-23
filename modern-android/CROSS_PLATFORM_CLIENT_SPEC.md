@@ -182,8 +182,8 @@ Gradle 和 Android 配置位于 `app/build.gradle.kts` 与 `gradle/libs.versions
 API baseUrl：
 
 - Gradle property：`heritageApiBaseUrl`
-- 默认值：`https://10.0.2.2:5078`
-- 用途：Android 模拟器访问宿主机 HTTPS 后端。
+- 默认值：`https://tuantuan.myds.me:28887`
+- 用途：生产/测试环境后端地址。
 
 自签名证书：
 

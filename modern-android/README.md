@@ -30,7 +30,7 @@ The first network contract layer is in place:
 - DTOs: `app/src/main/java/com/duckylife/heritage/modern/core/network/dto`
 - API client: `app/src/main/java/com/duckylife/heritage/modern/core/network/HeritageApiClient.kt`
 - Repository boundary: `app/src/main/java/com/duckylife/heritage/modern/core/data/HeritageRepository.kt`
-- Base URL configured via `BuildConfig.HERITAGE_API_BASE_URL` (default `https://10.0.2.2:5078`)
+- Base URL configured via `BuildConfig.HERITAGE_API_BASE_URL` (default `https://tuantuan.myds.me:28887`)
 
 The contract maps the local Swagger document:
 
@@ -126,7 +126,7 @@ The base URL and HTTPS trust settings are injected at build time via `BuildConfi
 
 | Field | Source | Default |
 |-------|--------|---------|
-| `HERITAGE_API_BASE_URL` | `-PheritageApiBaseUrl=...` | `https://10.0.2.2:5078` |
+| `HERITAGE_API_BASE_URL` | `-PheritageApiBaseUrl=...` | `https://tuantuan.myds.me:28887` |
 | `HERITAGE_TRUST_SELF_SIGNED_CERTS` | `-PheritageTrustSelfSigned=...` | `true` (debug) / `false` (release) |
 
 ### Emulator (default)
