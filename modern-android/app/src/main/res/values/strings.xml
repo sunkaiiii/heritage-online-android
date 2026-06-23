@@ -74,6 +74,11 @@
     <string name="error_network_unavailable">网络不可用，请检查连接</string>
     <string name="error_timeout">请求超时，请稍后重试</string>
     <string name="error_server_unavailable">服务暂时不可用</string>
+    <string name="error_bad_request">当前条件无法查询</string>
+    <string name="error_unauthorized">当前设备无权限</string>
+    <string name="error_conflict">当前操作冲突，请稍后重试</string>
+    <string name="error_payload_too_large">内容过大，请缩小范围</string>
+    <string name="error_too_many_requests">请求过于频繁，请稍后重试</string>
     <string name="content_may_be_stale">内容可能不是最新</string>
     <string name="preview_image">预览图片</string>
     <string name="preview_close">关闭预览</string>

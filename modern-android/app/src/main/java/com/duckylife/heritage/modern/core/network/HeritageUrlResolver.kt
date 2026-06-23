@@ -69,12 +69,12 @@ class HeritageUrlResolver(
 
 private fun String.isLocalhostReference(): Boolean {
     val lower = lowercase()
-    return startsWith("http://localhost") ||
-        startsWith("https://localhost") ||
-        startsWith("http://127.0.0.1") ||
-        startsWith("https://127.0.0.1") ||
-        startsWith("http://[::1]") ||
-        startsWith("https://[::1]")
+    return lower.startsWith("http://localhost") ||
+        lower.startsWith("https://localhost") ||
+        lower.startsWith("http://127.0.0.1") ||
+        lower.startsWith("https://127.0.0.1") ||
+        lower.startsWith("http://[::1]") ||
+        lower.startsWith("https://[::1]")
 }
 
 private fun String?.isLocalhostHost(): Boolean {
@@ -85,17 +85,31 @@ private fun String?.isLocalhostHost(): Boolean {
 }
 
 /**
+ * 从候选 URL 中挑选列表/卡片场景的最佳图片 URL。
+ *
+ * 优先级：展示图 > 缩略图 > 原图 > 来源图。
+ */
+fun MediaAssetDto?.bestImageUrl(): String? =
+    this?.displayUrl ?: this?.thumbnailUrl ?: this?.originalUrl ?: this?.sourceUrl
+
+/**
+ * 从候选 URL 中挑选适合全屏预览的高画质图片 URL。
+ *
+ * 优先级：原图 > 展示图 > 缩略图 > 来源图。
+ */
+fun MediaAssetDto?.previewImageUrl(): String? =
+    this?.originalUrl ?: this?.displayUrl ?: this?.thumbnailUrl ?: this?.sourceUrl
+
+/**
  * 从候选 URL 中挑选最佳图片 URL，并用 [resolver] 解析为绝对 URL。
  */
 fun MediaAssetDto?.resolvedBestUrl(resolver: HeritageUrlResolver): String? {
-    val candidate = this?.let { displayUrl ?: thumbnailUrl ?: originalUrl ?: sourceUrl }
-    return resolver.resolve(candidate)
+    return resolver.resolve(bestImageUrl())
 }
 
 /**
  * 从候选 URL 中挑选适合预览/全屏查看的图片 URL，并用 [resolver] 解析为绝对 URL。
  */
 fun MediaAssetDto?.resolvedPreviewUrl(resolver: HeritageUrlResolver): String? {
-    val candidate = this?.let { displayUrl ?: thumbnailUrl ?: originalUrl ?: sourceUrl }
-    return resolver.resolve(candidate)
+    return resolver.resolve(previewImageUrl())
 }

@@ -3,7 +3,7 @@ package com.duckylife.heritage.modern.di
 import android.content.Context
 import coil3.ImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
-import com.duckylife.heritage.modern.BuildConfig
+import com.duckylife.heritage.modern.core.network.HeritageApiConfig
 import com.duckylife.heritage.modern.core.network.trustAllCertificatesManager
 import com.duckylife.heritage.modern.core.network.trustAllSslSocketFactory
 import dagger.Module
@@ -21,21 +21,22 @@ object ImageModule {
     @Singleton
     fun provideImageLoader(
         @ApplicationContext context: Context,
+        config: HeritageApiConfig,
     ): ImageLoader =
         ImageLoader.Builder(context)
             .components {
                 add(
                     OkHttpNetworkFetcherFactory(
                         callFactory = {
-                            createImageOkHttpClient()
+                            createImageOkHttpClient(config)
                         },
                     ),
                 )
             }
             .build()
 
-    private fun createImageOkHttpClient(): OkHttpClient {
-        if (!BuildConfig.HERITAGE_TRUST_SELF_SIGNED_CERTS) {
+    private fun createImageOkHttpClient(config: HeritageApiConfig): OkHttpClient {
+        if (!config.trustSelfSignedCertificates) {
             return OkHttpClient.Builder().build()
         }
         val trustManager = trustAllCertificatesManager()

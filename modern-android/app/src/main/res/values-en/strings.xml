@@ -74,6 +74,11 @@
     <string name="error_network_unavailable">Network unavailable. Check your connection.</string>
     <string name="error_timeout">Request timed out. Try again later.</string>
     <string name="error_server_unavailable">Service temporarily unavailable</string>
+    <string name="error_bad_request">The current conditions cannot be queried</string>
+    <string name="error_unauthorized">This device does not have permission</string>
+    <string name="error_conflict">The current operation conflicts. Please try again later</string>
+    <string name="error_payload_too_large">Content too large. Please narrow the scope</string>
+    <string name="error_too_many_requests">Too many requests. Please try again later</string>
     <string name="content_may_be_stale">Content may not be up to date</string>
     <string name="preview_image">Preview image</string>
     <string name="preview_close">Close preview</string>

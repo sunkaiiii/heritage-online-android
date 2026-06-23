@@ -44,6 +44,60 @@ import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
 import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.FavoriteCreateRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.HistoryRecordRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyResponseDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneySignalsDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressUpdateDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalFavoriteDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalHistoryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalLearningProgressDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AiCardDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentIntelligenceDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchResponseDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.V3ContentPageDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgesDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphBridgeDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphCommunitiesDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphExploreDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNeighborsDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.PathExplainDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.TopicGraphMapDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDetailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteNextDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsBreakdownDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsCompareDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsCrosstabDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsFacetsDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsOutliersDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingDefinitionDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingDetailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeHeatmapDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeRegionMapDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeTimelineDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDetailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDetailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ExportContentResultDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ExportTemplateDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.*
+import com.duckylife.heritage.modern.core.network.api.ContentExportApi
+import com.duckylife.heritage.modern.core.network.api.ContentIntelligenceApi
+import com.duckylife.heritage.modern.core.network.api.DataExploreApi
+import com.duckylife.heritage.modern.core.network.api.KnowledgeGraphApi
+import com.duckylife.heritage.modern.core.network.api.LearningRoutesApi
+import com.duckylife.heritage.modern.core.network.api.LocalUserApi
+import com.duckylife.heritage.modern.core.network.api.ResearchApi
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -53,10 +107,16 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -64,7 +124,14 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 
-interface HeritageApiClient {
+interface HeritageApiClient :
+    LocalUserApi,
+    ContentIntelligenceApi,
+    KnowledgeGraphApi,
+    LearningRoutesApi,
+    DataExploreApi,
+    ResearchApi,
+    ContentExportApi {
     suspend fun getHomeBanners(): List<HomeBannerDto>
 
     suspend fun getHomeFeed(): HomeFeedDto
@@ -211,7 +278,14 @@ class KtorHeritageApiClient(
     private val httpClient: HttpClient,
     private val baseUrl: String,
     private val profileRepository: LocalProfileRepository,
-) : HeritageApiClient {
+) : HeritageApiClient,
+    LocalUserApi,
+    ContentIntelligenceApi,
+    KnowledgeGraphApi,
+    LearningRoutesApi,
+    DataExploreApi,
+    ResearchApi,
+    ContentExportApi {
     override suspend fun getHomeBanners(): List<HomeBannerDto> =
         httpClient.get(endpoint("api/home-banners")).body()
 
@@ -532,6 +606,378 @@ class KtorHeritageApiClient(
             optionalParameter("diversify", query.diversify)
         }.body()
 
+    // ── LocalUser API ──
+
+    override suspend fun getLocalUserSummary(): LocalUserSummaryDto =
+        httpClient.get(endpoint("api/local-user/summary")).body()
+
+    override suspend fun getLocalUserFavorites(query: LocalUserFavoritesQuery): PagedResult<LocalFavoriteDto> =
+        httpClient.get(endpoint("api/local-user/favorites")) {
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("page", query.page)
+            optionalParameter("pageSize", query.pageSize)
+        }.body()
+
+    override suspend fun addLocalUserFavorite(request: FavoriteCreateRequestDto): LocalFavoriteDto =
+        httpClient.post(endpoint("api/local-user/favorites")) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
+    override suspend fun removeLocalUserFavorite(targetType: String, targetId: String) {
+        httpClient.delete(
+            endpoint("api/local-user/favorites/${pathSegment(targetType)}/${pathSegment(targetId)}")
+        )
+    }
+
+    override suspend fun getLocalUserHistory(query: LocalUserHistoryQuery): PagedResult<LocalHistoryDto> =
+        httpClient.get(endpoint("api/local-user/history")) {
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("page", query.page)
+            optionalParameter("pageSize", query.pageSize)
+        }.body()
+
+    override suspend fun recordLocalUserHistory(request: HistoryRecordRequestDto): LocalHistoryDto =
+        httpClient.post(endpoint("api/local-user/history")) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
+    override suspend fun clearLocalUserHistory(): Int =
+        httpClient.delete(endpoint("api/local-user/history")).body()
+
+    override suspend fun getLocalUserLearningProgress(): List<LocalLearningProgressDto> =
+        httpClient.get(endpoint("api/local-user/learning-progress")).body()
+
+    override suspend fun updateLocalUserLearningProgress(
+        routeId: String,
+        request: LearningProgressUpdateDto,
+    ): LocalLearningProgressDto =
+        httpClient.put(endpoint("api/local-user/learning-progress/${pathSegment(routeId)}")) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
+    override suspend fun getLocalUserJourneys(
+        strategy: JourneyStrategy,
+        limit: Int,
+    ): JourneyResponseDto =
+        httpClient.get(endpoint("api/local-user/journeys")) {
+            optionalParameter("strategy", strategy.wireName)
+            optionalParameter("limit", limit)
+        }.body()
+
+    override suspend fun getLocalUserJourneySignals(): JourneySignalsDto =
+        httpClient.get(endpoint("api/local-user/journeys/signals")).body()
+
+    // ── Content Intelligence API ──
+
+    override suspend fun getV3ContentPage(query: V3ContentPageQuery): V3ContentPageDto =
+        httpClient.get(endpoint("api/v3/pages/${v3PagePath(query.contentType)}/${pathSegment(query.id)}")) {
+            optionalParameter("profileId", query.profileId)
+            optionalParameter("includeAi", query.includeAi)
+            optionalParameter("includeGraph", query.includeGraph)
+            optionalParameter("includeRecommendations", query.includeRecommendations)
+            optionalParameter("includeLocalState", query.includeLocalState)
+            optionalParameter("includeDigest", query.includeDigest)
+            optionalParameter("includeExportHints", query.includeExportHints)
+            optionalParameter("recommendationLimit", query.recommendationLimit)
+            optionalParameter("neighborLimit", query.neighborLimit)
+        }.body()
+
+    override suspend fun getContentIntelligence(query: ContentIntelligenceQuery): ContentIntelligenceDto =
+        httpClient.get(endpoint("api/v3/content/${query.contentType.wireName}/${pathSegment(query.id)}/intelligence")) {
+            optionalParameter("includeAi", query.includeAi)
+            optionalParameter("includeGraph", query.includeGraph)
+            optionalParameter("includeRecommendations", query.includeRecommendations)
+            optionalParameter("recommendationLimit", query.recommendationLimit)
+            optionalParameter("neighborLimit", query.neighborLimit)
+        }.body()
+
+    override suspend fun getArticleAiCard(id: String): AiCardDto =
+        httpClient.get(endpoint("api/v3/articles/${pathSegment(id)}/ai-card")).body()
+
+    override suspend fun getDirectoryItemAiCard(id: String): AiCardDto =
+        httpClient.get(endpoint("api/v3/directory-items/${pathSegment(id)}/ai-card")).body()
+
+    override suspend fun getInheritorAiCard(id: String): AiCardDto =
+        httpClient.get(endpoint("api/v3/inheritors/${pathSegment(id)}/ai-card")).body()
+
+    override suspend fun intelligentSearch(query: IntelligentSearchQuery): IntelligentSearchResponseDto =
+        httpClient.get(endpoint("api/v3/search/intelligent")) {
+            optionalParameter("q", query.keywords)
+            optionalParameter(
+                "types",
+                query.types.takeIf { it.isNotEmpty() }?.joinToString(",") { it.wireName },
+            )
+            optionalParameter("page", query.page)
+            optionalParameter("pageSize", query.pageSize)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+            optionalParameter("year", query.year)
+            optionalParameter("kind", query.kind?.wireName)
+            optionalParameter("includeAi", query.includeAi)
+            optionalParameter("includeGraph", query.includeGraph)
+            optionalParameter("includeHighlights", query.includeHighlights)
+            optionalParameter("minScore", query.minScore)
+        }.body()
+
+    // ── KnowledgeGraph API ──
+
+    override suspend fun getGraphNeighbors(query: KnowledgeGraphNeighborsQuery): GraphNeighborsDto =
+        httpClient.get(endpoint("api/knowledge-graph/${query.contentType.wireName}/${pathSegment(query.id)}/neighbors")) {
+            optionalParameter("limit", query.limit)
+            optionalParameter("relationType", query.relationType?.takeIf { it != GraphRelationType.Unknown }?.wireName)
+            optionalParameter("source", query.source?.takeIf { it != GraphEvidenceSource.Unknown }?.wireName)
+            optionalParameter("includeTopics", query.includeTopics)
+        }.body()
+
+    override suspend fun getGraphSimilar(query: KnowledgeGraphSimilarQuery): GraphSimilarDto =
+        httpClient.get(endpoint("api/knowledge-graph/${query.contentType.wireName}/${pathSegment(query.id)}/similar")) {
+            optionalParameter("limit", query.limit)
+            optionalParameter("includeTopics", query.includeTopics)
+        }.body()
+
+    override suspend fun getGraphExplore(query: KnowledgeGraphExploreQuery): GraphExploreDto =
+        httpClient.get(endpoint("api/knowledge-graph/${query.contentType.wireName}/${pathSegment(query.id)}/explore")) {
+            optionalParameter("depth", query.depth)
+            optionalParameter("limit", query.limit)
+            optionalParameter("includeTopics", query.includeTopics)
+        }.body()
+
+    override suspend fun getGraphEvidence(query: KnowledgeGraphEvidenceQuery): GraphEvidenceDto =
+        httpClient.get(endpoint("api/knowledge-graph/${query.contentType.wireName}/${pathSegment(query.id)}/evidence")) {
+            optionalParameter("includeAiInferred", query.includeAiInferred)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getAiInferredEdges(query: KnowledgeGraphAiInferredQuery): AiInferredEdgesDto =
+        httpClient.get(endpoint("api/knowledge-graph/${query.contentType.wireName}/${pathSegment(query.id)}/ai-inferred")) {
+            optionalParameter("entityType", query.entityType)
+            optionalParameter("minConfidence", query.minConfidence)
+            optionalParameter("includeStale", query.includeStale)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery): GraphBridgeDto =
+        httpClient.get(endpoint("api/knowledge-graph/bridge")) {
+            optionalParameter("fromType", query.fromType.wireName)
+            optionalParameter("fromId", query.fromId)
+            optionalParameter("toType", query.toType.wireName)
+            optionalParameter("toId", query.toId)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery): PathExplainDto =
+        httpClient.get(endpoint("api/knowledge-graph/path/explain")) {
+            optionalParameter("fromType", query.fromType.wireName)
+            optionalParameter("fromId", query.fromId)
+            optionalParameter("toType", query.toType.wireName)
+            optionalParameter("toId", query.toId)
+            optionalParameter("maxDepth", query.maxDepth)
+            optionalParameter("includeAiInferred", query.includeAiInferred)
+        }.body()
+
+    override suspend fun getGraphCommunities(query: KnowledgeGraphCommunitiesQuery): GraphCommunitiesDto =
+        httpClient.get(endpoint("api/knowledge-graph/communities")) {
+            optionalParameter("limit", query.limit)
+            optionalParameter("minSize", query.minSize)
+        }.body()
+
+    override suspend fun getTopicGraphMap(query: TopicGraphMapQuery): TopicGraphMapDto =
+        httpClient.get(
+            endpoint("api/knowledge-graph/topics/${pathSegment(query.topicType)}/${pathSegment(query.topicKey)}/map")
+        ) {
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getRandomGraphTrail(query: GraphTrailRandomQuery): GraphTrailDto =
+        httpClient.get(endpoint("api/knowledge-graph/trails/random")) {
+            optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
+            optionalParameter("type", query.type?.wireName)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery): GraphTrailDto =
+        httpClient.get(
+            endpoint("api/knowledge-graph/trails/from/${query.contentType.wireName}/${pathSegment(query.id)}")
+        ) {
+            optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+            optionalParameter("includeTopics", query.includeTopics)
+        }.body()
+
+    override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery): GraphTrailDto =
+        httpClient.get(
+            endpoint("api/knowledge-graph/trails/topic/${pathSegment(query.topicType)}/${pathSegment(query.topicKey)}")
+        ) {
+            optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    // ── LearningRoutes API ──
+
+    override suspend fun getLearningRoutes(query: LearningRoutesListQuery): List<LearningRouteSummaryDto> =
+        httpClient.get(endpoint("api/learning-routes")) {
+            optionalParameter("difficulty", query.difficulty.takeIf { it != LearningRouteDifficulty.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getLearningRouteDetail(query: LearningRouteDetailQuery): LearningRouteDetailDto =
+        httpClient.get(endpoint("api/learning-routes/${pathSegment(query.routeId)}")) {
+            optionalParameter("limit", query.limit)
+            optionalParameter("includeAi", query.includeAi)
+        }.body()
+
+    override suspend fun buildLearningRoute(query: LearningRouteBuildQuery): LearningRouteDetailDto =
+        httpClient.get(endpoint("api/learning-routes/build")) {
+            optionalParameter("seedType", query.seedType.takeIf { it != LearningRouteSeedType.Unknown }?.wireName)
+            optionalParameter("seedKey", query.seedKey)
+            optionalParameter("difficulty", query.difficulty.takeIf { it != LearningRouteDifficulty.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+            optionalParameter("includeArticles", query.includeArticles)
+            optionalParameter("includeDirectoryItems", query.includeDirectoryItems)
+            optionalParameter("includeInheritors", query.includeInheritors)
+        }.body()
+
+    override suspend fun getLearningRouteNextStep(query: LearningRouteNextQuery): LearningRouteNextDto =
+        httpClient.get(endpoint("api/learning-routes/${pathSegment(query.routeId)}/next")) {
+            optionalParameter(
+                "completedStepIds",
+                query.completedStepIds.takeIf { it.isNotEmpty() }?.joinToString(",") { it },
+            )
+            optionalParameter("profileId", query.profileId)
+        }.body()
+
+    // ── DataExplore API ──
+
+    override suspend fun getSpacetimeOverview(query: SpacetimeOverviewQuery): SpacetimeOverviewDto =
+        httpClient.get(endpoint("api/spacetime/overview")) {
+            optionalParameter("fromYear", query.fromYear)
+            optionalParameter("toYear", query.toYear)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+            optionalParameter("kind", query.kind)
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getSpacetimeHeatmap(query: SpacetimeHeatmapQuery): SpacetimeHeatmapDto =
+        httpClient.get(endpoint("api/spacetime/heatmap")) {
+            optionalParameter("x", query.x.takeIf { it != SpacetimeDimension.Unknown }?.wireName)
+            optionalParameter("y", query.y.takeIf { it != SpacetimeDimension.Unknown }?.wireName)
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("fromYear", query.fromYear)
+            optionalParameter("toYear", query.toYear)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getSpacetimeRegionTimeline(query: SpacetimeRegionTimelineQuery): SpacetimeTimelineDto =
+        httpClient.get(endpoint("api/spacetime/regions/${pathSegment(query.region)}/timeline")).body()
+
+    override suspend fun getSpacetimeYearMap(query: SpacetimeYearMapQuery): SpacetimeRegionMapDto =
+        httpClient.get(endpoint("api/spacetime/years/${query.year}/map")).body()
+
+    override suspend fun getSpacetimeCategoryTimeline(query: SpacetimeCategoryTimelineQuery): SpacetimeTimelineDto =
+        httpClient.get(endpoint("api/spacetime/categories/${pathSegment(query.category)}/timeline")).body()
+
+    override suspend fun getAnalyticsFacets(query: AnalyticsFacetsQuery): AnalyticsFacetsDto =
+        httpClient.get(endpoint("api/analytics/facets")) {
+            applyAnalyticsFilters(query.filters)
+        }.body()
+
+    override suspend fun getAnalyticsBreakdown(query: AnalyticsBreakdownQuery): AnalyticsBreakdownDto =
+        httpClient.get(endpoint("api/analytics/breakdown")) {
+            optionalParameter("groupBy", query.groupBy.takeIf { it != AnalyticsDimension.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+            applyAnalyticsFilters(query.filters)
+        }.body()
+
+    override suspend fun getAnalyticsCrosstab(query: AnalyticsCrosstabQuery): AnalyticsCrosstabDto =
+        httpClient.get(endpoint("api/analytics/crosstab")) {
+            optionalParameter("x", query.x.takeIf { it != AnalyticsDimension.Unknown }?.wireName)
+            optionalParameter("y", query.y.takeIf { it != AnalyticsDimension.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+            applyAnalyticsFilters(query.filters)
+        }.body()
+
+    override suspend fun getAnalyticsCompare(query: AnalyticsCompareQuery): AnalyticsCompareDto =
+        httpClient.get(endpoint("api/analytics/compare")) {
+            optionalParameter("dimension", query.dimension.takeIf { it != AnalyticsDimension.Unknown }?.wireName)
+            optionalParameter("keys", query.keys.takeIf { it.isNotEmpty() }?.joinToString(","))
+            optionalParameter("metric", query.metric.takeIf { it != RankingMetric.Unknown }?.wireName)
+            applyAnalyticsFilters(query.filters)
+        }.body()
+
+    override suspend fun getAnalyticsOutliers(query: AnalyticsOutliersQuery): List<AnalyticsOutliersDto> =
+        httpClient.get(endpoint("api/analytics/outliers")) {
+            optionalParameter("dimension", query.dimension.takeIf { it != AnalyticsDimension.Unknown }?.wireName)
+            optionalParameter("metric", query.metric.takeIf { it != RankingMetric.Unknown }?.wireName)
+            optionalParameter("limit", query.limit)
+            applyAnalyticsFilters(query.filters)
+        }.body()
+
+    override suspend fun getRankings(): List<RankingDefinitionDto> =
+        httpClient.get(endpoint("api/rankings")).body()
+
+    override suspend fun getRankingDetail(query: RankingDetailQuery): RankingDetailDto =
+        httpClient.get(endpoint("api/rankings/${pathSegment(query.rankingId)}")) {
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+            optionalParameter("year", query.year)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    override suspend fun getRankingContent(query: RankingContentQuery): RankingDetailDto =
+        httpClient.get(endpoint("api/rankings/content")) {
+            optionalParameter("metric", query.metric.takeIf { it != RankingMetric.Unknown }?.wireName)
+            optionalParameter("targetType", query.targetType)
+            optionalParameter("region", query.region)
+            optionalParameter("category", query.category)
+            optionalParameter("year", query.year)
+            optionalParameter("limit", query.limit)
+        }.body()
+
+    // ── Research API ──
+
+    override suspend fun getResearchPackages(): List<ResearchPackageSummaryDto> =
+        httpClient.get(endpoint("api/research-packages")).body()
+
+    override suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery): ResearchPackageDetailDto =
+        httpClient.get(endpoint("api/research-packages/${pathSegment(query.packageId)}")).body()
+
+    override suspend fun getResearchArtifact(query: ResearchArtifactQuery): String =
+        httpClient.get(
+            endpoint("api/research-packages/${pathSegment(query.packageId)}/artifacts/${pathSegment(query.artifactName)}")
+        ).bodyAsText()
+
+    override suspend fun getResearchReports(): List<ResearchReportSummaryDto> =
+        httpClient.get(endpoint("api/research-reports")).body()
+
+    override suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDetailDto =
+        httpClient.get(endpoint("api/research-reports/${pathSegment(query.reportId)}")).body()
+
+    override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery): ResearchReportDetailDto =
+        httpClient.get(endpoint("api/research-packages/${pathSegment(query.packageId)}/research-report")).body()
+
+    // ── ContentExport API ──
+
+    override suspend fun getExportTemplates(): List<ExportTemplateDto> =
+        httpClient.get(endpoint("api/exports/templates")).body()
+
+    override suspend fun previewExport(request: ExportRequestDto): ExportPreviewDto =
+        httpClient.post(endpoint("api/exports/preview")) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
+    override suspend fun exportContent(request: ExportRequestDto): ExportContentResultDto =
+        httpClient.post(endpoint("api/exports/content")) {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
     override suspend fun currentProfileId(): String = profileRepository.currentProfileId()
 
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
@@ -539,6 +985,22 @@ class KtorHeritageApiClient(
     private fun pathSegment(value: String): String =
         java.net.URLEncoder.encode(value, "UTF-8")
             .replace("+", "%20")
+
+    private fun v3PagePath(type: SearchResultType): String = when (type) {
+        SearchResultType.Article -> "article"
+        SearchResultType.DirectoryItem -> "directory-item"
+        SearchResultType.Inheritor -> "inheritor"
+    }
+
+    private fun HttpRequestBuilder.applyAnalyticsFilters(filters: AnalyticsFilters) {
+        optionalParameter("targetType", filters.targetType)
+        optionalParameter("region", filters.region)
+        optionalParameter("category", filters.category)
+        optionalParameter("year", filters.year)
+        optionalParameter("kind", filters.kind)
+        optionalParameter("hasImage", filters.hasImage)
+        optionalParameter("hasAiResult", filters.hasAiResult)
+    }
 }
 
 fun createHeritageHttpClient(

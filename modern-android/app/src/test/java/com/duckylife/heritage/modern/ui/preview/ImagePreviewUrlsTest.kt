@@ -15,29 +15,29 @@ class ImagePreviewUrlsTest {
     // ── previewUrl() priority ──
 
     @Test
-    fun `previewUrl returns displayUrl first`() {
+    fun `previewUrl returns originalUrl first for highest quality`() {
         val asset = MediaAssetDto(
             displayUrl = "https://example.com/display.jpg",
             thumbnailUrl = "https://example.com/thumb.jpg",
             originalUrl = "https://example.com/original.jpg",
             sourceUrl = "https://example.com/source.jpg",
         )
+        assertEquals("https://example.com/original.jpg", asset.previewUrl())
+    }
+
+    @Test
+    fun `previewUrl falls back to displayUrl when originalUrl is null`() {
+        val asset = MediaAssetDto(
+            displayUrl = "https://example.com/display.jpg",
+            thumbnailUrl = "https://example.com/thumb.jpg",
+            originalUrl = null,
+            sourceUrl = "https://example.com/source.jpg",
+        )
         assertEquals("https://example.com/display.jpg", asset.previewUrl())
     }
 
     @Test
-    fun `previewUrl falls back to thumbnailUrl when displayUrl is null`() {
-        val asset = MediaAssetDto(
-            displayUrl = null,
-            thumbnailUrl = "https://example.com/thumb.jpg",
-            originalUrl = "https://example.com/original.jpg",
-            sourceUrl = "https://example.com/source.jpg",
-        )
-        assertEquals("https://example.com/thumb.jpg", asset.previewUrl())
-    }
-
-    @Test
-    fun `previewUrl falls back to originalUrl when displayUrl and thumbnailUrl are null`() {
+    fun `previewUrl falls back to thumbnailUrl when originalUrl and displayUrl are null`() {
         val asset = MediaAssetDto(
             displayUrl = null,
             thumbnailUrl = null,
