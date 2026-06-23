@@ -81,6 +81,55 @@
 
 **前置验收**：现有 Search、Timeline、Explore、Region Atlas、Collections、Detail Context 的 MockEngine/DTO 测试全部通过，且测试 JSON 与后端当前合同字段一致。
 
+> **合同来源优先级**：`API-CONTRACT.md` 是后端提供的稳定接口说明，但应以 **实际 Controller 源码与运行时 Swagger/fixture** 为最终依据。若合同文档与源码存在字段名、query 参数位置或 HTTP 方法不一致，优先按源码实现，并在本计划与本仓库测试 fixture 中同步修正。
+
+### 0.6 UI/UX 实现规范：现代、美观、可访问
+
+新增页面与组件必须遵循 Material3 设计系统，并在此基线之上做到**现代、克制、可访问**。本规范适用于本计划涉及的所有新增 Screen、BottomSheet、卡片与交互。
+
+#### 0.6.1 视觉基础
+
+- **颜色**：继续使用项目现有陶土/红褐主色；新增区块优先使用 `surfaceContainerLow`、`secondaryContainer`、`tertiaryContainer` 等语义色，不引入新的硬编码色值。深色模式必须同步验证。
+- **形状**：沿用现有 8.dp 圆角体系；小元素 4.dp，大卡片/ bottom sheet 8.dp。禁止在单个页面混用 12.dp、16.dp、24.dp 等多种圆角。
+- **字体**：使用 `MaterialTheme.typography` 层级：页面标题 `headlineSmall`、区块标题 `titleMedium`、卡片标题 `titleSmall`、正文 `bodyMedium`、辅助说明 `bodySmall`/`labelMedium`。避免直接写死字号。
+- **间距**：以 4.dp 为基 grid。页面水平内边距统一 16.dp–20.dp；列表项间距 12.dp；卡片内部 16.dp；相关元素之间 8.dp。复杂页面先画 wireframe 再写 Compose。
+
+#### 0.6.2 现代交互模式
+
+- **加载**：首次加载使用与最终布局结构一致的 skeleton，禁止全屏 indeterminate spinner。列表 skeleton 的项数与实际一屏接近；卡片 skeleton 保持真实圆角和间距。
+- **空态**：每个列表/区块必须有专属空态：图标（Material 图标，不使用 emoji）、一句标题、一句说明、一个下一步操作（如“去发现”）。空态不是失败提示。
+- **错误与重试**：非致命错误使用 inline error card 或 section-level retry button；致命错误使用居中带插画的错误页。retry 必须精确对应具体请求。
+- **过渡动画**：页面进入/退出使用 `AnimatedContent` 或 navigation3 默认过渡；列表项使用 `animateItemPlacement`；展开/收起使用 `AnimatedVisibility`。动画时长 200–300ms，使用 `MotionScheme`；必须尊重系统“移除动画”设置。
+- **触觉反馈**：收藏、完成 step、生成导出等成功操作可给轻微 `HapticFeedbackType.Confirm`；删除、清空等破坏操作给 `HapticFeedbackType.Reject` 或 `LongPress`。
+- **触摸目标**：所有可点击元素最小 48.dp；图标按钮使用 `IconButton` 保证触摸区域；列表项整卡可点击时，内部按钮仍要有独立触摸区。
+
+#### 0.6.3 内容密度与可读性
+
+- **图片**：列表缩略图统一比例（如 16:10 或 4:3），使用 `ContentScale.Crop` 并保留 `contentDescription`；无图时显示类型占位图标，不显示空白或 broken image。
+- **文本截断**：标题最多 2 行，正文 snippet 最多 2–3 行，使用 `TextOverflow.Ellipsis`。关键词 chip、reason 列表必须设最大显示数，展开由用户触发。
+- **信息层级**：一个卡片内不超过 3 层信息：主标题、1–2 行副信息、1 行动作或标签。不要把 score、edge type、model name 等技术字段直接塞进卡片。
+
+#### 0.6.4 可访问性
+
+- 所有新增图标按钮必须有 `contentDescription`；纯装饰图标设 `contentDescription = null`。
+- 自定义复合组件提供合并语义或清晰遍历顺序；底部弹窗标题用 `ModalBottomSheet` 的 `sheetContent` 语义。
+- 颜色对比度满足 WCAG AA；不要仅依赖颜色传达状态（如 AI inferred 关系除颜色外还有文字 badge）。
+
+#### 0.6.5 响应式与大屏
+
+- 列表在宽屏（>600dp）自动切换为 2 列网格；详情页在折叠屏/平板上考虑双窗格（但第一版允许保留单窗格）。
+- 所有 `LazyColumn`/`LazyVerticalGrid` 正确设置 `contentPadding`，避免被系统栏或底部导航遮挡。
+
+#### 0.6.6 UI 验收清单
+
+每个新增 Screen 合并前必须回答：
+1. 是否实现了 skeleton、空态、错误态三种状态？
+2. 是否在深色模式、字体放大 1.3 倍、屏幕旋转后仍不重叠？
+3. 是否所有可见文案来自 string resource 且 wire value 已映射？
+4. 是否所有可点击元素触摸目标 ≥48.dp？
+5. 是否为该 Screen 编写了 `@Preview`（至少 light/dark 各一），并在预览中覆盖空态与有数据态？
+6. 是否有至少一条 Compose 测试验证空态/错误态/核心交互？
+
 ---
 
 ## 1. 后端能力盘点与客户端取舍
@@ -91,7 +140,7 @@
 | --- | --- | --- | --- |
 | P0 | 连接与媒体基础 | 所有接口返回的内容/图片 URL | 全局网络层、全局图片组件 |
 | P0 | 本地用户状态 | `/api/local-user/*`、`/api/local-user/journeys*` | 我的页、详情页收藏、学习路线 |
-| P0 | V3 内容智能 | `/api/v3/pages/*`、`/api/v3/content/*/intelligence`、`/api/v3/*/ai-card` | 三类详情页 |
+| P0 | V3 内容智能 | `/api/v3/pages/article/{id}`、`/api/v3/pages/directory-item/{id}`、`/api/v3/pages/inheritor/{id}`、`/api/v3/content/{type}/{id}/intelligence`、`/api/v3/articles/{id}/ai-card`、`/api/v3/directory-items/{id}/ai-card`、`/api/v3/inheritors/{id}/ai-card` | 三类详情页 |
 | P0 | 智能搜索 | `/api/v3/search/intelligent` | 现有搜索页的“智能”模式 |
 | P1 | 图谱阅读 | `/api/knowledge-graph/*/neighbors|similar|explore|evidence|ai-inferred` | 详情页“关系”入口、发现页 |
 | P1 | 路径/漫游 | `/api/knowledge-graph/path/explain`、`/trails/*`、`/communities`、`topics/*/map` | 图谱页、发现页主题入口 |
@@ -278,8 +327,9 @@ data class RankingDetailPage(val rankingId: String) : DiscoveryRouteKey
 2. 首次安装时生成一次 profile ID，格式为 `android_` 加 UUID 去掉大括号后的字符串。例如 `android_550e8400-e29b-41d4-a716-446655440000`；长度小于 64，且只包含字母、数字、`_`、`-`，符合后端白名单。
 3. 将 ID 保存到独立的 DataStore key。读取失败时不能每次请求都重新生成；先在同一事务中写入后返回，保证一个安装实例始终对应同一个 profile。
 4. Ktor 增加一个请求插件或统一 default request hook，在所有正常 API 请求上附带 `X-Heritage-Profile-Id`。服务端无需该 header 的接口会忽略它；统一添加比各个 LocalUser method 手工添加更不易漏。
-5. 不增加任何管理员 key header，不在客户端保存后端密码、MongoDB 密码、Neo4j 密码或 LLM 配置。
-6. 为测试提供 `FakeLocalProfileRepository("android_test_profile")`，避免随机 ID 使 MockWebServer 断言不稳定。
+5. 注意后端对 profile ID 的读取方式不一致：LocalUser 全系依赖 header；`/api/v3/pages/*` 的 `includeLocalState=true` 需要把同一份 profile ID 作为 query 参数 `profileId` 传入；`/api/learning-routes/{routeId}/next` 也通过 query 参数 `profileId` 读取。Client 实现层应暴露 `currentProfileId()` 给需要 query 参数的接口使用，而不是让每个 Repository 自己拼 header。
+6. 不增加任何管理员 key header，不在客户端保存后端密码、MongoDB 密码、Neo4j 密码或 LLM 配置。
+7. 为测试提供 `FakeLocalProfileRepository("android_test_profile")`，避免随机 ID 使 MockWebServer 断言不稳定。
 
 **验收**：Ktor MockEngine 测试能断言普通 GET 和 LocalUser POST 均发送同一个 profile header；重建 Repository 不会改变该 profile ID。
 
@@ -442,13 +492,20 @@ GET    /api/local-user/journeys
 GET    /api/local-user/journeys/signals
 ```
 
+**Header 与身份**：
+
+1. 所有 `/api/local-user/*` 端点均通过 **`X-Heritage-Profile-Id`** 请求头区分用户。未提供时后端默认使用 `"local"`，但客户端必须始终发送本机生成的 profile ID。
+2. Header 值必须满足正则 `^[a-zA-Z0-9_-]{1,64}$`；首次生成时采用 `android_` + UUID（去大括号），例如 `android_550e8400-e29b-41d4-a716-446655440000`。
+3. 这些端点**不要**把 `profileId` 放进 body 或 query（除后端明确要求的 `/api/v3/pages/*` 与 `/api/learning-routes/{routeId}/next` 外）。
+
 **实现要求**：
 
 1. favorites/history 使用明确的 `page`、`pageSize` query；首次同步可使用 `pageSize=100`，随后根据 `hasMore` 循环，循环次数必须设置上限并支持 cancellation。
 2. POST favorite body 只发送后端合同允许的 `targetType`、`targetId`、`tags`、`note`。第一版不提供收藏备注编辑 UI，所以 tags/note 发送空值即可，不要伪造标题或图片字段。
-3. 详情浏览成功后在 ViewModel 中调用 `recordHistory(type, id, lastPosition = null)`；不要从 `onDispose` 调用，以免进程被杀时不可预测。
-4. 进度 body 的 `completedStepIds` 去重、保持 route step 的原顺序；`currentStepId` 必须是 route 内当前步骤或 null。
-5. `profileId` 使用 header，不在每个 body 或 query 重复传入；仅后端明确要求 `profileId` 的 V3 content page/learning route next 使用同一个仓库 ID。
+3. `targetType` 只允许规范化为 `article`、`directoryItem`、`inheritor`；`all` 在收藏/历史接口不可用。
+4. 详情浏览成功后在 ViewModel 中调用 `recordHistory(type, id, lastPosition = null)`；不要从 `onDispose` 调用，以免进程被杀时不可预测。
+5. 进度 body 的 `completedStepIds` 去重、保持 route step 的原顺序；`currentStepId` 必须是 route 内当前步骤或 null。服务端会对 `completedStepIds` 与真实 step 取并集，并自动计算 `percent` 和 `completedAt`。
+6. `DELETE /api/local-user/history` 无路径/查询参数，清空当前 profile 全部历史，返回被清除条数。
 
 **测试**：验证 header、POST/PUT/DELETE method、path segment 编码、分页 `hasMore`、空 progress、404 target、503 retry 分类。
 
@@ -559,10 +616,10 @@ GET /api/v3/pages/inheritor/{id}
 **实现逻辑**：
 
 1. 三类详情页继续先使用当前 `ArticleDetailDto`、`DirectoryItemDetailDto`、`InheritorDetailDto` 和 Room 缓存加载主内容。
-2. 主内容解析出 canonical Mongo id 后，异步调用 V3 page：`includeAi=true`、`includeGraph=true`、`includeRecommendations=true`、`includeLocalState=true`、`includeDigest=true`、`includeExportHints=false`、`recommendationLimit=8`、`neighborLimit=12`，并传入当前 profile ID。
+2. 主内容解析出 canonical Mongo id 后，异步调用 V3 page：`includeAi=true`、`includeGraph=true`、`includeRecommendations=true`、`includeLocalState=true`、`includeDigest=true`、`includeExportHints=false`、`recommendationLimit=8`、`neighborLimit=12`。`profileId` 作为 **query 参数**传入（该接口不读取 `X-Heritage-Profile-Id` header）；`includeLocalState=true` 时 `profileId` 必填。
 3. 由 `ContentIntelligenceRepository` 将 response 的 `sectionStatus` 映射为每个区块自己的 `Ready`、`Empty`、`Missing`、`Unavailable`、`Disabled`，不要仅用一个 Boolean `isLoading`。
 4. V3 page 成功后，先只在新组件中消费它；不要马上删除旧 digest/context/blended 请求。待新组件被 DTO、UI、真实设备共同验收后，再以单独步骤逐步停用重复请求。
-5. V3 page 400（常见于来源路由尚未解析为 ObjectId）时只记录开发日志并跳过增强层；主详情仍可阅读。
+5. V3 page 400（常见于来源路由尚未解析为 ObjectId 或缺少 `profileId`）时只记录开发日志并跳过增强层；主详情仍可阅读。
 
 **验收**：无 AI 结果、Neo4j 关闭、推荐为空时，三类原详情页仍可完整显示文字、图片、收藏和原有 Context。
 
@@ -661,7 +718,9 @@ GET /api/v3/content/{type}/{id}/intelligence
 GET /api/v3/articles/{id}/ai-card
 GET /api/v3/directory-items/{id}/ai-card
 GET /api/v3/inheritors/{id}/ai-card
-GET /api/v3/pages/{type}/{id}
+GET /api/v3/pages/article/{id}
+GET /api/v3/pages/directory-item/{id}
+GET /api/v3/pages/inheritor/{id}
 GET /api/v3/search/intelligent
 ```
 
@@ -755,7 +814,7 @@ GET /api/knowledge-graph/trails/topic/{topicType}/{topicKey}
 1. 页面只接受 `ContentRef`，只允许 `article`、`directoryItem`、`inheritor`。非法 route 在进入时显示参数错误页并允许返回。
 2. 首次打开先请求邻居 `neighbors(limit=12, includeTopics=false)`，同时按当前 initial tab 懒加载 similar 或 explore；不要并发请求所有 tab。
 3. `Similar` 首次进入请求 `similar(limit=12, includeTopics=true)`。
-4. `Explore` 首次进入请求 `explore(depth=2, limit=80, includeTopics=false)`。用户切换深度时只能选 1 或 2；显示“更多关系”前必须再次确认，不支持客户端输入任意深度。
+4. `Explore` 首次进入请求 `explore(depth=2, limit=50, includeTopics=false)`。后端默认 limit 为 50，超过 `MaxNeighborLimit` 会被 clamp；用户切换深度时只能选 1 或 2；显示“更多关系”前必须再次确认，不支持客户端输入任意深度。
 5. `Evidence` 首次进入请求 `evidence(limit=20, includeAiInferred=toggle)`。
 6. 每个 tab 有独立 `LoadableSectionState`，切换 tab 不清空已经成功加载的数据；重试仅重试当前 tab。
 7. 503 是 tab 级不可用；中心内容的标题优先从当前详情传入，缺失时调用最小内容 lookup，而不是展示 ObjectId。
@@ -915,10 +974,10 @@ GET /api/learning-routes/{routeId}/next
 
 1. 不替换已有 `/api/explore/learning-paths` 页面；旧学习路径是已有探索内容，新 Learning Routes 是带进度和下一步的学习产品。
 2. 新建 `feature/learningroutes/`，不要继续把不同后端模型堆入 `feature/learning/` 的旧 `LearningPath*` 类。
-3. 首页列表 query 默认 `difficulty=all`、`limit=20`；页面提供难度 filter chip：入门/进阶/深入。
-4. route detail 请求 `limit=20`、`includeAi=true`；AI 数据只作为每步摘要补充，缺失不阻断路线。
-5. `next` 请求附当前 profile ID 和已完成步骤 ID，用于决定“继续学习”按钮应定位的步骤。
-6. `build` 只由用户显式点击“从此内容生成学习路线”触发，seed 只能来自可信 route 参数：region/category/year/kind/content。不要给用户自由输入 seedType 或任意 JSON。
+3. 首页列表 query 默认 `difficulty=all`、`limit=20`；页面提供难度 filter chip：入门(`beginner`)/进阶(`intermediate`)/深入(`deep`)。后端 clamp `limit` 到 1–50。
+4. route detail 请求 `limit`（默认 10，后端 clamp 1–20）、`includeAi=true`；AI 数据只作为每步摘要补充，缺失不阻断路线。
+5. `next` 请求通过 query 参数 `profileId` 和 `completedStepIds`（逗号分隔）传入；`X-Heritage-Profile-Id` header 在该接口不被消费。用于决定“继续学习”按钮应定位的步骤。
+6. `build` 是 **GET** 请求，只由用户显式点击“从此内容生成学习路线”触发。参数通过 query 传入：`seedType`（`region`/`category`/`year`/`kind`/`content`）、`seedKey`、`difficulty`（不可为 `all`，默认 `beginner`）、`limit`（默认 8，clamp 1–20）、`includeArticles`、`includeDirectoryItems`、`includeInheritors`。不要给用户自由输入 seedType 或任意 JSON。
 
 ### 步骤 39：实现学习路线首页
 
@@ -927,7 +986,7 @@ GET /api/learning-routes/{routeId}/next
 **页面元素**：
 
 1. 顶部 app bar：返回、标题“学习路线”。
-2. 标题下方 horizontal filter chips：全部、入门、进阶、深入；选中状态写入 ViewModel `SavedStateHandle`，旋转/进程恢复后仍存在。
+2. 标题下方 horizontal filter chips：全部(`all`)、入门(`beginner`)、进阶(`intermediate`)、深入(`deep`)；选中状态写入 ViewModel `SavedStateHandle`，旋转/进程恢复后仍存在。
 3. 每张路线卡：左侧 72.dp 封面或类型占位，右侧标题、subtitle、难度 chip、预计分钟数、步骤数，底部最多两枚 tag。
 4. 卡片点击进入 `LearningRouteDetailPage(routeId)`；无结果显示对应难度的空态；加载使用 4 张卡 skeleton。
 5. 不显示 “AI 生成” 标志，路线的来源对用户不重要；只展示可执行的学习信息。
@@ -941,7 +1000,7 @@ GET /api/learning-routes/{routeId}/next
 3. `LazyColumn` 按 API `sections` 分组。section title 下面按 `order` 渲染 step 卡。
 4. step 卡左侧 checkbox：required step 有“必学”chip；中间为 title、description、estimated minutes；存在 target content 时右侧箭头可打开内容详情。
 5. 点击 checkbox 后立即更新本地进度并以 600ms debounce 写入 `PUT /api/local-user/learning-progress/{routeId}`；快速连续点击只发送最终状态。写失败时卡片保留本地状态并加入 pending operation。
-6. 页面底部只有在有 next step 时显示 `FilledTonalButton("继续下一步")`，点击滚动到/打开后端 `nextStep`；已完成时显示“已完成这条路线”，附“再学一次”文字按钮（清空本地 completed ids 前需确认）。
+6. 页面底部只有在有 next step 时显示 `FilledTonalButton("继续下一步")`。调用 `GET /api/learning-routes/{routeId}/next?profileId=...&completedStepIds=...` 获取下一步；已完成时显示“已完成这条路线”，附“再学一次”文字按钮（清空本地 completed ids 前需确认）。
 7. 第一次完成 route 时只显示短 snackbar，不弹全屏庆祝动画。
 
 **验收**：步骤顺序来自后端 `order`，不是列表原始顺序；离线完成步骤后重启仍保留；后端 404 route 时显示“路线已不存在”。
@@ -951,8 +1010,8 @@ GET /api/learning-routes/{routeId}/next
 **入口逻辑**：
 
 1. 三类内容详情的“继续探索”摘要条中，当 content ref 可用时显示“学习路线”。
-2. 点击默认先进入 `LearningRoutesPage` 并以 `content:{id}` 作为 build seed 的 pending intent；列表顶部显示“为此内容定制一条路线”卡。
-3. 用户点击该卡才调用 `/api/learning-routes/build?seedType=content&seedKey=article:{id}...`；不能在打开详情时自动 build。
+2. 点击默认先进入 `LearningRoutesPage` 并以 `{type}:{id}`（如 `article:abc123`）作为 build seed 的 pending intent；列表顶部显示“为此内容定制一条路线”卡。
+3. 用户点击该卡才调用 `/api/learning-routes/build?seedType=content&seedKey=article:{id}`；`seedKey` 中的 type 会被后端规范化为 `article`/`directoryItem`/`inheritor`。不能在打开详情时自动 build。
 4. build 成功后直接进入临时 `LearningRouteDetail`，同时允许它出现在“我的 -> 学习”进度列表；如果 build 只返回临时 routeId，仍以该 routeId 保存 progress。
 5. build 400/404 时回到路线列表，显示可理解提示，不显示后端 seed 格式。
 
@@ -1084,6 +1143,8 @@ GET /api/research-packages/{packageId}/research-report
 ### 步骤 49：接入内容导出，但保持用户主动触发
 
 **接口**：`GET /api/exports/templates`、`POST /api/exports/preview`、`POST /api/exports/content`。
+
+**身份说明**：导出接口可选读取 `X-Heritage-Profile-Id` header；`favorites` scope 需要 `profileId`（header 或 body 均可）。单内容 `ids` scope 可不传 header。
 
 **入口**：三类内容详情顶栏“更多”菜单增加“导出此内容”。第一版只支持当前单内容的 `ids` scope；不要一开始支持用户任意拼大范围导出。
 
