@@ -9,6 +9,11 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
     private val _favorites = MutableStateFlow<List<ProfileFavorite>>(emptyList())
     private val _history = MutableStateFlow<List<ProfileHistoryItem>>(emptyList())
     private val _progress = MutableStateFlow<List<ProfileLearningProgress>>(emptyList())
+    // 从当前时间开始，避免 ofEpochMilli(1) 生成 1970 年的测试时间戳。
+    private var historyCounter = System.currentTimeMillis()
+
+    var syncNowCalled: Boolean = false
+        private set
 
     override fun profileState(): Flow<SyncedProfileState?> = MutableStateFlow(null)
 
@@ -21,7 +26,7 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
     override fun pendingOperationCount(): Flow<Int> = MutableStateFlow(0)
 
     override suspend fun syncNow() {
-        // no-op
+        syncNowCalled = true
     }
 
     override suspend fun toggleFavorite(
@@ -58,16 +63,25 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
         titleSnapshot: String?,
         lastPosition: String?,
     ) {
-        _history.value = _history.value + ProfileHistoryItem(
-            id = "$type:$id",
-            targetType = type,
-            targetId = id,
-            titleSnapshot = titleSnapshot,
-            viewedAt = null,
-            viewCount = 1,
-            lastPosition = lastPosition,
-            syncStatus = ProfileSyncStatus.Pending,
-        )
+        val now = java.time.Instant.ofEpochMilli(++historyCounter).toString()
+        val existing = _history.value.find { it.targetType == type && it.targetId == id }
+        if (existing != null) {
+            _history.value = _history.value - existing + existing.copy(
+                viewedAt = now,
+                viewCount = existing.viewCount + 1,
+            )
+        } else {
+            _history.value = _history.value + ProfileHistoryItem(
+                id = "$type:$id",
+                targetType = type,
+                targetId = id,
+                titleSnapshot = titleSnapshot,
+                viewedAt = now,
+                viewCount = 1,
+                lastPosition = lastPosition,
+                syncStatus = ProfileSyncStatus.Pending,
+            )
+        }
     }
 
     override suspend fun updateProgress(

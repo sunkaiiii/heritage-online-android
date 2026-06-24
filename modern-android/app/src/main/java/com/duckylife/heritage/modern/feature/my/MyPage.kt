@@ -22,14 +22,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.CloudDone
-import androidx.compose.material.icons.outlined.DeleteOutline
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Explore
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Map
@@ -44,6 +43,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -53,6 +54,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -68,14 +70,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.data.ReadingPathEvent
-import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
-import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
-import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl
 import com.duckylife.heritage.modern.core.profile.ProfileLearningProgress
-import com.duckylife.heritage.modern.core.saved.SavedContentTarget
+import com.duckylife.heritage.modern.core.profile.ProfileSyncStatus
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
-import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
@@ -88,19 +87,20 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 sealed interface MyPageDestination {
     data class Article(
         val articleId: String?,
         val sourceId: String?,
         val sourceUrl: String?,
-        val category: ArticleCategory,
+        val category: com.duckylife.heritage.modern.core.network.dto.ArticleCategory,
     ) : MyPageDestination
 
     data class Directory(
         val itemId: String?,
         val sourceId: String?,
-        val kind: DirectoryItemKind,
+        val kind: com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind,
     ) : MyPageDestination
 
     data class Inheritor(
@@ -124,105 +124,134 @@ fun MyPage(
     onBack: () -> Unit,
     onNavigate: (MyPageDestination) -> Unit,
     onNavigateToDiscovery: () -> Unit = {},
+    onNavigateToLearningRoutes: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: MyPageViewModel = hiltViewModel(),
     readingPathViewModel: ReadingPathViewModel = hiltViewModel(),
 ) {
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
-    val recentlyViewed by viewModel.recentlyViewed.collectAsStateWithLifecycle()
+    val history by viewModel.history.collectAsStateWithLifecycle()
     val readingPathEvents by readingPathViewModel.events.collectAsStateWithLifecycle()
     val profileState by viewModel.profileState.collectAsStateWithLifecycle()
     val pendingCount by viewModel.pendingOperationCount.collectAsStateWithLifecycle()
     val learningProgress by viewModel.learningProgress.collectAsStateWithLifecycle()
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-    var showClearRecentDialog by remember { mutableStateOf(false) }
+    var showClearHistoryDialog by remember { mutableStateOf(false) }
     var showClearReadingPathDialog by remember { mutableStateOf(false) }
     var showSyncSheet by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     val imageLoader = rememberHeritageImageLoader()
+    val favoriteRemovedMessage = stringResource(R.string.favorite_removed_message)
+    val routeComingSoonMessage = stringResource(R.string.learning_route_detail_coming_soon)
 
-    HeritagePageBackground(modifier = modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            MyPageTopBar(
-                onBack = onBack,
-                pendingCount = pendingCount,
-                lastSyncError = profileState?.lastSyncError,
-                onSyncStatusClick = { showSyncSheet = true },
-            )
+    Box(modifier = modifier.fillMaxSize()) {
+        HeritagePageBackground(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                MyPageTopBar(
+                    onBack = onBack,
+                    pendingCount = pendingCount,
+                    lastSyncError = profileState?.lastSyncError,
+                    onSyncStatusClick = { showSyncSheet = true },
+                )
 
-            ProfileOverviewRow(
-                favoriteCount = profileState?.favoriteCount ?: favorites.size.toLong(),
-                historyCount = profileState?.historyCount ?: recentlyViewed.size.toLong(),
-                learningRouteCount = profileState?.learningRouteCount ?: learningProgress.size.toLong(),
-                pendingCount = pendingCount,
-                lastSyncError = profileState?.lastSyncError,
-                onRefresh = { viewModel.syncNow() },
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-            )
+                ProfileOverviewRow(
+                    favoriteCount = profileState?.favoriteCount ?: favorites.size.toLong(),
+                    historyCount = profileState?.historyCount ?: history.size.toLong(),
+                    learningRouteCount = profileState?.learningRouteCount ?: learningProgress.size.toLong(),
+                    pendingCount = pendingCount,
+                    lastSyncError = profileState?.lastSyncError,
+                    onRefresh = { viewModel.syncNow() },
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                )
 
-            SecondaryScrollableTabRow(selectedTabIndex = selectedTabIndex, edgePadding = 20.dp) {
-                MyPageTab.entries.forEachIndexed { index, tab ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = { Text(stringResource(tab.titleRes)) },
+                SecondaryScrollableTabRow(selectedTabIndex = selectedTabIndex, edgePadding = 20.dp) {
+                    MyPageTab.entries.forEachIndexed { index, tab ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            text = { Text(stringResource(tab.titleRes)) },
+                        )
+                    }
+                }
+
+                when (MyPageTab.entries[selectedTabIndex]) {
+                    MyPageTab.Favorites -> FavoritesTab(
+                        favorites = favorites,
+                        pendingCount = pendingCount,
+                        lastSyncAt = profileState?.lastSyncAt,
+                        imageLoader = imageLoader,
+                        onItemClick = { item ->
+                            item.navigationTarget?.let { onNavigate(it) }
+                        },
+                        onUnfavorite = { item ->
+                            scope.launch {
+                                snackbarHostState.showSnackbar(favoriteRemovedMessage)
+                            }
+                            viewModel.unfavorite(item)
+                        },
+                        onBrowseContent = onNavigateToDiscovery,
+                    )
+
+                    MyPageTab.Browsing -> BrowsingTab(
+                        history = history,
+                        readingPathEvents = readingPathEvents,
+                        lastSyncError = profileState?.lastSyncError,
+                        onItemClick = { item ->
+                            item.navigationTarget?.let { onNavigate(it) }
+                        },
+                        onReadingPathItemClick = { event ->
+                            event.toMyPageDestination()?.let { onNavigate(it) }
+                        },
+                        onClearHistory = { showClearHistoryDialog = true },
+                        onClearReadingPath = { showClearReadingPathDialog = true },
+                    )
+
+                    MyPageTab.Learning -> LearningTab(
+                        progress = learningProgress.map { it.toLearningItem() },
+                        onContinue = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(routeComingSoonMessage)
+                            }
+                        },
+                        onRestart = {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(routeComingSoonMessage)
+                            }
+                        },
+                        onBrowseRoutes = onNavigateToLearningRoutes,
+                    )
+
+                    MyPageTab.Journeys -> JourneysTab(
+                        onBrowseContent = onNavigateToDiscovery,
+                    )
+
+                    MyPageTab.Research -> ResearchTab(
+                        onBrowseContent = onNavigateToDiscovery,
                     )
                 }
             }
-
-            when (MyPageTab.entries[selectedTabIndex]) {
-                MyPageTab.Favorites -> FavoritesTab(
-                    favorites = favorites,
-                    imageLoader = imageLoader,
-                    onItemClick = { entity ->
-                        entity.toDestination()?.let { onNavigate(it) }
-                    },
-                    onRemove = { viewModel.unfavorite(it) },
-                )
-
-                MyPageTab.Browsing -> BrowsingTab(
-                    recentlyViewed = recentlyViewed,
-                    readingPathEvents = readingPathEvents,
-                    imageLoader = imageLoader,
-                    onClearRecent = { showClearRecentDialog = true },
-                    onClearReadingPath = { showClearReadingPathDialog = true },
-                    onItemClick = { entity ->
-                        entity.toDestination()?.let { onNavigate(it) }
-                    },
-                    onReadingPathItemClick = { event ->
-                        event.toMyPageDestination()?.let { onNavigate(it) }
-                    },
-                    onRemoveRecent = { viewModel.removeRecent(it) },
-                )
-
-                MyPageTab.Learning -> LearningTab(
-                    progress = learningProgress,
-                    onBrowseRoutes = onNavigateToDiscovery,
-                )
-
-                MyPageTab.Journeys -> JourneysTab(
-                    onBrowseContent = onNavigateToDiscovery,
-                )
-
-                MyPageTab.Research -> ResearchTab(
-                    onBrowseContent = onNavigateToDiscovery,
-                )
-            }
         }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter),
+        )
     }
 
-    if (showClearRecentDialog) {
+    if (showClearHistoryDialog) {
         AlertDialog(
-            onDismissRequest = { showClearRecentDialog = false },
-            title = { Text(stringResource(R.string.action_clear_recent)) },
-            text = { Text(stringResource(R.string.action_clear_recent_confirm)) },
+            onDismissRequest = { showClearHistoryDialog = false },
+            title = { Text(stringResource(R.string.action_clear_history)) },
+            text = { Text(stringResource(R.string.action_clear_history_confirm)) },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.clearRecent()
-                    showClearRecentDialog = false
+                    viewModel.clearHistory()
+                    showClearHistoryDialog = false
                 }) { Text(stringResource(R.string.confirm)) }
             },
             dismissButton = {
-                TextButton(onClick = { showClearRecentDialog = false }) {
+                TextButton(onClick = { showClearHistoryDialog = false }) {
                     Text(stringResource(R.string.cancel))
                 }
             },
@@ -413,10 +442,13 @@ private fun SyncStatusLine(
 
 @Composable
 private fun FavoritesTab(
-    favorites: List<SavedContentEntity>,
+    favorites: List<FavoriteItem>,
+    pendingCount: Int,
+    lastSyncAt: Long?,
     imageLoader: ImageLoader,
-    onItemClick: (SavedContentEntity) -> Unit,
-    onRemove: (SavedContentEntity) -> Unit,
+    onItemClick: (FavoriteItem) -> Unit,
+    onUnfavorite: (FavoriteItem) -> Unit,
+    onBrowseContent: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -427,25 +459,105 @@ private fun FavoritesTab(
             item {
                 EmptyState(
                     icon = Icons.Outlined.FavoriteBorder,
-                    title = stringResource(R.string.favorites_empty_message),
-                    message = stringResource(R.string.favorites_empty_message),
+                    title = stringResource(R.string.favorites_empty_title),
+                    message = stringResource(R.string.favorites_empty_message_detail),
+                    action = {
+                        TextButton(onClick = onBrowseContent) {
+                            Text(stringResource(R.string.action_go_discover))
+                        }
+                    },
                 )
             }
         } else {
             item {
-                Text(
-                    text = stringResource(R.string.favorites_section_header),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                SectionHeader(
+                    title = stringResource(R.string.favorites_section_header),
+                    subtitle = when {
+                        pendingCount > 0 -> stringResource(R.string.sync_status_pending)
+                        lastSyncAt != null -> stringResource(
+                            R.string.last_sync_at_format,
+                            formatSyncTime(lastSyncAt),
+                        )
+                        else -> null
+                    },
                 )
             }
-            items(favorites, key = { it.contentKey }) { entity ->
-                SavedContentRow(
-                    entity = entity,
+            items(favorites, key = { it.key }) { item ->
+                FavoriteCard(
+                    item = item,
                     imageLoader = imageLoader,
-                    isFavoriteTab = true,
-                    onClick = { onItemClick(entity) },
-                    onRemove = { onRemove(entity) },
+                    onClick = { onItemClick(item) },
+                    onUnfavorite = { onUnfavorite(item) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FavoriteCard(
+    item: FavoriteItem,
+    imageLoader: ImageLoader,
+    onClick: () -> Unit,
+    onUnfavorite: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val fallbackText = stringResource(R.string.brand_fallback)
+    HeritageContentCard(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(14.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HeritageListImage(
+                imageUrl = item.coverImageUrl,
+                imageLoader = imageLoader,
+                fallbackText = fallbackText,
+                modifier = Modifier
+                    .size(width = 72.dp, height = 72.dp)
+                    .clip(RoundedCornerShape(6.dp)),
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = item.title.orEmpty().ifBlank {
+                        stringResource(
+                            when (item.targetType) {
+                                "inheritor" -> R.string.unnamed_inheritor
+                                "directoryItem" -> R.string.unnamed_directory_item
+                                else -> R.string.unnamed_article
+                            },
+                        )
+                    },
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HeritageMetaChip(text = localizedTypeLabel(item.targetType))
+                    item.tags.take(3).forEach { tag ->
+                        if (tag.isNotBlank()) {
+                            HeritageMetaChip(text = tag)
+                        }
+                    }
+                }
+            }
+            IconButton(onClick = onUnfavorite) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = stringResource(R.string.action_unfavorite),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -454,33 +566,38 @@ private fun FavoritesTab(
 
 @Composable
 private fun BrowsingTab(
-    recentlyViewed: List<SavedContentEntity>,
+    history: List<HistoryItem>,
     readingPathEvents: List<ReadingPathEvent>,
-    imageLoader: ImageLoader,
-    onClearRecent: () -> Unit,
-    onClearReadingPath: () -> Unit,
-    onItemClick: (SavedContentEntity) -> Unit,
+    lastSyncError: String?,
+    onItemClick: (HistoryItem) -> Unit,
     onReadingPathItemClick: (ReadingPathEvent) -> Unit,
-    onRemoveRecent: (SavedContentEntity) -> Unit,
+    onClearHistory: () -> Unit,
+    onClearReadingPath: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (lastSyncError != null && history.isNotEmpty()) {
+            item {
+                OfflineNotice()
+            }
+        }
+
         item {
             SectionHeader(
                 title = stringResource(R.string.browsing_recent_header),
-                action = if (recentlyViewed.isNotEmpty()) {
+                action = if (history.isNotEmpty()) {
                     {
-                        TextButton(onClick = onClearRecent) {
+                        TextButton(onClick = onClearHistory) {
                             Icon(
                                 imageVector = Icons.Outlined.ClearAll,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp),
                             )
                             Spacer(modifier = Modifier.size(6.dp))
-                            Text(stringResource(R.string.action_clear_recent))
+                            Text(stringResource(R.string.action_clear_history))
                         }
                     }
                 } else {
@@ -489,22 +606,19 @@ private fun BrowsingTab(
             )
         }
 
-        if (recentlyViewed.isEmpty()) {
+        if (history.isEmpty()) {
             item {
                 EmptyState(
                     icon = Icons.Outlined.Visibility,
-                    title = stringResource(R.string.recent_empty_message),
+                    title = stringResource(R.string.history_empty_title),
                     message = stringResource(R.string.recent_empty_message),
                 )
             }
         } else {
-            items(recentlyViewed, key = { it.contentKey }) { entity ->
-                SavedContentRow(
-                    entity = entity,
-                    imageLoader = imageLoader,
-                    isFavoriteTab = false,
-                    onClick = { onItemClick(entity) },
-                    onRemove = { onRemoveRecent(entity) },
+            items(history, key = { it.key }) { item ->
+                HistoryRow(
+                    item = item,
+                    onClick = { onItemClick(item) },
                 )
             }
         }
@@ -550,10 +664,89 @@ private fun BrowsingTab(
 }
 
 @Composable
+private fun OfflineNotice(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(R.string.history_offline_notice),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(6.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+    )
+}
+
+@Composable
+private fun HistoryRow(
+    item: HistoryItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(14.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Text(
+                    text = item.title.orEmpty().ifBlank {
+                        stringResource(
+                            when (item.targetType) {
+                                "inheritor" -> R.string.unnamed_inheritor
+                                "directoryItem" -> R.string.unnamed_directory_item
+                                else -> R.string.unnamed_article
+                            },
+                        )
+                    },
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HeritageMetaChip(text = localizedTypeLabel(item.targetType))
+                    Text(
+                        text = stringResource(
+                            R.string.history_view_count_format,
+                            item.viewCount,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            Text(
+                text = formatViewedAt(item.viewedAt, item.legacyLastViewedAt),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
 private fun LearningTab(
-    progress: List<ProfileLearningProgress>,
+    progress: List<LearningProgressItem>,
+    onContinue: (String) -> Unit,
+    onRestart: (String) -> Unit,
     onBrowseRoutes: () -> Unit,
 ) {
+    val ongoing = remember(progress) { progress.filter { it.percent in 0..99 } }
+    val completed = remember(progress) { progress.filter { it.percent == 100 } }
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
@@ -573,8 +766,38 @@ private fun LearningTab(
                 )
             }
         } else {
-            items(progress, key = { it.id }) { item ->
-                LearningProgressRow(item = item)
+            if (ongoing.isNotEmpty()) {
+                item {
+                    SectionHeader(
+                        title = stringResource(R.string.learning_ongoing_header),
+                        subtitle = null,
+                    )
+                }
+                items(ongoing, key = { it.routeId }) { item ->
+                    LearningProgressRow(
+                        item = item,
+                        isCompleted = false,
+                        onContinue = { onContinue(item.routeId) },
+                        onRestart = { onRestart(item.routeId) },
+                    )
+                }
+            }
+
+            if (completed.isNotEmpty()) {
+                item {
+                    SectionHeader(
+                        title = stringResource(R.string.learning_completed_header),
+                        subtitle = null,
+                    )
+                }
+                items(completed, key = { it.routeId }) { item ->
+                    LearningProgressRow(
+                        item = item,
+                        isCompleted = true,
+                        onContinue = { onContinue(item.routeId) },
+                        onRestart = { onRestart(item.routeId) },
+                    )
+                }
             }
         }
     }
@@ -582,7 +805,10 @@ private fun LearningTab(
 
 @Composable
 private fun LearningProgressRow(
-    item: ProfileLearningProgress,
+    item: LearningProgressItem,
+    isCompleted: Boolean,
+    onContinue: () -> Unit,
+    onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     HeritageContentCard(
@@ -598,41 +824,56 @@ private fun LearningProgressRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
+            if (isCompleted) {
+                Text(
+                    text = stringResource(
+                        R.string.learning_completed_format,
+                        formatIsoDate(item.completedAt),
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
                 Text(
                     text = stringResource(
                         R.string.learning_progress_format,
-                        item.completedStepIds.size,
+                        item.completedStepCount,
                         item.percent,
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            ) {
+                Spacer(modifier = Modifier.height(8.dp))
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(fraction = (item.percent / 100f).coerceIn(0f, 1f))
+                        .fillMaxWidth()
                         .height(4.dp)
-                        .background(MaterialTheme.colorScheme.primary),
-                )
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(fraction = (item.percent / 100f).coerceIn(0f, 1f))
+                            .height(4.dp)
+                            .background(MaterialTheme.colorScheme.primary),
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.learning_route_detail_coming_soon),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                if (isCompleted) {
+                    TextButton(onClick = onRestart) {
+                        Text(stringResource(R.string.learning_route_restart))
+                    }
+                } else {
+                    TextButton(onClick = onContinue) {
+                        Text(stringResource(R.string.learning_route_continue))
+                    }
+                }
+            }
         }
     }
 }
@@ -682,18 +923,28 @@ private fun ResearchTab(
 @Composable
 private fun SectionHeader(
     title: String,
-    action: @Composable (() -> Unit)?,
+    subtitle: String? = null,
+    action: @Composable (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            if (!subtitle.isNullOrBlank()) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         action?.invoke()
     }
 }
@@ -877,100 +1128,6 @@ private fun localizedTypeLabel(type: String): String =
 private fun localizedSourceLabel(source: String): String =
     com.duckylife.heritage.modern.ui.text.localizedReadingPathSource(source)
 
-@Composable
-private fun SavedContentRow(
-    entity: SavedContentEntity,
-    imageLoader: ImageLoader,
-    isFavoriteTab: Boolean,
-    onClick: () -> Unit,
-    onRemove: () -> Unit,
-) {
-    val fallbackText = stringResource(R.string.brand_fallback)
-    val removeLabel = if (isFavoriteTab) stringResource(R.string.action_unfavorite)
-    else stringResource(R.string.action_remove_recent)
-    Column {
-        HeritageListCard(
-            onClick = onClick,
-            image = {
-                HeritageListImage(
-                    imageUrl = entity.coverImageJson?.let { extractDisplayUrl(it) },
-                    imageLoader = imageLoader,
-                    fallbackText = fallbackText,
-                    modifier = Modifier
-                        .size(width = 72.dp, height = 72.dp)
-                        .clip(RoundedCornerShape(6.dp)),
-                )
-            },
-            text = {
-                Text(
-                    text = entity.title.orEmpty().ifBlank {
-                        stringResource(
-                            when (entity.contentType) {
-                                "inheritor" -> R.string.unnamed_inheritor
-                                "directoryItem" -> R.string.unnamed_directory_item
-                                else -> R.string.unnamed_article
-                            },
-                        )
-                    },
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (!entity.summary.isNullOrBlank()) {
-                    Text(
-                        text = entity.summary,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            },
-        )
-        TextButton(
-            onClick = onRemove,
-            modifier = Modifier.padding(start = 4.dp),
-            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
-        ) {
-            Icon(
-                imageVector = if (isFavoriteTab) Icons.Outlined.Favorite else Icons.Outlined.DeleteOutline,
-                contentDescription = removeLabel,
-                modifier = Modifier.size(16.dp),
-            )
-            Spacer(modifier = Modifier.size(4.dp))
-            Text(
-                text = removeLabel,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
-    }
-}
-
-internal fun extractDisplayUrl(coverImageJson: String?): String? =
-    com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl(coverImageJson)
-
-private fun SavedContentEntity.toDestination(): MyPageDestination? {
-    return when (contentType) {
-        "article" -> MyPageDestination.Article(
-            articleId = targetId,
-            sourceId = targetSourceId,
-            sourceUrl = targetSourceUrl,
-            category = ArticleCategory.entries.firstOrNull { it.wireName == targetCategory } ?: ArticleCategory.News,
-        )
-        "directoryItem" -> MyPageDestination.Directory(
-            itemId = targetId,
-            sourceId = targetSourceId,
-            kind = DirectoryItemKind.entries.firstOrNull { it.wireName == targetKind } ?: DirectoryItemKind.NationalProject,
-        )
-        "inheritor" -> MyPageDestination.Inheritor(
-            inheritorId = targetId,
-            sourceId = targetSourceId,
-        )
-        else -> null
-    }
-}
-
 private fun formatSyncTime(timestamp: Long): String {
     return runCatching {
         Instant.ofEpochMilli(timestamp)
@@ -980,6 +1137,38 @@ private fun formatSyncTime(timestamp: Long): String {
                     .withLocale(Locale.getDefault()),
             )
     }.getOrDefault("")
+}
+
+private fun formatViewedAt(viewedAt: String?, legacyLastViewedAt: Long?): String {
+    val millis: Long = when {
+        viewedAt != null -> {
+            runCatching { Instant.parse(viewedAt).toEpochMilli() }.getOrNull()
+                ?: legacyLastViewedAt
+                ?: return ""
+        }
+        legacyLastViewedAt != null -> legacyLastViewedAt
+        else -> return ""
+    }
+    return runCatching {
+        Instant.ofEpochMilli(millis)
+            .atZone(ZoneId.systemDefault())
+            .format(
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                    .withLocale(Locale.getDefault()),
+            )
+    }.getOrDefault("")
+}
+
+private fun formatIsoDate(iso: String?): String {
+    if (iso.isNullOrBlank()) return ""
+    return runCatching {
+        Instant.parse(iso)
+            .atZone(ZoneId.systemDefault())
+            .format(
+                DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)
+                    .withLocale(Locale.getDefault()),
+            )
+    }.getOrDefault(iso)
 }
 
 @Preview(showBackground = true)
@@ -992,3 +1181,6 @@ private fun MyPagePreview() {
         )
     }
 }
+
+internal fun extractDisplayUrl(coverImageJson: String?): String? =
+    extractCoverImageUrl(coverImageJson)
