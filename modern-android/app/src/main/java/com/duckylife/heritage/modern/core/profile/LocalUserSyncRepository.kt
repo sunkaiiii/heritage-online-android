@@ -58,6 +58,8 @@ interface LocalUserSyncRepository {
         coverImageUrlSnapshot: String? = null,
     )
 
+    suspend fun removeFavorite(type: String, id: String)
+
     suspend fun recordHistory(
         type: String,
         id: String,
@@ -121,9 +123,24 @@ class DefaultLocalUserSyncRepository @Inject constructor(
         }
 
         currentCoroutineContext().ensureActive()
-        pullRemoteState(profileId)
+        val now = System.currentTimeMillis()
+        val pullResult = runCatching { pullRemoteState(profileId) }
+        if (pullResult.isFailure) {
+            val cause = pullResult.exceptionOrNull()!!
+            if (cause is kotlinx.coroutines.CancellationException) throw cause
 
-        stateDao.updateSyncStatus(profileId, System.currentTimeMillis(), lastError)
+            val failure = runCatching { cause.toApiFailure() }.getOrNull()
+                ?: com.duckylife.heritage.modern.ui.error.ApiFailure.Unknown(cause)
+            lastError = failure.toUiErrorMessage().kind.name
+            stateDao.updateSyncStatus(profileId, now, lastError)
+            throw ProfileSyncException(
+                "Pull remote state failed",
+                isRetryable = failure.isRetryable,
+                cause = cause,
+            )
+        }
+
+        stateDao.updateSyncStatus(profileId, now, lastError)
     }
 
     override suspend fun toggleFavorite(
@@ -168,6 +185,21 @@ class DefaultLocalUserSyncRepository @Inject constructor(
                 ),
             )
         }
+        scheduler.scheduleImmediate()
+    }
+
+    override suspend fun removeFavorite(type: String, id: String) {
+        requireValidTargetType(type)
+        val profileId = profileRepository.currentProfileId()
+        favoriteDao.deleteByTarget(profileId, type, id)
+        val payload = RemoveFavoritePayload(type, id)
+        pendingDao.upsert(
+            createPendingOperation(
+                kind = PendingOperationKind.RemoveFavorite,
+                dedupKey = "favorite:$type:$id",
+                payload = payload,
+            ),
+        )
         scheduler.scheduleImmediate()
     }
 

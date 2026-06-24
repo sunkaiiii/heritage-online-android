@@ -3,6 +3,7 @@ package com.duckylife.heritage.modern.feature.inheritors.detail
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.data.InheritorDetailLookup
 import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
+import com.duckylife.heritage.modern.core.profile.FakeLocalUserSyncRepository
 import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,6 +35,7 @@ class InheritorDetailViewModelTest {
                 ),
             ),
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -61,6 +63,7 @@ class InheritorDetailViewModelTest {
             sourceId = "source-1",
             repository = repository,
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -85,6 +88,7 @@ class InheritorDetailViewModelTest {
                 failure = IllegalStateException("network down"),
             ),
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()

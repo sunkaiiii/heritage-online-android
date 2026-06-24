@@ -11,6 +11,8 @@ import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import com.duckylife.heritage.modern.core.saved.SavedContentType
+import com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl
+import com.duckylife.heritage.modern.core.profile.LocalUserSyncRepository
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -30,6 +32,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
     @Assisted("sourceId") private val sourceId: String?,
     private val repository: HeritageRepository,
     private val savedContentRepository: SavedContentRepository,
+    private val syncRepository: LocalUserSyncRepository,
 ) : ViewModel() {
     private val lookup = InheritorDetailLookup(
         inheritorId = inheritorId,
@@ -169,6 +172,13 @@ class InheritorDetailViewModel @AssistedInject constructor(
         val snap = snapshot ?: return
         viewModelScope.launch {
             savedContentRepository.toggleFavorite(snap)
+            val id = snap.id ?: return@launch
+            syncRepository.toggleFavorite(
+                type = "inheritor",
+                id = id,
+                titleSnapshot = snap.title,
+                coverImageUrlSnapshot = extractCoverImageUrl(snap.coverImageJson),
+            )
         }
     }
 
@@ -191,9 +201,17 @@ class InheritorDetailViewModel @AssistedInject constructor(
             snapshot = newSnapshot
             viewModelScope.launch {
                 savedContentRepository.recordViewed(newSnapshot)
+                val historyId = item.id ?: return@launch
+                syncRepository.recordHistory(
+                    type = "inheritor",
+                    id = historyId,
+                    titleSnapshot = item.name,
+                    lastPosition = null,
+                )
             }
         }
     }
+
 
     @AssistedFactory
     interface Factory {

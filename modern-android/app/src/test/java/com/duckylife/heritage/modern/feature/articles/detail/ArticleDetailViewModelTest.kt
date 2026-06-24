@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
+import com.duckylife.heritage.modern.core.profile.FakeLocalUserSyncRepository
 import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,6 +39,7 @@ class ArticleDetailViewModelTest {
                 ),
             ),
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -60,6 +62,7 @@ class ArticleDetailViewModelTest {
                 failure = IllegalStateException("detail unavailable"),
             ),
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -87,6 +90,7 @@ class ArticleDetailViewModelTest {
             category = ArticleCategory.News,
             repository = repository,
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -114,6 +118,7 @@ class ArticleDetailViewModelTest {
             category = ArticleCategory.News,
             repository = repository,
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()
@@ -141,6 +146,7 @@ class ArticleDetailViewModelTest {
                 failure = IllegalStateException("network down"),
             ),
             savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = FakeLocalUserSyncRepository(),
         )
 
         advanceUntilIdle()

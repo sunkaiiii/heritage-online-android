@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.duckylife.heritage.modern.feature.my
 
 import androidx.compose.foundation.background
@@ -16,23 +18,36 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.ClearAll
-import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.CloudDone
 import androidx.compose.material.icons.outlined.DeleteOutline
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Folder
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -43,10 +58,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.data.ReadingPathEvent
@@ -54,28 +72,22 @@ import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
-import com.duckylife.heritage.modern.core.saved.SavedContentRepository
-import com.duckylife.heritage.modern.core.network.HeritageJson
-import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.core.profile.ProfileLearningProgress
+import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.error.ErrorKind
+import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import com.duckylife.heritage.modern.core.saved.SavedContentTarget
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 
 sealed interface MyPageDestination {
     data class Article(
@@ -97,55 +109,21 @@ sealed interface MyPageDestination {
     ) : MyPageDestination
 }
 
-@HiltViewModel
-class MyPageViewModel @Inject constructor(
-    private val savedContentRepository: SavedContentRepository,
-) : ViewModel() {
-    val favorites: StateFlow<List<SavedContentEntity>> =
-        savedContentRepository.favorites().stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
-        )
-
-    val recentlyViewed: StateFlow<List<SavedContentEntity>> =
-        savedContentRepository.recentlyViewed().stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
-        )
-
-    fun unfavorite(entity: SavedContentEntity) {
-        viewModelScope.launch {
-            savedContentRepository.removeFavorite(entity.toTarget())
-        }
-    }
-
-    fun removeRecent(entity: SavedContentEntity) {
-        viewModelScope.launch {
-            savedContentRepository.removeRecent(entity.toTarget())
-        }
-    }
-
-    fun clearRecent() {
-        viewModelScope.launch {
-            savedContentRepository.clearRecent()
-        }
-    }
-
-    private fun SavedContentEntity.toTarget() = SavedContentTarget(
-        id = targetId,
-        sourceId = targetSourceId,
-        sourceUrl = targetSourceUrl,
-        category = targetCategory,
-        kind = targetKind,
-    )
+private enum class MyPageTab(
+    val titleRes: Int,
+) {
+    Favorites(R.string.favorites_tab),
+    Browsing(R.string.browsing_tab),
+    Learning(R.string.learning_tab),
+    Journeys(R.string.journeys_tab),
+    Research(R.string.research_tab),
 }
 
 @Composable
 fun MyPage(
     onBack: () -> Unit,
     onNavigate: (MyPageDestination) -> Unit,
+    onNavigateToDiscovery: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: MyPageViewModel = hiltViewModel(),
     readingPathViewModel: ReadingPathViewModel = hiltViewModel(),
@@ -153,149 +131,81 @@ fun MyPage(
     val favorites by viewModel.favorites.collectAsStateWithLifecycle()
     val recentlyViewed by viewModel.recentlyViewed.collectAsStateWithLifecycle()
     val readingPathEvents by readingPathViewModel.events.collectAsStateWithLifecycle()
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val profileState by viewModel.profileState.collectAsStateWithLifecycle()
+    val pendingCount by viewModel.pendingOperationCount.collectAsStateWithLifecycle()
+    val learningProgress by viewModel.learningProgress.collectAsStateWithLifecycle()
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var showClearRecentDialog by remember { mutableStateOf(false) }
     var showClearReadingPathDialog by remember { mutableStateOf(false) }
+    var showSyncSheet by remember { mutableStateOf(false) }
     val imageLoader = rememberHeritageImageLoader()
 
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = stringResource(R.string.action_back),
+            MyPageTopBar(
+                onBack = onBack,
+                pendingCount = pendingCount,
+                lastSyncError = profileState?.lastSyncError,
+                onSyncStatusClick = { showSyncSheet = true },
+            )
+
+            ProfileOverviewRow(
+                favoriteCount = profileState?.favoriteCount ?: favorites.size.toLong(),
+                historyCount = profileState?.historyCount ?: recentlyViewed.size.toLong(),
+                learningRouteCount = profileState?.learningRouteCount ?: learningProgress.size.toLong(),
+                pendingCount = pendingCount,
+                lastSyncError = profileState?.lastSyncError,
+                onRefresh = { viewModel.syncNow() },
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+            )
+
+            SecondaryScrollableTabRow(selectedTabIndex = selectedTabIndex, edgePadding = 20.dp) {
+                MyPageTab.entries.forEachIndexed { index, tab ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(stringResource(tab.titleRes)) },
                     )
                 }
-                Text(
-                    text = stringResource(R.string.my_title),
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.SemiBold,
-                )
             }
 
-            SecondaryTabRow(selectedTabIndex = selectedTab) {
-                Tab(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    text = { Text(stringResource(R.string.favorites_tab)) },
+            when (MyPageTab.entries[selectedTabIndex]) {
+                MyPageTab.Favorites -> FavoritesTab(
+                    favorites = favorites,
+                    imageLoader = imageLoader,
+                    onItemClick = { entity ->
+                        entity.toDestination()?.let { onNavigate(it) }
+                    },
+                    onRemove = { viewModel.unfavorite(it) },
                 )
-                Tab(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
-                    text = { Text(stringResource(R.string.recent_tab)) },
-                )
-                Tab(
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 },
-                    text = { Text(stringResource(R.string.reading_path_tab)) },
-                )
-            }
 
-            when (selectedTab) {
-                0 -> {
-                    // 收藏
-                    val emptyMessage = stringResource(R.string.favorites_empty_message)
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        if (favorites.isEmpty()) {
-                            item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().height(220.dp),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Text(
-                                        text = emptyMessage,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                }
-                            }
-                        }
-                        items(favorites, key = { it.contentKey }) { entity ->
-                            SavedContentRow(
-                                entity = entity,
-                                imageLoader = imageLoader,
-                                isFavoriteTab = true,
-                                onClick = {
-                                    val dest = entity.toDestination() ?: return@SavedContentRow
-                                    onNavigate(dest)
-                                },
-                                onRemove = { viewModel.unfavorite(entity) },
-                            )
-                        }
-                    }
-                }
-                1 -> {
-                    // 最近浏览
-                    val emptyMessage = stringResource(R.string.recent_empty_message)
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        if (recentlyViewed.isNotEmpty()) {
-                            item {
-                                TextButton(onClick = { showClearRecentDialog = true }) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.ClearAll,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp),
-                                    )
-                                    Spacer(modifier = Modifier.size(6.dp))
-                                    Text(stringResource(R.string.action_clear_recent))
-                                }
-                            }
-                        }
-                        if (recentlyViewed.isEmpty()) {
-                            item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().height(220.dp),
-                                    contentAlignment = Alignment.Center,
-                                ) {
-                                    Text(
-                                        text = emptyMessage,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                }
-                            }
-                        }
-                        items(recentlyViewed, key = { it.contentKey }) { entity ->
-                            SavedContentRow(
-                                entity = entity,
-                                imageLoader = imageLoader,
-                                isFavoriteTab = false,
-                                onClick = {
-                                    val dest = entity.toDestination() ?: return@SavedContentRow
-                                    onNavigate(dest)
-                                },
-                                onRemove = { viewModel.removeRecent(entity) },
-                            )
-                        }
-                    }
-                }
-                2 -> {
-                    // 阅读路径
-                    ReadingPathContent(
-                        events = readingPathEvents,
-                        onClear = { showClearReadingPathDialog = true },
-                        onItemClick = { event ->
-                            event.toMyPageDestination()?.let { destination ->
-                                onNavigate(destination)
-                            }
-                        },
-                    )
-                }
+                MyPageTab.Browsing -> BrowsingTab(
+                    recentlyViewed = recentlyViewed,
+                    readingPathEvents = readingPathEvents,
+                    imageLoader = imageLoader,
+                    onClearRecent = { showClearRecentDialog = true },
+                    onClearReadingPath = { showClearReadingPathDialog = true },
+                    onItemClick = { entity ->
+                        entity.toDestination()?.let { onNavigate(it) }
+                    },
+                    onReadingPathItemClick = { event ->
+                        event.toMyPageDestination()?.let { onNavigate(it) }
+                    },
+                    onRemoveRecent = { viewModel.removeRecent(it) },
+                )
+
+                MyPageTab.Learning -> LearningTab(
+                    progress = learningProgress,
+                    onBrowseRoutes = onNavigateToDiscovery,
+                )
+
+                MyPageTab.Journeys -> JourneysTab(
+                    onBrowseContent = onNavigateToDiscovery,
+                )
+
+                MyPageTab.Research -> ResearchTab(
+                    onBrowseContent = onNavigateToDiscovery,
+                )
             }
         }
     }
@@ -337,52 +247,571 @@ fun MyPage(
             },
         )
     }
+
+    if (showSyncSheet) {
+        SyncStatusSheet(
+            pendingCount = pendingCount,
+            lastSyncAt = profileState?.lastSyncAt,
+            lastSyncError = profileState?.lastSyncError,
+            onDismiss = { showSyncSheet = false },
+            onRefresh = { viewModel.syncNow() },
+        )
+    }
 }
 
 @Composable
-private fun ReadingPathContent(
-    events: List<ReadingPathEvent>,
-    onClear: () -> Unit,
-    onItemClick: (ReadingPathEvent) -> Unit,
+private fun MyPageTopBar(
+    onBack: () -> Unit,
+    pendingCount: Int,
+    lastSyncError: String?,
+    onSyncStatusClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 4.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = stringResource(R.string.action_back),
+            )
+        }
+        Text(
+            text = stringResource(R.string.my_space_title),
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.weight(1f),
+        )
+        SyncStatusIcon(
+            pendingCount = pendingCount,
+            lastSyncError = lastSyncError,
+            onClick = onSyncStatusClick,
+        )
+    }
+}
+
+@Composable
+private fun SyncStatusIcon(
+    pendingCount: Int,
+    lastSyncError: String?,
+    onClick: () -> Unit,
+) {
+    when {
+        lastSyncError != null -> {
+            IconButton(onClick = onClick) {
+                Icon(
+                    imageVector = Icons.Outlined.ErrorOutline,
+                    contentDescription = stringResource(R.string.sync_status_error),
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+        }
+
+        pendingCount > 0 -> {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clickable(onClick = onClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp,
+                )
+            }
+        }
+
+        else -> {
+            // 成功状态不占额外空间。
+        }
+    }
+}
+
+@Composable
+private fun ProfileOverviewRow(
+    favoriteCount: Long,
+    historyCount: Long,
+    learningRouteCount: Long,
+    pendingCount: Int,
+    lastSyncError: String?,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.secondaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AccountCircle,
+                contentDescription = null,
+                modifier = Modifier.size(28.dp),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.my_profile_label),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = stringResource(
+                    R.string.profile_counts_format,
+                    favoriteCount,
+                    historyCount,
+                    learningRouteCount,
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SyncStatusLine(
+                pendingCount = pendingCount,
+                lastSyncError = lastSyncError,
+            )
+        }
+        IconButton(onClick = onRefresh) {
+            Icon(
+                imageVector = Icons.Outlined.Refresh,
+                contentDescription = stringResource(R.string.action_sync_now),
+            )
+        }
+    }
+}
+
+@Composable
+private fun SyncStatusLine(
+    pendingCount: Int,
+    lastSyncError: String?,
+) {
+    val text = when {
+        lastSyncError != null -> stringResource(R.string.sync_status_error)
+        pendingCount > 0 -> stringResource(R.string.sync_status_pending)
+        else -> stringResource(R.string.sync_status_success)
+    }
+    val color = when {
+        lastSyncError != null -> MaterialTheme.colorScheme.error
+        pendingCount > 0 -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodySmall,
+        color = color,
+    )
+}
+
+@Composable
+private fun FavoritesTab(
+    favorites: List<SavedContentEntity>,
+    imageLoader: ImageLoader,
+    onItemClick: (SavedContentEntity) -> Unit,
+    onRemove: (SavedContentEntity) -> Unit,
+) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        if (events.isNotEmpty()) {
+        if (favorites.isEmpty()) {
             item {
-                TextButton(onClick = onClear) {
-                    Icon(
-                        imageVector = Icons.Outlined.ClearAll,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Spacer(modifier = Modifier.size(6.dp))
-                    Text(stringResource(R.string.reading_path_clear))
-                }
+                EmptyState(
+                    icon = Icons.Outlined.FavoriteBorder,
+                    title = stringResource(R.string.favorites_empty_message),
+                    message = stringResource(R.string.favorites_empty_message),
+                )
+            }
+        } else {
+            item {
+                Text(
+                    text = stringResource(R.string.favorites_section_header),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            items(favorites, key = { it.contentKey }) { entity ->
+                SavedContentRow(
+                    entity = entity,
+                    imageLoader = imageLoader,
+                    isFavoriteTab = true,
+                    onClick = { onItemClick(entity) },
+                    onRemove = { onRemove(entity) },
+                )
             }
         }
-        if (events.isEmpty()) {
-            item {
-                Box(
-                    modifier = Modifier.fillMaxWidth().height(220.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(R.string.reading_path_empty),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-        }
-        items(events) { event ->
-            ReadingPathRow(
-                event = event,
-                onClick = { onItemClick(event) },
+    }
+}
+
+@Composable
+private fun BrowsingTab(
+    recentlyViewed: List<SavedContentEntity>,
+    readingPathEvents: List<ReadingPathEvent>,
+    imageLoader: ImageLoader,
+    onClearRecent: () -> Unit,
+    onClearReadingPath: () -> Unit,
+    onItemClick: (SavedContentEntity) -> Unit,
+    onReadingPathItemClick: (ReadingPathEvent) -> Unit,
+    onRemoveRecent: (SavedContentEntity) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        item {
+            SectionHeader(
+                title = stringResource(R.string.browsing_recent_header),
+                action = if (recentlyViewed.isNotEmpty()) {
+                    {
+                        TextButton(onClick = onClearRecent) {
+                            Icon(
+                                imageVector = Icons.Outlined.ClearAll,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(stringResource(R.string.action_clear_recent))
+                        }
+                    }
+                } else {
+                    null
+                },
             )
+        }
+
+        if (recentlyViewed.isEmpty()) {
+            item {
+                EmptyState(
+                    icon = Icons.Outlined.Visibility,
+                    title = stringResource(R.string.recent_empty_message),
+                    message = stringResource(R.string.recent_empty_message),
+                )
+            }
+        } else {
+            items(recentlyViewed, key = { it.contentKey }) { entity ->
+                SavedContentRow(
+                    entity = entity,
+                    imageLoader = imageLoader,
+                    isFavoriteTab = false,
+                    onClick = { onItemClick(entity) },
+                    onRemove = { onRemoveRecent(entity) },
+                )
+            }
+        }
+
+        item {
+            SectionHeader(
+                title = stringResource(R.string.reading_path_section_header),
+                action = if (readingPathEvents.isNotEmpty()) {
+                    {
+                        TextButton(onClick = onClearReadingPath) {
+                            Icon(
+                                imageVector = Icons.Outlined.ClearAll,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Spacer(modifier = Modifier.size(6.dp))
+                            Text(stringResource(R.string.reading_path_clear))
+                        }
+                    }
+                } else {
+                    null
+                },
+            )
+        }
+
+        if (readingPathEvents.isEmpty()) {
+            item {
+                EmptyState(
+                    icon = Icons.Outlined.Map,
+                    title = stringResource(R.string.reading_path_empty),
+                    message = stringResource(R.string.reading_path_empty),
+                )
+            }
+        } else {
+            items(readingPathEvents, key = { it.id }) { event ->
+                ReadingPathRow(
+                    event = event,
+                    onClick = { onReadingPathItemClick(event) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LearningTab(
+    progress: List<ProfileLearningProgress>,
+    onBrowseRoutes: () -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        if (progress.isEmpty()) {
+            item {
+                EmptyState(
+                    icon = Icons.Outlined.School,
+                    title = stringResource(R.string.learning_empty_title),
+                    message = stringResource(R.string.learning_empty_message),
+                    action = {
+                        TextButton(onClick = onBrowseRoutes) {
+                            Text(stringResource(R.string.action_browse_learning_routes))
+                        }
+                    },
+                )
+            }
+        } else {
+            items(progress, key = { it.id }) { item ->
+                LearningProgressRow(item = item)
+            }
+        }
+    }
+}
+
+@Composable
+private fun LearningProgressRow(
+    item: ProfileLearningProgress,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(
+        onClick = null,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = item.routeTitle.orEmpty().ifBlank { item.routeId },
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.learning_progress_format,
+                        item.completedStepIds.size,
+                        item.percent,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = (item.percent / 100f).coerceIn(0f, 1f))
+                        .height(4.dp)
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = stringResource(R.string.learning_route_detail_coming_soon),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun JourneysTab(
+    onBrowseContent: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        EmptyState(
+            icon = Icons.Outlined.Explore,
+            title = stringResource(R.string.journeys_empty_title),
+            message = stringResource(R.string.journeys_empty_message),
+            action = {
+                TextButton(onClick = onBrowseContent) {
+                    Text(stringResource(R.string.action_go_discover))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun ResearchTab(
+    onBrowseContent: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        EmptyState(
+            icon = Icons.Outlined.Folder,
+            title = stringResource(R.string.research_empty_title),
+            message = stringResource(R.string.research_empty_message),
+            action = {
+                TextButton(onClick = onBrowseContent) {
+                    Text(stringResource(R.string.action_go_discover))
+                }
+            },
+        )
+    }
+}
+
+@Composable
+private fun SectionHeader(
+    title: String,
+    action: @Composable (() -> Unit)?,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        action?.invoke()
+    }
+}
+
+@Composable
+private fun EmptyState(
+    icon: ImageVector,
+    title: String,
+    message: String,
+    modifier: Modifier = Modifier,
+    action: @Composable (() -> Unit)? = null,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        action?.invoke()
+    }
+}
+
+@Composable
+private fun SyncStatusSheet(
+    pendingCount: Int,
+    lastSyncAt: Long?,
+    lastSyncError: String?,
+    onDismiss: () -> Unit,
+    onRefresh: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 32.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.action_sync_now),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                val icon = when {
+                    lastSyncError != null -> Icons.Outlined.CloudOff
+                    pendingCount > 0 -> Icons.Outlined.CloudDone
+                    else -> Icons.Outlined.CloudDone
+                }
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = if (lastSyncError != null) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                )
+                Text(
+                    text = when {
+                        lastSyncError != null -> stringResource(R.string.sync_status_error)
+                        pendingCount > 0 -> stringResource(R.string.sync_status_pending)
+                        else -> stringResource(R.string.sync_status_success)
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+            lastSyncAt?.let { syncAt ->
+                Text(
+                    text = stringResource(
+                        R.string.last_sync_at_format,
+                        formatSyncTime(syncAt),
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            lastSyncError?.let { error ->
+                val errorKind = ErrorKind.entries.find { it.name == error } ?: ErrorKind.Unknown
+                Text(
+                    text = stringResource(errorKind.fallbackResId()),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+            TextButton(
+                onClick = {
+                    onRefresh()
+                    onDismiss()
+                },
+                modifier = Modifier.align(Alignment.End),
+            ) {
+                Text(stringResource(R.string.action_sync_now))
+            }
         }
     }
 }
@@ -402,10 +831,7 @@ private fun ReadingPathRow(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // 左侧竖线 + 圆点
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
                         .size(8.dp)
@@ -420,7 +846,6 @@ private fun ReadingPathRow(
                         .background(MaterialTheme.colorScheme.outlineVariant),
                 )
             }
-            // 内容
             Column(modifier = Modifier.weight(1f)) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -522,13 +947,8 @@ private fun SavedContentRow(
     }
 }
 
-internal fun extractDisplayUrl(coverImageJson: String?): String? {
-    if (coverImageJson.isNullOrBlank()) return null
-    return runCatching {
-        val asset = HeritageJson.decodeFromString<MediaAssetDto>(coverImageJson)
-        asset.displayUrl ?: asset.thumbnailUrl
-    }.getOrNull()
-}
+internal fun extractDisplayUrl(coverImageJson: String?): String? =
+    com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl(coverImageJson)
 
 private fun SavedContentEntity.toDestination(): MyPageDestination? {
     return when (contentType) {
@@ -549,6 +969,17 @@ private fun SavedContentEntity.toDestination(): MyPageDestination? {
         )
         else -> null
     }
+}
+
+private fun formatSyncTime(timestamp: Long): String {
+    return runCatching {
+        Instant.ofEpochMilli(timestamp)
+            .atZone(ZoneId.systemDefault())
+            .format(
+                DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                    .withLocale(Locale.getDefault()),
+            )
+    }.getOrDefault("")
 }
 
 @Preview(showBackground = true)
