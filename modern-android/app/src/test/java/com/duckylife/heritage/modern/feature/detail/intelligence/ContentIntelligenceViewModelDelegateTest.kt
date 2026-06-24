@@ -45,6 +45,7 @@ class ContentIntelligenceViewModelDelegateTest {
         assertNull(state.loadError)
         assertEquals(ref, state.page?.ref)
         assertEquals(SectionStatus.Ready, state.aiSection.status)
+        assertEquals(true, state.learningRoutesAvailable)
     }
 
     @Test
@@ -159,6 +160,7 @@ private fun page(ref: ContentIntelligenceRef): ContentIntelligencePage = Content
     localState = null,
     sectionStatus = emptyMap(),
     warnings = emptyList(),
+    learningRoutesAvailable = true,
 )
 
 private class FakeContentIntelligenceRepository : ContentIntelligenceRepository {

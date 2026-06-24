@@ -109,6 +109,13 @@ class DiscoveryNavigationStateTest {
             DiscoveryRouteKey.StoriesIndexPage,
             DiscoveryRouteKey.StoryPage(region = "云南", year = 2024),
             DiscoveryRouteKey.DeepDivePage(seedType = "article", seedId = "seed1"),
+            DiscoveryRouteKey.GraphExplorePage(
+                type = "article",
+                contentId = "a1",
+                initialTab = GraphTab.Similar,
+            ),
+            DiscoveryRouteKey.LearningRoutesPage(seedType = "article", seedId = "a1"),
+            DiscoveryRouteKey.LearningRouteDetailPage(routeId = "route-1"),
             DiscoveryRouteKey.DiscoveryArticleDetail(
                 id = "a1",
                 sourceUrl = "https://test.test/page?id=1&name=浙江",

@@ -127,10 +127,11 @@ private fun AiCard(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    val hasSummary = !card.summary.isNullOrBlank()
+    val hasShortSummary = !card.shortSummary.isNullOrBlank()
     val summaryText = when {
-        expanded -> card.summary
-        !card.shortSummary.isNullOrBlank() -> card.shortSummary
-        else -> card.summary
+        expanded || !hasShortSummary -> card.summary
+        else -> card.shortSummary
     }
 
     HeritageContentCard(modifier = modifier.fillMaxWidth()) {
@@ -174,10 +175,10 @@ private fun AiCard(
                     Text(
                         text = summaryText,
                         style = MaterialTheme.typography.bodyMedium,
-                        maxLines = if (expanded) Int.MAX_VALUE else 3,
+                        maxLines = if (expanded || !hasShortSummary) Int.MAX_VALUE else 3,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    if (!card.summary.isNullOrBlank() && !card.shortSummary.isNullOrBlank()) {
+                    if (hasSummary && hasShortSummary) {
                         TextButton(
                             onClick = { expanded = !expanded },
                             modifier = Modifier.padding(top = 2.dp),

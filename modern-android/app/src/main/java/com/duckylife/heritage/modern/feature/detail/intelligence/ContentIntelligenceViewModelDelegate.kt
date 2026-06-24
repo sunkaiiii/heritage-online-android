@@ -96,6 +96,7 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                             graphSection = page.graphSection,
                             recommendationSection = page.recommendationSection,
                             digestSection = page.digestSection,
+                            learningRoutesAvailable = page.learningRoutesAvailable,
                             warnings = page.warnings,
                         )
                     }
@@ -137,6 +138,7 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                 graphSection = IntelligenceSection<GraphNeighborsDto>(SectionStatus.Unavailable),
                 recommendationSection = IntelligenceSection<List<ContentRefDto>>(SectionStatus.Unavailable),
                 digestSection = IntelligenceSection<ContentDigestSectionDto>(SectionStatus.Unavailable),
+                learningRoutesAvailable = false,
             )
         }
     }

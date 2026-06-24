@@ -22,5 +22,6 @@ data class ContentIntelligenceUiState(
     val graphSection: IntelligenceSection<GraphNeighborsDto> = IntelligenceSection(SectionStatus.Disabled),
     val recommendationSection: IntelligenceSection<List<ContentRefDto>> = IntelligenceSection(SectionStatus.Disabled),
     val digestSection: IntelligenceSection<ContentDigestSectionDto> = IntelligenceSection(SectionStatus.Disabled),
+    val learningRoutesAvailable: Boolean = false,
     val warnings: List<String> = emptyList(),
 )

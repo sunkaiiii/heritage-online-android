@@ -27,6 +27,8 @@ import com.duckylife.heritage.modern.feature.discovery.deepdive.DeepDiveRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
 import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
 import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
+import com.duckylife.heritage.modern.feature.learningroutes.LearningRouteDetailRoute
+import com.duckylife.heritage.modern.feature.learningroutes.LearningRoutesRoute
 import com.duckylife.heritage.modern.feature.regions.RegionAtlasRoute
 import com.duckylife.heritage.modern.feature.regions.RegionDetailRoute
 import com.duckylife.heritage.modern.feature.search.SearchRoute
@@ -74,6 +76,15 @@ private fun navigateToDetailContextTarget(
             backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = target.type, key = target.key))
     }
 }
+
+private fun DiscoveryRouteKey.DiscoveryArticleDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private fun DiscoveryRouteKey.DiscoveryDirectoryDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private fun DiscoveryRouteKey.DiscoveryInheritorDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
 
 // ---------------------------------------------------------------------------
 // NavHost
@@ -231,6 +242,25 @@ fun DiscoveryNavHost(
                     )
                 }
 
+                // ---- Learning Routes ----
+                is DiscoveryRouteKey.LearningRoutesPage -> NavEntry(entryKey) {
+                    LearningRoutesRoute(
+                        seedType = key.seedType,
+                        seedId = key.seedId,
+                        onBack = { backStack.removeLastOrNull() },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Learning Route Detail ----
+                is DiscoveryRouteKey.LearningRouteDetailPage -> NavEntry(entryKey) {
+                    LearningRouteDetailRoute(
+                        routeId = key.routeId,
+                        onBack = { backStack.removeLastOrNull() },
+                        modifier = modifier,
+                    )
+                }
+
                 // ---- Collection ----
                 is DiscoveryRouteKey.CollectionDetail -> NavEntry(entryKey) {
                     CollectionRoute(
@@ -302,6 +332,7 @@ fun DiscoveryNavHost(
 
                 // ---- Article Detail ----
                 is DiscoveryRouteKey.DiscoveryArticleDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
                     ArticleDetailRoute(
                         articleId = key.id,
                         sourceId = key.sourceId,
@@ -320,12 +351,45 @@ fun DiscoveryNavHost(
                         onExploreTargetClick = { click ->
                             navigateToDetailContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "article",
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "article",
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = "article",
+                                        seedId = it,
+                                    ),
+                                )
+                            }
+                        },
                         modifier = modifier,
                     )
                 }
 
                 // ---- Directory Detail ----
                 is DiscoveryRouteKey.DiscoveryDirectoryDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
                     DirectoryDetailRoute(
                         itemId = key.id,
                         sourceId = key.sourceId,
@@ -349,12 +413,45 @@ fun DiscoveryNavHost(
                         onExploreTargetClick = { click ->
                             navigateToDetailContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "directoryItem",
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "directoryItem",
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = "directoryItem",
+                                        seedId = it,
+                                    ),
+                                )
+                            }
+                        },
                         modifier = modifier,
                     )
                 }
 
                 // ---- Inheritor Detail ----
                 is DiscoveryRouteKey.DiscoveryInheritorDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
@@ -375,6 +472,38 @@ fun DiscoveryNavHost(
                         },
                         onExploreTargetClick = { click ->
                             navigateToDetailContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "inheritor",
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = "inheritor",
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = "inheritor",
+                                        seedId = it,
+                                    ),
+                                )
+                            }
                         },
                         modifier = modifier,
                     )

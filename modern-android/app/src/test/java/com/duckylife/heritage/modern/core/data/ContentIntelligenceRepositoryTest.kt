@@ -54,6 +54,7 @@ class ContentIntelligenceRepositoryTest {
         assertEquals(SectionStatus.Ready, page.digestSection.status)
         assertEquals(SearchResultType.Article, page.pageType)
         assertEquals("article-1", page.ref.id)
+        assertEquals(true, page.learningRoutesAvailable)
     }
 
     @Test

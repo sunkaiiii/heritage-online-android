@@ -47,6 +47,7 @@ data class ContentIntelligencePage(
     val localState: LocalStateSectionDto?,
     val sectionStatus: Map<String, SectionStatus>,
     val warnings: List<String>,
+    val learningRoutesAvailable: Boolean = false,
 )
 
 /**
@@ -133,8 +134,15 @@ private fun V3ContentPageDto.toPage(ref: ContentIntelligenceRef): ContentIntelli
         localState = localState,
         sectionStatus = statusMap,
         warnings = warnings,
+        learningRoutesAvailable = ref.type in LEARNABLE_CONTENT_TYPES,
     )
 }
+
+private val LEARNABLE_CONTENT_TYPES = setOf(
+    SearchResultType.Article,
+    SearchResultType.DirectoryItem,
+    SearchResultType.Inheritor,
+)
 
 private inline fun <T : Any> T?.toSection(
     statusMap: Map<String, SectionStatus>,

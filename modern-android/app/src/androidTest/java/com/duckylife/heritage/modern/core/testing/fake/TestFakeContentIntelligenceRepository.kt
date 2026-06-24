@@ -27,5 +27,10 @@ class TestFakeContentIntelligenceRepository : ContentIntelligenceRepository {
             localState = null,
             sectionStatus = emptyMap(),
             warnings = emptyList(),
+            learningRoutesAvailable = ref.type in setOf(
+                com.duckylife.heritage.modern.core.network.dto.SearchResultType.Article,
+                com.duckylife.heritage.modern.core.network.dto.SearchResultType.DirectoryItem,
+                com.duckylife.heritage.modern.core.network.dto.SearchResultType.Inheritor,
+            ),
         )
 }

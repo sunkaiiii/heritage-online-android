@@ -81,6 +81,7 @@ import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
 import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
 import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
+import com.duckylife.heritage.modern.feature.detail.DetailContinueExploreSection
 import com.duckylife.heritage.modern.feature.detail.intelligence.DetailIntelligenceSection
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.DetailExploreSection
@@ -108,6 +109,9 @@ fun InheritorDetailRoute(
     onRelatedProjectSelected: (DirectoryReferenceDto) -> Unit,
     onRelatedInheritorSelected: (DirectoryReferenceDto) -> Unit,
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit,
+    onGraphExploreClick: () -> Unit = {},
+    onSimilarClick: () -> Unit = {},
+    onLearningRoutesClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     readingPathRecorder: ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
@@ -184,6 +188,9 @@ fun InheritorDetailRoute(
         onDigestRetry = viewModel::retryDigest,
         onExploreTargetClick = wrappedExploreTargetClick,
         onRetryIntelligence = viewModel::retryIntelligence,
+        onGraphExploreClick = onGraphExploreClick,
+        onSimilarClick = onSimilarClick,
+        onLearningRoutesClick = onLearningRoutesClick,
         modifier = modifier,
     )
 }
@@ -202,6 +209,9 @@ fun InheritorDetailScreen(
     onDigestRetry: () -> Unit = {},
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     onRetryIntelligence: () -> Unit = {},
+    onGraphExploreClick: () -> Unit = {},
+    onSimilarClick: () -> Unit = {},
+    onLearningRoutesClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -316,6 +326,9 @@ fun InheritorDetailScreen(
                     onExploreTargetClick = onExploreTargetClick,
                     intelligenceUiState = intelligenceUiState,
                     onRetryIntelligence = onRetryIntelligence,
+                    onGraphExploreClick = onGraphExploreClick,
+                    onSimilarClick = onSimilarClick,
+                    onLearningRoutesClick = onLearningRoutesClick,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -358,6 +371,9 @@ private fun InheritorDetailContent(
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
     intelligenceUiState: ContentIntelligenceUiState,
     onRetryIntelligence: () -> Unit = {},
+    onGraphExploreClick: () -> Unit = {},
+    onSimilarClick: () -> Unit = {},
+    onLearningRoutesClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val resolver = rememberHeritageUrlResolver()
@@ -443,6 +459,16 @@ private fun InheritorDetailContent(
                 uiState = intelligenceUiState,
                 onKeywordClick = {},
                 onRetry = onRetryIntelligence,
+            )
+        }
+
+        // 继续探索 action bar（关系图谱 / 相似内容 / 学习路线）
+        item {
+            DetailContinueExploreSection(
+                uiState = intelligenceUiState,
+                onGraphClick = onGraphExploreClick,
+                onSimilarClick = onSimilarClick,
+                onLearningRoutesClick = onLearningRoutesClick,
             )
         }
 
