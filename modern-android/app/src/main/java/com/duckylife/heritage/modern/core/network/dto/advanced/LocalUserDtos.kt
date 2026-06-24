@@ -4,6 +4,16 @@ import com.duckylife.heritage.modern.core.network.dto.PagedResult
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class LocalUserProfileDto(
+    val profileId: String,
+    val displayName: String = "",
+    val favoriteCount: Long = 0L,
+    val historyCount: Long = 0L,
+    val learningRouteCount: Long = 0L,
+    val generatedAt: String? = null,
+)
+
+@Serializable
 data class LocalUserSummaryDto(
     val profileId: String,
     val favoriteCount: Int = 0,

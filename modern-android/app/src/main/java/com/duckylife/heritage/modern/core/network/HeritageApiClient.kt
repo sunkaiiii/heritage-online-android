@@ -608,6 +608,9 @@ class KtorHeritageApiClient(
 
     // ── LocalUser API ──
 
+    override suspend fun getLocalUserProfile(): LocalUserProfileDto =
+        httpClient.get(endpoint("api/local-user/profile")).body()
+
     override suspend fun getLocalUserSummary(): LocalUserSummaryDto =
         httpClient.get(endpoint("api/local-user/summary")).body()
 

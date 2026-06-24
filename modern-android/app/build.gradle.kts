@@ -43,6 +43,17 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.all {
+            it.systemProperty("room.schema.dir", "$projectDir/schemas")
+        }
+    }
+
+    sourceSets {
+        getByName("androidTest") {
+            assets.srcDir("$projectDir/schemas")
+        }
+    }
 }
 
 val homeDir = System.getProperty("user.home") ?: "~"
@@ -139,6 +150,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.zoomimage.compose.coil3)

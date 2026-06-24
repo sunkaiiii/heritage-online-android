@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.core.testing.fake
 
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
+import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -15,6 +16,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+
+private val FAKE_PROFILE_ID = "android_test_profile"
 
 @Module
 @TestInstallIn(
@@ -32,6 +35,13 @@ object TestFakeDataModule {
     @Provides
     @Singleton
     fun provideSavedContentRepository(): SavedContentRepository = TestFakeSavedContentRepository()
+
+    @Provides
+    @Singleton
+    fun provideLocalProfileRepository(): LocalProfileRepository = object : LocalProfileRepository {
+        override val profileId: Flow<String> = flowOf(FAKE_PROFILE_ID)
+        override suspend fun currentProfileId(): String = FAKE_PROFILE_ID
+    }
 }
 
 private class TestFakeSavedContentRepository : SavedContentRepository {

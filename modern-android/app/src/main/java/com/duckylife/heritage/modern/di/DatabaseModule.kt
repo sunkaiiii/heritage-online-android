@@ -6,6 +6,11 @@ import com.duckylife.heritage.modern.core.database.HeritageDatabase
 import com.duckylife.heritage.modern.core.database.HeritageMigrations
 import com.duckylife.heritage.modern.core.data.DefaultReadingPathRepository
 import com.duckylife.heritage.modern.core.data.ReadingPathRepository
+import com.duckylife.heritage.modern.core.database.dao.PendingProfileOperationDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileFavoriteDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileHistoryDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileLearningProgressDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileStateDao
 import com.duckylife.heritage.modern.core.database.dao.ReadingPathDao
 import com.duckylife.heritage.modern.core.saved.RoomSavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
@@ -36,6 +41,26 @@ object DatabaseModule {
     @Provides
     fun provideReadingPathDao(database: HeritageDatabase): ReadingPathDao =
         database.readingPathDao()
+
+    @Provides
+    fun provideProfileStateDao(database: HeritageDatabase): ProfileStateDao =
+        database.profileStateDao()
+
+    @Provides
+    fun provideProfileFavoriteDao(database: HeritageDatabase): ProfileFavoriteDao =
+        database.profileFavoriteDao()
+
+    @Provides
+    fun provideProfileHistoryDao(database: HeritageDatabase): ProfileHistoryDao =
+        database.profileHistoryDao()
+
+    @Provides
+    fun provideProfileLearningProgressDao(database: HeritageDatabase): ProfileLearningProgressDao =
+        database.profileLearningProgressDao()
+
+    @Provides
+    fun providePendingProfileOperationDao(database: HeritageDatabase): PendingProfileOperationDao =
+        database.pendingProfileOperationDao()
 }
 
 @Module

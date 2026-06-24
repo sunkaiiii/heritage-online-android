@@ -4,10 +4,15 @@ import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportFormat
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.FavoriteCreateRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.HistoryRecordRequestDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressUpdateDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import io.ktor.client.plugins.api.createClientPlugin
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 
-import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.PagedResult
 import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -64,6 +69,138 @@ class AdvancedApiClientTest {
         val request = requireNotNull(captured)
         assertEquals("/api/local-user/summary", request.url.encodedPath)
         assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
+    }
+
+    @Test
+    fun `getLocalUserProfile sends profile header and decodes display name`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "profileId": "android_test_profile",
+                        "displayName": "Tester",
+                        "favoriteCount": 1,
+                        "historyCount": 2,
+                        "learningRouteCount": 3
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.getLocalUserProfile()
+
+        assertEquals("android_test_profile", result.profileId)
+        assertEquals("Tester", result.displayName)
+        assertEquals(1L, result.favoriteCount)
+        val request = requireNotNull(captured)
+        assertEquals("/api/local-user/profile", request.url.encodedPath)
+        assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
+    }
+
+    @Test
+    fun `getLocalUserFavorites applies query parameters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "items": [
+                            {"id": "f1", "targetType": "article", "targetId": "a1"}
+                        ],
+                        "page": 1,
+                        "pageSize": 10,
+                        "total": 1,
+                        "hasMore": false
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.getLocalUserFavorites(
+            LocalUserFavoritesQuery(targetType = "article", page = 1, pageSize = 10),
+        )
+
+        assertEquals(1, result.items.size)
+        val request = requireNotNull(captured)
+        assertEquals("/api/local-user/favorites", request.url.encodedPath)
+        assertEquals("article", request.url.parameters["targetType"])
+        assertEquals("1", request.url.parameters["page"])
+        assertEquals("10", request.url.parameters["pageSize"])
+    }
+
+    @Test
+    fun `recordLocalUserHistory serializes request body`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "id": "h1",
+                        "targetType": "article",
+                        "targetId": "a1",
+                        "viewCount": 2
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.recordLocalUserHistory(
+            HistoryRecordRequestDto(targetType = "article", targetId = "a1", lastPosition = "p1"),
+        )
+
+        assertEquals("h1", result.id)
+        assertEquals(2, result.viewCount)
+        val request = requireNotNull(captured)
+        assertEquals("/api/local-user/history", request.url.encodedPath)
+        assertEquals("POST", request.method.value)
+        val body = request.bodyText()
+        assertTrue(body.contains("\"targetType\":\"article\""))
+        assertTrue(body.contains("\"lastPosition\":\"p1\""))
+    }
+
+    @Test
+    fun `updateLocalUserLearningProgress uses put and route id path`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "routeId": "route-1",
+                        "completedStepIds": ["s1"],
+                        "currentStepId": "s2",
+                        "percent": 50
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.updateLocalUserLearningProgress(
+            routeId = "route-1",
+            request = LearningProgressUpdateDto(completedStepIds = listOf("s1"), currentStepId = "s2"),
+        )
+
+        assertEquals("route-1", result.routeId)
+        assertEquals(listOf("s1"), result.completedStepIds)
+        val request = requireNotNull(captured)
+        assertEquals("/api/local-user/learning-progress/route-1", request.url.encodedPath)
+        assertEquals("PUT", request.method.value)
     }
 
     @Test

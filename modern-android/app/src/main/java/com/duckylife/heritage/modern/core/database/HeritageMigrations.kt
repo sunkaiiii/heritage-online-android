@@ -59,5 +59,139 @@ object HeritageMigrations {
         }
     }
 
-    val ALL: Array<Migration> = arrayOf(MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
+    val MIGRATION_10_11 = object : Migration(10, 11) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS local_profile_state (
+                    profileId TEXT NOT NULL PRIMARY KEY,
+                    displayName TEXT NOT NULL,
+                    favoriteCount INTEGER NOT NULL,
+                    historyCount INTEGER NOT NULL,
+                    learningRouteCount INTEGER NOT NULL,
+                    generatedAt TEXT,
+                    lastSyncAt INTEGER,
+                    lastSyncError TEXT
+                )
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS profile_favorites (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    profileId TEXT NOT NULL,
+                    targetType TEXT NOT NULL,
+                    targetId TEXT NOT NULL,
+                    titleSnapshot TEXT,
+                    coverImageUrlSnapshot TEXT,
+                    tags TEXT NOT NULL,
+                    note TEXT,
+                    createdAt TEXT,
+                    updatedAt TEXT,
+                    syncStatus TEXT NOT NULL
+                )
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE UNIQUE INDEX IF NOT EXISTS index_profile_favorites_profileId_targetType_targetId
+                ON profile_favorites(profileId, targetType, targetId)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE INDEX IF NOT EXISTS index_profile_favorites_updatedAt
+                ON profile_favorites(updatedAt)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS profile_history (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    profileId TEXT NOT NULL,
+                    targetType TEXT NOT NULL,
+                    targetId TEXT NOT NULL,
+                    titleSnapshot TEXT,
+                    viewedAt TEXT,
+                    viewCount INTEGER NOT NULL,
+                    lastPosition TEXT,
+                    syncStatus TEXT NOT NULL
+                )
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE UNIQUE INDEX IF NOT EXISTS index_profile_history_profileId_targetType_targetId
+                ON profile_history(profileId, targetType, targetId)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE INDEX IF NOT EXISTS index_profile_history_viewedAt
+                ON profile_history(viewedAt)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS profile_learning_progress (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    profileId TEXT NOT NULL,
+                    routeId TEXT NOT NULL,
+                    routeTitle TEXT,
+                    completedStepIds TEXT NOT NULL,
+                    currentStepId TEXT,
+                    percent INTEGER NOT NULL,
+                    startedAt TEXT,
+                    updatedAt TEXT,
+                    completedAt TEXT,
+                    syncStatus TEXT NOT NULL
+                )
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE UNIQUE INDEX IF NOT EXISTS index_profile_learning_progress_profileId_routeId
+                ON profile_learning_progress(profileId, routeId)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE INDEX IF NOT EXISTS index_profile_learning_progress_updatedAt
+                ON profile_learning_progress(updatedAt)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS pending_profile_operations (
+                    operationId TEXT NOT NULL PRIMARY KEY,
+                    kind TEXT NOT NULL,
+                    deduplicationKey TEXT NOT NULL,
+                    payloadJson TEXT NOT NULL,
+                    createdAt INTEGER NOT NULL,
+                    attemptCount INTEGER NOT NULL,
+                    lastError TEXT
+                )
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE UNIQUE INDEX IF NOT EXISTS index_pending_profile_operations_deduplicationKey
+                ON pending_profile_operations(deduplicationKey)
+                """.trimIndent(),
+            )
+            db.execSQL(
+                """
+                CREATE INDEX IF NOT EXISTS index_pending_profile_operations_createdAt
+                ON pending_profile_operations(createdAt)
+                """.trimIndent(),
+            )
+        }
+    }
+
+    val ALL: Array<Migration> = arrayOf(
+        MIGRATION_7_8,
+        MIGRATION_8_9,
+        MIGRATION_9_10,
+        MIGRATION_10_11,
+    )
 }

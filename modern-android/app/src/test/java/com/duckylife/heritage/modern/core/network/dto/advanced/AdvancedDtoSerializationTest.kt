@@ -36,6 +36,58 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `LocalUserProfileDto decodes with display name and counts`() {
+        val json = """
+            {
+                "profileId": "android_abc",
+                "displayName": "Tester",
+                "favoriteCount": 3,
+                "historyCount": 10,
+                "learningRouteCount": 1,
+                "generatedAt": "2026-06-24T09:00:00Z"
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LocalUserProfileDto.serializer(), json)
+        assertEquals("android_abc", dto.profileId)
+        assertEquals("Tester", dto.displayName)
+        assertEquals(3L, dto.favoriteCount)
+        assertEquals(10L, dto.historyCount)
+        assertEquals(1L, dto.learningRouteCount)
+        assertEquals("2026-06-24T09:00:00Z", dto.generatedAt)
+    }
+
+    @Test
+    fun `LocalHistoryDto decodes with defaults`() {
+        val json = """
+            {
+                "id": "h1",
+                "targetType": "article",
+                "targetId": "a1"
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LocalHistoryDto.serializer(), json)
+        assertEquals("h1", dto.id)
+        assertEquals("article", dto.targetType)
+        assertEquals("a1", dto.targetId)
+        assertEquals(1, dto.viewCount)
+        assertNull(dto.viewedAt)
+    }
+
+    @Test
+    fun `LocalLearningProgressDto decodes with defaults`() {
+        val json = """
+            {
+                "routeId": "r1"
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LocalLearningProgressDto.serializer(), json)
+        assertEquals("r1", dto.routeId)
+        assertNull(dto.id)
+        assertTrue(dto.completedStepIds.isEmpty())
+        assertEquals(0, dto.percent)
+    }
+
+    @Test
     fun `PagedResult LocalFavoriteDto decodes`() {
         val json = """
             {

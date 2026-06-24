@@ -9,7 +9,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class HeritageMigrationTest {
@@ -87,15 +86,44 @@ class HeritageMigrationTest {
         )
             .addMigrations(*HeritageMigrations.ALL)
             .build()
-        assertTrue(db.isOpen)
+        // 强制打开底层连接，isOpen 才真正为 true。
+        val openedDb = db.openHelper.writableDatabase
+        assertTrue(openedDb.isOpen)
         db.close()
     }
 
     @Test
-    fun schemaJsonIsPresent() {
-        val schemaDir = File("app/schemas/com.duckylife.heritage.modern.core.database.HeritageDatabase")
-        assertTrue("Schema directory not found at $schemaDir", schemaDir.isDirectory)
-        val schemaFile = File(schemaDir, "10.json")
-        assertTrue("Schema v10 JSON not found at $schemaFile. Run assembleDebug to generate.", schemaFile.exists())
+    fun migrate10To11CreatesProfileSyncTables() {
+        val dbV10 = migrationHelper.createDatabase(testDbName, 10)
+        dbV10.close()
+
+        val dbV11 = migrationHelper.runMigrationsAndValidate(
+            testDbName, 11, true, HeritageMigrations.MIGRATION_10_11,
+        )
+        assertTrue(dbV11.isOpen)
+
+        val tables = listOf(
+            "local_profile_state",
+            "profile_favorites",
+            "profile_history",
+            "profile_learning_progress",
+            "pending_profile_operations",
+        )
+        for (table in tables) {
+            val cursor = dbV11.query(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='$table'",
+            )
+            assertTrue("$table table should exist", cursor.moveToFirst())
+            cursor.close()
+        }
+
+        val indexCursor = dbV11.query(
+            "SELECT name FROM sqlite_master WHERE type='index' AND name='index_profile_favorites_profileId_targetType_targetId'",
+        )
+        assertTrue("unique index on favorites should exist", indexCursor.moveToFirst())
+        indexCursor.close()
+
+        dbV11.close()
     }
+
 }

@@ -11,6 +11,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressU
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalFavoriteDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalHistoryDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalLearningProgressDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 
@@ -21,6 +22,8 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
  * 生成的 `X-Heritage-Profile-Id` header 区分用户。
  */
 interface LocalUserApi {
+    suspend fun getLocalUserProfile(): LocalUserProfileDto
+
     suspend fun getLocalUserSummary(): LocalUserSummaryDto
 
     suspend fun getLocalUserFavorites(query: LocalUserFavoritesQuery = LocalUserFavoritesQuery()): PagedResult<LocalFavoriteDto>
