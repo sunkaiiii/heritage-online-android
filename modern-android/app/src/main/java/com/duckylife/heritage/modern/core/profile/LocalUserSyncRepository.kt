@@ -157,7 +157,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
         if (existing != null) {
             favoriteDao.deleteByTarget(profileId, type, id)
             val payload = RemoveFavoritePayload(type, id)
-            pendingDao.upsert(
+            pendingDao.replace(
                 createPendingOperation(
                     kind = PendingOperationKind.RemoveFavorite,
                     dedupKey = dedupKey,
@@ -177,7 +177,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
             )
             favoriteDao.upsert(entity)
             val payload = AddFavoritePayload(type, id)
-            pendingDao.upsert(
+            pendingDao.replace(
                 createPendingOperation(
                     kind = PendingOperationKind.AddFavorite,
                     dedupKey = dedupKey,
@@ -193,7 +193,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
         val profileId = profileRepository.currentProfileId()
         favoriteDao.deleteByTarget(profileId, type, id)
         val payload = RemoveFavoritePayload(type, id)
-        pendingDao.upsert(
+        pendingDao.replace(
             createPendingOperation(
                 kind = PendingOperationKind.RemoveFavorite,
                 dedupKey = "favorite:$type:$id",
@@ -225,7 +225,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
         )
         historyDao.upsert(entity)
         val payload = RecordHistoryPayload(type, id, lastPosition)
-        pendingDao.upsert(
+        pendingDao.replace(
             createPendingOperation(
                 kind = PendingOperationKind.RecordHistory,
                 dedupKey = "history:$type:$id",
@@ -262,7 +262,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
             completedStepIds = completedStepIds.distinct(),
             currentStepId = currentStepId,
         )
-        pendingDao.upsert(
+        pendingDao.replace(
             createPendingOperation(
                 kind = PendingOperationKind.UpdateProgress,
                 dedupKey = "progress:$routeId",
@@ -275,7 +275,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
     override suspend fun clearHistory() {
         val profileId = profileRepository.currentProfileId()
         historyDao.deleteAllByProfile(profileId)
-        pendingDao.upsert(
+        pendingDao.replace(
             createPendingOperation(
                 kind = PendingOperationKind.ClearHistory,
                 dedupKey = "history:clear",
@@ -321,7 +321,10 @@ class DefaultLocalUserSyncRepository @Inject constructor(
 
             // 服务端返回 404 等不可恢复错误时，清除本地乐观镜像，避免用户看到“已收藏但服务端不存在”。
             when (operation.kind) {
-                PendingOperationKind.AddFavorite,
+                PendingOperationKind.AddFavorite -> {
+                    val payload = decodePayload<AddFavoritePayload>(operation.payloadJson)
+                    favoriteDao.deleteByTarget(profileId, payload.targetType, payload.targetId)
+                }
                 PendingOperationKind.RemoveFavorite -> {
                     val payload = decodePayload<RemoveFavoritePayload>(operation.payloadJson)
                     favoriteDao.deleteByTarget(profileId, payload.targetType, payload.targetId)
@@ -429,10 +432,14 @@ class DefaultLocalUserSyncRepository @Inject constructor(
             hasMore = result.hasMore
             page++
         }
-        // 删除服务端已不存在的同步后收藏，但保留本地待发送的乐观写入。
-        favoriteDao.getByProfileId(profileId)
-            .filter { it.syncStatus == ProfileSyncStatus.Synced && (it.targetType to it.targetId) !in remoteKeys }
-            .forEach { favoriteDao.deleteByTarget(profileId, it.targetType, it.targetId) }
+        // 只有完整拉完服务端分页后才能把不在 remoteKeys 中的项视为已删除。
+        // 达到保护上限时 remoteKeys 只是前 MAX_SYNC_PAGES 页，若仍做 reconcile 会误删
+        // 大账户中较后的本地镜像。
+        if (!hasMore) {
+            favoriteDao.getByProfileId(profileId)
+                .filter { it.syncStatus == ProfileSyncStatus.Synced && (it.targetType to it.targetId) !in remoteKeys }
+                .forEach { favoriteDao.deleteByTarget(profileId, it.targetType, it.targetId) }
+        }
     }
 
     private suspend fun syncHistory(profileId: String) {
@@ -451,9 +458,12 @@ class DefaultLocalUserSyncRepository @Inject constructor(
             hasMore = result.hasMore
             page++
         }
-        historyDao.getByProfileId(profileId)
-            .filter { it.syncStatus == ProfileSyncStatus.Synced && (it.targetType to it.targetId) !in remoteKeys }
-            .forEach { historyDao.deleteByTarget(profileId, it.targetType, it.targetId) }
+        // 同 favorites：分页被保护上限截断时，不能把未拉到的历史当成远端已删除。
+        if (!hasMore) {
+            historyDao.getByProfileId(profileId)
+                .filter { it.syncStatus == ProfileSyncStatus.Synced && (it.targetType to it.targetId) !in remoteKeys }
+                .forEach { historyDao.deleteByTarget(profileId, it.targetType, it.targetId) }
+        }
     }
 
     private suspend fun syncProgress(profileId: String) {

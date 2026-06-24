@@ -79,15 +79,14 @@ internal class DefaultContentIntelligenceViewModelDelegate(
 
     private fun startLoad(ref: ContentIntelligenceRef) {
         job?.cancel()
+        // 切换详情时不能沿用上一条内容的 action/AI 卡片；否则用户在新详情的
+        // loading 阶段可能跳转到旧内容对应的图谱或相似内容。
+        _uiState.value = ContentIntelligenceUiState(isLoading = true)
         job = scope.launch {
-            _uiState.update {
-                it.copy(
-                    isLoading = true,
-                    loadError = null,
-                )
-            }
             runCatchingCancellable { repository.loadContentPage(ref) }
                 .onSuccess { page ->
+                    // repository/HTTP 实现不一定立刻响应 cancel；只接受当前 ref 的结果。
+                    if (lastRef != ref) return@onSuccess
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -102,7 +101,9 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                     }
                 }
                 .onFailure { throwable ->
-                    handleFailure(throwable)
+                    if (lastRef == ref) {
+                        handleFailure(throwable)
+                    }
                 }
         }
     }

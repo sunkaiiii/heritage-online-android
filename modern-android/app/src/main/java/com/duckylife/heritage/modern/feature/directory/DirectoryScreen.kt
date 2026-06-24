@@ -92,6 +92,7 @@ import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 @Composable
 fun DirectoryRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    onKeywordSearch: (String) -> Unit = {},
     pendingNavigation: MyPageDestination.Directory? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -163,6 +164,7 @@ fun DirectoryRoute(
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -184,6 +186,7 @@ fun DirectoryRoute(
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -201,6 +204,7 @@ fun DirectoryRoute(
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }

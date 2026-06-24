@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -100,7 +98,7 @@ private fun IntelligenceSkeleton(modifier: Modifier = Modifier) {
         ) {
             // Header skeleton
             Row(verticalAlignment = Alignment.CenterVertically) {
-                SkeletonBox(width = 24.dp, height = 24.dp)
+            SkeletonBox(width = 24.dp, height = 24.dp)
                 Spacer(modifier = Modifier.size(8.dp))
                 SkeletonBox(width = 96.dp, height = 18.dp)
             }
@@ -112,10 +110,11 @@ private fun IntelligenceSkeleton(modifier: Modifier = Modifier) {
 
 @Composable
 private fun SkeletonBox(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp) {
+    val placeholderColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
     androidx.compose.foundation.layout.Box(
         modifier = Modifier
             .size(width, height)
-            .shimmerPlaceholder(),
+            .shimmerPlaceholder(placeholderColor),
     )
 }
 
@@ -302,9 +301,9 @@ private fun IntelligenceUnavailable(
     }
 }
 
-private fun Modifier.shimmerPlaceholder(): Modifier =
+private fun Modifier.shimmerPlaceholder(color: Color): Modifier =
     this.then(
         drawBehind {
-            drawRect(color = Color.LightGray.copy(alpha = 0.3f))
+            drawRect(color = color)
         },
     )

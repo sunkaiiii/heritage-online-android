@@ -4,6 +4,11 @@ import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
+import com.duckylife.heritage.modern.core.database.entity.PendingProfileOperationEntity
+import com.duckylife.heritage.modern.core.profile.PendingOperationKind
+import java.util.UUID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -156,6 +161,43 @@ class HeritageMigrationTest {
         assertEquals("Legacy Article", cursor.getString(titleIndex))
         cursor.close()
         dbV11.close()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun pendingProfileOperationReplaceKeepsOnlyLastIntentForDeduplicationKey() = runTest {
+        val db = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            HeritageDatabase::class.java,
+        ).build()
+        try {
+            val dao = db.pendingProfileOperationDao()
+            val deduplicationKey = "favorite:article:a1"
+            dao.replace(
+                PendingProfileOperationEntity(
+                    operationId = UUID.randomUUID().toString(),
+                    kind = PendingOperationKind.AddFavorite,
+                    deduplicationKey = deduplicationKey,
+                    payloadJson = "{\"targetType\":\"article\",\"targetId\":\"a1\"}",
+                    createdAt = 1L,
+                ),
+            )
+            dao.replace(
+                PendingProfileOperationEntity(
+                    operationId = UUID.randomUUID().toString(),
+                    kind = PendingOperationKind.RemoveFavorite,
+                    deduplicationKey = deduplicationKey,
+                    payloadJson = "{\"targetType\":\"article\",\"targetId\":\"a1\"}",
+                    createdAt = 2L,
+                ),
+            )
+
+            val operations = dao.getAll()
+            assertEquals(1, operations.size)
+            assertEquals(PendingOperationKind.RemoveFavorite, operations.single().kind)
+        } finally {
+            db.close()
+        }
     }
 
 }

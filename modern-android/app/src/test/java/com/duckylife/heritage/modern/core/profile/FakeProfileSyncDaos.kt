@@ -134,8 +134,8 @@ class FakePendingProfileOperationDao : PendingProfileOperationDao {
 
     override suspend fun getAll(): List<PendingProfileOperationEntity> = data.value.sortedBy { it.createdAt }
 
-    override suspend fun upsert(entity: PendingProfileOperationEntity) {
-        // 与真实 DAO 的唯一索引一致：按 deduplicationKey 去重。
+    override suspend fun replace(entity: PendingProfileOperationEntity) {
+        // 与真实 DAO 的 REPLACE 语义一致：按 deduplicationKey 保留最后意图。
         data.value = data.value.filter { it.deduplicationKey != entity.deduplicationKey } + entity
     }
 

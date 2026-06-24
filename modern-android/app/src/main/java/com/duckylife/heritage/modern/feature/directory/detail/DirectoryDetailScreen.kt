@@ -117,6 +117,7 @@ fun DirectoryDetailRoute(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     readingPathRecorder: ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
@@ -198,6 +199,7 @@ fun DirectoryDetailRoute(
         onGraphExploreClick = onGraphExploreClick,
         onSimilarClick = onSimilarClick,
         onLearningRoutesClick = onLearningRoutesClick,
+        onKeywordSearch = onKeywordSearch,
         modifier = modifier,
     )
 }
@@ -219,6 +221,7 @@ fun DirectoryDetailScreen(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -337,6 +340,7 @@ fun DirectoryDetailScreen(
                     onGraphExploreClick = onGraphExploreClick,
                     onSimilarClick = onSimilarClick,
                     onLearningRoutesClick = onLearningRoutesClick,
+                    onKeywordSearch = onKeywordSearch,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -382,6 +386,7 @@ private fun DirectoryDetailContent(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val resolver = rememberHeritageUrlResolver()
@@ -490,7 +495,7 @@ private fun DirectoryDetailContent(
         item {
             DetailIntelligenceSection(
                 uiState = intelligenceUiState,
-                onKeywordClick = {},
+                onKeywordClick = onKeywordSearch,
                 onRetry = onRetryIntelligence,
             )
         }

@@ -160,6 +160,16 @@ private fun HeritageApp(
     var inheritorsInDetail by remember { mutableStateOf(false) }
     var discoveryInDetail by remember { mutableStateOf(false) }
     var myPageDestination by remember { mutableStateOf<MyPageDestination?>(null) }
+    var pendingDiscoverySearch by rememberSaveable { mutableStateOf<String?>(null) }
+    val openDiscoverySearch: (String) -> Unit = { rawQuery ->
+        val query = rawQuery.trim()
+        if (query.isNotEmpty()) {
+            showSettings = false
+            showMyPage = false
+            selectedDestination = HomeDestination.Discovery
+            pendingDiscoverySearch = query
+        }
+    }
     val selectedDestinationInDetail = when (selectedDestination) {
         HomeDestination.Articles -> articlesInDetail
         HomeDestination.Directory -> directoryInDetail
@@ -247,6 +257,7 @@ private fun HeritageApp(
             HomeDestination.Articles -> ArticlesNavHost(
                 onSettingsSelected = { showSettings = true },
                 onSecondaryDestinationChanged = { articlesInDetail = it },
+                onKeywordSearch = openDiscoverySearch,
                 pendingNavigation = myPageDestination as? MyPageDestination.Article,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -256,6 +267,7 @@ private fun HeritageApp(
 
             HomeDestination.Directory -> DirectoryRoute(
                 onSecondaryDestinationChanged = { directoryInDetail = it },
+                onKeywordSearch = openDiscoverySearch,
                 pendingNavigation = myPageDestination as? MyPageDestination.Directory,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -265,6 +277,7 @@ private fun HeritageApp(
 
             HomeDestination.Inheritors -> InheritorsRoute(
                 onSecondaryDestinationChanged = { inheritorsInDetail = it },
+                onKeywordSearch = openDiscoverySearch,
                 pendingNavigation = myPageDestination as? MyPageDestination.Inheritor,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -276,6 +289,8 @@ private fun HeritageApp(
                 onSecondaryDestinationChanged = { discoveryInDetail = it },
                 pendingNavigation = myPageDestination as? MyPageDestination.GraphExplore,
                 onPendingNavigationConsumed = { myPageDestination = null },
+                pendingSearchQuery = pendingDiscoverySearch,
+                onPendingSearchConsumed = { pendingDiscoverySearch = null },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

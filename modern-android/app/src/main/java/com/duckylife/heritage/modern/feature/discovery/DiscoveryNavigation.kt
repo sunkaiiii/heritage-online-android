@@ -95,6 +95,8 @@ fun DiscoveryNavHost(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
     pendingNavigation: MyPageDestination.GraphExplore? = null,
     onPendingNavigationConsumed: () -> Unit = {},
+    pendingSearchQuery: String? = null,
+    onPendingSearchConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var savedStack by rememberSaveable { mutableStateOf("") }
@@ -123,6 +125,14 @@ fun DiscoveryNavHost(
             ),
         )
         onPendingNavigationConsumed()
+    }
+    LaunchedEffect(pendingSearchQuery) {
+        val query = pendingSearchQuery?.trim().orEmpty()
+        if (query.isEmpty()) return@LaunchedEffect
+        backStack.clear()
+        backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+        onPendingSearchConsumed()
     }
 
     NavDisplay(
@@ -383,6 +393,9 @@ fun DiscoveryNavHost(
                                 )
                             }
                         },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
                         modifier = modifier,
                     )
                 }
@@ -445,6 +458,9 @@ fun DiscoveryNavHost(
                                 )
                             }
                         },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
                         modifier = modifier,
                     )
                 }
@@ -504,6 +520,9 @@ fun DiscoveryNavHost(
                                     ),
                                 )
                             }
+                        },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
                         },
                         modifier = modifier,
                     )

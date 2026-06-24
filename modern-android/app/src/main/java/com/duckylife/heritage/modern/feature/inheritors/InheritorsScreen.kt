@@ -91,6 +91,7 @@ import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 @Composable
 fun InheritorsRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    onKeywordSearch: (String) -> Unit = {},
     pendingNavigation: MyPageDestination.Inheritor? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -159,6 +160,7 @@ fun InheritorsRoute(
                         onExploreTargetClick = { click ->
                             navigateInheritorContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -181,6 +183,7 @@ fun InheritorsRoute(
                         onExploreTargetClick = { click ->
                             navigateInheritorContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -198,6 +201,7 @@ fun InheritorsRoute(
                         onExploreTargetClick = { click ->
                             navigateInheritorContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }

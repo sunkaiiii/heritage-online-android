@@ -136,6 +136,7 @@ private fun navigateContextTarget(
 fun ArticlesNavHost(
     onSettingsSelected: () -> Unit,
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    onKeywordSearch: (String) -> Unit = {},
     pendingNavigation: MyPageDestination.Article? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -197,6 +198,7 @@ fun ArticlesNavHost(
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -216,6 +218,7 @@ fun ArticlesNavHost(
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }
@@ -234,6 +237,7 @@ fun ArticlesNavHost(
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
                         },
+                        onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
                 }

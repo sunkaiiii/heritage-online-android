@@ -23,6 +23,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -95,6 +96,28 @@ class ContentIntelligenceViewModelDelegateTest {
 
         assertEquals(second, delegate.uiState.value.page?.ref)
         assertTrue(repository.cancelledRefs.contains(first))
+    }
+
+    @Test
+    fun switchingRefImmediatelyClearsPreviousContentActions() = runTest {
+        val repository = FakeContentIntelligenceRepository()
+        val first = ContentIntelligenceRef(SearchResultType.Article, "first")
+        val second = ContentIntelligenceRef(SearchResultType.Article, "second")
+        repository.given(first, page(first))
+        repository.given(second, page(second))
+        val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
+
+        delegate.load(first)
+        advanceUntilIdle()
+        assertEquals(first, delegate.uiState.value.page?.ref)
+
+        delegate.load(second)
+
+        val loadingState = delegate.uiState.value
+        assertTrue(loadingState.isLoading)
+        assertNull(loadingState.page)
+        assertFalse(loadingState.learningRoutesAvailable)
+        assertEquals(SectionStatus.Disabled, loadingState.graphSection.status)
     }
 
     @Test

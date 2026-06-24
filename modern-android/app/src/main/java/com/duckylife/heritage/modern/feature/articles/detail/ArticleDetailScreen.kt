@@ -105,6 +105,7 @@ fun ArticleDetailRoute(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
     readingPathRecorder: ReadingPathRecorderViewModel = hiltViewModel(),
 ) {
@@ -175,6 +176,7 @@ fun ArticleDetailRoute(
         onGraphExploreClick = onGraphExploreClick,
         onSimilarClick = onSimilarClick,
         onLearningRoutesClick = onLearningRoutesClick,
+        onKeywordSearch = onKeywordSearch,
         modifier = modifier,
     )
 }
@@ -195,6 +197,7 @@ fun ArticleDetailScreen(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -309,6 +312,7 @@ fun ArticleDetailScreen(
                     onGraphExploreClick = onGraphExploreClick,
                     onSimilarClick = onSimilarClick,
                     onLearningRoutesClick = onLearningRoutesClick,
+                    onKeywordSearch = onKeywordSearch,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -353,6 +357,7 @@ private fun ArticleDetailContent(
     onGraphExploreClick: () -> Unit = {},
     onSimilarClick: () -> Unit = {},
     onLearningRoutesClick: () -> Unit = {},
+    onKeywordSearch: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val resolver = rememberHeritageUrlResolver()
@@ -445,7 +450,7 @@ private fun ArticleDetailContent(
         item {
             DetailIntelligenceSection(
                 uiState = intelligenceUiState,
-                onKeywordClick = {},
+                onKeywordClick = onKeywordSearch,
                 onRetry = onRetryIntelligence,
             )
         }
