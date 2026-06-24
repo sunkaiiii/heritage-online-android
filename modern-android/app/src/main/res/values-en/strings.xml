@@ -297,4 +297,13 @@
     <string name="blended_show_more_reasons">More reasons</string>
     <string name="blended_score">Score</string>
     <string name="action_open_detail">Open detail</string>
+
+    <!-- Intelligence -->
+    <string name="intelligence_section_title">AI Insights</string>
+    <string name="intelligence_stale_badge">Content may have been updated</string>
+    <string name="intelligence_expand">Show full insights</string>
+    <string name="intelligence_collapse">Collapse</string>
+    <string name="intelligence_show_all_n">Show all %1$d</string>
+    <string name="intelligence_based_on_local_ai">Based on locally generated materials</string>
+    <string name="intelligence_not_available">AI insights are not yet available for this content</string>
 </resources>

@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.ArticleDetailLookup
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.network.HeritageJson
+import com.duckylife.heritage.modern.core.data.ContentIntelligenceRef
 import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -36,7 +39,12 @@ class ArticleDetailViewModel @AssistedInject constructor(
     private val repository: HeritageRepository,
     private val savedContentRepository: SavedContentRepository,
     private val syncRepository: LocalUserSyncRepository,
+    intelligenceDelegateFactory: ContentIntelligenceViewModelDelegateFactory,
 ) : ViewModel() {
+
+    private val intelligenceDelegate = intelligenceDelegateFactory.create(viewModelScope)
+    val intelligenceUiState: kotlinx.coroutines.flow.StateFlow<ContentIntelligenceUiState> =
+        intelligenceDelegate.uiState
     private val lookup = ArticleDetailLookup(
         articleId = articleId,
         sourceId = sourceId,
@@ -107,6 +115,7 @@ class ArticleDetailViewModel @AssistedInject constructor(
                 loadContext(article.id)
                 loadDigest(article.id)
                 loadBlended(article.id)
+                loadIntelligence(article.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -154,6 +163,11 @@ class ArticleDetailViewModel @AssistedInject constructor(
     fun retryDigest() {
         val id = _uiState.value.article?.id ?: return
         loadDigest(id)
+    }
+
+    private fun loadIntelligence(articleId: String?) {
+        if (articleId.isNullOrBlank()) return
+        intelligenceDelegate.load(ContentIntelligenceRef(SearchResultType.Article, articleId))
     }
 
     private fun loadBlended(articleId: String?) {
@@ -231,4 +245,9 @@ class ArticleDetailViewModel @AssistedInject constructor(
             @Assisted category: ArticleCategory,
         ): ArticleDetailViewModel
     }
+
+    /**
+     * 公开给 UI 的重试入口：当 V3 增强层失败时调用。
+     */
+    fun retryIntelligence() = intelligenceDelegate.retry()
 }

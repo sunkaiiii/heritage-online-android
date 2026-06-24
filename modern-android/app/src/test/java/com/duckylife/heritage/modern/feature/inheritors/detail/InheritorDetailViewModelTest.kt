@@ -6,6 +6,7 @@ import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
 import com.duckylife.heritage.modern.core.profile.FakeLocalUserSyncRepository
 import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
+import com.duckylife.heritage.modern.feature.detail.intelligence.FakeContentIntelligenceViewModelDelegateFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -36,6 +37,7 @@ class InheritorDetailViewModelTest {
             ),
             savedContentRepository = FakeSavedContentRepository(),
             syncRepository = FakeLocalUserSyncRepository(),
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
         )
 
         advanceUntilIdle()
@@ -64,6 +66,7 @@ class InheritorDetailViewModelTest {
             repository = repository,
             savedContentRepository = FakeSavedContentRepository(),
             syncRepository = FakeLocalUserSyncRepository(),
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
         )
 
         advanceUntilIdle()
@@ -89,6 +92,7 @@ class InheritorDetailViewModelTest {
             ),
             savedContentRepository = FakeSavedContentRepository(),
             syncRepository = FakeLocalUserSyncRepository(),
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
         )
 
         advanceUntilIdle()

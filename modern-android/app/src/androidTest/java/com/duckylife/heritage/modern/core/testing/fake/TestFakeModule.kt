@@ -1,10 +1,13 @@
 package com.duckylife.heritage.modern.core.testing.fake
 
+import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
+import com.duckylife.heritage.modern.feature.detail.intelligence.DefaultContentIntelligenceViewModelDelegateFactory
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import com.duckylife.heritage.modern.core.saved.SavedContentType
 import dagger.Module
@@ -35,6 +38,18 @@ object TestFakeDataModule {
     @Provides
     @Singleton
     fun provideSavedContentRepository(): SavedContentRepository = TestFakeSavedContentRepository()
+
+    @Provides
+    @Singleton
+    fun provideContentIntelligenceRepository(): ContentIntelligenceRepository =
+        TestFakeContentIntelligenceRepository()
+
+    @Provides
+    @Singleton
+    fun provideContentIntelligenceViewModelDelegateFactory(
+        repository: ContentIntelligenceRepository,
+    ): ContentIntelligenceViewModelDelegateFactory =
+        DefaultContentIntelligenceViewModelDelegateFactory(repository)
 
     @Provides
     @Singleton

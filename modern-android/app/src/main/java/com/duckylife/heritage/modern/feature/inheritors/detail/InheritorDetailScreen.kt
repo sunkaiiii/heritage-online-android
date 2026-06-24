@@ -80,6 +80,8 @@ import com.duckylife.heritage.modern.core.data.ReadingPathContentRef
 import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
 import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
 import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
+import com.duckylife.heritage.modern.feature.detail.intelligence.DetailIntelligenceSection
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
@@ -119,6 +121,7 @@ fun InheritorDetailRoute(
         },
     )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val intelligenceUiState by viewModel.intelligenceUiState.collectAsStateWithLifecycle()
 
     // 包装回调，记录阅读路径
     fun currentFromRef(): ReadingPathContentRef? {
@@ -171,6 +174,7 @@ fun InheritorDetailRoute(
 
     InheritorDetailScreen(
         uiState = uiState,
+        intelligenceUiState = intelligenceUiState,
         onBack = onBack,
         onRetry = viewModel::refresh,
         onToggleFavorite = viewModel::toggleFavorite,
@@ -179,6 +183,7 @@ fun InheritorDetailRoute(
         onContextRetry = viewModel::loadContext,
         onDigestRetry = viewModel::retryDigest,
         onExploreTargetClick = wrappedExploreTargetClick,
+        onRetryIntelligence = viewModel::retryIntelligence,
         modifier = modifier,
     )
 }
@@ -187,6 +192,7 @@ fun InheritorDetailRoute(
 @Composable
 fun InheritorDetailScreen(
     uiState: InheritorDetailUiState,
+    intelligenceUiState: ContentIntelligenceUiState,
     onBack: () -> Unit,
     onRetry: () -> Unit,
     onToggleFavorite: () -> Unit,
@@ -195,6 +201,7 @@ fun InheritorDetailScreen(
     onContextRetry: () -> Unit = {},
     onDigestRetry: () -> Unit = {},
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
+    onRetryIntelligence: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val imageLoader = rememberHeritageImageLoader()
@@ -307,6 +314,8 @@ fun InheritorDetailScreen(
                     onDigestRetry = onDigestRetry,
                     blendedRecommendations = uiState.blendedRecommendations,
                     onExploreTargetClick = onExploreTargetClick,
+                    intelligenceUiState = intelligenceUiState,
+                    onRetryIntelligence = onRetryIntelligence,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(contentPadding),
@@ -347,6 +356,8 @@ private fun InheritorDetailContent(
     // Blended Recommendations
     blendedRecommendations: BlendedRecommendationResponseDto? = null,
     onExploreTargetClick: (DetailExploreTargetClick) -> Unit = {},
+    intelligenceUiState: ContentIntelligenceUiState,
+    onRetryIntelligence: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val resolver = rememberHeritageUrlResolver()
@@ -425,6 +436,15 @@ private fun InheritorDetailContent(
             references = item.relatedInheritors,
             onReferenceSelected = onRelatedInheritorSelected,
         )
+
+        // 智能解读区块（V3 content page 的 AI 板块）
+        item {
+            DetailIntelligenceSection(
+                uiState = intelligenceUiState,
+                onKeywordClick = {},
+                onRetry = onRetryIntelligence,
+            )
+        }
 
         // 探索区块：Digest -> Blended -> Context
         item {

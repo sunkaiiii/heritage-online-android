@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.InheritorDetailLookup
+import com.duckylife.heritage.modern.core.data.ContentIntelligenceRef
 import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.HeritageJson
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -33,7 +36,12 @@ class InheritorDetailViewModel @AssistedInject constructor(
     private val repository: HeritageRepository,
     private val savedContentRepository: SavedContentRepository,
     private val syncRepository: LocalUserSyncRepository,
+    intelligenceDelegateFactory: ContentIntelligenceViewModelDelegateFactory,
 ) : ViewModel() {
+
+    private val intelligenceDelegate = intelligenceDelegateFactory.create(viewModelScope)
+    val intelligenceUiState: kotlinx.coroutines.flow.StateFlow<ContentIntelligenceUiState> =
+        intelligenceDelegate.uiState
     private val lookup = InheritorDetailLookup(
         inheritorId = inheritorId,
         sourceId = sourceId,
@@ -100,6 +108,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
                 loadContext(item.id)
                 loadDigest(item.id)
                 loadBlended(item.id)
+                loadIntelligence(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
                     it.copy(
@@ -147,6 +156,11 @@ class InheritorDetailViewModel @AssistedInject constructor(
     fun retryDigest() {
         val id = _uiState.value.item?.id ?: return
         loadDigest(id)
+    }
+
+    private fun loadIntelligence(inheritorId: String?) {
+        if (inheritorId.isNullOrBlank()) return
+        intelligenceDelegate.load(ContentIntelligenceRef(SearchResultType.Inheritor, inheritorId))
     }
 
     private fun loadBlended(inheritorId: String?) {
@@ -220,4 +234,6 @@ class InheritorDetailViewModel @AssistedInject constructor(
             @Assisted("sourceId") sourceId: String?,
         ): InheritorDetailViewModel
     }
+
+    fun retryIntelligence() = intelligenceDelegate.retry()
 }

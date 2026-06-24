@@ -1,11 +1,18 @@
 package com.duckylife.heritage.modern.core.network.dto.advanced
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 
 @Serializable
 data class V3ContentPageDto(
     val pageType: GraphNodeType = GraphNodeType.Unknown,
-    val content: ContentRefDto? = null,
+    /**
+     * V3 content page 返回的原始主体内容。
+     *
+     * 该字段为通用 JSON，具体结构随 [pageType] 变化（文章/名录/传承人对应不同详情 DTO）。
+     * 当前客户端未直接消费此字段，如需强类型访问，应按 [pageType] 解析为对应领域模型。
+     */
+    val content: JsonObject? = null,
     val digest: ContentDigestSectionDto? = null,
     val aiCard: AiCardDto? = null,
     val graph: GraphNeighborsDto? = null,
@@ -22,6 +29,8 @@ data class V3ContentPageDto(
 data class SectionStatusDto(
     val section: String,
     val status: SectionStatus = SectionStatus.Unknown,
+    val message: String = "",
+    val source: String = "",
 )
 
 @Serializable
@@ -29,6 +38,7 @@ data class LocalStateSectionDto(
     val isFavorite: Boolean = false,
     val lastViewedAt: String? = null,
     val viewCount: Int = 0,
+    val learningProgressPercent: Double = 0.0,
 )
 
 @Serializable
