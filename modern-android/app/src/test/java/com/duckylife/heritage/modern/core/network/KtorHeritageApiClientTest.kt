@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleContentBlockType
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -1258,6 +1259,44 @@ class KtorHeritageApiClientTest {
         assertEquals("0.3", request.url.parameters["sameCategoryWeight"])
         assertEquals("0.2", request.url.parameters["sameRegionWeight"])
         assertEquals("false", request.url.parameters["diversify"])
+    }
+
+    @Test
+    fun getLocalUserJourneys_includesStrategyAndFlags() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "strategy": "novelty",
+                      "signals": [],
+                      "items": [],
+                      "warnings": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+            install(profileHeaderPlugin(fakeProfileRepository))
+        }
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getLocalUserJourneys(
+            strategy = JourneyStrategy.Novelty,
+            limit = 12,
+            includeAiInferred = false,
+            includeTrail = true,
+        )
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/local-user/journeys", request.url.encodedPath)
+        assertEquals("novelty", request.url.parameters["strategy"])
+        assertEquals("12", request.url.parameters["limit"])
+        assertEquals("false", request.url.parameters["includeAiInferred"])
+        assertEquals("true", request.url.parameters["includeTrail"])
     }
 
     @Test

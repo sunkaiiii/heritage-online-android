@@ -5,6 +5,7 @@ import androidx.room.testing.MigrationTestHelper
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -123,6 +124,37 @@ class HeritageMigrationTest {
         assertTrue("unique index on favorites should exist", indexCursor.moveToFirst())
         indexCursor.close()
 
+        dbV11.close()
+    }
+
+    @Test
+    fun migrate10To11PreservesSavedContent() {
+        val dbV10 = migrationHelper.createDatabase(testDbName, 10)
+        dbV10.execSQL(
+            """
+            INSERT INTO saved_content (
+                contentKey, contentType, title, summary, coverImageJson,
+                category, region, year, sourceUrl, targetId, targetSourceId,
+                targetSourceUrl, targetCategory, targetKind, isFavorite,
+                favoritedAt, lastViewedAt
+            ) VALUES (
+                'article:a1', 'article', 'Legacy Article', 'summary', NULL,
+                'news', 'Zhejiang', 2024, 'https://example.test', 'a1', NULL,
+                NULL, NULL, NULL, 1, 1719200000000, 1719200000000
+            )
+            """.trimIndent(),
+        )
+        dbV10.close()
+
+        val dbV11 = migrationHelper.runMigrationsAndValidate(
+            testDbName, 11, true, HeritageMigrations.MIGRATION_10_11,
+        )
+
+        val cursor = dbV11.query("SELECT * FROM saved_content WHERE contentKey = 'article:a1'")
+        assertTrue("saved_content row should survive migration", cursor.moveToFirst())
+        val titleIndex = cursor.getColumnIndexOrThrow("title")
+        assertEquals("Legacy Article", cursor.getString(titleIndex))
+        cursor.close()
         dbV11.close()
     }
 

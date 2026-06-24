@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.discovery
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import kotlinx.serialization.SerialName
 
 // ---------------------------------------------------------------------------
 // 路由 key：用强类型替代 List<Any> 的临时字符串状态
@@ -22,6 +23,11 @@ internal sealed interface DiscoveryRouteKey {
     data object StoriesIndexPage : DiscoveryRouteKey
     data class StoryPage(val region: String? = null, val category: String? = null, val year: Int? = null) : DiscoveryRouteKey
     data class DeepDivePage(val seedType: String, val seedId: String) : DiscoveryRouteKey
+    data class GraphExplorePage(
+        val type: String,
+        val contentId: String,
+        val initialTab: GraphTab = GraphTab.Neighbors,
+    ) : DiscoveryRouteKey
     data class DiscoveryArticleDetail(
         val id: String? = null,
         val sourceId: String? = null,
@@ -62,9 +68,21 @@ internal sealed interface RouteState {
     @kotlinx.serialization.Serializable data object StoriesIndex : RouteState
     @kotlinx.serialization.Serializable data class Story(val region: String? = null, val category: String? = null, val year: Int? = null) : RouteState
     @kotlinx.serialization.Serializable data class DeepDive(val seedType: String = "", val seedId: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class GraphExplore(@SerialName("contentType") val type: String = "", @SerialName("contentId") val contentId: String = "", val tab: String = "neighbors") : RouteState
     @kotlinx.serialization.Serializable data class ArticleDetail(val id: String? = null, val sourceId: String? = null, val sourceUrl: String? = null, val category: String = "news") : RouteState
     @kotlinx.serialization.Serializable data class DirectoryDetail(val id: String? = null, val sourceId: String? = null, val kind: String = "nationalProject") : RouteState
     @kotlinx.serialization.Serializable data class InheritorDetail(val id: String? = null, val sourceId: String? = null) : RouteState
+}
+
+// ---------------------------------------------------------------------------
+// 图谱 tab
+// ---------------------------------------------------------------------------
+
+enum class GraphTab(val wireName: String) {
+    Neighbors("neighbors"),
+    Similar("similar"),
+    Explore("explore"),
+    Evidence("evidence"),
 }
 
 // ---------------------------------------------------------------------------
@@ -86,6 +104,7 @@ internal fun DiscoveryRouteKey.toRouteState(): RouteState = when (this) {
     is DiscoveryRouteKey.StoriesIndexPage -> RouteState.StoriesIndex
     is DiscoveryRouteKey.StoryPage -> RouteState.Story(region, category, year)
     is DiscoveryRouteKey.DeepDivePage -> RouteState.DeepDive(seedType, seedId)
+    is DiscoveryRouteKey.GraphExplorePage -> RouteState.GraphExplore(type, contentId, initialTab.wireName)
     is DiscoveryRouteKey.DiscoveryArticleDetail -> RouteState.ArticleDetail(id, sourceId, sourceUrl, category.wireName)
     is DiscoveryRouteKey.DiscoveryDirectoryDetail -> RouteState.DirectoryDetail(id, sourceId, kind.wireName)
     is DiscoveryRouteKey.DiscoveryInheritorDetail -> RouteState.InheritorDetail(id, sourceId)
@@ -106,6 +125,11 @@ internal fun RouteState.toRouteKey(): DiscoveryRouteKey = when (this) {
     is RouteState.StoriesIndex -> DiscoveryRouteKey.StoriesIndexPage
     is RouteState.Story -> DiscoveryRouteKey.StoryPage(region, category, year)
     is RouteState.DeepDive -> DiscoveryRouteKey.DeepDivePage(seedType, seedId)
+    is RouteState.GraphExplore -> DiscoveryRouteKey.GraphExplorePage(
+        type = type,
+        contentId = contentId,
+        initialTab = GraphTab.entries.firstOrNull { it.wireName == tab } ?: GraphTab.Neighbors,
+    )
     is RouteState.ArticleDetail -> DiscoveryRouteKey.DiscoveryArticleDetail(
         id = id, sourceId = sourceId, sourceUrl = sourceUrl,
         category = ArticleCategory.entries.firstOrNull { it.wireName == category } ?: ArticleCategory.News,

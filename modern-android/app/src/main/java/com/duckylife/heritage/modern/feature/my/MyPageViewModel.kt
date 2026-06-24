@@ -5,7 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailStepDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyItemDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyResponseDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneySignalsDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl
+import com.duckylife.heritage.modern.core.profile.JourneyRepository
 import com.duckylife.heritage.modern.core.profile.LocalUserSyncRepository
 import com.duckylife.heritage.modern.core.profile.ProfileFavorite
 import com.duckylife.heritage.modern.core.profile.ProfileLearningProgress
@@ -13,11 +20,17 @@ import com.duckylife.heritage.modern.core.profile.ProfileSyncStatus
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.error.toApiFailure
+import com.duckylife.heritage.modern.ui.error.toErrorKind
+import kotlinx.coroutines.ensureActive
 import javax.inject.Inject
 
 /**
@@ -29,6 +42,7 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val savedContentRepository: SavedContentRepository,
     private val syncRepository: LocalUserSyncRepository,
+    private val journeyRepository: JourneyRepository,
 ) : ViewModel() {
 
     val favorites: StateFlow<List<FavoriteItem>> = combine(
@@ -70,6 +84,56 @@ class MyPageViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = emptyList(),
     )
+
+    private val _selectedStrategy = MutableStateFlow(JourneyStrategy.Balanced)
+    val selectedStrategy: StateFlow<JourneyStrategy> = _selectedStrategy
+
+    private val _journeys = MutableStateFlow<JourneysUiState>(JourneysUiState.Loading)
+    val journeys: StateFlow<JourneysUiState> = _journeys
+
+    private var journeysJob: Job? = null
+    private var latestSignals: JourneySignalsDto? = null
+
+    init {
+        loadSignalsThenJourneys()
+    }
+
+    fun selectStrategy(strategy: JourneyStrategy) {
+        if (_selectedStrategy.value == strategy) return
+        _selectedStrategy.value = strategy
+        loadJourneys()
+    }
+
+    fun retryJourneys() = loadJourneys()
+
+    private fun loadSignalsThenJourneys() {
+        viewModelScope.launch {
+            latestSignals = runCatching { journeyRepository.loadSignals() }.getOrNull()
+            loadJourneys()
+        }
+    }
+
+    private fun loadJourneys() {
+        journeysJob?.cancel()
+        _journeys.value = JourneysUiState.Loading
+        journeysJob = viewModelScope.launch {
+            val strategy = _selectedStrategy.value
+            val result = runCatching { journeyRepository.loadJourneys(strategy) }
+            ensureActive()
+            result.fold(
+                onSuccess = { response ->
+                    _journeys.value = response.toUiState(latestSignals)
+                },
+                onFailure = { cause ->
+                    _journeys.value = JourneysUiState.Error(
+                        signals = latestSignals?.signals.orEmpty(),
+                        signalWarning = latestSignals?.warning,
+                        messageResId = cause.toApiFailure().toErrorKind().fallbackResId(),
+                    )
+                },
+            )
+        }
+    }
 
     fun syncNow() {
         viewModelScope.launch {
@@ -248,3 +312,95 @@ data class LearningProgressItem(
     val completedAt: String?,
     val syncStatus: ProfileSyncStatus,
 )
+
+sealed interface JourneysUiState {
+    data object Loading : JourneysUiState
+
+    data class Empty(
+        val signals: List<String>,
+        val signalWarning: String?,
+    ) : JourneysUiState
+
+    data class Error(
+        val signals: List<String>,
+        val signalWarning: String?,
+        val messageResId: Int,
+    ) : JourneysUiState
+
+    data class Success(
+        val signals: List<String>,
+        val signalWarning: String?,
+        val items: List<JourneyUiItem>,
+        val trailSteps: List<JourneyTrailStepUiItem>?,
+        val warnings: List<String>,
+    ) : JourneysUiState
+}
+
+data class JourneyUiItem(
+    val nodeKey: String,
+    val contentType: String,
+    val targetId: String?,
+    val title: String,
+    val subtitle: String?,
+    val coverImageUrl: String?,
+    val reasons: List<String>,
+    val isPreviouslyViewed: Boolean,
+    val isFavorite: Boolean,
+) {
+    val isContentNode: Boolean
+        get() = contentType in setOf("article", "directoryItem", "inheritor")
+}
+
+data class JourneyTrailStepUiItem(
+    val order: Int,
+    val nodeKey: String?,
+    val contentType: String?,
+    val targetId: String?,
+    val title: String?,
+    val reason: String?,
+) {
+    val isContentNode: Boolean
+        get() = contentType in setOf("article", "directoryItem", "inheritor")
+}
+
+private fun JourneyResponseDto.toUiState(signals: JourneySignalsDto?): JourneysUiState {
+    val signalList = signals?.signals ?: this.signals
+    val signalWarning = (signals?.warning ?: this.warnings.firstOrNull())?.takeIf { it.isNotBlank() }
+    val uiItems = items.map { it.toUiItem() }
+    val trailSteps = trail?.steps?.take(TRAIL_STEP_LIMIT)?.map { it.toUiItem() }
+    return if (uiItems.isEmpty() && trailSteps.isNullOrEmpty()) {
+        JourneysUiState.Empty(signalList, signalWarning)
+    } else {
+        JourneysUiState.Success(
+            signals = signalList,
+            signalWarning = signalWarning,
+            items = uiItems,
+            trailSteps = trailSteps,
+            warnings = warnings.mapNotNull { it.takeIf(String::isNotBlank) },
+        )
+    }
+}
+
+private fun JourneyItemDto.toUiItem(): JourneyUiItem = JourneyUiItem(
+    nodeKey = node.nodeKey,
+    contentType = node.type.wireName,
+    targetId = node.id,
+    title = node.title.orEmpty(),
+    subtitle = node.subtitle,
+    coverImageUrl = node.coverImageUrl,
+    reasons = reasons.take(MAX_REASONS),
+    isPreviouslyViewed = isPreviouslyViewed,
+    isFavorite = isFavorite,
+)
+
+private fun GraphTrailStepDto.toUiItem(): JourneyTrailStepUiItem = JourneyTrailStepUiItem(
+    order = order,
+    nodeKey = node?.nodeKey,
+    contentType = node?.type?.wireName,
+    targetId = node?.id,
+    title = node?.title,
+    reason = reason,
+)
+
+private const val MAX_REASONS = 2
+private const val TRAIL_STEP_LIMIT = 4

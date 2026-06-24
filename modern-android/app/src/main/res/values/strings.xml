@@ -335,4 +335,29 @@
     <string name="blended_show_more_reasons">更多理由</string>
     <string name="blended_score">评分</string>
     <string name="action_open_detail">查看详情</string>
+
+    <!-- Graph Explore -->
+    <string name="graph_explore_title">内容关系</string>
+    <string name="graph_tab_neighbors">关联</string>
+    <string name="graph_tab_similar">相似</string>
+    <string name="graph_tab_explore">探索</string>
+    <string name="graph_tab_evidence">证据</string>
+    <string name="graph_explore_coming_soon">图谱探索即将上线</string>
+
+    <!-- Journeys -->
+    <string name="journeys_section_header">为你继续探索</string>
+    <string name="journeys_strategy_label">探索策略</string>
+    <string name="journeys_strategy_balanced">均衡</string>
+    <string name="journeys_strategy_continue">继续学习</string>
+    <string name="journeys_strategy_novelty">尝试新内容</string>
+    <string name="journeys_strategy_deep_dive">深入探索</string>
+    <string name="journeys_signals_prefix">依据：%1$s</string>
+    <string name="journeys_signals_empty">多浏览或收藏一些内容后，这里会逐渐更懂你的探索方向。</string>
+    <string name="journeys_trail_header">这次旅程的连接线索</string>
+    <string name="journeys_view_relations">查看关系</string>
+    <string name="journeys_error_message">关联服务暂时不可用，可继续浏览收藏内容</string>
+    <string name="journeys_error_retry">重试</string>
+    <string name="journeys_warning_cold_start">你的探索数据还不多，推荐会随浏览和收藏逐渐改善。</string>
+    <string name="journeys_warning_graph_unavailable">关系数据暂时不可用，本次推荐仅依据本地记录。</string>
+    <string name="journeys_warning_generic">个性化推荐正在学习中。</string>
 </resources>

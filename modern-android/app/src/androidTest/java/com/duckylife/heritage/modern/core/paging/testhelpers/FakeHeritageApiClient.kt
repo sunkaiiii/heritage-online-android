@@ -246,6 +246,11 @@ class FakeHeritageApiClient : HeritageApiClient {
     override suspend fun clearLocalUserHistory(): Int = 0
     override suspend fun getLocalUserLearningProgress(): List<LocalLearningProgressDto> = emptyList()
     override suspend fun updateLocalUserLearningProgress(routeId: String, request: LearningProgressUpdateDto): LocalLearningProgressDto = LocalLearningProgressDto(routeId = routeId)
-    override suspend fun getLocalUserJourneys(strategy: JourneyStrategy, limit: Int): JourneyResponseDto = JourneyResponseDto()
+    override suspend fun getLocalUserJourneys(
+        strategy: JourneyStrategy,
+        limit: Int,
+        includeAiInferred: Boolean,
+        includeTrail: Boolean,
+    ): JourneyResponseDto = JourneyResponseDto()
     override suspend fun getLocalUserJourneySignals(): JourneySignalsDto = JourneySignalsDto()
 }

@@ -218,6 +218,7 @@ private fun HeritageApp(
                         is MyPageDestination.Article -> HomeDestination.Articles
                         is MyPageDestination.Directory -> HomeDestination.Directory
                         is MyPageDestination.Inheritor -> HomeDestination.Inheritors
+                        is MyPageDestination.GraphExplore -> HomeDestination.Discovery
                     }
                 },
                 modifier = Modifier
@@ -273,6 +274,8 @@ private fun HeritageApp(
 
             HomeDestination.Discovery -> DiscoveryNavHost(
                 onSecondaryDestinationChanged = { discoveryInDetail = it },
+                pendingNavigation = myPageDestination as? MyPageDestination.GraphExplore,
+                onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),

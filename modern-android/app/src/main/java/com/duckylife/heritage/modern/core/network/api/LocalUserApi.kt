@@ -48,6 +48,8 @@ interface LocalUserApi {
     suspend fun getLocalUserJourneys(
         strategy: JourneyStrategy = JourneyStrategy.Balanced,
         limit: Int = 8,
+        includeAiInferred: Boolean = false,
+        includeTrail: Boolean = true,
     ): JourneyResponseDto
 
     suspend fun getLocalUserJourneySignals(): JourneySignalsDto

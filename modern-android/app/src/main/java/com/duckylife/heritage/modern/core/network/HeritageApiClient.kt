@@ -664,10 +664,14 @@ class KtorHeritageApiClient(
     override suspend fun getLocalUserJourneys(
         strategy: JourneyStrategy,
         limit: Int,
+        includeAiInferred: Boolean,
+        includeTrail: Boolean,
     ): JourneyResponseDto =
         httpClient.get(endpoint("api/local-user/journeys")) {
             optionalParameter("strategy", strategy.wireName)
             optionalParameter("limit", limit)
+            optionalParameter("includeAiInferred", includeAiInferred)
+            optionalParameter("includeTrail", includeTrail)
         }.body()
 
     override suspend fun getLocalUserJourneySignals(): JourneySignalsDto =

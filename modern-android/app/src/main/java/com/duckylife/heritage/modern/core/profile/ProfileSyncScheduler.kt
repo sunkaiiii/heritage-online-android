@@ -12,15 +12,22 @@ import javax.inject.Singleton
 
 /**
  * 调度唯一的 profile 同步后台任务。
+ */
+interface ProfileSyncScheduler {
+    fun scheduleImmediate()
+}
+
+/**
+ * 使用 WorkManager 实现的 [ProfileSyncScheduler]。
  *
  * 使用 `ExistingWorkPolicy.KEEP` 避免并发重复同步；任务需要网络连接。
  */
 @Singleton
-class ProfileSyncScheduler @Inject constructor(
+class WorkManagerProfileSyncScheduler @Inject constructor(
     @param:ApplicationContext private val context: Context,
-) {
+) : ProfileSyncScheduler {
 
-    fun scheduleImmediate() {
+    override fun scheduleImmediate() {
         val request = OneTimeWorkRequestBuilder<LocalUserSyncWorker>()
             .setConstraints(
                 Constraints.Builder()

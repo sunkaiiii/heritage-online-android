@@ -107,6 +107,11 @@ sealed interface MyPageDestination {
         val inheritorId: String?,
         val sourceId: String?,
     ) : MyPageDestination
+
+    data class GraphExplore(
+        val contentType: String,
+        val contentId: String,
+    ) : MyPageDestination
 }
 
 private enum class MyPageTab(
@@ -135,6 +140,8 @@ fun MyPage(
     val profileState by viewModel.profileState.collectAsStateWithLifecycle()
     val pendingCount by viewModel.pendingOperationCount.collectAsStateWithLifecycle()
     val learningProgress by viewModel.learningProgress.collectAsStateWithLifecycle()
+    val journeys by viewModel.journeys.collectAsStateWithLifecycle()
+    val selectedStrategy by viewModel.selectedStrategy.collectAsStateWithLifecycle()
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var showClearHistoryDialog by remember { mutableStateOf(false) }
     var showClearReadingPathDialog by remember { mutableStateOf(false) }
@@ -223,7 +230,15 @@ fun MyPage(
                     )
 
                     MyPageTab.Journeys -> JourneysTab(
+                        uiState = journeys,
+                        selectedStrategy = selectedStrategy,
+                        onStrategySelected = { viewModel.selectStrategy(it) },
+                        onRetry = { viewModel.retryJourneys() },
+                        onItemClick = { destination -> destination?.let { onNavigate(it) } },
+                        onViewRelations = { destination -> onNavigate(destination) },
+                        onTrailStepClick = { destination -> destination?.let { onNavigate(it) } },
                         onBrowseContent = onNavigateToDiscovery,
+                        modifier = Modifier.fillMaxSize(),
                     )
 
                     MyPageTab.Research -> ResearchTab(
@@ -878,26 +893,6 @@ private fun LearningProgressRow(
     }
 }
 
-@Composable
-private fun JourneysTab(
-    onBrowseContent: () -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter,
-    ) {
-        EmptyState(
-            icon = Icons.Outlined.Explore,
-            title = stringResource(R.string.journeys_empty_title),
-            message = stringResource(R.string.journeys_empty_message),
-            action = {
-                TextButton(onClick = onBrowseContent) {
-                    Text(stringResource(R.string.action_go_discover))
-                }
-            },
-        )
-    }
-}
 
 @Composable
 private fun ResearchTab(
@@ -950,7 +945,7 @@ private fun SectionHeader(
 }
 
 @Composable
-private fun EmptyState(
+internal fun EmptyState(
     icon: ImageVector,
     title: String,
     message: String,

@@ -20,6 +20,8 @@ import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
 import com.duckylife.heritage.modern.feature.compare.CompareRoute
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.discovery.graphexplore.GraphExploreRoute
+import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
 import com.duckylife.heritage.modern.feature.discovery.deepdive.DeepDiveRoute
 import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
@@ -80,6 +82,8 @@ private fun navigateToDetailContextTarget(
 @Composable
 fun DiscoveryNavHost(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    pendingNavigation: MyPageDestination.GraphExplore? = null,
+    onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var savedStack by rememberSaveable { mutableStateOf("") }
@@ -94,6 +98,20 @@ fun DiscoveryNavHost(
     val isInDetail = backStack.lastOrNull() !is DiscoveryRouteKey.DiscoveryIndex
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
+    }
+
+    LaunchedEffect(pendingNavigation) {
+        val destination = pendingNavigation ?: return@LaunchedEffect
+        backStack.clear()
+        backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        backStack.add(
+            DiscoveryRouteKey.GraphExplorePage(
+                type = destination.contentType,
+                contentId = destination.contentId,
+                initialTab = GraphTab.Similar,
+            ),
+        )
+        onPendingNavigationConsumed()
     }
 
     NavDisplay(
@@ -463,6 +481,18 @@ fun DiscoveryNavHost(
                     DeepDiveRoute(
                         seedType = key.seedType,
                         seedId = key.seedId,
+                        onBack = { backStack.removeLastOrNull() },
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Graph Explore ----
+                is DiscoveryRouteKey.GraphExplorePage -> NavEntry(entryKey) {
+                    GraphExploreRoute(
+                        contentType = key.type,
+                        contentId = key.contentId,
+                        initialTab = key.initialTab,
                         onBack = { backStack.removeLastOrNull() },
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         modifier = modifier,
