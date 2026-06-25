@@ -3,6 +3,9 @@ package com.duckylife.heritage.modern.core.testing.fake
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
+import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.RecentContentProvider
+import com.duckylife.heritage.modern.core.data.RecentContentRef
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.core.network.IntelligentSearchQuery
@@ -61,6 +64,18 @@ object TestFakeDataModule {
         repository: ContentIntelligenceRepository,
     ): ContentIntelligenceViewModelDelegateFactory =
         DefaultContentIntelligenceViewModelDelegateFactory(repository)
+
+    @Provides
+    @Singleton
+    fun provideKnowledgeGraphRepository(): KnowledgeGraphRepository =
+        TestFakeKnowledgeGraphRepository()
+
+    @Provides
+    @Singleton
+    fun provideRecentContentProvider(): RecentContentProvider = object : RecentContentProvider {
+        override fun observeRecentContent(): kotlinx.coroutines.flow.Flow<RecentContentRef?> =
+            kotlinx.coroutines.flow.flowOf(null)
+    }
 
     @Provides
     @Singleton

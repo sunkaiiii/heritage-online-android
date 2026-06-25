@@ -19,6 +19,9 @@ internal sealed interface DiscoveryRouteKey {
     data object RegionAtlasPage : DiscoveryRouteKey
     data class RegionDetailPage(val region: String) : DiscoveryRouteKey
     data object TimelinePage : DiscoveryRouteKey
+    data object KnowledgeGraphHubPage : DiscoveryRouteKey
+    data class TopicGraphMapPage(val topicType: String, val topicKey: String) : DiscoveryRouteKey
+    data class GraphTrailPage(val source: GraphTrailSource) : DiscoveryRouteKey
     data object TaxonomyPage : DiscoveryRouteKey
     data class TaxonomyDetailPage(val type: String, val key: String) : DiscoveryRouteKey
     data class ComparePage(val type: String? = null, val left: String? = null, val right: String? = null) : DiscoveryRouteKey
@@ -66,6 +69,9 @@ internal sealed interface RouteState {
     @kotlinx.serialization.Serializable data object RegionAtlas : RouteState
     @kotlinx.serialization.Serializable data class RegionDetail(val region: String = "") : RouteState
     @kotlinx.serialization.Serializable data object Timeline : RouteState
+    @kotlinx.serialization.Serializable data object KnowledgeGraphHub : RouteState
+    @kotlinx.serialization.Serializable data class TopicGraphMap(@kotlinx.serialization.SerialName("topicType") val topicType: String = "", val topicKey: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class GraphTrail(val source: GraphTrailSource = GraphTrailSource.Random) : RouteState
     @kotlinx.serialization.Serializable data object Taxonomy : RouteState
     @kotlinx.serialization.Serializable data class TaxonomyDetail(@kotlinx.serialization.SerialName("topicType") val type: String = "", val key: String = "") : RouteState
     @kotlinx.serialization.Serializable data class Compare(@kotlinx.serialization.SerialName("topicType") val type: String? = null, val left: String? = null, val right: String? = null) : RouteState
@@ -90,6 +96,29 @@ enum class GraphTab(val wireName: String) {
 }
 
 // ---------------------------------------------------------------------------
+// 图谱漫游来源
+// ---------------------------------------------------------------------------
+
+@kotlinx.serialization.Serializable
+sealed interface GraphTrailSource {
+    @kotlinx.serialization.Serializable
+    data object Random : GraphTrailSource
+
+    @kotlinx.serialization.Serializable
+    data class FromContent(
+        @kotlinx.serialization.SerialName("contentType")
+        val type: String,
+        val contentId: String,
+    ) : GraphTrailSource
+
+    @kotlinx.serialization.Serializable
+    data class FromTopic(
+        val topicType: String,
+        val topicKey: String,
+    ) : GraphTrailSource
+}
+
+// ---------------------------------------------------------------------------
 // 路由 key 与可持久化状态之间的转换
 // ---------------------------------------------------------------------------
 
@@ -104,6 +133,9 @@ internal fun DiscoveryRouteKey.toRouteState(): RouteState = when (this) {
     is DiscoveryRouteKey.RegionAtlasPage -> RouteState.RegionAtlas
     is DiscoveryRouteKey.RegionDetailPage -> RouteState.RegionDetail(region)
     is DiscoveryRouteKey.TimelinePage -> RouteState.Timeline
+    is DiscoveryRouteKey.KnowledgeGraphHubPage -> RouteState.KnowledgeGraphHub
+    is DiscoveryRouteKey.TopicGraphMapPage -> RouteState.TopicGraphMap(topicType, topicKey)
+    is DiscoveryRouteKey.GraphTrailPage -> RouteState.GraphTrail(source)
     is DiscoveryRouteKey.TaxonomyPage -> RouteState.Taxonomy
     is DiscoveryRouteKey.TaxonomyDetailPage -> RouteState.TaxonomyDetail(type, key)
     is DiscoveryRouteKey.ComparePage -> RouteState.Compare(type, left, right)
@@ -127,6 +159,9 @@ internal fun RouteState.toRouteKey(): DiscoveryRouteKey = when (this) {
     is RouteState.RegionAtlas -> DiscoveryRouteKey.RegionAtlasPage
     is RouteState.RegionDetail -> DiscoveryRouteKey.RegionDetailPage(region)
     is RouteState.Timeline -> DiscoveryRouteKey.TimelinePage
+    is RouteState.KnowledgeGraphHub -> DiscoveryRouteKey.KnowledgeGraphHubPage
+    is RouteState.TopicGraphMap -> DiscoveryRouteKey.TopicGraphMapPage(topicType, topicKey)
+    is RouteState.GraphTrail -> DiscoveryRouteKey.GraphTrailPage(source)
     is RouteState.Taxonomy -> DiscoveryRouteKey.TaxonomyPage
     is RouteState.TaxonomyDetail -> DiscoveryRouteKey.TaxonomyDetailPage(type, key)
     is RouteState.Compare -> DiscoveryRouteKey.ComparePage(type, left, right)

@@ -10,6 +10,10 @@ import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepository
 import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
+import com.duckylife.heritage.modern.core.data.DefaultKnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.DefaultRecentContentProvider
+import com.duckylife.heritage.modern.core.data.RecentContentProvider
 import com.duckylife.heritage.modern.core.profile.DataStoreLocalProfileRepository
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
@@ -42,6 +46,18 @@ abstract class DataModule {
     abstract fun bindIntelligentSearchRepository(
         repository: DefaultIntelligentSearchRepository,
     ): IntelligentSearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindKnowledgeGraphRepository(
+        repository: DefaultKnowledgeGraphRepository,
+    ): KnowledgeGraphRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentContentProvider(
+        provider: DefaultRecentContentProvider,
+    ): RecentContentProvider
 
     @Binds
     @Singleton

@@ -29,6 +29,9 @@ import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRo
 import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
 import com.duckylife.heritage.modern.feature.learningroutes.LearningRouteDetailRoute
 import com.duckylife.heritage.modern.feature.learningroutes.LearningRoutesRoute
+import com.duckylife.heritage.modern.feature.graph.hub.KnowledgeGraphHubRoute
+import com.duckylife.heritage.modern.feature.graph.topicmap.TopicGraphMapRoute
+import com.duckylife.heritage.modern.feature.graph.trail.GraphTrailRoute
 import com.duckylife.heritage.modern.feature.regions.RegionAtlasRoute
 import com.duckylife.heritage.modern.feature.regions.RegionDetailRoute
 import com.duckylife.heritage.modern.feature.search.SearchRoute
@@ -172,6 +175,9 @@ fun DiscoveryNavHost(
                         },
                         onTimelineClick = {
                             backStack.add(DiscoveryRouteKey.TimelinePage)
+                        },
+                        onKnowledgeGraphClick = {
+                            backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
                         },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
@@ -647,6 +653,50 @@ fun DiscoveryNavHost(
                     )
                 }
 
+                // ---- Knowledge Graph Hub ----
+                is DiscoveryRouteKey.KnowledgeGraphHubPage -> NavEntry(entryKey) {
+                    KnowledgeGraphHubRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        onTopicClick = { topicType, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = topicType,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
+                        onRandomTrailClick = {
+                            backStack.add(DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.Random))
+                        },
+                        onRecentTrailClick = { type, id ->
+                            backStack.add(
+                                DiscoveryRouteKey.GraphTrailPage(
+                                    GraphTrailSource.FromContent(type, id),
+                                ),
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Topic Graph Map ----
+                is DiscoveryRouteKey.TopicGraphMapPage -> NavEntry(entryKey) {
+                    TopicGraphMapRoute(
+                        topicType = key.topicType,
+                        topicKey = key.topicKey,
+                        onBack = { backStack.removeLastOrNull() },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Graph Trail ----
+                is DiscoveryRouteKey.GraphTrailPage -> NavEntry(entryKey) {
+                    GraphTrailRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        modifier = modifier,
+                    )
+                }
+
                 // ---- Fallback ----
                 else -> NavEntry(Unit) {
                     DiscoveryRoute(
@@ -673,6 +723,9 @@ fun DiscoveryNavHost(
                         },
                         onTimelineClick = {
                             backStack.add(DiscoveryRouteKey.TimelinePage)
+                        },
+                        onKnowledgeGraphClick = {
+                            backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
                         },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },

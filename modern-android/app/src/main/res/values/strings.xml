@@ -355,6 +355,9 @@
 
     <!-- Graph Explore -->
     <string name="graph_explore_title">内容关系</string>
+    <string name="knowledge_graph_hub_title">知识图谱</string>
+    <string name="knowledge_graph_hub_subtitle">从内容、主题与关联中继续探索</string>
+    <string name="knowledge_graph_hub_coming_soon">知识图谱首页即将上线，敬请期待</string>
     <string name="graph_tab_neighbors">关联</string>
     <string name="graph_tab_similar">相似</string>
     <string name="graph_tab_explore">探索</string>
@@ -399,4 +402,39 @@
     <string name="journeys_warning_cold_start">你的探索数据还不多，推荐会随浏览和收藏逐渐改善。</string>
     <string name="journeys_warning_graph_unavailable">关系数据暂时不可用，本次推荐仅依据本地记录。</string>
     <string name="journeys_warning_generic">个性化推荐正在学习中。</string>
+
+    <!-- Graph Hub -->
+    <string name="knowledge_graph_hub_info_icon_description">关于知识图谱</string>
+    <string name="knowledge_graph_hub_intro">按主题发现互相关联的非遗内容</string>
+    <string name="knowledge_graph_hub_communities_title">热门主题群</string>
+    <string name="knowledge_graph_hub_community_content_count">%1$d 项内容</string>
+    <string name="knowledge_graph_hub_community_relation_count">%1$d 条关系</string>
+    <string name="knowledge_graph_hub_trails_title">开始一段漫游</string>
+    <string name="knowledge_graph_hub_random_trail_title">随机漫游</string>
+    <string name="knowledge_graph_hub_random_trail_subtitle">从任意节点出发探索</string>
+    <string name="knowledge_graph_hub_recent_trail_title">从我最近浏览开始</string>
+    <string name="knowledge_graph_hub_recent_trail_disabled_subtitle">先浏览一条内容后再来</string>
+    <string name="knowledge_graph_hub_footer">在内容详情中查看关系</string>
+    <string name="knowledge_graph_hub_info_title">关于知识图谱</string>
+    <string name="knowledge_graph_hub_info_body">这里展示的关系来自已有内容字段与图谱投影，帮助你在非遗内容、主题与地区之间继续探索。此页面不会生成 AI 内容，也不会修改后端数据。</string>
+    <string name="knowledge_graph_hub_empty_title">图谱尚无可展示主题</string>
+    <string name="knowledge_graph_hub_empty_message">热门主题群会在数据更新后逐步出现。</string>
+    <string name="knowledge_graph_hub_empty_action">去发现</string>
+
+    <!-- Topic Graph Map & Trail placeholders -->
+    <string name="topic_graph_map_title">主题图谱</string>
+    <string name="topic_graph_map_coming_soon">主题图谱地图即将上线</string>
+    <string name="graph_trail_title">知识漫游</string>
+    <string name="graph_trail_coming_soon">知识漫游即将上线</string>
+
+    <!-- Graph Explore -->
+    <string name="graph_explore_center_fallback_title">内容关系</string>
+    <string name="graph_explore_neighbors_summary">已找到 %1$d 个直接关联</string>
+    <string name="graph_explore_similar_summary">找到 %1$d 个相似内容</string>
+    <string name="graph_explore_explore_summary">深度 %1$d：%2$d 个节点 · %3$d 条关系</string>
+    <string name="graph_explore_include_ai_inferred">包含 AI 推断关系</string>
+    <string name="graph_explore_invalid_route_title">无法识别的内容类型</string>
+    <string name="graph_explore_invalid_route_message">该内容暂时不支持关系图谱。</string>
+
+    <string name="action_close">关闭</string>
 </resources>

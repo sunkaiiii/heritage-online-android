@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountTree
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -71,6 +72,7 @@ fun DiscoveryRoute(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onKnowledgeGraphClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
     onTodayItemClick: (DiscoveryItemDto) -> Unit,
@@ -90,6 +92,7 @@ fun DiscoveryRoute(
         onCollectionClick = onCollectionClick,
         onRegionAtlasClick = onRegionAtlasClick,
         onTimelineClick = onTimelineClick,
+        onKnowledgeGraphClick = onKnowledgeGraphClick,
         onSerendipityClick = viewModel::serendipity,
         onTrendingItemClick = onTrendingItemClick,
         onWeeklyItemClick = onWeeklyItemClick,
@@ -116,6 +119,7 @@ fun DiscoveryScreen(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onKnowledgeGraphClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -152,6 +156,7 @@ fun DiscoveryScreen(
                     onCollectionClick = onCollectionClick,
                     onRegionAtlasClick = onRegionAtlasClick,
                     onTimelineClick = onTimelineClick,
+                    onKnowledgeGraphClick = onKnowledgeGraphClick,
                     onSerendipityClick = onSerendipityClick,
                     onTrendingItemClick = onTrendingItemClick,
                     onWeeklyItemClick = onWeeklyItemClick,
@@ -179,6 +184,7 @@ private fun DiscoveryContent(
     onCollectionClick: (FeaturedCollectionDto) -> Unit,
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
+    onKnowledgeGraphClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -295,6 +301,17 @@ private fun DiscoveryContent(
                 subtitle = stringResource(R.string.discovery_stories_subtitle),
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 onClick = onStoriesClick,
+            )
+        }
+
+        // 知识图谱入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.knowledge_graph_hub_title),
+                subtitle = stringResource(R.string.knowledge_graph_hub_subtitle),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                icon = Icons.Outlined.AccountTree,
+                onClick = onKnowledgeGraphClick,
             )
         }
 
@@ -797,6 +814,7 @@ private fun DiscoveryEntryCard(
     containerColor: androidx.compose.ui.graphics.Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: androidx.compose.ui.graphics.vector.ImageVector? = null,
 ) {
     Card(
         modifier = modifier
@@ -813,6 +831,14 @@ private fun DiscoveryEntryCard(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            if (icon != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 12.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,

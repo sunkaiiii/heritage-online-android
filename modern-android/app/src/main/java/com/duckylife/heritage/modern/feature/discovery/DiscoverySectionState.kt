@@ -8,5 +8,5 @@ data class DiscoverySectionState<T>(
     val errorKind: ErrorKind? = null,
 ) {
     val hasData: Boolean get() = data != null
-    val hasError: Boolean get() = errorKind != null && !hasData
+    val hasError: Boolean get() = errorKind != null
 }

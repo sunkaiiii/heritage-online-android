@@ -323,4 +323,39 @@
     <string name="intelligence_show_all_n">Show all %1$d</string>
     <string name="intelligence_based_on_local_ai">Based on locally generated materials</string>
     <string name="intelligence_not_available">AI insights are not yet available for this content</string>
+
+    <!-- Graph Hub -->
+    <string name="knowledge_graph_hub_info_icon_description">About knowledge graph</string>
+    <string name="knowledge_graph_hub_intro">Discover related heritage content by topic</string>
+    <string name="knowledge_graph_hub_communities_title">Hot topic communities</string>
+    <string name="knowledge_graph_hub_community_content_count">%1$d items</string>
+    <string name="knowledge_graph_hub_community_relation_count">%1$d relations</string>
+    <string name="knowledge_graph_hub_trails_title">Start a trail</string>
+    <string name="knowledge_graph_hub_random_trail_title">Random trail</string>
+    <string name="knowledge_graph_hub_random_trail_subtitle">Explore from a random starting point</string>
+    <string name="knowledge_graph_hub_recent_trail_title">From recent viewing</string>
+    <string name="knowledge_graph_hub_recent_trail_disabled_subtitle">Browse a piece of content first</string>
+    <string name="knowledge_graph_hub_footer">View relationships in content detail</string>
+    <string name="knowledge_graph_hub_info_title">About the knowledge graph</string>
+    <string name="knowledge_graph_hub_info_body">The relationships shown here come from existing content fields and graph projections, helping you explore heritage content, topics, and regions. This page does not generate AI content or modify backend data.</string>
+    <string name="knowledge_graph_hub_empty_title">No topic communities yet</string>
+    <string name="knowledge_graph_hub_empty_message">Hot communities will appear as data is updated.</string>
+    <string name="knowledge_graph_hub_empty_action">Go discover</string>
+
+    <!-- Topic Graph Map & Trail placeholders -->
+    <string name="topic_graph_map_title">Topic graph</string>
+    <string name="topic_graph_map_coming_soon">Topic graph map coming soon</string>
+    <string name="graph_trail_title">Knowledge trail</string>
+    <string name="graph_trail_coming_soon">Knowledge trail coming soon</string>
+
+    <!-- Graph Explore -->
+    <string name="graph_explore_center_fallback_title">Content relationships</string>
+    <string name="graph_explore_neighbors_summary">%1$d direct connections found</string>
+    <string name="graph_explore_similar_summary">%1$d similar items found</string>
+    <string name="graph_explore_explore_summary">Depth %1$d: %2$d nodes · %3$d relations</string>
+    <string name="graph_explore_include_ai_inferred">Include AI-inferred relations</string>
+    <string name="graph_explore_invalid_route_title">Unrecognized content type</string>
+    <string name="graph_explore_invalid_route_message">Relationship graph is not available for this content.</string>
+
+    <string name="action_close">Close</string>
 </resources>
