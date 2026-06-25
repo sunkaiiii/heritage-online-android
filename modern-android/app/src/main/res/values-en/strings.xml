@@ -349,6 +349,11 @@
     <string name="graph_trail_coming_soon">Knowledge trail coming soon</string>
 
     <!-- Graph Explore -->
+    <string name="graph_explore_title">Content relationships</string>
+    <string name="graph_tab_neighbors">Related</string>
+    <string name="graph_tab_similar">Similar</string>
+    <string name="graph_tab_explore">Explore</string>
+    <string name="graph_tab_evidence">Evidence</string>
     <string name="graph_explore_center_fallback_title">Content relationships</string>
     <string name="graph_explore_neighbors_summary">%1$d direct connections found</string>
     <string name="graph_explore_similar_summary">%1$d similar items found</string>
@@ -356,6 +361,13 @@
     <string name="graph_explore_include_ai_inferred">Include AI-inferred relations</string>
     <string name="graph_explore_invalid_route_title">Unrecognized content type</string>
     <string name="graph_explore_invalid_route_message">Relationship graph is not available for this content.</string>
+    <string name="graph_explore_menu_more">More options</string>
+    <string name="graph_explore_menu_refresh">Refresh</string>
+    <string name="graph_explore_menu_relation_explanation">About relationships</string>
+    <string name="graph_explore_relation_explanation_title">About relationships</string>
+    <string name="graph_explore_relation_explanation_body">The relationships shown here come from existing content fields and graph projections, with AI-inferred relations added when “Include AI-inferred relations” is on. Relationships may change as data is updated.</string>
+    <string name="graph_explore_ai_inferred_hint">AI-inferred relations are marked separately and may change with model results</string>
+    <string name="graph_explore_loading">Loading relationships</string>
 
     <string name="action_close">Close</string>
 </resources>

@@ -23,6 +23,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -106,6 +107,39 @@ class GraphExploreViewModelTest {
 
         assertTrue(viewModel.uiState.value.neighbors.hasData)
         assertFalse(viewModel.uiState.value.similar.isLoading)
+    }
+
+    @Test
+    fun `refresh reloads current tab`() = runTest {
+        fakeRepository.failure = RuntimeException("network")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.neighbors.hasError)
+
+        fakeRepository.failure = null
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.neighbors.hasData)
+        assertFalse(viewModel.uiState.value.similar.isLoading)
+    }
+
+    @Test
+    fun `refresh failure preserves cached data and sets section error`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.neighbors.hasData)
+
+        fakeRepository.failure = RuntimeException("network")
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        val section = viewModel.uiState.value.neighbors
+        assertTrue(section.hasData)
+        assertNotNull(section.errorKind)
+        assertFalse(section.hasError)
     }
 
     @Test

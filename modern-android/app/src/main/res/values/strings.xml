@@ -435,6 +435,13 @@
     <string name="graph_explore_include_ai_inferred">包含 AI 推断关系</string>
     <string name="graph_explore_invalid_route_title">无法识别的内容类型</string>
     <string name="graph_explore_invalid_route_message">该内容暂时不支持关系图谱。</string>
+    <string name="graph_explore_menu_more">更多选项</string>
+    <string name="graph_explore_menu_refresh">刷新</string>
+    <string name="graph_explore_menu_relation_explanation">关系说明</string>
+    <string name="graph_explore_relation_explanation_title">关系说明</string>
+    <string name="graph_explore_relation_explanation_body">这里展示的关系来自已有内容字段与图谱投影，并在开启“包含 AI 推断关系”时补充 AI 推断结果。关系会随数据更新而变化。</string>
+    <string name="graph_explore_ai_inferred_hint">AI 推断关系会单独标识，可能随模型结果变化</string>
+    <string name="graph_explore_loading">关系加载中</string>
 
     <string name="action_close">关闭</string>
 </resources>

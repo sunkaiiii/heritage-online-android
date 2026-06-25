@@ -64,6 +64,13 @@ class GraphExploreViewModel @AssistedInject constructor(
         loadTab(_uiState.value.selectedTab, force = true)
     }
 
+    /**
+     * 刷新当前 tab 的数据。
+     *
+     * 与 [retry] 语义相同，都从菜单触发当前选中 tab 的重新加载。
+     */
+    fun refresh() = retry()
+
     fun toggleAiInferred() {
         _uiState.update { it.copy(includeAiInferred = !it.includeAiInferred) }
         loadTab(GraphTab.Evidence, force = true)
