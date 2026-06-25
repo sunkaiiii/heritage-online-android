@@ -32,5 +32,5 @@ data class DiscoveryUiState(
     val isAnyLoading: Boolean
         get() = today.isLoading || trending.isLoading || weekly.isLoading || classic.isLoading
     val isAllFailed: Boolean
-        get() = today.hasError && trending.hasError && weekly.hasError && classic.hasError
+        get() = today.hasFatalError && trending.hasFatalError && weekly.hasFatalError && classic.hasFatalError
 }

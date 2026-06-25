@@ -44,6 +44,7 @@ class GraphExploreViewModel @AssistedInject constructor(
     val uiState: StateFlow<GraphExploreUiState> = _uiState.asStateFlow()
 
     private val tabJobs = mutableMapOf<GraphTab, Job>()
+    private var aiInferredJob: Job? = null
 
     init {
         if (contentRef != null && contentId.isNotBlank()) {
@@ -58,10 +59,17 @@ class GraphExploreViewModel @AssistedInject constructor(
         if (tab == _uiState.value.selectedTab) return
         _uiState.update { it.copy(selectedTab = tab) }
         loadTab(tab)
+        if (tab == GraphTab.Evidence && _uiState.value.includeAiInferred) {
+            loadAiInferred()
+        }
     }
 
     fun retry() {
-        loadTab(_uiState.value.selectedTab, force = true)
+        val selectedTab = _uiState.value.selectedTab
+        loadTab(selectedTab, force = true)
+        if (selectedTab == GraphTab.Evidence && _uiState.value.includeAiInferred) {
+            loadAiInferred(force = true)
+        }
     }
 
     /**
@@ -72,8 +80,18 @@ class GraphExploreViewModel @AssistedInject constructor(
     fun refresh() = retry()
 
     fun toggleAiInferred() {
-        _uiState.update { it.copy(includeAiInferred = !it.includeAiInferred) }
-        loadTab(GraphTab.Evidence, force = true)
+        val shouldInclude = !_uiState.value.includeAiInferred
+        _uiState.update { it.copy(includeAiInferred = shouldInclude) }
+        if (shouldInclude) {
+            loadAiInferred()
+        }
+    }
+
+    fun selectExploreDepth(depth: Int) {
+        val clampedDepth = depth.coerceIn(1, 2)
+        if (clampedDepth == _uiState.value.exploreDepth) return
+        _uiState.update { it.copy(exploreDepth = clampedDepth) }
+        loadTab(GraphTab.Explore, force = true)
     }
 
     private fun loadTab(tab: GraphTab, force: Boolean = false) {
@@ -114,7 +132,8 @@ class GraphExploreViewModel @AssistedInject constructor(
     }
 
     private suspend fun loadExplore(ref: SearchResultType) {
-        runCatchingCancellable { repository.loadExplore(ref, contentId, depth = 2) }
+        val depth = _uiState.value.exploreDepth
+        runCatchingCancellable { repository.loadExplore(ref, contentId, depth = depth) }
             .onSuccess { explore ->
                 _uiState.update { it.copy(explore = DiscoverySectionState(data = explore)) }
             }
@@ -126,13 +145,42 @@ class GraphExploreViewModel @AssistedInject constructor(
             repository.loadEvidence(
                 ref,
                 contentId,
-                includeAiInferred = _uiState.value.includeAiInferred,
+                includeAiInferred = false,
             )
         }
             .onSuccess { evidence ->
                 _uiState.update { it.copy(evidence = DiscoverySectionState(data = evidence)) }
             }
             .onFailure { setTabError(GraphTab.Evidence, it.toUiError().kind) }
+    }
+
+    private fun loadAiInferred(force: Boolean = false) {
+        val ref = contentRef ?: return
+        val section = _uiState.value.aiInferredEdges
+        if (!force && (section.isLoading || section.hasData)) return
+
+        aiInferredJob?.cancel()
+        aiInferredJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(aiInferredEdges = it.aiInferredEdges.copy(isLoading = true, errorKind = null))
+            }
+            runCatchingCancellable { repository.loadAiInferredEdges(ref, contentId) }
+                .onSuccess { edges ->
+                    _uiState.update {
+                        it.copy(aiInferredEdges = DiscoverySectionState(data = edges))
+                    }
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(
+                            aiInferredEdges = it.aiInferredEdges.copy(
+                                isLoading = false,
+                                errorKind = throwable.toUiError().kind,
+                            ),
+                        )
+                    }
+                }
+        }
     }
 
     private fun GraphTab.isLoadedOrLoading(): Boolean {
@@ -170,6 +218,7 @@ class GraphExploreViewModel @AssistedInject constructor(
     override fun onCleared() {
         tabJobs.values.forEach { it.cancel() }
         tabJobs.clear()
+        aiInferredJob?.cancel()
     }
 
     @AssistedFactory

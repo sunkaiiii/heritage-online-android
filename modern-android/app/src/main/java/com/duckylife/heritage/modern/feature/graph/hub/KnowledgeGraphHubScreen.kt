@@ -154,7 +154,7 @@ private fun KnowledgeGraphHubContent(
                 }
             }
 
-            uiState.communities.hasError -> {
+            uiState.communities.hasFatalError -> {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     HubErrorCard(
                         errorKind = uiState.communities.errorKind ?: ErrorKind.Unknown,

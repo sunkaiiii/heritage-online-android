@@ -876,8 +876,11 @@ private fun <T> SectionContainer(
     Column(modifier = modifier.fillMaxWidth()) {
         when {
             section.isLoading && !section.hasData -> loadingContent()
-            section.hasError -> errorContent(section.errorKind!!)
-            section.hasData -> content(section.data!!)
+            section.hasFatalError -> errorContent(section.errorKind!!)
+            section.hasData -> {
+                section.errorKind?.let { errorKind -> errorContent(errorKind) }
+                content(section.data!!)
+            }
         }
     }
 }

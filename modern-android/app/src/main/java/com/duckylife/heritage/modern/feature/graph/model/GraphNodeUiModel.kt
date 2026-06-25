@@ -22,6 +22,12 @@ data class GraphNodeUiModel(
             type == GraphNodeType.DirectoryItem ||
             type == GraphNodeType.Inheritor
 
+    val isTopicNode: Boolean
+        get() = !isContentNode && type != GraphNodeType.Unknown
+
+    val topicKey: String
+        get() = id?.takeIf { it.isNotBlank() } ?: nodeKey
+
     val displayTitle: String
         get() = title?.takeIf { it.isNotBlank() } ?: nodeKey
 }

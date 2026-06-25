@@ -3,15 +3,18 @@ package com.duckylife.heritage.modern.core.data
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphCommunitiesQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphEvidenceQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphExploreQuery
+import com.duckylife.heritage.modern.core.network.KnowledgeGraphAiInferredQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphNeighborsQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphSimilarQuery
 import com.duckylife.heritage.modern.core.network.api.KnowledgeGraphApi
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphCommunityUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
+import com.duckylife.heritage.modern.feature.graph.model.toAiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.toEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.toExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.toNeighborsResult
@@ -38,6 +41,8 @@ interface KnowledgeGraphRepository {
         id: String,
         includeAiInferred: Boolean = false,
     ): GraphEvidenceResult
+
+    suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult
 }
 
 class DefaultKnowledgeGraphRepository @Inject constructor(
@@ -95,4 +100,17 @@ class DefaultKnowledgeGraphRepository @Inject constructor(
             limit = 20,
         ),
     ).toEvidenceResult()
+
+    override suspend fun loadAiInferredEdges(
+        type: SearchResultType,
+        id: String,
+    ): AiInferredEdgesResult = api.getAiInferredEdges(
+        KnowledgeGraphAiInferredQuery(
+            contentType = type,
+            id = id,
+            minConfidence = 0.0,
+            includeStale = false,
+            limit = 50,
+        ),
+    ).toAiInferredEdgesResult()
 }

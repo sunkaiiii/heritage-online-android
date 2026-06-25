@@ -13,11 +13,17 @@ import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.feature.discovery.DiscoverySectionState
 import com.duckylife.heritage.modern.feature.discovery.GraphTab
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
+import com.duckylife.heritage.modern.feature.graph.model.AssociationLevel
+import com.duckylife.heritage.modern.feature.graph.model.GraphEdgeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarItemUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import org.junit.Assert.assertEquals
@@ -45,7 +51,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -72,7 +80,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -99,7 +109,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -121,7 +133,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = { toggled = true },
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -146,7 +160,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -168,7 +184,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -189,7 +207,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -211,10 +231,22 @@ class GraphExploreRouteTest {
                                         nodeKey = "article-test",
                                         type = GraphNodeType.Article,
                                         id = "article-test-id",
+                                        title = "Center Article",
+                                    ),
+                                    GraphNodeUiModel(
+                                        nodeKey = "article-cached",
+                                        type = GraphNodeType.Article,
+                                        id = "article-cached-id",
                                         title = "Cached Article",
                                     ),
                                 ),
-                                edges = emptyList(),
+                                edges = listOf(
+                                    GraphEdgeUiModel(
+                                        fromNodeKey = "article-test",
+                                        toNodeKey = "article-cached",
+                                        relationType = GraphRelationType.RelatedTo,
+                                    ),
+                                ),
                             ),
                             errorKind = ErrorKind.ServerError,
                         ),
@@ -224,7 +256,9 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
@@ -244,12 +278,227 @@ class GraphExploreRouteTest {
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
-                    onCenterNodeClick = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
                 )
             }
         }
 
         composeRule.onNodeWithText(context.getString(R.string.graph_explore_invalid_route_title))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun similarEmptyStateOffersExploreAction() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Similar,
+                        similar = DiscoverySectionState(data = GraphSimilarResult(emptyList())),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_similar_empty_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.graph_similar_empty_action))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun similarPathButtonShowsPendingPathSheet() {
+        var clicked = false
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(selectedTab = GraphTab.Similar),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = { clicked = true },
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_similar_view_path))
+            .performClick()
+        composeRule.waitForIdle()
+
+        assertTrue(clicked)
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_pending_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_pending_target, "Related Article"))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun exploreOverviewFallsBackWhenGraphIsTooLarge() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Explore,
+                        explore = DiscoverySectionState(data = largeExploreResult()),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_explore_overview_view))
+            .performClick()
+        composeRule.onNodeWithText(context.getString(R.string.graph_overview_too_large_title))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun exploreTabShowsEmptyStateWhenThereAreNoNodes() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Explore,
+                        explore = DiscoverySectionState(data = GraphExploreResult(2, emptyList(), emptyList())),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_explore_empty_title))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun exploreOverviewFallsBackWhenThereAreNoEdges() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Explore,
+                        explore = DiscoverySectionState(
+                            data = GraphExploreResult(
+                                depth = 2,
+                                nodes = listOf(
+                                    GraphNodeUiModel(
+                                        nodeKey = "node-1",
+                                        type = GraphNodeType.Article,
+                                        id = "node-1",
+                                        title = "Node 1",
+                                    ),
+                                ),
+                                edges = emptyList(),
+                                centerNodeKey = "node-1",
+                            ),
+                        ),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_explore_overview_view))
+            .performClick()
+        composeRule.onNodeWithText(context.getString(R.string.graph_overview_no_edges_title))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun aiInferredEmptyStateIsSeparateFromEvidence() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Evidence,
+                        includeAiInferred = true,
+                        evidence = DiscoverySectionState(data = GraphEvidenceResult(emptyList(), emptyList())),
+                        aiInferredEdges = DiscoverySectionState(data = AiInferredEdgesResult(emptyList())),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_evidence_empty_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.graph_ai_inferred_empty_title))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun aiInferredErrorKeepsEvidenceContent() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Evidence,
+                        includeAiInferred = true,
+                        evidence = DiscoverySectionState(
+                            data = GraphEvidenceResult(
+                                evidence = emptyList(),
+                                warnings = emptyList(),
+                            ),
+                        ),
+                        aiInferredEdges = DiscoverySectionState(errorKind = ErrorKind.ServerError),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_evidence_intro))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.action_retry))
             .assertIsDisplayed()
     }
 
@@ -263,20 +512,74 @@ class GraphExploreRouteTest {
             category = "Category",
             region = "Region",
         )
+        val neighborNode = GraphNodeUiModel(
+            nodeKey = "article-related",
+            type = GraphNodeType.Article,
+            id = "article-related-id",
+            title = "Related Article",
+            subtitle = "Related subtitle",
+        )
+        val edge = GraphEdgeUiModel(
+            fromNodeKey = centerNode.nodeKey,
+            toNodeKey = neighborNode.nodeKey,
+            relationType = GraphRelationType.RelatedTo,
+            reason = "同属一个主题",
+        )
         return GraphExploreUiState(
             centerNode = centerNode,
             neighbors = DiscoverySectionState(
                 data = GraphNeighborsResult(
                     centerNodeKey = centerNode.nodeKey,
-                    nodes = listOf(centerNode),
-                    edges = emptyList(),
+                    nodes = listOf(centerNode, neighborNode),
+                    edges = listOf(edge),
                 ),
             ),
-            similar = DiscoverySectionState(data = GraphSimilarResult(emptyList())),
+            similar = DiscoverySectionState(
+                data = GraphSimilarResult(
+                    items = listOf(
+                        GraphSimilarItemUiModel(
+                            node = neighborNode,
+                            associationLevel = AssociationLevel.High,
+                            reasons = listOf("共享主题"),
+                            sharedTopics = listOf("传统技艺"),
+                            sharedNeighborCount = 2,
+                        ),
+                    ),
+                ),
+            ),
             explore = DiscoverySectionState(
-                data = GraphExploreResult(2, emptyList(), emptyList()),
+                data = GraphExploreResult(
+                    depth = 2,
+                    nodes = listOf(centerNode, neighborNode),
+                    edges = listOf(edge),
+                    centerNodeKey = centerNode.nodeKey,
+                ),
             ),
             evidence = DiscoverySectionState(data = GraphEvidenceResult(emptyList(), emptyList())),
+        )
+    }
+
+    private fun largeExploreResult(): GraphExploreResult {
+        val nodes = (0..36).map { index ->
+            GraphNodeUiModel(
+                nodeKey = "node-$index",
+                type = if (index == 0) GraphNodeType.Article else GraphNodeType.Category,
+                id = "id-$index",
+                title = "Node $index",
+            )
+        }
+        val edges = (1..73).map { index ->
+            GraphEdgeUiModel(
+                fromNodeKey = "node-0",
+                toNodeKey = "node-${((index - 1) % 36) + 1}",
+                relationType = GraphRelationType.Topic,
+            )
+        }
+        return GraphExploreResult(
+            depth = 2,
+            nodes = nodes,
+            edges = edges,
+            centerNodeKey = "node-0",
         )
     }
 }

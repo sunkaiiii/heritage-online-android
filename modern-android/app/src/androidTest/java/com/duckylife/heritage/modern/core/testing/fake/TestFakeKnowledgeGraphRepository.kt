@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.core.testing.fake
 
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphCommunityUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
@@ -21,6 +22,7 @@ class TestFakeKnowledgeGraphRepository : KnowledgeGraphRepository {
     var similarResult: GraphSimilarResult = GraphSimilarResult(emptyList())
     var exploreResult: GraphExploreResult = GraphExploreResult(2, emptyList(), emptyList())
     var evidenceResult: GraphEvidenceResult = GraphEvidenceResult(emptyList(), emptyList())
+    var aiInferredEdgesResult: AiInferredEdgesResult = AiInferredEdgesResult(emptyList())
     var failure: Throwable? = null
 
     override suspend fun getCommunities(limit: Int, minSize: Int): List<GraphCommunityUiModel> {
@@ -54,5 +56,10 @@ class TestFakeKnowledgeGraphRepository : KnowledgeGraphRepository {
     ): GraphEvidenceResult {
         failure?.let { throw it }
         return evidenceResult
+    }
+
+    override suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult {
+        failure?.let { throw it }
+        return aiInferredEdgesResult
     }
 }

@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.data.RecentContentProvider
 import com.duckylife.heritage.modern.core.data.RecentContentRef
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphCommunityUiModel
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import io.ktor.client.HttpClient
@@ -84,6 +85,7 @@ class KnowledgeGraphHubViewModelTest {
         val viewModel = createViewModel()
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value.communities.hasError)
+        assertTrue(viewModel.uiState.value.communities.hasFatalError)
 
         fakeRepository.failure = null
         fakeRepository.communitiesResult = listOf(
@@ -158,6 +160,9 @@ class KnowledgeGraphHubViewModelTest {
             throw NotImplementedError()
 
         override suspend fun loadEvidence(type: SearchResultType, id: String, includeAiInferred: Boolean) =
+            throw NotImplementedError()
+
+        override suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult =
             throw NotImplementedError()
     }
 

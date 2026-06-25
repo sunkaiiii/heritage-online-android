@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.discovery.GraphTab
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphEdgeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
@@ -99,6 +100,7 @@ class GraphExploreViewModelTest {
         val viewModel = createViewModel()
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value.neighbors.hasError)
+        assertTrue(viewModel.uiState.value.neighbors.hasFatalError)
 
         fakeRepository.failure = null
         fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
@@ -115,6 +117,7 @@ class GraphExploreViewModelTest {
         val viewModel = createViewModel()
         advanceUntilIdle()
         assertTrue(viewModel.uiState.value.neighbors.hasError)
+        assertTrue(viewModel.uiState.value.neighbors.hasFatalError)
 
         fakeRepository.failure = null
         fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
@@ -139,7 +142,8 @@ class GraphExploreViewModelTest {
         val section = viewModel.uiState.value.neighbors
         assertTrue(section.hasData)
         assertNotNull(section.errorKind)
-        assertFalse(section.hasError)
+        assertTrue(section.hasError)
+        assertFalse(section.hasFatalError)
     }
 
     @Test
@@ -153,7 +157,48 @@ class GraphExploreViewModelTest {
     }
 
     @Test
-    fun `toggle ai inferred reloads evidence`() = runTest {
+    fun `toggle ai inferred loads ai section without reloading evidence`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
+        fakeRepository.evidenceResult = GraphEvidenceResult(emptyList(), emptyList())
+        fakeRepository.aiInferredEdgesResult = AiInferredEdgesResult(emptyList())
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.selectTab(GraphTab.Evidence)
+        advanceUntilIdle()
+        assertEquals(1, fakeRepository.evidenceLoadCount)
+        assertEquals(false, fakeRepository.lastEvidenceIncludeAiInferred)
+        assertFalse(viewModel.uiState.value.includeAiInferred)
+
+        viewModel.toggleAiInferred()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.includeAiInferred)
+        assertEquals(1, fakeRepository.evidenceLoadCount)
+        assertEquals(1, fakeRepository.aiInferredLoadCount)
+        assertTrue(viewModel.uiState.value.aiInferredEdges.hasData)
+    }
+
+    @Test
+    fun `select explore depth reloads explore with selected depth`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
+        fakeRepository.exploreResult = GraphExploreResult(2, emptyList(), emptyList())
+        val viewModel = createViewModel(initialTab = GraphTab.Explore)
+        advanceUntilIdle()
+
+        assertEquals(2, fakeRepository.lastExploreDepth)
+
+        fakeRepository.exploreResult = GraphExploreResult(1, emptyList(), emptyList())
+        viewModel.selectExploreDepth(1)
+        advanceUntilIdle()
+
+        assertEquals(1, viewModel.uiState.value.exploreDepth)
+        assertEquals(1, fakeRepository.lastExploreDepth)
+        assertEquals(2, fakeRepository.exploreLoadCount)
+    }
+
+    @Test
+    fun `ai inferred failure keeps regular evidence data`() = runTest {
         fakeRepository.neighborsResult = neighborsResult("article-1", "Article 1")
         fakeRepository.evidenceResult = GraphEvidenceResult(emptyList(), emptyList())
         val viewModel = createViewModel()
@@ -161,15 +206,13 @@ class GraphExploreViewModelTest {
 
         viewModel.selectTab(GraphTab.Evidence)
         advanceUntilIdle()
-        assertEquals(1, fakeRepository.evidenceLoadCount)
-        assertFalse(viewModel.uiState.value.includeAiInferred)
+        fakeRepository.aiInferredFailure = serviceUnavailableException()
 
         viewModel.toggleAiInferred()
         advanceUntilIdle()
 
-        assertTrue(viewModel.uiState.value.includeAiInferred)
-        assertEquals(2, fakeRepository.evidenceLoadCount)
-        assertTrue(fakeRepository.lastEvidenceIncludeAiInferred == true)
+        assertTrue(viewModel.uiState.value.evidence.hasData)
+        assertEquals(ErrorKind.ServerError, viewModel.uiState.value.aiInferredEdges.errorKind)
     }
 
     @Test
@@ -224,12 +267,17 @@ class GraphExploreViewModelTest {
         var similarResult = GraphSimilarResult(emptyList())
         var exploreResult = GraphExploreResult(2, emptyList(), emptyList())
         var evidenceResult = GraphEvidenceResult(emptyList(), emptyList())
+        var aiInferredEdgesResult = AiInferredEdgesResult(emptyList())
         var failure: Throwable? = null
+        var aiInferredFailure: Throwable? = null
 
         var lastLoadedTab: GraphTab? = null
         private val loadedTabs = mutableMapOf<GraphTab, Int>()
         var similarLoadCount = 0
+        var exploreLoadCount = 0
+        var lastExploreDepth: Int? = null
         var evidenceLoadCount = 0
+        var aiInferredLoadCount = 0
         var lastEvidenceIncludeAiInferred: Boolean? = null
 
         fun lastLoadedTabFor(tab: GraphTab): Int? = loadedTabs[tab]
@@ -254,7 +302,11 @@ class GraphExploreViewModelTest {
             }
 
         override suspend fun loadExplore(type: SearchResultType, id: String, depth: Int): GraphExploreResult =
-            load(GraphTab.Explore) { exploreResult }
+            load(GraphTab.Explore) {
+                exploreLoadCount++
+                lastExploreDepth = depth
+                exploreResult
+            }
 
         override suspend fun loadEvidence(
             type: SearchResultType,
@@ -264,6 +316,12 @@ class GraphExploreViewModelTest {
             evidenceLoadCount++
             lastEvidenceIncludeAiInferred = includeAiInferred
             evidenceResult
+        }
+
+        override suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult {
+            aiInferredFailure?.let { throw it }
+            aiInferredLoadCount++
+            return aiInferredEdgesResult
         }
     }
 }

@@ -649,6 +649,14 @@ fun DiscoveryNavHost(
                         initialTab = key.initialTab,
                         onBack = { backStack.removeLastOrNull() },
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTopicClick = { topicType, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = topicType,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
                         modifier = modifier,
                     )
                 }

@@ -1,7 +1,10 @@
 package com.duckylife.heritage.modern.feature.discovery.graphexplore
 
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,26 +16,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.AccountTree
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,6 +59,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -56,22 +73,35 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSource
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.feature.discovery.DiscoverySectionState
 import com.duckylife.heritage.modern.feature.discovery.GraphTab
+import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
+import com.duckylife.heritage.modern.feature.graph.model.GraphEdgeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
+import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarItemUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
+import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.text.localizedContentType
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,6 +111,7 @@ fun GraphExploreRoute(
     initialTab: GraphTab,
     onBack: () -> Unit,
     onItemClick: (DiscoveryItemDto) -> Unit,
+    onTopicClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: GraphExploreViewModel = hiltViewModel<GraphExploreViewModel, GraphExploreViewModel.Factory>(
@@ -102,8 +133,13 @@ fun GraphExploreRoute(
         onRetry = viewModel::retry,
         onRefresh = viewModel::refresh,
         onToggleAiInferred = viewModel::toggleAiInferred,
-        onCenterNodeClick = { node ->
-            node.toDiscoveryItemDto()?.let(onItemClick)
+        onExploreDepthSelected = viewModel::selectExploreDepth,
+        onPathClick = ::acknowledgePathClickPendingRoute,
+        onNodeClick = { node ->
+            when {
+                node.isContentNode -> node.toDiscoveryItemDto()?.let(onItemClick)
+                node.isTopicNode -> onTopicClick(node.type.wireName, node.topicKey)
+            }
         },
         modifier = modifier,
     )
@@ -118,11 +154,14 @@ internal fun GraphExploreScreen(
     onRetry: () -> Unit,
     onRefresh: () -> Unit,
     onToggleAiInferred: () -> Unit,
-    onCenterNodeClick: (GraphNodeUiModel) -> Unit,
+    onExploreDepthSelected: (Int) -> Unit,
+    onPathClick: (GraphSimilarItemUiModel) -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     var showExplanation by remember { mutableStateOf(false) }
+    var pendingPathItem by remember { mutableStateOf<GraphSimilarItemUiModel?>(null) }
     val sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
     )
@@ -200,7 +239,12 @@ internal fun GraphExploreScreen(
                     onTabSelected = onTabSelected,
                     onRetry = onRetry,
                     onToggleAiInferred = onToggleAiInferred,
-                    onCenterNodeClick = onCenterNodeClick,
+                    onExploreDepthSelected = onExploreDepthSelected,
+                    onPathClick = { item ->
+                        pendingPathItem = item
+                        onPathClick(item)
+                    },
+                    onNodeClick = onNodeClick,
                 )
             }
         }
@@ -212,6 +256,13 @@ internal fun GraphExploreScreen(
             onDismiss = { showExplanation = false },
         )
     }
+    pendingPathItem?.let { item ->
+        PathPendingBottomSheet(
+            item = item,
+            sheetState = sheetState,
+            onDismiss = { pendingPathItem = null },
+        )
+    }
 }
 
 @Composable
@@ -220,7 +271,9 @@ private fun GraphExploreBody(
     onTabSelected: (GraphTab) -> Unit,
     onRetry: () -> Unit,
     onToggleAiInferred: () -> Unit,
-    onCenterNodeClick: (GraphNodeUiModel) -> Unit,
+    onExploreDepthSelected: (Int) -> Unit,
+    onPathClick: (GraphSimilarItemUiModel) -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val tabs = GraphTab.entries
@@ -229,7 +282,7 @@ private fun GraphExploreBody(
         if (centerNode != null) {
             CenterNodeCard(
                 node = centerNode,
-                onClick = onCenterNodeClick,
+                onClick = onNodeClick,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             )
         } else {
@@ -245,6 +298,9 @@ private fun GraphExploreBody(
                     selected = uiState.selectedTab == tab,
                     onClick = { onTabSelected(tab) },
                     text = { Text(label) },
+                    modifier = Modifier.semantics {
+                        contentDescription = label
+                    },
                 )
             }
         }
@@ -253,20 +309,29 @@ private fun GraphExploreBody(
             GraphTab.Neighbors -> NeighborsTab(
                 section = uiState.neighbors,
                 onRetry = onRetry,
+                onNodeClick = onNodeClick,
+                onSimilarClick = { onTabSelected(GraphTab.Similar) },
                 modifier = Modifier.weight(1f),
             )
             GraphTab.Similar -> SimilarTab(
                 section = uiState.similar,
                 onRetry = onRetry,
+                onNodeClick = onNodeClick,
+                onPathClick = onPathClick,
+                onExploreClick = { onTabSelected(GraphTab.Explore) },
                 modifier = Modifier.weight(1f),
             )
             GraphTab.Explore -> ExploreTab(
                 section = uiState.explore,
+                selectedDepth = uiState.exploreDepth,
+                onDepthSelected = onExploreDepthSelected,
                 onRetry = onRetry,
+                onNodeClick = onNodeClick,
                 modifier = Modifier.weight(1f),
             )
             GraphTab.Evidence -> EvidenceTab(
                 section = uiState.evidence,
+                aiInferredSection = uiState.aiInferredEdges,
                 includeAiInferred = uiState.includeAiInferred,
                 onRetry = onRetry,
                 onToggleAiInferred = onToggleAiInferred,
@@ -379,6 +444,8 @@ private fun CenterNodeSkeleton(
 private fun NeighborsTab(
     section: DiscoverySectionState<GraphNeighborsResult>,
     onRetry: () -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onSimilarClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SectionContent(
@@ -387,29 +454,73 @@ private fun NeighborsTab(
         skeleton = { NeighborsSkeleton() },
         modifier = modifier,
     ) { result ->
+        val relationRows = result.relatedRows()
+        if (relationRows.isEmpty()) {
+            EmptyTabState(
+                title = stringResource(R.string.graph_neighbors_empty_title),
+                message = stringResource(R.string.graph_neighbors_empty_message),
+                actionLabel = stringResource(R.string.graph_neighbors_empty_action),
+                onActionClick = onSimilarClick,
+                modifier = Modifier.fillMaxSize(),
+            )
+            return@SectionContent
+        }
+        var expandedGroups by remember(result) { mutableStateOf<Set<String>>(emptySet()) }
+        val groups = relationRows.groupBy { it.groupKey }
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Text(
-                    text = stringResource(
-                        R.string.graph_explore_neighbors_summary,
-                        result.nodes.size,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = stringResource(
+                            R.string.graph_explore_neighbors_summary,
+                            relationRows.distinctBy { it.node.nodeKey }.size,
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = stringResource(R.string.graph_neighbors_content_only_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
-            items(
-                items = result.nodes,
-                key = { it.nodeKey },
-            ) { node ->
-                Text(
-                    text = node.displayTitle,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                )
+            groups.forEach { (groupKey, rows) ->
+                item(key = "group-$groupKey") {
+                    val groupLabel = rows.firstOrNull()?.edge?.localizedRelationLabel()
+                        ?: stringResource(R.string.graph_relation_other_node)
+                    RelationGroupHeader(
+                        title = groupLabel,
+                        count = rows.size,
+                    )
+                }
+                val expanded = groupKey in expandedGroups
+                val visibleRows = if (expanded) rows else rows.take(6)
+                items(
+                    items = visibleRows,
+                    key = { "${it.node.nodeKey}-${it.edge.fromNodeKey}-${it.edge.toNodeKey}-${it.edge.relationType}" },
+                ) { row ->
+                    RelationNodeRow(
+                        node = row.node,
+                        relationLabel = row.edge.localizedRelationLabel(),
+                        reason = row.edge.reason,
+                        isAiInferred = row.edge.isAiInferred,
+                        onNodeClick = onNodeClick,
+                    )
+                }
+                if (!expanded && rows.size > 6) {
+                    item(key = "expand-$groupKey") {
+                        TextButton(
+                            onClick = { expandedGroups = expandedGroups + groupKey },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(stringResource(R.string.graph_neighbors_show_all, rows.size))
+                        }
+                    }
+                }
             }
         }
     }
@@ -419,6 +530,9 @@ private fun NeighborsTab(
 private fun SimilarTab(
     section: DiscoverySectionState<GraphSimilarResult>,
     onRetry: () -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onPathClick: (GraphSimilarItemUiModel) -> Unit,
+    onExploreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SectionContent(
@@ -427,28 +541,36 @@ private fun SimilarTab(
         skeleton = { SimilarSkeleton() },
         modifier = modifier,
     ) { result ->
+        if (result.items.isEmpty()) {
+            EmptyTabState(
+                title = stringResource(R.string.graph_similar_empty_title),
+                message = stringResource(R.string.graph_similar_empty_message),
+                actionLabel = stringResource(R.string.graph_similar_empty_action),
+                onActionClick = onExploreClick,
+                modifier = Modifier.fillMaxSize(),
+            )
+            return@SectionContent
+        }
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
                 Text(
-                    text = stringResource(
-                        R.string.graph_explore_similar_summary,
-                        result.items.size,
-                    ),
+                    text = stringResource(R.string.graph_similar_intro),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            items(
+            itemsIndexed(
                 items = result.items,
-                key = { it.node.nodeKey },
-            ) { item ->
-                Text(
-                    text = item.node.displayTitle,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(vertical = 4.dp),
+                key = { _, item -> item.node.nodeKey },
+            ) { index, item ->
+                SimilarResultCard(
+                    rank = index + 1,
+                    item = item,
+                    onNodeClick = onNodeClick,
+                    onPathClick = onPathClick,
                 )
             }
         }
@@ -458,7 +580,10 @@ private fun SimilarTab(
 @Composable
 private fun ExploreTab(
     section: DiscoverySectionState<GraphExploreResult>,
+    selectedDepth: Int,
+    onDepthSelected: (Int) -> Unit,
     onRetry: () -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SectionContent(
@@ -467,20 +592,114 @@ private fun ExploreTab(
         skeleton = { ExploreSkeleton() },
         modifier = modifier,
     ) { result ->
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        var showOverview by remember(result) { mutableStateOf(false) }
+        val rows = result.exploreRows()
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(
-                text = stringResource(
-                    R.string.graph_explore_explore_summary,
-                    result.depth,
-                    result.nodes.size,
-                    result.edges.size,
-                ),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            item {
+                ExploreTabHeader(
+                    selectedDepth = selectedDepth,
+                    nodeCount = result.nodes.size,
+                    edgeCount = result.edges.size,
+                    showOverview = showOverview,
+                    onDepthSelected = onDepthSelected,
+                    onViewModeSelected = { showOverview = it },
+                )
+            }
+            when {
+                result.nodes.isEmpty() -> item {
+                    EmptyTabState(
+                        title = stringResource(R.string.graph_explore_empty_title),
+                        message = stringResource(R.string.graph_explore_empty_message),
+                        actionLabel = null,
+                        onActionClick = null,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                showOverview && result.canRenderOverview -> {
+                    item {
+                        GraphOverviewCanvas(
+                            result = result,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(220.dp)
+                                .testTag("GraphOverviewCanvas"),
+                        )
+                    }
+                    item {
+                        Text(
+                            text = stringResource(R.string.graph_overview_accessible_list_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    items(
+                        items = rows,
+                        key = { "overview-${it.node.nodeKey}" },
+                    ) { row ->
+                        RelationNodeRow(
+                            node = row.node,
+                            relationLabel = row.edge?.localizedRelationLabel()
+                                ?: stringResource(R.string.graph_relation_other_node),
+                            reason = row.edge?.reason,
+                            isAiInferred = row.edge?.isAiInferred == true,
+                            onNodeClick = onNodeClick,
+                        )
+                    }
+                }
+                showOverview -> item {
+                    EmptyTabState(
+                        title = if (result.edges.isEmpty()) {
+                            stringResource(R.string.graph_overview_no_edges_title)
+                        } else {
+                            stringResource(R.string.graph_overview_too_large_title)
+                        },
+                        message = if (result.edges.isEmpty()) {
+                            stringResource(R.string.graph_overview_no_edges_message)
+                        } else {
+                            stringResource(R.string.graph_overview_too_large_message)
+                        },
+                        actionLabel = stringResource(R.string.graph_explore_list_view),
+                        onActionClick = { showOverview = false },
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                else -> {
+                    val groupedRows = rows.groupBy { it.distance }
+                    groupedRows.forEach { (distance, distanceRows) ->
+                        item(key = "distance-$distance") {
+                            RelationGroupHeader(
+                                title = stringResource(R.string.graph_explore_distance_group, distance),
+                                count = distanceRows.size,
+                            )
+                        }
+                        items(
+                            items = distanceRows,
+                            key = { "distance-$distance-${it.node.nodeKey}" },
+                        ) { row ->
+                            RelationNodeRow(
+                                node = row.node,
+                                relationLabel = row.edge?.localizedRelationLabel()
+                                    ?: stringResource(R.string.graph_relation_other_node),
+                                reason = row.edge?.reason,
+                                isAiInferred = row.edge?.isAiInferred == true,
+                                onNodeClick = onNodeClick,
+                            )
+                        }
+                    }
+                    if (result.edges.size >= 50) {
+                        item {
+                            Text(
+                                text = stringResource(R.string.graph_explore_truncated_hint, result.edges.size),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -488,6 +707,7 @@ private fun ExploreTab(
 @Composable
 private fun EvidenceTab(
     section: DiscoverySectionState<GraphEvidenceResult>,
+    aiInferredSection: DiscoverySectionState<AiInferredEdgesResult>,
     includeAiInferred: Boolean,
     onRetry: () -> Unit,
     onToggleAiInferred: () -> Unit,
@@ -521,20 +741,521 @@ private fun EvidenceTab(
         ) { result ->
             LazyColumn(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                items(
-                    items = result.evidence,
-                    key = { it.evidenceId ?: it.relationLabel + it.sourceContentTitle },
-                ) { item ->
+                item {
                     Text(
-                        text = item.relationLabel,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(vertical = 4.dp),
+                        text = stringResource(R.string.graph_evidence_intro),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (result.evidence.isEmpty()) {
+                    item {
+                        EmptyTabState(
+                            title = stringResource(R.string.graph_evidence_empty_title),
+                            message = stringResource(R.string.graph_evidence_empty_message),
+                            actionLabel = null,
+                            onActionClick = null,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                } else {
+                    items(
+                        items = result.evidence,
+                        key = { it.evidenceId ?: it.relationLabel.orEmpty() + it.sourceContentTitle.orEmpty() },
+                    ) { item ->
+                        EvidenceCard(item)
+                    }
+                }
+                if (includeAiInferred) {
+                    item {
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                    item {
+                        Text(
+                            text = stringResource(R.string.graph_ai_inferred_section_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    aiInferredSectionContent(
+                        section = aiInferredSection,
+                        onRetry = onRetry,
                     )
                 }
             }
         }
+    }
+}
+
+private fun LazyListScope.aiInferredSectionContent(
+    section: DiscoverySectionState<AiInferredEdgesResult>,
+    onRetry: () -> Unit,
+) {
+    when {
+        section.isLoading && !section.hasData -> item(key = "ai-loading") {
+            GraphListSkeleton(itemCount = 2, modifier = Modifier.height(140.dp))
+        }
+        section.hasFatalError -> item(key = "ai-error") {
+            SectionErrorCard(
+                errorKind = section.errorKind ?: ErrorKind.Unknown,
+                onRetry = onRetry,
+                modifier = Modifier.padding(0.dp),
+            )
+        }
+        section.hasData && section.data!!.edges.isEmpty() -> item(key = "ai-empty") {
+            EmptyTabState(
+                title = stringResource(R.string.graph_ai_inferred_empty_title),
+                message = stringResource(R.string.graph_ai_inferred_empty_message),
+                actionLabel = null,
+                onActionClick = null,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        section.hasData -> items(
+            items = section.data!!.edges,
+            key = { "${it.fromNodeKey}-${it.toNodeKey}-${it.relationType}-${it.entityName}" },
+        ) { edge ->
+            AiInferredEdgeCard(edge)
+        }
+    }
+}
+
+@Composable
+private fun RelationGroupHeader(
+    title: String,
+    count: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f),
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AccountTree,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+        HeritageMetaChip(text = count.toString())
+    }
+}
+
+@Composable
+private fun RelationNodeRow(
+    node: GraphNodeUiModel,
+    relationLabel: String,
+    reason: String?,
+    isAiInferred: Boolean,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val imageLoader = rememberHeritageImageLoader()
+    val canNavigate = node.isContentNode || node.isTopicNode
+    HeritageContentCard(
+        onClick = if (canNavigate) {{ onNodeClick(node) }} else null,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            HeritageListImage(
+                imageUrl = node.coverImageUrl,
+                imageLoader = imageLoader,
+                fallbackText = stringResource(node.type.placeholderResId()),
+                contentDescription = node.displayTitle,
+                modifier = Modifier.size(56.dp),
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HeritageMetaChip(
+                        text = localizedContentType(node.type.wireName)
+                            .ifBlank { stringResource(node.type.fallbackLabelResId()) },
+                    )
+                    if (isAiInferred) {
+                        AiInferredBadge()
+                    }
+                }
+                Text(
+                    text = node.displayTitle,
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                val subtitle = node.subtitle?.takeIf { it.isNotBlank() }
+                    ?: relationLabel
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (!reason.isNullOrBlank()) {
+                    Text(
+                        text = reason,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+            if (canNavigate) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SimilarResultCard(
+    rank: Int,
+    item: GraphSimilarItemUiModel,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onPathClick: (GraphSimilarItemUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(
+        onClick = if (item.node.isContentNode || item.node.isTopicNode) {{ onNodeClick(item.node) }} else null,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RankBadge(rank)
+                Text(
+                    text = item.node.displayTitle,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                HeritageMetaChip(
+                    text = localizedContentType(item.node.type.wireName)
+                        .ifBlank { stringResource(item.node.type.fallbackLabelResId()) },
+                )
+                HeritageMetaChip(text = stringResource(GraphRelationFormatter.associationLevelLabelResId(item.associationLevel)))
+                HeritageMetaChip(text = stringResource(R.string.graph_similar_shared_neighbors, item.sharedNeighborCount))
+            }
+            if (item.sharedTopics.isNotEmpty()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    item.sharedTopics.take(2).forEach { topic ->
+                        HeritageMetaChip(text = topic)
+                    }
+                }
+            }
+            item.reasons.take(2).forEach { reason ->
+                Text(
+                    text = "• $reason",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(onClick = { onPathClick(item) }) {
+                    Text(stringResource(R.string.graph_similar_view_path))
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ExploreTabHeader(
+    selectedDepth: Int,
+    nodeCount: Int,
+    edgeCount: Int,
+    showOverview: Boolean,
+    onDepthSelected: (Int) -> Unit,
+    onViewModeSelected: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            SingleChoiceSegmentedButtonRow {
+                listOf(1, 2).forEachIndexed { index, depth ->
+                    SegmentedButton(
+                        selected = selectedDepth == depth,
+                        onClick = { onDepthSelected(depth) },
+                        shape = SegmentedButtonDefaults.itemShape(index = index, count = 2),
+                    ) {
+                        Text(stringResource(if (depth == 1) R.string.graph_explore_depth_one else R.string.graph_explore_depth_two))
+                    }
+                }
+            }
+            Text(
+                text = stringResource(R.string.graph_explore_explore_summary, selectedDepth, nodeCount, edgeCount),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = !showOverview,
+                onClick = { onViewModeSelected(false) },
+                label = { Text(stringResource(R.string.graph_explore_list_view)) },
+            )
+            FilterChip(
+                selected = showOverview,
+                onClick = { onViewModeSelected(true) },
+                label = { Text(stringResource(R.string.graph_explore_overview_view)) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun GraphOverviewCanvas(
+    result: GraphExploreResult,
+    modifier: Modifier = Modifier,
+) {
+    val lineColor = MaterialTheme.colorScheme.outlineVariant
+    val contentColor = MaterialTheme.colorScheme.primary
+    val topicColor = MaterialTheme.colorScheme.tertiary
+    val nodePositions = remember(result) { result.circularNodePositions() }
+
+    Canvas(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp)),
+    ) {
+        val scaled = nodePositions.mapValues { (_, unitPoint) ->
+            Offset(unitPoint.x * size.width, unitPoint.y * size.height)
+        }
+        result.edges.forEach { edge ->
+            val from = scaled[edge.fromNodeKey]
+            val to = scaled[edge.toNodeKey]
+            if (from != null && to != null) {
+                drawLine(
+                    color = lineColor,
+                    start = from,
+                    end = to,
+                    strokeWidth = if (edge.isAiInferred) 3f else 2f,
+                )
+            }
+        }
+        result.nodes.forEach { node ->
+            val offset = scaled[node.nodeKey] ?: return@forEach
+            drawCircle(
+                color = if (node.isContentNode) contentColor else topicColor,
+                radius = if (node.nodeKey == result.centerNodeKey) 9f else 6f,
+                center = offset,
+            )
+        }
+    }
+}
+
+@Composable
+private fun EvidenceCard(
+    item: GraphEvidenceUiModel,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = item.relationLabel ?: stringResource(GraphRelationFormatter.labelResId(item.relationType)),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                if (item.isAiInferred) {
+                    AiInferredBadge()
+                }
+            }
+            HeritageMetaChip(text = stringResource(item.source.labelResId()))
+            if (!item.reason.isNullOrBlank()) {
+                Text(
+                    text = item.reason,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            item.sourceContentTitle?.let { title ->
+                Text(
+                    text = stringResource(R.string.graph_evidence_source_content, title),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AiInferredEdgeCard(
+    item: AiInferredEdgeUiModel,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(GraphRelationFormatter.labelResId(item.relationType)),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.weight(1f),
+                )
+                AiInferredBadge()
+            }
+            Text(
+                text = "${item.fromNodeKey} → ${item.toNodeKey}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                HeritageMetaChip(text = stringResource(GraphRelationFormatter.confidenceLabelResId(item.confidence)))
+                item.entityName?.let { HeritageMetaChip(text = it) }
+            }
+            if (!item.reason.isNullOrBlank()) {
+                Text(
+                    text = item.reason,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptyTabState(
+    title: String,
+    message: String,
+    actionLabel: String?,
+    onActionClick: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.AccountTree,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(28.dp),
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        if (actionLabel != null && onActionClick != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(onClick = onActionClick) {
+                Text(actionLabel)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RankBadge(rank: Int) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    ) {
+        Text(
+            text = "#$rank",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        )
+    }
+}
+
+@Composable
+private fun AiInferredBadge() {
+    Surface(
+        shape = RoundedCornerShape(4.dp),
+        color = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.tertiary,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+    ) {
+        Text(
+            text = stringResource(R.string.graph_ai_inferred_badge),
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 3.dp),
+        )
     }
 }
 
@@ -564,7 +1285,7 @@ private fun <T> SectionContent(
                     content(section.data!!)
                 }
             }
-            section.hasError -> SectionErrorCard(
+            section.hasFatalError -> SectionErrorCard(
                 errorKind = section.errorKind ?: ErrorKind.Unknown,
                 onRetry = onRetry,
             )
@@ -713,6 +1434,66 @@ private fun RelationExplanationSheetContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PathPendingBottomSheet(
+    item: GraphSimilarItemUiModel,
+    sheetState: SheetState,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        modifier = modifier,
+    ) {
+        PathPendingSheetContent(
+            item = item,
+            onDismiss = onDismiss,
+            modifier = Modifier.padding(bottom = 32.dp),
+        )
+    }
+}
+
+@Composable
+private fun PathPendingSheetContent(
+    item: GraphSimilarItemUiModel,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.graph_path_pending_title),
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = stringResource(R.string.graph_path_pending_target, item.node.displayTitle),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(
+            text = stringResource(R.string.graph_path_pending_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.action_close))
+            }
+        }
+    }
+}
+
 @Composable
 private fun InvalidRouteContent(
     onBack: () -> Unit,
@@ -740,6 +1521,134 @@ private fun InvalidRouteContent(
             Text(stringResource(R.string.action_back))
         }
     }
+}
+
+private data class RelatedNodeRow(
+    val node: GraphNodeUiModel,
+    val edge: GraphEdgeUiModel,
+    val groupKey: String,
+)
+
+private data class ExploreNodeRow(
+    val node: GraphNodeUiModel,
+    val distance: Int,
+    val edge: GraphEdgeUiModel?,
+)
+
+private fun GraphNeighborsResult.relatedRows(): List<RelatedNodeRow> {
+    val centerKey = centerNodeKey ?: nodes.firstOrNull()?.nodeKey
+    val nodeByKey = nodes.associateBy { it.nodeKey }
+    return edges.mapNotNull { edge ->
+        val relatedKey = when {
+            centerKey == null -> edge.toNodeKey
+            edge.fromNodeKey == centerKey -> edge.toNodeKey
+            edge.toNodeKey == centerKey -> edge.fromNodeKey
+            else -> null
+        }
+        val node = relatedKey?.let(nodeByKey::get) ?: return@mapNotNull null
+        if (node.nodeKey == centerKey) return@mapNotNull null
+        RelatedNodeRow(
+            node = node,
+            edge = edge,
+            groupKey = edge.label?.takeIf { it.isNotBlank() } ?: edge.relationType.wireName,
+        )
+    }.distinctBy { "${it.node.nodeKey}-${it.edge.relationType}-${it.edge.fromNodeKey}-${it.edge.toNodeKey}" }
+}
+
+private fun GraphExploreResult.exploreRows(): List<ExploreNodeRow> {
+    if (nodes.isEmpty()) return emptyList()
+    val centerKey = centerNodeKey ?: nodes.firstOrNull()?.nodeKey
+    val distances = mutableMapOf<String, Int>()
+    if (centerKey != null) {
+        distances[centerKey] = 0
+        repeat(depth.coerceIn(1, 2)) {
+            val snapshot = distances.toMap()
+            edges.forEach { edge ->
+                val fromDistance = snapshot[edge.fromNodeKey]
+                val toDistance = snapshot[edge.toNodeKey]
+                when {
+                    fromDistance != null && fromDistance < 2 ->
+                        distances.putIfAbsent(edge.toNodeKey, fromDistance + 1)
+                    toDistance != null && toDistance < 2 ->
+                        distances.putIfAbsent(edge.fromNodeKey, toDistance + 1)
+                }
+            }
+        }
+    }
+    return nodes
+        .filterNot { it.nodeKey == centerKey }
+        .map { node ->
+            ExploreNodeRow(
+                node = node,
+                distance = distances[node.nodeKey]?.coerceIn(1, 2) ?: 1,
+                edge = edges.firstOrNull { it.fromNodeKey == node.nodeKey || it.toNodeKey == node.nodeKey },
+            )
+        }
+        .sortedWith(compareBy<ExploreNodeRow> { it.distance }.thenBy { it.node.displayTitle })
+}
+
+private val GraphExploreResult.canRenderOverview: Boolean
+    get() = nodes.isNotEmpty() && edges.isNotEmpty() && nodes.size <= 36 && edges.size <= 72
+
+private fun GraphExploreResult.circularNodePositions(): Map<String, Offset> {
+    if (nodes.isEmpty()) return emptyMap()
+    val centerKey = centerNodeKey ?: nodes.first().nodeKey
+    val outerNodes = nodes.filterNot { it.nodeKey == centerKey }
+    val result = mutableMapOf(centerKey to Offset(0.5f, 0.5f))
+    val radius = 0.38f
+    outerNodes.forEachIndexed { index, node ->
+        val angle = 2.0 * PI * index / outerNodes.size.coerceAtLeast(1)
+        result[node.nodeKey] = Offset(
+            x = (0.5f + radius * cos(angle)).toFloat().coerceIn(0.08f, 0.92f),
+            y = (0.5f + radius * sin(angle)).toFloat().coerceIn(0.08f, 0.92f),
+        )
+    }
+    return result
+}
+
+private fun GraphNodeType.placeholderResId(): Int = when (this) {
+    GraphNodeType.Article -> R.string.graph_node_placeholder_article
+    GraphNodeType.DirectoryItem -> R.string.graph_node_placeholder_directory
+    GraphNodeType.Inheritor -> R.string.graph_node_placeholder_inheritor
+    GraphNodeType.Category,
+    GraphNodeType.Region,
+    GraphNodeType.Year,
+    GraphNodeType.Kind,
+    GraphNodeType.ProjectCode,
+    -> R.string.graph_node_placeholder_topic
+    GraphNodeType.Unknown -> R.string.graph_node_placeholder_unknown
+}
+
+private fun GraphNodeType.fallbackLabelResId(): Int = when (this) {
+    GraphNodeType.Article -> R.string.graph_node_type_article
+    GraphNodeType.DirectoryItem -> R.string.graph_node_type_directory
+    GraphNodeType.Inheritor -> R.string.graph_node_type_inheritor
+    GraphNodeType.Category,
+    GraphNodeType.Region,
+    GraphNodeType.Year,
+    GraphNodeType.Kind,
+    GraphNodeType.ProjectCode,
+    -> R.string.graph_node_type_topic
+    GraphNodeType.Unknown -> R.string.graph_node_type_unknown
+}
+
+private fun GraphEvidenceSource.labelResId(): Int = when (this) {
+    GraphEvidenceSource.Explicit -> R.string.graph_evidence_source_explicit
+    GraphEvidenceSource.Inferred -> R.string.graph_evidence_source_inferred
+    GraphEvidenceSource.Embedding -> R.string.graph_evidence_source_embedding
+    GraphEvidenceSource.Ai -> R.string.graph_evidence_source_ai
+    GraphEvidenceSource.Unknown -> R.string.graph_evidence_source_unknown
+}
+
+@Composable
+private fun GraphEdgeUiModel.localizedRelationLabel(): String =
+    label?.takeIf { it.isNotBlank() }
+        ?: stringResource(GraphRelationFormatter.labelResId(relationType))
+
+@Suppress("UNUSED_PARAMETER")
+private fun acknowledgePathClickPendingRoute(item: GraphSimilarItemUiModel) {
+    // GraphExploreScreen already gives immediate user feedback. This hook is kept for
+    // future navigation to a dedicated path/explanation route once that API is available.
 }
 
 private fun GraphNodeUiModel.toDiscoveryItemDto(): DiscoveryItemDto? {
@@ -777,7 +1686,9 @@ private fun GraphExploreScreenLightPreview() {
             onRetry = {},
             onRefresh = {},
             onToggleAiInferred = {},
-            onCenterNodeClick = {},
+            onExploreDepthSelected = {},
+            onPathClick = {},
+            onNodeClick = {},
         )
     }
 }
@@ -793,7 +1704,9 @@ private fun GraphExploreScreenDarkPreview() {
             onRetry = {},
             onRefresh = {},
             onToggleAiInferred = {},
-            onCenterNodeClick = {},
+            onExploreDepthSelected = {},
+            onPathClick = {},
+            onNodeClick = {},
         )
     }
 }
@@ -812,7 +1725,9 @@ private fun GraphExploreScreenLoadingPreview() {
             onRetry = {},
             onRefresh = {},
             onToggleAiInferred = {},
-            onCenterNodeClick = {},
+            onExploreDepthSelected = {},
+            onPathClick = {},
+            onNodeClick = {},
         )
     }
 }
@@ -828,7 +1743,9 @@ private fun GraphExploreScreenInvalidRoutePreview() {
             onRetry = {},
             onRefresh = {},
             onToggleAiInferred = {},
-            onCenterNodeClick = {},
+            onExploreDepthSelected = {},
+            onPathClick = {},
+            onNodeClick = {},
         )
     }
 }

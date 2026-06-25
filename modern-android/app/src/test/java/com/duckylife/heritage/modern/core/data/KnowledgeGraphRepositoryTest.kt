@@ -162,6 +162,31 @@ class KnowledgeGraphRepositoryTest {
         assertTrue(fakeApi.capturedEvidenceQuery?.includeAiInferred == true)
     }
 
+    @Test
+    fun `loadAiInferredEdges uses dedicated endpoint query`() = runTest {
+        fakeApi.aiInferredResult = AiInferredEdgesDto(
+            edges = listOf(
+                com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgeDto(
+                    from = "a1",
+                    to = "topic-1",
+                    confidence = 0.82,
+                    reason = "AI matched entity",
+                ),
+            ),
+        )
+
+        val result = repository.loadAiInferredEdges(SearchResultType.Article, "a1")
+
+        assertEquals(1, result.edges.size)
+        assertEquals(0.82, result.edges.first().confidence, 0.0)
+        with(fakeApi.capturedAiInferredQuery) {
+            assertEquals(SearchResultType.Article, this?.contentType)
+            assertEquals("a1", this?.id)
+            assertEquals(false, this?.includeStale)
+            assertEquals(50, this?.limit)
+        }
+    }
+
     @Test(expected = RuntimeException::class)
     fun `loadNeighbors propagates exceptions`() = runTest {
         fakeApi.failure = RuntimeException("service unavailable")
@@ -175,12 +200,14 @@ class KnowledgeGraphRepositoryTest {
         var similarResult = GraphSimilarDto()
         var exploreResult = GraphExploreDto()
         var evidenceResult = GraphEvidenceDto()
+        var aiInferredResult = AiInferredEdgesDto()
         var failure: Throwable? = null
 
         var capturedNeighborsQuery: KnowledgeGraphNeighborsQuery? = null
         var capturedSimilarQuery: KnowledgeGraphSimilarQuery? = null
         var capturedExploreQuery: KnowledgeGraphExploreQuery? = null
         var capturedEvidenceQuery: KnowledgeGraphEvidenceQuery? = null
+        var capturedAiInferredQuery: KnowledgeGraphAiInferredQuery? = null
 
         private fun <R> maybeFail(result: R): R {
             failure?.let { throw it }
@@ -210,8 +237,10 @@ class KnowledgeGraphRepositoryTest {
         override suspend fun getGraphCommunities(query: KnowledgeGraphCommunitiesQuery): GraphCommunitiesDto =
             maybeFail(communitiesResult)
 
-        override suspend fun getAiInferredEdges(query: KnowledgeGraphAiInferredQuery): AiInferredEdgesDto =
-            AiInferredEdgesDto()
+        override suspend fun getAiInferredEdges(query: KnowledgeGraphAiInferredQuery): AiInferredEdgesDto {
+            capturedAiInferredQuery = query
+            return maybeFail(aiInferredResult)
+        }
 
         override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery): GraphBridgeDto = GraphBridgeDto()
         override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery): PathExplainDto = PathExplainDto()

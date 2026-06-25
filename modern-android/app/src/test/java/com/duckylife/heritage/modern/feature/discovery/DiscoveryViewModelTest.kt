@@ -110,6 +110,10 @@ class DiscoveryViewModelTest {
         assertTrue(state.trending.hasError)
         assertTrue(state.weekly.hasError)
         assertTrue(state.classic.hasError)
+        assertTrue(state.today.hasFatalError)
+        assertTrue(state.trending.hasFatalError)
+        assertTrue(state.weekly.hasFatalError)
+        assertTrue(state.classic.hasFatalError)
         assertTrue(state.isAllFailed)
     }
 

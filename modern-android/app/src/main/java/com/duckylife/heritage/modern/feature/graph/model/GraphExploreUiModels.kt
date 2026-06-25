@@ -11,6 +11,8 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarItemDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgeDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgesDto
 import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
 
 /**
@@ -66,6 +68,26 @@ data class GraphExploreResult(
     val depth: Int,
     val nodes: List<GraphNodeUiModel>,
     val edges: List<GraphEdgeUiModel>,
+    val centerNodeKey: String? = null,
+)
+
+/**
+ * AI 推断边单条结果。
+ */
+data class AiInferredEdgeUiModel(
+    val fromNodeKey: String,
+    val toNodeKey: String,
+    val relationType: GraphRelationType,
+    val entityName: String?,
+    val confidence: Double,
+    val reason: String?,
+)
+
+/**
+ * AI 推断边结果。
+ */
+data class AiInferredEdgesResult(
+    val edges: List<AiInferredEdgeUiModel>,
 )
 
 /**
@@ -73,8 +95,9 @@ data class GraphExploreResult(
  */
 data class GraphEvidenceUiModel(
     val evidenceId: String?,
-    val relationLabel: String,
-    val sourceLabel: String,
+    val relationType: GraphRelationType,
+    val relationLabel: String?,
+    val source: GraphEvidenceSource,
     val reason: String?,
     val sourceContentTitle: String?,
     val isAiInferred: Boolean,
@@ -130,14 +153,9 @@ fun GraphSimilarDto.toSimilarResult(): GraphSimilarResult = GraphSimilarResult(
 )
 
 private fun GraphSimilarItemDto.toUiModel(): GraphSimilarItemUiModel {
-    val level = when {
-        score >= 0.75 -> AssociationLevel.High
-        score >= 0.45 -> AssociationLevel.Medium
-        else -> AssociationLevel.Low
-    }
     return GraphSimilarItemUiModel(
         node = node.toGraphNodeUiModel(),
-        associationLevel = level,
+        associationLevel = GraphRelationFormatter.associationLevel(score),
         reasons = reasons.mapNotNull { it.takeIf(String::isNotBlank) },
         sharedTopics = sharedTopics.mapNotNull { it.takeIf(String::isNotBlank) }.take(2),
         sharedNeighborCount = sharedNeighborCount,
@@ -151,6 +169,7 @@ fun GraphExploreDto.toExploreResult(): GraphExploreResult {
         depth = depth.coerceIn(1, 2),
         nodes = nodeMap.values.toList(),
         edges = edges.toGraphEdgeUiModels(availableKeys),
+        centerNodeKey = center,
     )
 }
 
@@ -159,23 +178,28 @@ fun GraphEvidenceDto.toEvidenceResult(): GraphEvidenceResult = GraphEvidenceResu
     warnings = warnings.mapNotNull { it.takeIf(String::isNotBlank) },
 )
 
+fun AiInferredEdgesDto.toAiInferredEdgesResult(): AiInferredEdgesResult = AiInferredEdgesResult(
+    edges = edges.map { it.toUiModel() },
+)
+
+private fun AiInferredEdgeDto.toUiModel(): AiInferredEdgeUiModel = AiInferredEdgeUiModel(
+    fromNodeKey = from,
+    toNodeKey = to,
+    relationType = relationType,
+    entityName = entityName?.takeIf { it.isNotBlank() },
+    confidence = confidence,
+    reason = reason?.takeIf { it.isNotBlank() },
+)
+
 private fun GraphEvidenceItemDto.toUiModel(): GraphEvidenceUiModel = GraphEvidenceUiModel(
     evidenceId = evidenceId,
-    relationLabel = relationLabel?.takeIf { it.isNotBlank() }
-        ?: GraphRelationFormatter.label(relationType),
-    sourceLabel = sourceLabel(source),
+    relationType = relationType,
+    relationLabel = relationLabel?.takeIf { it.isNotBlank() },
+    source = source,
     reason = reason?.takeIf { it.isNotBlank() },
     sourceContentTitle = sourceContent?.title?.takeIf { it.isNotBlank() },
     isAiInferred = relationType == GraphRelationType.AiInferred || source == GraphEvidenceSource.Ai,
 )
-
-private fun sourceLabel(source: GraphEvidenceSource?): String = when (source) {
-    GraphEvidenceSource.Explicit -> "原始字段"
-    GraphEvidenceSource.Inferred -> "图谱投影"
-    GraphEvidenceSource.Embedding -> "语义关联"
-    GraphEvidenceSource.Ai -> "AI 推断"
-    else -> "其他来源"
-}
 
 // -----------------------------------------------------------------------------
 // Legacy mapping helpers
