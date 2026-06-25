@@ -8,6 +8,8 @@ import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.DefaultContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepository
+import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
 import com.duckylife.heritage.modern.core.profile.DataStoreLocalProfileRepository
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
@@ -34,6 +36,12 @@ abstract class DataModule {
     abstract fun bindContentIntelligenceRepository(
         repository: DefaultContentIntelligenceRepository,
     ): ContentIntelligenceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindIntelligentSearchRepository(
+        repository: DefaultIntelligentSearchRepository,
+    ): IntelligentSearchRepository
 
     @Binds
     @Singleton

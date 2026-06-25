@@ -143,7 +143,8 @@ class ContentIntelligenceViewModelDelegateTest {
         repository.given(ref, serviceUnavailableException())
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
-        delegate.load(ref)
+        var fallbackCalled = false
+        delegate.load(ref, onFallbackRequired = { fallbackCalled = true })
         advanceUntilIdle()
 
         val state = delegate.uiState.value
@@ -153,6 +154,7 @@ class ContentIntelligenceViewModelDelegateTest {
         assertEquals(SectionStatus.Unavailable, state.graphSection.status)
         assertEquals(SectionStatus.Unavailable, state.recommendationSection.status)
         assertEquals(SectionStatus.Unavailable, state.digestSection.status)
+        assertTrue(fallbackCalled)
     }
 
     @Test
@@ -218,6 +220,7 @@ private class FakeContentIntelligenceRepository : ContentIntelligenceRepository 
         failures[ref]?.let { throw it }
         return pages.getValue(ref)
     }
+
 }
 
 private suspend fun badRequestException(): Throwable {

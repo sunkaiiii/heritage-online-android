@@ -2,10 +2,13 @@ package com.duckylife.heritage.modern.feature.search
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
+import com.duckylife.heritage.modern.core.network.IntelligentSearchQuery
+import com.duckylife.heritage.modern.core.network.SearchV2Query
 import com.duckylife.heritage.modern.core.network.dto.SearchResultItemDto
 import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchResponseDto
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
-import com.duckylife.heritage.modern.ui.error.ErrorKind
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.advanceTimeBy
@@ -24,12 +27,13 @@ class SearchViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    // region empty data state
-
     @Test
     fun `blank query does not trigger search`() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = SearchViewModel(repository = repo)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("   ")
         viewModel.search()
@@ -50,7 +54,10 @@ class SearchViewModelTest {
                 hasMore = false,
             ),
         )
-        val viewModel = SearchViewModel(repository = repo)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("不存在的关键词")
         viewModel.search()
@@ -67,7 +74,10 @@ class SearchViewModelTest {
     @Test
     fun `search failure sets errorKind`() = runTest {
         val repo = FakeHeritageRepository(failure = IllegalStateException("network down"))
-        val viewModel = SearchViewModel(repository = repo)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("test")
         viewModel.search()
@@ -81,7 +91,10 @@ class SearchViewModelTest {
     @Test
     fun `empty suggestions list does not crash`() = runTest {
         val repo = FakeHeritageRepository()
-        val viewModel = SearchViewModel(repository = repo)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("xyz")
         advanceUntilIdle()
@@ -90,14 +103,13 @@ class SearchViewModelTest {
         assertTrue(state.suggestions.isEmpty())
     }
 
-    // endregion
-
-    // region fast state switching
-
     @Test
     fun `fast query change cancels previous search`() = runTest {
-        val repo = SlowSearchRepository(delayMs = 100)
-        val viewModel = SearchViewModel(repository = repo)
+        val repo = ReferenceSlowSearchRepository(delayMs = 100)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("first")
         viewModel.search()
@@ -115,8 +127,11 @@ class SearchViewModelTest {
 
     @Test
     fun `fast filter change cancels previous search`() = runTest {
-        val repo = SlowSearchRepository(delayMs = 100)
-        val viewModel = SearchViewModel(repository = repo)
+        val repo = ReferenceSlowSearchRepository(delayMs = 100)
+        val viewModel = SearchViewModel(
+            repository = repo,
+            intelligentSearchRepository = NoopIntelligentSearchRepository(),
+        )
 
         viewModel.updateQuery("test")
         viewModel.search()
@@ -129,11 +144,14 @@ class SearchViewModelTest {
         assertFalse(state.isSearching)
         assertNull(state.errorKind)
     }
-
-    // endregion
 }
 
-private class SlowSearchRepository(
+private class NoopIntelligentSearchRepository : IntelligentSearchRepository {
+    override suspend fun search(query: IntelligentSearchQuery): IntelligentSearchResponseDto =
+        IntelligentSearchResponseDto()
+}
+
+private class ReferenceSlowSearchRepository(
     private val delayMs: Long,
     internal val delegate: FakeHeritageRepository = FakeHeritageRepository(
         searchV2Response = SearchV2ResponseDto(
@@ -148,7 +166,7 @@ private class SlowSearchRepository(
     var lastQuery: String? = null
         private set
 
-    override suspend fun searchV2(query: com.duckylife.heritage.modern.core.network.SearchV2Query): SearchV2ResponseDto {
+    override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto {
         delay(delayMs)
         lastQuery = query.keywords
         return delegate.searchV2(query)

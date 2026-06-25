@@ -223,7 +223,9 @@ class AdvancedApiClientTest {
                 includeAi = true,
                 includeGraph = false,
                 includeRecommendations = true,
-                includeLocalState = false,
+                includeLocalState = true,
+                includeDigest = false,
+                profileId = "profile-42",
             ),
         )
 
@@ -232,7 +234,48 @@ class AdvancedApiClientTest {
         assertEquals("true", request.url.parameters["includeAi"])
         assertEquals("false", request.url.parameters["includeGraph"])
         assertEquals("true", request.url.parameters["includeRecommendations"])
-        assertEquals("false", request.url.parameters["includeLocalState"])
+        assertEquals("true", request.url.parameters["includeLocalState"])
+        assertEquals("false", request.url.parameters["includeDigest"])
+        assertEquals("profile-42", request.url.parameters["profileId"])
+    }
+
+    @Test
+    fun `intelligent search encodes filters and enhancement options`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"items":[],"page":2,"pageSize":20,"total":0,"hasMore":false}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val api = createApiClient(createClient(engine))
+
+        api.intelligentSearch(
+            IntelligentSearchQuery(
+                keywords = "剪纸",
+                types = setOf(SearchResultType.Article),
+                page = 2,
+                pageSize = 20,
+                region = "北京",
+                category = "传统美术",
+                includeAi = false,
+                includeGraph = true,
+                includeHighlights = false,
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/v3/search/intelligent", request.url.encodedPath)
+        assertEquals("剪纸", request.url.parameters["q"])
+        assertEquals("article", request.url.parameters["types"])
+        assertEquals("2", request.url.parameters["page"])
+        assertEquals("20", request.url.parameters["pageSize"])
+        assertEquals("北京", request.url.parameters["region"])
+        assertEquals("传统美术", request.url.parameters["category"])
+        assertEquals("false", request.url.parameters["includeAi"])
+        assertEquals("true", request.url.parameters["includeGraph"])
+        assertEquals("false", request.url.parameters["includeHighlights"])
     }
 
     @Test

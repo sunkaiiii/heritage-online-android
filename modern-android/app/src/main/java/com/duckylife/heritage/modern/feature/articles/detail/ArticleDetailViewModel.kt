@@ -9,8 +9,10 @@ import com.duckylife.heritage.modern.core.data.ContentIntelligenceRef
 import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.detail.intelligence.applyDetailEnhancements
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
+import com.duckylife.heritage.modern.feature.detail.intelligence.loadAllLegacyDetailEnhancements
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -112,9 +114,6 @@ class ArticleDetailViewModel @AssistedInject constructor(
                     )
                 }
                 recordViewedIfNew(article)
-                loadContext(article.id)
-                loadDigest(article.id)
-                loadBlended(article.id)
                 loadIntelligence(article.id)
             }.onFailure { throwable ->
                 _uiState.update {
@@ -167,7 +166,25 @@ class ArticleDetailViewModel @AssistedInject constructor(
 
     private fun loadIntelligence(articleId: String?) {
         if (articleId.isNullOrBlank()) return
-        intelligenceDelegate.load(ContentIntelligenceRef(SearchResultType.Article, articleId))
+        intelligenceDelegate.load(
+            ref = ContentIntelligenceRef(SearchResultType.Article, articleId),
+            onPageLoaded = { page ->
+                page.applyDetailEnhancements<ArticleDetailUiState>(
+                    updateState = { reducer -> _uiState.update(reducer) },
+                    loadDigest = ::loadDigest,
+                    loadBlendedRecommendations = ::loadBlended,
+                    loadContext = ::loadContext,
+                )
+            },
+            onFallbackRequired = {
+                loadAllLegacyDetailEnhancements(
+                    id = articleId,
+                    loadContext = ::loadContext,
+                    loadDigest = ::loadDigest,
+                    loadBlendedRecommendations = ::loadBlended,
+                )
+            },
+        )
     }
 
     private fun loadBlended(articleId: String?) {

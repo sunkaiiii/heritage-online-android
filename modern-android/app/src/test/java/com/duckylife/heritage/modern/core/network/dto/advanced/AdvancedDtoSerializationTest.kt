@@ -124,6 +124,38 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `V3 content page fixture decodes stale AI mixed sections and local state`() {
+        val json = """
+            {
+                "pageType": "article",
+                "digest": {"summary": "摘要", "highlights": ["要点"]},
+                "aiCard": {"hasAi": true, "status": "ready", "isStale": true, "keywords": ["剪纸"]},
+                "graph": null,
+                "recommendations": [{"type": "article", "id": "a2", "title": "相关内容"}],
+                "relatedContent": [],
+                "localState": {"isFavorite": true, "viewCount": 4, "learningProgressPercent": 25.0},
+                "sectionStatus": [
+                    {"section": "aiCard", "status": "ready"},
+                    {"section": "graph", "status": "unavailable"},
+                    {"section": "recommendations", "status": "ready"},
+                    {"section": "relatedContent", "status": "missing"},
+                    {"section": "digest", "status": "ready"}
+                ]
+            }
+        """.trimIndent()
+
+        val dto = HeritageJson.decodeFromString(V3ContentPageDto.serializer(), json)
+
+        assertTrue(dto.aiCard?.isStale == true)
+        assertEquals("剪纸", dto.aiCard?.keywords?.single())
+        assertEquals(SectionStatus.Unavailable, dto.sectionStatus[1].status)
+        assertEquals(SectionStatus.Missing, dto.sectionStatus[3].status)
+        assertEquals(true, dto.localState?.isFavorite)
+        assertEquals(4, dto.localState?.viewCount)
+        assertEquals(1, dto.recommendations.size)
+    }
+
+    @Test
     fun `IntelligentSearchResponseDto decodes item with score breakdown`() {
         val json = """
             {

@@ -3,9 +3,14 @@ package com.duckylife.heritage.modern.feature.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
+import com.duckylife.heritage.modern.core.network.IntelligentSearchQuery
 import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.isServiceUnavailable
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchItemDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchResponseDto
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,14 +22,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import javax.inject.Inject
 
-private const val SEARCH_DEBOUNCE_MS = 350L
+private const val INTELLIGENT_SEARCH_DEBOUNCE_MS = 300L
 private const val SUGGESTION_DEBOUNCE_MS = 200L
 private const val PAGE_SIZE = 20
 
@@ -32,6 +36,7 @@ private const val PAGE_SIZE = 20
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: HeritageRepository,
+    private val intelligentSearchRepository: IntelligentSearchRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SearchUiState())
@@ -49,7 +54,11 @@ class SearchViewModel @Inject constructor(
                 .debounce(SUGGESTION_DEBOUNCE_MS)
                 .distinctUntilChanged()
                 .collect { query ->
-                    if (query.isNotBlank() && _uiState.value.results.isEmpty()) {
+                    if (
+                        _uiState.value.mode == SearchMode.Reference &&
+                        query.isNotBlank() &&
+                        _uiState.value.results.isEmpty()
+                    ) {
                         loadSuggestions(query)
                     } else {
                         _uiState.update { it.copy(suggestions = emptyList()) }
@@ -60,9 +69,68 @@ class SearchViewModel @Inject constructor(
 
     fun updateQuery(query: String) {
         _uiState.update { it.copy(query = query) }
+        if (_uiState.value.mode == SearchMode.Intelligent) {
+            scheduleIntelligentSearch()
+        }
     }
 
     fun search() {
+        if (_uiState.value.mode == SearchMode.Intelligent) {
+            scheduleIntelligentSearch()
+        } else {
+            searchReference()
+        }
+    }
+
+    fun selectMode(mode: SearchMode) {
+        if (_uiState.value.mode == mode) return
+        searchJob?.cancel()
+        suggestionJob?.cancel()
+        _uiState.update {
+            it.copy(
+                mode = mode,
+                isSearching = false,
+                isLoadingMore = false,
+                results = emptyList(),
+                intelligentResults = emptyList(),
+                page = 1,
+                total = 0,
+                hasMore = false,
+                suggestions = emptyList(),
+                errorKind = null,
+                intelligenceUnavailable = false,
+                whyMatchItem = null,
+            )
+        }
+        if (_uiState.value.query.isNotBlank()) {
+            search()
+        }
+    }
+
+    fun showWhyMatch(item: IntelligentSearchItemDto) {
+        _uiState.update { it.copy(whyMatchItem = item) }
+    }
+
+    fun dismissWhyMatch() {
+        _uiState.update { it.copy(whyMatchItem = null) }
+    }
+
+    fun updateIntelligentIncludeAi(enabled: Boolean) {
+        _uiState.update { it.copy(intelligentIncludeAi = enabled) }
+        searchForCurrentMode()
+    }
+
+    fun updateIntelligentIncludeGraph(enabled: Boolean) {
+        _uiState.update { it.copy(intelligentIncludeGraph = enabled) }
+        searchForCurrentMode()
+    }
+
+    fun updateIntelligentIncludeHighlights(enabled: Boolean) {
+        _uiState.update { it.copy(intelligentIncludeHighlights = enabled) }
+        searchForCurrentMode()
+    }
+
+    private fun searchReference() {
         val query = _uiState.value.query.trim()
         if (query.isBlank()) return
 
@@ -73,31 +141,37 @@ class SearchViewModel @Inject constructor(
                 isSearching = true,
                 page = 1,
                 results = emptyList(),
+                intelligentResults = emptyList(),
                 suggestions = emptyList(),
                 errorKind = null,
+                intelligenceUnavailable = false,
             )
         }
 
         searchJob = viewModelScope.launch {
-            runCatchingCancellable { performSearch(query, page = 1) }
+            runCatchingCancellable { performReferenceSearch(query, page = 1) }
                 .onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
-                            isSearching = false,
-                            results = response.items,
-                            page = 1,
-                            hasMore = response.hasMore,
-                            total = response.total,
-                            facets = response.facets?.toSearchFacetsDto(),
-                        )
+                    if (_uiState.value.mode == SearchMode.Reference && _uiState.value.query.trim() == query) {
+                        _uiState.update {
+                            it.copy(
+                                isSearching = false,
+                                results = response.items,
+                                page = 1,
+                                hasMore = response.hasMore,
+                                total = response.total,
+                                facets = response.facets?.toSearchFacetsDto(),
+                            )
+                        }
                     }
                 }
                 .onFailure { e ->
-                    _uiState.update {
-                        it.copy(
-                            isSearching = false,
-                            errorKind = e.toUiError().kind,
-                        )
+                    if (_uiState.value.mode == SearchMode.Reference && _uiState.value.query.trim() == query) {
+                        _uiState.update {
+                            it.copy(
+                                isSearching = false,
+                                errorKind = e.toUiError().kind,
+                            )
+                        }
                     }
                 }
         }
@@ -110,32 +184,65 @@ class SearchViewModel @Inject constructor(
         val nextPage = state.page + 1
         _uiState.update { it.copy(isLoadingMore = true) }
 
-        viewModelScope.launch {
-            runCatchingCancellable { performSearch(state.query.trim(), page = nextPage) }
-                .onSuccess { response ->
-                    _uiState.update {
-                        it.copy(
-                            isLoadingMore = false,
-                            results = it.results + response.items,
-                            page = nextPage,
-                            hasMore = response.hasMore,
-                        )
+        searchJob = viewModelScope.launch {
+            if (state.mode == SearchMode.Intelligent) {
+                runCatchingCancellable { performIntelligentSearch(state.query.trim(), nextPage) }
+                    .onSuccess { response ->
+                        if (
+                            _uiState.value.mode == SearchMode.Intelligent &&
+                            _uiState.value.query.trim() == state.query.trim()
+                        ) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoadingMore = false,
+                                    intelligentResults = it.intelligentResults + response.items,
+                                    page = nextPage,
+                                    hasMore = response.hasMore,
+                                    total = response.total,
+                                )
+                            }
+                        }
                     }
-                }
-                .onFailure { e ->
-                    _uiState.update {
-                        it.copy(
-                            isLoadingMore = false,
-                            errorKind = e.toUiError().kind,
-                        )
+                    .onFailure { error ->
+                        if (
+                            _uiState.value.mode == SearchMode.Intelligent &&
+                            _uiState.value.query.trim() == state.query.trim()
+                        ) {
+                            _uiState.update { it.copy(isLoadingMore = false, errorKind = error.toUiError().kind) }
+                        }
                     }
-                }
+            } else {
+                runCatchingCancellable { performReferenceSearch(state.query.trim(), page = nextPage) }
+                    .onSuccess { response ->
+                        if (
+                            _uiState.value.mode == SearchMode.Reference &&
+                            _uiState.value.query.trim() == state.query.trim()
+                        ) {
+                            _uiState.update {
+                                it.copy(
+                                    isLoadingMore = false,
+                                    results = it.results + response.items,
+                                    page = nextPage,
+                                    hasMore = response.hasMore,
+                                )
+                            }
+                        }
+                    }
+                    .onFailure { error ->
+                        if (
+                            _uiState.value.mode == SearchMode.Reference &&
+                            _uiState.value.query.trim() == state.query.trim()
+                        ) {
+                            _uiState.update { it.copy(isLoadingMore = false, errorKind = error.toUiError().kind) }
+                        }
+                    }
+            }
         }
     }
 
     fun selectSuggestion(text: String) {
         _uiState.update { it.copy(query = text, suggestions = emptyList()) }
-        search()
+        searchForCurrentMode()
     }
 
     fun toggleType(type: SearchResultType) {
@@ -147,32 +254,32 @@ class SearchViewModel @Inject constructor(
             }
             state.copy(selectedTypes = newTypes)
         }
-        search()
+        searchForCurrentMode()
     }
 
     fun updateRegionFilter(region: String) {
         _uiState.update { it.copy(regionFilter = region) }
-        search()
+        searchForCurrentMode()
     }
 
     fun updateCategoryFilter(category: String) {
         _uiState.update { it.copy(categoryFilter = category) }
-        search()
+        searchForCurrentMode()
     }
 
     fun updateYearFilter(year: Int?) {
         _uiState.update { it.copy(yearFilter = year) }
-        search()
+        searchForCurrentMode()
     }
 
     fun updateKindFilter(kind: DirectoryItemKind?) {
         _uiState.update { it.copy(kindFilter = kind) }
-        search()
+        searchForCurrentMode()
     }
 
     fun updateHasImageFilter(hasImage: Boolean?) {
         _uiState.update { it.copy(hasImageFilter = hasImage) }
-        search()
+        searchForCurrentMode()
     }
 
     fun clearFilters() {
@@ -184,13 +291,16 @@ class SearchViewModel @Inject constructor(
                 yearFilter = null,
                 kindFilter = null,
                 hasImageFilter = null,
+                intelligentIncludeAi = true,
+                intelligentIncludeGraph = false,
+                intelligentIncludeHighlights = true,
             )
         }
-        search()
+        searchForCurrentMode()
     }
 
     fun clearError() {
-        _uiState.update { it.copy(errorKind = null) }
+        _uiState.update { it.copy(errorKind = null, intelligenceUnavailable = false) }
     }
 
     private suspend fun loadSuggestions(prefix: String) {
@@ -213,7 +323,82 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private suspend fun performSearch(query: String, page: Int) =
+    private fun searchForCurrentMode() {
+        if (_uiState.value.mode == SearchMode.Intelligent) {
+            scheduleIntelligentSearch()
+        } else {
+            searchReference()
+        }
+    }
+
+    private fun scheduleIntelligentSearch() {
+        val query = _uiState.value.query.trim()
+        searchJob?.cancel()
+        suggestionJob?.cancel()
+        if (query.isBlank()) {
+            _uiState.update {
+                it.copy(
+                    isSearching = false,
+                    intelligentResults = emptyList(),
+                    page = 1,
+                    total = 0,
+                    hasMore = false,
+                    errorKind = null,
+                    suggestions = emptyList(),
+                    whyMatchItem = null,
+                )
+            }
+            return
+        }
+        _uiState.update {
+            it.copy(
+                isSearching = true,
+                results = emptyList(),
+                intelligentResults = emptyList(),
+                page = 1,
+                total = 0,
+                hasMore = false,
+                errorKind = null,
+                intelligenceUnavailable = false,
+                suggestions = emptyList(),
+                whyMatchItem = null,
+            )
+        }
+        searchJob = viewModelScope.launch {
+            kotlinx.coroutines.delay(INTELLIGENT_SEARCH_DEBOUNCE_MS)
+            runCatchingCancellable { performIntelligentSearch(query, page = 1) }
+                .onSuccess { response ->
+                    val current = _uiState.value
+                    if (current.mode == SearchMode.Intelligent && current.query.trim() == query) {
+                        _uiState.update {
+                            it.copy(
+                                isSearching = false,
+                                intelligentResults = response.items,
+                                page = 1,
+                                hasMore = response.hasMore,
+                                total = response.total,
+                            )
+                        }
+                    }
+                }
+                .onFailure { error ->
+                    if (
+                        _uiState.value.mode == SearchMode.Intelligent &&
+                        _uiState.value.query.trim() == query
+                    ) {
+                        _uiState.update {
+                            it.copy(
+                                isSearching = false,
+                                errorKind = error.toUiError().kind,
+                                intelligenceUnavailable = error.isServiceUnavailable(),
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    private suspend fun performReferenceSearch(query: String, page: Int) =
         repository.searchV2(
             SearchV2Query(
                 keywords = query,
@@ -227,6 +412,28 @@ class SearchViewModel @Inject constructor(
                 hasImage = _uiState.value.hasImageFilter,
             ),
         )
+
+    private suspend fun performIntelligentSearch(
+        query: String,
+        page: Int,
+    ): IntelligentSearchResponseDto {
+        val state = _uiState.value
+        return intelligentSearchRepository.search(
+            IntelligentSearchQuery(
+                keywords = query,
+                types = state.selectedTypes,
+                page = page,
+                pageSize = PAGE_SIZE,
+                region = state.regionFilter.takeIf { it.isNotBlank() },
+                category = state.categoryFilter.takeIf { it.isNotBlank() },
+                year = state.yearFilter,
+                kind = state.kindFilter,
+                includeAi = state.intelligentIncludeAi,
+                includeGraph = state.intelligentIncludeGraph,
+                includeHighlights = state.intelligentIncludeHighlights,
+            ),
+        )
+    }
 
     private fun com.duckylife.heritage.modern.core.network.dto.SearchFacetsDto.toSearchFacetsDto() =
         SearchFacetsDto(

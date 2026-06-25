@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.detail.intelligence
 
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRef
+import com.duckylife.heritage.modern.core.data.ContentIntelligencePage
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.IntelligenceSection
 import com.duckylife.heritage.modern.core.network.dto.advanced.AiCardDto
@@ -33,7 +34,11 @@ interface ContentIntelligenceViewModelDelegate {
     /**
      * 加载指定内容的 V3 content page。若 [ref] 与当前相同，不会重复发起请求。
      */
-    fun load(ref: ContentIntelligenceRef)
+    fun load(
+        ref: ContentIntelligenceRef,
+        onPageLoaded: (ContentIntelligencePage) -> Unit = {},
+        onFallbackRequired: () -> Unit = {},
+    )
 
     /**
      * 重试最后一次请求的 ref。
@@ -65,10 +70,18 @@ internal class DefaultContentIntelligenceViewModelDelegate(
 
     private var job: Job? = null
     private var lastRef: ContentIntelligenceRef? = null
+    private var onPageLoaded: (ContentIntelligencePage) -> Unit = {}
+    private var onFallbackRequired: () -> Unit = {}
 
-    override fun load(ref: ContentIntelligenceRef) {
+    override fun load(
+        ref: ContentIntelligenceRef,
+        onPageLoaded: (ContentIntelligencePage) -> Unit,
+        onFallbackRequired: () -> Unit,
+    ) {
         if (lastRef == ref) return
         lastRef = ref
+        this.onPageLoaded = onPageLoaded
+        this.onFallbackRequired = onFallbackRequired
         startLoad(ref)
     }
 
@@ -99,6 +112,7 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                             warnings = page.warnings,
                         )
                     }
+                    onPageLoaded(page)
                 }
                 .onFailure { throwable ->
                     if (lastRef == ref) {
@@ -119,6 +133,7 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                     loadError = null,
                 )
             }
+            onFallbackRequired()
             return
         }
 
@@ -142,5 +157,6 @@ internal class DefaultContentIntelligenceViewModelDelegate(
                 learningRoutesAvailable = false,
             )
         }
+        onFallbackRequired()
     }
 }

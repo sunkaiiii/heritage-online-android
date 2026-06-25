@@ -2,8 +2,11 @@ package com.duckylife.heritage.modern.core.testing.fake
 
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
+import com.duckylife.heritage.modern.core.network.IntelligentSearchQuery
+import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchResponseDto
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
@@ -43,6 +46,14 @@ object TestFakeDataModule {
     @Singleton
     fun provideContentIntelligenceRepository(): ContentIntelligenceRepository =
         TestFakeContentIntelligenceRepository()
+
+    @Provides
+    @Singleton
+    fun provideIntelligentSearchRepository(): IntelligentSearchRepository =
+        object : IntelligentSearchRepository {
+            override suspend fun search(query: IntelligentSearchQuery): IntelligentSearchResponseDto =
+                IntelligentSearchResponseDto(query = query.keywords)
+        }
 
     @Provides
     @Singleton

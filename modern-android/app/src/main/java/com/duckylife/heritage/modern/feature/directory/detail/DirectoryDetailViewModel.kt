@@ -9,8 +9,10 @@ import com.duckylife.heritage.modern.core.data.ContentIntelligenceRef
 import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.feature.detail.intelligence.applyDetailEnhancements
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
+import com.duckylife.heritage.modern.feature.detail.intelligence.loadAllLegacyDetailEnhancements
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -109,9 +111,6 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                     )
                 }
                 recordViewedIfNew(item)
-                loadContext(item.id)
-                loadDigest(item.id)
-                loadBlended(item.id)
                 loadIntelligence(item.id)
             }.onFailure { throwable ->
                 _uiState.update {
@@ -164,7 +163,25 @@ class DirectoryDetailViewModel @AssistedInject constructor(
 
     private fun loadIntelligence(itemId: String?) {
         if (itemId.isNullOrBlank()) return
-        intelligenceDelegate.load(ContentIntelligenceRef(SearchResultType.DirectoryItem, itemId))
+        intelligenceDelegate.load(
+            ref = ContentIntelligenceRef(SearchResultType.DirectoryItem, itemId),
+            onPageLoaded = { page ->
+                page.applyDetailEnhancements<DirectoryDetailUiState>(
+                    updateState = { reducer -> _uiState.update(reducer) },
+                    loadDigest = ::loadDigest,
+                    loadBlendedRecommendations = ::loadBlended,
+                    loadContext = ::loadContext,
+                )
+            },
+            onFallbackRequired = {
+                loadAllLegacyDetailEnhancements(
+                    id = itemId,
+                    loadContext = ::loadContext,
+                    loadDigest = ::loadDigest,
+                    loadBlendedRecommendations = ::loadBlended,
+                )
+            },
+        )
     }
 
     private fun loadBlended(itemId: String?) {

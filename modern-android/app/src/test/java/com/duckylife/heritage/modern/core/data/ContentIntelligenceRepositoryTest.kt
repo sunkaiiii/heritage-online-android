@@ -15,6 +15,11 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatus
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatusDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.V3ContentPageDto
 import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -55,6 +60,13 @@ class ContentIntelligenceRepositoryTest {
         assertEquals(SearchResultType.Article, page.pageType)
         assertEquals("article-1", page.ref.id)
         assertEquals(true, page.learningRoutesAvailable)
+        assertEquals("人工摘要", page.detailDigest?.quickRead)
+        assertEquals(2, page.detailRecommendations?.items?.size)
+        assertEquals(1, page.detailContext?.related?.size)
+        assertEquals(1, page.detailContext?.recommendations?.size)
+        assertEquals(false, page.legacyFallback.loadDigest)
+        assertEquals(false, page.legacyFallback.loadBlendedRecommendations)
+        assertEquals(false, page.legacyFallback.loadContext)
     }
 
     @Test
@@ -105,6 +117,59 @@ class ContentIntelligenceRepositoryTest {
     }
 
     @Test
+    fun `unavailable V3 sections keep legacy detail fallback enabled`() = runTest {
+        val api = FakeContentIntelligenceApi(
+            response = V3ContentPageDto(
+                digest = ContentDigestSectionDto(summary = "不应直接显示"),
+                recommendations = listOf(ContentRefDto(type = GraphNodeType.Article, id = "r1")),
+                sectionStatus = listOf(
+                    SectionStatusDto(section = "digest", status = SectionStatus.Unavailable),
+                    SectionStatusDto(section = "recommendations", status = SectionStatus.Disabled),
+                    SectionStatusDto(section = "relatedContent", status = SectionStatus.Missing),
+                    SectionStatusDto(section = "graph", status = SectionStatus.Unavailable),
+                ),
+            ),
+        )
+        val repository = DefaultContentIntelligenceRepository(
+            api = api,
+            profileRepository = FakeLocalProfileRepository(),
+        )
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+        )
+
+        assertNull(page.detailDigest)
+        assertNull(page.detailRecommendations)
+        assertNull(page.detailContext)
+        assertEquals(true, page.legacyFallback.loadDigest)
+        assertEquals(true, page.legacyFallback.loadBlendedRecommendations)
+        assertEquals(true, page.legacyFallback.loadContext)
+    }
+
+    @Test
+    fun `V3 503 degrades to unavailable enhancement page without fatal detail error`() = runTest {
+        val api = FakeContentIntelligenceApi().apply {
+            failure = serviceUnavailableException()
+        }
+        val repository = DefaultContentIntelligenceRepository(
+            api = api,
+            profileRepository = FakeLocalProfileRepository(),
+        )
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+        )
+
+        assertEquals(SectionStatus.Unavailable, page.aiSection.status)
+        assertEquals(SectionStatus.Unavailable, page.graphSection.status)
+        assertEquals(SectionStatus.Unavailable, page.digestSection.status)
+        assertEquals(true, page.legacyFallback.loadDigest)
+        assertEquals(true, page.legacyFallback.loadBlendedRecommendations)
+        assertEquals(true, page.legacyFallback.loadContext)
+    }
+
+    @Test
     fun sendsProfileIdForLocalState() = runTest {
         val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
         val repository = DefaultContentIntelligenceRepository(
@@ -128,9 +193,11 @@ private class FakeContentIntelligenceApi(
     var response: V3ContentPageDto = V3ContentPageDto(),
 ) : ContentIntelligenceApi {
     val queries = mutableListOf<V3ContentPageQuery>()
+    var failure: Throwable? = null
 
     override suspend fun getV3ContentPage(query: V3ContentPageQuery): V3ContentPageDto {
         queries += query
+        failure?.let { throw it }
         return response
     }
 
@@ -143,4 +210,12 @@ private class FakeContentIntelligenceApi(
     override suspend fun intelligentSearch(
         query: com.duckylife.heritage.modern.core.network.IntelligentSearchQuery,
     ): IntelligentSearchResponseDto = throw NotImplementedError()
+}
+
+private suspend fun serviceUnavailableException(): Throwable {
+    val client = HttpClient(MockEngine { respondError(HttpStatusCode.ServiceUnavailable) }) {
+        expectSuccess = true
+    }
+    return runCatching { client.get("http://test.example/") }.exceptionOrNull()
+        ?: error("expected exception")
 }
