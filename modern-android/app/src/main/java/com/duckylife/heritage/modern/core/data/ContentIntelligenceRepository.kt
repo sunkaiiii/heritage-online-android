@@ -157,8 +157,9 @@ private fun V3ContentPageDto.toPage(ref: ContentIntelligenceRef): ContentIntelli
         sectionName = "aiCard",
         derive = { card ->
             when {
-                card?.hasAi != true -> SectionStatus.Empty
-                else -> SectionStatus.Ready
+                card == null -> SectionStatus.Missing
+                card.hasDisplayableContent -> SectionStatus.Ready
+                else -> SectionStatus.Empty
             }
         },
     )
@@ -307,6 +308,13 @@ private fun GraphEdgeDto.toDetailGraphEdge() =
         source = source?.wireName,
         weight = weight ?: 0.0,
     )
+
+private val AiCardDto.hasDisplayableContent: Boolean
+    get() = !summary.isNullOrBlank() ||
+        !shortSummary.isNullOrBlank() ||
+        highlights.isNotEmpty() ||
+        keywords.isNotEmpty() ||
+        entities.isNotEmpty()
 
 private val LEARNABLE_CONTENT_TYPES = setOf(
     SearchResultType.Article,

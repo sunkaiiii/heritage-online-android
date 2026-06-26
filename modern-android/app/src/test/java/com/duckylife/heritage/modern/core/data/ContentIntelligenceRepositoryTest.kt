@@ -94,6 +94,30 @@ class ContentIntelligenceRepositoryTest {
     }
 
     @Test
+    fun mapsAiCardReadyWhenHasAiFalseButContentPresent() = runTest {
+        val api = FakeContentIntelligenceApi(
+            response = V3ContentPageDto(
+                aiCard = AiCardDto(
+                    hasAi = false,
+                    summary = "AI 摘要",
+                    highlights = listOf("亮点 1"),
+                ),
+            ),
+        )
+        val repository = DefaultContentIntelligenceRepository(
+            api = api,
+            profileRepository = FakeLocalProfileRepository(),
+        )
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+        )
+
+        assertEquals(SectionStatus.Ready, page.aiSection.status)
+        assertEquals("AI 摘要", page.aiSection.data?.summary)
+    }
+
+    @Test
     fun respectsExplicitUnavailableStatus() = runTest {
         val api = FakeContentIntelligenceApi(
             response = V3ContentPageDto(
