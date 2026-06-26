@@ -3,6 +3,7 @@ package com.duckylife.heritage.modern.ui.text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 
 /**
  * 将内容类型 wire value 映射为本地化显示文案。
@@ -100,3 +101,16 @@ fun localizedRelationLabel(relationType: String?, label: String?): String {
         ?: label?.takeIf { it.isNotBlank() }
         ?: ""
 }
+
+/**
+ * 将学习路线难度 wire value 映射为本地化显示文案。
+ */
+@Composable
+fun localizedLearningRouteDifficulty(difficulty: LearningRouteDifficulty): String =
+    when (difficulty) {
+        LearningRouteDifficulty.All -> stringResource(R.string.learning_route_difficulty_all)
+        LearningRouteDifficulty.Beginner -> stringResource(R.string.learning_route_difficulty_beginner)
+        LearningRouteDifficulty.Intermediate -> stringResource(R.string.learning_route_difficulty_intermediate)
+        LearningRouteDifficulty.Deep -> stringResource(R.string.learning_route_difficulty_deep)
+        LearningRouteDifficulty.Unknown -> stringResource(R.string.learning_route_difficulty_unknown)
+    }

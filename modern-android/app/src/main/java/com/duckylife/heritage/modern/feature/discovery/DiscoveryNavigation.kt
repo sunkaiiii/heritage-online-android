@@ -195,6 +195,9 @@ fun DiscoveryNavHost(
                         onKnowledgeGraphClick = {
                             backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
                         },
+                        onLearningRoutesClick = {
+                            backStack.add(DiscoveryRouteKey.LearningRoutesPage())
+                        },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
@@ -280,6 +283,11 @@ fun DiscoveryNavHost(
                         seedType = key.seedType,
                         seedId = key.seedId,
                         onBack = { backStack.removeLastOrNull() },
+                        onRouteClick = { routeId ->
+                            if (routeId.isNotBlank()) {
+                                backStack.add(DiscoveryRouteKey.LearningRouteDetailPage(routeId = routeId))
+                            }
+                        },
                         modifier = modifier,
                     )
                 }
@@ -779,6 +787,9 @@ fun DiscoveryNavHost(
                         },
                         onKnowledgeGraphClick = {
                             backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
+                        },
+                        onLearningRoutesClick = {
+                            backStack.add(DiscoveryRouteKey.LearningRoutesPage())
                         },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },

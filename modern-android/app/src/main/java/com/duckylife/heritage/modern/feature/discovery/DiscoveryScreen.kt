@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountTree
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -73,6 +74,7 @@ fun DiscoveryRoute(
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
+    onLearningRoutesClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
     onTodayItemClick: (DiscoveryItemDto) -> Unit,
@@ -93,6 +95,7 @@ fun DiscoveryRoute(
         onRegionAtlasClick = onRegionAtlasClick,
         onTimelineClick = onTimelineClick,
         onKnowledgeGraphClick = onKnowledgeGraphClick,
+        onLearningRoutesClick = onLearningRoutesClick,
         onSerendipityClick = viewModel::serendipity,
         onTrendingItemClick = onTrendingItemClick,
         onWeeklyItemClick = onWeeklyItemClick,
@@ -120,6 +123,7 @@ fun DiscoveryScreen(
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
+    onLearningRoutesClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -157,6 +161,7 @@ fun DiscoveryScreen(
                     onRegionAtlasClick = onRegionAtlasClick,
                     onTimelineClick = onTimelineClick,
                     onKnowledgeGraphClick = onKnowledgeGraphClick,
+                    onLearningRoutesClick = onLearningRoutesClick,
                     onSerendipityClick = onSerendipityClick,
                     onTrendingItemClick = onTrendingItemClick,
                     onWeeklyItemClick = onWeeklyItemClick,
@@ -185,6 +190,7 @@ private fun DiscoveryContent(
     onRegionAtlasClick: () -> Unit,
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
+    onLearningRoutesClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -312,6 +318,17 @@ private fun DiscoveryContent(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 icon = Icons.Outlined.AccountTree,
                 onClick = onKnowledgeGraphClick,
+            )
+        }
+
+        // 新学习路线入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.learning_routes_title),
+                subtitle = stringResource(R.string.discovery_learning_routes_subtitle),
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                icon = Icons.Outlined.School,
+                onClick = onLearningRoutesClick,
             )
         }
 

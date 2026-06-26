@@ -12,6 +12,8 @@ import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepositor
 import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
 import com.duckylife.heritage.modern.core.data.DefaultKnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.DefaultLearningRoutesRepository
+import com.duckylife.heritage.modern.core.data.LearningRoutesRepository
 import com.duckylife.heritage.modern.core.data.DefaultRecentContentProvider
 import com.duckylife.heritage.modern.core.data.RecentContentProvider
 import com.duckylife.heritage.modern.core.profile.DataStoreLocalProfileRepository
@@ -52,6 +54,12 @@ abstract class DataModule {
     abstract fun bindKnowledgeGraphRepository(
         repository: DefaultKnowledgeGraphRepository,
     ): KnowledgeGraphRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLearningRoutesRepository(
+        repository: DefaultLearningRoutesRepository,
+    ): LearningRoutesRepository
 
     @Binds
     @Singleton

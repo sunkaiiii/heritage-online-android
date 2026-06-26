@@ -384,6 +384,20 @@
     <string name="learning_routes_title">学习路线</string>
     <string name="learning_routes_coming_soon">学习路线列表即将上线，敬请期待</string>
     <string name="learning_routes_seed_hint">将从当前内容出发推荐适合的学习路线</string>
+    <string name="learning_routes_subtitle">带进度的连续学习</string>
+    <string name="learning_routes_empty_title">还没有符合条件的路线</string>
+    <string name="learning_routes_empty_message">换个难度筛选，或去发现页浏览更多内容。</string>
+    <string name="learning_routes_minutes_format">%1$d 分钟</string>
+    <string name="learning_routes_steps_format">%1$d 个步骤</string>
+    <string name="learning_routes_build_from_seed_title">为当前内容定制路线</string>
+    <string name="learning_routes_build_from_seed_subtitle">从这条内容出发，生成一条专属学习路线</string>
+    <string name="learning_routes_build_action">生成</string>
+    <string name="learning_route_difficulty_all">全部</string>
+    <string name="learning_route_difficulty_beginner">入门</string>
+    <string name="learning_route_difficulty_intermediate">进阶</string>
+    <string name="learning_route_difficulty_deep">深入</string>
+    <string name="learning_route_difficulty_unknown">未知</string>
+    <string name="discovery_learning_routes_subtitle">带进度的连续学习</string>
     <string name="learning_route_detail_title">学习路线详情</string>
 
     <!-- Journeys -->

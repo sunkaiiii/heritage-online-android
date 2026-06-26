@@ -286,6 +286,46 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `LearningRouteSummaryDto decodes defaults and tags`() {
+        val json = """
+            {
+                "routeId": "r1",
+                "title": "入门路线",
+                "difficulty": "beginner",
+                "estimatedMinutes": 15,
+                "stepCount": 5,
+                "tags": ["传统技艺", "浙江"],
+                "coverImageUrl": "/images/route.jpg"
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LearningRouteSummaryDto.serializer(), json)
+        assertEquals("r1", dto.routeId)
+        assertEquals("入门路线", dto.title)
+        assertEquals(LearningRouteDifficulty.Beginner, dto.difficulty)
+        assertEquals(5, dto.stepCount)
+        assertEquals(listOf("传统技艺", "浙江"), dto.tags)
+        assertEquals("/images/route.jpg", dto.coverImageUrl)
+    }
+
+    @Test
+    fun `LearningRouteNextDto decodes completion and next step`() {
+        val json = """
+            {
+                "routeId": "r1",
+                "completed": false,
+                "nextStep": {"stepId": "step2", "order": 2, "title": "下一步"},
+                "relatedRoutes": [{"routeId": "r2", "title": "相关路线"}]
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LearningRouteNextDto.serializer(), json)
+        assertEquals("r1", dto.routeId)
+        assertFalse(dto.completed)
+        assertEquals("step2", dto.nextStep?.stepId)
+        assertEquals("下一步", dto.nextStep?.title)
+        assertEquals(1, dto.relatedRoutes.size)
+    }
+
+    @Test
     fun `SpacetimeOverviewDto decodes with empty arrays`() {
         val json = """
             {

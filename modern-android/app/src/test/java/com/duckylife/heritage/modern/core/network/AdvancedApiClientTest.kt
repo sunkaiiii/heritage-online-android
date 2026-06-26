@@ -6,8 +6,12 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.FavoriteCreateRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.HistoryRecordRequestDto
+import com.duckylife.heritage.modern.core.network.LearningRouteBuildQuery
+import com.duckylife.heritage.modern.core.network.LearningRouteDetailQuery
+import com.duckylife.heritage.modern.core.network.LearningRouteNextQuery
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressUpdateDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import io.ktor.client.plugins.api.createClientPlugin
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
@@ -328,6 +332,116 @@ class AdvancedApiClientTest {
         assertEquals("/api/learning-routes", request.url.encodedPath)
         assertEquals("beginner", request.url.parameters["difficulty"])
         assertEquals("25", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getLearningRouteDetail encodes route id and query params`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "routeId": "route-1",
+                        "title": "Route",
+                        "difficulty": "intermediate",
+                        "estimatedMinutes": 30,
+                        "sections": [],
+                        "steps": [],
+                        "relatedRoutes": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.getLearningRouteDetail(
+            LearningRouteDetailQuery(routeId = "route 1", limit = 15, includeAi = false),
+        )
+
+        assertEquals("route-1", result.routeId)
+        val request = requireNotNull(captured)
+        assertEquals("/api/learning-routes/route%201", request.url.encodedPath)
+        assertEquals("15", request.url.parameters["limit"])
+        assertEquals("false", request.url.parameters["includeAi"])
+    }
+
+    @Test
+    fun `buildLearningRoute sends seed params as GET query`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "routeId": "built-1",
+                        "title": "Built",
+                        "difficulty": "beginner",
+                        "estimatedMinutes": 20,
+                        "sections": [],
+                        "steps": [],
+                        "relatedRoutes": []
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.buildLearningRoute(
+            LearningRouteBuildQuery(
+                seedType = LearningRouteSeedType.Content,
+                seedKey = "article:中文",
+                difficulty = LearningRouteDifficulty.Beginner,
+                limit = 8,
+            ),
+        )
+
+        assertEquals("built-1", result.routeId)
+        val request = requireNotNull(captured)
+        assertEquals("/api/learning-routes/build", request.url.encodedPath)
+        assertEquals("content", request.url.parameters["seedType"])
+        assertEquals("article:中文", request.url.parameters["seedKey"])
+        assertEquals("beginner", request.url.parameters["difficulty"])
+        assertEquals("8", request.url.parameters["limit"])
+        assertEquals("true", request.url.parameters["includeArticles"])
+    }
+
+    @Test
+    fun `getLearningRouteNextStep passes profileId and completedStepIds`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "routeId": "route-1",
+                        "completed": false,
+                        "nextStep": {"stepId": "step2", "order": 2, "title": "Next"}
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.getLearningRouteNextStep(
+            LearningRouteNextQuery(
+                routeId = "route-1",
+                completedStepIds = listOf("step1", "step2"),
+                profileId = "android_test_profile",
+            ),
+        )
+
+        assertEquals("step2", result.nextStep?.stepId)
+        val request = requireNotNull(captured)
+        assertEquals("/api/learning-routes/route-1/next", request.url.encodedPath)
+        assertEquals("android_test_profile", request.url.parameters["profileId"])
+        assertEquals("step1,step2", request.url.parameters["completedStepIds"])
     }
 
     @Test
