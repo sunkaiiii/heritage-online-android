@@ -96,7 +96,7 @@ private fun DiscoveryRouteKey.DiscoveryInheritorDetail.continueExploreContentId(
 @Composable
 fun DiscoveryNavHost(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
-    pendingNavigation: MyPageDestination.GraphExplore? = null,
+    pendingNavigation: MyPageDestination? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     pendingSearchQuery: String? = null,
     onPendingSearchConsumed: () -> Unit = {},
@@ -120,13 +120,29 @@ fun DiscoveryNavHost(
         val destination = pendingNavigation ?: return@LaunchedEffect
         backStack.clear()
         backStack.add(DiscoveryRouteKey.DiscoveryIndex)
-        backStack.add(
-            DiscoveryRouteKey.GraphExplorePage(
-                type = destination.contentType,
-                contentId = destination.contentId,
-                initialTab = GraphTab.Similar,
-            ),
-        )
+        when (destination) {
+            is MyPageDestination.GraphExplore -> {
+                backStack.add(
+                    DiscoveryRouteKey.GraphExplorePage(
+                        type = destination.contentType,
+                        contentId = destination.contentId,
+                        initialTab = GraphTab.entries.firstOrNull { it.wireName == destination.initialTabName }
+                            ?: GraphTab.Similar,
+                    ),
+                )
+            }
+            is MyPageDestination.LearningRoutes -> {
+                backStack.add(
+                    DiscoveryRouteKey.LearningRoutesPage(
+                        seedType = destination.seedType,
+                        seedId = destination.seedId,
+                    ),
+                )
+            }
+            else -> {
+                // 其他 destination 类型不应进入 DiscoveryNavHost；安全起见直接消费。
+            }
+        }
         onPendingNavigationConsumed()
     }
     LaunchedEffect(pendingSearchQuery) {

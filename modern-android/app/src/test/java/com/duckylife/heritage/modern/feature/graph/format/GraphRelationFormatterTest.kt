@@ -43,6 +43,16 @@ class GraphRelationFormatterTest {
     }
 
     @Test
+    fun mapsRawRelationTypeWireNamesToStringResources() {
+        assertEquals(R.string.graph_relation_type_related_to, GraphRelationFormatter.labelResId("RELATED_TO"))
+        assertEquals(R.string.graph_relation_related_article, GraphRelationFormatter.labelResId("relatedArticle"))
+        assertEquals(R.string.graph_relation_related_directory_item, GraphRelationFormatter.labelResId("relatedDirectoryItem"))
+        assertEquals(R.string.graph_relation_related_inheritor, GraphRelationFormatter.labelResId("relatedInheritor"))
+        assertEquals(R.string.graph_relation_semantic_similarity, GraphRelationFormatter.labelResId("semanticSimilarity"))
+        assertEquals(null, GraphRelationFormatter.labelResId("unknownRawKey"))
+    }
+
+    @Test
     fun edgeIsAiInferredWhenSourceIsAi() {
         val edge = GraphEdgeUiModel(
             fromNodeKey = "a",

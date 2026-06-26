@@ -111,6 +111,12 @@ sealed interface MyPageDestination {
     data class GraphExplore(
         val contentType: String,
         val contentId: String,
+        val initialTabName: String = "similar",
+    ) : MyPageDestination
+
+    data class LearningRoutes(
+        val seedType: String? = null,
+        val seedId: String? = null,
     ) : MyPageDestination
 }
 

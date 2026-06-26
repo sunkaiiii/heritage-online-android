@@ -403,4 +403,43 @@ class AdvancedDtoSerializationTest {
         assertEquals(2, dto.sectionStatus.size)
         assertEquals(SectionStatus.Ready, dto.sectionStatus.first().status)
     }
+
+    @Test
+    fun `V3ContentPageDto decodes object keyFacts and warnings`() {
+        val json = """
+            {
+                "pageType": "inheritor",
+                "digest": {
+                    "summary": "传承人摘要",
+                    "highlights": ["要点"],
+                    "keyFacts": [
+                        {"label": "姓名", "value": "丁义江"},
+                        {"label": "项目", "value": "传统技艺"}
+                    ],
+                    "keywords": ["非遗"]
+                },
+                "aiCard": {"hasAi": false, "status": "missing"},
+                "sectionStatus": [
+                    {"section": "aiCard", "status": "missing"},
+                    {"section": "digest", "status": "ready"},
+                    {"section": "graph", "status": "ready"},
+                    {"section": "recommendations", "status": "ready"},
+                    {"section": "relatedContent", "status": "ready"}
+                ],
+                "warnings": [
+                    {"code": "ai_missing", "message": "AI 结果缺失", "severity": "info"}
+                ]
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(V3ContentPageDto.serializer(), json)
+
+        assertEquals(GraphNodeType.Inheritor, dto.pageType)
+        assertEquals(2, dto.digest?.keyFacts?.size)
+        assertEquals("姓名", dto.digest?.keyFacts?.first()?.label)
+        assertEquals("丁义江", dto.digest?.keyFacts?.first()?.value)
+        assertEquals(1, dto.warnings.size)
+        assertEquals("ai_missing", dto.warnings.first().code)
+        assertEquals("AI 结果缺失", dto.warnings.first().message)
+        assertEquals("info", dto.warnings.first().severity)
+    }
 }

@@ -74,6 +74,47 @@ class GraphModelMappingTest {
     }
 
     @Test
+    fun nodeMappingDerivesIdFromNodeKeyWhenIdMissing() {
+        val dto = GraphNodeDto(
+            nodeKey = "article:abc123",
+            type = GraphNodeType.Article,
+            title = "Article",
+        )
+        val ui = dto.toGraphNodeUiModel()
+
+        assertEquals("abc123", ui.id)
+        assertTrue(ui.isContentNode)
+    }
+
+    @Test
+    fun nodeMappingDerivesTopicKeyFromNodeKeyWhenIdMissing() {
+        val dto = GraphNodeDto(
+            nodeKey = "category:传统戏剧",
+            type = GraphNodeType.Category,
+            title = "传统戏剧",
+        )
+        val ui = dto.toGraphNodeUiModel()
+
+        assertEquals("传统戏剧", ui.id)
+        assertEquals("传统戏剧", ui.topicKey)
+        assertFalse(ui.isContentNode)
+        assertTrue(ui.isTopicNode)
+    }
+
+    @Test
+    fun nodeMappingPrefersExplicitIdOverNodeKey() {
+        val dto = GraphNodeDto(
+            nodeKey = "article:abc123",
+            type = GraphNodeType.Article,
+            id = "explicit-id",
+            title = "Article",
+        )
+        val ui = dto.toGraphNodeUiModel()
+
+        assertEquals("explicit-id", ui.id)
+    }
+
+    @Test
     fun edgesAreDedupedByFromToRelation() {
         val edges = listOf(
             GraphEdgeDto(from = "a", to = "b", type = GraphRelationType.RelatedTo),

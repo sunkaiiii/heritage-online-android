@@ -21,7 +21,7 @@ data class V3ContentPageDto(
     val localState: LocalStateSectionDto? = null,
     val exportHints: List<String> = emptyList(),
     val sectionStatus: List<SectionStatusDto> = emptyList(),
-    val warnings: List<String> = emptyList(),
+    val warnings: List<V3PageWarningDto> = emptyList(),
     val generatedAt: String? = null,
 )
 
@@ -45,8 +45,30 @@ data class LocalStateSectionDto(
 data class ContentDigestSectionDto(
     val summary: String? = null,
     val highlights: List<String> = emptyList(),
-    val keyFacts: List<String> = emptyList(),
+    val keyFacts: List<ContentDigestKeyFactDto> = emptyList(),
     val keywords: List<String> = emptyList(),
+)
+
+/**
+ * V3 content page digest 中的关键事实。
+ *
+ * 后端返回对象数组 `{ "label": "...", "value": "..." }`，
+ * 旧版字符串数组已不再使用。
+ */
+@Serializable
+data class ContentDigestKeyFactDto(
+    val label: String = "",
+    val value: String = "",
+)
+
+/**
+ * V3 content page 返回的警告信息。
+ */
+@Serializable
+data class V3PageWarningDto(
+    val code: String = "",
+    val message: String = "",
+    val severity: String = "",
 )
 
 @Serializable

@@ -409,6 +409,13 @@
     <string name="graph_relation_type_topic">Shared topic</string>
     <string name="graph_relation_type_ai_inferred">AI inferred</string>
     <string name="graph_relation_type_unknown">Other relation</string>
+    <string name="graph_relation_related_article">Related article</string>
+    <string name="graph_relation_related_directory_item">Related directory item</string>
+    <string name="graph_relation_related_inheritor">Related inheritor</string>
+    <string name="graph_relation_semantic_similarity">Semantic similarity</string>
+    <string name="graph_relation_same_category">Same category</string>
+    <string name="graph_relation_same_region">Same region</string>
+    <string name="graph_relation_same_topic">Same topic</string>
     <string name="graph_association_level_high">Association: high</string>
     <string name="graph_association_level_medium">Association: medium</string>
     <string name="graph_association_level_low">Association: low</string>

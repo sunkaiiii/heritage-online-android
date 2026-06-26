@@ -43,4 +43,28 @@ object GraphRelationFormatter {
      */
     fun isControlledByAiToggle(relationType: GraphRelationType): Boolean =
         relationType == GraphRelationType.AiInferred
+
+    /**
+     * 将后端原始关系类型字符串映射为本地化资源 ID。
+     *
+     * 同时覆盖 V3 图谱枚举 wire name（如 `RELATED_TO`）与旧版 Context API 的
+     * 业务关系码（如 `relatedArticle`、`semanticSimilarity`）。未知值返回 `null`，
+     * 调用方应回退到后端提供的 [label] 或隐藏该字段。
+     */
+    fun labelResId(rawRelationType: String?): Int? = when (rawRelationType) {
+        GraphRelationType.RelatedTo.wireName -> R.string.graph_relation_type_related_to
+        GraphRelationType.InheritsProject.wireName -> R.string.graph_relation_type_inherits_project
+        GraphRelationType.Similar.wireName -> R.string.graph_relation_type_similar
+        GraphRelationType.Topic.wireName -> R.string.graph_relation_type_topic
+        GraphRelationType.AiInferred.wireName -> R.string.graph_relation_type_ai_inferred
+        GraphRelationType.Unknown.wireName -> R.string.graph_relation_type_unknown
+        "relatedArticle" -> R.string.graph_relation_related_article
+        "relatedDirectoryItem" -> R.string.graph_relation_related_directory_item
+        "relatedInheritor" -> R.string.graph_relation_related_inheritor
+        "semanticSimilarity" -> R.string.graph_relation_semantic_similarity
+        "sameCategory" -> R.string.graph_relation_same_category
+        "sameRegion" -> R.string.graph_relation_same_region
+        "sameTopic" -> R.string.graph_relation_same_topic
+        else -> null
+    }
 }

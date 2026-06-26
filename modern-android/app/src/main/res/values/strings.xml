@@ -482,6 +482,13 @@
     <string name="graph_relation_type_topic">同属主题</string>
     <string name="graph_relation_type_ai_inferred">AI 推断</string>
     <string name="graph_relation_type_unknown">其他关系</string>
+    <string name="graph_relation_related_article">相关文章</string>
+    <string name="graph_relation_related_directory_item">相关名录</string>
+    <string name="graph_relation_related_inheritor">相关传承人</string>
+    <string name="graph_relation_semantic_similarity">语义相似</string>
+    <string name="graph_relation_same_category">同一分类</string>
+    <string name="graph_relation_same_region">同一地区</string>
+    <string name="graph_relation_same_topic">同一主题</string>
     <string name="graph_association_level_high">关联度：高</string>
     <string name="graph_association_level_medium">关联度：中</string>
     <string name="graph_association_level_low">关联度：低</string>

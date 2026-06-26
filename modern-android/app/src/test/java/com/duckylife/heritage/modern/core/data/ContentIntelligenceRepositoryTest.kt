@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.network.V3ContentPageQuery
 import com.duckylife.heritage.modern.core.network.api.ContentIntelligenceApi
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.AiCardDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentDigestKeyFactDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ContentDigestSectionDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ContentIntelligenceDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ContentRefDto
@@ -14,6 +15,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearch
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatus
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatusDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.V3ContentPageDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.V3PageWarningDto
 import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -67,6 +69,59 @@ class ContentIntelligenceRepositoryTest {
         assertEquals(false, page.legacyFallback.loadDigest)
         assertEquals(false, page.legacyFallback.loadBlendedRecommendations)
         assertEquals(false, page.legacyFallback.loadContext)
+    }
+
+    @Test
+    fun mapsDigestKeyFactsToLabelValuePairs() = runTest {
+        val api = FakeContentIntelligenceApi(
+            response = V3ContentPageDto(
+                digest = ContentDigestSectionDto(
+                    summary = "摘要",
+                    keyFacts = listOf(
+                        ContentDigestKeyFactDto(label = "发布时间", value = "2026-06-26"),
+                        ContentDigestKeyFactDto(label = "来源", value = "人民日报"),
+                    ),
+                ),
+            ),
+        )
+        val repository = DefaultContentIntelligenceRepository(
+            api = api,
+            profileRepository = FakeLocalProfileRepository(),
+        )
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+        )
+
+        assertEquals(2, page.detailDigest?.keyFacts?.size)
+        assertEquals("发布时间", page.detailDigest?.keyFacts?.first()?.label)
+        assertEquals("2026-06-26", page.detailDigest?.keyFacts?.first()?.value)
+    }
+
+    @Test
+    fun mapsWarningObjectsToMessages() = runTest {
+        val api = FakeContentIntelligenceApi(
+            response = V3ContentPageDto(
+                digest = ContentDigestSectionDto(summary = "摘要"),
+                warnings = listOf(
+                    V3PageWarningDto(
+                        code = "ai_missing",
+                        message = "AI 结果缺失",
+                        severity = "info",
+                    ),
+                ),
+            ),
+        )
+        val repository = DefaultContentIntelligenceRepository(
+            api = api,
+            profileRepository = FakeLocalProfileRepository(),
+        )
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1"),
+        )
+
+        assertEquals(listOf("AI 结果缺失"), page.warnings)
     }
 
     @Test

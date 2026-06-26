@@ -170,6 +170,25 @@ private fun HeritageApp(
             pendingDiscoverySearch = query
         }
     }
+    val navigateToGraphExplore: (String, String, String) -> Unit = { contentType, contentId, initialTabName ->
+        showSettings = false
+        showMyPage = false
+        myPageDestination = MyPageDestination.GraphExplore(
+            contentType = contentType,
+            contentId = contentId,
+            initialTabName = initialTabName,
+        )
+        selectedDestination = HomeDestination.Discovery
+    }
+    val navigateToLearningRoutes: (String?, String?) -> Unit = { seedType, seedId ->
+        showSettings = false
+        showMyPage = false
+        myPageDestination = MyPageDestination.LearningRoutes(
+            seedType = seedType,
+            seedId = seedId,
+        )
+        selectedDestination = HomeDestination.Discovery
+    }
     val selectedDestinationInDetail = when (selectedDestination) {
         HomeDestination.Articles -> articlesInDetail
         HomeDestination.Directory -> directoryInDetail
@@ -229,6 +248,7 @@ private fun HeritageApp(
                         is MyPageDestination.Directory -> HomeDestination.Directory
                         is MyPageDestination.Inheritor -> HomeDestination.Inheritors
                         is MyPageDestination.GraphExplore -> HomeDestination.Discovery
+                        is MyPageDestination.LearningRoutes -> HomeDestination.Discovery
                     }
                 },
                 modifier = Modifier
@@ -258,6 +278,8 @@ private fun HeritageApp(
                 onSettingsSelected = { showSettings = true },
                 onSecondaryDestinationChanged = { articlesInDetail = it },
                 onKeywordSearch = openDiscoverySearch,
+                onGraphExploreSelected = navigateToGraphExplore,
+                onLearningRoutesSelected = navigateToLearningRoutes,
                 pendingNavigation = myPageDestination as? MyPageDestination.Article,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -268,6 +290,8 @@ private fun HeritageApp(
             HomeDestination.Directory -> DirectoryRoute(
                 onSecondaryDestinationChanged = { directoryInDetail = it },
                 onKeywordSearch = openDiscoverySearch,
+                onGraphExploreSelected = navigateToGraphExplore,
+                onLearningRoutesSelected = navigateToLearningRoutes,
                 pendingNavigation = myPageDestination as? MyPageDestination.Directory,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -278,6 +302,8 @@ private fun HeritageApp(
             HomeDestination.Inheritors -> InheritorsRoute(
                 onSecondaryDestinationChanged = { inheritorsInDetail = it },
                 onKeywordSearch = openDiscoverySearch,
+                onGraphExploreSelected = navigateToGraphExplore,
+                onLearningRoutesSelected = navigateToLearningRoutes,
                 pendingNavigation = myPageDestination as? MyPageDestination.Inheritor,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 modifier = Modifier
@@ -287,7 +313,7 @@ private fun HeritageApp(
 
             HomeDestination.Discovery -> DiscoveryNavHost(
                 onSecondaryDestinationChanged = { discoveryInDetail = it },
-                pendingNavigation = myPageDestination as? MyPageDestination.GraphExplore,
+                pendingNavigation = myPageDestination,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 pendingSearchQuery = pendingDiscoverySearch,
                 onPendingSearchConsumed = { pendingDiscoverySearch = null },

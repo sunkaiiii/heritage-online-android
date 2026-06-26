@@ -209,7 +209,7 @@ private fun V3ContentPageDto.toPage(ref: ContentIntelligenceRef): ContentIntelli
         digestSection = digestSection,
         localState = localState,
         sectionStatus = statusMap,
-        warnings = warnings,
+        warnings = warnings.map { it.message },
         learningRoutesAvailable = ref.type in LEARNABLE_CONTENT_TYPES,
         detailDigest = digestSection.data?.toDetailDigest(ref),
         detailRecommendations = if (hasV3Recommendations) {
@@ -242,7 +242,7 @@ private fun ContentDigestSectionDto.toDetailDigest(ref: ContentIntelligenceRef):
         id = ref.id,
         quickRead = summary,
         highlights = highlights,
-        keyFacts = keyFacts.map { DigestFactDto(value = it) },
+        keyFacts = keyFacts.map { DigestFactDto(label = it.label, value = it.value) },
         keywords = keywords,
     )
 
@@ -287,9 +287,10 @@ private fun GraphNeighborsDto.toDetailGraph(): GraphDto = GraphDto(
     edges = edges.map { it.toDetailGraphEdge() },
 )
 
-private fun GraphNodeDto.toDetailGraphNode() =
-    com.duckylife.heritage.modern.core.network.dto.GraphNodeDto(
-        id = id ?: nodeKey,
+private fun GraphNodeDto.toDetailGraphNode(): com.duckylife.heritage.modern.core.network.dto.GraphNodeDto {
+    val effectiveId = id?.takeIf { it.isNotBlank() } ?: nodeKey.extractNodeId(type.wireName)
+    return com.duckylife.heritage.modern.core.network.dto.GraphNodeDto(
+        id = effectiveId ?: nodeKey,
         type = type.wireName,
         title = title,
         subtitle = subtitle,
@@ -297,6 +298,17 @@ private fun GraphNodeDto.toDetailGraphNode() =
         region = region,
         coverImage = coverImageUrl?.let { MediaAssetDto(displayUrl = it) },
     )
+}
+
+private fun String.extractNodeId(typeWireName: String): String? {
+    if (isBlank()) return null
+    val prefix = "$typeWireName:"
+    return when {
+        startsWith(prefix) -> removePrefix(prefix)
+        contains(":") -> substringAfter(":")
+        else -> this
+    }
+}
 
 private fun GraphEdgeDto.toDetailGraphEdge() =
     com.duckylife.heritage.modern.core.network.dto.GraphEdgeDto(

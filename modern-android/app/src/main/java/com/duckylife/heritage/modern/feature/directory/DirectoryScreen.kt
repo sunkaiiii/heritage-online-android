@@ -93,6 +93,8 @@ import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 fun DirectoryRoute(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
     onKeywordSearch: (String) -> Unit = {},
+    onGraphExploreSelected: (contentType: String, contentId: String, initialTabName: String) -> Unit = { _, _, _ -> },
+    onLearningRoutesSelected: (seedType: String?, seedId: String?) -> Unit = { _, _ -> },
     pendingNavigation: MyPageDestination.Directory? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -164,6 +166,15 @@ fun DirectoryRoute(
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("directoryItem", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("directoryItem", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "directoryItem:$it") }
+                        },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
@@ -186,6 +197,15 @@ fun DirectoryRoute(
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("inheritor", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("inheritor", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "inheritor:$it") }
+                        },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
@@ -203,6 +223,15 @@ fun DirectoryRoute(
                         },
                         onExploreTargetClick = { click ->
                             navigateDirectoryContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("article", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("article", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "article:$it") }
                         },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
@@ -282,6 +311,15 @@ private fun navigateDirectoryContextTarget(
 ) {
     backStack.add(directoryContextMapper.map(target))
 }
+
+private val DirectoryRouteKey.DirectoryDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private val DirectoryRouteKey.DirectoryInheritorDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private val DirectoryRouteKey.DirectoryTabArticleDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
 
 private fun DirectoryReferenceDto.toDirectoryDetail(fallbackKind: DirectoryItemKind): DirectoryRouteKey.DirectoryDetail? {
     if (sourceId.isNullOrBlank() || isInheritorReference) {

@@ -51,6 +51,15 @@ private data class ArticleTabCollectionDetail(val id: String)
 
 private data class ArticleTabTopicDetail(val type: String, val key: String)
 
+private val ArticleDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private val ArticleTabDirectoryDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private val ArticleTabInheritorDetail.idOrSourceId: String?
+    get() = id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
 // 序列化（JSON 安全）
 @kotlinx.serialization.Serializable
 private sealed interface ArticleRouteState {
@@ -137,6 +146,8 @@ fun ArticlesNavHost(
     onSettingsSelected: () -> Unit,
     onSecondaryDestinationChanged: (Boolean) -> Unit,
     onKeywordSearch: (String) -> Unit = {},
+    onGraphExploreSelected: (contentType: String, contentId: String, initialTabName: String) -> Unit = { _, _, _ -> },
+    onLearningRoutesSelected: (seedType: String?, seedId: String?) -> Unit = { _, _ -> },
     pendingNavigation: MyPageDestination.Article? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     modifier: Modifier = Modifier,
@@ -198,6 +209,15 @@ fun ArticlesNavHost(
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("article", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("article", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "article:$it") }
+                        },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
@@ -218,6 +238,15 @@ fun ArticlesNavHost(
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
                         },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("directoryItem", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("directoryItem", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "directoryItem:$it") }
+                        },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,
                     )
@@ -236,6 +265,15 @@ fun ArticlesNavHost(
                         },
                         onExploreTargetClick = { click ->
                             navigateContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("inheritor", it, "neighbors") }
+                        },
+                        onSimilarClick = {
+                            key.idOrSourceId?.let { onGraphExploreSelected("inheritor", it, "similar") }
+                        },
+                        onLearningRoutesClick = {
+                            key.idOrSourceId?.let { onLearningRoutesSelected("content", "inheritor:$it") }
                         },
                         onKeywordSearch = onKeywordSearch,
                         modifier = modifier,

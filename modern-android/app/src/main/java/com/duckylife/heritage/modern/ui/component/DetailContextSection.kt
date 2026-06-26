@@ -40,6 +40,7 @@ import com.duckylife.heritage.modern.core.network.dto.RecommendationDto
 import com.duckylife.heritage.modern.core.network.dto.RelatedSummaryDto
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedRelationLabel
 
 /**
  * Context 区块点击事件，携带来源和元数据。
@@ -427,6 +428,7 @@ private fun ContextGraphSection(
                 GraphEdgeRow(
                     fromTitle = fromNode.title.orEmpty(),
                     toTitle = toNode.title.orEmpty(),
+                    relationType = edge.relationType,
                     label = edge.label,
                     reason = edge.reason,
                     source = edge.source,
@@ -464,6 +466,7 @@ private fun ContextGraphSection(
 private fun GraphEdgeRow(
     fromTitle: String,
     toTitle: String,
+    relationType: String?,
     label: String?,
     reason: String?,
     source: String?,
@@ -512,9 +515,10 @@ private fun GraphEdgeRow(
                 )
             }
             // 关系标签
-            if (!label.isNullOrBlank()) {
+            val relationLabel = localizedRelationLabel(relationType, label)
+            if (relationLabel.isNotBlank()) {
                 Text(
-                    text = label,
+                    text = relationLabel,
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

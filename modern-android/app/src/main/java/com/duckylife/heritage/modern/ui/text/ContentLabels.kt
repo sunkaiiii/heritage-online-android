@@ -70,3 +70,33 @@ fun localizedReadingPathSource(source: String): String =
         "list" -> stringResource(R.string.reading_path_source_list)
         else -> source
     }
+
+/**
+ * 将详情页关系线索中的关系类型映射为本地化显示文案。
+ *
+ * 同时覆盖 V3 图谱枚举 wire name（如 `RELATED_TO`）与旧版 Context API 的
+ * 业务关系码（如 `relatedArticle`、`semanticSimilarity`）。
+ * 当 [relationType] 无法识别时，回退到 [label]；两者都为空则返回空字符串。
+ */
+@Composable
+fun localizedRelationLabel(relationType: String?, label: String?): String {
+    val mappedResId = when (relationType) {
+        "RELATED_TO" -> R.string.graph_relation_type_related_to
+        "INHERITS_PROJECT" -> R.string.graph_relation_type_inherits_project
+        "SIMILAR" -> R.string.graph_relation_type_similar
+        "TOPIC" -> R.string.graph_relation_type_topic
+        "AI_INFERRED" -> R.string.graph_relation_type_ai_inferred
+        "unknown" -> R.string.graph_relation_type_unknown
+        "relatedArticle" -> R.string.graph_relation_related_article
+        "relatedDirectoryItem" -> R.string.graph_relation_related_directory_item
+        "relatedInheritor" -> R.string.graph_relation_related_inheritor
+        "semanticSimilarity" -> R.string.graph_relation_semantic_similarity
+        "sameCategory" -> R.string.graph_relation_same_category
+        "sameRegion" -> R.string.graph_relation_same_region
+        "sameTopic" -> R.string.graph_relation_same_topic
+        else -> null
+    }
+    return mappedResId?.let { stringResource(it) }
+        ?: label?.takeIf { it.isNotBlank() }
+        ?: ""
+}
