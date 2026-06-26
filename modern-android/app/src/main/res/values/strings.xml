@@ -399,6 +399,19 @@
     <string name="learning_route_difficulty_unknown">未知</string>
     <string name="discovery_learning_routes_subtitle">带进度的连续学习</string>
     <string name="learning_route_detail_title">学习路线详情</string>
+    <string name="learning_route_detail_loading">路线详情加载中…</string>
+    <string name="learning_route_not_found">路线已不存在</string>
+    <string name="learning_route_progress_format">已完成 %1$d/%2$d 步</string>
+    <string name="learning_route_step_required">必学</string>
+    <string name="learning_route_next_step_title">下一步</string>
+    <string name="learning_route_continue_next">继续下一步</string>
+    <string name="learning_route_completed_title">已完成这条路线</string>
+    <string name="learning_route_completed_steps_format">已完成 %1$d/%2$d 步</string>
+    <string name="learning_route_completed_all">已完成这条路线</string>
+    <string name="learning_route_restart_confirm_title">重新开始学习？</string>
+    <string name="learning_route_restart_confirm_message">清空进度并重新开始这条路线。</string>
+    <string name="learning_routes_build_failed">无法为当前内容生成路线，请换一条内容再试。</string>
+    <string name="action_more_options">更多选项</string>
 
     <!-- Journeys -->
     <string name="journeys_section_header">为你继续探索</string>

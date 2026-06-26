@@ -121,7 +121,7 @@ internal fun LearningRouteDetailDto.toDetailUiModel(): LearningRouteDetailUiMode
         difficulty = difficulty,
         estimatedMinutes = estimatedMinutes,
         sections = sections.map { it.toSectionUiModel() },
-        steps = steps.map { it.toStepUiModel() },
+        steps = steps.map { it.toStepUiModel() }.sortedBy { it.order },
         relatedRoutes = relatedRoutes.map { it.toSummaryUiModel() },
     )
 

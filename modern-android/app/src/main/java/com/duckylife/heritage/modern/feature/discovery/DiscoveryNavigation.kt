@@ -139,6 +139,12 @@ fun DiscoveryNavHost(
                     ),
                 )
             }
+            is MyPageDestination.LearningRouteDetail -> {
+                val routeId = destination.routeId.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
+                backStack.add(
+                    DiscoveryRouteKey.LearningRouteDetailPage(routeId = routeId),
+                )
+            }
             else -> {
                 // 其他 destination 类型不应进入 DiscoveryNavHost；安全起见直接消费。
             }
@@ -297,6 +303,13 @@ fun DiscoveryNavHost(
                     LearningRouteDetailRoute(
                         routeId = key.routeId,
                         onBack = { backStack.removeLastOrNull() },
+                        onStepContentClick = { targetType, targetId ->
+                            when (targetType) {
+                                "article" -> backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = targetId))
+                                "directoryItem" -> backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = targetId))
+                                "inheritor" -> backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = targetId))
+                            }
+                        },
                         modifier = modifier,
                     )
                 }

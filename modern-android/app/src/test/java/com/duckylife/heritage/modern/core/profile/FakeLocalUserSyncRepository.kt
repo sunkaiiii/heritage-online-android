@@ -23,6 +23,10 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
 
     override fun learningProgress(): Flow<List<ProfileLearningProgress>> = _progress.asStateFlow()
 
+    fun emitProgress(progress: ProfileLearningProgress) {
+        _progress.value = _progress.value.filter { it.routeId != progress.routeId } + progress
+    }
+
     override fun pendingOperationCount(): Flow<Int> = MutableStateFlow(0)
 
     override suspend fun syncNow() {
@@ -84,13 +88,25 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
         }
     }
 
+    val updateProgressCalls = mutableListOf<UpdateProgressCall>()
+    var updateProgressFailure: Throwable? = null
+
     override suspend fun updateProgress(
         routeId: String,
         routeTitle: String?,
         completedStepIds: List<String>,
         currentStepId: String?,
     ) {
-        _progress.value = _progress.value + ProfileLearningProgress(
+        updateProgressCalls.add(
+            UpdateProgressCall(
+                routeId = routeId,
+                routeTitle = routeTitle,
+                completedStepIds = completedStepIds,
+                currentStepId = currentStepId,
+            ),
+        )
+        updateProgressFailure?.let { throw it }
+        _progress.value = _progress.value.filter { it.routeId != routeId } + ProfileLearningProgress(
             id = routeId,
             routeId = routeId,
             routeTitle = routeTitle,
@@ -106,4 +122,11 @@ class FakeLocalUserSyncRepository : LocalUserSyncRepository {
     override suspend fun clearHistory() {
         _history.value = emptyList()
     }
+
+    data class UpdateProgressCall(
+        val routeId: String,
+        val routeTitle: String?,
+        val completedStepIds: List<String>,
+        val currentStepId: String?,
+    )
 }

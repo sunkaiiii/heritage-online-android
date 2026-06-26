@@ -249,6 +249,7 @@ private fun HeritageApp(
                         is MyPageDestination.Inheritor -> HomeDestination.Inheritors
                         is MyPageDestination.GraphExplore -> HomeDestination.Discovery
                         is MyPageDestination.LearningRoutes -> HomeDestination.Discovery
+                        is MyPageDestination.LearningRouteDetail -> HomeDestination.Discovery
                     }
                 },
                 modifier = Modifier

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.duckylife.heritage.modern.core.data.LearningRoutesRepository
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
+import com.duckylife.heritage.modern.core.profile.FakeLocalUserSyncRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteDetailUiModel
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteNextUiModel
@@ -22,6 +23,7 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -34,6 +36,7 @@ class LearningRoutesViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     private val fakeRepository = FakeLearningRoutesRepository()
+    private val fakeSyncRepository = FakeLocalUserSyncRepository()
 
     @Test
     fun `loads routes on init with all difficulty`() = runTest {
@@ -169,6 +172,42 @@ class LearningRoutesViewModelTest {
         assertEquals("article:a1", fakeRepository.capturedBuildSeedKey)
         assertEquals("built-1", navigationEvent)
         assertFalse(viewModel.uiState.value.isBuildingSeed)
+
+        val progressCall = fakeSyncRepository.updateProgressCalls.find { it.routeId == "built-1" }
+        assertNotNull(progressCall)
+        assertEquals("Built Route", progressCall?.routeTitle)
+        assertTrue(progressCall?.completedStepIds.isNullOrEmpty())
+    }
+
+    @Test
+    fun `buildFromSeed progress write failure surfaces error and does not navigate`() = runTest {
+        fakeRepository.builtDetail = LearningRouteDetailUiModel(
+            routeId = "built-1",
+            title = "Built Route",
+            description = null,
+            difficulty = LearningRouteDifficulty.Beginner,
+            estimatedMinutes = 20,
+            sections = emptyList(),
+            steps = emptyList(),
+            relatedRoutes = emptyList(),
+        )
+        fakeSyncRepository.updateProgressFailure = RuntimeException("db locked")
+        val viewModel = createViewModel()
+        viewModel.setSeed(seedType = "article", seedId = "a1")
+        advanceUntilIdle()
+
+        var navigationEvent: String? = null
+        val collectJob = launch {
+            viewModel.navigationEvents.collect { navigationEvent = it }
+        }
+
+        viewModel.buildFromSeed()
+        advanceUntilIdle()
+        collectJob.cancel()
+
+        assertNull(navigationEvent)
+        assertNotNull(viewModel.uiState.value.buildSeedError)
+        assertFalse(viewModel.uiState.value.isBuildingSeed)
     }
 
     @Test
@@ -256,7 +295,11 @@ class LearningRoutesViewModelTest {
     private fun createViewModel(
         savedStateHandle: SavedStateHandle = SavedStateHandle(),
     ): LearningRoutesViewModel =
-        LearningRoutesViewModel(repository = fakeRepository, savedStateHandle = savedStateHandle)
+        LearningRoutesViewModel(
+            repository = fakeRepository,
+            syncRepository = fakeSyncRepository,
+            savedStateHandle = savedStateHandle,
+        )
 
     private suspend fun serviceUnavailableException(): ResponseException {
         val client = HttpClient(MockEngine { respond("", status = HttpStatusCode.ServiceUnavailable) }) {

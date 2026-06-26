@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.LearningRoutesRepository
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
+import com.duckylife.heritage.modern.core.profile.LocalUserSyncRepository
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class LearningRoutesViewModel @Inject constructor(
     private val repository: LearningRoutesRepository,
+    private val syncRepository: LocalUserSyncRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -133,12 +135,21 @@ class LearningRoutesViewModel @Inject constructor(
             runCatchingCancellable {
                 val seedTypeEnum = LearningRouteSeedType.entries.firstOrNull { it.wireName == seedType }
                     ?: LearningRouteSeedType.Content
-                repository.buildRoute(
+                val detail = repository.buildRoute(
                     seedType = seedTypeEnum,
                     seedKey = "$seedType:$seedId",
                     difficulty = difficulty,
                     limit = BUILD_LIMIT,
                 )
+                // 将临时生成的路线以 0% 进度写入本地，使其出现在“我的 -> 学习”列表。
+                // 写入失败时不应静默跳过，否则路线不会出现在“我的 -> 学习”中。
+                syncRepository.updateProgress(
+                    routeId = detail.routeId,
+                    routeTitle = detail.title,
+                    completedStepIds = emptyList(),
+                    currentStepId = null,
+                )
+                detail
             }.onSuccess { detail ->
                 _uiState.update { it.copy(isBuildingSeed = false) }
                 _navigationEvents.send(detail.routeId)

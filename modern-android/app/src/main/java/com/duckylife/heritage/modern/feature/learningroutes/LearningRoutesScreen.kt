@@ -26,15 +26,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -64,6 +68,8 @@ fun LearningRoutesRoute(
     viewModel: LearningRoutesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(seedType, seedId) {
         viewModel.setSeed(seedType, seedId)
@@ -75,6 +81,17 @@ fun LearningRoutesRoute(
         }
     }
 
+    val buildError = uiState.buildSeedError
+    LaunchedEffect(buildError) {
+        if (buildError != null) {
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.learning_routes_build_failed),
+                withDismissAction = true,
+            )
+            viewModel.clearBuildError()
+        }
+    }
+
     LearningRoutesScreen(
         uiState = uiState,
         onBack = onBack,
@@ -82,6 +99,7 @@ fun LearningRoutesRoute(
         onDifficultySelected = viewModel::selectDifficulty,
         onRouteClick = onRouteClick,
         onBuildFromSeed = viewModel::buildFromSeed,
+        snackbarHostState = snackbarHostState,
         modifier = modifier,
     )
 }
@@ -95,9 +113,11 @@ internal fun LearningRoutesScreen(
     onDifficultySelected: (LearningRouteDifficulty) -> Unit,
     onRouteClick: (String) -> Unit,
     onBuildFromSeed: () -> Unit,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.learning_routes_title)) },

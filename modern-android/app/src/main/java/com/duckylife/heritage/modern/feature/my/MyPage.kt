@@ -118,6 +118,10 @@ sealed interface MyPageDestination {
         val seedType: String? = null,
         val seedId: String? = null,
     ) : MyPageDestination
+
+    data class LearningRouteDetail(
+        val routeId: String,
+    ) : MyPageDestination
 }
 
 private enum class MyPageTab(
@@ -156,7 +160,6 @@ fun MyPage(
     val scope = rememberCoroutineScope()
     val imageLoader = rememberHeritageImageLoader()
     val favoriteRemovedMessage = stringResource(R.string.favorite_removed_message)
-    val routeComingSoonMessage = stringResource(R.string.learning_route_detail_coming_soon)
 
     Box(modifier = modifier.fillMaxSize()) {
         HeritagePageBackground(modifier = Modifier.fillMaxSize()) {
@@ -222,15 +225,8 @@ fun MyPage(
 
                     MyPageTab.Learning -> LearningTab(
                         progress = learningProgress.map { it.toLearningItem() },
-                        onContinue = {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(routeComingSoonMessage)
-                            }
-                        },
-                        onRestart = {
-                            scope.launch {
-                                snackbarHostState.showSnackbar(routeComingSoonMessage)
-                            }
+                        onRouteSelected = { routeId ->
+                            onNavigate(MyPageDestination.LearningRouteDetail(routeId = routeId))
                         },
                         onBrowseRoutes = onNavigateToLearningRoutes,
                     )
@@ -761,8 +757,7 @@ private fun HistoryRow(
 @Composable
 private fun LearningTab(
     progress: List<LearningProgressItem>,
-    onContinue: (String) -> Unit,
-    onRestart: (String) -> Unit,
+    onRouteSelected: (String) -> Unit,
     onBrowseRoutes: () -> Unit,
 ) {
     val ongoing = remember(progress) { progress.filter { it.percent in 0..99 } }
@@ -798,8 +793,7 @@ private fun LearningTab(
                     LearningProgressRow(
                         item = item,
                         isCompleted = false,
-                        onContinue = { onContinue(item.routeId) },
-                        onRestart = { onRestart(item.routeId) },
+                        onClick = { onRouteSelected(item.routeId) },
                     )
                 }
             }
@@ -815,8 +809,7 @@ private fun LearningTab(
                     LearningProgressRow(
                         item = item,
                         isCompleted = true,
-                        onContinue = { onContinue(item.routeId) },
-                        onRestart = { onRestart(item.routeId) },
+                        onClick = { onRouteSelected(item.routeId) },
                     )
                 }
             }
@@ -828,12 +821,11 @@ private fun LearningTab(
 private fun LearningProgressRow(
     item: LearningProgressItem,
     isCompleted: Boolean,
-    onContinue: () -> Unit,
-    onRestart: () -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     HeritageContentCard(
-        onClick = null,
+        onClick = onClick,
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -885,14 +877,12 @@ private fun LearningProgressRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
             ) {
-                if (isCompleted) {
-                    TextButton(onClick = onRestart) {
-                        Text(stringResource(R.string.learning_route_restart))
-                    }
-                } else {
-                    TextButton(onClick = onContinue) {
-                        Text(stringResource(R.string.learning_route_continue))
-                    }
+                TextButton(onClick = onClick) {
+                    Text(
+                        stringResource(
+                            if (isCompleted) R.string.learning_route_restart else R.string.learning_route_continue,
+                        ),
+                    )
                 }
             }
         }
