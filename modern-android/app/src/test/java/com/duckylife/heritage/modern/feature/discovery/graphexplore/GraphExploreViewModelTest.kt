@@ -7,11 +7,13 @@ import com.duckylife.heritage.modern.feature.discovery.GraphTab
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphEdgeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
+import com.duckylife.heritage.modern.feature.graph.model.BridgeResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
+import com.duckylife.heritage.modern.feature.graph.model.PathExplainResult
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -224,6 +226,213 @@ class GraphExploreViewModelTest {
         assertEquals("Center Title", viewModel.uiState.value.centerNode?.title)
     }
 
+    @Test
+    fun `open path explain loads result`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        fakeRepository.pathExplainResult = PathExplainResult(
+            found = true,
+            steps = emptyList(),
+            narrative = listOf("Narrative"),
+            evidence = emptyList(),
+            warnings = emptyList(),
+        )
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        val target = GraphNodeUiModel(
+            nodeKey = "article-2",
+            type = GraphNodeType.Article,
+            id = "a2",
+            title = "Target",
+        )
+        viewModel.openPathExplain(target)
+        advanceUntilIdle()
+
+        val sheet = viewModel.uiState.value.pathExplainSheet
+        assertFalse(sheet.isLoading)
+        assertEquals(true, sheet.result?.found)
+        assertEquals(GraphNodeType.Article, fakeRepository.lastPathExplainTargetType)
+        assertEquals("a2", fakeRepository.lastPathExplainTargetId)
+    }
+
+    @Test
+    fun `open path explain with unknown node type sets bad request`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "unknown-1",
+                type = GraphNodeType.Unknown,
+                id = "u1",
+                title = "Unknown",
+            ),
+        )
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.pathExplainSheet.errorKind)
+        assertEquals(0, fakeRepository.pathExplainLoadCount)
+    }
+
+    @Test
+    fun `dismiss path explain resets state`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        fakeRepository.pathExplainResult = PathExplainResult(
+            found = true,
+            steps = emptyList(),
+            narrative = emptyList(),
+            evidence = emptyList(),
+            warnings = emptyList(),
+        )
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-2",
+                type = GraphNodeType.Article,
+                id = "a2",
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.pathExplainSheet.result != null)
+
+        viewModel.dismissPathExplain()
+        advanceUntilIdle()
+
+        assertNull(viewModel.uiState.value.pathExplainSheet.targetNode)
+        assertNull(viewModel.uiState.value.pathExplainSheet.result)
+    }
+
+    @Test
+    fun `load bridge populates bridge section`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        fakeRepository.bridgeResult = BridgeResult(emptyList())
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-2",
+                type = GraphNodeType.Article,
+                id = "a2",
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+        viewModel.loadBridge()
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.pathExplainSheet.bridge.hasData)
+        assertEquals(1, fakeRepository.bridgeLoadCount)
+    }
+
+    @Test
+    fun `path explain failure sets sheet error`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        fakeRepository.pathExplainFailure = serviceUnavailableException()
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-2",
+                type = GraphNodeType.Article,
+                id = "a2",
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.ServerError, viewModel.uiState.value.pathExplainSheet.errorKind)
+    }
+
+    @Test
+    fun `path explain with blank target id sets bad request`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-2",
+                type = GraphNodeType.Article,
+                id = null,
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.pathExplainSheet.errorKind)
+        assertEquals(0, fakeRepository.pathExplainLoadCount)
+    }
+
+    @Test
+    fun `load bridge with blank target id sets bad request`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-2",
+                type = GraphNodeType.Article,
+                id = "a2",
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+
+        viewModel.loadBridge()
+        advanceUntilIdle()
+        assertEquals(1, fakeRepository.bridgeLoadCount)
+
+        // Replace target with blank id and retry bridge
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "article-3",
+                type = GraphNodeType.Article,
+                id = "",
+                title = "Target",
+            ),
+        )
+        advanceUntilIdle()
+        viewModel.loadBridge()
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.pathExplainSheet.bridge.errorKind)
+        assertEquals(1, fakeRepository.bridgeLoadCount)
+    }
+
+    @Test
+    fun `path explain with topic node uses topic type and topic key as id`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        fakeRepository.pathExplainResult = PathExplainResult(
+            found = true,
+            steps = emptyList(),
+            narrative = emptyList(),
+            evidence = emptyList(),
+            warnings = emptyList(),
+        )
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "category-folk-art",
+                type = GraphNodeType.Category,
+                id = "folk-art",
+                title = "民间美术",
+            ),
+        )
+        advanceUntilIdle()
+
+        assertEquals(GraphNodeType.Category, fakeRepository.lastPathExplainTargetType)
+        assertEquals("folk-art", fakeRepository.lastPathExplainTargetId)
+    }
+
     private fun createViewModel(
         contentType: String = "article",
         contentId: String = "a1",
@@ -268,8 +477,17 @@ class GraphExploreViewModelTest {
         var exploreResult = GraphExploreResult(2, emptyList(), emptyList())
         var evidenceResult = GraphEvidenceResult(emptyList(), emptyList())
         var aiInferredEdgesResult = AiInferredEdgesResult(emptyList())
+        var pathExplainResult = PathExplainResult(
+            found = true,
+            steps = emptyList(),
+            narrative = emptyList(),
+            evidence = emptyList(),
+            warnings = emptyList(),
+        )
+        var bridgeResult = BridgeResult(emptyList())
         var failure: Throwable? = null
         var aiInferredFailure: Throwable? = null
+        var pathExplainFailure: Throwable? = null
 
         var lastLoadedTab: GraphTab? = null
         private val loadedTabs = mutableMapOf<GraphTab, Int>()
@@ -279,6 +497,10 @@ class GraphExploreViewModelTest {
         var evidenceLoadCount = 0
         var aiInferredLoadCount = 0
         var lastEvidenceIncludeAiInferred: Boolean? = null
+        var pathExplainLoadCount = 0
+        var bridgeLoadCount = 0
+        var lastPathExplainTargetType: GraphNodeType? = null
+        var lastPathExplainTargetId: String? = null
 
         fun lastLoadedTabFor(tab: GraphTab): Int? = loadedTabs[tab]
 
@@ -323,5 +545,54 @@ class GraphExploreViewModelTest {
             aiInferredLoadCount++
             return aiInferredEdgesResult
         }
+
+        override suspend fun explainPath(
+            fromType: SearchResultType,
+            fromId: String,
+            toType: GraphNodeType,
+            toId: String,
+            maxDepth: Int,
+        ): PathExplainResult {
+            pathExplainFailure?.let { throw it }
+            pathExplainLoadCount++
+            lastPathExplainTargetType = toType
+            lastPathExplainTargetId = toId
+            return pathExplainResult
+        }
+
+        override suspend fun getBridge(
+            fromType: SearchResultType,
+            fromId: String,
+            toType: GraphNodeType,
+            toId: String,
+            limit: Int,
+        ): BridgeResult {
+            failure?.let { throw it }
+            bridgeLoadCount++
+            return bridgeResult
+        }
+
+        override suspend fun getTopicGraphMap(topicType: String, topicKey: String, limit: Int) =
+            throw NotImplementedError()
+
+        override suspend fun getRandomGraphTrail(
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            type: SearchResultType?,
+            limit: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getGraphTrailFromContent(
+            contentType: SearchResultType,
+            contentId: String,
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            limit: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getGraphTrailFromTopic(
+            topicType: String,
+            topicKey: String,
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            limit: Int,
+        ) = throw NotImplementedError()
     }
 }

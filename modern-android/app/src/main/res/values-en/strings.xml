@@ -342,11 +342,30 @@
     <string name="knowledge_graph_hub_empty_message">Hot communities will appear as data is updated.</string>
     <string name="knowledge_graph_hub_empty_action">Go discover</string>
 
-    <!-- Topic Graph Map & Trail placeholders -->
+    <!-- Topic Graph Map -->
     <string name="topic_graph_map_title">Topic graph</string>
-    <string name="topic_graph_map_coming_soon">Topic graph map coming soon</string>
+    <string name="topic_graph_map_loading">Loading topic graph</string>
+    <string name="topic_graph_map_empty_title">No related nodes for this topic</string>
+    <string name="topic_graph_map_empty_message">More related content will appear after data updates.</string>
+    <string name="topic_graph_map_node_count">%1$d nodes · %2$d relations</string>
+    <string name="topic_graph_map_content_nodes">Related content</string>
+    <string name="topic_graph_map_topic_nodes">Related topics</string>
+    <string name="topic_graph_map_list_view">List</string>
+    <string name="topic_graph_map_overview_view">Overview</string>
+
+    <!-- Graph Trail -->
     <string name="graph_trail_title">Knowledge trail</string>
-    <string name="graph_trail_coming_soon">Knowledge trail coming soon</string>
+    <string name="graph_trail_loading">Loading trail</string>
+    <string name="graph_trail_empty_title">No trail available</string>
+    <string name="graph_trail_empty_message">Try a different starting point or come back later.</string>
+    <string name="graph_trail_resample">Try another trail</string>
+    <string name="graph_trail_steps_format">%1$d nodes</string>
+    <string name="graph_trail_strategy_label">Strategy</string>
+    <string name="graph_trail_topic_labels">Topics</string>
+    <string name="graph_trail_step_start">Start</string>
+    <string name="graph_trail_step_recommended">Recommended next</string>
+    <string name="graph_trail_step_via">via %1$s</string>
+
 
     <!-- Graph Explore -->
     <string name="graph_explore_title">Content relationships</string>
@@ -402,9 +421,17 @@
     <string name="graph_similar_empty_action">View topic relationships</string>
     <string name="graph_similar_shared_neighbors">%1$d shared neighbors</string>
     <string name="graph_similar_view_path">View path</string>
-    <string name="graph_path_pending_title">How they are connected</string>
-    <string name="graph_path_pending_target">Target: %1$s</string>
-    <string name="graph_path_pending_body">Path explanations will be connected in the next step. This entry now gives immediate feedback without preloading the full exploration graph.</string>
+    <string name="graph_path_explain_title">How they are connected</string>
+    <string name="graph_path_explain_subtitle">From “%1$s” to “%2$s”</string>
+    <string name="graph_path_explain_target_only">Target: %1$s</string>
+    <string name="graph_path_explain_target_unknown">Target content</string>
+    <string name="graph_path_explain_not_found_title">No connecting path found</string>
+    <string name="graph_path_explain_not_found_message">There is no direct connection in the current graph. Try viewing bridge nodes or changing the exploration depth.</string>
+    <string name="graph_path_explain_show_bridge">View bridge nodes</string>
+    <string name="graph_path_explain_bridge_title">Bridge nodes</string>
+    <string name="graph_path_explain_bridge_empty">No shared bridge nodes found</string>
+    <string name="graph_path_explain_bridge_node">Bridge node</string>
+    <string name="graph_path_explain_bridge_score">Bridge score: %.2f</string>
     <string name="graph_explore_depth_one">1 hop</string>
     <string name="graph_explore_depth_two">2 hops</string>
     <string name="graph_explore_list_view">Relationship list</string>

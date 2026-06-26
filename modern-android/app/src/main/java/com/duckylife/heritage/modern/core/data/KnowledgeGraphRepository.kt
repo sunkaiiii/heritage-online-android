@@ -1,24 +1,40 @@
 package com.duckylife.heritage.modern.core.data
 
+import com.duckylife.heritage.modern.core.network.GraphTrailFromContentQuery
+import com.duckylife.heritage.modern.core.network.GraphTrailFromTopicQuery
+import com.duckylife.heritage.modern.core.network.GraphTrailRandomQuery
+import com.duckylife.heritage.modern.core.network.KnowledgeGraphBridgeQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphCommunitiesQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphEvidenceQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphExploreQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphAiInferredQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphNeighborsQuery
+import com.duckylife.heritage.modern.core.network.KnowledgeGraphPathExplainQuery
 import com.duckylife.heritage.modern.core.network.KnowledgeGraphSimilarQuery
+import com.duckylife.heritage.modern.core.network.TopicGraphMapQuery
 import com.duckylife.heritage.modern.core.network.api.KnowledgeGraphApi
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
+import com.duckylife.heritage.modern.feature.graph.model.BridgeResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphCommunityUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
+import com.duckylife.heritage.modern.feature.graph.model.GraphTrailResult
+import com.duckylife.heritage.modern.feature.graph.model.PathExplainResult
+import com.duckylife.heritage.modern.feature.graph.model.TopicGraphMapResult
 import com.duckylife.heritage.modern.feature.graph.model.toAiInferredEdgesResult
+import com.duckylife.heritage.modern.feature.graph.model.toBridgeResult
 import com.duckylife.heritage.modern.feature.graph.model.toEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.toExploreResult
+import com.duckylife.heritage.modern.feature.graph.model.toGraphTrailResult
 import com.duckylife.heritage.modern.feature.graph.model.toNeighborsResult
+import com.duckylife.heritage.modern.feature.graph.model.toPathExplainResult
 import com.duckylife.heritage.modern.feature.graph.model.toSimilarResult
+import com.duckylife.heritage.modern.feature.graph.model.toTopicGraphMapResult
 import com.duckylife.heritage.modern.feature.graph.model.toUiModel
 import javax.inject.Inject
 
@@ -43,6 +59,48 @@ interface KnowledgeGraphRepository {
     ): GraphEvidenceResult
 
     suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult
+
+    suspend fun explainPath(
+        fromType: SearchResultType,
+        fromId: String,
+        toType: GraphNodeType,
+        toId: String,
+        maxDepth: Int = 3,
+    ): PathExplainResult
+
+    suspend fun getBridge(
+        fromType: SearchResultType,
+        fromId: String,
+        toType: GraphNodeType,
+        toId: String,
+        limit: Int = 10,
+    ): BridgeResult
+
+    suspend fun getTopicGraphMap(
+        topicType: String,
+        topicKey: String,
+        limit: Int = 50,
+    ): TopicGraphMapResult
+
+    suspend fun getRandomGraphTrail(
+        strategy: TrailStrategy = TrailStrategy.Mixed,
+        type: SearchResultType? = null,
+        limit: Int = 6,
+    ): GraphTrailResult
+
+    suspend fun getGraphTrailFromContent(
+        contentType: SearchResultType,
+        contentId: String,
+        strategy: TrailStrategy = TrailStrategy.Mixed,
+        limit: Int = 6,
+    ): GraphTrailResult
+
+    suspend fun getGraphTrailFromTopic(
+        topicType: String,
+        topicKey: String,
+        strategy: TrailStrategy = TrailStrategy.Representative,
+        limit: Int = 6,
+    ): GraphTrailResult
 }
 
 class DefaultKnowledgeGraphRepository @Inject constructor(
@@ -113,4 +171,89 @@ class DefaultKnowledgeGraphRepository @Inject constructor(
             limit = 50,
         ),
     ).toAiInferredEdgesResult()
+
+    override suspend fun explainPath(
+        fromType: SearchResultType,
+        fromId: String,
+        toType: GraphNodeType,
+        toId: String,
+        maxDepth: Int,
+    ): PathExplainResult = api.explainPath(
+        KnowledgeGraphPathExplainQuery(
+            fromType = fromType,
+            fromId = fromId,
+            toType = toType,
+            toId = toId,
+            maxDepth = maxDepth.coerceIn(1, 5),
+            includeAiInferred = false,
+        ),
+    ).toPathExplainResult()
+
+    override suspend fun getBridge(
+        fromType: SearchResultType,
+        fromId: String,
+        toType: GraphNodeType,
+        toId: String,
+        limit: Int,
+    ): BridgeResult = api.getGraphBridge(
+        KnowledgeGraphBridgeQuery(
+            fromType = fromType,
+            fromId = fromId,
+            toType = toType,
+            toId = toId,
+            limit = limit.coerceIn(1, 100),
+        ),
+    ).toBridgeResult()
+
+    override suspend fun getTopicGraphMap(
+        topicType: String,
+        topicKey: String,
+        limit: Int,
+    ): TopicGraphMapResult = api.getTopicGraphMap(
+        TopicGraphMapQuery(
+            topicType = topicType,
+            topicKey = topicKey,
+            limit = limit.coerceIn(1, 100),
+        ),
+    ).toTopicGraphMapResult()
+
+    override suspend fun getRandomGraphTrail(
+        strategy: TrailStrategy,
+        type: SearchResultType?,
+        limit: Int,
+    ): GraphTrailResult = api.getRandomGraphTrail(
+        GraphTrailRandomQuery(
+            strategy = strategy,
+            type = type,
+            limit = limit.coerceIn(3, 10),
+        ),
+    ).toGraphTrailResult()
+
+    override suspend fun getGraphTrailFromContent(
+        contentType: SearchResultType,
+        contentId: String,
+        strategy: TrailStrategy,
+        limit: Int,
+    ): GraphTrailResult = api.getGraphTrailFromContent(
+        GraphTrailFromContentQuery(
+            contentType = contentType,
+            id = contentId,
+            strategy = strategy,
+            limit = limit.coerceIn(3, 10),
+        ),
+    ).toGraphTrailResult()
+
+    override suspend fun getGraphTrailFromTopic(
+        topicType: String,
+        topicKey: String,
+        strategy: TrailStrategy,
+        limit: Int,
+    ): GraphTrailResult = api.getGraphTrailFromTopic(
+        GraphTrailFromTopicQuery(
+            topicType = topicType,
+            topicKey = topicKey,
+            strategy = strategy,
+            limit = limit.coerceIn(3, 10),
+        ),
+    ).toGraphTrailResult()
 }

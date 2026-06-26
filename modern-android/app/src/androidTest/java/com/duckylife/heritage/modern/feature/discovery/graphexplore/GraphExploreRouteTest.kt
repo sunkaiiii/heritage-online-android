@@ -3,6 +3,8 @@ package com.duckylife.heritage.modern.feature.discovery.graphexplore
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import coil3.ImageLoader
+import javax.inject.Inject
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -10,6 +12,9 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.duckylife.heritage.modern.R
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Before
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.feature.discovery.DiscoverySectionState
 import com.duckylife.heritage.modern.feature.discovery.GraphTab
@@ -32,11 +37,23 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class GraphExploreRouteTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     val composeRule = createComposeRule()
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
+
+    @Before
+    fun init() {
+        hiltRule.inject()
+    }
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
@@ -53,6 +70,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -82,6 +102,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -111,6 +134,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -135,6 +161,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = { toggled = true },
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -162,6 +191,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -186,6 +218,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -209,6 +244,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -258,6 +296,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -280,6 +321,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -305,6 +349,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -317,33 +364,42 @@ class GraphExploreRouteTest {
     }
 
     @Test
-    fun similarPathButtonShowsPendingPathSheet() {
-        var clicked = false
+    fun pathExplainBottomSheetOpensWhenTargetSet() {
         composeRule.setContent {
             HeritageTheme {
                 GraphExploreScreen(
-                    uiState = loadedUiState().copy(selectedTab = GraphTab.Similar),
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Similar,
+                        pathExplainSheet = PathExplainSheetState(
+                            targetNode = GraphNodeUiModel(
+                                nodeKey = "article-target",
+                                type = GraphNodeType.Article,
+                                id = "a2",
+                                title = "Related Article",
+                            ),
+                            isLoading = true,
+                        ),
+                    ),
                     onBack = {},
                     onTabSelected = {},
                     onRetry = {},
                     onRefresh = {},
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
-                    onPathClick = { clicked = true },
+                    onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
         }
 
-        composeRule.onNodeWithText(context.getString(R.string.graph_similar_view_path))
-            .performClick()
-        composeRule.waitForIdle()
-
-        assertTrue(clicked)
-        composeRule.onNodeWithText(context.getString(R.string.graph_path_pending_title))
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_explain_title))
             .assertIsDisplayed()
-        composeRule.onNodeWithText(context.getString(R.string.graph_path_pending_target, "Related Article"))
-            .assertIsDisplayed()
+        composeRule.onNodeWithText(
+            context.getString(R.string.graph_path_explain_subtitle, "Article Title", "Related Article"),
+        ).assertIsDisplayed()
     }
 
     @Test
@@ -362,6 +418,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -389,6 +448,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -428,6 +490,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -457,6 +522,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }
@@ -491,6 +559,9 @@ class GraphExploreRouteTest {
                     onToggleAiInferred = {},
                     onExploreDepthSelected = {},
                     onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
                     onNodeClick = {},
                 )
             }

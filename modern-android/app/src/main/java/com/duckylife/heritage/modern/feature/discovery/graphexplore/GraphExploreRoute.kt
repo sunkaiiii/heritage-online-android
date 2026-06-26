@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
@@ -84,7 +87,11 @@ import com.duckylife.heritage.modern.feature.discovery.GraphTab
 import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
+import com.duckylife.heritage.modern.feature.graph.model.BridgeItemUiModel
+import com.duckylife.heritage.modern.feature.graph.model.BridgeResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphEdgeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.PathExplainResult
+import com.duckylife.heritage.modern.feature.graph.model.PathStepUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
@@ -134,7 +141,10 @@ fun GraphExploreRoute(
         onRefresh = viewModel::refresh,
         onToggleAiInferred = viewModel::toggleAiInferred,
         onExploreDepthSelected = viewModel::selectExploreDepth,
-        onPathClick = ::acknowledgePathClickPendingRoute,
+        onPathClick = { item -> viewModel.openPathExplain(item.node) },
+        onPathExplainDismiss = viewModel::dismissPathExplain,
+        onPathExplainRetry = viewModel::retryPathExplain,
+        onPathExplainLoadBridge = viewModel::loadBridge,
         onNodeClick = { node ->
             when {
                 node.isContentNode -> node.toDiscoveryItemDto()?.let(onItemClick)
@@ -156,12 +166,14 @@ internal fun GraphExploreScreen(
     onToggleAiInferred: () -> Unit,
     onExploreDepthSelected: (Int) -> Unit,
     onPathClick: (GraphSimilarItemUiModel) -> Unit,
+    onPathExplainDismiss: () -> Unit,
+    onPathExplainRetry: () -> Unit,
+    onPathExplainLoadBridge: () -> Unit,
     onNodeClick: (GraphNodeUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     var showExplanation by remember { mutableStateOf(false) }
-    var pendingPathItem by remember { mutableStateOf<GraphSimilarItemUiModel?>(null) }
     val sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
     )
@@ -240,10 +252,7 @@ internal fun GraphExploreScreen(
                     onRetry = onRetry,
                     onToggleAiInferred = onToggleAiInferred,
                     onExploreDepthSelected = onExploreDepthSelected,
-                    onPathClick = { item ->
-                        pendingPathItem = item
-                        onPathClick(item)
-                    },
+                    onPathClick = onPathClick,
                     onNodeClick = onNodeClick,
                 )
             }
@@ -256,11 +265,16 @@ internal fun GraphExploreScreen(
             onDismiss = { showExplanation = false },
         )
     }
-    pendingPathItem?.let { item ->
-        PathPendingBottomSheet(
-            item = item,
-            sheetState = sheetState,
-            onDismiss = { pendingPathItem = null },
+    val pathSheet = uiState.pathExplainSheet
+    if (pathSheet.targetNode != null) {
+        PathExplainBottomSheet(
+            centerNode = uiState.centerNode,
+            sheetState = pathSheet,
+            bottomSheetState = sheetState,
+            onDismiss = onPathExplainDismiss,
+            onNodeClick = onNodeClick,
+            onRetry = onPathExplainRetry,
+            onLoadBridge = onPathExplainLoadBridge,
         )
     }
 }
@@ -1436,19 +1450,27 @@ private fun RelationExplanationSheetContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PathPendingBottomSheet(
-    item: GraphSimilarItemUiModel,
-    sheetState: SheetState,
+private fun PathExplainBottomSheet(
+    centerNode: GraphNodeUiModel?,
+    sheetState: PathExplainSheetState,
+    bottomSheetState: SheetState,
     onDismiss: () -> Unit,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onRetry: () -> Unit,
+    onLoadBridge: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        sheetState = sheetState,
+        sheetState = bottomSheetState,
         modifier = modifier,
     ) {
-        PathPendingSheetContent(
-            item = item,
+        PathExplainSheetContent(
+            centerNode = centerNode,
+            sheetState = sheetState,
+            onNodeClick = onNodeClick,
+            onRetry = onRetry,
+            onLoadBridge = onLoadBridge,
             onDismiss = onDismiss,
             modifier = Modifier.padding(bottom = 32.dp),
         )
@@ -1456,39 +1478,278 @@ private fun PathPendingBottomSheet(
 }
 
 @Composable
-private fun PathPendingSheetContent(
-    item: GraphSimilarItemUiModel,
+private fun PathExplainSheetContent(
+    centerNode: GraphNodeUiModel?,
+    sheetState: PathExplainSheetState,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onRetry: () -> Unit,
+    onLoadBridge: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
-            text = stringResource(R.string.graph_path_pending_title),
+            text = stringResource(R.string.graph_path_explain_title),
             style = MaterialTheme.typography.headlineSmall,
         )
+        val targetTitle = sheetState.targetNode?.displayTitle.orEmpty()
+        val centerTitle = centerNode?.displayTitle.orEmpty()
         Text(
-            text = stringResource(R.string.graph_path_pending_target, item.node.displayTitle),
+            text = if (centerTitle.isNotBlank() && targetTitle.isNotBlank()) {
+                stringResource(R.string.graph_path_explain_subtitle, centerTitle, targetTitle)
+            } else if (targetTitle.isNotBlank()) {
+                stringResource(R.string.graph_path_explain_target_only, targetTitle)
+            } else {
+                stringResource(R.string.graph_path_explain_target_unknown)
+            },
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
-        Text(
-            text = stringResource(R.string.graph_path_pending_body),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+
+        when {
+            sheetState.isLoading && sheetState.result == null -> PathExplainSkeleton()
+            sheetState.errorKind != null && sheetState.result == null -> SectionErrorCard(
+                errorKind = sheetState.errorKind,
+                onRetry = onRetry,
+                modifier = Modifier.padding(0.dp),
+            )
+            sheetState.result != null -> PathExplainResultContent(
+                result = sheetState.result,
+                centerNode = centerNode,
+                targetNode = sheetState.targetNode,
+                bridgeSection = sheetState.bridge,
+                onNodeClick = onNodeClick,
+                onLoadBridge = onLoadBridge,
+                onRetryBridge = onLoadBridge,
+            )
+            sheetState.errorKind != null -> SectionErrorCard(
+                errorKind = sheetState.errorKind,
+                onRetry = onRetry,
+                modifier = Modifier.padding(0.dp),
+            )
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
         ) {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.action_close))
+            }
+        }
+    }
+}
+
+@Composable
+private fun PathExplainResultContent(
+    result: PathExplainResult,
+    centerNode: GraphNodeUiModel?,
+    targetNode: GraphNodeUiModel?,
+    bridgeSection: DiscoverySectionState<BridgeResult>,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    onLoadBridge: () -> Unit,
+    onRetryBridge: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        if (!result.found) {
+            EmptyTabState(
+                title = stringResource(R.string.graph_path_explain_not_found_title),
+                message = stringResource(R.string.graph_path_explain_not_found_message),
+                actionLabel = null,
+                onActionClick = null,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            return@Column
+        }
+
+        if (result.warnings.isNotEmpty()) {
+            Text(
+                text = result.warnings.joinToString("\n"),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+
+        result.narrative.firstOrNull { it.isNotBlank() }?.let { narrative ->
+            Text(
+                text = narrative,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        result.steps.forEachIndexed { index, step ->
+            PathStepItem(
+                step = step,
+                isLast = index == result.steps.lastIndex,
+                onNodeClick = onNodeClick,
+            )
+        }
+
+        if (centerNode?.isContentNode == true && targetNode?.isContentNode == true) {
+            when {
+                bridgeSection.isLoading && !bridgeSection.hasData -> PathExplainSkeleton(itemCount = 2)
+                bridgeSection.hasFatalError -> SectionErrorCard(
+                    errorKind = bridgeSection.errorKind ?: ErrorKind.Unknown,
+                    onRetry = onRetryBridge,
+                    modifier = Modifier.padding(0.dp),
+                )
+                bridgeSection.hasData -> Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    if (bridgeSection.errorKind != null) {
+                        SectionErrorCard(
+                            errorKind = bridgeSection.errorKind,
+                            onRetry = onRetryBridge,
+                            modifier = Modifier.padding(0.dp),
+                        )
+                    }
+                    BridgeSection(
+                        bridges = bridgeSection.data!!.bridges,
+                        onNodeClick = onNodeClick,
+                    )
+                }
+                else -> TextButton(onClick = onLoadBridge) {
+                    Text(stringResource(R.string.graph_path_explain_show_bridge))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PathStepItem(
+    step: PathStepUiModel,
+    isLast: Boolean,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ) {
+                Text(
+                    text = "${step.order + 1}",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                )
+            }
+            if (!isLast) {
+                Box(
+                    modifier = Modifier
+                        .width(2.dp)
+                        .weight(1f)
+                        .padding(vertical = 4.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
+                )
+            }
+        }
+        RelationNodeRow(
+            node = step.node,
+            relationLabel = step.edge?.localizedRelationLabel()
+                ?: stringResource(R.string.graph_relation_other_node),
+            reason = step.explanation ?: step.edge?.reason,
+            isAiInferred = step.edge?.isAiInferred == true,
+            onNodeClick = onNodeClick,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
+private fun PathExplainSkeleton(
+    itemCount: Int = 3,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        repeat(itemCount) {
+            HeritageContentCard {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun BridgeSection(
+    bridges: List<BridgeItemUiModel>,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.graph_path_explain_bridge_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+        )
+        if (bridges.isEmpty()) {
+            Text(
+                text = stringResource(R.string.graph_path_explain_bridge_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        } else {
+            bridges.forEach { bridge ->
+                BridgeNodeRow(bridge = bridge, onNodeClick = onNodeClick)
+            }
+        }
+    }
+}
+
+@Composable
+private fun BridgeNodeRow(
+    bridge: BridgeItemUiModel,
+    onNodeClick: (GraphNodeUiModel) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    HeritageContentCard(modifier = modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            RelationNodeRow(
+                node = bridge.node,
+                relationLabel = stringResource(R.string.graph_path_explain_bridge_node),
+                reason = bridge.reason,
+                isAiInferred = false,
+                onNodeClick = onNodeClick,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                HeritageMetaChip(
+                    text = stringResource(R.string.graph_path_explain_bridge_score, bridge.score),
+                )
             }
         }
     }
@@ -1645,12 +1906,6 @@ private fun GraphEdgeUiModel.localizedRelationLabel(): String =
     label?.takeIf { it.isNotBlank() }
         ?: stringResource(GraphRelationFormatter.labelResId(relationType))
 
-@Suppress("UNUSED_PARAMETER")
-private fun acknowledgePathClickPendingRoute(item: GraphSimilarItemUiModel) {
-    // GraphExploreScreen already gives immediate user feedback. This hook is kept for
-    // future navigation to a dedicated path/explanation route once that API is available.
-}
-
 private fun GraphNodeUiModel.toDiscoveryItemDto(): DiscoveryItemDto? {
     if (!isContentNode || id.isNullOrBlank()) return null
     return DiscoveryItemDto(
@@ -1688,6 +1943,9 @@ private fun GraphExploreScreenLightPreview() {
             onToggleAiInferred = {},
             onExploreDepthSelected = {},
             onPathClick = {},
+            onPathExplainDismiss = {},
+            onPathExplainRetry = {},
+            onPathExplainLoadBridge = {},
             onNodeClick = {},
         )
     }
@@ -1706,6 +1964,9 @@ private fun GraphExploreScreenDarkPreview() {
             onToggleAiInferred = {},
             onExploreDepthSelected = {},
             onPathClick = {},
+            onPathExplainDismiss = {},
+            onPathExplainRetry = {},
+            onPathExplainLoadBridge = {},
             onNodeClick = {},
         )
     }
@@ -1727,6 +1988,9 @@ private fun GraphExploreScreenLoadingPreview() {
             onToggleAiInferred = {},
             onExploreDepthSelected = {},
             onPathClick = {},
+            onPathExplainDismiss = {},
+            onPathExplainRetry = {},
+            onPathExplainLoadBridge = {},
             onNodeClick = {},
         )
     }
@@ -1745,6 +2009,9 @@ private fun GraphExploreScreenInvalidRoutePreview() {
             onToggleAiInferred = {},
             onExploreDepthSelected = {},
             onPathClick = {},
+            onPathExplainDismiss = {},
+            onPathExplainRetry = {},
+            onPathExplainLoadBridge = {},
             onNodeClick = {},
         )
     }

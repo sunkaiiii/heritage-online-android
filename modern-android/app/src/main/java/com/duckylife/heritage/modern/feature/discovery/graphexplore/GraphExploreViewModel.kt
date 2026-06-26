@@ -10,6 +10,8 @@ import com.duckylife.heritage.modern.feature.discovery.GraphTab
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
 import com.duckylife.heritage.modern.feature.graph.model.centerNode
 import com.duckylife.heritage.modern.ui.error.ErrorKind
@@ -45,6 +47,7 @@ class GraphExploreViewModel @AssistedInject constructor(
 
     private val tabJobs = mutableMapOf<GraphTab, Job>()
     private var aiInferredJob: Job? = null
+    private var pathExplainJob: Job? = null
 
     init {
         if (contentRef != null && contentId.isNotBlank()) {
@@ -92,6 +95,130 @@ class GraphExploreViewModel @AssistedInject constructor(
         if (clampedDepth == _uiState.value.exploreDepth) return
         _uiState.update { it.copy(exploreDepth = clampedDepth) }
         loadTab(GraphTab.Explore, force = true)
+    }
+
+    fun openPathExplain(targetNode: GraphNodeUiModel) {
+        _uiState.update {
+            it.copy(pathExplainSheet = PathExplainSheetState(targetNode = targetNode, isLoading = true))
+        }
+        loadPathExplain(targetNode)
+    }
+
+    fun dismissPathExplain() {
+        pathExplainJob?.cancel()
+        _uiState.update { it.copy(pathExplainSheet = PathExplainSheetState()) }
+    }
+
+    fun retryPathExplain() {
+        val target = _uiState.value.pathExplainSheet.targetNode ?: return
+        loadPathExplain(target)
+    }
+
+    fun loadBridge() {
+        val ref = contentRef ?: return
+        val target = _uiState.value.pathExplainSheet.targetNode ?: return
+        val targetId = target.toPathId()
+        if (target.type == GraphNodeType.Unknown || targetId.isBlank() || (target.isContentNode && target.id.isNullOrBlank())) {
+            _uiState.update {
+                it.copy(
+                    pathExplainSheet = it.pathExplainSheet.copy(
+                        bridge = DiscoverySectionState(errorKind = ErrorKind.BadRequest),
+                    ),
+                )
+            }
+            return
+        }
+        pathExplainJob?.cancel()
+        pathExplainJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    pathExplainSheet = it.pathExplainSheet.copy(
+                        bridge = DiscoverySectionState(isLoading = true, errorKind = null),
+                    ),
+                )
+            }
+            runCatchingCancellable {
+                repository.getBridge(
+                    fromType = ref,
+                    fromId = contentId,
+                    toType = target.type,
+                    toId = targetId,
+                    limit = 10,
+                )
+            }
+                .onSuccess { bridge ->
+                    _uiState.update {
+                        it.copy(
+                            pathExplainSheet = it.pathExplainSheet.copy(
+                                bridge = DiscoverySectionState(data = bridge),
+                            ),
+                        )
+                    }
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(
+                            pathExplainSheet = it.pathExplainSheet.copy(
+                                bridge = DiscoverySectionState(errorKind = throwable.toUiError().kind),
+                            ),
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun loadPathExplain(targetNode: GraphNodeUiModel) {
+        val ref = contentRef ?: return
+        val targetId = targetNode.toPathId()
+        if (targetNode.type == GraphNodeType.Unknown || targetId.isBlank() || (targetNode.isContentNode && targetNode.id.isNullOrBlank())) {
+            _uiState.update {
+                it.copy(
+                    pathExplainSheet = it.pathExplainSheet.copy(
+                        isLoading = false,
+                        errorKind = ErrorKind.BadRequest,
+                    ),
+                )
+            }
+            return
+        }
+        pathExplainJob?.cancel()
+        pathExplainJob = viewModelScope.launch {
+            _uiState.update {
+                it.copy(
+                    pathExplainSheet = it.pathExplainSheet.copy(isLoading = true, errorKind = null),
+                )
+            }
+            runCatchingCancellable {
+                repository.explainPath(
+                    fromType = ref,
+                    fromId = contentId,
+                    toType = targetNode.type,
+                    toId = targetId,
+                    maxDepth = 3,
+                )
+            }
+                .onSuccess { result ->
+                    _uiState.update {
+                        it.copy(
+                            pathExplainSheet = it.pathExplainSheet.copy(
+                                isLoading = false,
+                                result = result,
+                                errorKind = null,
+                            ),
+                        )
+                    }
+                }
+                .onFailure { throwable ->
+                    _uiState.update {
+                        it.copy(
+                            pathExplainSheet = it.pathExplainSheet.copy(
+                                isLoading = false,
+                                errorKind = throwable.toUiError().kind,
+                            ),
+                        )
+                    }
+                }
+        }
     }
 
     private fun loadTab(tab: GraphTab, force: Boolean = false) {
@@ -219,6 +346,7 @@ class GraphExploreViewModel @AssistedInject constructor(
         tabJobs.values.forEach { it.cancel() }
         tabJobs.clear()
         aiInferredJob?.cancel()
+        pathExplainJob?.cancel()
     }
 
     @AssistedFactory

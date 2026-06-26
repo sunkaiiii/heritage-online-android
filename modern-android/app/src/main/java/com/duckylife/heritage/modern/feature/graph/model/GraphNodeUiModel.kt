@@ -30,4 +30,16 @@ data class GraphNodeUiModel(
 
     val displayTitle: String
         get() = title?.takeIf { it.isNotBlank() } ?: nodeKey
+
+    /**
+     * 返回用于路径/桥接 API 的节点标识。
+     *
+     * 内容节点优先使用后端内容 ID；主题节点使用 topic key，避免把 `category:xxx`
+     * 这类复合 nodeKey 直接当作 ID 传入。
+     */
+    fun toPathId(): String = when {
+        isTopicNode -> id?.takeIf { it.isNotBlank() }
+            ?: nodeKey.removePrefix("${type.wireName}-")
+        else -> id?.takeIf { it.isNotBlank() } ?: nodeKey
+    }
 }

@@ -13,6 +13,14 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarItemDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgeDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.AiInferredEdgesDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.BridgeItemDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphBridgeDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailStepDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.PathDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.PathExplainDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.TopicGraphMapDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
 
 /**
@@ -211,3 +219,203 @@ private fun GraphEvidenceItemDto.toUiModel(): GraphEvidenceUiModel = GraphEviden
 fun GraphNeighborsResult.centerNode(): GraphNodeUiModel? =
     centerNodeKey?.let { key -> nodes.firstOrNull { it.nodeKey == key } }
         ?: nodes.firstOrNull()
+
+// -----------------------------------------------------------------------------
+// Path Explain & Bridge UI models
+// -----------------------------------------------------------------------------
+
+/**
+ * 路径解释结果。
+ */
+data class PathExplainResult(
+    val found: Boolean,
+    val steps: List<PathStepUiModel>,
+    val narrative: List<String>,
+    val evidence: List<GraphEvidenceUiModel>,
+    val warnings: List<String>,
+)
+
+/**
+ * 路径单步。
+ */
+data class PathStepUiModel(
+    val order: Int,
+    val node: GraphNodeUiModel,
+    val edge: GraphEdgeUiModel?,
+    val explanation: String?,
+)
+
+/**
+ * 桥接节点结果。
+ */
+data class BridgeResult(
+    val bridges: List<BridgeItemUiModel>,
+)
+
+/**
+ * 单个桥接节点。
+ */
+data class BridgeItemUiModel(
+    val node: GraphNodeUiModel,
+    val score: Double,
+    val reason: String?,
+    val paths: List<PathExplainResult>,
+)
+
+/**
+ * 主题图谱地图结果。
+ */
+data class TopicGraphMapResult(
+    val topicType: String,
+    val topicKey: String,
+    val topicNode: GraphNodeUiModel?,
+    val nodes: List<GraphNodeUiModel>,
+    val edges: List<GraphEdgeUiModel>,
+)
+
+/**
+ * 图谱漫游单步。
+ */
+data class GraphTrailStepUiModel(
+    val order: Int,
+    val node: GraphNodeUiModel,
+    val stepType: String?,
+    val reason: String?,
+    val viaRelationType: GraphRelationType,
+)
+
+/**
+ * 图谱漫游结果。
+ */
+data class GraphTrailResult(
+    val trailId: String?,
+    val strategy: TrailStrategy,
+    val title: String?,
+    val subtitle: String?,
+    val startNode: GraphNodeUiModel?,
+    val endNode: GraphNodeUiModel?,
+    val steps: List<GraphTrailStepUiModel>,
+    val nodes: List<GraphNodeUiModel>,
+    val edges: List<GraphEdgeUiModel>,
+    val topicLabels: List<String>,
+    val score: Double,
+)
+
+// -----------------------------------------------------------------------------
+// Path Explain & Bridge DTO -> UI mapping
+// -----------------------------------------------------------------------------
+
+fun PathExplainDto.toPathExplainResult(): PathExplainResult {
+    val pathDto = path
+    val rawNodes = (pathDto?.nodes ?: emptyList()) + steps.mapNotNull { it.node }
+    val nodeMap = rawNodes.toGraphNodeUiModels().associateBy { it.nodeKey }
+    val availableKeys = nodeMap.keys
+    return PathExplainResult(
+        found = pathDto?.found ?: steps.isNotEmpty(),
+        steps = steps.mapNotNull { step ->
+            val node = step.node?.toGraphNodeUiModel() ?: return@mapNotNull null
+            val edge = step.edge
+                ?.takeIf { it.from in availableKeys && it.to in availableKeys }
+                ?.toGraphEdgeUiModel()
+            PathStepUiModel(
+                order = step.order,
+                node = node,
+                edge = edge,
+                explanation = step.explanation?.takeIf { it.isNotBlank() },
+            )
+        }.sortedBy { it.order },
+        narrative = narrative.mapNotNull { it.takeIf(String::isNotBlank) },
+        evidence = evidence.map { it.toUiModel() },
+        warnings = warnings.mapNotNull { it.takeIf(String::isNotBlank) },
+    )
+}
+
+fun GraphBridgeDto.toBridgeResult(): BridgeResult = BridgeResult(
+    bridges = bridges.map { bridge ->
+        BridgeItemUiModel(
+            node = bridge.bridgeNode.toGraphNodeUiModel(),
+            score = bridge.score,
+            reason = bridge.reason?.takeIf { it.isNotBlank() },
+            paths = bridge.paths.map { it.toPathExplainResult() },
+        )
+    }.sortedByDescending { it.score },
+)
+
+private fun PathDto.toPathExplainResult(): PathExplainResult {
+    val nodeMap = nodes.toGraphNodeUiModels().associateBy { it.nodeKey }
+    val availableKeys = nodeMap.keys
+    return PathExplainResult(
+        found = found,
+        steps = nodes.mapIndexedNotNull { index, nodeDto ->
+            val node = nodeMap[nodeDto.nodeKey] ?: return@mapIndexedNotNull null
+            val nextKey = nodes.getOrNull(index + 1)?.nodeKey
+            val edge = nextKey?.let {
+                edges.firstOrNull { e -> e.from == nodeDto.nodeKey && e.to == nextKey }
+                    ?: edges.firstOrNull { e -> e.to == nodeDto.nodeKey && e.from == nextKey }
+            }
+            PathStepUiModel(
+                order = index,
+                node = node,
+                edge = edge?.takeIf { it.from in availableKeys && it.to in availableKeys }
+                    ?.toGraphEdgeUiModel(),
+                explanation = edge?.reason?.takeIf { it.isNotBlank() },
+            )
+        },
+        narrative = emptyList(),
+        evidence = emptyList(),
+        warnings = emptyList(),
+    )
+}
+
+// -----------------------------------------------------------------------------
+// Topic Graph Map DTO -> UI mapping
+// -----------------------------------------------------------------------------
+
+fun TopicGraphMapDto.toTopicGraphMapResult(): TopicGraphMapResult {
+    val allNodes = (nodes + listOfNotNull(topic)).toGraphNodeUiModels().distinctBy { it.nodeKey }
+    val nodeMap = allNodes.associateBy { it.nodeKey }
+    val availableKeys = nodeMap.keys
+    return TopicGraphMapResult(
+        topicType = topicType ?: "",
+        topicKey = topicKey ?: "",
+        topicNode = topic?.toGraphNodeUiModel(),
+        nodes = allNodes,
+        edges = edges.toGraphEdgeUiModels(availableKeys),
+    )
+}
+
+// -----------------------------------------------------------------------------
+// Graph Trail DTO -> UI mapping
+// -----------------------------------------------------------------------------
+
+fun GraphTrailDto.toGraphTrailResult(): GraphTrailResult {
+    val allNodes = (nodes + listOfNotNull(startNode, endNode))
+        .toGraphNodeUiModels()
+        .distinctBy { it.nodeKey }
+    val nodeMap = allNodes.associateBy { it.nodeKey }
+    val availableKeys = nodeMap.keys
+    return GraphTrailResult(
+        trailId = trailId,
+        strategy = strategy,
+        title = title?.takeIf { it.isNotBlank() },
+        subtitle = subtitle?.takeIf { it.isNotBlank() },
+        startNode = startNode?.toGraphNodeUiModel()?.takeIf { it.nodeKey in availableKeys },
+        endNode = endNode?.toGraphNodeUiModel()?.takeIf { it.nodeKey in availableKeys },
+        steps = steps.mapNotNull { step ->
+            val node = step.node?.toGraphNodeUiModel() ?: return@mapNotNull null
+            GraphTrailStepUiModel(
+                order = step.order,
+                node = node,
+                stepType = step.stepType?.takeIf { it.isNotBlank() },
+                reason = step.reason?.takeIf { it.isNotBlank() },
+                viaRelationType = GraphRelationType.entries
+                    .firstOrNull { it.wireName == step.viaRelationType }
+                    ?: GraphRelationType.Unknown,
+            )
+        }.sortedBy { it.order },
+        nodes = allNodes,
+        edges = edges.toGraphEdgeUiModels(availableKeys),
+        topicLabels = topicLabels.mapNotNull { it.takeIf(String::isNotBlank) }.distinct(),
+        score = score,
+    )
+}

@@ -421,11 +421,29 @@
     <string name="knowledge_graph_hub_empty_message">热门主题群会在数据更新后逐步出现。</string>
     <string name="knowledge_graph_hub_empty_action">去发现</string>
 
-    <!-- Topic Graph Map & Trail placeholders -->
+    <!-- Topic Graph Map -->
     <string name="topic_graph_map_title">主题图谱</string>
-    <string name="topic_graph_map_coming_soon">主题图谱地图即将上线</string>
+    <string name="topic_graph_map_loading">主题图谱加载中</string>
+    <string name="topic_graph_map_empty_title">该主题暂无关联节点</string>
+    <string name="topic_graph_map_empty_message">数据更新后这里会显示更多相关内容。</string>
+    <string name="topic_graph_map_node_count">%1$d 个节点 · %2$d 条关系</string>
+    <string name="topic_graph_map_content_nodes">相关内容</string>
+    <string name="topic_graph_map_topic_nodes">相关主题</string>
+    <string name="topic_graph_map_list_view">列表</string>
+    <string name="topic_graph_map_overview_view">概览图</string>
+
+    <!-- Graph Trail -->
     <string name="graph_trail_title">知识漫游</string>
-    <string name="graph_trail_coming_soon">知识漫游即将上线</string>
+    <string name="graph_trail_loading">路线加载中</string>
+    <string name="graph_trail_empty_title">暂无可用路线</string>
+    <string name="graph_trail_empty_message">换个起点或稍后再试。</string>
+    <string name="graph_trail_resample">换一条路线</string>
+    <string name="graph_trail_steps_format">%1$d 个节点</string>
+    <string name="graph_trail_strategy_label">探索策略</string>
+    <string name="graph_trail_topic_labels">主题</string>
+    <string name="graph_trail_step_start">起点</string>
+    <string name="graph_trail_step_recommended">推荐下一步</string>
+    <string name="graph_trail_step_via">通过 %1$s</string>
 
     <!-- Graph Explore -->
     <string name="graph_explore_center_fallback_title">内容关系</string>
@@ -476,9 +494,17 @@
     <string name="graph_similar_empty_action">查看主题关系</string>
     <string name="graph_similar_shared_neighbors">共同关联 %1$d 个</string>
     <string name="graph_similar_view_path">查看路径</string>
-    <string name="graph_path_pending_title">它们如何关联</string>
-    <string name="graph_path_pending_target">目标内容：%1$s</string>
-    <string name="graph_path_pending_body">路径解释将在下一步接入。当前入口会先保留可点击反馈，避免预加载完整探索图影响本页性能。</string>
+    <string name="graph_path_explain_title">它们如何关联</string>
+    <string name="graph_path_explain_subtitle">从“%1$s”到“%2$s”</string>
+    <string name="graph_path_explain_target_only">目标：%1$s</string>
+    <string name="graph_path_explain_target_unknown">目标内容</string>
+    <string name="graph_path_explain_not_found_title">未找到连接路径</string>
+    <string name="graph_path_explain_not_found_message">当前图谱范围内没有直接连接，可尝试查看中介节点或切换探索深度。</string>
+    <string name="graph_path_explain_show_bridge">查看中介节点</string>
+    <string name="graph_path_explain_bridge_title">中介节点</string>
+    <string name="graph_path_explain_bridge_empty">未找到共同中介节点</string>
+    <string name="graph_path_explain_bridge_node">桥接节点</string>
+    <string name="graph_path_explain_bridge_score">桥接分：%.2f</string>
     <string name="graph_explore_depth_one">1 跳</string>
     <string name="graph_explore_depth_two">2 跳</string>
     <string name="graph_explore_list_view">关系列表</string>

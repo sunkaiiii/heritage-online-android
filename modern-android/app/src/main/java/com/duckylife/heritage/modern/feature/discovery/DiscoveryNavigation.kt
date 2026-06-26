@@ -693,6 +693,20 @@ fun DiscoveryNavHost(
                         topicType = key.topicType,
                         topicKey = key.topicKey,
                         onBack = { backStack.removeLastOrNull() },
+                        onContentClick = { type, id ->
+                            navigateToDiscoveryItem(
+                                DiscoveryItemDto(id = id, type = type),
+                                backStack,
+                            )
+                        },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = type,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
                         modifier = modifier,
                     )
                 }
@@ -700,7 +714,22 @@ fun DiscoveryNavHost(
                 // ---- Graph Trail ----
                 is DiscoveryRouteKey.GraphTrailPage -> NavEntry(entryKey) {
                     GraphTrailRoute(
+                        source = key.source,
                         onBack = { backStack.removeLastOrNull() },
+                        onContentClick = { type, id ->
+                            navigateToDiscoveryItem(
+                                DiscoveryItemDto(id = id, type = type),
+                                backStack,
+                            )
+                        },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = type,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
                         modifier = modifier,
                     )
                 }

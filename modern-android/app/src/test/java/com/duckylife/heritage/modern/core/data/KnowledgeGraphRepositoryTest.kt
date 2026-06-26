@@ -30,8 +30,12 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarItemDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailStepDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.PathDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.PathExplainDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.PathStepDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.TopicGraphMapDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.core.network.isServiceUnavailable
 import com.duckylife.heritage.modern.feature.graph.model.AssociationLevel
 import io.ktor.client.plugins.ResponseException
@@ -194,6 +198,120 @@ class KnowledgeGraphRepositoryTest {
         repository.loadNeighbors(SearchResultType.Article, "a1")
     }
 
+    @Test
+    fun `explainPath clamps maxDepth and maps steps`() = runTest {
+        val article2 = GraphNodeDto(nodeKey = "article-2", type = GraphNodeType.Article, id = "a2", title = "Target")
+        fakeApi.pathExplainResult = PathExplainDto(
+            path = PathDto(
+                found = true,
+                nodes = listOf(
+                    GraphNodeDto(nodeKey = "article-1", type = GraphNodeType.Article, id = "a1", title = "Center"),
+                    article2,
+                ),
+                edges = listOf(
+                    GraphEdgeDto(from = "article-1", to = "article-2", type = GraphRelationType.RelatedTo, reason = "Shared topic"),
+                ),
+                maxDepth = 3,
+            ),
+            steps = listOf(
+                PathStepDto(order = 0, node = article2, explanation = "Final hop"),
+            ),
+        )
+
+        val result = repository.explainPath(
+            SearchResultType.Article, "a1",
+            GraphNodeType.Article, "a2",
+            maxDepth = 7,
+        )
+
+        assertTrue(result.found)
+        assertEquals(1, result.steps.size)
+        assertEquals("Target", result.steps.first().node.displayTitle)
+        assertEquals(5, fakeApi.capturedPathExplainQuery?.maxDepth)
+    }
+
+    @Test
+    fun `explainPath found false is normal empty state`() = runTest {
+        fakeApi.pathExplainResult = PathExplainDto(path = PathDto(found = false))
+
+        val result = repository.explainPath(
+            SearchResultType.Article, "a1",
+            GraphNodeType.Article, "a2",
+        )
+
+        assertFalse(result.found)
+        assertTrue(result.steps.isEmpty())
+    }
+
+    @Test
+    fun `getBridge empty result is normal empty state`() = runTest {
+        fakeApi.bridgeResult = GraphBridgeDto(bridges = emptyList())
+
+        val result = repository.getBridge(
+            SearchResultType.Article, "a1",
+            GraphNodeType.Article, "a2",
+        )
+
+        assertTrue(result.bridges.isEmpty())
+        assertEquals(10, fakeApi.capturedBridgeQuery?.limit)
+    }
+
+    @Test
+    fun `getTopicGraphMap encodes topic and clamps limit`() = runTest {
+        fakeApi.topicGraphMapResult = TopicGraphMapDto(
+            topicType = "category",
+            topicKey = "folk-art",
+            topic = GraphNodeDto(nodeKey = "category-folk-art", type = GraphNodeType.Category, id = "folk-art", title = "民间美术"),
+            nodes = listOf(
+                GraphNodeDto(nodeKey = "article-1", type = GraphNodeType.Article, id = "a1", title = "Article"),
+            ),
+            edges = emptyList(),
+        )
+
+        repository.getTopicGraphMap(topicType = "category", topicKey = "folk-art", limit = 200)
+
+        assertEquals("category", fakeApi.capturedTopicGraphMapQuery?.topicType)
+        assertEquals("folk-art", fakeApi.capturedTopicGraphMapQuery?.topicKey)
+        assertEquals(100, fakeApi.capturedTopicGraphMapQuery?.limit)
+    }
+
+    @Test
+    fun `getRandomGraphTrail passes strategy and limit`() = runTest {
+        fakeApi.graphTrailResult = GraphTrailDto(
+            trailId = "trail-1",
+            strategy = TrailStrategy.HiddenGem,
+            title = "Random trail",
+            steps = emptyList(),
+        )
+
+        repository.getRandomGraphTrail(strategy = TrailStrategy.HiddenGem, limit = 12)
+
+        assertEquals(TrailStrategy.HiddenGem, fakeApi.capturedRandomTrailQuery?.strategy)
+        assertEquals(10, fakeApi.capturedRandomTrailQuery?.limit)
+    }
+
+    @Test
+    fun `getGraphTrailFromContent maps source`() = runTest {
+        fakeApi.graphTrailResult = GraphTrailDto(trailId = "trail-2", steps = emptyList())
+
+        repository.getGraphTrailFromContent(SearchResultType.DirectoryItem, "d1", limit = 2)
+
+        assertEquals(SearchResultType.DirectoryItem, fakeApi.capturedTrailFromContentQuery?.contentType)
+        assertEquals("d1", fakeApi.capturedTrailFromContentQuery?.id)
+        assertEquals(3, fakeApi.capturedTrailFromContentQuery?.limit)
+    }
+
+    @Test
+    fun `getGraphTrailFromTopic maps topic source`() = runTest {
+        fakeApi.graphTrailResult = GraphTrailDto(trailId = "trail-3", steps = emptyList())
+
+        repository.getGraphTrailFromTopic("region", "zhejiang", limit = 20)
+
+        assertEquals("region", fakeApi.capturedTrailFromTopicQuery?.topicType)
+        assertEquals("zhejiang", fakeApi.capturedTrailFromTopicQuery?.topicKey)
+        assertEquals(10, fakeApi.capturedTrailFromTopicQuery?.limit)
+    }
+
     private class FakeKnowledgeGraphApi : KnowledgeGraphApi {
         var communitiesResult = GraphCommunitiesDto()
         var neighborsResult = GraphNeighborsDto()
@@ -201,6 +319,10 @@ class KnowledgeGraphRepositoryTest {
         var exploreResult = GraphExploreDto()
         var evidenceResult = GraphEvidenceDto()
         var aiInferredResult = AiInferredEdgesDto()
+        var pathExplainResult = PathExplainDto()
+        var bridgeResult = GraphBridgeDto()
+        var topicGraphMapResult = TopicGraphMapDto()
+        var graphTrailResult = GraphTrailDto()
         var failure: Throwable? = null
 
         var capturedNeighborsQuery: KnowledgeGraphNeighborsQuery? = null
@@ -208,6 +330,12 @@ class KnowledgeGraphRepositoryTest {
         var capturedExploreQuery: KnowledgeGraphExploreQuery? = null
         var capturedEvidenceQuery: KnowledgeGraphEvidenceQuery? = null
         var capturedAiInferredQuery: KnowledgeGraphAiInferredQuery? = null
+        var capturedPathExplainQuery: KnowledgeGraphPathExplainQuery? = null
+        var capturedBridgeQuery: KnowledgeGraphBridgeQuery? = null
+        var capturedTopicGraphMapQuery: TopicGraphMapQuery? = null
+        var capturedRandomTrailQuery: GraphTrailRandomQuery? = null
+        var capturedTrailFromContentQuery: GraphTrailFromContentQuery? = null
+        var capturedTrailFromTopicQuery: GraphTrailFromTopicQuery? = null
 
         private fun <R> maybeFail(result: R): R {
             failure?.let { throw it }
@@ -242,14 +370,34 @@ class KnowledgeGraphRepositoryTest {
             return maybeFail(aiInferredResult)
         }
 
-        override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery): GraphBridgeDto = GraphBridgeDto()
-        override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery): PathExplainDto = PathExplainDto()
-        override suspend fun getTopicGraphMap(query: TopicGraphMapQuery): TopicGraphMapDto = TopicGraphMapDto()
-        override suspend fun getRandomGraphTrail(query: GraphTrailRandomQuery): GraphTrailDto = GraphTrailDto()
-        override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery): GraphTrailDto =
-            GraphTrailDto()
+        override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery): GraphBridgeDto {
+            capturedBridgeQuery = query
+            return maybeFail(bridgeResult)
+        }
 
-        override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery): GraphTrailDto =
-            GraphTrailDto()
+        override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery): PathExplainDto {
+            capturedPathExplainQuery = query
+            return maybeFail(pathExplainResult)
+        }
+
+        override suspend fun getTopicGraphMap(query: TopicGraphMapQuery): TopicGraphMapDto {
+            capturedTopicGraphMapQuery = query
+            return maybeFail(topicGraphMapResult)
+        }
+
+        override suspend fun getRandomGraphTrail(query: GraphTrailRandomQuery): GraphTrailDto {
+            capturedRandomTrailQuery = query
+            return maybeFail(graphTrailResult)
+        }
+
+        override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery): GraphTrailDto {
+            capturedTrailFromContentQuery = query
+            return maybeFail(graphTrailResult)
+        }
+
+        override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery): GraphTrailDto {
+            capturedTrailFromTopicQuery = query
+            return maybeFail(graphTrailResult)
+        }
     }
 }

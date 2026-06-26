@@ -4,6 +4,7 @@ import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.data.RecentContentProvider
 import com.duckylife.heritage.modern.core.data.RecentContentRef
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgesResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphCommunityUiModel
@@ -164,6 +165,45 @@ class KnowledgeGraphHubViewModelTest {
 
         override suspend fun loadAiInferredEdges(type: SearchResultType, id: String): AiInferredEdgesResult =
             throw NotImplementedError()
+
+        override suspend fun explainPath(
+            fromType: SearchResultType,
+            fromId: String,
+            toType: GraphNodeType,
+            toId: String,
+            maxDepth: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getBridge(
+            fromType: SearchResultType,
+            fromId: String,
+            toType: GraphNodeType,
+            toId: String,
+            limit: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getTopicGraphMap(topicType: String, topicKey: String, limit: Int) =
+            throw NotImplementedError()
+
+        override suspend fun getRandomGraphTrail(
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            type: SearchResultType?,
+            limit: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getGraphTrailFromContent(
+            contentType: SearchResultType,
+            contentId: String,
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            limit: Int,
+        ) = throw NotImplementedError()
+
+        override suspend fun getGraphTrailFromTopic(
+            topicType: String,
+            topicKey: String,
+            strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
+            limit: Int,
+        ) = throw NotImplementedError()
     }
 
     private suspend fun serviceUnavailableException(): ResponseException {

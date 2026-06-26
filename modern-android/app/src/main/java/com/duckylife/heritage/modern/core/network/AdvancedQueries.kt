@@ -6,6 +6,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimensio
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportFormat
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSource
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
@@ -225,7 +226,7 @@ data class KnowledgeGraphAiInferredQuery(
 data class KnowledgeGraphBridgeQuery(
     val fromType: SearchResultType,
     val fromId: String,
-    val toType: SearchResultType,
+    val toType: GraphNodeType,
     val toId: String,
     val limit: Int = 10,
 ) {
@@ -239,7 +240,7 @@ data class KnowledgeGraphBridgeQuery(
 data class KnowledgeGraphPathExplainQuery(
     val fromType: SearchResultType,
     val fromId: String,
-    val toType: SearchResultType,
+    val toType: GraphNodeType,
     val toId: String,
     val maxDepth: Int = 3,
     val includeAiInferred: Boolean = false,
