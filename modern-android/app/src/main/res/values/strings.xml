@@ -567,4 +567,100 @@
     <string name="graph_ai_inferred_empty_message">普通证据仍可继续阅读。</string>
 
     <string name="action_close">关闭</string>
+
+    <!-- 发现页入口 -->
+    <string name="discovery_spacetime">数据探索</string>
+    <string name="discovery_spacetime_subtitle">按地区、类别与年份浏览非遗分布</string>
+    <string name="discovery_rankings">排行榜</string>
+    <string name="discovery_rankings_subtitle">多维数据排行与隐藏宝藏</string>
+
+    <!-- 内容类型 -->
+    <string name="content_type_article">文章</string>
+    <string name="content_type_directory">名录</string>
+    <string name="content_type_inheritor">传承人</string>
+
+    <!-- 维度 -->
+    <string name="dimension_region">地区</string>
+    <string name="dimension_category">类别</string>
+    <string name="dimension_year">年份</string>
+    <string name="dimension_kind">种类</string>
+    <string name="dimension_target_type">内容类型</string>
+    <string name="dimension_unknown">未知</string>
+
+    <!-- 时空探索 -->
+    <string name="spacetime_title">时空探索</string>
+    <string name="spacetime_tab_overview">概览</string>
+    <string name="spacetime_tab_analytics">进一步分析</string>
+    <string name="spacetime_filter_title">筛选</string>
+    <string name="spacetime_filter_from_year">起始年份</string>
+    <string name="spacetime_filter_to_year">截止年份</string>
+    <string name="spacetime_filter_region">地区</string>
+    <string name="spacetime_filter_category">类别</string>
+    <string name="spacetime_filter_kind">种类</string>
+    <string name="spacetime_filter_invalid_year_range">起始年份不能晚于截止年份</string>
+    <string name="spacetime_metrics_total">总计</string>
+    <string name="spacetime_top_regions_title">热门地区</string>
+    <string name="spacetime_top_categories_title">热门类别</string>
+    <string name="spacetime_year_timeline_title">年份时间轴</string>
+    <string name="spacetime_region_timeline_title">%1$s 时间轴</string>
+    <string name="spacetime_year_map_title">%1$d 年地区分布</string>
+    <string name="spacetime_heatmap_title">分布热力</string>
+    <string name="spacetime_heatmap_preset_region_category">地区 × 类别</string>
+    <string name="spacetime_heatmap_preset_region_year">地区 × 年份</string>
+    <string name="spacetime_heatmap_preset_category_year">类别 × 年份</string>
+    <string name="spacetime_heatmap_preset_kind_region">种类 × 地区</string>
+    <string name="spacetime_heatmap_preset_kind_category">种类 × 类别</string>
+    <string name="spacetime_heatmap_empty">当前维度组合下暂无数据</string>
+    <string name="spacetime_empty_list">暂无数据</string>
+    <string name="spacetime_drilldown_empty">请选择一项查看详情</string>
+
+    <!-- 进一步分析 -->
+    <string name="analytics_breakdown_title">按维度查看</string>
+    <string name="analytics_breakdown_empty">当前维度下暂无数据</string>
+    <string name="analytics_group_by_label">分组维度</string>
+    <string name="analytics_compare_title">比较</string>
+    <string name="analytics_compare_button">比较所选项</string>
+    <string name="analytics_compare_limit_hint">最多选择 10 项</string>
+    <string name="analytics_compare_winner">%1$s 领先</string>
+    <string name="analytics_metric_label">指标</string>
+    <string name="analytics_outliers_title">值得留意</string>
+    <string name="analytics_outliers_empty">当前筛选下没有明显异常分布</string>
+    <string name="analytics_outlier_ratio">数值 %1$.1f，平均 %2$.1f，为平均的 %3$.1f 倍</string>
+    <string name="analytics_crosstab_title">交叉分布</string>
+    <string name="analytics_crosstab_button">查看交叉分布</string>
+    <string name="analytics_crosstab_x">横向维度</string>
+    <string name="analytics_crosstab_y">纵向维度</string>
+    <string name="analytics_crosstab_empty">当前交叉维度下暂无数据</string>
+
+    <!-- 排行榜指标 -->
+    <string name="ranking_metric_total">总计</string>
+    <string name="ranking_metric_article_count">文章数</string>
+    <string name="ranking_metric_directory_count">名录数</string>
+    <string name="ranking_metric_inheritor_count">传承人数</string>
+    <string name="ranking_metric_connectivity">连接度</string>
+    <string name="ranking_metric_hidden_gem">隐藏宝藏</string>
+    <string name="ranking_metric_completeness">完整度</string>
+    <string name="ranking_metric_image_richness">图片丰富度</string>
+    <string name="ranking_metric_ai_coverage">智能覆盖</string>
+    <string name="ranking_metric_freshness">新近内容</string>
+    <string name="ranking_metric_unknown">未知</string>
+
+    <!-- 排行榜 -->
+    <string name="rankings_title">发现排行榜</string>
+    <string name="rankings_subtitle">多维数据排行</string>
+    <string name="ranking_detail_title">排行榜详情</string>
+    <string name="ranking_not_found">该榜单已不存在</string>
+    <string name="ranking_empty_title">当前榜单暂无内容</string>
+    <string name="ranking_score_label">综合表现</string>
+    <string name="ranking_metrics_expand">查看指标</string>
+    <string name="ranking_metrics_collapse">收起指标</string>
+    <string name="ranking_top_1_content_description">第一名</string>
+    <string name="ranking_top_2_content_description">第二名</string>
+    <string name="ranking_top_3_content_description">第三名</string>
+    <string name="ranking_filter_title">排行榜筛选</string>
+    <string name="ranking_reasons_title">上榜理由</string>
+    <string name="ranking_target_type_all">全部</string>
+    <string name="ranking_target_type_article">文章</string>
+    <string name="ranking_target_type_directoryItem">名录</string>
+    <string name="ranking_target_type_inheritor">传承人</string>
 </resources>

@@ -5,7 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
+import com.duckylife.heritage.modern.core.data.DataExploreRepository
 import com.duckylife.heritage.modern.core.data.DefaultContentIntelligenceRepository
+import com.duckylife.heritage.modern.core.data.DefaultDataExploreRepository
 import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
 import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepository
@@ -60,6 +62,12 @@ abstract class DataModule {
     abstract fun bindLearningRoutesRepository(
         repository: DefaultLearningRoutesRepository,
     ): LearningRoutesRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDataExploreRepository(
+        repository: DefaultDataExploreRepository,
+    ): DataExploreRepository
 
     @Binds
     @Singleton

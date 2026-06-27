@@ -15,6 +15,9 @@ internal sealed interface DiscoveryRouteKey {
     data class LearningPathDetail(val id: String) : DiscoveryRouteKey
     data class LearningRoutesPage(val seedType: String? = null, val seedId: String? = null) : DiscoveryRouteKey
     data class LearningRouteDetailPage(val routeId: String) : DiscoveryRouteKey
+    data object SpacetimePage : DiscoveryRouteKey
+    data object RankingsPage : DiscoveryRouteKey
+    data class RankingDetailPage(val rankingId: String) : DiscoveryRouteKey
     data class CollectionDetail(val id: String? = null, val type: String? = null, val key: String? = null) : DiscoveryRouteKey
     data object RegionAtlasPage : DiscoveryRouteKey
     data class RegionDetailPage(val region: String) : DiscoveryRouteKey
@@ -65,6 +68,9 @@ internal sealed interface RouteState {
     @kotlinx.serialization.Serializable data class LearningPath(val id: String = "") : RouteState
     @kotlinx.serialization.Serializable data class LearningRoutes(val seedType: String? = null, val seedId: String? = null) : RouteState
     @kotlinx.serialization.Serializable data class LearningRouteDetail(val routeId: String = "") : RouteState
+    @kotlinx.serialization.Serializable data object Spacetime : RouteState
+    @kotlinx.serialization.Serializable data object Rankings : RouteState
+    @kotlinx.serialization.Serializable data class RankingDetail(val rankingId: String = "") : RouteState
     @kotlinx.serialization.Serializable data class CollectionState(val id: String? = null, @kotlinx.serialization.SerialName("topicType") val type: String? = null, val key: String? = null) : RouteState
     @kotlinx.serialization.Serializable data object RegionAtlas : RouteState
     @kotlinx.serialization.Serializable data class RegionDetail(val region: String = "") : RouteState
@@ -129,6 +135,9 @@ internal fun DiscoveryRouteKey.toRouteState(): RouteState = when (this) {
     is DiscoveryRouteKey.LearningPathDetail -> RouteState.LearningPath(id)
     is DiscoveryRouteKey.LearningRoutesPage -> RouteState.LearningRoutes(seedType, seedId)
     is DiscoveryRouteKey.LearningRouteDetailPage -> RouteState.LearningRouteDetail(routeId)
+    is DiscoveryRouteKey.SpacetimePage -> RouteState.Spacetime
+    is DiscoveryRouteKey.RankingsPage -> RouteState.Rankings
+    is DiscoveryRouteKey.RankingDetailPage -> RouteState.RankingDetail(rankingId)
     is DiscoveryRouteKey.CollectionDetail -> RouteState.CollectionState(id, type, key)
     is DiscoveryRouteKey.RegionAtlasPage -> RouteState.RegionAtlas
     is DiscoveryRouteKey.RegionDetailPage -> RouteState.RegionDetail(region)
@@ -155,6 +164,9 @@ internal fun RouteState.toRouteKey(): DiscoveryRouteKey = when (this) {
     is RouteState.LearningPath -> DiscoveryRouteKey.LearningPathDetail(id)
     is RouteState.LearningRoutes -> DiscoveryRouteKey.LearningRoutesPage(seedType, seedId)
     is RouteState.LearningRouteDetail -> DiscoveryRouteKey.LearningRouteDetailPage(routeId)
+    is RouteState.Spacetime -> DiscoveryRouteKey.SpacetimePage
+    is RouteState.Rankings -> DiscoveryRouteKey.RankingsPage
+    is RouteState.RankingDetail -> DiscoveryRouteKey.RankingDetailPage(rankingId = rankingId)
     is RouteState.CollectionState -> DiscoveryRouteKey.CollectionDetail(id, type, key)
     is RouteState.RegionAtlas -> DiscoveryRouteKey.RegionAtlasPage
     is RouteState.RegionDetail -> DiscoveryRouteKey.RegionDetailPage(region)

@@ -497,4 +497,100 @@
     <string name="graph_ai_inferred_empty_message">You can still read the regular evidence.</string>
 
     <string name="action_close">Close</string>
+
+    <!-- Discovery entries -->
+    <string name="discovery_spacetime">Data Exploration</string>
+    <string name="discovery_spacetime_subtitle">Browse intangible heritage by region, category, and year</string>
+    <string name="discovery_rankings">Rankings</string>
+    <string name="discovery_rankings_subtitle">Multi-dimensional data rankings and hidden gems</string>
+
+    <!-- Content types -->
+    <string name="content_type_article">Article</string>
+    <string name="content_type_directory">Directory</string>
+    <string name="content_type_inheritor">Inheritor</string>
+
+    <!-- Dimensions -->
+    <string name="dimension_region">Region</string>
+    <string name="dimension_category">Category</string>
+    <string name="dimension_year">Year</string>
+    <string name="dimension_kind">Kind</string>
+    <string name="dimension_target_type">Content type</string>
+    <string name="dimension_unknown">Unknown</string>
+
+    <!-- Spacetime -->
+    <string name="spacetime_title">Spacetime</string>
+    <string name="spacetime_tab_overview">Overview</string>
+    <string name="spacetime_tab_analytics">Deeper Analytics</string>
+    <string name="spacetime_filter_title">Filters</string>
+    <string name="spacetime_filter_from_year">From year</string>
+    <string name="spacetime_filter_to_year">To year</string>
+    <string name="spacetime_filter_region">Region</string>
+    <string name="spacetime_filter_category">Category</string>
+    <string name="spacetime_filter_kind">Kind</string>
+    <string name="spacetime_filter_invalid_year_range">Start year cannot be later than end year</string>
+    <string name="spacetime_metrics_total">Total</string>
+    <string name="spacetime_top_regions_title">Top regions</string>
+    <string name="spacetime_top_categories_title">Top categories</string>
+    <string name="spacetime_year_timeline_title">Year timeline</string>
+    <string name="spacetime_region_timeline_title">%1$s timeline</string>
+    <string name="spacetime_year_map_title">Regional distribution in %1$d</string>
+    <string name="spacetime_heatmap_title">Distribution heatmap</string>
+    <string name="spacetime_heatmap_preset_region_category">Region × Category</string>
+    <string name="spacetime_heatmap_preset_region_year">Region × Year</string>
+    <string name="spacetime_heatmap_preset_category_year">Category × Year</string>
+    <string name="spacetime_heatmap_preset_kind_region">Kind × Region</string>
+    <string name="spacetime_heatmap_preset_kind_category">Kind × Category</string>
+    <string name="spacetime_heatmap_empty">No data for the current dimension combination</string>
+    <string name="spacetime_empty_list">No data</string>
+    <string name="spacetime_drilldown_empty">Select an item to view details</string>
+
+    <!-- Analytics -->
+    <string name="analytics_breakdown_title">Breakdown</string>
+    <string name="analytics_breakdown_empty">No data for the current dimension</string>
+    <string name="analytics_group_by_label">Group by</string>
+    <string name="analytics_compare_title">Compare</string>
+    <string name="analytics_compare_button">Compare selected</string>
+    <string name="analytics_compare_limit_hint">Select up to 10 items</string>
+    <string name="analytics_compare_winner">%1$s leads</string>
+    <string name="analytics_metric_label">Metric</string>
+    <string name="analytics_outliers_title">Notable outliers</string>
+    <string name="analytics_outliers_empty">No significant outliers for the current filters</string>
+    <string name="analytics_outlier_ratio">Value %1$.1f, average %2$.1f, %3$.1f× the average</string>
+    <string name="analytics_crosstab_title">Crosstab</string>
+    <string name="analytics_crosstab_button">View crosstab</string>
+    <string name="analytics_crosstab_x">X dimension</string>
+    <string name="analytics_crosstab_y">Y dimension</string>
+    <string name="analytics_crosstab_empty">No data for the current crosstab dimensions</string>
+
+    <!-- Ranking metrics -->
+    <string name="ranking_metric_total">Total</string>
+    <string name="ranking_metric_article_count">Articles</string>
+    <string name="ranking_metric_directory_count">Directory items</string>
+    <string name="ranking_metric_inheritor_count">Inheritors</string>
+    <string name="ranking_metric_connectivity">Connectivity</string>
+    <string name="ranking_metric_hidden_gem">Hidden gem</string>
+    <string name="ranking_metric_completeness">Completeness</string>
+    <string name="ranking_metric_image_richness">Image richness</string>
+    <string name="ranking_metric_ai_coverage">AI coverage</string>
+    <string name="ranking_metric_freshness">Freshness</string>
+    <string name="ranking_metric_unknown">Unknown</string>
+
+    <!-- Rankings -->
+    <string name="rankings_title">Rankings</string>
+    <string name="rankings_subtitle">Multi-dimensional rankings</string>
+    <string name="ranking_detail_title">Ranking detail</string>
+    <string name="ranking_not_found">This ranking no longer exists</string>
+    <string name="ranking_empty_title">This ranking is empty</string>
+    <string name="ranking_score_label">Score</string>
+    <string name="ranking_metrics_expand">View metrics</string>
+    <string name="ranking_metrics_collapse">Hide metrics</string>
+    <string name="ranking_top_1_content_description">First place</string>
+    <string name="ranking_top_2_content_description">Second place</string>
+    <string name="ranking_top_3_content_description">Third place</string>
+    <string name="ranking_filter_title">Ranking filters</string>
+    <string name="ranking_reasons_title">Why it ranks</string>
+    <string name="ranking_target_type_all">All</string>
+    <string name="ranking_target_type_article">Article</string>
+    <string name="ranking_target_type_directoryItem">Directory item</string>
+    <string name="ranking_target_type_inheritor">Inheritor</string>
 </resources>

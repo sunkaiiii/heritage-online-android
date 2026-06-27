@@ -121,6 +121,9 @@ class DiscoveryNavigationStateTest {
             ),
             DiscoveryRouteKey.LearningRoutesPage(seedType = "article", seedId = "a1"),
             DiscoveryRouteKey.LearningRouteDetailPage(routeId = "route-1"),
+            DiscoveryRouteKey.SpacetimePage,
+            DiscoveryRouteKey.RankingsPage,
+            DiscoveryRouteKey.RankingDetailPage(rankingId = "top-regions"),
             DiscoveryRouteKey.DiscoveryArticleDetail(
                 id = "a1",
                 sourceUrl = "https://test.test/page?id=1&name=浙江",

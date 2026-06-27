@@ -75,6 +75,8 @@ fun DiscoveryRoute(
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
     onLearningRoutesClick: () -> Unit,
+    onSpacetimeClick: () -> Unit,
+    onRankingsClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
     onTodayItemClick: (DiscoveryItemDto) -> Unit,
@@ -96,6 +98,8 @@ fun DiscoveryRoute(
         onTimelineClick = onTimelineClick,
         onKnowledgeGraphClick = onKnowledgeGraphClick,
         onLearningRoutesClick = onLearningRoutesClick,
+        onSpacetimeClick = onSpacetimeClick,
+        onRankingsClick = onRankingsClick,
         onSerendipityClick = viewModel::serendipity,
         onTrendingItemClick = onTrendingItemClick,
         onWeeklyItemClick = onWeeklyItemClick,
@@ -124,6 +128,8 @@ fun DiscoveryScreen(
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
     onLearningRoutesClick: () -> Unit,
+    onSpacetimeClick: () -> Unit,
+    onRankingsClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -162,6 +168,8 @@ fun DiscoveryScreen(
                     onTimelineClick = onTimelineClick,
                     onKnowledgeGraphClick = onKnowledgeGraphClick,
                     onLearningRoutesClick = onLearningRoutesClick,
+                    onSpacetimeClick = onSpacetimeClick,
+                    onRankingsClick = onRankingsClick,
                     onSerendipityClick = onSerendipityClick,
                     onTrendingItemClick = onTrendingItemClick,
                     onWeeklyItemClick = onWeeklyItemClick,
@@ -191,6 +199,8 @@ private fun DiscoveryContent(
     onTimelineClick: () -> Unit,
     onKnowledgeGraphClick: () -> Unit,
     onLearningRoutesClick: () -> Unit,
+    onSpacetimeClick: () -> Unit,
+    onRankingsClick: () -> Unit,
     onSerendipityClick: () -> Unit,
     onTrendingItemClick: (DiscoveryItemDto) -> Unit,
     onWeeklyItemClick: (DiscoveryItemDto) -> Unit,
@@ -329,6 +339,26 @@ private fun DiscoveryContent(
                 containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 icon = Icons.Outlined.School,
                 onClick = onLearningRoutesClick,
+            )
+        }
+
+        // 数据探索入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.discovery_spacetime),
+                subtitle = stringResource(R.string.discovery_spacetime_subtitle),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                onClick = onSpacetimeClick,
+            )
+        }
+
+        // 排行榜入口
+        item {
+            DiscoveryEntryCard(
+                title = stringResource(R.string.discovery_rankings),
+                subtitle = stringResource(R.string.discovery_rankings_subtitle),
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                onClick = onRankingsClick,
             )
         }
 

@@ -29,6 +29,9 @@ import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRo
 import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
 import com.duckylife.heritage.modern.feature.learningroutes.LearningRouteDetailRoute
 import com.duckylife.heritage.modern.feature.learningroutes.LearningRoutesRoute
+import com.duckylife.heritage.modern.feature.rankings.RankingDetailRoute
+import com.duckylife.heritage.modern.feature.rankings.RankingsRoute
+import com.duckylife.heritage.modern.feature.spacetime.SpacetimeRoute
 import com.duckylife.heritage.modern.feature.graph.hub.KnowledgeGraphHubRoute
 import com.duckylife.heritage.modern.feature.graph.topicmap.TopicGraphMapRoute
 import com.duckylife.heritage.modern.feature.graph.trail.GraphTrailRoute
@@ -203,6 +206,12 @@ fun DiscoveryNavHost(
                         },
                         onLearningRoutesClick = {
                             backStack.add(DiscoveryRouteKey.LearningRoutesPage())
+                        },
+                        onSpacetimeClick = {
+                            backStack.add(DiscoveryRouteKey.SpacetimePage)
+                        },
+                        onRankingsClick = {
+                            backStack.add(DiscoveryRouteKey.RankingsPage)
                         },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
@@ -772,6 +781,39 @@ fun DiscoveryNavHost(
                 }
 
                 // ---- Fallback ----
+                is DiscoveryRouteKey.SpacetimePage -> NavEntry(entryKey) {
+                    SpacetimeRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        modifier = modifier,
+                    )
+                }
+
+                is DiscoveryRouteKey.RankingsPage -> NavEntry(entryKey) {
+                    RankingsRoute(
+                        onBack = { backStack.removeLastOrNull() },
+                        onRankingClick = { rankingId ->
+                            if (rankingId.isNotBlank()) {
+                                backStack.add(DiscoveryRouteKey.RankingDetailPage(rankingId = rankingId))
+                            }
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                is DiscoveryRouteKey.RankingDetailPage -> NavEntry(entryKey) {
+                    RankingDetailRoute(
+                        rankingId = key.rankingId,
+                        onBack = { backStack.removeLastOrNull() },
+                        onContentClick = { type, id ->
+                            navigateToDiscoveryItem(
+                                DiscoveryItemDto(id = id, type = type),
+                                backStack,
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
                 else -> NavEntry(Unit) {
                     DiscoveryRoute(
                         onSearchSubmit = { query ->
@@ -803,6 +845,12 @@ fun DiscoveryNavHost(
                         },
                         onLearningRoutesClick = {
                             backStack.add(DiscoveryRouteKey.LearningRoutesPage())
+                        },
+                        onSpacetimeClick = {
+                            backStack.add(DiscoveryRouteKey.SpacetimePage)
+                        },
+                        onRankingsClick = {
+                            backStack.add(DiscoveryRouteKey.RankingsPage)
                         },
                         onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
