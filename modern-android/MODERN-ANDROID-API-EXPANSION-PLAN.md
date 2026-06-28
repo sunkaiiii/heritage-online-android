@@ -1005,6 +1005,8 @@ GET /api/learning-routes/{routeId}/next
 
 **验收**：步骤顺序来自后端 `order`，不是列表原始顺序；离线完成步骤后重启仍保留；后端 404 route 时显示“路线已不存在”。
 
+> **状态：已实现。** `LearningRouteDetailViewModel` 通过 `LocalUserSyncRepository.updateProgress` 以 600ms debounce 写入进度；`LearningRouteDetailScreen` 渲染头部进度、章节步骤、下一步卡片、完成态与重启确认；404 显示本地化“路线已不存在”。验证：单元测试覆盖加载、进度同步、debounce、完成提示、404 与刷新；`./gradlew :app:verifyLocal` 通过。
+
 ### 步骤 41：在详情页添加“从此开始学习”入口
 
 **入口逻辑**：
@@ -1014,6 +1016,8 @@ GET /api/learning-routes/{routeId}/next
 3. 用户点击该卡才调用 `/api/learning-routes/build?seedType=content&seedKey=article:{id}`；`seedKey` 中的 type 会被后端规范化为 `article`/`directoryItem`/`inheritor`。不能在打开详情时自动 build。
 4. build 成功后直接进入临时 `LearningRouteDetail`，同时允许它出现在“我的 -> 学习”进度列表；如果 build 只返回临时 routeId，仍以该 routeId 保存 progress。
 5. build 400/404 时回到路线列表，显示可理解提示，不显示后端 seed 格式。
+
+> **状态：已实现。** 内容详情“继续探索”摘要条已显示学习路线入口；点击进入 `LearningRoutesPage(seedType, seedId)` 并在顶部显示“为当前内容定制路线”卡；用户点击后才调用 `buildRoute`；成功导航到 `LearningRouteDetailPage`；400/404 通过 Snackbar 显示 `learning_routes_build_failed` 文案，不暴露 seed 格式。验证：`./gradlew :app:verifyLocal` 与 `:app:compileDebugAndroidTestKotlin` 通过。
 
 ### 步骤 42：接入时空探索（Spacetime）
 
@@ -1030,6 +1034,8 @@ GET /api/learning-routes/{routeId}/next
 5. 热力图使用可滚动的表格 grid；每格有文本 count 和强度背景，色阶同时通过数值/无障碍描述传达，不仅依赖颜色。点击格子更新筛选并返回 overview，不必做复杂地图组件。
 6. 单地区/单类别时间线用纵向 bucket 列表或小柱状图；年份 map 用地区排行列表表示，不要求真实地理地图数据。
 
+**状态：已实现。** 新增 `DataExploreRepository` 与 `SpacetimeViewModel/Screen`；发现页“数据探索” entry card 进入 `SpacetimePage`；overview tab 展示指标、热门地区/类别、年份时间轴与热力图；点击地区/类别/年份通过 bottom sheet 展示对应 timeline/map；筛选 sheet 校验年份范围与合法维度组合。
+
 **验收**：不合法维度组合不发请求；大数据集 grid 不嵌套无边界滚动；深色模式下色阶仍可区分。
 
 ### 步骤 43：接入 Analytics，作为时空页的“进一步分析”tab
@@ -1043,6 +1049,8 @@ GET /api/learning-routes/{routeId}/next
 3. 第二段“比较”：用户从当前 facet 中多选最多 10 项，底部按钮“比较所选项”；调用 compare 后显示横向数值条和 winner 文案。达到 10 个时禁用其余 chip 并说明上限。
 4. 第三段“值得留意”：调用 outliers，显示 label、相对平均的描述和 reason；空结果正常显示“当前筛选下没有明显异常分布”。
 5. crosstab 不在首屏自动调用；用户点击“查看交叉分布”才进入 full-screen 二维表，维度选择使用同一组受限选项。
+
+**状态：已实现。** `SpacetimePage` 第二 tab“进一步分析”接入 breakdown、compare、outliers 与 crosstab；维度与指标使用受限选项；compare 最多选 10 项；filter 变更后各段统一使用同一 filter snapshot，旧响应不会覆盖新筛选结果。
 
 **验收**：filter 改变后 facets/breakdown/outliers 使用同一个 filter snapshot；旧响应不可覆盖新筛选结果。
 
@@ -1065,17 +1073,23 @@ GET /api/learning-routes/{routeId}/next
 3. metrics 默认折叠到“查看指标”行，展开后展示最多 4 个关键 metric，不显示权重算法原始公式。
 4. 点击 item 打开对应内容详情；未知/缺失 target 不渲染为可点击项。
 
+**状态：已实现。** 新增 `RankingsViewModel/Screen` 与 `RankingDetailViewModel/Screen`；发现页“排行榜” entry card 进入 `RankingsPage`；definition 卡展示标题/描述/refresh hint；详情页显示排名项、前三徽章、可展开 metrics、上榜理由与内容跳转；筛选按钮支持内容类型、地区、类别、年份。
+
 **验收**：rankingId 404 显示“该榜单已不存在”；排行榜为空是正常空态；点击内容跳转后返回仍保持榜单过滤条件。
 
 ### 步骤 45：发现与学习阶段测试
 
-**必须新增测试**：
+**状态：已实现。**
 
-1. Learning route DTO、next step、progress body、content seed build 的 client/repository tests。
-2. Learning route ViewModel：checkbox debounce、route 404、next step 定位、离线 progress。
-3. Spacetime/Analytics query tests：年份范围、合法维度组合、limit clamp、filter snapshot。
-4. Rankings DTO、未知排名 404、前 3 项布局的 Compose semantic test。
-5. `DiscoveryRouteSerializerTest`：所有新增 route 能恢复，未知 enum 安全回退。
+1. Learning route DTO、next step、progress body、content seed build 的 client/repository tests（已随步骤 38–41 完成）。
+2. Learning route ViewModel：checkbox debounce、route 404、next step 定位、离线 progress（已随步骤 38–41 完成）。
+3. Spacetime/Analytics：
+   - 新增 `AdvancedQueriesTest` 覆盖 Spacetime/Analytics/Rankings query 参数校验（年份范围、维度冲突、空值、limit 范围、keys 数量等）。
+   - 扩展 `AdvancedApiClientTest` 覆盖 Spacetime overview/heatmap/region timeline/category timeline、Analytics facets/breakdown/crosstab/compare/outliers、Rankings list/detail/content 的 path 与 query 编码，以及 ranking detail 404 异常。
+   - `DataExploreRepositoryTest` 覆盖 overview/heatmap/timeline/map/category timeline/facets/breakdown/crosstab/compare/outliers 映射与 query 参数。
+   - `SpacetimeViewModelTest` 覆盖 tab 切换、filter 变更、breakdown/compare/crosstab/drilldown、错误映射与 SavedStateHandle 恢复。
+4. Rankings：`RankingsViewModelTest` 覆盖列表加载、重试、详情加载、filter 变更、SavedStateHandle 恢复与 404 错误映射。
+5. Discovery：`DiscoveryNavigationStateTest` 已扩展 SpacetimePage/RankingsPage/RankingDetailPage 的序列化 round-trip；`DiscoveryScreenSpacetimeEntryTest`（androidTest）验证发现页两个入口的显示与点击。
 
 **阶段验收命令**：
 

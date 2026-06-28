@@ -2,6 +2,12 @@ package com.duckylife.heritage.modern.feature.rankings
 
 import androidx.lifecycle.SavedStateHandle
 import com.duckylife.heritage.modern.core.data.DataExploreRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
 import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
@@ -121,6 +127,34 @@ class RankingsViewModelTest {
 
         assertEquals("top-regions", viewModel.uiState.value.rankingId)
         assertEquals("top-regions", viewModel.uiState.value.detail.data?.rankingId)
+    }
+
+    @Test
+    fun `ranking detail 404 maps to NotFound error`() = runTest {
+        fakeRepository.rankingDetailFailure = notFoundException()
+
+        val viewModel = RankingDetailViewModel(
+            repository = fakeRepository,
+            savedStateHandle = SavedStateHandle(),
+        )
+        viewModel.setRankingId("missing")
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.NotFound, viewModel.uiState.value.detail.errorKind)
+    }
+
+    private suspend fun notFoundException(): ResponseException {
+        val client = HttpClient(MockEngine { respond("", status = HttpStatusCode.NotFound) }) {
+            expectSuccess = true
+        }
+        return try {
+            client.get("/")
+            error("expected exception")
+        } catch (e: ResponseException) {
+            e
+        } finally {
+            client.close()
+        }
     }
 
     private class FakeDataExploreRepository : DataExploreRepository {

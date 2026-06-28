@@ -13,6 +13,9 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressU
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
+import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
 import io.ktor.client.plugins.api.createClientPlugin
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 
@@ -32,6 +35,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonPrimitive
+import io.ktor.client.plugins.ResponseException
+import io.ktor.http.HttpStatusCode
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -524,6 +529,7 @@ class AdvancedApiClientTest {
 
     private fun createClient(engine: MockEngine): HttpClient =
         HttpClient(engine) {
+            expectSuccess = true
             install(ContentNegotiation) {
                 json(HeritageJson)
             }
@@ -533,5 +539,326 @@ class AdvancedApiClientTest {
     private fun HttpRequestData.bodyText(): String = when (val body = body) {
         is OutgoingContent.ByteArrayContent -> body.bytes().decodeToString()
         else -> error("Unsupported body type: $body")
+    }
+
+    // ── DataExplore API ──
+
+    @Test
+    fun `getSpacetimeOverview encodes filters and limit`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"metrics":{"total":5},"topRegions":[],"topCategories":[],"yearTimeline":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeOverview(
+            SpacetimeOverviewQuery(fromYear = 2000, toYear = 2024, region = "浙江", limit = 50),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/overview", request.url.encodedPath)
+        assertEquals("2000", request.url.parameters["fromYear"])
+        assertEquals("2024", request.url.parameters["toYear"])
+        assertEquals("浙江", request.url.parameters["region"])
+        assertEquals("50", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getSpacetimeHeatmap encodes dimensions and targetType`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"x":"region","y":"category","cells":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeHeatmap(
+            SpacetimeHeatmapQuery(
+                x = SpacetimeDimension.Region,
+                y = SpacetimeDimension.Category,
+                targetType = "article",
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/heatmap", request.url.encodedPath)
+        assertEquals("region", request.url.parameters["x"])
+        assertEquals("category", request.url.parameters["y"])
+        assertEquals("article", request.url.parameters["targetType"])
+    }
+
+    @Test
+    fun `getSpacetimeRegionTimeline encodes Chinese region`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"key":"浙江","buckets":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeRegionTimeline(SpacetimeRegionTimelineQuery(region = "浙江"))
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/regions/%E6%B5%99%E6%B1%9F/timeline", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getSpacetimeCategoryTimeline encodes Chinese category`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"key":"传统技艺","buckets":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeCategoryTimeline(SpacetimeCategoryTimelineQuery(category = "传统技艺"))
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/categories/%E4%BC%A0%E7%BB%9F%E6%8A%80%E8%89%BA/timeline", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getAnalyticsFacets applies filter parameters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"regions":[{"key":"浙江","count":3}],"categories":[],"years":[],"kinds":[],"targetTypes":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getAnalyticsFacets(
+            AnalyticsFacetsQuery(filters = AnalyticsFilters(region = "浙江", category = "传统技艺", year = 2024)),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/analytics/facets", request.url.encodedPath)
+        assertEquals("浙江", request.url.parameters["region"])
+        assertEquals("传统技艺", request.url.parameters["category"])
+        assertEquals("2024", request.url.parameters["year"])
+    }
+
+    @Test
+    fun `getAnalyticsBreakdown encodes groupBy and limit`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"groupBy":"region","buckets":[],"total":0}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getAnalyticsBreakdown(
+            AnalyticsBreakdownQuery(groupBy = AnalyticsDimension.Region, limit = 25),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/analytics/breakdown", request.url.encodedPath)
+        assertEquals("region", request.url.parameters["groupBy"])
+        assertEquals("25", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getAnalyticsCrosstab encodes x y dimensions`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"x":"region","y":"year","cells":[],"xBuckets":[],"yBuckets":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getAnalyticsCrosstab(
+            AnalyticsCrosstabQuery(
+                x = AnalyticsDimension.Region,
+                y = AnalyticsDimension.Year,
+                filters = AnalyticsFilters(targetType = "all"),
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/analytics/crosstab", request.url.encodedPath)
+        assertEquals("region", request.url.parameters["x"])
+        assertEquals("year", request.url.parameters["y"])
+    }
+
+    @Test
+    fun `getAnalyticsCompare encodes keys as comma separated`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"dimension":"region","metric":"total","items":[],"winnerKey":"浙江"}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getAnalyticsCompare(
+            AnalyticsCompareQuery(
+                dimension = AnalyticsDimension.Region,
+                keys = listOf("浙江", "江苏"),
+                metric = RankingMetric.Total,
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/analytics/compare", request.url.encodedPath)
+        assertEquals("浙江,江苏", request.url.parameters["keys"])
+        assertEquals("region", request.url.parameters["dimension"])
+        assertEquals("total", request.url.parameters["metric"])
+    }
+
+    @Test
+    fun `getAnalyticsOutliers encodes dimension and metric`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = "[]",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getAnalyticsOutliers(
+            AnalyticsOutliersQuery(
+                dimension = AnalyticsDimension.Region,
+                metric = RankingMetric.HiddenGem,
+                limit = 10,
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/analytics/outliers", request.url.encodedPath)
+        assertEquals("region", request.url.parameters["dimension"])
+        assertEquals("hiddenGem", request.url.parameters["metric"])
+        assertEquals("10", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getRankings hits correct path`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """[{"rankingId":"top-regions","title":"热门地区"}]""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val result = api.getRankings()
+
+        assertEquals(1, result.size)
+        val request = requireNotNull(captured)
+        assertEquals("/api/rankings", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getRankingDetail encodes rankingId and filters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"rankingId":"top-regions","items":[{"rank":1,"title":"浙江"}]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getRankingDetail(
+            RankingDetailQuery(
+                rankingId = "top-regions",
+                targetType = "article",
+                region = "浙江",
+                limit = 50,
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/rankings/top-regions", request.url.encodedPath)
+        assertEquals("article", request.url.parameters["targetType"])
+        assertEquals("浙江", request.url.parameters["region"])
+        assertEquals("50", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getRankingContent encodes metric and targetType`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"rankingId":"","items":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getRankingContent(
+            RankingContentQuery(
+                metric = RankingMetric.Connectivity,
+                targetType = "all",
+                limit = 30,
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/rankings/content", request.url.encodedPath)
+        assertEquals("connectivity", request.url.parameters["metric"])
+        assertEquals("all", request.url.parameters["targetType"])
+        assertEquals("30", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun `getRankingDetail throws ResponseException on 404`() = runTest {
+        val engine = MockEngine { _ ->
+            respond(
+                content = "{}",
+                status = HttpStatusCode.NotFound,
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val exception = try {
+            api.getRankingDetail(RankingDetailQuery(rankingId = "missing"))
+            null
+        } catch (e: Throwable) {
+            e
+        }
+        assertTrue(exception is ResponseException)
     }
 }
