@@ -286,6 +286,34 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `LearningRouteDetailDto decodes content ref target aliases`() {
+        val json = """
+            {
+                "routeId": "starter-global",
+                "title": "Starter",
+                "steps": [
+                    {
+                        "stepId": "step1",
+                        "order": 1,
+                        "title": "Read",
+                        "content": {
+                            "targetType": "article",
+                            "targetId": "article-1",
+                            "title": "Article",
+                            "category": "specialtopic"
+                        }
+                    }
+                ]
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(LearningRouteDetailDto.serializer(), json)
+        val content = dto.steps.first().content
+        assertEquals(GraphNodeType.Article, content?.type)
+        assertEquals("article-1", content?.id)
+        assertEquals("specialtopic", content?.category)
+    }
+
+    @Test
     fun `LearningRouteSummaryDto decodes defaults and tags`() {
         val json = """
             {
@@ -343,6 +371,36 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `SpacetimeOverviewDto decodes backend metrics array and region aliases`() {
+        val json = """
+            {
+                "filters": {"targetType": "all"},
+                "metrics": [
+                    {"key": "article", "articleCount": 10, "directoryItemCount": 0, "inheritorCount": 0, "total": 10},
+                    {"key": "directoryItem", "articleCount": 0, "directoryItemCount": 20, "inheritorCount": 0, "total": 20},
+                    {"key": "inheritor", "articleCount": 0, "directoryItemCount": 0, "inheritorCount": 30, "total": 30},
+                    {"key": "total", "articleCount": 10, "directoryItemCount": 20, "inheritorCount": 30, "total": 60}
+                ],
+                "topRegions": [
+                    {"regionKey": "浙江", "regionLabel": "浙江", "directoryItemCount": 2, "inheritorCount": 3, "total": 5}
+                ],
+                "topCategories": [
+                    {"key": "specialtopic", "label": "specialtopic", "articleCount": 4, "total": 4}
+                ],
+                "yearTimeline": [
+                    {"year": 2006, "articleCount": 1, "directoryItemCount": 2, "inheritorCount": 3, "total": 6}
+                ]
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(SpacetimeOverviewDto.serializer(), json)
+        assertEquals(60, dto.metrics?.total)
+        assertEquals(10, dto.metrics?.articleCount)
+        assertEquals("浙江", dto.topRegions.first().regionKey)
+        assertEquals(5, dto.topRegions.first().total)
+        assertEquals(6, dto.yearTimeline.first().total)
+    }
+
+    @Test
     fun `AnalyticsBreakdownDto decodes buckets`() {
         val json = """
             {
@@ -382,6 +440,32 @@ class AdvancedDtoSerializationTest {
         val dto = HeritageJson.decodeFromString(RankingDetailDto.serializer(), json)
         assertEquals(1, dto.items.size)
         assertEquals(1, dto.items.first().metrics.size)
+    }
+
+    @Test
+    fun `RankingDetailDto decodes content ref target aliases`() {
+        val json = """
+            {
+                "rankingId": "top-regions",
+                "title": "热门地区",
+                "items": [
+                    {
+                        "rank": 1,
+                        "targetType": "article",
+                        "targetId": "a1",
+                        "title": "A",
+                        "content": {
+                            "targetType": "article",
+                            "targetId": "a1",
+                            "title": "A"
+                        }
+                    }
+                ]
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(RankingDetailDto.serializer(), json)
+        assertEquals(GraphNodeType.Article, dto.items.first().content?.type)
+        assertEquals("a1", dto.items.first().content?.id)
     }
 
     @Test

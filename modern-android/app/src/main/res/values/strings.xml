@@ -448,7 +448,7 @@
     <string name="intelligence_not_available">此内容暂未生成智能解读</string>
     <string name="intelligence_unavailable">智能解读加载失败，请稍后重试</string>
     <string name="intelligence_retry">重试</string>
-    <string name="explore_actions_title">继续探索</string>
+    <string name="explore_actions_title">探索入口</string>
     <string name="explore_action_graph">关系图谱</string>
     <string name="explore_action_graph_subtitle">%1$d 个关联</string>
     <string name="explore_action_similar">相似内容</string>

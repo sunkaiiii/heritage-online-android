@@ -50,6 +50,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -224,6 +225,7 @@ private fun CommunityCard(
     modifier: Modifier = Modifier,
 ) {
     val enabled = !community.primaryTopicKey.isNullOrBlank() && community.topicType.isNotBlank()
+    val displayTitle = localizedHeritageFacetLabel(community.title) ?: community.title
     HeritageContentCard(
         onClick = onClick.takeIf { enabled },
         modifier = modifier,
@@ -233,7 +235,7 @@ private fun CommunityCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = community.title,
+                text = displayTitle,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
                 maxLines = 2,
@@ -244,9 +246,10 @@ private fun CommunityCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 community.topicChips.forEach { chip ->
+                    val label = localizedHeritageFacetLabel(chip) ?: chip
                     androidx.compose.material3.SuggestionChip(
                         onClick = {},
-                        label = { Text(chip) },
+                        label = { Text(label) },
                         enabled = false,
                         colors = SuggestionChipDefaults.suggestionChipColors(
                             disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,

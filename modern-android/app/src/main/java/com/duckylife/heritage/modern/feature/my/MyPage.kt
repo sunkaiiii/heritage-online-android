@@ -264,6 +264,7 @@ fun MyPage(
                             selectedResearchReportId = reportId
                         },
                         modifier = Modifier.fillMaxSize(),
+                        showTopBar = false,
                     )
                 }
             }

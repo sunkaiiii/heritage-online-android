@@ -59,6 +59,7 @@ fun ResearchLibraryRoute(
     onPackageClick: (String) -> Unit,
     onReportClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    showTopBar: Boolean = true,
     viewModel: ResearchLibraryViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -70,6 +71,7 @@ fun ResearchLibraryRoute(
         onPackageClick = onPackageClick,
         onReportClick = onReportClick,
         modifier = modifier,
+        showTopBar = showTopBar,
     )
 }
 
@@ -82,31 +84,34 @@ internal fun ResearchLibraryScreen(
     onPackageClick: (String) -> Unit,
     onReportClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    showTopBar: Boolean = true,
 ) {
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(stringResource(R.string.research_header_title))
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onRefresh) {
-                        Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.action_refresh),
-                        )
-                    }
-                },
-            )
+            if (showTopBar) {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(R.string.research_header_title))
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                                contentDescription = stringResource(R.string.action_back),
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onRefresh) {
+                            Icon(
+                                imageVector = Icons.Outlined.Refresh,
+                                contentDescription = stringResource(R.string.action_refresh),
+                            )
+                        }
+                    },
+                )
+            }
         },
     ) { paddingValues ->
         HeritagePageBackground(
@@ -175,7 +180,9 @@ private fun PackagesList(
             icon = Icons.Outlined.Folder,
             title = stringResource(R.string.research_empty_title),
             message = stringResource(R.string.research_empty_message),
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(20.dp),
         )
 
         else -> {

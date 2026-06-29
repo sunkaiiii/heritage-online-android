@@ -30,10 +30,10 @@ fun localizedContentType(type: String?): String =
  */
 @Composable
 fun localizedArticleCategory(category: String?): String? =
-    when (category) {
+    when (category.normalizedWireName()) {
         "news" -> stringResource(R.string.category_news)
         "forum" -> stringResource(R.string.category_forum)
-        "specialTopic" -> stringResource(R.string.category_special_topic)
+        "specialtopic" -> stringResource(R.string.category_special_topic)
         else -> category?.takeIf { it.isNotBlank() }
     }
 
@@ -45,15 +45,50 @@ fun localizedArticleCategory(category: String?): String? =
  */
 @Composable
 fun localizedDirectoryKind(kind: String?): String? =
-    when (kind) {
-        "nationalProject" -> stringResource(R.string.directory_kind_national_project)
-        "culturalEcoZone" -> stringResource(R.string.directory_kind_cultural_eco_zone)
-        "productiveProtectionBase" -> stringResource(R.string.directory_kind_productive_protection_base)
-        "unescoEntry" -> stringResource(R.string.directory_kind_unesco_entry)
-        "chinaUnescoEntry" -> stringResource(R.string.directory_kind_china_unesco_entry)
-        "contractingState" -> stringResource(R.string.directory_kind_contracting_state)
+    when (kind.normalizedWireName()) {
+        "nationalproject" -> stringResource(R.string.directory_kind_national_project)
+        "culturalecozone" -> stringResource(R.string.directory_kind_cultural_eco_zone)
+        "productiveprotectionbase" -> stringResource(R.string.directory_kind_productive_protection_base)
+        "unescoentry" -> stringResource(R.string.directory_kind_unesco_entry)
+        "chinaunescoentry" -> stringResource(R.string.directory_kind_china_unesco_entry)
+        "contractingstate" -> stringResource(R.string.directory_kind_contracting_state)
         else -> kind?.takeIf { it.isNotBlank() }
     }
+
+/**
+ * 将图谱主题类型 wire value 映射为本地化显示文案。
+ */
+@Composable
+fun localizedTopicType(type: String?): String =
+    when (type.normalizedWireName()) {
+        "category" -> stringResource(R.string.dimension_category)
+        "region" -> stringResource(R.string.dimension_region)
+        "year" -> stringResource(R.string.dimension_year)
+        "kind" -> stringResource(R.string.dimension_kind)
+        "projectcode" -> stringResource(R.string.directory_field_project_code)
+        else -> localizedContentType(type).ifBlank { type.orEmpty() }
+    }
+
+/**
+ * 统一处理高级接口中常见的分类/kind/topic 裸 wire value，避免英文界面出现
+ * `specialTopic`、`nationalProject` 这类内部字段名。
+ */
+@Composable
+fun localizedHeritageFacetLabel(value: String?): String? {
+    if (value.isNullOrBlank()) return null
+    return when (value.normalizedWireName()) {
+        "news", "forum", "specialtopic" -> localizedArticleCategory(value)
+        "nationalproject",
+        "culturalecozone",
+        "productiveprotectionbase",
+        "unescoentry",
+        "chinaunescoentry",
+        "contractingstate",
+        -> localizedDirectoryKind(value)
+        "category", "region", "year", "kind", "projectcode" -> localizedTopicType(value)
+        else -> value
+    }
+}
 
 /**
  * 将阅读路径来源 wire value 映射为本地化显示文案。
@@ -118,3 +153,10 @@ fun localizedLearningRouteDifficulty(difficulty: LearningRouteDifficulty): Strin
         LearningRouteDifficulty.Deep -> stringResource(R.string.learning_route_difficulty_deep)
         LearningRouteDifficulty.Unknown -> stringResource(R.string.learning_route_difficulty_unknown)
     }
+
+private fun String?.normalizedWireName(): String? =
+    this
+        ?.takeIf { it.isNotBlank() }
+        ?.replace("_", "")
+        ?.replace("-", "")
+        ?.lowercase()

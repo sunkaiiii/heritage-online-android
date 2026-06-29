@@ -93,6 +93,7 @@ import com.duckylife.heritage.modern.feature.spacetime.model.YearCountUiModel
 import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 import com.duckylife.heritage.modern.ui.state.AsyncState
 
 private const val MAX_TIMELINE_ROWS = 20
@@ -421,6 +422,7 @@ private fun NamedCountBar(
     modifier: Modifier = Modifier,
 ) {
     val fraction = if (maxCount > 0) item.count.toFloat() / maxCount.toFloat() else 0f
+    val label = localizedHeritageFacetLabel(item.label ?: item.key) ?: item.key
     Column(
         modifier = modifier.then(
             if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
@@ -431,7 +433,7 @@ private fun NamedCountBar(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = item.label ?: item.key,
+                text = label,
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

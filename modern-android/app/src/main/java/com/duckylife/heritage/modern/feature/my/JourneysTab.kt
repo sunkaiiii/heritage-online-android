@@ -165,10 +165,9 @@ private fun JourneyHeader(
         JourneyStrategy.entries.filter { it != JourneyStrategy.Unknown }
     }
 
-    Row(
+    Column(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = stringResource(R.string.journeys_section_header),
@@ -181,7 +180,9 @@ private fun JourneyHeader(
             onExpandedChange = { expanded = it },
         ) {
             TextField(
-                modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
                 readOnly = true,
                 value = localizedJourneyStrategy(selectedStrategy),
                 onValueChange = {},

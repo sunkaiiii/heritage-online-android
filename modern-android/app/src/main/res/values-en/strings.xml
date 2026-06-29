@@ -730,7 +730,7 @@
     <string name="graph_explore_coming_soon">Graph exploration coming soon</string>
     <string name="intelligence_unavailable">Intelligence unavailable, please retry later</string>
     <string name="intelligence_retry">Retry</string>
-    <string name="explore_actions_title">Keep exploring</string>
+    <string name="explore_actions_title">Explore actions</string>
     <string name="explore_action_graph">Relation graph</string>
     <string name="explore_action_graph_subtitle">%1$d connections</string>
     <string name="explore_action_similar">Similar content</string>

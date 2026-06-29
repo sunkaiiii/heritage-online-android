@@ -57,7 +57,8 @@ import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
 import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
-import com.duckylife.heritage.modern.ui.text.localizedContentType
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
+import com.duckylife.heritage.modern.ui.text.localizedTopicType
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlin.math.PI
 import kotlin.math.cos
@@ -156,6 +157,9 @@ private fun TopicGraphMapContent(
     modifier: Modifier = Modifier,
 ) {
     val topicNode = result.topicNode
+    val topicTitle = localizedHeritageFacetLabel(topicNode?.displayTitle ?: result.topicKey)
+        ?: topicNode?.displayTitle
+        ?: result.topicKey
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
@@ -164,7 +168,7 @@ private fun TopicGraphMapContent(
         item {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = topicNode?.displayTitle ?: result.topicKey,
+                    text = topicTitle,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
@@ -172,7 +176,7 @@ private fun TopicGraphMapContent(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     HeritageMetaChip(
-                        text = localizedContentType(result.topicType)
+                        text = localizedTopicType(result.topicType)
                             .ifBlank { stringResource(R.string.graph_node_type_topic) },
                     )
                     HeritageMetaChip(
@@ -318,7 +322,7 @@ private fun TopicNodeRow(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     HeritageMetaChip(
-                        text = localizedContentType(node.type.wireName)
+                        text = localizedTopicType(node.type.wireName)
                             .ifBlank { stringResource(node.type.fallbackLabelResId()) },
                     )
                 }
@@ -338,7 +342,7 @@ private fun TopicNodeRow(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    node.category?.takeIf { it.isNotBlank() }?.let { HeritageMetaChip(text = it) }
+                    localizedHeritageFacetLabel(node.category)?.let { HeritageMetaChip(text = it) }
                     node.region?.takeIf { it.isNotBlank() }?.let { HeritageMetaChip(text = it) }
                 }
             }

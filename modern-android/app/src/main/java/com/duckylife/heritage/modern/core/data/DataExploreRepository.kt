@@ -255,9 +255,9 @@ internal fun SpacetimeRegionMapDto.toUiModel(): SpacetimeRegionMapUiModel =
 
 internal fun NamedCountDto.toUiModel(): NamedCountUiModel =
     NamedCountUiModel(
-        key = key.orEmpty(),
-        label = label,
-        count = count,
+        key = displayKey,
+        label = displayLabel,
+        count = displayCount,
         articleCount = articleCount,
         directoryItemCount = directoryItemCount,
         inheritorCount = inheritorCount,
@@ -266,11 +266,32 @@ internal fun NamedCountDto.toUiModel(): NamedCountUiModel =
 internal fun YearCountDto.toUiModel(): YearCountUiModel =
     YearCountUiModel(
         year = year,
-        count = count,
+        count = count.takeIf { it != 0 } ?: total,
         articleCount = articleCount,
         directoryItemCount = directoryItemCount,
         inheritorCount = inheritorCount,
     )
+
+private val NamedCountDto.displayKey: String
+    get() = key
+        ?.takeIf { it.isNotBlank() }
+        ?: regionKey?.takeIf { it.isNotBlank() }
+        ?: categoryKey?.takeIf { it.isNotBlank() }
+        ?: kindKey?.takeIf { it.isNotBlank() }
+        ?: targetType?.takeIf { it.isNotBlank() }
+        ?: ""
+
+private val NamedCountDto.displayLabel: String?
+    get() = label
+        ?.takeIf { it.isNotBlank() }
+        ?: regionLabel?.takeIf { it.isNotBlank() }
+        ?: categoryLabel?.takeIf { it.isNotBlank() }
+        ?: kindLabel?.takeIf { it.isNotBlank() }
+        ?: targetTypeLabel?.takeIf { it.isNotBlank() }
+        ?: displayKey.takeIf { it.isNotBlank() }
+
+private val NamedCountDto.displayCount: Int
+    get() = count.takeIf { it != 0 } ?: total
 
 internal fun SpacetimeHeatmapCellDto.toUiModel(): SpacetimeHeatmapCellUiModel =
     SpacetimeHeatmapCellUiModel(

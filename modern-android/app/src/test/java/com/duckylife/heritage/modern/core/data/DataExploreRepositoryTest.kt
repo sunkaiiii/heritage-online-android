@@ -72,6 +72,33 @@ class DataExploreRepositoryTest {
     }
 
     @Test
+    fun `getSpacetimeOverview maps backend aliases for regions and totals`() = runTest {
+        fakeApi.overviewResult = SpacetimeOverviewDto(
+            metrics = SpacetimeMetricsDto(total = 60, articleCount = 10, directoryItemCount = 20, inheritorCount = 30),
+            topRegions = listOf(
+                NamedCountDto(
+                    regionKey = "浙江",
+                    regionLabel = "浙江",
+                    total = 5,
+                    directoryItemCount = 2,
+                    inheritorCount = 3,
+                ),
+            ),
+            topCategories = listOf(NamedCountDto(key = "specialtopic", label = "specialtopic", total = 4)),
+            yearTimeline = listOf(YearCountDto(year = 2006, total = 6)),
+        )
+
+        val result = repository.getSpacetimeOverview(SpacetimeFilters())
+
+        assertEquals(60, result.total)
+        assertEquals("浙江", result.topRegions.first().key)
+        assertEquals("浙江", result.topRegions.first().label)
+        assertEquals(5, result.topRegions.first().count)
+        assertEquals(4, result.topCategories.first().count)
+        assertEquals(6, result.yearTimeline.first().count)
+    }
+
+    @Test
     fun `getSpacetimeHeatmap passes dimensions and filters`() = runTest {
         fakeApi.heatmapResult = SpacetimeHeatmapDto(
             x = SpacetimeDimension.Region,

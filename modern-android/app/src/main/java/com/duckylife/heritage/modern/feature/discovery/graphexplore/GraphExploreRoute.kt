@@ -43,8 +43,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SheetState
@@ -104,7 +104,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
-import com.duckylife.heritage.modern.ui.text.localizedContentType
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
+import com.duckylife.heritage.modern.ui.text.localizedTopicType
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlin.math.PI
 import kotlin.math.cos
@@ -308,7 +309,10 @@ private fun GraphExploreBody(
             )
         }
 
-        PrimaryTabRow(selectedTabIndex = tabs.indexOf(uiState.selectedTab)) {
+        SecondaryScrollableTabRow(
+            selectedTabIndex = tabs.indexOf(uiState.selectedTab),
+            edgePadding = 16.dp,
+        ) {
             tabs.forEach { tab ->
                 val label = stringResource(tab.labelResId())
                 Tab(
@@ -366,7 +370,7 @@ private fun CenterNodeCard(
 ) {
     val title = node.displayTitle
     val subtitle = node.subtitle
-    val typeLabel = localizedContentType(node.type.wireName)
+    val typeLabel = localizedTopicType(node.type.wireName)
     val enabled = node.isContentNode
     val cardClick: (() -> Unit)? = if (enabled) {
         { onClick(node) }
@@ -414,7 +418,7 @@ private fun CenterNodeCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                node.category?.takeIf { it.isNotBlank() }?.let {
+                localizedHeritageFacetLabel(node.category)?.let {
                     HeritageMetaChip(text = it)
                 }
                 node.region?.takeIf { it.isNotBlank() }?.let {
@@ -916,7 +920,7 @@ private fun RelationNodeRow(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     HeritageMetaChip(
-                        text = localizedContentType(node.type.wireName)
+                        text = localizedTopicType(node.type.wireName)
                             .ifBlank { stringResource(node.type.fallbackLabelResId()) },
                     )
                     if (isAiInferred) {
@@ -999,7 +1003,7 @@ private fun SimilarResultCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 HeritageMetaChip(
-                    text = localizedContentType(item.node.type.wireName)
+                    text = localizedTopicType(item.node.type.wireName)
                         .ifBlank { stringResource(item.node.type.fallbackLabelResId()) },
                 )
                 HeritageMetaChip(text = stringResource(GraphRelationFormatter.associationLevelLabelResId(item.associationLevel)))
@@ -1008,7 +1012,7 @@ private fun SimilarResultCard(
             if (item.sharedTopics.isNotEmpty()) {
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     item.sharedTopics.take(2).forEach { topic ->
-                        HeritageMetaChip(text = topic)
+                        HeritageMetaChip(text = localizedHeritageFacetLabel(topic) ?: topic)
                     }
                 }
             }

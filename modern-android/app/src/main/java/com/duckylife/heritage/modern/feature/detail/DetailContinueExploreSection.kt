@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.automirrored.outlined.CompareArrows
@@ -58,7 +60,9 @@ fun DetailContinueExploreSection(
         HeritageSectionHeader(title = stringResource(R.string.explore_actions_title))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             if (graphCount != null) {
@@ -67,7 +71,7 @@ fun DetailContinueExploreSection(
                     label = stringResource(R.string.explore_action_graph),
                     subtitle = stringResource(R.string.explore_action_graph_subtitle, graphCount),
                     onClick = onGraphClick,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.width(184.dp),
                 )
             }
             if (recommendationCount != null) {
@@ -79,7 +83,7 @@ fun DetailContinueExploreSection(
                         recommendationCount,
                     ),
                     onClick = onSimilarClick,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.width(184.dp),
                 )
             }
             if (learningRoutesAvailable) {
@@ -88,7 +92,7 @@ fun DetailContinueExploreSection(
                     label = stringResource(R.string.explore_action_learning_routes),
                     subtitle = stringResource(R.string.explore_action_learning_routes_subtitle),
                     onClick = onLearningRoutesClick,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.width(184.dp),
                 )
             }
         }

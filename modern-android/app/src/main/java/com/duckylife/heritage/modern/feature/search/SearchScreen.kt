@@ -72,6 +72,7 @@ import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.ui.text.localizedArticleCategory
 import com.duckylife.heritage.modern.ui.text.localizedContentType
 import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 // ---------------------------------------------------------------------------
@@ -730,7 +731,7 @@ private fun IntelligentSearchResultCard(
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 SearchTypeBadge(text = localizedContentType(item.type.wireName))
-                item.category?.takeIf { it.isNotBlank() }?.let { SearchTypeBadge(text = it) }
+                localizedHeritageFacetLabel(item.category)?.let { SearchTypeBadge(text = it) }
             }
             Text(
                 text = item.title.orEmpty().ifBlank { stringResource(R.string.unnamed_article) },
@@ -808,12 +809,8 @@ private fun SearchResultRow(
                     else -> item.type.orEmpty()
                 }
                 SearchTypeBadge(text = typeLabel)
-                if (!item.category.isNullOrBlank()) {
-                    SearchTypeBadge(text = item.category)
-                }
-                if (!item.kind.isNullOrBlank()) {
-                    SearchTypeBadge(text = item.kind)
-                }
+                localizedHeritageFacetLabel(item.category)?.let { SearchTypeBadge(text = it) }
+                localizedHeritageFacetLabel(item.kind)?.let { SearchTypeBadge(text = it) }
             }
             Text(
                 text = item.title.orEmpty().ifBlank { stringResource(R.string.unnamed_article) },
