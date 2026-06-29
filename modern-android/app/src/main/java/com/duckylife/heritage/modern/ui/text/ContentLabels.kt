@@ -70,6 +70,17 @@ fun localizedTopicType(type: String?): String =
     }
 
 /**
+ * 将合集类型 wire value 映射为本地化显示文案。
+ */
+@Composable
+fun localizedCollectionType(type: String?): String? =
+    when (type.normalizedWireName()) {
+        "static" -> stringResource(R.string.collection_type_static)
+        "specialtopic" -> stringResource(R.string.collection_type_special_topic)
+        else -> type?.takeIf { it.isNotBlank() }
+    }
+
+/**
  * 统一处理高级接口中常见的分类/kind/topic 裸 wire value，避免英文界面出现
  * `specialTopic`、`nationalProject` 这类内部字段名。
  */

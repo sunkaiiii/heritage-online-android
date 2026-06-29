@@ -3,6 +3,8 @@ package com.duckylife.heritage.modern.feature.inheritors
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -80,6 +84,7 @@ import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRo
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
+import com.duckylife.heritage.modern.ui.component.mainTabContentPadding
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
@@ -415,7 +420,7 @@ fun InheritorsScreen(
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 18.dp),
+            contentPadding = mainTabContentPadding(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {
@@ -780,8 +785,11 @@ private fun InheritorFilterSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
+                .imePadding()
                 .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp),
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(

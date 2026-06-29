@@ -46,7 +46,9 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedArticleCategory
 import com.duckylife.heritage.modern.ui.text.localizedContentType
+import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
 
 @Composable
 fun TimelineRoute(
@@ -322,8 +324,8 @@ private fun TimelineItemRow(
                         else -> item.type.orEmpty()
                     }
                     HeritageMetaChip(text = typeLabel)
-                    if (!item.category.isNullOrBlank()) {
-                        HeritageMetaChip(text = item.category)
+                    localizedArticleCategory(item.category)?.let { categoryLabel ->
+                        HeritageMetaChip(text = categoryLabel)
                     }
                 }
                 Text(
@@ -350,9 +352,9 @@ private fun TimelineItemRow(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    if (!item.kind.isNullOrBlank()) {
+                    localizedDirectoryKind(item.kind)?.let { kindLabel ->
                         Text(
-                            text = item.kind,
+                            text = kindLabel,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

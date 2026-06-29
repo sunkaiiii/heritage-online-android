@@ -81,6 +81,7 @@ import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRo
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
+import com.duckylife.heritage.modern.ui.component.mainTabContentPadding
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
@@ -421,7 +422,7 @@ fun DirectoryScreen(
     HeritagePageBackground(modifier = modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 18.dp),
+            contentPadding = mainTabContentPadding(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             item {

@@ -52,6 +52,8 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 
 @Composable
 fun RegionDetailRoute(
@@ -185,7 +187,7 @@ private fun RegionDetailContent(
         }
 
         // Category breakdown
-        if (detail.categoryBreakdown.isNotEmpty()) {
+        if (detail.categoryBreakdown.isNotEmpty() && detail.categoryBreakdown.any { it.count > 0 }) {
             item {
                 HeritageSectionHeader(
                     title = stringResource(R.string.statistics_category_title),
@@ -201,7 +203,7 @@ private fun RegionDetailContent(
         }
 
         // Kind breakdown
-        if (detail.kindBreakdown.isNotEmpty()) {
+        if (detail.kindBreakdown.isNotEmpty() && detail.kindBreakdown.any { it.count > 0 }) {
             item {
                 HeritageSectionHeader(
                     title = stringResource(R.string.region_kind_breakdown),
@@ -358,7 +360,7 @@ private fun BreakdownRow(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = bucket.key.orEmpty(),
+                        text = localizedHeritageFacetLabel(bucket.key) ?: bucket.key.orEmpty(),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -400,8 +402,8 @@ private fun DirectoryItemRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (!item.kind.wireName.isNullOrBlank()) {
-                    HeritageMetaChip(text = item.kind.wireName)
+                localizedDirectoryKind(item.kind.wireName)?.let { kindLabel ->
+                    HeritageMetaChip(text = kindLabel)
                 }
                 if (!item.region.isNullOrBlank()) {
                     HeritageMetaChip(text = item.region)

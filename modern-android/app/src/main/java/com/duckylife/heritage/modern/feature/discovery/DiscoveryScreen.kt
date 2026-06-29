@@ -58,6 +58,7 @@ import com.duckylife.heritage.modern.ui.component.DiscoveryItemCard
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
+import com.duckylife.heritage.modern.ui.component.mainTabContentPadding
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
@@ -216,7 +217,7 @@ private fun DiscoveryContent(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 18.dp),
+        contentPadding = mainTabContentPadding(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         item {

@@ -450,7 +450,11 @@ private fun DirectoryDetailContent(
             DirectoryFacts(item)
         }
 
-        if (!item.summary.isNullOrBlank()) {
+        val firstContentText = item.contentBlocks
+            .firstOrNull { it.type == ArticleContentBlockType.Text && !it.text.isNullOrBlank() }
+            ?.text
+        val summaryDuplicate = item.summary.isDuplicateOf(firstContentText)
+        if (!item.summary.isNullOrBlank() && !summaryDuplicate) {
             item {
                 Text(
                     text = item.summary,
@@ -827,6 +831,14 @@ private val DirectoryItemKind.labelRes: Int
         DirectoryItemKind.ChinaUnescoEntry -> R.string.directory_kind_china_unesco_entry
         DirectoryItemKind.ContractingState -> R.string.directory_kind_contracting_state
     }
+
+private fun String?.isDuplicateOf(other: String?): Boolean {
+    if (this.isNullOrBlank() || other.isNullOrBlank()) return false
+    return this.normalizedContentText() == other.normalizedContentText()
+}
+
+private fun String.normalizedContentText(): String =
+    trim().replace(Regex("\\s+"), " ")
 
 @Preview(showBackground = true)
 @Composable

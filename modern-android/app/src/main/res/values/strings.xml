@@ -63,6 +63,9 @@
     <string name="category_news">新闻</string>
     <string name="category_forum">论坛</string>
     <string name="category_special_topic">专题</string>
+
+    <string name="collection_type_static">静态</string>
+    <string name="collection_type_special_topic">专题</string>
     <string name="article_load_failed">文章加载失败</string>
     <string name="article_append_failed">加载更多失败</string>
     <string name="banner_load_failed">Banner 加载失败</string>

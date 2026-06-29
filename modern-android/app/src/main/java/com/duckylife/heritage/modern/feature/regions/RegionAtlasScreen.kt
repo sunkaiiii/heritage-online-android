@@ -42,6 +42,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 
 @Composable
 fun RegionAtlasRoute(
@@ -221,7 +222,7 @@ private fun RegionCard(
             if (region.topCategories.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
-                    text = region.topCategories.take(2).mapNotNull { it.key }.joinToString("、"),
+                    text = region.topCategories.take(2).mapNotNull { localizedHeritageFacetLabel(it.key) }.joinToString("、"),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
@@ -231,7 +232,7 @@ private fun RegionCard(
             if (region.topKinds.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = region.topKinds.take(2).mapNotNull { it.key }.joinToString("、"),
+                    text = region.topKinds.take(2).mapNotNull { localizedHeritageFacetLabel(it.key) }.joinToString("、"),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,

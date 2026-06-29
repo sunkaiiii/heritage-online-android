@@ -52,6 +52,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedArticleCategory
 
 @Composable
 fun ExploreTopicRoute(
@@ -307,8 +308,8 @@ private fun TopicItemCard(
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (!item.category.isNullOrBlank()) {
-                    HeritageMetaChip(text = item.category)
+                localizedArticleCategory(item.category)?.let { categoryLabel ->
+                    HeritageMetaChip(text = categoryLabel)
                 }
                 if (!item.region.isNullOrBlank()) {
                     HeritageMetaChip(text = item.region)

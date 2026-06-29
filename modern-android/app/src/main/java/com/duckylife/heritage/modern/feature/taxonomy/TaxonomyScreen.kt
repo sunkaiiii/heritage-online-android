@@ -44,6 +44,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.MetricPill
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
 
 @Composable
 fun TaxonomyRoute(
@@ -224,7 +225,7 @@ private fun KindList(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = kind.title,
+                        text = localizedDirectoryKind(kind.title) ?: kind.title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )

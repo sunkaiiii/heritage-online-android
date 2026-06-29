@@ -45,6 +45,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.text.formatIsoDate
+import com.duckylife.heritage.modern.ui.text.localizedArticleCategory
+import com.duckylife.heritage.modern.ui.text.localizedCollectionType
 
 @Composable
 fun CollectionRoute(
@@ -151,8 +153,8 @@ private fun CollectionContent(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                if (!collection.type.isNullOrBlank()) {
-                    HeritageMetaChip(text = collection.type)
+                localizedCollectionType(collection.type)?.let { typeLabel ->
+                    HeritageMetaChip(text = typeLabel)
                 }
                 collection.tags.forEach { tag ->
                     HeritageMetaChip(text = tag)
@@ -212,8 +214,8 @@ private fun CollectionItemRow(
                     else -> item.type.orEmpty()
                 }
                 HeritageMetaChip(text = typeLabel)
-                if (!item.category.isNullOrBlank()) {
-                    HeritageMetaChip(text = item.category)
+                localizedArticleCategory(item.category)?.let { categoryLabel ->
+                    HeritageMetaChip(text = categoryLabel)
                 }
             }
             Text(

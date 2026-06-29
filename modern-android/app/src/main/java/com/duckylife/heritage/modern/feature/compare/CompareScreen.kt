@@ -58,6 +58,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.component.MetricPillRow
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 
 @Composable
 fun CompareRoute(
@@ -496,7 +497,7 @@ private fun CompareSideCard(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = side.title.ifBlank { side.key },
+                text = localizedHeritageFacetLabel(side.title.ifBlank { side.key }) ?: side.title.ifBlank { side.key },
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )
@@ -530,25 +531,25 @@ private fun CompareWinnerSummary(
         )
         summary.winnerByTotal?.let {
             Text(
-                text = "${stringResource(R.string.compare_metric_total)}: $it",
+                text = "${stringResource(R.string.compare_metric_total)}: ${localizedHeritageFacetLabel(it) ?: it}",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
         summary.winnerByDirectoryItems?.let {
             Text(
-                text = "${stringResource(R.string.compare_metric_directory_items)}: $it",
+                text = "${stringResource(R.string.compare_metric_directory_items)}: ${localizedHeritageFacetLabel(it) ?: it}",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
         summary.winnerByInheritors?.let {
             Text(
-                text = "${stringResource(R.string.compare_metric_inheritors)}: $it",
+                text = "${stringResource(R.string.compare_metric_inheritors)}: ${localizedHeritageFacetLabel(it) ?: it}",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
         summary.winnerByArticles?.let {
             Text(
-                text = "${stringResource(R.string.compare_metric_articles)}: $it",
+                text = "${stringResource(R.string.compare_metric_articles)}: ${localizedHeritageFacetLabel(it) ?: it}",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -580,7 +581,7 @@ private fun CompareChipSection(
                 FilterChip(
                     selected = false,
                     onClick = {},
-                    label = { Text(label) },
+                    label = { Text(localizedHeritageFacetLabel(label) ?: label) },
                 )
             }
         }

@@ -7,6 +7,7 @@ import android.os.LocaleList
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
@@ -15,7 +16,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -159,8 +160,12 @@ class AppSmokeTest {
 
         clickContentDescription(R.string.action_back)
 
+        // 返回文章列表后，确保主列表滚回顶部，再点击 header 中的设置入口
+        composeRule.onNode(
+            hasScrollAction() and hasAnyDescendant(hasText(string(R.string.articles_latest_title))),
+            useUnmergedTree = true,
+        ).performScrollToIndex(0)
         composeRule.onNodeWithContentDescription(string(R.string.nav_settings))
-            .performScrollTo()
             .performClick()
 
         composeRule.onNodeWithText(string(R.string.settings_title))
@@ -339,11 +344,11 @@ class AppSmokeTest {
     }
 
     private fun scrollToAndClick(text: String) {
+        waitUntilTextExists(text)
         composeRule.onNode(
-            hasScrollAction(),
+            hasScrollAction() and hasAnyDescendant(hasText(text)),
             useUnmergedTree = true,
         ).performScrollToNode(hasText(text))
-        waitUntilTextExists(text)
         composeRule.onAllNodesWithText(text).onFirst().performClick()
     }
 
