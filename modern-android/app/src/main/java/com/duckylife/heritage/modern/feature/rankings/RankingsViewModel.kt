@@ -8,7 +8,7 @@ import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDefinitionUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingFilters
-import com.duckylife.heritage.modern.feature.spacetime.AsyncState
+import com.duckylife.heritage.modern.ui.state.AsyncState
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

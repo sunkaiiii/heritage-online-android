@@ -385,25 +385,53 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
-    fun `ResearchPackageDetailDto decodes artifacts and status`() {
+    fun `ResearchPackageDto decodes artifacts and status`() {
         val json = """
             {
                 "packageId": "p1",
-                "title": "包",
                 "status": "succeeded",
-                "nodeCount": 10,
-                "edgeCount": 20,
-                "sourceCount": 5,
-                "evidenceCount": 8,
+                "graphRagPackId": "pack-1",
+                "request": {
+                    "graphRagPackId": "pack-1",
+                    "includeContent": true,
+                    "includeEvidence": true,
+                    "maxItems": 50
+                },
                 "artifacts": [
-                    {"name": "manifest", "format": "json", "size": 1024}
-                ]
+                    {"name": "manifest.json", "artifactType": "manifest", "mimeType": "application/json", "sizeBytes": 1024, "sha256": "abc"}
+                ],
+                "createdAt": "2026-06-26T08:00:00Z"
             }
         """.trimIndent()
-        val dto = HeritageJson.decodeFromString(ResearchPackageDetailDto.serializer(), json)
+        val dto = HeritageJson.decodeFromString(ResearchPackageDto.serializer(), json)
         assertEquals(ResearchTaskStatus.Succeeded, dto.status)
         assertEquals(1, dto.artifacts.size)
-        assertEquals(1024L, dto.artifacts.first().size)
+        assertEquals(1024L, dto.artifacts.first().sizeBytes)
+        assertEquals("pack-1", dto.request?.graphRagPackId)
+    }
+
+    @Test
+    fun `ResearchReportDto decodes findings and status`() {
+        val json = """
+            {
+                "reportId": "r1",
+                "packageId": "p1",
+                "status": "succeeded",
+                "title": "报告",
+                "executiveSummary": "摘要",
+                "findings": [
+                    {"findingId": "f1", "claim": "发现一", "evidenceIds": ["e1"], "confidence": 0.95}
+                ],
+                "limitations": ["样本有限"],
+                "warnings": [],
+                "createdAt": "2026-06-26T08:00:00Z"
+            }
+        """.trimIndent()
+        val dto = HeritageJson.decodeFromString(ResearchReportDto.serializer(), json)
+        assertEquals(ResearchTaskStatus.Succeeded, dto.status)
+        assertEquals("摘要", dto.executiveSummary)
+        assertEquals(1, dto.findings.size)
+        assertEquals(0.95, dto.findings.first().confidence, 0.001)
     }
 
     @Test

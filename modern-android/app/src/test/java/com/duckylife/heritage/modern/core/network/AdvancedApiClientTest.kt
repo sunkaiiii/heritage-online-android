@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.core.network
 
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportFormat
+import com.duckylife.heritage.modern.core.network.dto.advanced.ExportContentResultDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.FavoriteCreateRequestDto
@@ -34,6 +35,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import io.ktor.client.plugins.ResponseException
 import io.ktor.http.HttpStatusCode
@@ -469,12 +471,12 @@ class AdvancedApiClientTest {
     }
 
     @Test
-    fun `getResearchPackages hits correct path`() = runTest {
+    fun `getResearchPackages decodes list wrapper`() = runTest {
         var captured: HttpRequestData? = null
         val engine = MockEngine { request ->
             captured = request
             respond(
-                content = """[{"packageId":"pkg-1","title":"Package"}]""",
+                content = """{"packages":[{"packageId":"pkg-1","status":"succeeded"}],"totalCount":1}""",
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
             )
         }
@@ -483,7 +485,8 @@ class AdvancedApiClientTest {
 
         val result = api.getResearchPackages()
 
-        assertEquals(1, result.size)
+        assertEquals(1, result.packages.size)
+        assertEquals(1, result.totalCount)
         val request = requireNotNull(captured)
         assertEquals("/api/research-packages", request.url.encodedPath)
     }
@@ -525,6 +528,65 @@ class AdvancedApiClientTest {
         assertEquals("csv", json["format"]?.jsonPrimitive?.content)
         assertEquals("陶瓷", json["query"]?.jsonPrimitive?.content)
         assertEquals(10, json["limit"]?.jsonPrimitive?.int)
+    }
+
+    @Test
+    fun `exportContent serializes ids request and returns content`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "format": "markdown",
+                        "itemCount": 1,
+                        "content": "# Title"
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val request = ExportRequestDto(
+            scopeType = ExportScopeType.Ids,
+            format = ExportFormat.Markdown,
+            ids = listOf("article-1"),
+            targetType = "article",
+        )
+        val result = api.exportContent(request)
+
+        assertEquals("# Title", result.content)
+        assertEquals(1, result.itemCount)
+        assertEquals(ExportFormat.Markdown, result.format)
+
+        val raw = requireNotNull(captured).bodyText()
+        val json = HeritageJson.decodeFromString<JsonObject>(raw)
+        assertEquals("ids", json["scopeType"]?.jsonPrimitive?.content)
+        assertEquals("article", json["targetType"]?.jsonPrimitive?.content)
+        assertEquals("article-1", json["ids"]?.jsonArray?.firstOrNull()?.jsonPrimitive?.content)
+    }
+
+    @Test(expected = ResponseException::class)
+    fun `exportContent throws ResponseException on 413`() = runTest {
+        val engine = MockEngine { _ ->
+            respond(
+                content = "",
+                status = HttpStatusCode.PayloadTooLarge,
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.exportContent(
+            ExportRequestDto(
+                scopeType = ExportScopeType.Ids,
+                format = ExportFormat.Json,
+                ids = listOf("article-1"),
+            ),
+        )
     }
 
     private fun createClient(engine: MockEngine): HttpClient =

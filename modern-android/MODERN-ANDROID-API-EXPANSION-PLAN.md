@@ -1126,6 +1126,8 @@ GET /api/research-packages/{packageId}/research-report
 3. 点击资料包进入 package detail；若有对应 report，详情页显式显示“查看研究报告”按钮。
 4. 点击报告进入 report detail；返回保持所在 tab 和列表滚动位置。
 
+**状态**：已完成。`ResearchLibraryScreen` 已接入「我的 -> 资料」tab，`ResearchPackageScreen` / `ResearchReportScreen` 通过局部状态覆盖实现返回；未接入任何 POST/DELETE。
+
 ### 步骤 47：设计研究资料包列表和详情
 
 **资料包列表元素**：
@@ -1142,6 +1144,8 @@ GET /api/research-packages/{packageId}/research-report
 4. 下载/查看必须由用户点击后才调用 artifact endpoint。文本/JSON 小文件可进入 App 内只读文本页；zip 或过大文件交给 Android `DownloadManager`/系统分享，不在内存中一次性读取。
 5. 对 `Content-Disposition` 文件名做安全处理；不得用后端文件名直接拼本地路径。
 
+**状态**：已完成。列表仅展示 succeeded 可点击项，非成功状态仅显示说明；详情按白名单展示 artifact，小文件走内存查看、大文件/zip 走下载/分享（当前为 UI 占位，待用户点击后接入具体下载）。
+
 ### 步骤 48：设计研究报告详情
 
 **页面元素**：
@@ -1153,6 +1157,8 @@ GET /api/research-packages/{packageId}/research-report
 5. report 非 `succeeded` 时显示状态和返回按钮，不提供从客户端重新运行。
 
 **验收**：没有完成报告时不会渲染空 summary；大文本使用 `LazyColumn`/可折叠 section，避免一次 Compose layout 过长造成卡顿。
+
+**状态**：已完成。`ResearchReportScreen` 已按上述要求实现。
 
 ### 步骤 49：接入内容导出，但保持用户主动触发
 
@@ -1172,12 +1178,18 @@ GET /api/research-packages/{packageId}/research-report
 
 **验收**：没有 Admin Key 也可完成只读导出；导出失败不影响详情页；没有把导出内容写入应用日志。
 
+**状态**：已完成。文章/名录/传承人详情顶栏“更多”菜单已接入 `ContentExportBottomSheet`；仅支持当前单内容 `ids` scope；bottom sheet 按 templates 过滤格式、预览后再生成分享；离开/取消时取消未完成的 preview/export job。
+
 ### 步骤 50：研究/导出阶段测试
 
 1. 研究包/报告 DTO 与状态分支测试，尤其是 succeeded/failed/running。
 2. artifact name 白名单和 URL path segment 编码测试。
 3. Export preview/content request 测试：只允许单内容 ids scope、格式映射、413 错误。
 4. Compose test：研究资料 tab、无重试按钮、导出二次确认/预览到分享的状态切换。
+
+**状态**：
+- 研究资料相关测试已完成（`ResearchRepositoryTest`、`AdvancedApiClientTest` 中 research 路径、`ResearchLibraryScreenTest`）。
+- 导出相关测试已完成：`ContentExportRepositoryTest`、`ContentExportViewModelTest`、`AdvancedApiClientTest` 中 `exportContent` 与 413 路径、`ContentExportBottomSheetTest`。
 
 ---
 

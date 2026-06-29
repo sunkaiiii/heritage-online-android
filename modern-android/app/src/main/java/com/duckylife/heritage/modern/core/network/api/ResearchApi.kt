@@ -4,24 +4,24 @@ import com.duckylife.heritage.modern.core.network.ResearchArtifactQuery
 import com.duckylife.heritage.modern.core.network.ResearchPackageDetailQuery
 import com.duckylife.heritage.modern.core.network.ResearchReportByPackageQuery
 import com.duckylife.heritage.modern.core.network.ResearchReportDetailQuery
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDetailDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageSummaryDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDetailDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageListResultDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportListResultDto
 
 /**
  * 已生成研究资料包与研究报告只读端点契约。
  */
 interface ResearchApi {
-    suspend fun getResearchPackages(): List<ResearchPackageSummaryDto>
+    suspend fun getResearchPackages(): ResearchPackageListResultDto
 
-    suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery): ResearchPackageDetailDto
+    suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery): ResearchPackageDto
 
     suspend fun getResearchArtifact(query: ResearchArtifactQuery): String
 
-    suspend fun getResearchReports(): List<ResearchReportSummaryDto>
+    suspend fun getResearchReports(): ResearchReportListResultDto
 
-    suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDetailDto
+    suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDto
 
-    suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery): ResearchReportDetailDto
+    suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery): ResearchReportDto
 }

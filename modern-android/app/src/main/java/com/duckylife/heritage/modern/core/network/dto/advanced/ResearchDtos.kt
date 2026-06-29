@@ -2,72 +2,109 @@ package com.duckylife.heritage.modern.core.network.dto.advanced
 
 import kotlinx.serialization.Serializable
 
+/**
+ * 研究资料包列表响应。
+ */
 @Serializable
-data class ResearchPackageSummaryDto(
-    val packageId: String,
-    val title: String? = null,
-    val querySummary: String? = null,
-    val createdAt: String? = null,
-    val status: ResearchTaskStatus = ResearchTaskStatus.Unknown,
-    val contentCount: Int = 0,
-    val hasEvidence: Boolean = false,
-    val hasAiResults: Boolean = false,
+data class ResearchPackageListResultDto(
+    val packages: List<ResearchPackageDto> = emptyList(),
+    val totalCount: Int = 0,
 )
 
+/**
+ * 研究资料包详情 DTO，与后端 `ResearchPackageDto` 对齐。
+ */
 @Serializable
-data class ResearchPackageDetailDto(
+data class ResearchPackageDto(
     val packageId: String,
-    val title: String? = null,
-    val querySummary: String? = null,
-    val source: String? = null,
-    val dataScope: String? = null,
-    val createdAt: String? = null,
     val status: ResearchTaskStatus = ResearchTaskStatus.Unknown,
-    val nodeCount: Int = 0,
-    val edgeCount: Int = 0,
-    val sourceCount: Int = 0,
-    val evidenceCount: Int = 0,
-    val artifacts: List<ResearchArtifactDto> = emptyList(),
-    val reportId: String? = null,
+    val request: ResearchPackageCreateRequestDto? = null,
+    val graphRagPackId: String = "",
+    val graphRagPackHash: String = "",
+    val snapshotId: String? = null,
+    val manifestHash: String = "",
+    val artifacts: List<ResearchPackageArtifactDto> = emptyList(),
     val warnings: List<String> = emptyList(),
+    val errorCode: String? = null,
+    val createdAt: String? = null,
+    val startedAt: String? = null,
+    val completedAt: String? = null,
+    val updatedAt: String? = null,
 )
 
+/**
+ * 研究资料包创建请求（只读展示，App 不发起创建）。
+ */
 @Serializable
-data class ResearchArtifactDto(
+data class ResearchPackageCreateRequestDto(
+    val graphRagPackId: String = "",
+    val snapshotId: String? = null,
+    val formats: List<String> = emptyList(),
+    val includeContent: Boolean = true,
+    val includeEvidence: Boolean = true,
+    val includeAiResults: Boolean = false,
+    val includeAiInferred: Boolean = false,
+    val maxItems: Int = 100,
+)
+
+/**
+ * 资料包 artifact 元数据。
+ */
+@Serializable
+data class ResearchPackageArtifactDto(
     val name: String,
-    val fileName: String? = null,
-    val format: String? = null,
-    val size: Long? = null,
+    val artifactType: String = "",
+    val mimeType: String = "",
+    val sizeBytes: Long = 0,
+    val sha256: String = "",
 )
 
+/**
+ * 研究报告列表响应。
+ */
 @Serializable
-data class ResearchReportSummaryDto(
-    val reportId: String,
-    val packageId: String? = null,
-    val title: String? = null,
-    val status: ResearchTaskStatus = ResearchTaskStatus.Unknown,
-    val createdAt: String? = null,
-    val modelName: String? = null,
+data class ResearchReportListResultDto(
+    val reports: List<ResearchReportDto> = emptyList(),
+    val totalCount: Int = 0,
 )
 
+/**
+ * 研究报告详情 DTO，与后端 `ResearchReportDto` 对齐。
+ */
 @Serializable
-data class ResearchReportDetailDto(
+data class ResearchReportDto(
     val reportId: String,
-    val packageId: String? = null,
-    val title: String? = null,
+    val packageId: String = "",
+    val packageManifestHash: String = "",
+    val aiResultId: String? = null,
+    val jobId: String? = null,
     val status: ResearchTaskStatus = ResearchTaskStatus.Unknown,
-    val createdAt: String? = null,
-    val executiveSummary: String? = null,
-    val findings: List<ResearchFindingDto> = emptyList(),
-    val sourceCount: Int = 0,
+    val modelProvider: String = "",
+    val modelName: String = "",
+    val modelVersion: String = "",
+    val promptVersion: String = "",
+    val sourceHash: String = "",
+    val resultHash: String = "",
+    val title: String = "",
+    val executiveSummary: String = "",
+    val findings: List<ResearchReportFindingDto> = emptyList(),
+    val followUpQuestions: List<String> = emptyList(),
+    val limitations: List<String> = emptyList(),
     val warnings: List<String> = emptyList(),
+    val errorCode: String? = null,
+    val createdAt: String? = null,
+    val generatedAt: String? = null,
+    val updatedAt: String? = null,
 )
 
+/**
+ * 研究发现。
+ */
 @Serializable
-data class ResearchFindingDto(
-    val number: Int = 0,
-    val title: String? = null,
-    val body: String? = null,
+data class ResearchReportFindingDto(
+    val findingId: String = "",
+    val claim: String = "",
     val evidenceIds: List<String> = emptyList(),
-    val evidenceReferences: List<ContentRefDto> = emptyList(),
+    val confidence: Double = 0.0,
+    val limitations: List<String> = emptyList(),
 )

@@ -82,10 +82,10 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeHeatmapD
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeOverviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeRegionMapDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeTimelineDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDetailDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageSummaryDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDetailDto
-import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageListResultDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportListResultDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportContentResultDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
@@ -948,10 +948,10 @@ class KtorHeritageApiClient(
 
     // ── Research API ──
 
-    override suspend fun getResearchPackages(): List<ResearchPackageSummaryDto> =
+    override suspend fun getResearchPackages(): ResearchPackageListResultDto =
         httpClient.get(endpoint("api/research-packages")).body()
 
-    override suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery): ResearchPackageDetailDto =
+    override suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery): ResearchPackageDto =
         httpClient.get(endpoint("api/research-packages/${pathSegment(query.packageId)}")).body()
 
     override suspend fun getResearchArtifact(query: ResearchArtifactQuery): String =
@@ -959,13 +959,13 @@ class KtorHeritageApiClient(
             endpoint("api/research-packages/${pathSegment(query.packageId)}/artifacts/${pathSegment(query.artifactName)}")
         ).bodyAsText()
 
-    override suspend fun getResearchReports(): List<ResearchReportSummaryDto> =
+    override suspend fun getResearchReports(): ResearchReportListResultDto =
         httpClient.get(endpoint("api/research-reports")).body()
 
-    override suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDetailDto =
+    override suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDto =
         httpClient.get(endpoint("api/research-reports/${pathSegment(query.reportId)}")).body()
 
-    override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery): ResearchReportDetailDto =
+    override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery): ResearchReportDto =
         httpClient.get(endpoint("api/research-packages/${pathSegment(query.packageId)}/research-report")).body()
 
     // ── ContentExport API ──

@@ -30,7 +30,6 @@ import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.School
@@ -78,6 +77,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.feature.research.ResearchLibraryRoute
+import com.duckylife.heritage.modern.feature.research.ResearchPackageRoute
+import com.duckylife.heritage.modern.feature.research.ResearchReportRoute
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
@@ -153,6 +155,8 @@ fun MyPage(
     val journeys by viewModel.journeys.collectAsStateWithLifecycle()
     val selectedStrategy by viewModel.selectedStrategy.collectAsStateWithLifecycle()
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
+    var selectedResearchPackageId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedResearchReportId by rememberSaveable { mutableStateOf<String?>(null) }
     var showClearHistoryDialog by remember { mutableStateOf(false) }
     var showClearReadingPathDialog by remember { mutableStateOf(false) }
     var showSyncSheet by remember { mutableStateOf(false) }
@@ -243,8 +247,45 @@ fun MyPage(
                         modifier = Modifier.fillMaxSize(),
                     )
 
-                    MyPageTab.Research -> ResearchTab(
-                        onBrowseContent = onNavigateToDiscovery,
+                    MyPageTab.Research -> ResearchLibraryRoute(
+                        onBack = onBack,
+                        onPackageClick = { packageId ->
+                            selectedResearchReportId = null
+                            selectedResearchPackageId = packageId
+                        },
+                        onReportClick = { reportId ->
+                            selectedResearchPackageId = null
+                            selectedResearchReportId = reportId
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
+
+            selectedResearchPackageId?.let { packageId ->
+                ResearchPackageRoute(
+                    packageId = packageId,
+                    onBack = {
+                        selectedResearchPackageId = null
+                        selectedResearchReportId = null
+                    },
+                    onViewReport = { reportId ->
+                        selectedResearchPackageId = null
+                        selectedResearchReportId = reportId
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+
+            if (selectedResearchPackageId == null) {
+                selectedResearchReportId?.let { reportId ->
+                    ResearchReportRoute(
+                        reportId = reportId,
+                        onBack = {
+                            selectedResearchPackageId = null
+                            selectedResearchReportId = null
+                        },
+                        modifier = Modifier.fillMaxSize(),
                     )
                 }
             }
@@ -889,27 +930,6 @@ private fun LearningProgressRow(
     }
 }
 
-
-@Composable
-private fun ResearchTab(
-    onBrowseContent: () -> Unit,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter,
-    ) {
-        EmptyState(
-            icon = Icons.Outlined.Folder,
-            title = stringResource(R.string.research_empty_title),
-            message = stringResource(R.string.research_empty_message),
-            action = {
-                TextButton(onClick = onBrowseContent) {
-                    Text(stringResource(R.string.action_go_discover))
-                }
-            },
-        )
-    }
-}
 
 @Composable
 private fun SectionHeader(

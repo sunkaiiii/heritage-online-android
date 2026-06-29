@@ -132,12 +132,12 @@ object ApiEndpointCatalog {
      *
      * | 方法 | 路径 | 主要 DTO | UI 入口 |
      * |---|---|---|---|
-     * | GET | `/api/research-packages` | [ResearchPackageSummary][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageSummaryDto] | 我的 -> 资料 -> 资料包 |
-     * | GET | `/api/research-packages/{packageId}` | [ResearchPackageDetail][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDetailDto] | 资料包详情 |
+     * | GET | `/api/research-packages` | [ResearchPackageListResult][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageListResultDto] | 我的 -> 资料 -> 资料包 |
+     * | GET | `/api/research-packages/{packageId}` | [ResearchPackage][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDto] | 资料包详情 |
      * | GET | `/api/research-packages/{packageId}/artifacts/{artifactName}` | ByteArray / 文本 | 资料包 artifact 查看/分享 |
-     * | GET | `/api/research-reports` | [ResearchReportSummary][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportSummaryDto] | 我的 -> 资料 -> 研究报告 |
-     * | GET | `/api/research-reports/{reportId}` | [ResearchReportDetail][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDetailDto] | 研究报告详情 |
-     * | GET | `/api/research-packages/{packageId}/research-report` | [ResearchReportDetail][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDetailDto] | 资料包详情“查看报告” |
+     * | GET | `/api/research-reports` | [ResearchReportListResult][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportListResultDto] | 我的 -> 资料 -> 研究报告 |
+     * | GET | `/api/research-reports/{reportId}` | [ResearchReport][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto] | 研究报告详情 |
+     * | GET | `/api/research-packages/{packageId}/research-report` | [ResearchReport][com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto] | 资料包详情“查看报告” |
      */
     object Research
 

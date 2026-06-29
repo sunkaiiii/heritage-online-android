@@ -19,8 +19,8 @@ import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeHeatmapUiM
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeOverviewUiModel
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeRegionMapUiModel
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeTimelineUiModel
-import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.toUiError
+import com.duckylife.heritage.modern.ui.state.AsyncState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,21 +40,6 @@ private const val KEY_COMPARE_KEYS = "spacetime_compare_keys"
 private const val KEY_COMPARE_METRIC = "spacetime_compare_metric"
 private const val KEY_CROSSTAB_X = "spacetime_crosstab_x"
 private const val KEY_CROSSTAB_Y = "spacetime_crosstab_y"
-
-/**
- * 通用异步数据区段状态。
- */
-data class AsyncState<T>(
-    val isLoading: Boolean = false,
-    val data: T? = null,
-    val errorKind: ErrorKind? = null,
-) {
-    fun <R> map(transform: (T) -> R): AsyncState<R> = AsyncState(
-        isLoading = isLoading,
-        data = data?.let(transform),
-        errorKind = errorKind,
-    )
-}
 
 /**
  * 时空探索详情 drilldown 状态。

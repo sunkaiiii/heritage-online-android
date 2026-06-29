@@ -78,11 +78,14 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.feature.articles.detail.isStandaloneSectionTitle
 import com.duckylife.heritage.modern.feature.directory.localizedKindLabel
 import com.duckylife.heritage.modern.core.data.ReadingPathContentRef
 import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
 import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
+import com.duckylife.heritage.modern.feature.export.ContentExportBottomSheet
+import com.duckylife.heritage.modern.feature.export.DetailExportOverflowMenu
 import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
 import com.duckylife.heritage.modern.feature.detail.DetailContinueExploreSection
@@ -243,6 +246,8 @@ fun DirectoryDetailScreen(
     }
     var showPreview by remember { mutableStateOf(false) }
     var previewIndex by remember { mutableIntStateOf(0) }
+    var showExportSheet by remember { mutableStateOf(false) }
+    val exportableContentId = uiState.item?.id
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -284,6 +289,10 @@ fun DirectoryDetailScreen(
                                 contentDescription = stringResource(R.string.action_refresh),
                             )
                         }
+                        DetailExportOverflowMenu(
+                            enabled = exportableContentId != null,
+                            onExportClick = { showExportSheet = true },
+                        )
                     },
                 )
             },
@@ -354,6 +363,14 @@ fun DirectoryDetailScreen(
                 initialIndex = previewIndex,
                 imageLoader = imageLoader,
                 onDismiss = { showPreview = false },
+            )
+        }
+
+        if (showExportSheet && exportableContentId != null) {
+            ContentExportBottomSheet(
+                contentId = exportableContentId,
+                targetType = SearchResultType.DirectoryItem,
+                onDismiss = { showExportSheet = false },
             )
         }
     }

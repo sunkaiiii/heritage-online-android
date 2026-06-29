@@ -64,7 +64,7 @@ import com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingFilters
 import com.duckylife.heritage.modern.feature.rankings.model.RankingItemUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingMetricUiModel
-import com.duckylife.heritage.modern.feature.spacetime.AsyncState
+import com.duckylife.heritage.modern.ui.state.AsyncState
 import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground

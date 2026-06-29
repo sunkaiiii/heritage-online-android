@@ -51,6 +51,8 @@ import androidx.compose.ui.layout.ContentScale
 import com.duckylife.heritage.modern.core.data.ReadingPathContentRef
 import com.duckylife.heritage.modern.feature.detail.DetailExploreSource
 import com.duckylife.heritage.modern.feature.detail.DetailExploreTargetClick
+import com.duckylife.heritage.modern.feature.export.ContentExportBottomSheet
+import com.duckylife.heritage.modern.feature.export.DetailExportOverflowMenu
 import com.duckylife.heritage.modern.feature.detail.ReadingPathRecorderViewModel
 import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceUiState
 import com.duckylife.heritage.modern.feature.detail.DetailContinueExploreSection
@@ -77,6 +79,7 @@ import com.duckylife.heritage.modern.core.network.dto.ArticleReferenceDto
 import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
 import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
 import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
 import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
@@ -218,6 +221,8 @@ fun ArticleDetailScreen(
     }
     var showPreview by remember { mutableStateOf(false) }
     var previewIndex by remember { mutableIntStateOf(0) }
+    var showExportSheet by remember { mutableStateOf(false) }
+    val exportableContentId = uiState.article?.id
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -259,6 +264,10 @@ fun ArticleDetailScreen(
                                 contentDescription = stringResource(R.string.action_refresh),
                             )
                         }
+                        DetailExportOverflowMenu(
+                            enabled = exportableContentId != null,
+                            onExportClick = { showExportSheet = true },
+                        )
                     },
                 )
             },
@@ -326,6 +335,14 @@ fun ArticleDetailScreen(
                 initialIndex = previewIndex,
                 imageLoader = imageLoader,
                 onDismiss = { showPreview = false },
+            )
+        }
+
+        if (showExportSheet && exportableContentId != null) {
+            ContentExportBottomSheet(
+                contentId = exportableContentId,
+                targetType = SearchResultType.Article,
+                onDismiss = { showExportSheet = false },
             )
         }
     }

@@ -93,6 +93,7 @@ import com.duckylife.heritage.modern.feature.spacetime.model.YearCountUiModel
 import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.state.AsyncState
 
 @Composable
 fun SpacetimeRoute(

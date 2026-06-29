@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.duckylife.heritage.modern.core.data.ContentExportRepository
 import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.DataExploreRepository
+import com.duckylife.heritage.modern.core.data.DefaultContentExportRepository
 import com.duckylife.heritage.modern.core.data.DefaultContentIntelligenceRepository
 import com.duckylife.heritage.modern.core.data.DefaultDataExploreRepository
 import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
@@ -13,6 +15,8 @@ import com.duckylife.heritage.modern.core.data.HeritageRepository
 import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepository
 import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
 import com.duckylife.heritage.modern.core.data.DefaultKnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.DefaultResearchRepository
+import com.duckylife.heritage.modern.core.data.ResearchRepository
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.data.DefaultLearningRoutesRepository
 import com.duckylife.heritage.modern.core.data.LearningRoutesRepository
@@ -38,6 +42,12 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindHeritageRepository(repository: DefaultHeritageRepository): HeritageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindContentExportRepository(
+        repository: DefaultContentExportRepository,
+    ): ContentExportRepository
 
     @Binds
     @Singleton
@@ -68,6 +78,12 @@ abstract class DataModule {
     abstract fun bindDataExploreRepository(
         repository: DefaultDataExploreRepository,
     ): DataExploreRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindResearchRepository(
+        repository: DefaultResearchRepository,
+    ): ResearchRepository
 
     @Binds
     @Singleton

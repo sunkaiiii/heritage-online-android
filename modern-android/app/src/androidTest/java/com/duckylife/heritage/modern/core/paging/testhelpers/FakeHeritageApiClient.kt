@@ -231,9 +231,9 @@ class FakeHeritageApiClient : HeritageApiClient {
     override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery) = TODO()
 
     // Export
-    override suspend fun getExportTemplates() = TODO()
-    override suspend fun previewExport(request: ExportRequestDto) = TODO()
-    override suspend fun exportContent(request: ExportRequestDto) = TODO()
+    override suspend fun getExportTemplates(): List<ExportTemplateDto> = emptyList()
+    override suspend fun previewExport(request: ExportRequestDto): ExportPreviewDto = ExportPreviewDto()
+    override suspend fun exportContent(request: ExportRequestDto): ExportContentResultDto = ExportContentResultDto()
 
     // LocalUser
     override suspend fun getLocalUserProfile(): LocalUserProfileDto = LocalUserProfileDto(profileId = currentProfileId())
