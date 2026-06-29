@@ -110,6 +110,9 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
+private const val MAX_BRIDGE_NODES = 20
+private const val MAX_SIMILAR_REASONS = 2
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GraphExploreRoute(
@@ -1009,11 +1012,13 @@ private fun SimilarResultCard(
                     }
                 }
             }
-            item.reasons.take(2).forEach { reason ->
+            item.reasons.take(MAX_SIMILAR_REASONS).forEach { reason ->
                 Text(
                     text = "• $reason",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             if (item.node.isContentNode && !item.node.id.isNullOrBlank()) {
@@ -1154,6 +1159,8 @@ private fun EvidenceCard(
                     text = item.reason,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
             item.sourceContentTitle?.let { title ->
@@ -1205,6 +1212,8 @@ private fun AiInferredEdgeCard(
                     text = item.reason,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -1749,8 +1758,18 @@ private fun BridgeSection(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         } else {
-            bridges.forEach { bridge ->
+            bridges.take(MAX_BRIDGE_NODES).forEach { bridge ->
                 BridgeNodeRow(bridge = bridge, onNodeClick = onNodeClick)
+            }
+            if (bridges.size > MAX_BRIDGE_NODES) {
+                Text(
+                    text = stringResource(
+                        R.string.and_more_format,
+                        bridges.size - MAX_BRIDGE_NODES,
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

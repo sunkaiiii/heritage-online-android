@@ -158,7 +158,7 @@
     <string name="action_browse_learning_routes">浏览学习路线</string>
     <string name="journeys_empty_title">为你继续探索</string>
     <string name="journeys_empty_message">多浏览或收藏一些内容后，这里会逐渐更懂你的探索方向。</string>
-    <string name="research_empty_title">本机已生成研究资料</string>
+    <string name="research_empty_title">暂无已生成研究资料</string>
     <string name="research_empty_message">研究资料由本地服务预先生成后显示在这里。</string>
     <string name="research_header_title">本机已生成研究资料</string>
     <string name="research_packages_tab">资料包</string>

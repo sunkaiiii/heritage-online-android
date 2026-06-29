@@ -26,6 +26,7 @@ import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
+import com.duckylife.heritage.modern.feature.graph.model.PathExplainResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarItemUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
@@ -570,6 +571,52 @@ class GraphExploreRouteTest {
         composeRule.onNodeWithText(context.getString(R.string.graph_evidence_intro))
             .assertIsDisplayed()
         composeRule.onNodeWithText(context.getString(R.string.action_retry))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun pathExplainBottomSheet_showsNoPathStateWhenResultNotFound() {
+        composeRule.setContent {
+            HeritageTheme {
+                GraphExploreScreen(
+                    uiState = loadedUiState().copy(
+                        selectedTab = GraphTab.Similar,
+                        pathExplainSheet = PathExplainSheetState(
+                            targetNode = GraphNodeUiModel(
+                                nodeKey = "article-target",
+                                type = GraphNodeType.Article,
+                                id = "a2",
+                                title = "Related Article",
+                            ),
+                            result = PathExplainResult(
+                                found = false,
+                                steps = emptyList(),
+                                narrative = emptyList(),
+                                evidence = emptyList(),
+                                warnings = emptyList(),
+                            ),
+                        ),
+                    ),
+                    onBack = {},
+                    onTabSelected = {},
+                    onRetry = {},
+                    onRefresh = {},
+                    onToggleAiInferred = {},
+                    onExploreDepthSelected = {},
+                    onPathClick = {},
+                    onPathExplainDismiss = {},
+                    onPathExplainRetry = {},
+                    onPathExplainLoadBridge = {},
+                    onNodeClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_explain_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_explain_not_found_title))
+            .assertIsDisplayed()
+        composeRule.onNodeWithText(context.getString(R.string.graph_path_explain_not_found_message))
             .assertIsDisplayed()
     }
 

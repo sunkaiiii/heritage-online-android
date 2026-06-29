@@ -95,6 +95,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
 
+private const val MAX_TIMELINE_ROWS = 20
+private const val MAX_COMPARE_OPTIONS = 20
+
 @Composable
 fun SpacetimeRoute(
     onBack: () -> Unit,
@@ -499,11 +502,21 @@ private fun YearTimelineSection(
                     modifier = contentModifier,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    data.forEach { yearCount ->
+                    data.take(MAX_TIMELINE_ROWS).forEach { yearCount ->
                         YearTimelineRow(
                             yearCount = yearCount,
                             maxCount = maxCount,
                             onYearClick = onYearClick,
+                        )
+                    }
+                    if (data.size > MAX_TIMELINE_ROWS) {
+                        Text(
+                            text = stringResource(
+                                R.string.and_more_format,
+                                data.size - MAX_TIMELINE_ROWS,
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -818,7 +831,7 @@ private fun CompareSection(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Column {
-                options.forEach { bucket ->
+                options.take(MAX_COMPARE_OPTIONS).forEach { bucket ->
                     val selected = bucket.key in compare.selectedKeys
                     Row(
                         modifier = Modifier
@@ -830,13 +843,26 @@ private fun CompareSection(
                         Text(
                             text = bucket.label ?: bucket.key,
                             style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f),
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = bucket.count.toString(),
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
+                }
+                if (options.size > MAX_COMPARE_OPTIONS) {
+                    Text(
+                        text = stringResource(
+                            R.string.and_more_format,
+                            options.size - MAX_COMPARE_OPTIONS,
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }

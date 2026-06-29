@@ -71,6 +71,9 @@ import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
 import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 
+private const val RANKING_REASONS_MAX_COUNT = 5
+private const val RANKING_METRICS_MAX_COUNT = 10
+
 @Composable
 fun RankingsRoute(
     onBack: () -> Unit,
@@ -460,9 +463,21 @@ private fun RankingItemCard(
                             style = MaterialTheme.typography.labelMedium,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        item.reasons.forEach { reason ->
+                        item.reasons.take(RANKING_REASONS_MAX_COUNT).forEach { reason ->
                             Text(
                                 text = "• $reason",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                        if (item.reasons.size > RANKING_REASONS_MAX_COUNT) {
+                            Text(
+                                text = stringResource(
+                                    R.string.and_more_format,
+                                    item.reasons.size - RANKING_REASONS_MAX_COUNT,
+                                ),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -480,7 +495,7 @@ private fun RankingMetricsList(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        metrics.forEach { metric ->
+        metrics.take(RANKING_METRICS_MAX_COUNT).forEach { metric ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -488,12 +503,26 @@ private fun RankingMetricsList(
                 Text(
                     text = metric.label ?: metric.key,
                     style = MaterialTheme.typography.bodySmall,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
                 )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "%.2f".format(metric.value),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
+        }
+        if (metrics.size > RANKING_METRICS_MAX_COUNT) {
+            Text(
+                text = stringResource(
+                    R.string.and_more_format,
+                    metrics.size - RANKING_METRICS_MAX_COUNT,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

@@ -6,7 +6,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimensio
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class AdvancedQueriesTest {
+class SpacetimeAnalyticsQueryTest {
 
     // -----------------------------------------------------------------------
     // Spacetime

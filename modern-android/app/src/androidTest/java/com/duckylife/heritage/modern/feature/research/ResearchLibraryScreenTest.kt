@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.research
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
@@ -71,17 +72,18 @@ class ResearchLibraryScreenTest {
 
     @Test
     fun displaysPackagesAndSwitchesToReports() {
+        val selectedTab = mutableStateOf(ResearchLibraryTab.Packages)
         composeTestRule.setContent {
             HeritageTheme {
                 ResearchLibraryScreen(
                     uiState = ResearchLibraryUiState(
-                        selectedTab = ResearchLibraryTab.Packages,
+                        selectedTab = selectedTab.value,
                         packages = AsyncState(data = packages),
                         reports = AsyncState(data = reports),
                     ),
                     onBack = {},
                     onRefresh = {},
-                    onTabSelected = {},
+                    onTabSelected = { selectedTab.value = it },
                     onPackageClick = {},
                     onReportClick = {},
                 )

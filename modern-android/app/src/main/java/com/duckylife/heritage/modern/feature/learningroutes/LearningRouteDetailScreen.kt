@@ -49,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -436,6 +437,7 @@ private fun LearningRouteStepCard(
             Checkbox(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
+                modifier = Modifier.testTag("learning_step_checkbox_${step.stepId}"),
             )
 
             Column(

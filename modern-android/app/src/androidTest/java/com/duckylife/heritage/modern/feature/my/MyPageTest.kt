@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -64,7 +65,9 @@ class MyPageTest {
         composeRule.onNodeWithText(string(R.string.browsing_tab)).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.learning_tab)).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.journeys_tab)).assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.research_tab)).assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.research_tab))
+            .performScrollTo()
+            .assertIsDisplayed()
 
         composeRule.onNodeWithText(string(R.string.journeys_tab)).performClick()
         composeRule.onNodeWithText(string(R.string.journeys_strategy_label)).assertIsDisplayed()

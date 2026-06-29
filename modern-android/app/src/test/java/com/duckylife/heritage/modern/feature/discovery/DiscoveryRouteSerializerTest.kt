@@ -5,7 +5,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class DiscoveryNavigationStateTest {
+class DiscoveryRouteSerializerTest {
 
     @Test
     fun roundTrip_index() {
@@ -134,5 +134,18 @@ class DiscoveryNavigationStateTest {
         )
         val restored = deserializeDiscoveryRoutes(serializeDiscoveryRoutes(allTypes))
         assertEquals(allTypes, restored)
+    }
+
+    @Test
+    fun navigationToGraphHubAndBackReturnsDiscoveryIndex() {
+        val stack = listOf(
+            DiscoveryRouteKey.DiscoveryIndex,
+            DiscoveryRouteKey.KnowledgeGraphHubPage,
+        )
+        val serialized = serializeDiscoveryRoutes(stack)
+        val restored = deserializeDiscoveryRoutes(serialized)
+        // 模拟返回键：移除栈顶后仅剩发现首页。
+        val afterBack = restored.dropLast(1)
+        assertEquals(listOf(DiscoveryRouteKey.DiscoveryIndex), afterBack)
     }
 }

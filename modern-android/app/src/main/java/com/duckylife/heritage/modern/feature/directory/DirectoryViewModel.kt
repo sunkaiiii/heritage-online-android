@@ -215,7 +215,7 @@ class DirectoryViewModel @Inject constructor(
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_MS = 350L
+        private const val SEARCH_DEBOUNCE_MS = 300L
     }
 }
 
