@@ -46,6 +46,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedContentType
 
 @Composable
 fun TimelineRoute(
@@ -218,7 +219,7 @@ private fun TypeFilterRow(
                 selected = type in selectedTypes,
                 onClick = { onToggleType(type) },
                 label = {
-                    Text("$key (${facet.count})")
+                    Text("${localizedContentType(key)} (${facet.count})")
                 },
             )
         }

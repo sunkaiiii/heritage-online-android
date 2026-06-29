@@ -305,6 +305,7 @@ private fun OverviewTab(
                             title = stringResource(R.string.spacetime_year_timeline_title),
                             data = overview.data.yearTimeline,
                             onYearClick = onYearClick,
+                            scrollable = false,
                         )
                     }
                 }
@@ -462,59 +463,95 @@ private fun YearTimelineSection(
     data: List<YearCountUiModel>,
     onYearClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    scrollable: Boolean = true,
 ) {
     val maxCount = data.maxOfOrNull { it.count }?.coerceAtLeast(1) ?: 1
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(modifier = Modifier.height(8.dp))
+        if (title.isNotBlank()) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
         Card {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                data.forEach { yearCount ->
-                    val fraction = yearCount.count.toFloat() / maxCount.toFloat()
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onYearClick(yearCount.year) },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = yearCount.year.toString(),
-                            modifier = Modifier.width(48.dp),
-                            style = MaterialTheme.typography.bodySmall,
+            val contentModifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+            if (scrollable) {
+                LazyColumn(
+                    modifier = contentModifier.heightIn(max = (data.size.coerceAtMost(20) * 36).dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    items(
+                        items = data,
+                        key = { it.year },
+                    ) { yearCount ->
+                        YearTimelineRow(
+                            yearCount = yearCount,
+                            maxCount = maxCount,
+                            onYearClick = onYearClick,
                         )
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(16.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(fraction)
-                                    .fillMaxHeight()
-                                    .background(MaterialTheme.colorScheme.secondary),
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = yearCount.count.toString(),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.width(36.dp),
-                            textAlign = TextAlign.End,
+                    }
+                }
+            } else {
+                Column(
+                    modifier = contentModifier,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    data.forEach { yearCount ->
+                        YearTimelineRow(
+                            yearCount = yearCount,
+                            maxCount = maxCount,
+                            onYearClick = onYearClick,
                         )
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun YearTimelineRow(
+    yearCount: YearCountUiModel,
+    maxCount: Int,
+    onYearClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val fraction = yearCount.count.toFloat() / maxCount.toFloat()
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onYearClick(yearCount.year) },
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = yearCount.year.toString(),
+            modifier = Modifier.width(48.dp),
+            style = MaterialTheme.typography.bodySmall,
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(16.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(fraction)
+                    .fillMaxHeight()
+                    .background(MaterialTheme.colorScheme.secondary),
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = yearCount.count.toString(),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.width(36.dp),
+            textAlign = TextAlign.End,
+        )
     }
 }
 

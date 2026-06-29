@@ -166,6 +166,16 @@ internal fun ContentExportSheetContent(
             }
         }
 
+        if (uiState.templates.errorKind != null) {
+            item {
+                HeritageErrorState(
+                    errorKind = uiState.templates.errorKind,
+                    onRetry = onRetryTemplates,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
         item {
             FormatSelector(
                 formats = uiState.supportedFormats.toList(),
@@ -220,15 +230,6 @@ internal fun ContentExportSheetContent(
             )
         }
 
-        if (uiState.templates.errorKind != null) {
-            item {
-                HeritageErrorState(
-                    errorKind = uiState.templates.errorKind,
-                    onRetry = onRetryTemplates,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
     }
 
     if (showExportConfirmDialog) {

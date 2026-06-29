@@ -69,7 +69,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.core.settings.AppThemeMode
+import com.duckylife.heritage.modern.ui.text.localizedArticleCategory
 import com.duckylife.heritage.modern.ui.text.localizedContentType
+import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 // ---------------------------------------------------------------------------
@@ -1055,6 +1057,7 @@ private fun SearchFilterSheet(
                     title = stringResource(R.string.search_filter_type),
                     buckets = uiState.facets.types,
                     selectedKeys = uiState.selectedTypes.map { it.wireName }.toSet(),
+                    labelForKey = { localizedContentType(it) },
                     onToggle = { key ->
                         val type = SearchResultType.entries.firstOrNull { it.wireName == key }
                         if (type != null) onToggleType(type)
@@ -1068,6 +1071,7 @@ private fun SearchFilterSheet(
                     title = stringResource(R.string.filter_field_category),
                     buckets = uiState.facets.categories,
                     selectedKeys = setOfNotNull(uiState.categoryFilter.takeIf { it.isNotBlank() }),
+                    labelForKey = { localizedArticleCategory(it) ?: it },
                     onToggle = { key ->
                         onUpdateCategory(if (uiState.categoryFilter == key) "" else key)
                     },
@@ -1092,6 +1096,7 @@ private fun SearchFilterSheet(
                     title = stringResource(R.string.search_filter_kind),
                     buckets = uiState.facets.kinds,
                     selectedKeys = setOfNotNull(uiState.kindFilter?.wireName),
+                    labelForKey = { localizedDirectoryKind(it) ?: it },
                     onToggle = { key ->
                         val kind = DirectoryItemKind.entries.firstOrNull { it.wireName == key }
                         onUpdateKind(if (uiState.kindFilter == kind) null else kind)
@@ -1199,6 +1204,7 @@ private fun FilterSection(
     selectedKeys: Set<String>,
     onToggle: (String) -> Unit,
     modifier: Modifier = Modifier,
+    labelForKey: @Composable (String) -> String = { it },
 ) {
     Column(modifier = modifier) {
         Text(
@@ -1217,7 +1223,7 @@ private fun FilterSection(
                     selected = key in selectedKeys,
                     onClick = { onToggle(key) },
                     label = {
-                        Text("$key (${bucket.count})")
+                        Text("${labelForKey(key)} (${bucket.count})")
                     },
                 )
             }

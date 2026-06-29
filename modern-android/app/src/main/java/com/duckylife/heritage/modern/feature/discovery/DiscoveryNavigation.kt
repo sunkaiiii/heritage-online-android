@@ -117,9 +117,11 @@ fun DiscoveryNavHost(
     val popBackStack: () -> Unit = {
         if (backStack.size > 1) {
             backStack.removeLastOrNull()
+        } else if (backStack.isEmpty()) {
+            backStack.add(DiscoveryRouteKey.DiscoveryIndex)
         }
     }
-    val isInDetail = backStack.lastOrNull() !is DiscoveryRouteKey.DiscoveryIndex
+    val isInDetail = backStack.isNotEmpty() && backStack.lastOrNull() !is DiscoveryRouteKey.DiscoveryIndex
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }
@@ -317,13 +319,7 @@ fun DiscoveryNavHost(
                     LearningRouteDetailRoute(
                         routeId = key.routeId,
                         onBack = popBackStack,
-                        onStepContentClick = { targetType, targetId ->
-                            when (targetType) {
-                                "article" -> backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = targetId))
-                                "directoryItem" -> backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = targetId))
-                                "inheritor" -> backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = targetId))
-                            }
-                        },
+                        onStepContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         modifier = modifier,
                     )
                 }
@@ -699,7 +695,7 @@ fun DiscoveryNavHost(
                         contentId = key.contentId,
                         initialTab = key.initialTab,
                         onBack = popBackStack,
-                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         onTopicClick = { topicType, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
@@ -744,12 +740,7 @@ fun DiscoveryNavHost(
                         topicType = key.topicType,
                         topicKey = key.topicKey,
                         onBack = popBackStack,
-                        onContentClick = { type, id ->
-                            navigateToDiscoveryItem(
-                                DiscoveryItemDto(id = id, type = type),
-                                backStack,
-                            )
-                        },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         onTopicClick = { type, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
@@ -767,12 +758,7 @@ fun DiscoveryNavHost(
                     GraphTrailRoute(
                         source = key.source,
                         onBack = popBackStack,
-                        onContentClick = { type, id ->
-                            navigateToDiscoveryItem(
-                                DiscoveryItemDto(id = id, type = type),
-                                backStack,
-                            )
-                        },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         onTopicClick = { type, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
@@ -809,12 +795,7 @@ fun DiscoveryNavHost(
                     RankingDetailRoute(
                         rankingId = key.rankingId,
                         onBack = popBackStack,
-                        onContentClick = { type, id ->
-                            navigateToDiscoveryItem(
-                                DiscoveryItemDto(id = id, type = type),
-                                backStack,
-                            )
-                        },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         modifier = modifier,
                     )
                 }

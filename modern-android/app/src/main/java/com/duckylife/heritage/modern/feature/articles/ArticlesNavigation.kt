@@ -160,9 +160,11 @@ fun ArticlesNavHost(
     val popBackStack: () -> Unit = {
         if (backStack.size > 1) {
             backStack.removeLastOrNull()
+        } else if (backStack.isEmpty()) {
+            backStack.add(ArticlesList)
         }
     }
-    val isInDetail = backStack.lastOrNull() !is ArticlesList
+    val isInDetail = backStack.isNotEmpty() && backStack.lastOrNull() !is ArticlesList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }

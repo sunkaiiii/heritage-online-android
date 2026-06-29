@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
+import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
@@ -84,6 +85,13 @@ fun DeepDiveScreen(
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
+                uiState.seed == null && uiState.related.isEmpty() -> {
+                    HeritageEmptyState(
+                        message = stringResource(R.string.deep_dive_empty_message),
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+
                 else -> {
                     DeepDiveContent(
                         seed = uiState.seed,

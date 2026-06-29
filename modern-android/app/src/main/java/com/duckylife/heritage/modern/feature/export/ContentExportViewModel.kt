@@ -44,9 +44,8 @@ data class ContentExportUiState(
 ) {
     val canRequestExport: Boolean
         get() = contentId.isNotBlank() &&
-            templates.data != null &&
             !templates.isLoading &&
-            templates.errorKind == null
+            (templates.data != null || templates.errorKind != null)
 }
 
 /**

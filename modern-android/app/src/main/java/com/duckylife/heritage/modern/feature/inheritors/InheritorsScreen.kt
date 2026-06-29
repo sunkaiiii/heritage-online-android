@@ -86,6 +86,8 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.error.toUiError
+import com.duckylife.heritage.modern.ui.text.InheritorGender
+import com.duckylife.heritage.modern.ui.text.localizedInheritorGender
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
@@ -108,9 +110,11 @@ fun InheritorsRoute(
     val popBackStack: () -> Unit = {
         if (backStack.size > 1) {
             backStack.removeLastOrNull()
+        } else if (backStack.isEmpty()) {
+            backStack.add(InheritorsRouteKey.InheritorsList)
         }
     }
-    val isInDetail = backStack.lastOrNull() !is InheritorsRouteKey.InheritorsList
+    val isInDetail = backStack.isNotEmpty() && backStack.lastOrNull() !is InheritorsRouteKey.InheritorsList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }
@@ -453,7 +457,12 @@ fun InheritorsScreen(
                                 selected = true,
                                 onClick = { onClearFilterField(field) },
                                 label = {
-                                    Text(stringResource(field.labelRes) + ": " + value)
+                                    val displayValue = if (field == InheritorFilterField.Gender) {
+                                        localizedInheritorGender(value)
+                                    } else {
+                                        value
+                                    }
+                                    Text(stringResource(field.labelRes) + ": " + displayValue)
                                 },
                                 trailingIcon = {
                                     Icon(
@@ -815,33 +824,19 @@ private fun InheritorFilterSheet(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            val genderOptions = listOf(
-                stringResource(R.string.filter_gender_any),
-                stringResource(R.string.filter_gender_male),
-                stringResource(R.string.filter_gender_female),
-            )
-            val selectedIndex = when (draftGender) {
-                "男" -> 1
-                "女" -> 2
-                else -> 0
-            }
+            val genderOptions = InheritorGender.entries
+            val selectedIndex = genderOptions.indexOfFirst { it.wireValue == draftGender }.takeIf { it >= 0 } ?: 0
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                genderOptions.forEachIndexed { index, label ->
+                genderOptions.forEachIndexed { index, option ->
                     SegmentedButton(
                         selected = index == selectedIndex,
-                        onClick = {
-                            draftGender = when (index) {
-                                1 -> "男"
-                                2 -> "女"
-                                else -> ""
-                            }
-                        },
+                        onClick = { draftGender = option.wireValue },
                         shape = SegmentedButtonDefaults.itemShape(
                             index = index,
                             count = genderOptions.size,
                         ),
                     ) {
-                        Text(label)
+                        Text(stringResource(option.labelRes))
                     }
                 }
             }

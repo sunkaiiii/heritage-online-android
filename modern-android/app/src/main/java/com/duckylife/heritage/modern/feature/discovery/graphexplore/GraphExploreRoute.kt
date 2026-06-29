@@ -77,8 +77,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
-import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
-import com.duckylife.heritage.modern.core.network.dto.MediaAssetDto
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSource
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
@@ -117,7 +117,7 @@ fun GraphExploreRoute(
     contentId: String,
     initialTab: GraphTab,
     onBack: () -> Unit,
-    onItemClick: (DiscoveryItemDto) -> Unit,
+    onContentClick: (DetailContextTarget) -> Unit,
     onTopicClick: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -147,7 +147,7 @@ fun GraphExploreRoute(
         onPathExplainLoadBridge = viewModel::loadBridge,
         onNodeClick = { node ->
             when {
-                node.isContentNode -> node.toDiscoveryItemDto()?.let(onItemClick)
+                node.isContentNode -> node.toDetailContextTarget()?.let(onContentClick)
                 node.isTopicNode -> onTopicClick(node.type.wireName, node.topicKey)
             }
         },
@@ -1016,7 +1016,7 @@ private fun SimilarResultCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            if (item.node.isContentNode) {
+            if (item.node.isContentNode && !item.node.id.isNullOrBlank()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
@@ -1534,11 +1534,22 @@ private fun PathExplainSheetContent(
 
         when {
             sheetState.isLoading && sheetState.result == null -> PathExplainSkeleton()
-            sheetState.errorKind != null && sheetState.result == null -> SectionErrorCard(
-                errorKind = sheetState.errorKind,
-                onRetry = onRetry,
-                modifier = Modifier.padding(0.dp),
-            )
+            sheetState.errorKind != null && sheetState.result == null -> {
+                val targetNode = sheetState.targetNode
+                if (targetNode != null && !targetNode.isContentNode) {
+                    Text(
+                        text = stringResource(R.string.graph_path_explain_unsupported_node),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    SectionErrorCard(
+                        errorKind = sheetState.errorKind,
+                        onRetry = onRetry,
+                        modifier = Modifier.padding(0.dp),
+                    )
+                }
+            }
             sheetState.result != null -> PathExplainResultContent(
                 result = sheetState.result,
                 centerNode = centerNode,
@@ -1922,19 +1933,6 @@ private fun GraphEvidenceSource.labelResId(): Int = when (this) {
 private fun GraphEdgeUiModel.localizedRelationLabel(): String =
     label?.takeIf { it.isNotBlank() }
         ?: stringResource(GraphRelationFormatter.labelResId(relationType))
-
-private fun GraphNodeUiModel.toDiscoveryItemDto(): DiscoveryItemDto? {
-    if (!isContentNode || id.isNullOrBlank()) return null
-    return DiscoveryItemDto(
-        id = id,
-        type = type.wireName,
-        title = title.orEmpty(),
-        summary = subtitle,
-        category = category,
-        region = region,
-        coverImage = coverImageUrl?.let { MediaAssetDto(displayUrl = it) },
-    )
-}
 
 private fun GraphTab.labelResId(): Int = when (this) {
     GraphTab.Neighbors -> R.string.graph_tab_neighbors

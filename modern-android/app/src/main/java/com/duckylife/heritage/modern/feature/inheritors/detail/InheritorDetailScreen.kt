@@ -87,6 +87,7 @@ import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntellig
 import com.duckylife.heritage.modern.feature.detail.DetailContinueExploreSection
 import com.duckylife.heritage.modern.feature.detail.intelligence.DetailIntelligenceSection
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
+import com.duckylife.heritage.modern.ui.text.localizedInheritorGender
 import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageDetailImage
@@ -587,7 +588,7 @@ private fun InheritorHero(
 @Composable
 private fun InheritorMetaChips(item: InheritorDetailDto) {
     val labels = listOfNotNull(
-        item.gender?.takeIf { it.isNotBlank() },
+        item.gender?.takeIf { it.isNotBlank() }?.let { localizedInheritorGender(it) },
         item.ethnicity?.takeIf { it.isNotBlank() },
         item.category?.takeIf { it.isNotBlank() },
         item.region?.takeIf { it.isNotBlank() },

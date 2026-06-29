@@ -68,6 +68,10 @@ fun localizedReadingPathSource(source: String): String =
         "collection" -> stringResource(R.string.context_collections)
         "graph" -> stringResource(R.string.context_graph)
         "exploreTopic" -> stringResource(R.string.context_explore_topics)
+        "graphTrail" -> stringResource(R.string.reading_path_source_graph_trail)
+        "journey" -> stringResource(R.string.reading_path_source_journey)
+        "learningRoute" -> stringResource(R.string.reading_path_source_learning_route)
+        "ranking" -> stringResource(R.string.reading_path_source_ranking)
         "list" -> stringResource(R.string.reading_path_source_list)
         else -> source
     }

@@ -65,6 +65,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.text.localizedLearningRouteDifficulty
 
 /**
@@ -72,14 +74,14 @@ import com.duckylife.heritage.modern.ui.text.localizedLearningRouteDifficulty
  *
  * @param routeId 路线 ID。
  * @param onBack 返回回调。
- * @param onStepContentClick 点击步骤关联内容时回调，参数为 (targetType, targetId)。
+ * @param onStepContentClick 点击步骤关联内容时回调，参数为 [DetailContextTarget]。
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LearningRouteDetailRoute(
     routeId: String,
     onBack: () -> Unit,
-    onStepContentClick: (String, String) -> Unit = { _, _ -> },
+    onStepContentClick: (DetailContextTarget) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val viewModel: LearningRouteDetailViewModel = hiltViewModel<LearningRouteDetailViewModel, LearningRouteDetailViewModel.Factory>(
@@ -122,7 +124,7 @@ internal fun LearningRouteDetailScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onStepChecked: (String, Boolean) -> Unit,
-    onStepContentClick: (String, String) -> Unit,
+    onStepContentClick: (DetailContextTarget) -> Unit,
     onLoadNextStep: () -> Unit,
     onShowRestartConfirmation: () -> Unit,
     onDismissRestartConfirmation: () -> Unit,
@@ -240,7 +242,7 @@ private fun LearningRouteDetailLoadedContent(
     totalSteps: Int,
     nextStep: LearningRouteStepUiModel?,
     onStepChecked: (String, Boolean) -> Unit,
-    onStepContentClick: (String, String) -> Unit,
+    onStepContentClick: (DetailContextTarget) -> Unit,
     onLoadNextStep: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -282,11 +284,7 @@ private fun LearningRouteDetailLoadedContent(
                         checked = step.stepId in completedStepIds,
                         onCheckedChange = { checked -> onStepChecked(step.stepId, checked) },
                         onContentClick = {
-                            val type = step.targetType
-                            val id = step.targetId
-                            if (!type.isNullOrBlank() && !id.isNullOrBlank()) {
-                                onStepContentClick(type, id)
-                            }
+                            step.toDetailContextTarget()?.let(onStepContentClick)
                         },
                     )
                 }
@@ -309,11 +307,7 @@ private fun LearningRouteDetailLoadedContent(
                     checked = step.stepId in completedStepIds,
                     onCheckedChange = { checked -> onStepChecked(step.stepId, checked) },
                     onContentClick = {
-                        val type = step.targetType
-                        val id = step.targetId
-                        if (!type.isNullOrBlank() && !id.isNullOrBlank()) {
-                            onStepContentClick(type, id)
-                        }
+                        step.toDetailContextTarget()?.let(onStepContentClick)
                     },
                 )
             }
@@ -324,11 +318,7 @@ private fun LearningRouteDetailLoadedContent(
                 NextStepCard(
                     step = nextStep,
                     onClick = {
-                        val type = nextStep.targetType
-                        val id = nextStep.targetId
-                        if (!type.isNullOrBlank() && !id.isNullOrBlank()) {
-                            onStepContentClick(type, id)
-                        }
+                        nextStep.toDetailContextTarget()?.let(onStepContentClick)
                     },
                     modifier = Modifier.padding(top = 6.dp),
                 )

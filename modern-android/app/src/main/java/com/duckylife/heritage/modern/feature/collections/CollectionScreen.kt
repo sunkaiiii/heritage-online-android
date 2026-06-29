@@ -44,6 +44,7 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.formatIsoDate
 
 @Composable
 fun CollectionRoute(
@@ -157,7 +158,7 @@ private fun CollectionContent(
                     HeritageMetaChip(text = tag)
                 }
                 if (!collection.generatedAt.isNullOrBlank()) {
-                    HeritageMetaChip(text = collection.generatedAt)
+                    HeritageMetaChip(text = formatIsoDate(collection.generatedAt) ?: collection.generatedAt)
                 }
             }
         }

@@ -12,12 +12,14 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportFindingDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchTaskStatus
 import com.duckylife.heritage.modern.feature.research.model.ResearchArtifactUiModel
+import com.duckylife.heritage.modern.feature.research.model.ResearchDataScope
 import com.duckylife.heritage.modern.feature.research.model.ResearchEvidenceUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchFindingUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchPackageDetailUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchPackageItemUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchReportDetailUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchReportItemUiModel
+import com.duckylife.heritage.modern.feature.research.model.ResearchSourceType
 import javax.inject.Inject
 
 /**
@@ -82,13 +84,14 @@ internal fun ResearchPackageDto.toItemUiModel(): ResearchPackageItemUiModel {
 
 internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel {
     val safeArtifacts = artifacts.filter { isAllowedArtifactName(it.name) }
+    val filteredArtifactCount = artifacts.size - safeArtifacts.size
     return ResearchPackageDetailUiModel(
         packageId = packageId,
         title = resolvePackageTitle(),
         querySummary = resolvePackageSubtitle(),
-        source = request?.snapshotId?.takeIf { it.isNotBlank() }
-            ?: graphRagPackId.takeIf { it.isNotBlank() },
-        dataScope = buildDataScopeLabel(),
+        sourceType = resolveSourceType(),
+        sourceDetail = resolveSourceDetail(),
+        dataScope = buildDataScopeList(),
         createdAt = createdAt,
         status = status,
         nodeCount = safeArtifacts.count { it.artifactType == "content" },
@@ -99,6 +102,7 @@ internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel 
         hasReport = false,
         reportId = null,
         warnings = warnings,
+        filteredArtifactCount = filteredArtifactCount,
         includesContent = request?.includeContent ?: true,
         includesEvidence = request?.includeEvidence ?: true,
         includesAiResults = request?.includeAiResults ?: false,
@@ -131,15 +135,24 @@ private fun ResearchPackageDto.resolvePackageSubtitle(): String? {
     return parts.takeIf { it.isNotEmpty() }?.joinToString(" · ")
 }
 
-private fun ResearchPackageDto.buildDataScopeLabel(): String {
-    val flags = buildList {
-        if (request?.includeContent != false) add("content")
-        if (request?.includeEvidence != false) add("evidence")
-        if (request?.includeAiResults == true) add("aiResults")
-        if (request?.includeAiInferred == true) add("aiInferred")
+private fun ResearchPackageDto.resolveSourceType(): ResearchSourceType =
+    when {
+        !graphRagPackId.isBlank() -> ResearchSourceType.GraphRagPack
+        !snapshotId.isNullOrBlank() -> ResearchSourceType.Snapshot
+        else -> ResearchSourceType.Unknown
     }
-    return flags.joinToString(", ")
-}
+
+private fun ResearchPackageDto.resolveSourceDetail(): String? =
+    graphRagPackId.takeIf { it.isNotBlank() }
+        ?: snapshotId?.takeIf { it.isNotBlank() }
+
+private fun ResearchPackageDto.buildDataScopeList(): List<ResearchDataScope> =
+    buildList {
+        if (request?.includeContent != false) add(ResearchDataScope.Content)
+        if (request?.includeEvidence != false) add(ResearchDataScope.Evidence)
+        if (request?.includeAiResults == true) add(ResearchDataScope.AiResults)
+        if (request?.includeAiInferred == true) add(ResearchDataScope.AiInferred)
+    }
 
 private fun isViewableArtifact(mimeType: String): Boolean =
     mimeType.startsWith("text/") ||

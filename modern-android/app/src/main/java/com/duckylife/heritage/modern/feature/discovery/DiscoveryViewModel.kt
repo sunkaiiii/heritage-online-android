@@ -8,6 +8,7 @@ import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,12 @@ class DiscoveryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DiscoveryUiState())
     val uiState: StateFlow<DiscoveryUiState> = _uiState.asStateFlow()
 
+    private var todayJob: Job? = null
+    private var trendingJob: Job? = null
+    private var weeklyJob: Job? = null
+    private var classicJob: Job? = null
+    private var serendipityJob: Job? = null
+
     init {
         loadAll()
     }
@@ -37,7 +44,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun loadToday() {
-        viewModelScope.launch {
+        todayJob?.cancel()
+        todayJob = viewModelScope.launch {
             _uiState.update { it.copy(today = it.today.copy(isLoading = true, errorKind = null)) }
             runCatchingCancellable { repository.discoveryToday() }
                 .onSuccess { data ->
@@ -52,7 +60,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun loadTrending() {
-        viewModelScope.launch {
+        trendingJob?.cancel()
+        trendingJob = viewModelScope.launch {
             _uiState.update { it.copy(trending = it.trending.copy(isLoading = true, errorKind = null)) }
             runCatchingCancellable { repository.discoveryTrending(limit = 10) }
                 .onSuccess { data ->
@@ -67,7 +76,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun loadWeekly() {
-        viewModelScope.launch {
+        weeklyJob?.cancel()
+        weeklyJob = viewModelScope.launch {
             _uiState.update { it.copy(weekly = it.weekly.copy(isLoading = true, errorKind = null)) }
             runCatchingCancellable { repository.discoveryWeekly() }
                 .onSuccess { data ->
@@ -82,7 +92,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun loadClassic() {
-        viewModelScope.launch {
+        classicJob?.cancel()
+        classicJob = viewModelScope.launch {
             _uiState.update { it.copy(classic = it.classic.copy(isLoading = true, errorKind = null)) }
             try {
                 coroutineScope {
@@ -137,7 +148,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun serendipity() {
-        viewModelScope.launch {
+        serendipityJob?.cancel()
+        serendipityJob = viewModelScope.launch {
             _uiState.update { it.copy(serendipityLoading = true) }
             runCatchingCancellable {
                 repository.discoverySerendipity(DiscoverySerendipityQuery())

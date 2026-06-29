@@ -55,6 +55,8 @@ import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.text.localizedContentType
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlin.math.PI
@@ -67,7 +69,7 @@ fun TopicGraphMapRoute(
     topicType: String,
     topicKey: String,
     onBack: () -> Unit,
-    onContentClick: (type: String, id: String) -> Unit,
+    onContentClick: (DetailContextTarget) -> Unit,
     onTopicClick: (type: String, topicKey: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -89,9 +91,7 @@ fun TopicGraphMapRoute(
         onViewModeSelected = viewModel::selectViewMode,
         onNodeClick = { node ->
             when {
-                node.isContentNode && !node.id.isNullOrBlank() ->
-                    onContentClick(node.type.wireName, node.id)
-
+                node.isContentNode -> node.toDetailContextTarget()?.let(onContentClick)
                 node.isTopicNode -> onTopicClick(node.type.wireName, node.topicKey)
             }
         },

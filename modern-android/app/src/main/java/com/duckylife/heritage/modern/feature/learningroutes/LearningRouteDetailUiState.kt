@@ -31,11 +31,10 @@ data class LearningRouteDetailUiState(
 ) {
     val totalSteps: Int get() = route?.steps?.size ?: 0
 
-    val validCompletedStepIds: Set<String>
-        get() {
-            val routeStepIds = route?.steps?.mapTo(mutableSetOf()) { it.stepId }.orEmpty()
-            return completedStepIds.intersect(routeStepIds)
-        }
+    val validCompletedStepIds: Set<String> = run {
+        val routeStepIds = route?.steps?.mapTo(mutableSetOf()) { it.stepId }.orEmpty()
+        completedStepIds.intersect(routeStepIds)
+    }
 
     val completedCount: Int get() = validCompletedStepIds.size
 

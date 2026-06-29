@@ -81,6 +81,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toUiError
+import com.duckylife.heritage.modern.ui.text.formatIsoDate
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
@@ -571,7 +572,7 @@ private fun ArticleRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = article.summary.orEmpty().ifBlank { article.publishedAt.orEmpty() },
+                text = article.summary.orEmpty().ifBlank { formatIsoDate(article.publishedAt) ?: article.publishedAt.orEmpty() },
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2,

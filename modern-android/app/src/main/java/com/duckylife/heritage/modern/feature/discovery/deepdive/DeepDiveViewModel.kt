@@ -12,6 +12,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,46 +33,29 @@ class DeepDiveViewModel @AssistedInject constructor(
     private val _uiState = MutableStateFlow(DeepDiveUiState())
     val uiState: StateFlow<DeepDiveUiState> = _uiState.asStateFlow()
 
+    private var loadJob: Job? = null
+
     init {
         load()
     }
 
     fun load() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorKind = null) }
-            runCatchingCancellable {
-                repository.discoveryDeepDive(
-                    DiscoveryDeepDiveQuery(
-                        seedType = searchResultTypeFromWire(seedType),
-                        seedId = seedId,
-                    ),
-                )
-            }
-                .onSuccess { result ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            seed = result.seed,
-                            related = result.related,
-                        )
-                    }
-                }
-                .onFailure { e ->
-                    _uiState.update {
-                        it.copy(isLoading = false, errorKind = e.toUiError().kind)
-                    }
-                }
-        }
+        loadWithSeed(searchResultTypeFromWire(seedType), seedId)
     }
 
     fun deepDiveAgain(item: DiscoveryItemDto) {
-        viewModelScope.launch {
+        loadWithSeed(searchResultTypeFromWire(item.type), item.id.orEmpty())
+    }
+
+    private fun loadWithSeed(seedType: SearchResultType, seedId: String) {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorKind = null) }
             runCatchingCancellable {
                 repository.discoveryDeepDive(
                     DiscoveryDeepDiveQuery(
-                        seedType = searchResultTypeFromWire(item.type),
-                        seedId = item.id.orEmpty(),
+                        seedType = seedType,
+                        seedId = seedId,
                     ),
                 )
             }

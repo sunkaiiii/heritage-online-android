@@ -3,6 +3,25 @@ package com.duckylife.heritage.modern.feature.research.model
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchTaskStatus
 
 /**
+ * 研究资料包来源类型。
+ */
+enum class ResearchSourceType {
+    GraphRagPack,
+    Snapshot,
+    Unknown,
+}
+
+/**
+ * 研究资料包数据范围标记。
+ */
+enum class ResearchDataScope {
+    Content,
+    Evidence,
+    AiResults,
+    AiInferred,
+}
+
+/**
  * 研究资料包列表项 UI 模型。
  */
 data class ResearchPackageItemUiModel(
@@ -26,8 +45,9 @@ data class ResearchPackageDetailUiModel(
     val packageId: String,
     val title: String,
     val querySummary: String?,
-    val source: String?,
-    val dataScope: String?,
+    val sourceType: ResearchSourceType,
+    val sourceDetail: String?,
+    val dataScope: List<ResearchDataScope>,
     val createdAt: String?,
     val status: ResearchTaskStatus,
     val nodeCount: Int,
@@ -38,6 +58,7 @@ data class ResearchPackageDetailUiModel(
     val hasReport: Boolean,
     val reportId: String?,
     val warnings: List<String>,
+    val filteredArtifactCount: Int = 0,
     val includesContent: Boolean = true,
     val includesEvidence: Boolean = true,
     val includesAiResults: Boolean = false,

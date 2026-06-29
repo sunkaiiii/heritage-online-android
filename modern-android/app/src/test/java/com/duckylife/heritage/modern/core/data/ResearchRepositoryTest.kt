@@ -13,6 +13,8 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportFindingDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportListResultDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchTaskStatus
+import com.duckylife.heritage.modern.feature.research.model.ResearchDataScope
+import com.duckylife.heritage.modern.feature.research.model.ResearchSourceType
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -85,7 +87,17 @@ class ResearchRepositoryTest {
         assertEquals(5, detail.artifacts.size)
         assertTrue(detail.artifacts.any { it.name == "content.json" && it.isViewable })
         assertFalse(detail.artifacts.any { it.name == "report.zip" && it.isViewable })
-        assertEquals("pack-1", detail.source)
+        assertEquals(ResearchSourceType.GraphRagPack, detail.sourceType)
+        assertEquals("pack-1", detail.sourceDetail)
+        assertEquals(
+            listOf(
+                ResearchDataScope.Content,
+                ResearchDataScope.Evidence,
+                ResearchDataScope.AiResults,
+                ResearchDataScope.AiInferred,
+            ),
+            detail.dataScope,
+        )
     }
 
     @Test

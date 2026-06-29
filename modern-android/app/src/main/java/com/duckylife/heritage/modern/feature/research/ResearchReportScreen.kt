@@ -43,6 +43,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
+import com.duckylife.heritage.modern.ui.text.formatIsoDate
 
 @Composable
 fun ResearchReportRoute(
@@ -132,7 +133,7 @@ private fun ReportDetailContent(
                 ReportStatusLine(status = report.status)
                 if (!report.createdAt.isNullOrBlank()) {
                     Text(
-                        text = report.createdAt,
+                        text = formatIsoDate(report.createdAt) ?: report.createdAt,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

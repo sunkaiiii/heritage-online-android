@@ -35,6 +35,8 @@ import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -200,6 +202,8 @@ fun MyPage(
                         favorites = favorites,
                         pendingCount = pendingCount,
                         lastSyncAt = profileState?.lastSyncAt,
+                        lastSyncError = profileState?.lastSyncError,
+                        onSyncNow = { viewModel.syncNow() },
                         imageLoader = imageLoader,
                         onItemClick = { item ->
                             item.navigationTarget?.let { onNavigate(it) }
@@ -229,6 +233,8 @@ fun MyPage(
 
                     MyPageTab.Learning -> LearningTab(
                         progress = learningProgress.map { it.toLearningItem() },
+                        lastSyncError = profileState?.lastSyncError,
+                        onSyncNow = { viewModel.syncNow() },
                         onRouteSelected = { routeId ->
                             onNavigate(MyPageDestination.LearningRouteDetail(routeId = routeId))
                         },
@@ -499,10 +505,48 @@ private fun SyncStatusLine(
 }
 
 @Composable
+private fun SyncErrorBanner(
+    lastSyncError: String?,
+    onSyncNow: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (lastSyncError.isNullOrBlank()) return
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(R.string.sync_status_error),
+                color = MaterialTheme.colorScheme.onErrorContainer,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f),
+            )
+            TextButton(onClick = onSyncNow) {
+                Text(
+                    text = stringResource(R.string.action_sync_now),
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun FavoritesTab(
     favorites: List<FavoriteItem>,
     pendingCount: Int,
     lastSyncAt: Long?,
+    lastSyncError: String?,
+    onSyncNow: () -> Unit,
     imageLoader: ImageLoader,
     onItemClick: (FavoriteItem) -> Unit,
     onUnfavorite: (FavoriteItem) -> Unit,
@@ -513,6 +557,15 @@ private fun FavoritesTab(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (!lastSyncError.isNullOrBlank()) {
+            item {
+                SyncErrorBanner(
+                    lastSyncError = lastSyncError,
+                    onSyncNow = onSyncNow,
+                )
+            }
+        }
+
         if (favorites.isEmpty()) {
             item {
                 EmptyState(
@@ -798,6 +851,8 @@ private fun HistoryRow(
 @Composable
 private fun LearningTab(
     progress: List<LearningProgressItem>,
+    lastSyncError: String?,
+    onSyncNow: () -> Unit,
     onRouteSelected: (String) -> Unit,
     onBrowseRoutes: () -> Unit,
 ) {
@@ -809,6 +864,15 @@ private fun LearningTab(
         contentPadding = PaddingValues(horizontal = 20.dp, vertical = 14.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        if (!lastSyncError.isNullOrBlank()) {
+            item {
+                SyncErrorBanner(
+                    lastSyncError = lastSyncError,
+                    onSyncNow = onSyncNow,
+                )
+            }
+        }
+
         if (progress.isEmpty()) {
             item {
                 EmptyState(

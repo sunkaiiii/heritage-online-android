@@ -128,6 +128,10 @@
     <string name="reading_path_clear">清空阅读路径</string>
     <string name="reading_path_clear_confirm">确认清空所有阅读路径记录？</string>
     <string name="reading_path_source_list">列表</string>
+    <string name="reading_path_source_graph_trail">图谱漫游</string>
+    <string name="reading_path_source_journey">为你继续探索</string>
+    <string name="reading_path_source_learning_route">学习路线</string>
+    <string name="reading_path_source_ranking">排行榜</string>
     <string name="action_favorite">收藏</string>
     <string name="action_unfavorite">取消收藏</string>
     <string name="favorites_empty_message">还没有收藏内容。</string>
@@ -733,4 +737,28 @@
     <string name="ranking_target_type_article">文章</string>
     <string name="ranking_target_type_directoryItem">名录</string>
     <string name="ranking_target_type_inheritor">传承人</string>
+
+    <string name="research_source_graph_rag_pack">图谱资料包</string>
+    <string name="research_source_snapshot">数据快照</string>
+    <string name="research_source_unknown">未知来源</string>
+    <string name="research_scope_content">内容</string>
+    <string name="research_scope_evidence">证据</string>
+    <string name="research_scope_ai_results">AI 结果</string>
+    <string name="research_scope_ai_inferred">AI 推断</string>
+
+
+    <string name="trail_strategy_mixed">混合</string>
+    <string name="trail_strategy_topic_ladder">主题阶梯</string>
+    <string name="trail_strategy_hidden_gem">冷门推荐</string>
+    <string name="trail_strategy_bridge_walk">关联漫步</string>
+    <string name="trail_strategy_similar">相似推荐</string>
+    <string name="trail_strategy_bridge">桥接</string>
+    <string name="trail_strategy_representative">代表性</string>
+    <string name="trail_strategy_diverse">多样化</string>
+    <string name="trail_strategy_unknown">未知策略</string>
+
+    <string name="deep_dive_empty_message">暂无相关发现，换个内容再试试。</string>
+    <string name="content_no_longer_exists">内容已不存在或已被移除</string>
+    <string name="graph_path_explain_unsupported_node">该节点类型暂不支持路径解释</string>
+    <string name="research_package_artifacts_filtered_warning">已忽略 %1$d 个名称不安全的附件</string>
 </resources>

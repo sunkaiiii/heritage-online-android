@@ -127,8 +127,8 @@ class SpacetimeViewModel @Inject constructor(
                 filters = filters,
                 breakdown = AsyncState(),
                 outliers = AsyncState(),
-                compareResult = AsyncState(),
-                crosstabResult = AsyncState(),
+                compareResult = if (shouldReloadAnalytics) AsyncState() else it.compareResult,
+                crosstabResult = if (shouldReloadAnalytics) AsyncState() else it.crosstabResult,
             )
         }
         persistUiState()

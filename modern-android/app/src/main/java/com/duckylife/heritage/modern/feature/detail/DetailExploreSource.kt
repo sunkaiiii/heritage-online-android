@@ -13,6 +13,10 @@ enum class DetailExploreSource(val wireName: String) {
     Collection("collection"),
     Graph("graph"),
     ExploreTopic("exploreTopic"),
+    GraphTrail("graphTrail"),
+    Journey("journey"),
+    LearningRoute("learningRoute"),
+    Ranking("ranking"),
 }
 
 /**

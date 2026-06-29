@@ -109,9 +109,11 @@ fun DirectoryRoute(
     val popBackStack: () -> Unit = {
         if (backStack.size > 1) {
             backStack.removeLastOrNull()
+        } else if (backStack.isEmpty()) {
+            backStack.add(DirectoryRouteKey.DirectoryList)
         }
     }
-    val isInDetail = backStack.lastOrNull() !is DirectoryRouteKey.DirectoryList
+    val isInDetail = backStack.isNotEmpty() && backStack.lastOrNull() !is DirectoryRouteKey.DirectoryList
     LaunchedEffect(isInDetail) {
         onSecondaryDestinationChanged(isInDetail)
     }

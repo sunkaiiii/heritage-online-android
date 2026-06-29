@@ -53,6 +53,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticItemDto
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.formatIsoDate
 
 @Composable
 fun DirectoryStatisticsContent(
@@ -150,7 +151,7 @@ private fun StatisticsOverviewCard(
             Spacer(modifier = Modifier.height(8.dp))
             if (!generatedAt.isNullOrBlank()) {
                 Text(
-                    text = stringResource(R.string.statistics_generated_at, generatedAt),
+                    text = stringResource(R.string.statistics_generated_at, formatIsoDate(generatedAt) ?: generatedAt),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

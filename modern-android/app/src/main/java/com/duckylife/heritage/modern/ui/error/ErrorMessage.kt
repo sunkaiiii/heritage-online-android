@@ -61,7 +61,7 @@ fun ErrorKind.fallbackResId(): Int = when (this) {
     ErrorKind.NetworkUnavailable -> com.duckylife.heritage.modern.R.string.error_network_unavailable
     ErrorKind.Timeout -> com.duckylife.heritage.modern.R.string.error_timeout
     ErrorKind.ServerError -> com.duckylife.heritage.modern.R.string.error_server_unavailable
-    ErrorKind.NotFound -> com.duckylife.heritage.modern.R.string.content_not_available
+    ErrorKind.NotFound -> com.duckylife.heritage.modern.R.string.content_no_longer_exists
     ErrorKind.BadRequest -> com.duckylife.heritage.modern.R.string.error_bad_request
     ErrorKind.Unauthorized -> com.duckylife.heritage.modern.R.string.error_unauthorized
     ErrorKind.Conflict -> com.duckylife.heritage.modern.R.string.error_conflict

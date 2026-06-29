@@ -67,6 +67,8 @@ import com.duckylife.heritage.modern.feature.rankings.model.RankingMetricUiModel
 import com.duckylife.heritage.modern.ui.state.AsyncState
 import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritageErrorState
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 
 @Composable
@@ -215,7 +217,7 @@ private fun RankingDefinitionCard(
 fun RankingDetailRoute(
     rankingId: String,
     onBack: () -> Unit,
-    onContentClick: (String, String) -> Unit,
+    onContentClick: (DetailContextTarget) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RankingDetailViewModel = hiltViewModel(),
 ) {
@@ -242,7 +244,7 @@ internal fun RankingDetailScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onFiltersChanged: (RankingFilters) -> Unit,
-    onContentClick: (String, String) -> Unit,
+    onContentClick: (DetailContextTarget) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -328,11 +330,7 @@ internal fun RankingDetailScreen(
                                 RankingItemCard(
                                     item = item,
                                     onClick = {
-                                        item.contentType?.let { type ->
-                                            item.contentId?.let { id ->
-                                                onContentClick(type, id)
-                                            }
-                                        }
+                                        item.toDetailContextTarget()?.let(onContentClick)
                                     },
                                 )
                             }

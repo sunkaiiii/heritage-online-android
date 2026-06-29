@@ -51,6 +51,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
+import com.duckylife.heritage.modern.ui.text.formatIsoDate
+import com.duckylife.heritage.modern.ui.text.localizedResearchDataScopeList
+import com.duckylife.heritage.modern.ui.text.localizedResearchSource
 import java.io.File
 
 @Composable
@@ -167,21 +170,25 @@ private fun PackageDetailContent(
                 PackageStatusLine(status = packageDetail.status)
                 if (!packageDetail.createdAt.isNullOrBlank()) {
                     Text(
-                        text = packageDetail.createdAt,
+                        text = formatIsoDate(packageDetail.createdAt) ?: packageDetail.createdAt,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if (!packageDetail.source.isNullOrBlank()) {
+                Text(
+                    text = stringResource(
+                        R.string.research_package_source_format,
+                        localizedResearchSource(packageDetail.sourceType, packageDetail.sourceDetail),
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                if (packageDetail.dataScope.isNotEmpty()) {
                     Text(
-                        text = stringResource(R.string.research_package_source_format, packageDetail.source),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (!packageDetail.dataScope.isNullOrBlank()) {
-                    Text(
-                        text = stringResource(R.string.research_package_scope_format, packageDetail.dataScope),
+                        text = stringResource(
+                            R.string.research_package_scope_format,
+                            localizedResearchDataScopeList(packageDetail.dataScope),
+                        ),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -209,9 +216,19 @@ private fun PackageDetailContent(
             }
         }
 
-        if (packageDetail.warnings.isNotEmpty()) {
+        if (packageDetail.warnings.isNotEmpty() || packageDetail.filteredArtifactCount > 0) {
             item {
-                WarningsSection(warnings = packageDetail.warnings)
+                val allWarnings = packageDetail.warnings.toMutableList().apply {
+                    if (packageDetail.filteredArtifactCount > 0) {
+                        add(
+                            stringResource(
+                                R.string.research_package_artifacts_filtered_warning,
+                                packageDetail.filteredArtifactCount,
+                            ),
+                        )
+                    }
+                }
+                WarningsSection(warnings = allWarnings)
             }
         }
 
