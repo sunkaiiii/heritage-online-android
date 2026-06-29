@@ -87,6 +87,8 @@ import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntellig
 import com.duckylife.heritage.modern.feature.detail.DetailContinueExploreSection
 import com.duckylife.heritage.modern.feature.detail.intelligence.DetailIntelligenceSection
 import com.duckylife.heritage.modern.ui.component.DetailContextSection
+import com.duckylife.heritage.modern.ui.text.contentTypeFallbackText
+import com.duckylife.heritage.modern.ui.text.localizedInheritorBatch
 import com.duckylife.heritage.modern.ui.text.localizedInheritorGender
 import com.duckylife.heritage.modern.ui.component.DetailExploreSection
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
@@ -522,7 +524,7 @@ private fun InheritorHero(
     onOpenSource: (String) -> Unit,
     onCoverImageClick: (() -> Unit)? = null,
 ) {
-    val fallbackText = stringResource(R.string.brand_fallback)
+    val fallbackText = contentTypeFallbackText("inheritor")
     HeritageContentCard {
         Column {
             item.coverImage?.let { coverImage ->
@@ -592,7 +594,7 @@ private fun InheritorMetaChips(item: InheritorDetailDto) {
         item.ethnicity?.takeIf { it.isNotBlank() },
         item.category?.takeIf { it.isNotBlank() },
         item.region?.takeIf { it.isNotBlank() },
-        item.batch?.takeIf { it.isNotBlank() },
+        item.batch?.let { localizedInheritorBatch(it) },
     )
     if (labels.isNotEmpty()) {
         FlowRow(
@@ -615,7 +617,7 @@ private fun InheritorFacts(item: InheritorDetailDto) {
         item.projectName?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.inheritor_field_project_name), it) },
         item.projectCode?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.inheritor_field_project_code), it) },
         item.birthDateText?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.inheritor_field_birth_date), it) },
-        item.batch?.takeIf { it.isNotBlank() }?.let { HeritageFact(stringResource(R.string.inheritor_field_batch), it) },
+        item.batch?.let { localizedInheritorBatch(it) }?.let { HeritageFact(stringResource(R.string.inheritor_field_batch), it) },
     )
     HeritageFactCard(facts = facts)
 }

@@ -54,6 +54,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -457,12 +459,17 @@ private fun BannerCard(
         ?: banner.displayImage?.thumbnailUrl
         ?: banner.desktopImage?.displayUrl
         ?: banner.desktopImage?.thumbnailUrl
+    val bannerLabel = stringResource(R.string.banner_view_details)
     Card(
         modifier = Modifier
             .size(width = 300.dp, height = 156.dp)
             .then(
                 if (!targetUrl.isNullOrBlank()) {
-                    Modifier.clickable(onClick = { onBannerSelected(targetUrl) })
+                    Modifier
+                        .clickable(onClick = { onBannerSelected(targetUrl) })
+                        .semantics {
+                            contentDescription = "$bannerLabel: $targetUrl"
+                        }
                 } else {
                     Modifier
                 }
@@ -471,12 +478,31 @@ private fun BannerCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        HeritageListImage(
-            imageUrl = bannerImageUrl,
-            imageLoader = imageLoader,
-            fallbackText = stringResource(R.string.brand_fallback),
-            modifier = Modifier.fillMaxSize(),
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            HeritageListImage(
+                imageUrl = bannerImageUrl,
+                imageLoader = imageLoader,
+                fallbackText = stringResource(R.string.brand_fallback),
+                modifier = Modifier.fillMaxSize(),
+            )
+            if (!targetUrl.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.74f))
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = bannerLabel,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+            }
+        }
     }
 }
 

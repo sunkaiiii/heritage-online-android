@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -338,7 +340,7 @@ private fun MetricsRow(metrics: SpacetimeOverviewUiModel, modifier: Modifier = M
         MetricCard(
             label = stringResource(R.string.spacetime_metrics_total),
             value = metrics.total.toString(),
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(2f),
         )
         MetricCard(
             label = stringResource(R.string.content_type_article),
@@ -374,6 +376,8 @@ private fun MetricCard(label: String, value: String, modifier: Modifier = Modifi
                 text = value,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = label,
@@ -1134,7 +1138,10 @@ private fun SpacetimeFilterSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp),
+                .verticalScroll(rememberScrollState())
+                .navigationBarsPadding()
+                .imePadding()
+                .padding(bottom = 16.dp),
         ) {
             Text(
                 text = stringResource(R.string.spacetime_filter_title),

@@ -92,6 +92,8 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.error.toUiError
 import com.duckylife.heritage.modern.ui.text.InheritorGender
+import com.duckylife.heritage.modern.ui.text.contentTypeFallbackText
+import com.duckylife.heritage.modern.ui.text.localizedInheritorBatch
 import com.duckylife.heritage.modern.ui.text.localizedInheritorGender
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
@@ -618,7 +620,7 @@ private fun InheritorRow(
     modifier: Modifier = Modifier,
 ) {
     val unnamedInheritor = stringResource(R.string.unnamed_inheritor)
-    val fallbackText = stringResource(R.string.brand_fallback)
+    val fallbackText = contentTypeFallbackText("inheritor")
     val imageUrl = inheritor.coverImage?.displayUrl
         ?: inheritor.coverImage?.thumbnailUrl
         ?: inheritor.coverImage?.originalUrl
@@ -673,7 +675,7 @@ private fun InheritorMetaRow(inheritor: InheritorSummaryDto) {
     val labels = listOfNotNull(
         inheritor.category?.takeIf { it.isNotBlank() },
         inheritor.region?.takeIf { it.isNotBlank() },
-        inheritor.batch?.takeIf { it.isNotBlank() },
+        inheritor.batch?.let { localizedInheritorBatch(it) },
     ).take(3)
 
     FlowRow(

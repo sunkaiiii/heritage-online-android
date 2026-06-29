@@ -47,6 +47,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.component.MetricPill
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
 
 @Composable
 fun TaxonomyDetailRoute(
@@ -629,7 +630,10 @@ private fun DirectoryItemReferenceRow(
 ) {
     HeritageReferenceCard(
         title = item.title.orEmpty().ifBlank { stringResource(R.string.unnamed_directory_item) },
-        meta = listOfNotNull(item.kind.wireName, item.region).joinToString(" · "),
+        meta = listOfNotNull(
+            localizedDirectoryKind(item.kind.wireName),
+            item.region,
+        ).joinToString(" · "),
         onClick = onClick,
         modifier = modifier,
     )

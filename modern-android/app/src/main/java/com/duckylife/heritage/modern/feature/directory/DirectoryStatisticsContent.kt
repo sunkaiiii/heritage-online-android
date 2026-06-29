@@ -75,7 +75,7 @@ fun DirectoryStatisticsContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
                 StatisticsOverviewCard(

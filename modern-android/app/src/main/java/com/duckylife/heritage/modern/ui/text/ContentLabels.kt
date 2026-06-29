@@ -165,6 +165,33 @@ fun localizedLearningRouteDifficulty(difficulty: LearningRouteDifficulty): Strin
         LearningRouteDifficulty.Unknown -> stringResource(R.string.learning_route_difficulty_unknown)
     }
 
+/**
+ * 格式化传承人批次字段。
+ *
+ * 后端常见格式如 `2025(2025年（第六批）)`，直接展示显得冗余。
+ * 这里提取括号内的人可读批次名（如“第六批”）；若不存在则原样返回。
+ */
+fun localizedInheritorBatch(batch: String?): String? {
+    if (batch.isNullOrBlank()) return null
+    val trimmed = batch.trim()
+    // 优先提取最后一组全角或半角括号内的内容
+    val match = Regex("""[（(]([^（()）)]+)[）)]""").findAll(trimmed).lastOrNull()
+    return match?.groupValues?.get(1)?.trim()?.takeIf { it.isNotBlank() } ?: trimmed
+}
+
+/**
+ * 按内容类型返回占位符文字，用于无缩略图时区分内容类型。
+ */
+@Composable
+fun contentTypeFallbackText(type: String?): String =
+    when (type.normalizedWireName()) {
+        "article" -> stringResource(R.string.graph_node_placeholder_article)
+        "directoryitem", "directory" -> stringResource(R.string.graph_node_placeholder_directory)
+        "inheritor" -> stringResource(R.string.graph_node_placeholder_inheritor)
+        "topic" -> stringResource(R.string.graph_node_placeholder_topic)
+        else -> stringResource(R.string.brand_fallback)
+    }
+
 private fun String?.normalizedWireName(): String? =
     this
         ?.takeIf { it.isNotBlank() }

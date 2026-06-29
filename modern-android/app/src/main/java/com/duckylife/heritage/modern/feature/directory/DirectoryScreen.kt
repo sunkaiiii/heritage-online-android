@@ -81,6 +81,8 @@ import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRo
 import com.duckylife.heritage.modern.feature.my.MyPageDestination
 import com.duckylife.heritage.modern.ui.component.HeritageFilterButton
 import com.duckylife.heritage.modern.ui.component.HeritageListCard
+import com.duckylife.heritage.modern.ui.component.horizontalFadingEdge
+import com.duckylife.heritage.modern.ui.text.contentTypeFallbackText
 import com.duckylife.heritage.modern.ui.component.mainTabContentPadding
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
@@ -657,6 +659,10 @@ private fun DirectoryKindFilters(
     onKindSelected: (DirectoryItemKind) -> Unit,
 ) {
     LazyRow(
+        modifier = Modifier.horizontalFadingEdge(
+            edgeWidth = 12.dp,
+            color = MaterialTheme.colorScheme.background,
+        ),
         contentPadding = PaddingValues(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -678,7 +684,7 @@ private fun DirectoryItemRow(
     modifier: Modifier = Modifier,
 ) {
     val unnamedItem = stringResource(R.string.unnamed_directory_item)
-    val fallbackText = stringResource(R.string.brand_fallback)
+    val fallbackText = contentTypeFallbackText("directory")
     val imageUrl = item.coverImage?.displayUrl
         ?: item.coverImage?.thumbnailUrl
         ?: item.coverImage?.originalUrl

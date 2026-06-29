@@ -162,6 +162,11 @@ class LearningRouteDetailViewModel @AssistedInject constructor(
                     it.copy(
                         isLoadingNext = false,
                         nextStep = result.nextStep,
+                        snackbarMessage = if (result.nextStep != null) {
+                            LearningRouteDetailMessage(R.string.learning_route_next_step_located)
+                        } else {
+                            null
+                        },
                     )
                 }
             }.onFailure { throwable ->

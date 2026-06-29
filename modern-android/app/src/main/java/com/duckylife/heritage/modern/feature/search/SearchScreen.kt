@@ -459,7 +459,7 @@ private fun ActiveFiltersRow(
             FilterChip(
                 selected = true,
                 onClick = { onToggleType(type) },
-                label = { Text(type.wireName) },
+                label = { Text(localizedContentType(type.wireName)) },
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.Close,
@@ -487,7 +487,7 @@ private fun ActiveFiltersRow(
             FilterChip(
                 selected = true,
                 onClick = onClearCategory,
-                label = { Text(uiState.categoryFilter) },
+                label = { Text(localizedArticleCategory(uiState.categoryFilter) ?: uiState.categoryFilter) },
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.Close,
@@ -515,7 +515,7 @@ private fun ActiveFiltersRow(
             FilterChip(
                 selected = true,
                 onClick = onClearKind,
-                label = { Text(uiState.kindFilter.wireName) },
+                label = { Text(localizedDirectoryKind(uiState.kindFilter.wireName) ?: uiState.kindFilter.wireName) },
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Outlined.Close,

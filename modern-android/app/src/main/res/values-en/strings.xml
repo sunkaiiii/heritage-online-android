@@ -60,6 +60,7 @@
     <string name="action_retry">Retry</string>
     <string name="action_back">Back</string>
     <string name="action_clear_search">Clear search</string>
+    <string name="action_search">Search</string>
     <string name="category_news">News</string>
     <string name="category_forum">Forum</string>
     <string name="category_special_topic">Specials</string>
@@ -69,6 +70,7 @@
     <string name="article_load_failed">Failed to load articles</string>
     <string name="article_append_failed">Failed to load more</string>
     <string name="banner_load_failed">Failed to load banners</string>
+    <string name="banner_view_details">View details</string>
     <string name="article_detail_load_failed">Failed to load article detail</string>
     <string name="unnamed_article">Untitled article</string>
     <string name="content_load_failed">Load failed</string>
@@ -221,7 +223,7 @@
     <string name="filter_clear_item">Clear %1$s</string>
     <string name="filter_placeholder_year">2024</string>
     <string name="filter_placeholder_region">Beijing</string>
-    <string name="filter_placeholder_list_type">representative</string>
+    <string name="filter_placeholder_list_type">e.g. National project</string>
     <string name="directory_tab_list">Directory</string>
     <string name="directory_tab_statistics">Statistics</string>
     <string name="statistics_overview_title">Overview</string>
@@ -301,6 +303,7 @@
     <string name="learning_route_step_required">Required</string>
     <string name="learning_route_next_step_title">Next step</string>
     <string name="learning_route_continue_next">Continue next step</string>
+    <string name="learning_route_next_step_located">Next step located</string>
     <string name="learning_route_completed_title">Route completed</string>
     <string name="learning_route_completed_steps_format">Completed %1$d/%2$d steps</string>
     <string name="learning_route_completed_all">Route completed</string>
@@ -368,6 +371,7 @@
     <string name="taxonomy_stat_inheritors">Inheritors</string>
     <string name="taxonomy_stat_articles">Articles</string>
     <string name="taxonomy_stat_total">Total</string>
+    <string name="taxonomy_kind_compare_action">Compare this kind</string>
     <string name="taxonomy_top_regions">Top Regions</string>
     <string name="taxonomy_top_categories">Top Categories</string>
     <string name="taxonomy_related_categories">Related Categories</string>

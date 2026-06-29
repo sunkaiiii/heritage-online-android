@@ -181,7 +181,9 @@ internal fun LearningRouteDetailScreen(
                     isCompleted = uiState.isCompleted,
                     isLoadingNext = uiState.isLoadingNext,
                     nextStepError = uiState.nextStepError,
+                    nextStep = uiState.nextStep,
                     onLoadNextStep = onLoadNextStep,
+                    onStepContentClick = onStepContentClick,
                     onRestart = onShowRestartConfirmation,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                 )
@@ -375,8 +377,11 @@ private fun LearningRouteHeader(
 
         Spacer(modifier = Modifier.height(4.dp))
 
+        val progress = remember(percent) {
+            (percent / 100f).coerceIn(0f, 1f)
+        }
         LinearProgressIndicator(
-            progress = { percent / 100f },
+            progress = { progress },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
@@ -545,7 +550,9 @@ private fun LearningRouteDetailBottomBar(
     isCompleted: Boolean,
     isLoadingNext: Boolean,
     nextStepError: ErrorKind?,
+    nextStep: LearningRouteStepUiModel?,
     onLoadNextStep: () -> Unit,
+    onStepContentClick: (DetailContextTarget) -> Unit,
     onRestart: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -578,8 +585,15 @@ private fun LearningRouteDetailBottomBar(
                 }
             }
         } else {
+            val target = nextStep?.toDetailContextTarget()
             FilledTonalButton(
-                onClick = onLoadNextStep,
+                onClick = {
+                    if (target != null) {
+                        onStepContentClick(target)
+                    } else {
+                        onLoadNextStep()
+                    }
+                },
                 enabled = !isLoadingNext,
                 modifier = Modifier.fillMaxWidth(),
             ) {

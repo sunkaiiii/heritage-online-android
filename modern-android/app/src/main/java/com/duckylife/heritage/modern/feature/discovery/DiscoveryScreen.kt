@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.feature.discovery
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -416,21 +417,40 @@ private fun DiscoverySearchBar(
     modifier: Modifier = Modifier,
 ) {
     var searchText by remember { mutableStateOf("") }
-    HeritageSearchField(
-        value = searchText,
-        onValueChange = { searchText = it },
-        onSearch = { query ->
-            if (query.isNotBlank()) {
-                onSearchSubmit(query.trim())
-            }
-        },
-        label = stringResource(R.string.discovery_search_placeholder),
-        placeholder = stringResource(R.string.discovery_search_placeholder),
-        clearContentDescription = stringResource(R.string.action_clear_search),
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-    )
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        HeritageSearchField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            onSearch = { query ->
+                if (query.isNotBlank()) {
+                    focusManager.clearFocus()
+                    onSearchSubmit(query.trim())
+                }
+            },
+            label = stringResource(R.string.discovery_search_placeholder),
+            placeholder = stringResource(R.string.discovery_search_placeholder),
+            clearContentDescription = stringResource(R.string.action_clear_search),
+            modifier = Modifier.weight(1f),
+        )
+        androidx.compose.animation.AnimatedVisibility(visible = searchText.isNotBlank()) {
+            Button(
+                onClick = {
+                    focusManager.clearFocus()
+                    onSearchSubmit(searchText.trim())
+                },
+                enabled = searchText.isNotBlank(),
+            ) {
+                Text(stringResource(R.string.action_search))
+            }
+        }
+    }
 }
 
 @Composable

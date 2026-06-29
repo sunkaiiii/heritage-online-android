@@ -60,6 +60,7 @@
     <string name="action_retry">重试</string>
     <string name="action_back">返回</string>
     <string name="action_clear_search">清空搜索</string>
+    <string name="action_search">搜索</string>
     <string name="category_news">新闻</string>
     <string name="category_forum">论坛</string>
     <string name="category_special_topic">专题</string>
@@ -69,6 +70,7 @@
     <string name="article_load_failed">文章加载失败</string>
     <string name="article_append_failed">加载更多失败</string>
     <string name="banner_load_failed">Banner 加载失败</string>
+    <string name="banner_view_details">查看详情</string>
     <string name="article_detail_load_failed">文章详情加载失败</string>
     <string name="unnamed_article">未命名文章</string>
     <string name="content_load_failed">加载失败</string>
@@ -257,7 +259,7 @@
     <string name="filter_clear_item">清除 %1$s</string>
     <string name="filter_placeholder_year">2024</string>
     <string name="filter_placeholder_region">北京</string>
-    <string name="filter_placeholder_list_type">representative</string>
+    <string name="filter_placeholder_list_type">如：国家级项目</string>
     <string name="directory_tab_list">名录</string>
     <string name="directory_tab_statistics">统计</string>
     <string name="statistics_overview_title">总览</string>
@@ -374,6 +376,7 @@
     <string name="taxonomy_stat_inheritors">传承人</string>
     <string name="taxonomy_stat_articles">文章</string>
     <string name="taxonomy_stat_total">总计</string>
+    <string name="taxonomy_kind_compare_action">对比此种类</string>
     <string name="taxonomy_top_regions">热门地区</string>
     <string name="taxonomy_top_categories">热门分类</string>
     <string name="taxonomy_related_categories">相关分类</string>
@@ -482,6 +485,7 @@
     <string name="learning_route_step_required">必学</string>
     <string name="learning_route_next_step_title">下一步</string>
     <string name="learning_route_continue_next">继续下一步</string>
+    <string name="learning_route_next_step_located">已定位到下一步</string>
     <string name="learning_route_completed_title">已完成这条路线</string>
     <string name="learning_route_completed_steps_format">已完成 %1$d/%2$d 步</string>
     <string name="learning_route_completed_all">已完成这条路线</string>

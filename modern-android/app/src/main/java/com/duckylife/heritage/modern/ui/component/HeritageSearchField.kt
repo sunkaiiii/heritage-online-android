@@ -41,6 +41,17 @@ fun HeritageSearchField(
         },
         trailingIcon = {
             if (value.isNotBlank()) {
+                IconButton(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onSearch?.invoke(value)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Search,
+                        contentDescription = null,
+                    )
+                }
                 IconButton(onClick = { onValueChange("") }) {
                     Icon(
                         imageVector = Icons.Outlined.Close,
