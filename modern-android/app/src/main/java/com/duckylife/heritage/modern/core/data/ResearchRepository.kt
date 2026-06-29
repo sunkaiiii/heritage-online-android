@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.network.ResearchPackageDetailQuery
 import com.duckylife.heritage.modern.core.network.ResearchReportByPackageQuery
 import com.duckylife.heritage.modern.core.network.ResearchReportDetailQuery
 import com.duckylife.heritage.modern.core.network.api.ResearchApi
+import com.duckylife.heritage.modern.core.network.isAllowedArtifactName
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageArtifactDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchPackageDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchReportDto
@@ -41,8 +42,12 @@ class DefaultResearchRepository @Inject constructor(
     override suspend fun getPackageDetail(packageId: String): ResearchPackageDetailUiModel =
         api.getResearchPackageDetail(ResearchPackageDetailQuery(packageId = packageId)).toDetailUiModel()
 
-    override suspend fun getArtifactContent(packageId: String, artifactName: String): String =
-        api.getResearchArtifact(ResearchArtifactQuery(packageId = packageId, artifactName = artifactName))
+    override suspend fun getArtifactContent(packageId: String, artifactName: String): String {
+        require(isAllowedArtifactName(artifactName)) {
+            "artifactName must be a safe file name (no path separators, control chars, or traversal, 1-128 chars)"
+        }
+        return api.getResearchArtifact(ResearchArtifactQuery(packageId = packageId, artifactName = artifactName))
+    }
 
     override suspend fun getReports(): List<ResearchReportItemUiModel> =
         api.getResearchReports().reports.map { it.toItemUiModel() }

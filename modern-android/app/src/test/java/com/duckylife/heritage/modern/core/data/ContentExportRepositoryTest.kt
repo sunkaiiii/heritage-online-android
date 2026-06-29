@@ -7,9 +7,18 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ExportPreviewDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportTemplateDto
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.request.get
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ContentExportRepositoryTest {
@@ -69,10 +78,61 @@ class ContentExportRepositoryTest {
         assertEquals(request, fakeApi.capturedExportRequest)
     }
 
+    @Test(expected = ResponseException::class)
+    fun `exportContent throws ResponseException on 413`() = runTest {
+        fakeApi.exportFailure = createResponseException(HttpStatusCode.PayloadTooLarge)
+        val request = ExportRequestDto(
+            scopeType = ExportScopeType.Ids,
+            format = ExportFormat.Markdown,
+            ids = listOf("a1"),
+        )
+
+        repository.exportContent(request)
+    }
+
+    @Test
+    fun `exportContent propagates captured request even on failure`() = runTest {
+        fakeApi.exportFailure = createResponseException(HttpStatusCode.PayloadTooLarge)
+        val request = ExportRequestDto(
+            scopeType = ExportScopeType.Ids,
+            format = ExportFormat.Json,
+            ids = listOf("b1"),
+            targetType = "directoryItem",
+        )
+
+        try {
+            repository.exportContent(request)
+        } catch (_: ResponseException) {
+            // expected
+        }
+
+        assertEquals(request, fakeApi.capturedExportRequest)
+    }
+
+    private suspend fun createResponseException(status: HttpStatusCode): ResponseException {
+        val engine = MockEngine { _ ->
+            respond(
+                content = "{}",
+                status = status,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = HttpClient(engine) { expectSuccess = true }
+        return try {
+            client.get("/test")
+            error("Expected exception")
+        } catch (e: ResponseException) {
+            e
+        } finally {
+            client.close()
+        }
+    }
+
     private class FakeContentExportApi : ContentExportApi {
         var templates: List<ExportTemplateDto> = emptyList()
         var previewResult: ExportPreviewDto = ExportPreviewDto()
         var exportResult: ExportContentResultDto = ExportContentResultDto()
+        var exportFailure: Throwable? = null
         var capturedPreviewRequest: ExportRequestDto? = null
         var capturedExportRequest: ExportRequestDto? = null
 
@@ -85,6 +145,7 @@ class ContentExportRepositoryTest {
 
         override suspend fun exportContent(request: ExportRequestDto): ExportContentResultDto {
             capturedExportRequest = request
+            exportFailure?.let { throw it }
             return exportResult
         }
     }

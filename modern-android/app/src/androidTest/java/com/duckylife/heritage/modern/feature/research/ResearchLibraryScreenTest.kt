@@ -146,4 +146,58 @@ class ResearchLibraryScreenTest {
 
         assertEquals(1, retryCount)
     }
+
+    @Test
+    fun nonSucceededPackage_doesNotEmitClickAndNoRetryButton() {
+        var clickedId: String? = null
+        composeTestRule.setContent {
+            HeritageTheme {
+                ResearchLibraryScreen(
+                    uiState = ResearchLibraryUiState(
+                        selectedTab = ResearchLibraryTab.Packages,
+                        packages = AsyncState(data = packages),
+                    ),
+                    onBack = {},
+                    onRefresh = {},
+                    onTabSelected = {},
+                    onPackageClick = { clickedId = it },
+                    onReportClick = {},
+                )
+            }
+        }
+
+        // Running package is displayed but not clickable.
+        composeTestRule.onNodeWithText("准备中的资料包")
+            .assertIsDisplayed()
+            .performClick()
+        assertEquals(null, clickedId)
+
+        // No per-card retry/cancel button appears in non-error list state.
+        composeTestRule.onNodeWithText(context.getString(R.string.action_retry))
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun emptyPackagesState_showsEmptyMessage() {
+        composeTestRule.setContent {
+            HeritageTheme {
+                ResearchLibraryScreen(
+                    uiState = ResearchLibraryUiState(
+                        selectedTab = ResearchLibraryTab.Packages,
+                        packages = AsyncState(data = emptyList()),
+                    ),
+                    onBack = {},
+                    onRefresh = {},
+                    onTabSelected = {},
+                    onPackageClick = {},
+                    onReportClick = {},
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(context.getString(R.string.research_empty_title))
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(context.getString(R.string.research_empty_message))
+            .assertIsDisplayed()
+    }
 }

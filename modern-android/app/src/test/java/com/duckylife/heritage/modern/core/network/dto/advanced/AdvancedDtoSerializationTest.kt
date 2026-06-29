@@ -435,6 +435,68 @@ class AdvancedDtoSerializationTest {
     }
 
     @Test
+    fun `ResearchPackageDto decodes running status`() {
+        val dto = decodePackageWithStatus("running")
+        assertEquals(ResearchTaskStatus.Running, dto.status)
+    }
+
+    @Test
+    fun `ResearchPackageDto decodes failed status`() {
+        val dto = decodePackageWithStatus("failed")
+        assertEquals(ResearchTaskStatus.Failed, dto.status)
+    }
+
+    @Test
+    fun `ResearchPackageDto decodes queued status`() {
+        val dto = decodePackageWithStatus("queued")
+        assertEquals(ResearchTaskStatus.Queued, dto.status)
+    }
+
+    @Test
+    fun `ResearchPackageDto decodes cancelled status`() {
+        val dto = decodePackageWithStatus("cancelled")
+        assertEquals(ResearchTaskStatus.Cancelled, dto.status)
+    }
+
+    @Test
+    fun `ResearchPackageDto decodes unknown status wire value`() {
+        val dto = decodePackageWithStatus("orphaned")
+        assertEquals(ResearchTaskStatus.Unknown, dto.status)
+    }
+
+    @Test
+    fun `ResearchReportDto decodes running status`() {
+        val dto = decodeReportWithStatus("running")
+        assertEquals(ResearchTaskStatus.Running, dto.status)
+    }
+
+    @Test
+    fun `ResearchReportDto decodes failed status`() {
+        val dto = decodeReportWithStatus("failed")
+        assertEquals(ResearchTaskStatus.Failed, dto.status)
+    }
+
+    @Test
+    fun `ResearchReportDto decodes unknown status wire value`() {
+        val dto = decodeReportWithStatus("orphaned")
+        assertEquals(ResearchTaskStatus.Unknown, dto.status)
+    }
+
+    private fun decodePackageWithStatus(status: String): ResearchPackageDto {
+        val json = """
+            {"packageId": "p1", "status": "$status"}
+        """.trimIndent()
+        return HeritageJson.decodeFromString(ResearchPackageDto.serializer(), json)
+    }
+
+    private fun decodeReportWithStatus(status: String): ResearchReportDto {
+        val json = """
+            {"reportId": "r1", "packageId": "p1", "status": "$status", "title": "报告"}
+        """.trimIndent()
+        return HeritageJson.decodeFromString(ResearchReportDto.serializer(), json)
+    }
+
+    @Test
     fun `ExportRequestDto decodes with defaults`() {
         val json = """
             {

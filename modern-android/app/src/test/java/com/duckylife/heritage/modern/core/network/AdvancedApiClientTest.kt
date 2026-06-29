@@ -492,6 +492,90 @@ class AdvancedApiClientTest {
     }
 
     @Test
+    fun `getResearchPackageDetail encodes packageId path segment`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"packageId":"中文包","status":"succeeded"}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getResearchPackageDetail(ResearchPackageDetailQuery(packageId = "中文包"))
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/research-packages/%E4%B8%AD%E6%96%87%E5%8C%85", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getResearchArtifact encodes packageId and artifactName path segments`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = "artifact body",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Text.Plain.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getResearchArtifact(
+            ResearchArtifactQuery(packageId = "中文包", artifactName = "报告.json"),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals(
+            "/api/research-packages/%E4%B8%AD%E6%96%87%E5%8C%85/artifacts/%E6%8A%A5%E5%91%8A.json",
+            request.url.encodedPath,
+        )
+    }
+
+    @Test
+    fun `getResearchReportDetail encodes reportId path segment`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"reportId":"中文报告","status":"succeeded","title":""}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getResearchReportDetail(ResearchReportDetailQuery(reportId = "中文报告"))
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/research-reports/%E4%B8%AD%E6%96%87%E6%8A%A5%E5%91%8A", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getResearchReportByPackage encodes packageId path segment`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"reportId":"r1","packageId":"中文包","status":"succeeded","title":""}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getResearchReportByPackage(ResearchReportByPackageQuery(packageId = "中文包"))
+
+        val request = requireNotNull(captured)
+        assertEquals(
+            "/api/research-packages/%E4%B8%AD%E6%96%87%E5%8C%85/research-report",
+            request.url.encodedPath,
+        )
+    }
+
+    @Test
     fun `previewExport serializes request and maps md format to Markdown`() = runTest {
         var captured: HttpRequestData? = null
         val engine = MockEngine { request ->

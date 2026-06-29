@@ -199,6 +199,8 @@
     <string name="export_preview_samples">示例</string>
     <string name="export_sample_untitled">未命名内容</string>
     <string name="export_generate_and_share">生成并分享</string>
+    <string name="export_confirm_title">确认导出并分享？</string>
+    <string name="export_confirm_message">将生成当前内容的导出文本，并通过系统分享发送。继续吗？</string>
     <string name="export_oversized_warning">导出内容过大，请改用更小范围或格式后再试。</string>
     <string name="export_share_title">分享导出内容</string>
     <string name="export_share_no_app">未找到可分享的应用</string>

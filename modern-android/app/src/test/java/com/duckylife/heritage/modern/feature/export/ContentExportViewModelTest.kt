@@ -10,6 +10,15 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ExportSampleItemD
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportTemplateDto
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
+import com.duckylife.heritage.modern.ui.error.ErrorKind
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.ResponseException
+import io.ktor.client.request.get
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.headersOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -152,25 +161,6 @@ class ContentExportViewModelTest {
     }
 
     @Test
-    fun `exportAndShare sets oversized warning for huge content`() = runTest {
-        fakeRepository.exportResult = ExportContentResultDto(
-            content = "x".repeat(MAX_EXPORT_CONTENT_BYTES + 1),
-            format = ExportFormat.Markdown,
-            itemCount = 1,
-        )
-        val viewModel = ContentExportViewModel(fakeRepository)
-        viewModel.initialize("a1", SearchResultType.Article)
-        advanceUntilIdle()
-
-        viewModel.exportAndShare()
-        advanceUntilIdle()
-
-        val state = viewModel.uiState.value
-        assertTrue(state.oversizedWarning)
-        assertNull(state.shareContent)
-    }
-
-    @Test
     fun `exportAndShare maps error to exportError`() = runTest {
         fakeRepository.exportFailure = IllegalStateException("export failed")
         val viewModel = ContentExportViewModel(fakeRepository)
@@ -201,6 +191,78 @@ class ContentExportViewModelTest {
         assertNull(state.preview.data)
         assertNull(state.shareContent)
         assertFalse(state.oversizedWarning)
+    }
+
+    @Test
+    fun `exportAndShare maps 413 to PayloadTooLarge error kind`() = runTest {
+        fakeRepository.exportFailure = createResponseException(HttpStatusCode.PayloadTooLarge)
+        val viewModel = ContentExportViewModel(fakeRepository)
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+
+        viewModel.exportAndShare()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.exportError.isLoading)
+        assertEquals(ErrorKind.PayloadTooLarge, state.exportError.errorKind)
+    }
+
+    @Test
+    fun `exportAndShare allows content at exact max boundary`() = runTest {
+        fakeRepository.exportResult = ExportContentResultDto(
+            content = "x".repeat(MAX_EXPORT_CONTENT_BYTES),
+            format = ExportFormat.Markdown,
+            itemCount = 1,
+        )
+        val viewModel = ContentExportViewModel(fakeRepository)
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+
+        viewModel.exportAndShare()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.oversizedWarning)
+        assertNotNull(state.shareContent)
+    }
+
+    @Test
+    fun `exportAndShare blocks content one byte above max boundary`() = runTest {
+        fakeRepository.exportResult = ExportContentResultDto(
+            content = "x".repeat(MAX_EXPORT_CONTENT_BYTES + 1),
+            format = ExportFormat.Markdown,
+            itemCount = 1,
+        )
+        val viewModel = ContentExportViewModel(fakeRepository)
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+
+        viewModel.exportAndShare()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.oversizedWarning)
+        assertNull(state.shareContent)
+    }
+
+    private suspend fun createResponseException(status: HttpStatusCode): ResponseException {
+        val engine = MockEngine { _ ->
+            respond(
+                content = "{}",
+                status = status,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val client = HttpClient(engine) { expectSuccess = true }
+        return try {
+            client.get("/test")
+            error("Expected exception")
+        } catch (e: ResponseException) {
+            e
+        } finally {
+            client.close()
+        }
     }
 
     private class FakeContentExportRepository : ContentExportRepository {

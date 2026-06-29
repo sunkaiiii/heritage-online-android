@@ -472,6 +472,13 @@ data class RankingContentQuery(
 /**
  * 研究资料查询参数（只读）。
  */
+
+/** 允许的 artifact 文件名：禁止控制字符、路径分隔符与目录遍历，长度 1–128。 */
+internal val ArtifactNameRegex = Regex("^[^\\p{Cntrl}/\\\\]{1,128}$")
+
+internal fun isAllowedArtifactName(name: String): Boolean =
+    name.isNotBlank() && name != "." && name != ".." && ArtifactNameRegex.matches(name)
+
 data class ResearchPackageDetailQuery(
     val packageId: String,
 ) {
@@ -486,7 +493,9 @@ data class ResearchArtifactQuery(
 ) {
     init {
         require(packageId.isNotBlank()) { "packageId must not be blank" }
-        require(artifactName.isNotBlank()) { "artifactName must not be blank" }
+        require(isAllowedArtifactName(artifactName)) {
+            "artifactName must be a safe file name (no path separators, control chars, or traversal, 1-128 chars)"
+        }
     }
 }
 

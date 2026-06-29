@@ -181,6 +181,8 @@
     <string name="export_preview_samples">Samples</string>
     <string name="export_sample_untitled">Untitled content</string>
     <string name="export_generate_and_share">Generate &amp; share</string>
+    <string name="export_confirm_title">Confirm export and share?</string>
+    <string name="export_confirm_message">This will generate the exported text for the current content and send it via the system share sheet. Continue?</string>
     <string name="export_oversized_warning">The exported content is too large. Try a smaller scope or format.</string>
     <string name="export_share_title">Share exported content</string>
     <string name="export_share_no_app">No app found to share</string>

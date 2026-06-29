@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -131,6 +132,8 @@ internal fun ContentExportSheetContent(
     onRetryPreview: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    var showExportConfirmDialog by remember { mutableStateOf(false) }
+
     LazyColumn(
         modifier = modifier
             .fillMaxWidth()
@@ -195,7 +198,7 @@ internal fun ContentExportSheetContent(
                 enabled = !uiState.exportError.isLoading && uiState.contentId.isNotBlank(),
                 isLoading = uiState.exportError.isLoading,
                 oversized = uiState.oversizedWarning,
-                onExport = onExport,
+                onExport = { showExportConfirmDialog = true },
             )
         }
 
@@ -208,6 +211,27 @@ internal fun ContentExportSheetContent(
                 )
             }
         }
+    }
+
+    if (showExportConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = { showExportConfirmDialog = false },
+            title = { Text(stringResource(R.string.export_confirm_title)) },
+            text = { Text(stringResource(R.string.export_confirm_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showExportConfirmDialog = false
+                        onExport()
+                    },
+                ) { Text(stringResource(R.string.confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExportConfirmDialog = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            },
+        )
     }
 }
 
