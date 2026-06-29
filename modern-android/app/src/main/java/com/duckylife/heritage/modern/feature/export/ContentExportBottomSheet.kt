@@ -149,6 +149,23 @@ internal fun ContentExportSheetContent(
             )
         }
 
+        if (uiState.templates.isLoading && uiState.templates.data == null) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                    Text(
+                        text = stringResource(R.string.export_templates_loading),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+
         item {
             FormatSelector(
                 formats = uiState.supportedFormats.toList(),
@@ -188,6 +205,7 @@ internal fun ContentExportSheetContent(
         item {
             PreviewSection(
                 preview = uiState.preview,
+                enabled = uiState.canRequestExport,
                 onPreview = onPreview,
                 onRetry = onRetryPreview,
             )
@@ -195,7 +213,7 @@ internal fun ContentExportSheetContent(
 
         item {
             ExportButtonSection(
-                enabled = !uiState.exportError.isLoading && uiState.contentId.isNotBlank(),
+                enabled = uiState.canRequestExport && !uiState.exportError.isLoading,
                 isLoading = uiState.exportError.isLoading,
                 oversized = uiState.oversizedWarning,
                 onExport = { showExportConfirmDialog = true },
@@ -338,6 +356,7 @@ private fun OptionSwitch(
 @Composable
 private fun PreviewSection(
     preview: com.duckylife.heritage.modern.ui.state.AsyncState<ExportPreviewUiModel>,
+    enabled: Boolean,
     onPreview: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
@@ -356,7 +375,7 @@ private fun PreviewSection(
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
             )
-            TextButton(onClick = onPreview, enabled = !preview.isLoading) {
+            TextButton(onClick = onPreview, enabled = enabled && !preview.isLoading) {
                 Text(stringResource(R.string.export_preview_button))
             }
         }
@@ -491,4 +510,3 @@ private fun ExportButtonSection(
         }
     }
 }
-

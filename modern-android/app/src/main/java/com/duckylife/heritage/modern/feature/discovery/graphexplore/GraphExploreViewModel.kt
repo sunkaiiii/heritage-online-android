@@ -10,7 +10,6 @@ import com.duckylife.heritage.modern.feature.discovery.GraphTab
 import com.duckylife.heritage.modern.feature.graph.model.GraphEvidenceResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphExploreResult
 import com.duckylife.heritage.modern.feature.graph.model.GraphNeighborsResult
-import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.feature.graph.model.GraphNodeUiModel
 import com.duckylife.heritage.modern.feature.graph.model.GraphSimilarResult
 import com.duckylife.heritage.modern.feature.graph.model.centerNode
@@ -118,7 +117,7 @@ class GraphExploreViewModel @AssistedInject constructor(
         val ref = contentRef ?: return
         val target = _uiState.value.pathExplainSheet.targetNode ?: return
         val targetId = target.toPathId()
-        if (target.type == GraphNodeType.Unknown || targetId.isBlank() || (target.isContentNode && target.id.isNullOrBlank())) {
+        if (!target.isSupportedPathEndpoint(targetId)) {
             _uiState.update {
                 it.copy(
                     pathExplainSheet = it.pathExplainSheet.copy(
@@ -170,7 +169,7 @@ class GraphExploreViewModel @AssistedInject constructor(
     private fun loadPathExplain(targetNode: GraphNodeUiModel) {
         val ref = contentRef ?: return
         val targetId = targetNode.toPathId()
-        if (targetNode.type == GraphNodeType.Unknown || targetId.isBlank() || (targetNode.isContentNode && targetNode.id.isNullOrBlank())) {
+        if (!targetNode.isSupportedPathEndpoint(targetId)) {
             _uiState.update {
                 it.copy(
                     pathExplainSheet = it.pathExplainSheet.copy(
@@ -341,6 +340,9 @@ class GraphExploreViewModel @AssistedInject constructor(
             }
         }
     }
+
+    private fun GraphNodeUiModel.isSupportedPathEndpoint(pathId: String): Boolean =
+        isContentNode && id?.isNotBlank() == true && pathId.isNotBlank()
 
     override fun onCleared() {
         tabJobs.values.forEach { it.cancel() }

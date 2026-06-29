@@ -26,6 +26,7 @@ import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.detail.intelligence.FakeContentIntelligenceViewModelDelegateFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -178,6 +179,47 @@ class ArticleDetailViewModelTest {
         assertFalse(state.isLoading)
         assertNull(state.errorKind)
         assertEquals("缓存详情", state.article?.title)
+    }
+
+    @Test
+    fun recordsHistoryOnlyOnceWhenCachedAndRemoteArticleShareCanonicalId() = runTest {
+        val syncRepository = FakeLocalUserSyncRepository()
+        val articleId = "article-1"
+        val lookup = ArticleDetailLookup(articleId = articleId)
+        ArticleDetailViewModel(
+            articleId = articleId,
+            sourceId = null,
+            sourceUrl = null,
+            category = ArticleCategory.News,
+            repository = FakeHeritageRepository(
+                cachedArticleDetails = mapOf(
+                    lookup to ArticleDetailDto(
+                        id = articleId,
+                        category = ArticleCategory.News,
+                        title = "缓存详情",
+                        summary = "缓存摘要",
+                    ),
+                ),
+                articleDetails = mapOf(
+                    articleId to ArticleDetailDto(
+                        id = articleId,
+                        category = ArticleCategory.News,
+                        title = "网络详情",
+                        summary = "网络摘要",
+                    ),
+                ),
+            ),
+            savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = syncRepository,
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
+        )
+
+        advanceUntilIdle()
+
+        val history = syncRepository.history().first()
+        assertEquals(1, history.size)
+        assertEquals(1, history.single().viewCount)
+        assertEquals(articleId, history.single().targetId)
     }
 
     @Test

@@ -8,6 +8,7 @@ import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.detail.intelligence.FakeContentIntelligenceViewModelDelegateFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -101,5 +102,42 @@ class InheritorDetailViewModelTest {
         assertFalse(state.isLoading)
         assertNull(state.errorKind)
         assertEquals("缓存传承人", state.item?.name)
+    }
+
+    @Test
+    fun recordsHistoryOnlyOnceWhenCachedAndRemoteInheritorShareCanonicalId() = runTest {
+        val syncRepository = FakeLocalUserSyncRepository()
+        val inheritorId = "inheritor-1"
+        val lookup = InheritorDetailLookup(inheritorId = inheritorId)
+        InheritorDetailViewModel(
+            inheritorId = inheritorId,
+            sourceId = null,
+            repository = FakeHeritageRepository(
+                cachedInheritorDetails = mapOf(
+                    lookup to InheritorDetailDto(
+                        id = inheritorId,
+                        name = "缓存传承人",
+                        description = "缓存简介",
+                    ),
+                ),
+                inheritorDetails = mapOf(
+                    inheritorId to InheritorDetailDto(
+                        id = inheritorId,
+                        name = "网络传承人",
+                        description = "网络简介",
+                    ),
+                ),
+            ),
+            savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = syncRepository,
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
+        )
+
+        advanceUntilIdle()
+
+        val history = syncRepository.history().first()
+        assertEquals(1, history.size)
+        assertEquals(1, history.single().viewCount)
+        assertEquals(inheritorId, history.single().targetId)
     }
 }

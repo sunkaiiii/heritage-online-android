@@ -155,7 +155,7 @@ class LearningRouteDetailViewModel @AssistedInject constructor(
             runCatchingCancellable {
                 repository.getNextStep(
                     routeId = routeId,
-                    completedStepIds = current.completedStepIds.toList(),
+                    completedStepIds = current.validCompletedStepIds.toList(),
                 )
             }.onSuccess { result ->
                 _uiState.update {
@@ -230,7 +230,7 @@ class LearningRouteDetailViewModel @AssistedInject constructor(
                 syncRepository.updateProgress(
                     routeId = routeId,
                     routeTitle = current.route?.title,
-                    completedStepIds = current.completedStepIds.toList(),
+                    completedStepIds = current.validCompletedStepIds.toList(),
                     currentStepId = current.currentStep?.stepId,
                 )
             }.onSuccess {

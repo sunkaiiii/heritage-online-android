@@ -165,6 +165,7 @@
     <string name="research_package_evidence_count_format">%1$d evidence</string>
     <string name="research_evidence_item_format">Evidence %1$s</string>
     <string name="export_sheet_title">Export Content</string>
+    <string name="export_templates_loading">Loading available export formats…</string>
     <string name="export_format_label">Format</string>
     <string name="export_format_markdown">Markdown</string>
     <string name="export_format_json">JSON</string>
@@ -199,6 +200,7 @@
     <string name="research_report_follow_up_questions">Follow-up Questions</string>
     <string name="research_report_not_ready">The report is not ready yet. Please check back later.</string>
     <string name="research_finding_evidence">Evidence</string>
+    <string name="research_finding_default_title">Finding %1$d</string>
     <string name="research_finding_confidence_format">Confidence %.0f%%</string>
     <string name="research_artifact_size_format">%.1f MB</string>
     <string name="research_artifact_size_kb_format">%.0f KB</string>

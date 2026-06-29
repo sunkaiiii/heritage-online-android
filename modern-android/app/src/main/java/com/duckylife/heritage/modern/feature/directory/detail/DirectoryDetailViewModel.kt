@@ -55,6 +55,7 @@ class DirectoryDetailViewModel @AssistedInject constructor(
     val uiState: StateFlow<DirectoryDetailUiState> = _uiState.asStateFlow()
 
     private var snapshot: SavedContentSnapshot? = null
+    private var recordedViewKey: String? = null
 
     init {
         observeFavorite()
@@ -234,18 +235,21 @@ class DirectoryDetailViewModel @AssistedInject constructor(
                 kind = kind.wireName,
             ),
         )
-        if (newSnapshot != snapshot) {
-            snapshot = newSnapshot
-            viewModelScope.launch {
-                savedContentRepository.recordViewed(newSnapshot)
-                val historyId = item.id ?: return@launch
-                syncRepository.recordHistory(
-                    type = "directoryItem",
-                    id = historyId,
-                    titleSnapshot = item.title,
-                    lastPosition = null,
-                )
-            }
+        snapshot = newSnapshot
+        val viewKey = item.id?.takeIf { it.isNotBlank() }
+            ?.let { "directoryItem:$it" }
+            ?: SavedContentRepository.computeKey(newSnapshot)
+        if (viewKey == recordedViewKey) return
+        recordedViewKey = viewKey
+        viewModelScope.launch {
+            savedContentRepository.recordViewed(newSnapshot)
+            val historyId = item.id ?: return@launch
+            syncRepository.recordHistory(
+                type = "directoryItem",
+                id = historyId,
+                titleSnapshot = item.title,
+                lastPosition = null,
+            )
         }
     }
 

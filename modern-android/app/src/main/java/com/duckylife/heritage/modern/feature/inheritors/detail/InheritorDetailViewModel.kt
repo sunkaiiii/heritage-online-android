@@ -52,6 +52,7 @@ class InheritorDetailViewModel @AssistedInject constructor(
     val uiState: StateFlow<InheritorDetailUiState> = _uiState.asStateFlow()
 
     private var snapshot: SavedContentSnapshot? = null
+    private var recordedViewKey: String? = null
 
     init {
         observeFavorite()
@@ -228,18 +229,21 @@ class InheritorDetailViewModel @AssistedInject constructor(
                 sourceId = sourceId,
             ),
         )
-        if (newSnapshot != snapshot) {
-            snapshot = newSnapshot
-            viewModelScope.launch {
-                savedContentRepository.recordViewed(newSnapshot)
-                val historyId = item.id ?: return@launch
-                syncRepository.recordHistory(
-                    type = "inheritor",
-                    id = historyId,
-                    titleSnapshot = item.name,
-                    lastPosition = null,
-                )
-            }
+        snapshot = newSnapshot
+        val viewKey = item.id?.takeIf { it.isNotBlank() }
+            ?.let { "inheritor:$it" }
+            ?: SavedContentRepository.computeKey(newSnapshot)
+        if (viewKey == recordedViewKey) return
+        recordedViewKey = viewKey
+        viewModelScope.launch {
+            savedContentRepository.recordViewed(newSnapshot)
+            val historyId = item.id ?: return@launch
+            syncRepository.recordHistory(
+                type = "inheritor",
+                id = historyId,
+                titleSnapshot = item.name,
+                lastPosition = null,
+            )
         }
     }
 

@@ -407,15 +407,8 @@ class GraphExploreViewModelTest {
     }
 
     @Test
-    fun `path explain with topic node uses topic type and topic key as id`() = runTest {
+    fun `path explain with topic node is rejected because endpoint supports content nodes only`() = runTest {
         fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
-        fakeRepository.pathExplainResult = PathExplainResult(
-            found = true,
-            steps = emptyList(),
-            narrative = emptyList(),
-            evidence = emptyList(),
-            warnings = emptyList(),
-        )
         val viewModel = createViewModel()
         advanceUntilIdle()
 
@@ -429,8 +422,30 @@ class GraphExploreViewModelTest {
         )
         advanceUntilIdle()
 
-        assertEquals(GraphNodeType.Category, fakeRepository.lastPathExplainTargetType)
-        assertEquals("folk-art", fakeRepository.lastPathExplainTargetId)
+        assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.pathExplainSheet.errorKind)
+        assertEquals(0, fakeRepository.pathExplainLoadCount)
+    }
+
+    @Test
+    fun `load bridge with topic node is rejected because endpoint supports content nodes only`() = runTest {
+        fakeRepository.neighborsResult = neighborsResult("article-1", "Center")
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        viewModel.openPathExplain(
+            GraphNodeUiModel(
+                nodeKey = "category-folk-art",
+                type = GraphNodeType.Category,
+                id = "folk-art",
+                title = "民间美术",
+            ),
+        )
+        advanceUntilIdle()
+        viewModel.loadBridge()
+        advanceUntilIdle()
+
+        assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.pathExplainSheet.bridge.errorKind)
+        assertEquals(0, fakeRepository.bridgeLoadCount)
     }
 
     private fun createViewModel(

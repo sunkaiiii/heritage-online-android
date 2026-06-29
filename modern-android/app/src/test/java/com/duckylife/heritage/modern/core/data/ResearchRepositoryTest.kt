@@ -89,6 +89,28 @@ class ResearchRepositoryTest {
     }
 
     @Test
+    fun `package mappers omit unsafe artifact names from counts and details`() = runTest {
+        val dto = ResearchPackageDto(
+            packageId = "p1",
+            status = ResearchTaskStatus.Succeeded,
+            graphRagPackId = "pack-1",
+            artifacts = listOf(
+                artifact("content.json", "content", "application/json", 1024),
+                artifact("../secret.json", "content", "application/json", 2048),
+            ),
+        )
+        fakeApi.packages = listOf(dto)
+        fakeApi.packageDetail = dto
+
+        val listItem = repository.getPackages().single()
+        val detail = repository.getPackageDetail("p1")
+
+        assertEquals(1, listItem.artifactCount)
+        assertEquals(1, detail.nodeCount)
+        assertEquals(listOf("content.json"), detail.artifacts.map { it.name })
+    }
+
+    @Test
     fun `getReports maps reports and title fallback`() = runTest {
         fakeApi.reports = listOf(
             ResearchReportDto(
@@ -156,7 +178,7 @@ class ResearchRepositoryTest {
         assertEquals(2, detail.findings[0].evidence.size)
         assertEquals(0.95, detail.findings[0].confidence ?: 0.0, 0.001)
         assertEquals(2, detail.sourceCount)
-        assertEquals("发现 f2", detail.findings[1].title) // fallback
+        assertNull(detail.findings[1].title) // UI localizes the fallback title
     }
 
     @Test

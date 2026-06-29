@@ -90,7 +90,7 @@ data class ResearchReportDetailUiModel(
  */
 data class ResearchFindingUiModel(
     val number: Int,
-    val title: String,
+    val title: String?,
     val body: String,
     val confidence: Double?,
     val evidence: List<ResearchEvidenceUiModel>,

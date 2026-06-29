@@ -19,6 +19,7 @@ import io.ktor.client.request.get
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -135,6 +136,20 @@ class ContentExportViewModelTest {
     }
 
     @Test
+    fun `loadPreview waits until templates are loaded`() = runTest {
+        fakeRepository.templatesDeferred = CompletableDeferred()
+        val viewModel = ContentExportViewModel(fakeRepository)
+
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+        viewModel.loadPreview()
+        advanceUntilIdle()
+
+        assertNull(fakeRepository.capturedPreviewRequest)
+        assertNull(viewModel.uiState.value.preview.data)
+    }
+
+    @Test
     fun `exportAndShare emits shareContent for normal size`() = runTest {
         fakeRepository.exportResult = ExportContentResultDto(
             content = "# Article",
@@ -158,6 +173,20 @@ class ContentExportViewModelTest {
             assertEquals(ExportScopeType.Ids, this?.scopeType)
             assertEquals(listOf("a1"), this?.ids)
         }
+    }
+
+    @Test
+    fun `exportAndShare waits until templates are loaded`() = runTest {
+        fakeRepository.templatesDeferred = CompletableDeferred()
+        val viewModel = ContentExportViewModel(fakeRepository)
+
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+        viewModel.exportAndShare()
+        advanceUntilIdle()
+
+        assertNull(fakeRepository.capturedExportRequest)
+        assertNull(viewModel.uiState.value.shareContent)
     }
 
     @Test
@@ -191,6 +220,28 @@ class ContentExportViewModelTest {
         assertNull(state.preview.data)
         assertNull(state.shareContent)
         assertFalse(state.oversizedWarning)
+    }
+
+    @Test
+    fun `reopening same content after dismiss during template loading restarts template load`() = runTest {
+        fakeRepository.templatesDeferred = CompletableDeferred()
+        val viewModel = ContentExportViewModel(fakeRepository)
+
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+        assertTrue(viewModel.uiState.value.templates.isLoading)
+        assertEquals(1, fakeRepository.getTemplatesCalls)
+
+        viewModel.dismiss()
+
+        val dismissedState = viewModel.uiState.value
+        assertFalse(dismissedState.templates.isLoading)
+
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.templates.isLoading)
+        assertEquals(2, fakeRepository.getTemplatesCalls)
     }
 
     @Test
@@ -267,13 +318,19 @@ class ContentExportViewModelTest {
 
     private class FakeContentExportRepository : ContentExportRepository {
         var templates: List<ExportTemplateDto> = emptyList()
+        var templatesDeferred: CompletableDeferred<List<ExportTemplateDto>>? = null
+        var getTemplatesCalls: Int = 0
         var previewResult: ExportPreviewDto = ExportPreviewDto()
         var exportResult: ExportContentResultDto = ExportContentResultDto()
         var exportFailure: Throwable? = null
         var capturedPreviewRequest: ExportRequestDto? = null
         var capturedExportRequest: ExportRequestDto? = null
 
-        override suspend fun getTemplates(): List<ExportTemplateDto> = templates
+        override suspend fun getTemplates(): List<ExportTemplateDto> {
+            getTemplatesCalls += 1
+            templatesDeferred?.let { return it.await() }
+            return templates
+        }
 
         override suspend fun previewExport(request: ExportRequestDto): ExportPreviewDto {
             capturedPreviewRequest = request

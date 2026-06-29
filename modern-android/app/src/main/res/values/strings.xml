@@ -183,6 +183,7 @@
     <string name="research_package_evidence_count_format">%1$d 条证据</string>
     <string name="research_evidence_item_format">证据 %1$s</string>
     <string name="export_sheet_title">导出内容</string>
+    <string name="export_templates_loading">正在读取可用导出格式…</string>
     <string name="export_format_label">格式</string>
     <string name="export_format_markdown">Markdown</string>
     <string name="export_format_json">JSON</string>
@@ -217,6 +218,7 @@
     <string name="research_report_follow_up_questions">后续问题</string>
     <string name="research_report_not_ready">报告尚未完成，请稍后再来。</string>
     <string name="research_finding_evidence">证据</string>
+    <string name="research_finding_default_title">发现 %1$d</string>
     <string name="research_finding_confidence_format">置信度 %.0f%%</string>
     <string name="research_artifact_size_format">%.1f MB</string>
     <string name="research_artifact_size_kb_format">%.0f KB</string>

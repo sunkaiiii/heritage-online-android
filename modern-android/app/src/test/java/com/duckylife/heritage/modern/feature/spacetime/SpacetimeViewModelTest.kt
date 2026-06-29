@@ -112,6 +112,85 @@ class SpacetimeViewModelTest {
     }
 
     @Test
+    fun `update filters while analytics tab is selected reloads breakdown and outliers`() = runTest {
+        fakeRepository.breakdown = AnalyticsBreakdownUiModel(
+            groupBy = AnalyticsDimension.Region,
+            buckets = listOf(AnalyticsBreakdownUiModel.Bucket(key = "旧筛选", total = 1)),
+        )
+        fakeRepository.outliers = listOf(
+            AnalyticsOutlierUiModel(
+                dimension = AnalyticsDimension.Region,
+                key = "旧筛选",
+                metric = RankingMetric.Total,
+                value = 1.0,
+                average = 1.0,
+                ratioToAverage = 1.0,
+            ),
+        )
+        val viewModel = createViewModel()
+        viewModel.selectTab(1)
+        advanceUntilIdle()
+
+        fakeRepository.breakdown = AnalyticsBreakdownUiModel(
+            groupBy = AnalyticsDimension.Region,
+            buckets = listOf(AnalyticsBreakdownUiModel.Bucket(key = "浙江", total = 10)),
+        )
+        fakeRepository.outliers = listOf(
+            AnalyticsOutlierUiModel(
+                dimension = AnalyticsDimension.Region,
+                key = "浙江",
+                metric = RankingMetric.Total,
+                value = 10.0,
+                average = 2.0,
+                ratioToAverage = 5.0,
+            ),
+        )
+        viewModel.updateFilters(SpacetimeFilters(region = "浙江"))
+        advanceUntilIdle()
+
+        assertEquals("浙江", viewModel.uiState.value.breakdown.data?.buckets?.single()?.key)
+        assertEquals("浙江", viewModel.uiState.value.outliers.data?.single()?.key)
+        assertEquals("浙江", fakeRepository.lastBreakdownFilters?.region)
+        assertEquals("浙江", fakeRepository.lastOutlierFilters?.region)
+    }
+
+    @Test
+    fun `set breakdown dimension also reloads outliers with matching dimension`() = runTest {
+        fakeRepository.breakdown = AnalyticsBreakdownUiModel(groupBy = AnalyticsDimension.Region)
+        fakeRepository.outliers = listOf(
+            AnalyticsOutlierUiModel(
+                dimension = AnalyticsDimension.Region,
+                key = "浙江",
+                metric = RankingMetric.Total,
+                value = 10.0,
+                average = 5.0,
+                ratioToAverage = 2.0,
+            ),
+        )
+        val viewModel = createViewModel()
+        viewModel.selectTab(1)
+        advanceUntilIdle()
+
+        fakeRepository.breakdown = AnalyticsBreakdownUiModel(groupBy = AnalyticsDimension.Category)
+        fakeRepository.outliers = listOf(
+            AnalyticsOutlierUiModel(
+                dimension = AnalyticsDimension.Category,
+                key = "传统技艺",
+                metric = RankingMetric.Total,
+                value = 7.0,
+                average = 2.0,
+                ratioToAverage = 3.5,
+            ),
+        )
+        viewModel.setBreakdownDimension(AnalyticsDimension.Category)
+        advanceUntilIdle()
+
+        assertEquals(AnalyticsDimension.Category, viewModel.uiState.value.breakdown.data?.groupBy)
+        assertEquals(AnalyticsDimension.Category, viewModel.uiState.value.outliers.data?.single()?.dimension)
+        assertEquals(AnalyticsDimension.Category, fakeRepository.lastOutlierDimension)
+    }
+
+    @Test
     fun `run compare with selected keys`() = runTest {
         fakeRepository.compare = AnalyticsCompareUiModel(
             dimension = AnalyticsDimension.Region,
@@ -191,6 +270,33 @@ class SpacetimeViewModelTest {
         assertEquals("浙江", viewModel.uiState.value.filters.region)
     }
 
+    @Test
+    fun `restored analytics tab loads visible analytics sections on init`() = runTest {
+        fakeRepository.breakdown = AnalyticsBreakdownUiModel(
+            groupBy = AnalyticsDimension.Region,
+            buckets = listOf(AnalyticsBreakdownUiModel.Bucket(key = "浙江", total = 3)),
+        )
+        fakeRepository.outliers = listOf(
+            AnalyticsOutlierUiModel(
+                dimension = AnalyticsDimension.Region,
+                key = "浙江",
+                metric = RankingMetric.Total,
+                value = 10.0,
+                average = 5.0,
+                ratioToAverage = 2.0,
+            ),
+        )
+        val savedStateHandle = SavedStateHandle().apply {
+            set("spacetime_selected_tab", 1)
+        }
+
+        val viewModel = createViewModel(savedStateHandle)
+        advanceUntilIdle()
+
+        assertEquals("浙江", viewModel.uiState.value.breakdown.data?.buckets?.single()?.key)
+        assertEquals("浙江", viewModel.uiState.value.outliers.data?.single()?.key)
+    }
+
     private fun createViewModel(savedStateHandle: SavedStateHandle = SavedStateHandle()) =
         SpacetimeViewModel(repository = fakeRepository, savedStateHandle = savedStateHandle)
 
@@ -212,6 +318,9 @@ class SpacetimeViewModelTest {
         var overviewFailure: Throwable? = null
         var heatmapFailure: Throwable? = null
         var lastCompareKeys: List<String> = emptyList()
+        var lastBreakdownFilters: com.duckylife.heritage.modern.core.network.AnalyticsFilters? = null
+        var lastOutlierFilters: com.duckylife.heritage.modern.core.network.AnalyticsFilters? = null
+        var lastOutlierDimension: AnalyticsDimension? = null
 
         override suspend fun getSpacetimeOverview(filters: SpacetimeFilters): SpacetimeOverviewUiModel {
             overviewFailure?.let { throw it }
@@ -236,7 +345,10 @@ class SpacetimeViewModelTest {
             groupBy: AnalyticsDimension,
             filters: com.duckylife.heritage.modern.core.network.AnalyticsFilters,
             limit: Int,
-        ): AnalyticsBreakdownUiModel = breakdown
+        ): AnalyticsBreakdownUiModel {
+            lastBreakdownFilters = filters
+            return breakdown
+        }
 
         override suspend fun getAnalyticsCrosstab(
             x: AnalyticsDimension,
@@ -260,7 +372,11 @@ class SpacetimeViewModelTest {
             metric: RankingMetric,
             filters: com.duckylife.heritage.modern.core.network.AnalyticsFilters,
             limit: Int,
-        ): List<AnalyticsOutlierUiModel> = outliers
+        ): List<AnalyticsOutlierUiModel> {
+            lastOutlierDimension = dimension
+            lastOutlierFilters = filters
+            return outliers
+        }
 
         override suspend fun getRankings(): List<com.duckylife.heritage.modern.feature.rankings.model.RankingDefinitionUiModel> = rankings
 

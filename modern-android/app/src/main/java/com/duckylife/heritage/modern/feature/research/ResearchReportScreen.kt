@@ -279,7 +279,8 @@ private fun FindingCard(
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
-                    text = finding.title,
+                    text = finding.title?.takeIf { it.isNotBlank() }
+                        ?: stringResource(R.string.research_finding_default_title, finding.number),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.weight(1f),

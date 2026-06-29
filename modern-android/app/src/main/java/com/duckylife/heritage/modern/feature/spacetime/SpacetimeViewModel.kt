@@ -104,6 +104,10 @@ class SpacetimeViewModel @Inject constructor(
         loadOverview()
         loadHeatmap()
         loadFacets()
+        if (_uiState.value.selectedTab == 1) {
+            loadBreakdown()
+            loadOutliers()
+        }
     }
 
     fun refresh() {
@@ -117,11 +121,24 @@ class SpacetimeViewModel @Inject constructor(
     }
 
     fun updateFilters(filters: SpacetimeFilters) {
-        _uiState.update { it.copy(filters = filters) }
+        val shouldReloadAnalytics = _uiState.value.selectedTab == 1
+        _uiState.update {
+            it.copy(
+                filters = filters,
+                breakdown = AsyncState(),
+                outliers = AsyncState(),
+                compareResult = AsyncState(),
+                crosstabResult = AsyncState(),
+            )
+        }
         persistUiState()
         loadOverview()
         loadHeatmap()
         loadFacets()
+        if (shouldReloadAnalytics) {
+            loadBreakdown()
+            loadOutliers()
+        }
     }
 
     fun selectTab(index: Int) {
@@ -141,9 +158,16 @@ class SpacetimeViewModel @Inject constructor(
     }
 
     fun setBreakdownDimension(dimension: AnalyticsDimension) {
-        _uiState.update { it.copy(breakdownDimension = dimension) }
+        _uiState.update {
+            it.copy(
+                breakdownDimension = dimension,
+                breakdown = AsyncState(),
+                outliers = AsyncState(),
+            )
+        }
         persistUiState()
         loadBreakdown()
+        loadOutliers()
     }
 
     fun setCompareDimension(dimension: AnalyticsDimension) {

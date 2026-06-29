@@ -9,6 +9,7 @@ import com.duckylife.heritage.modern.core.saved.FakeSavedContentRepository
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import com.duckylife.heritage.modern.feature.detail.intelligence.FakeContentIntelligenceViewModelDelegateFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -109,5 +110,45 @@ class DirectoryDetailViewModelTest {
         assertFalse(state.isLoading)
         assertNull(state.errorKind)
         assertEquals("缓存名录", state.item?.title)
+    }
+
+    @Test
+    fun recordsHistoryOnlyOnceWhenCachedAndRemoteDirectoryItemShareCanonicalId() = runTest {
+        val syncRepository = FakeLocalUserSyncRepository()
+        val itemId = "item-1"
+        val lookup = DirectoryDetailLookup(itemId = itemId)
+        DirectoryDetailViewModel(
+            itemId = itemId,
+            sourceId = null,
+            kind = DirectoryItemKind.NationalProject,
+            repository = FakeHeritageRepository(
+                cachedDirectoryDetails = mapOf(
+                    lookup to DirectoryItemDetailDto(
+                        id = itemId,
+                        kind = DirectoryItemKind.NationalProject,
+                        title = "缓存名录",
+                        summary = "缓存摘要",
+                    ),
+                ),
+                directoryDetails = mapOf(
+                    itemId to DirectoryItemDetailDto(
+                        id = itemId,
+                        kind = DirectoryItemKind.NationalProject,
+                        title = "网络名录",
+                        summary = "网络摘要",
+                    ),
+                ),
+            ),
+            savedContentRepository = FakeSavedContentRepository(),
+            syncRepository = syncRepository,
+            intelligenceDelegateFactory = FakeContentIntelligenceViewModelDelegateFactory(),
+        )
+
+        advanceUntilIdle()
+
+        val history = syncRepository.history().first()
+        assertEquals(1, history.size)
+        assertEquals(1, history.single().viewCount)
+        assertEquals(itemId, history.single().targetId)
     }
 }

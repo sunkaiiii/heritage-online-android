@@ -1001,12 +1001,14 @@ private fun SimilarResultCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-            ) {
-                TextButton(onClick = { onPathClick(item) }) {
-                    Text(stringResource(R.string.graph_similar_view_path))
+            if (item.node.isContentNode) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    TextButton(onClick = { onPathClick(item) }) {
+                        Text(stringResource(R.string.graph_similar_view_path))
+                    }
                 }
             }
         }

@@ -34,6 +34,8 @@ class ContentExportBottomSheetTest {
             HeritageTheme {
                 ContentExportSheetContent(
                     uiState = ContentExportUiState(
+                        contentId = "a1",
+                        templates = AsyncState(data = Unit),
                         supportedFormats = setOf(ExportFormat.Markdown, ExportFormat.Json),
                         selectedFormat = ExportFormat.Markdown,
                     ),
@@ -66,6 +68,8 @@ class ContentExportBottomSheetTest {
             HeritageTheme {
                 ContentExportSheetContent(
                     uiState = ContentExportUiState(
+                        contentId = "a1",
+                        templates = AsyncState(data = Unit),
                         supportedFormats = setOf(ExportFormat.Markdown),
                         selectedFormat = ExportFormat.Markdown,
                         preview = AsyncState(
@@ -113,6 +117,8 @@ class ContentExportBottomSheetTest {
             HeritageTheme {
                 ContentExportSheetContent(
                     uiState = ContentExportUiState(
+                        contentId = "a1",
+                        templates = AsyncState(data = Unit),
                         supportedFormats = setOf(ExportFormat.Markdown),
                         selectedFormat = ExportFormat.Markdown,
                         preview = AsyncState(
@@ -156,6 +162,8 @@ class ContentExportBottomSheetTest {
             HeritageTheme {
                 ContentExportSheetContent(
                     uiState = ContentExportUiState(
+                        contentId = "a1",
+                        templates = AsyncState(data = Unit),
                         supportedFormats = setOf(ExportFormat.Markdown),
                         selectedFormat = ExportFormat.Markdown,
                         oversizedWarning = true,

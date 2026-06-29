@@ -83,6 +83,36 @@ class LearningRouteDetailViewModelTest {
     }
 
     @Test
+    fun `synced stale step ids do not count toward visible route progress`() = runTest {
+        fakeRepository.detail = buildTestRouteDetail()
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+
+        fakeSyncRepository.emitProgress(
+            ProfileLearningProgress(
+                id = routeId,
+                routeId = routeId,
+                routeTitle = "Test Route",
+                completedStepIds = listOf("old-1", "old-2", "old-3"),
+                currentStepId = "old-3",
+                percent = 100,
+                updatedAt = null,
+                completedAt = null,
+                syncStatus = ProfileSyncStatus.Synced,
+            ),
+        )
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(setOf("old-1", "old-2", "old-3"), state.completedStepIds)
+        assertTrue(state.validCompletedStepIds.isEmpty())
+        assertEquals(0, state.completedCount)
+        assertEquals(0, state.percent)
+        assertFalse(state.isCompleted)
+        assertNull(state.snackbarMessage)
+    }
+
+    @Test
     fun `onStepChecked updates local state immediately`() = runTest {
         fakeRepository.detail = buildTestRouteDetail()
         val viewModel = createViewModel()
@@ -182,6 +212,38 @@ class LearningRouteDetailViewModelTest {
     }
 
     @Test
+    fun `loadNextStep filters stale completed step ids before calling repository`() = runTest {
+        fakeRepository.detail = buildTestRouteDetail()
+        fakeRepository.next = LearningRouteNextUiModel(
+            routeId = routeId,
+            completed = false,
+            nextStep = null,
+            relatedRoutes = emptyList(),
+        )
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        fakeSyncRepository.emitProgress(
+            ProfileLearningProgress(
+                id = routeId,
+                routeId = routeId,
+                routeTitle = "Test Route",
+                completedStepIds = listOf("old-1", "step-1", "old-2"),
+                currentStepId = "step-1",
+                percent = 33,
+                updatedAt = null,
+                completedAt = null,
+                syncStatus = ProfileSyncStatus.Synced,
+            ),
+        )
+        advanceUntilIdle()
+
+        viewModel.loadNextStep()
+        advanceUntilIdle()
+
+        assertEquals(listOf("step-1"), fakeRepository.capturedNextCompletedIds)
+    }
+
+    @Test
     fun `confirmRestart clears local progress and syncs empty list`() = runTest {
         fakeRepository.detail = buildTestRouteDetail()
         val viewModel = createViewModel()
@@ -271,6 +333,34 @@ class LearningRouteDetailViewModelTest {
         advanceUntilIdle()
 
         assertEquals(setOf("step-1"), viewModel.uiState.value.completedStepIds)
+    }
+
+    @Test
+    fun `debounced progress write filters stale step ids`() = runTest {
+        fakeRepository.detail = buildTestRouteDetail()
+        val viewModel = createViewModel()
+        advanceUntilIdle()
+        fakeSyncRepository.emitProgress(
+            ProfileLearningProgress(
+                id = routeId,
+                routeId = routeId,
+                routeTitle = "Test Route",
+                completedStepIds = listOf("old-1", "step-1"),
+                currentStepId = "step-1",
+                percent = 33,
+                updatedAt = null,
+                completedAt = null,
+                syncStatus = ProfileSyncStatus.Synced,
+            ),
+        )
+        advanceUntilIdle()
+
+        viewModel.onStepChecked("step-2", checked = true)
+        advanceUntilIdle()
+
+        val call = fakeSyncRepository.updateProgressCalls.last()
+        assertEquals(setOf("step-1", "step-2"), call.completedStepIds.toSet())
+        assertEquals("step-2", call.currentStepId)
     }
 
     private fun createViewModel(): LearningRouteDetailViewModel =

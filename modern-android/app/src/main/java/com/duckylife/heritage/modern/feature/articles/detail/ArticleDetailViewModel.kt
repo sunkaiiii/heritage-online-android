@@ -57,6 +57,7 @@ class ArticleDetailViewModel @AssistedInject constructor(
     val uiState: StateFlow<ArticleDetailUiState> = _uiState.asStateFlow()
 
     private var snapshot: SavedContentSnapshot? = null
+    private var recordedViewKey: String? = null
 
     init {
         observeFavorite()
@@ -236,18 +237,21 @@ class ArticleDetailViewModel @AssistedInject constructor(
                 category = category.wireName,
             ),
         )
-        if (newSnapshot != snapshot) {
-            snapshot = newSnapshot
-            viewModelScope.launch {
-                savedContentRepository.recordViewed(newSnapshot)
-                val historyId = article.id ?: return@launch
-                syncRepository.recordHistory(
-                    type = "article",
-                    id = historyId,
-                    titleSnapshot = article.title,
-                    lastPosition = null,
-                )
-            }
+        snapshot = newSnapshot
+        val viewKey = article.id?.takeIf { it.isNotBlank() }
+            ?.let { "article:$it" }
+            ?: SavedContentRepository.computeKey(newSnapshot)
+        if (viewKey == recordedViewKey) return
+        recordedViewKey = viewKey
+        viewModelScope.launch {
+            savedContentRepository.recordViewed(newSnapshot)
+            val historyId = article.id ?: return@launch
+            syncRepository.recordHistory(
+                type = "article",
+                id = historyId,
+                titleSnapshot = article.title,
+                lastPosition = null,
+            )
         }
     }
 

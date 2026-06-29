@@ -41,7 +41,13 @@ data class ContentExportUiState(
     val shareContent: String? = null,
     val oversizedWarning: Boolean = false,
     val exportError: AsyncState<Unit> = AsyncState(),
-)
+) {
+    val canRequestExport: Boolean
+        get() = contentId.isNotBlank() &&
+            templates.data != null &&
+            !templates.isLoading &&
+            templates.errorKind == null
+}
 
 /**
  * 导出预览 UI 模型。
@@ -81,7 +87,7 @@ class ContentExportViewModel @Inject constructor(
                 )
             }
             loadTemplates()
-        } else if (current.templates.errorKind != null) {
+        } else if (current.templates.errorKind != null || shouldLoadMissingTemplates(current)) {
             loadTemplates()
         }
     }
@@ -127,7 +133,7 @@ class ContentExportViewModel @Inject constructor(
 
     fun loadPreview() {
         val state = _uiState.value
-        if (state.contentId.isBlank()) return
+        if (!state.canRequestExport) return
         previewJob?.cancel()
         previewJob = viewModelScope.launch {
             _uiState.update {
@@ -153,7 +159,7 @@ class ContentExportViewModel @Inject constructor(
 
     fun exportAndShare() {
         val state = _uiState.value
-        if (state.contentId.isBlank()) return
+        if (!state.canRequestExport) return
         exportJob?.cancel()
         exportJob = viewModelScope.launch {
             _uiState.update { it.copy(exportError = AsyncState(isLoading = true), oversizedWarning = false, shareContent = null) }
@@ -184,6 +190,7 @@ class ContentExportViewModel @Inject constructor(
         cancelPendingJobs()
         _uiState.update {
             it.copy(
+                templates = if (it.templates.isLoading) AsyncState() else it.templates,
                 preview = AsyncState(),
                 exportError = AsyncState(),
                 oversizedWarning = false,
@@ -197,6 +204,9 @@ class ContentExportViewModel @Inject constructor(
         previewJob?.cancel()
         exportJob?.cancel()
     }
+
+    private fun shouldLoadMissingTemplates(state: ContentExportUiState): Boolean =
+        state.templates.data == null && templatesJob?.isActive != true
 
     override fun onCleared() {
         cancelPendingJobs()

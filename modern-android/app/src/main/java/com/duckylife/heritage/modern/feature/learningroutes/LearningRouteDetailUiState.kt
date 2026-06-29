@@ -31,7 +31,13 @@ data class LearningRouteDetailUiState(
 ) {
     val totalSteps: Int get() = route?.steps?.size ?: 0
 
-    val completedCount: Int get() = completedStepIds.size.coerceAtMost(totalSteps)
+    val validCompletedStepIds: Set<String>
+        get() {
+            val routeStepIds = route?.steps?.mapTo(mutableSetOf()) { it.stepId }.orEmpty()
+            return completedStepIds.intersect(routeStepIds)
+        }
+
+    val completedCount: Int get() = validCompletedStepIds.size
 
     val percent: Int
         get() = if (totalSteps == 0) 0 else (completedCount * 100 / totalSteps).coerceIn(0, 100)
@@ -44,7 +50,7 @@ data class LearningRouteDetailUiState(
      */
     val currentStep: LearningRouteStepUiModel?
         get() = route?.steps
-            ?.filter { it.stepId in completedStepIds }
+            ?.filter { it.stepId in validCompletedStepIds }
             ?.maxByOrNull { it.order }
 }
 

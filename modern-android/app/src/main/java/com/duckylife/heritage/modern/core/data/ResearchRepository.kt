@@ -63,23 +63,26 @@ class DefaultResearchRepository @Inject constructor(
 // Package mappers
 // ---------------------------------------------------------------------------
 
-internal fun ResearchPackageDto.toItemUiModel(): ResearchPackageItemUiModel =
-    ResearchPackageItemUiModel(
+internal fun ResearchPackageDto.toItemUiModel(): ResearchPackageItemUiModel {
+    val safeArtifacts = artifacts.filter { isAllowedArtifactName(it.name) }
+    return ResearchPackageItemUiModel(
         packageId = packageId,
         title = resolvePackageTitle(),
         subtitle = resolvePackageSubtitle(),
         createdAt = createdAt,
         status = status,
         isClickable = status == ResearchTaskStatus.Succeeded,
-        artifactCount = artifacts.size,
+        artifactCount = safeArtifacts.size,
         includesContent = request?.includeContent ?: true,
         includesEvidence = request?.includeEvidence ?: true,
         includesAiResults = request?.includeAiResults ?: false,
         includesAiInferred = request?.includeAiInferred ?: false,
     )
+}
 
-internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel =
-    ResearchPackageDetailUiModel(
+internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel {
+    val safeArtifacts = artifacts.filter { isAllowedArtifactName(it.name) }
+    return ResearchPackageDetailUiModel(
         packageId = packageId,
         title = resolvePackageTitle(),
         querySummary = resolvePackageSubtitle(),
@@ -88,11 +91,11 @@ internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel 
         dataScope = buildDataScopeLabel(),
         createdAt = createdAt,
         status = status,
-        nodeCount = artifacts.count { it.artifactType == "content" },
-        edgeCount = artifacts.count { it.artifactType == "graph" },
-        sourceCount = artifacts.count { it.artifactType == "sources" },
-        evidenceCount = artifacts.count { it.artifactType == "evidence" },
-        artifacts = artifacts.map { it.toUiModel() },
+        nodeCount = safeArtifacts.count { it.artifactType == "content" },
+        edgeCount = safeArtifacts.count { it.artifactType == "graph" },
+        sourceCount = safeArtifacts.count { it.artifactType == "sources" },
+        evidenceCount = safeArtifacts.count { it.artifactType == "evidence" },
+        artifacts = safeArtifacts.map { it.toUiModel() },
         hasReport = false,
         reportId = null,
         warnings = warnings,
@@ -101,6 +104,7 @@ internal fun ResearchPackageDto.toDetailUiModel(): ResearchPackageDetailUiModel 
         includesAiResults = request?.includeAiResults ?: false,
         includesAiInferred = request?.includeAiInferred ?: false,
     )
+}
 
 internal fun ResearchPackageArtifactDto.toUiModel(): ResearchArtifactUiModel =
     ResearchArtifactUiModel(
@@ -185,8 +189,7 @@ internal fun ResearchReportDto.toDetailUiModel(): ResearchReportDetailUiModel =
         followUpQuestions = followUpQuestions,
     )
 
-private fun ResearchReportFindingDto.resolveFindingTitle(): String {
+private fun ResearchReportFindingDto.resolveFindingTitle(): String? {
     val firstLine = claim.lines().firstOrNull()?.trim().orEmpty()
-    if (firstLine.isBlank()) return "发现 ${findingId}"
-    return firstLine.take(80)
+    return firstLine.takeIf { it.isNotBlank() }?.take(80)
 }
