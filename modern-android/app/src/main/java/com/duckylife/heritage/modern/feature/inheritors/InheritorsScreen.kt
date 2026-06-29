@@ -102,8 +102,13 @@ fun InheritorsRoute(
     val backStack = remember {
         mutableStateListOf<Any>().also { it.addAll(deserializeInheritorsRoutes(savedStack)) }
     }
-    LaunchedEffect(backStack.size) {
+    LaunchedEffect(backStack.toList()) {
         savedStack = serializeInheritorsRoutes(backStack.filterIsInstance<InheritorsRouteKey>())
+    }
+    val popBackStack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
     }
     val isInDetail = backStack.lastOrNull() !is InheritorsRouteKey.InheritorsList
     LaunchedEffect(isInDetail) {
@@ -123,7 +128,7 @@ fun InheritorsRoute(
     }
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = popBackStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
@@ -149,7 +154,7 @@ fun InheritorsRoute(
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference ->
                             when {
                                 reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
@@ -181,7 +186,7 @@ fun InheritorsRoute(
                         itemId = key.id,
                         sourceId = key.sourceId,
                         kind = key.kind,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference, fallbackKind ->
                             when {
                                 reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
@@ -214,7 +219,7 @@ fun InheritorsRoute(
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedArticleSelected = { reference, category ->
                             reference.toInheritorTabArticleDetail(category)?.let(backStack::add)
                         },
@@ -240,7 +245,7 @@ fun InheritorsRoute(
                         id = key.id,
                         type = null,
                         topicKey = null,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(InheritorsRouteKey.InheritorTabArticleDetail(id = id))
                         },
@@ -258,7 +263,7 @@ fun InheritorsRoute(
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(InheritorsRouteKey.InheritorTabArticleDetail(id = id))
                         },

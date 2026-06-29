@@ -133,11 +133,10 @@ class LearningRoutesViewModel @Inject constructor(
                 )
             }
             runCatchingCancellable {
-                val seedTypeEnum = LearningRouteSeedType.entries.firstOrNull { it.wireName == seedType }
-                    ?: LearningRouteSeedType.Content
+                val buildSeed = seedType.toBuildSeed(seedId)
                 val detail = repository.buildRoute(
-                    seedType = seedTypeEnum,
-                    seedKey = "$seedType:$seedId",
+                    seedType = buildSeed.type,
+                    seedKey = buildSeed.key,
                     difficulty = difficulty,
                     limit = BUILD_LIMIT,
                 )
@@ -164,6 +163,26 @@ class LearningRoutesViewModel @Inject constructor(
         }
     }
 
+    private fun String.toBuildSeed(seedId: String): BuildSeed {
+        val normalizedType = trim()
+        val normalizedId = seedId.trim()
+        if (normalizedType in CONTENT_SEED_TYPES) {
+            return BuildSeed(
+                type = LearningRouteSeedType.Content,
+                key = "$normalizedType:$normalizedId",
+            )
+        }
+        val seedTypeEnum = LearningRouteSeedType.entries.firstOrNull { it.wireName == normalizedType }
+            ?.takeIf { it != LearningRouteSeedType.Unknown }
+            ?: LearningRouteSeedType.Content
+        return BuildSeed(type = seedTypeEnum, key = normalizedId)
+    }
+
+    private data class BuildSeed(
+        val type: LearningRouteSeedType,
+        val key: String,
+    )
+
     /**
      * 清除 build seed 错误提示。
      */
@@ -174,5 +193,6 @@ class LearningRoutesViewModel @Inject constructor(
     companion object {
         private const val LIST_LIMIT = 20
         private const val BUILD_LIMIT = 8
+        private val CONTENT_SEED_TYPES = setOf("article", "directoryItem", "inheritor")
     }
 }

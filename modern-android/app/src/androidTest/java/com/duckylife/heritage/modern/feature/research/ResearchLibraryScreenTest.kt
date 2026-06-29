@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.research
 
 import android.content.Context
 import androidx.compose.ui.test.assertHasClickAction
+import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -169,7 +170,7 @@ class ResearchLibraryScreenTest {
         // Running package is displayed but not clickable.
         composeTestRule.onNodeWithText("准备中的资料包")
             .assertIsDisplayed()
-            .performClick()
+            .assertHasNoClickAction()
         assertEquals(null, clickedId)
 
         // No per-card retry/cancel button appears in non-error list state.

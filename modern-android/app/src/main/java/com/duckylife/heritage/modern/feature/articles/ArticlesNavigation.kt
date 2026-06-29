@@ -154,8 +154,13 @@ fun ArticlesNavHost(
 ) {
     var savedStack by rememberSaveable { mutableStateOf("") }
     val backStack = remember { mutableStateListOf<Any>().also { it.addAll(deserializeArticles(savedStack)) } }
-    LaunchedEffect(backStack.size) {
+    LaunchedEffect(backStack.toList()) {
         savedStack = serializeArticles(backStack.toList())
+    }
+    val popBackStack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
     }
     val isInDetail = backStack.lastOrNull() !is ArticlesList
     LaunchedEffect(isInDetail) {
@@ -177,7 +182,7 @@ fun ArticlesNavHost(
     }
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = popBackStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
@@ -202,7 +207,7 @@ fun ArticlesNavHost(
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedArticleSelected = { reference, category ->
                             reference.toArticleDetail(category)?.let(backStack::add)
                         },
@@ -228,7 +233,7 @@ fun ArticlesNavHost(
                         itemId = key.id,
                         sourceId = key.sourceId,
                         kind = key.kind,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference, kind ->
                             reference.toDirectoryDetail(kind)?.let(backStack::add)
                         },
@@ -256,7 +261,7 @@ fun ArticlesNavHost(
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference ->
                             reference.toDirectoryDetail()?.let(backStack::add)
                         },
@@ -285,7 +290,7 @@ fun ArticlesNavHost(
                         id = key.id,
                         type = null,
                         topicKey = null,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(ArticleDetail(id = id))
                         },
@@ -303,7 +308,7 @@ fun ArticlesNavHost(
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(ArticleDetail(id = id))
                         },

@@ -365,9 +365,14 @@ private fun CenterNodeCard(
     val subtitle = node.subtitle
     val typeLabel = localizedContentType(node.type.wireName)
     val enabled = node.isContentNode
+    val cardClick: (() -> Unit)? = if (enabled) {
+        { onClick(node) }
+    } else {
+        null
+    }
 
     HeritageContentCard(
-        onClick = if (enabled) {{ onClick(node) }} else null,
+        onClick = cardClick,
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 64.dp)
@@ -878,8 +883,13 @@ private fun RelationNodeRow(
 ) {
     val imageLoader = rememberHeritageImageLoader()
     val canNavigate = node.isContentNode || node.isTopicNode
+    val cardClick: (() -> Unit)? = if (canNavigate) {
+        { onNodeClick(node) }
+    } else {
+        null
+    }
     HeritageContentCard(
-        onClick = if (canNavigate) {{ onNodeClick(node) }} else null,
+        onClick = cardClick,
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(
@@ -954,8 +964,13 @@ private fun SimilarResultCard(
     onPathClick: (GraphSimilarItemUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val cardClick: (() -> Unit)? = if (item.node.isContentNode || item.node.isTopicNode) {
+        { onNodeClick(item.node) }
+    } else {
+        null
+    }
     HeritageContentCard(
-        onClick = if (item.node.isContentNode || item.node.isTopicNode) {{ onNodeClick(item.node) }} else null,
+        onClick = cardClick,
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(

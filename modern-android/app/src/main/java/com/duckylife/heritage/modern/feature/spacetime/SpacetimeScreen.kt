@@ -34,13 +34,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -413,11 +413,15 @@ private fun TopNamedCountsSection(
 private fun NamedCountBar(
     item: NamedCountUiModel,
     maxCount: Int,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
     val fraction = if (maxCount > 0) item.count.toFloat() / maxCount.toFloat() else 0f
-    Column(modifier = modifier.clickable(onClick = onClick)) {
+    Column(
+        modifier = modifier.then(
+            if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier,
+        ),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -730,7 +734,7 @@ private fun BreakdownSection(
                                     count = bucket.total,
                                 ),
                                 maxCount = max,
-                                onClick = {},
+                                onClick = null,
                             )
                         }
                     }
@@ -1114,7 +1118,7 @@ private fun SpacetimeFilterSheet(
             Spacer(modifier = Modifier.height(16.dp))
             val currentFilters = localFilters
             val valid = currentFilters.fromYear == null || currentFilters.toYear == null ||
-                (currentFilters.fromYear ?: 0) <= (currentFilters.toYear ?: 0)
+                currentFilters.fromYear <= currentFilters.toYear
             if (!valid) {
                 Text(
                     text = stringResource(R.string.spacetime_filter_invalid_year_range),
@@ -1276,7 +1280,7 @@ private fun DimensionDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(MenuAnchorType.PrimaryEditable),
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
         )
         ExposedDropdownMenu(
             expanded = expanded,
@@ -1317,7 +1321,7 @@ private fun MetricDropdown(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
             modifier = Modifier
                 .fillMaxWidth()
-                .menuAnchor(MenuAnchorType.PrimaryEditable),
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
         )
         ExposedDropdownMenu(
             expanded = expanded,

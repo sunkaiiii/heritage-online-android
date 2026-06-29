@@ -111,8 +111,13 @@ fun DiscoveryNavHost(
             it.addAll(deserializeDiscoveryRoutes(savedStack))
         }
     }
-    LaunchedEffect(backStack.size) {
+    LaunchedEffect(backStack.toList()) {
         savedStack = serializeDiscoveryRoutes(backStack.filterIsInstance<DiscoveryRouteKey>())
+    }
+    val popBackStack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
     }
     val isInDetail = backStack.lastOrNull() !is DiscoveryRouteKey.DiscoveryIndex
     LaunchedEffect(isInDetail) {
@@ -165,7 +170,7 @@ fun DiscoveryNavHost(
 
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = popBackStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
@@ -235,7 +240,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.SearchResults -> NavEntry(entryKey) {
                     SearchRoute(
                         initialQuery = key.query,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -254,7 +259,7 @@ fun DiscoveryNavHost(
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -275,7 +280,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.LearningPathDetail -> NavEntry(entryKey) {
                     LearningPathRoute(
                         id = key.id,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -297,7 +302,7 @@ fun DiscoveryNavHost(
                     LearningRoutesRoute(
                         seedType = key.seedType,
                         seedId = key.seedId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRouteClick = { routeId ->
                             if (routeId.isNotBlank()) {
                                 backStack.add(DiscoveryRouteKey.LearningRouteDetailPage(routeId = routeId))
@@ -311,7 +316,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.LearningRouteDetailPage -> NavEntry(entryKey) {
                     LearningRouteDetailRoute(
                         routeId = key.routeId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onStepContentClick = { targetType, targetId ->
                             when (targetType) {
                                 "article" -> backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = targetId))
@@ -329,7 +334,7 @@ fun DiscoveryNavHost(
                         id = key.id,
                         type = key.type,
                         topicKey = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -346,7 +351,7 @@ fun DiscoveryNavHost(
                 // ---- Region Atlas ----
                 is DiscoveryRouteKey.RegionAtlasPage -> NavEntry(entryKey) {
                     RegionAtlasRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRegionSelected = { region ->
                             backStack.add(DiscoveryRouteKey.RegionDetailPage(region = region))
                         },
@@ -358,7 +363,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.RegionDetailPage -> NavEntry(entryKey) {
                     RegionDetailRoute(
                         region = key.region,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -378,7 +383,7 @@ fun DiscoveryNavHost(
                 // ---- Timeline ----
                 is DiscoveryRouteKey.TimelinePage -> NavEntry(entryKey) {
                     TimelineRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -400,7 +405,7 @@ fun DiscoveryNavHost(
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedArticleSelected = { reference, category ->
                             backStack.add(
                                 DiscoveryRouteKey.DiscoveryArticleDetail(
@@ -459,7 +464,7 @@ fun DiscoveryNavHost(
                         itemId = key.id,
                         sourceId = key.sourceId,
                         kind = key.kind,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference, kind ->
                             backStack.add(
                                 DiscoveryRouteKey.DiscoveryDirectoryDetail(
@@ -523,7 +528,7 @@ fun DiscoveryNavHost(
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference ->
                             backStack.add(
                                 DiscoveryRouteKey.DiscoveryDirectoryDetail(
@@ -583,7 +588,7 @@ fun DiscoveryNavHost(
                 // ---- Taxonomy ----
                 is DiscoveryRouteKey.TaxonomyPage -> NavEntry(entryKey) {
                     TaxonomyRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onTopicClick = { type, topicKey ->
                             if (type == "kind") {
                                 backStack.add(DiscoveryRouteKey.ComparePage(type = "kind", left = topicKey))
@@ -600,7 +605,7 @@ fun DiscoveryNavHost(
                     TaxonomyDetailRoute(
                         type = key.type,
                         key = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
                         },
@@ -638,7 +643,7 @@ fun DiscoveryNavHost(
                         initialType = key.type,
                         initialLeft = key.left,
                         initialRight = key.right,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         modifier = modifier,
                     )
@@ -647,7 +652,7 @@ fun DiscoveryNavHost(
                 // ---- Stories Index ----
                 is DiscoveryRouteKey.StoriesIndexPage -> NavEntry(entryKey) {
                     StoriesIndexRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRegionStoryClick = { region ->
                             backStack.add(DiscoveryRouteKey.StoryPage(region = region))
                         },
@@ -667,7 +672,7 @@ fun DiscoveryNavHost(
                         region = key.region,
                         category = key.category,
                         year = key.year,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onTopicClick = { type, topicKey ->
                             backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = type, key = topicKey))
@@ -681,7 +686,7 @@ fun DiscoveryNavHost(
                     DeepDiveRoute(
                         seedType = key.seedType,
                         seedId = key.seedId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         modifier = modifier,
                     )
@@ -693,7 +698,7 @@ fun DiscoveryNavHost(
                         contentType = key.type,
                         contentId = key.contentId,
                         initialTab = key.initialTab,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onTopicClick = { topicType, topicKey ->
                             backStack.add(
@@ -710,7 +715,7 @@ fun DiscoveryNavHost(
                 // ---- Knowledge Graph Hub ----
                 is DiscoveryRouteKey.KnowledgeGraphHubPage -> NavEntry(entryKey) {
                     KnowledgeGraphHubRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onTopicClick = { topicType, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
@@ -738,7 +743,7 @@ fun DiscoveryNavHost(
                     TopicGraphMapRoute(
                         topicType = key.topicType,
                         topicKey = key.topicKey,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onContentClick = { type, id ->
                             navigateToDiscoveryItem(
                                 DiscoveryItemDto(id = id, type = type),
@@ -761,7 +766,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.GraphTrailPage -> NavEntry(entryKey) {
                     GraphTrailRoute(
                         source = key.source,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onContentClick = { type, id ->
                             navigateToDiscoveryItem(
                                 DiscoveryItemDto(id = id, type = type),
@@ -783,14 +788,14 @@ fun DiscoveryNavHost(
                 // ---- Fallback ----
                 is DiscoveryRouteKey.SpacetimePage -> NavEntry(entryKey) {
                     SpacetimeRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         modifier = modifier,
                     )
                 }
 
                 is DiscoveryRouteKey.RankingsPage -> NavEntry(entryKey) {
                     RankingsRoute(
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRankingClick = { rankingId ->
                             if (rankingId.isNotBlank()) {
                                 backStack.add(DiscoveryRouteKey.RankingDetailPage(rankingId = rankingId))
@@ -803,7 +808,7 @@ fun DiscoveryNavHost(
                 is DiscoveryRouteKey.RankingDetailPage -> NavEntry(entryKey) {
                     RankingDetailRoute(
                         rankingId = key.rankingId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onContentClick = { type, id ->
                             navigateToDiscoveryItem(
                                 DiscoveryItemDto(id = id, type = type),

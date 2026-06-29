@@ -103,8 +103,13 @@ fun DirectoryRoute(
     val backStack = remember {
         mutableStateListOf<Any>().also { it.addAll(deserializeDirectoryRoutes(savedStack)) }
     }
-    LaunchedEffect(backStack.size) {
+    LaunchedEffect(backStack.toList()) {
         savedStack = serializeDirectoryRoutes(backStack.filterIsInstance<DirectoryRouteKey>())
+    }
+    val popBackStack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        }
     }
     val isInDetail = backStack.lastOrNull() !is DirectoryRouteKey.DirectoryList
     LaunchedEffect(isInDetail) {
@@ -125,7 +130,7 @@ fun DirectoryRoute(
     }
     NavDisplay(
         backStack = backStack,
-        onBack = { backStack.removeLastOrNull() },
+        onBack = popBackStack,
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
@@ -153,7 +158,7 @@ fun DirectoryRoute(
                         itemId = key.id,
                         sourceId = key.sourceId,
                         kind = key.kind,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference, fallbackKind ->
                             when {
                                 reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
@@ -184,7 +189,7 @@ fun DirectoryRoute(
                     InheritorDetailRoute(
                         inheritorId = key.id,
                         sourceId = key.sourceId,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedProjectSelected = { reference ->
                             when {
                                 reference.isInheritorReference -> reference.toInheritorDetail()?.let(backStack::add)
@@ -217,7 +222,7 @@ fun DirectoryRoute(
                         sourceId = key.sourceId,
                         sourceUrl = key.sourceUrl,
                         category = key.category,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onRelatedArticleSelected = { reference, category ->
                             reference.toDirectoryTabArticleDetail(category)?.let(backStack::add)
                         },
@@ -243,7 +248,7 @@ fun DirectoryRoute(
                         id = key.id,
                         type = null,
                         topicKey = null,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DirectoryRouteKey.DirectoryTabArticleDetail(id = id))
                         },
@@ -261,7 +266,7 @@ fun DirectoryRoute(
                     ExploreTopicRoute(
                         type = key.type,
                         key = key.key,
-                        onBack = { backStack.removeLastOrNull() },
+                        onBack = popBackStack,
                         onArticleSelected = { id ->
                             backStack.add(DirectoryRouteKey.DirectoryTabArticleDetail(id = id))
                         },

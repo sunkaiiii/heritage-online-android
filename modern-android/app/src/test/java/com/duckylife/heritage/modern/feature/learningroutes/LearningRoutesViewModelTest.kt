@@ -180,6 +180,52 @@ class LearningRoutesViewModelTest {
     }
 
     @Test
+    fun `buildFromSeed accepts preformatted content seed from cross tab navigation`() = runTest {
+        fakeRepository.builtDetail = LearningRouteDetailUiModel(
+            routeId = "built-1",
+            title = "Built Route",
+            description = null,
+            difficulty = LearningRouteDifficulty.Beginner,
+            estimatedMinutes = 20,
+            sections = emptyList(),
+            steps = emptyList(),
+            relatedRoutes = emptyList(),
+        )
+        val viewModel = createViewModel()
+        viewModel.setSeed(seedType = "content", seedId = "article:a1")
+        advanceUntilIdle()
+
+        viewModel.buildFromSeed()
+        advanceUntilIdle()
+
+        assertEquals(LearningRouteSeedType.Content, fakeRepository.capturedBuildSeedType)
+        assertEquals("article:a1", fakeRepository.capturedBuildSeedKey)
+    }
+
+    @Test
+    fun `buildFromSeed preserves non content seed types`() = runTest {
+        fakeRepository.builtDetail = LearningRouteDetailUiModel(
+            routeId = "built-1",
+            title = "Built Route",
+            description = null,
+            difficulty = LearningRouteDifficulty.Beginner,
+            estimatedMinutes = 20,
+            sections = emptyList(),
+            steps = emptyList(),
+            relatedRoutes = emptyList(),
+        )
+        val viewModel = createViewModel()
+        viewModel.setSeed(seedType = "region", seedId = "浙江")
+        advanceUntilIdle()
+
+        viewModel.buildFromSeed()
+        advanceUntilIdle()
+
+        assertEquals(LearningRouteSeedType.Region, fakeRepository.capturedBuildSeedType)
+        assertEquals("浙江", fakeRepository.capturedBuildSeedKey)
+    }
+
+    @Test
     fun `buildFromSeed progress write failure surfaces error and does not navigate`() = runTest {
         fakeRepository.builtDetail = LearningRouteDetailUiModel(
             routeId = "built-1",

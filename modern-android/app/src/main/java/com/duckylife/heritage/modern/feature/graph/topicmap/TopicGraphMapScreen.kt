@@ -288,8 +288,13 @@ private fun TopicNodeRow(
 ) {
     val imageLoader = rememberHeritageImageLoader()
     val canNavigate = node.isContentNode || node.isTopicNode
+    val cardClick: (() -> Unit)? = if (canNavigate) {
+        { onNodeClick(node) }
+    } else {
+        null
+    }
     HeritageContentCard(
-        onClick = if (canNavigate) {{ onNodeClick(node) }} else null,
+        onClick = cardClick,
         modifier = modifier.fillMaxWidth(),
     ) {
         Row(

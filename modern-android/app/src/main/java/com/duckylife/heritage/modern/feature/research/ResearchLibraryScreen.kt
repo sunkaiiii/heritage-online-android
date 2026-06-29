@@ -188,7 +188,7 @@ private fun PackagesList(
                 items(packages, key = { it.packageId }) { item ->
                     PackageCard(
                         item = item,
-                        onClick = { if (item.isClickable) onPackageClick(item.packageId) },
+                        onClick = { onPackageClick(item.packageId) },
                     )
                 }
             }
@@ -202,8 +202,9 @@ private fun PackageCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isClickable = item.isClickable && item.packageId.isNotBlank()
     HeritageContentCard(
-        onClick = if (item.isClickable) onClick else null,
+        onClick = if (isClickable) onClick else null,
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(
@@ -251,7 +252,7 @@ private fun PackageCard(
                 }
             }
 
-            if (!item.isClickable) {
+            if (!isClickable) {
                 Text(
                     text = stringResource(
                         when (item.status) {
@@ -313,8 +314,9 @@ private fun ReportCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isClickable = item.reportId.isNotBlank()
     HeritageContentCard(
-        onClick = onClick,
+        onClick = if (isClickable) onClick else null,
         modifier = modifier.fillMaxWidth(),
     ) {
         Column(

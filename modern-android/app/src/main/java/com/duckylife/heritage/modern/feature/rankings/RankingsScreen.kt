@@ -122,7 +122,11 @@ internal fun RankingsScreen(
             )
         },
     ) { padding ->
-        HeritagePageBackground(modifier = Modifier.fillMaxSize()) {
+        HeritagePageBackground(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
             when {
                 uiState.definitions.isLoading -> {
                     Box(
@@ -148,9 +152,7 @@ internal fun RankingsScreen(
                         )
                     } else {
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(padding),
+                            modifier = Modifier.fillMaxSize(),
                             contentPadding = PaddingValues(16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
@@ -174,10 +176,11 @@ private fun RankingDefinitionCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val isClickable = definition.rankingId.isNotBlank()
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .then(if (isClickable) Modifier.clickable(onClick = onClick) else Modifier),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -275,7 +278,11 @@ internal fun RankingDetailScreen(
             )
         },
     ) { padding ->
-        HeritagePageBackground(modifier = Modifier.fillMaxSize()) {
+        HeritagePageBackground(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+        ) {
             when {
                 uiState.detail.isLoading -> {
                     Box(
@@ -295,9 +302,7 @@ internal fun RankingDetailScreen(
                 uiState.detail.data != null -> {
                     val detail = uiState.detail.data
                     LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(padding),
+                        modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(vertical = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
@@ -357,6 +362,7 @@ private fun RankingItemCard(
     modifier: Modifier = Modifier,
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+    val isClickable = !item.contentType.isNullOrBlank() && !item.contentId.isNullOrBlank()
     val rankColor = when (item.rank) {
         1 -> MaterialTheme.colorScheme.primary
         2 -> MaterialTheme.colorScheme.secondary
@@ -367,7 +373,7 @@ private fun RankingItemCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .clickable(onClick = onClick),
+            .then(if (isClickable) Modifier.clickable(onClick = onClick) else Modifier),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {

@@ -98,6 +98,7 @@ fun KnowledgeGraphHubRoute(
                 onRandomTrailClick = onRandomTrailClick,
                 onRecentTrailClick = onRecentTrailClick,
                 onRetry = viewModel::retry,
+                onDiscoverClick = onBack,
             )
 
             if (uiState.isInfoSheetVisible) {
@@ -122,6 +123,7 @@ private fun KnowledgeGraphHubContent(
     onRandomTrailClick: () -> Unit,
     onRecentTrailClick: (type: String, id: String) -> Unit,
     onRetry: () -> Unit,
+    onDiscoverClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
@@ -171,7 +173,7 @@ private fun KnowledgeGraphHubContent(
                     CommunityCard(
                         community = community,
                         onClick = {
-                            community.primaryTopicKey?.let { topicKey ->
+                            community.primaryTopicKey?.takeIf { it.isNotBlank() }?.let { topicKey ->
                                 onTopicClick(community.topicType, topicKey)
                             }
                         },
@@ -182,7 +184,7 @@ private fun KnowledgeGraphHubContent(
             else -> {
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     CommunitiesEmptyState(
-                        onDiscoverClick = { /* discovery index is behind this page; back is enough */ },
+                        onDiscoverClick = onDiscoverClick,
                     )
                 }
             }
@@ -221,7 +223,7 @@ private fun CommunityCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val enabled = community.primaryTopicKey != null
+    val enabled = !community.primaryTopicKey.isNullOrBlank() && community.topicType.isNotBlank()
     HeritageContentCard(
         onClick = onClick.takeIf { enabled },
         modifier = modifier,
@@ -350,6 +352,9 @@ private fun TrailCardsRow(
     onRecentTrailClick: (type: String, id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val recentTrailClick = recentContent
+        ?.takeIf { it.id.isNotBlank() && it.type.wireName.isNotBlank() }
+        ?.let { content -> { onRecentTrailClick(content.type.wireName, content.id) } }
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -364,7 +369,7 @@ private fun TrailCardsRow(
             title = stringResource(R.string.knowledge_graph_hub_recent_trail_title),
             subtitle = recentContent?.title
                 ?: stringResource(R.string.knowledge_graph_hub_recent_trail_disabled_subtitle),
-            onClick = recentContent?.let { { onRecentTrailClick(it.type.wireName, it.id) } },
+            onClick = recentTrailClick,
             modifier = Modifier.weight(1f),
         )
     }
