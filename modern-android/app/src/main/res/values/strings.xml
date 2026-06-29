@@ -6,7 +6,7 @@
     <string name="nav_discovery">发现</string>
     <string name="nav_settings">设置</string>
     <string name="inheritors_title">代表性传承人</string>
-    <string name="inheritors_subtitle">按项目、类别与地区浏览传承人资料</string>
+    <string name="inheritors_subtitle">按项目、类别与地区浏览</string>
     <string name="inheritors_load_failed">传承人加载失败</string>
     <string name="inheritor_detail_title">传承人详情</string>
     <string name="inheritor_detail_load_failed">传承人详情加载失败</string>

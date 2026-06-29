@@ -6,7 +6,7 @@
     <string name="nav_discovery">Discover</string>
     <string name="nav_settings">Settings</string>
     <string name="inheritors_title">Representative Inheritors</string>
-    <string name="inheritors_subtitle">Browse inheritors by project, category, and region</string>
+    <string name="inheritors_subtitle">Browse by project, category, and region</string>
     <string name="inheritors_load_failed">Failed to load inheritors</string>
     <string name="inheritor_detail_title">Inheritor Detail</string>
     <string name="inheritor_detail_load_failed">Failed to load inheritor detail</string>

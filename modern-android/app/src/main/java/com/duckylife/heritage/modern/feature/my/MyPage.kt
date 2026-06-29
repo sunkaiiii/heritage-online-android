@@ -24,7 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.ClearAll
+import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material.icons.outlined.CloudDone
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.ErrorOutline
@@ -712,7 +712,7 @@ private fun BrowsingTab(
                     {
                         TextButton(onClick = onClearHistory) {
                             Icon(
-                                imageVector = Icons.Outlined.ClearAll,
+                                imageVector = Icons.Outlined.DeleteSweep,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp),
                             )
@@ -750,7 +750,7 @@ private fun BrowsingTab(
                     {
                         TextButton(onClick = onClearReadingPath) {
                             Icon(
-                                imageVector = Icons.Outlined.ClearAll,
+                                imageVector = Icons.Outlined.DeleteSweep,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp),
                             )
