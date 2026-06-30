@@ -129,7 +129,8 @@
     <string name="favorites_tab">收藏</string>
     <string name="recent_tab">最近浏览</string>
     <string name="reading_path_tab">阅读路径</string>
-    <string name="reading_path_empty">你浏览详情后会在这里形成探索路径</string>
+    <string name="reading_path_empty_title">还没有阅读路径</string>
+    <string name="reading_path_empty_message">浏览文章、名录或传承人详情后，你的探索路径会在这里显示。</string>
     <string name="reading_path_clear">清空阅读路径</string>
     <string name="reading_path_clear_confirm">确认清空所有阅读路径记录？</string>
     <string name="reading_path_source_list">列表</string>

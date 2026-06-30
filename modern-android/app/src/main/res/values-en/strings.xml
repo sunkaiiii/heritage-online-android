@@ -129,7 +129,8 @@
     <string name="favorites_tab">Favorites</string>
     <string name="recent_tab">Recent</string>
     <string name="reading_path_tab">Reading Path</string>
-    <string name="reading_path_empty">Your exploration path will appear here as you browse details</string>
+    <string name="reading_path_empty_title">No reading path yet</string>
+    <string name="reading_path_empty_message">Your exploration path will appear here as you browse articles, directory items, or inheritors.</string>
     <string name="reading_path_clear">Clear reading path</string>
     <string name="reading_path_clear_confirm">Clear all reading path records?</string>
     <string name="reading_path_source_list">List</string>

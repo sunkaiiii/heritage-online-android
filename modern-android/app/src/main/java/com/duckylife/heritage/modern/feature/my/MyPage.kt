@@ -763,8 +763,8 @@ private fun BrowsingTab(
             item {
                 EmptyState(
                     icon = Icons.Outlined.Map,
-                    title = stringResource(R.string.reading_path_empty),
-                    message = stringResource(R.string.reading_path_empty),
+                    title = stringResource(R.string.reading_path_empty_title),
+                    message = stringResource(R.string.reading_path_empty_message),
                 )
             }
         } else {
