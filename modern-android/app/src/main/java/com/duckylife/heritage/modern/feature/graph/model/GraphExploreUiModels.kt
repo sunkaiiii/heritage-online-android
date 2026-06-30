@@ -389,11 +389,35 @@ fun TopicGraphMapDto.toTopicGraphMapResult(): TopicGraphMapResult {
 // -----------------------------------------------------------------------------
 
 fun GraphTrailDto.toGraphTrailResult(): GraphTrailResult {
-    val allNodes = (nodes + listOfNotNull(startNode, endNode))
+    val stepNodes = steps.mapNotNull { it.node }
+    val allNodes = (nodes + listOfNotNull(startNode, endNode) + stepNodes)
         .toGraphNodeUiModels()
         .distinctBy { it.nodeKey }
     val nodeMap = allNodes.associateBy { it.nodeKey }
     val availableKeys = nodeMap.keys
+    val mappedSteps = steps.mapNotNull { step ->
+        val node = step.node?.toGraphNodeUiModel() ?: return@mapNotNull null
+        GraphTrailStepUiModel(
+            order = step.order,
+            node = node,
+            stepType = step.stepType?.takeIf { it.isNotBlank() },
+            reason = step.reason?.takeIf { it.isNotBlank() },
+            viaRelationType = GraphRelationType.entries
+                .firstOrNull { it.wireName == step.viaRelationType }
+                ?: GraphRelationType.Unknown,
+        )
+    }.sortedBy { it.order }
+    // 后端某些漫游接口只返回 nodes 而不返回 steps，用 nodes 兜底生成可浏览的步骤
+    val effectiveSteps = mappedSteps.takeIf { it.isNotEmpty() }
+        ?: nodes.mapIndexed { index, nodeDto ->
+            GraphTrailStepUiModel(
+                order = index,
+                node = nodeDto.toGraphNodeUiModel(),
+                stepType = null,
+                reason = null,
+                viaRelationType = GraphRelationType.Unknown,
+            )
+        }
     return GraphTrailResult(
         trailId = trailId,
         strategy = strategy,
@@ -401,18 +425,7 @@ fun GraphTrailDto.toGraphTrailResult(): GraphTrailResult {
         subtitle = subtitle?.takeIf { it.isNotBlank() },
         startNode = startNode?.toGraphNodeUiModel()?.takeIf { it.nodeKey in availableKeys },
         endNode = endNode?.toGraphNodeUiModel()?.takeIf { it.nodeKey in availableKeys },
-        steps = steps.mapNotNull { step ->
-            val node = step.node?.toGraphNodeUiModel() ?: return@mapNotNull null
-            GraphTrailStepUiModel(
-                order = step.order,
-                node = node,
-                stepType = step.stepType?.takeIf { it.isNotBlank() },
-                reason = step.reason?.takeIf { it.isNotBlank() },
-                viaRelationType = GraphRelationType.entries
-                    .firstOrNull { it.wireName == step.viaRelationType }
-                    ?: GraphRelationType.Unknown,
-            )
-        }.sortedBy { it.order },
+        steps = effectiveSteps,
         nodes = allNodes,
         edges = edges.toGraphEdgeUiModels(availableKeys),
         topicLabels = topicLabels.mapNotNull { it.takeIf(String::isNotBlank) }.distinct(),

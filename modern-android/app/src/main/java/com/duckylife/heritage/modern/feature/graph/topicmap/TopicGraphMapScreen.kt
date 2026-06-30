@@ -219,7 +219,7 @@ private fun TopicGraphMapContent(
                         result = result,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(240.dp),
+                            .height(320.dp),
                     )
                 }
                 item {
@@ -498,7 +498,7 @@ private fun TopicGraphOverviewCanvas(
 }
 
 private val TopicGraphMapResult.canRenderOverview: Boolean
-    get() = nodes.isNotEmpty() && edges.isNotEmpty() && nodes.size <= 36 && edges.size <= 72
+    get() = nodes.isNotEmpty() && edges.isNotEmpty() && nodes.size <= 80 && edges.size <= 160
 
 private fun TopicGraphMapResult.circularNodePositions(): Map<String, Offset> {
     if (nodes.isEmpty()) return emptyMap()

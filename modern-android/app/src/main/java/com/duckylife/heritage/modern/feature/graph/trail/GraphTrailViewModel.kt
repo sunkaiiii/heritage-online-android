@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.feature.discovery.GraphTrailSource
+import com.duckylife.heritage.modern.feature.graph.model.GraphTrailResult
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.assisted.Assisted
@@ -69,7 +71,7 @@ class GraphTrailViewModel @AssistedInject constructor(
     }
 
     private suspend fun loadTrail() = when (source) {
-        is GraphTrailSource.Random -> repository.getRandomGraphTrail(limit = 6)
+        is GraphTrailSource.Random -> loadRandomTrail()
         is GraphTrailSource.FromContent -> {
             val contentType = SearchResultType.fromWireName(source.type)
             if (contentType == null || source.contentId.isBlank()) {
@@ -91,6 +93,38 @@ class GraphTrailViewModel @AssistedInject constructor(
                 limit = 6,
             )
         }
+    }
+
+    /**
+     * 随机漫游会尝试多组 strategy/type 组合，避免单一次空响应就给出空态。
+     * 只要任意一次返回非空节点或步骤，即使用该结果。
+     */
+    private suspend fun loadRandomTrail(): GraphTrailResult {
+        val strategies = listOf(
+            TrailStrategy.Mixed,
+            TrailStrategy.Representative,
+            TrailStrategy.Diverse,
+        )
+        val types = listOf(null) + SearchResultType.entries
+        var lastResult: GraphTrailResult? = null
+        var attempts = 0
+        val maxAttempts = 4
+        for (strategy in strategies) {
+            for (type in types) {
+                if (attempts >= maxAttempts) break
+                val result = repository.getRandomGraphTrail(
+                    strategy = strategy,
+                    type = type,
+                    limit = 6,
+                )
+                lastResult = result
+                if (result.steps.isNotEmpty() || result.nodes.isNotEmpty()) {
+                    return result
+                }
+                attempts++
+            }
+        }
+        return lastResult ?: repository.getRandomGraphTrail(limit = 6)
     }
 
     @AssistedFactory

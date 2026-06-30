@@ -43,7 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -77,7 +77,6 @@ import com.duckylife.heritage.modern.core.profile.ProfileLearningProgress
 import com.duckylife.heritage.modern.core.profile.ProfileSyncStatus
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
-import com.duckylife.heritage.modern.ui.component.horizontalFadingEdge
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.feature.research.ResearchLibraryRoute
@@ -188,13 +187,9 @@ fun MyPage(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                 )
 
-                SecondaryScrollableTabRow(
+                SecondaryTabRow(
                     selectedTabIndex = selectedTabIndex,
-                    edgePadding = 8.dp,
-                    modifier = Modifier.horizontalFadingEdge(
-                        edgeWidth = 12.dp,
-                        color = MaterialTheme.colorScheme.background,
-                    ),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     MyPageTab.entries.forEachIndexed { index, tab ->
                         Tab(

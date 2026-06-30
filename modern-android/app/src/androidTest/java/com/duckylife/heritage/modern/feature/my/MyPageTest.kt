@@ -65,9 +65,7 @@ class MyPageTest {
         composeRule.onNodeWithText(string(R.string.browsing_tab)).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.learning_tab)).assertIsDisplayed()
         composeRule.onNodeWithText(string(R.string.journeys_tab)).assertIsDisplayed()
-        composeRule.onNodeWithText(string(R.string.research_tab))
-            .performScrollTo()
-            .assertIsDisplayed()
+        composeRule.onNodeWithText(string(R.string.research_tab)).assertIsDisplayed()
 
         composeRule.onNodeWithText(string(R.string.journeys_tab)).performClick()
         composeRule.onNodeWithText(string(R.string.journeys_strategy_label)).assertIsDisplayed()

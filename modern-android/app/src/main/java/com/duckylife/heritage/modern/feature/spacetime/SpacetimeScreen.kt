@@ -68,6 +68,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -331,37 +332,50 @@ private fun OverviewTab(
 
 @Composable
 private fun MetricsRow(metrics: SpacetimeOverviewUiModel, modifier: Modifier = Modifier) {
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         MetricCard(
             label = stringResource(R.string.spacetime_metrics_total),
             value = metrics.total.toString(),
-            modifier = Modifier.weight(2f),
+            modifier = Modifier.fillMaxWidth(),
         )
-        MetricCard(
-            label = stringResource(R.string.content_type_article),
-            value = metrics.articleCount.toString(),
-            modifier = Modifier.weight(1f),
-        )
-        MetricCard(
-            label = stringResource(R.string.content_type_directory),
-            value = metrics.directoryItemCount.toString(),
-            modifier = Modifier.weight(1f),
-        )
-        MetricCard(
-            label = stringResource(R.string.content_type_inheritor),
-            value = metrics.inheritorCount.toString(),
-            modifier = Modifier.weight(1f),
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            MetricCard(
+                label = stringResource(R.string.content_type_article),
+                value = metrics.articleCount.toString(),
+                valueStyle = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            MetricCard(
+                label = stringResource(R.string.content_type_directory),
+                value = metrics.directoryItemCount.toString(),
+                valueStyle = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+            MetricCard(
+                label = stringResource(R.string.content_type_inheritor),
+                value = metrics.inheritorCount.toString(),
+                valueStyle = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f),
+            )
+        }
     }
 }
 
 @Composable
-private fun MetricCard(label: String, value: String, modifier: Modifier = Modifier) {
+private fun MetricCard(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    valueStyle: TextStyle = MaterialTheme.typography.headlineSmall,
+) {
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
@@ -374,10 +388,10 @@ private fun MetricCard(label: String, value: String, modifier: Modifier = Modifi
         ) {
             Text(
                 text = value,
-                style = MaterialTheme.typography.headlineSmall,
+                style = valueStyle,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Visible,
             )
             Text(
                 text = label,
@@ -1127,7 +1141,7 @@ private fun SpacetimeFilterSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var localFilters by remember { mutableStateOf(filters) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -1137,68 +1151,74 @@ private fun SpacetimeFilterSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
                 .navigationBarsPadding()
                 .imePadding()
+                .padding(horizontal = 16.dp)
                 .padding(bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = stringResource(R.string.spacetime_filter_title),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.spacetime_filter_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = localFilters.fromYear?.toString() ?: "",
+                        onValueChange = {
+                            localFilters = localFilters.copy(fromYear = it.toIntOrNull())
+                        },
+                        label = { Text(stringResource(R.string.spacetime_filter_from_year)) },
+                        modifier = Modifier.weight(1f),
+                    )
+                    OutlinedTextField(
+                        value = localFilters.toYear?.toString() ?: "",
+                        onValueChange = {
+                            localFilters = localFilters.copy(toYear = it.toIntOrNull())
+                        },
+                        label = { Text(stringResource(R.string.spacetime_filter_to_year)) },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
                 OutlinedTextField(
-                    value = localFilters.fromYear?.toString() ?: "",
-                    onValueChange = {
-                        localFilters = localFilters.copy(fromYear = it.toIntOrNull())
-                    },
-                    label = { Text(stringResource(R.string.spacetime_filter_from_year)) },
-                    modifier = Modifier.weight(1f),
+                    value = localFilters.region ?: "",
+                    onValueChange = { localFilters = localFilters.copy(region = it.takeIf { it.isNotBlank() }) },
+                    label = { Text(stringResource(R.string.spacetime_filter_region)) },
+                    modifier = Modifier.fillMaxWidth(),
                 )
                 OutlinedTextField(
-                    value = localFilters.toYear?.toString() ?: "",
-                    onValueChange = {
-                        localFilters = localFilters.copy(toYear = it.toIntOrNull())
-                    },
-                    label = { Text(stringResource(R.string.spacetime_filter_to_year)) },
-                    modifier = Modifier.weight(1f),
+                    value = localFilters.category ?: "",
+                    onValueChange = { localFilters = localFilters.copy(category = it.takeIf { it.isNotBlank() }) },
+                    label = { Text(stringResource(R.string.spacetime_filter_category)) },
+                    modifier = Modifier.fillMaxWidth(),
                 )
+                OutlinedTextField(
+                    value = localFilters.kind ?: "",
+                    onValueChange = { localFilters = localFilters.copy(kind = it.takeIf { it.isNotBlank() }) },
+                    label = { Text(stringResource(R.string.spacetime_filter_kind)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                val currentFilters = localFilters
+                val valid = currentFilters.fromYear == null || currentFilters.toYear == null ||
+                    currentFilters.fromYear <= currentFilters.toYear
+                if (!valid) {
+                    Text(
+                        text = stringResource(R.string.spacetime_filter_invalid_year_range),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = localFilters.region ?: "",
-                onValueChange = { localFilters = localFilters.copy(region = it.takeIf { it.isNotBlank() }) },
-                label = { Text(stringResource(R.string.spacetime_filter_region)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = localFilters.category ?: "",
-                onValueChange = { localFilters = localFilters.copy(category = it.takeIf { it.isNotBlank() }) },
-                label = { Text(stringResource(R.string.spacetime_filter_category)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = localFilters.kind ?: "",
-                onValueChange = { localFilters = localFilters.copy(kind = it.takeIf { it.isNotBlank() }) },
-                label = { Text(stringResource(R.string.spacetime_filter_kind)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
             val currentFilters = localFilters
             val valid = currentFilters.fromYear == null || currentFilters.toYear == null ||
                 currentFilters.fromYear <= currentFilters.toYear
-            if (!valid) {
-                Text(
-                    text = stringResource(R.string.spacetime_filter_invalid_year_range),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),

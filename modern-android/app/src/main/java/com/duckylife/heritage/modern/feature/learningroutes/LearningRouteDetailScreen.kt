@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -32,7 +34,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -255,7 +256,31 @@ private fun LearningRouteDetailLoadedContent(
         }
     }
 
+    val listState = rememberLazyListState()
+    LaunchedEffect(nextStep?.stepId) {
+        val targetStep = nextStep ?: return@LaunchedEffect
+        val targetIndex = if (route.sections.isNotEmpty()) {
+            var index = 1 // header
+            var found = false
+            for (section in route.sections) {
+                val stepPosition = section.stepIds.indexOf(targetStep.stepId)
+                if (stepPosition >= 0) {
+                    index += 1 + stepPosition
+                    found = true
+                    break
+                }
+                index += 1 + section.stepIds.size + 1 // section header + steps + divider
+            }
+            if (found) index else null
+        } else {
+            val stepPosition = route.steps.indexOfFirst { it.stepId == targetStep.stepId }
+            if (stepPosition >= 0) 1 + stepPosition else null
+        }
+        targetIndex?.let { listState.animateScrollToItem(it) }
+    }
+
     LazyColumn(
+        state = listState,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -380,13 +405,21 @@ private fun LearningRouteHeader(
         val progress = remember(percent) {
             (percent / 100f).coerceIn(0f, 1f)
         }
-        LinearProgressIndicator(
-            progress = { progress },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(6.dp)
-                .clip(RoundedCornerShape(3.dp)),
-        )
+                .clip(RoundedCornerShape(3.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(progress)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(MaterialTheme.colorScheme.primary),
+            )
+        }
 
         Text(
             text = stringResource(R.string.learning_route_progress_format, completedCount, totalSteps),

@@ -653,20 +653,20 @@ private fun DirectoryTabToggle(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DirectoryKindFilters(
     selectedKind: DirectoryItemKind,
     onKindSelected: (DirectoryItemKind) -> Unit,
 ) {
-    LazyRow(
-        modifier = Modifier.horizontalFadingEdge(
-            edgeWidth = 12.dp,
-            color = MaterialTheme.colorScheme.background,
-        ),
-        contentPadding = PaddingValues(horizontal = 20.dp),
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(DirectoryItemKind.entries) { kind ->
+        DirectoryItemKind.entries.forEach { kind ->
             FilterChip(
                 selected = kind == selectedKind,
                 onClick = { onKindSelected(kind) },
