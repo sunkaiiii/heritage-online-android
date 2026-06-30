@@ -2,6 +2,7 @@ package com.duckylife.heritage.modern.feature.discovery.deepdive
 
 import com.duckylife.heritage.modern.core.data.FakeHeritageRepository
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.testing.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -23,7 +24,7 @@ class DeepDiveViewModelTest {
     fun `loads deep dive data on init`() = runTest {
         val repo = FakeHeritageRepository()
         val viewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "art-1",
             repository = repo,
         )
@@ -41,7 +42,7 @@ class DeepDiveViewModelTest {
     fun `deepDiveAgain refreshes with new seed`() = runTest {
         val repo = FakeHeritageRepository()
         val viewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "art-1",
             repository = repo,
         )
@@ -66,7 +67,7 @@ class DeepDiveViewModelTest {
         // An invalid seedType should not crash; it should fall back to Article
         val repo = FakeHeritageRepository()
         val viewModel = DeepDiveViewModel(
-            seedType = "nonexistent_type",
+            seedType = SearchResultType.Unknown,
             seedId = "some-id",
             repository = repo,
         )
@@ -83,7 +84,7 @@ class DeepDiveViewModelTest {
     fun `deepDiveAgain uses safe type conversion for item type`() = runTest {
         val repo = FakeHeritageRepository()
         val viewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "art-1",
             repository = repo,
         )
@@ -108,7 +109,7 @@ class DeepDiveViewModelTest {
     fun `failure sets errorKind`() = runTest {
         val repo = FakeHeritageRepository(failure = IllegalStateException("not found"))
         val viewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "missing",
             repository = repo,
         )
@@ -124,7 +125,7 @@ class DeepDiveViewModelTest {
     fun `deepDiveAgain failure sets errorKind`() = runTest {
         val repo = FakeHeritageRepository()
         val viewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "art-1",
             repository = repo,
         )
@@ -134,7 +135,7 @@ class DeepDiveViewModelTest {
         // Now swap to a failing repo by using a new ViewModel
         val failingRepo = FakeHeritageRepository(failure = IllegalStateException("server error"))
         val failingViewModel = DeepDiveViewModel(
-            seedType = "article",
+            seedType = SearchResultType.Article,
             seedId = "art-1",
             repository = failingRepo,
         )

@@ -42,11 +42,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoverySectionDto
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
@@ -55,6 +57,7 @@ import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
 import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
 import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasTotalsDto
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemCard
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
@@ -66,6 +69,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageSearchField
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun DiscoveryRoute(
@@ -1051,5 +1055,213 @@ private fun DiscoveryErrorContent(
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
         }
+    }
+}
+
+@Preview(name = "Discovery", showBackground = true)
+@Composable
+private fun DiscoveryScreenPreview() {
+    HeritageTheme {
+        DiscoveryScreen(
+            uiState = DiscoveryUiState(
+                today = DiscoverySectionState(
+                    data = DiscoveryTodayDto(
+                        featuredDirectoryItem = DiscoveryItemDto(
+                            id = "dir-1",
+                            type = "directoryItem",
+                            title = "京剧",
+                            summary = "中国影响最大的戏曲剧种之一。",
+                            category = "传统戏剧",
+                            region = "北京",
+                        ),
+                        featuredInheritor = DiscoveryItemDto(
+                            id = "inh-1",
+                            type = "inheritor",
+                            title = "梅兰芳",
+                            summary = "京剧表演艺术家。",
+                            category = "传统戏剧",
+                            region = "北京",
+                        ),
+                        articles = listOf(
+                            DiscoveryItemDto(
+                                id = "art-1",
+                                type = "article",
+                                title = "剪纸入门",
+                                summary = "中国传统民间艺术。",
+                                category = "传统美术",
+                                region = "陕西",
+                            ),
+                            DiscoveryItemDto(
+                                id = "art-2",
+                                type = "article",
+                                title = "皮影戏",
+                                summary = "古老的民间戏剧形式。",
+                                category = "传统戏剧",
+                                region = "河北",
+                            ),
+                        ),
+                    ),
+                ),
+                trending = DiscoverySectionState(
+                    data = DiscoveryTrendingDto(
+                        items = listOf(
+                            DiscoveryItemDto(
+                                id = "trend-1",
+                                type = "article",
+                                title = "非遗里的中国年",
+                                category = "民俗",
+                                region = "全国",
+                            ),
+                            DiscoveryItemDto(
+                                id = "trend-2",
+                                type = "directoryItem",
+                                title = "景泰蓝制作技艺",
+                                category = "传统技艺",
+                                region = "北京",
+                            ),
+                        ),
+                    ),
+                ),
+                weekly = DiscoverySectionState(
+                    data = DiscoveryWeeklyDto(
+                        sections = listOf(
+                            DiscoverySectionDto(
+                                id = "weekly-1",
+                                title = "本周最热技艺",
+                                subtitle = "值得一看的传统技艺精选",
+                                items = listOf(
+                                    DiscoveryItemDto(
+                                        id = "w-1",
+                                        type = "directoryItem",
+                                        title = "紫砂壶制作技艺",
+                                        category = "传统技艺",
+                                        region = "江苏",
+                                    ),
+                                    DiscoveryItemDto(
+                                        id = "w-2",
+                                        type = "directoryItem",
+                                        title = "苏绣",
+                                        category = "传统美术",
+                                        region = "江苏",
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                classic = DiscoverySectionState(
+                    data = DiscoveryClassicData(
+                        topics = listOf(
+                            ExploreTopicInfoDto(
+                                key = "paper-cutting",
+                                title = "剪纸",
+                                type = "category",
+                            ),
+                            ExploreTopicInfoDto(
+                                key = "beijing",
+                                title = "北京",
+                                type = "region",
+                            ),
+                        ),
+                        learningPaths = listOf(
+                            LearningPathDto(
+                                id = "lp-1",
+                                title = "从零开始学剪纸",
+                                subtitle = "适合初学者的剪纸入门路径",
+                                stepCount = 5,
+                            ),
+                        ),
+                        featuredCollections = listOf(
+                            FeaturedCollectionDto(
+                                id = "fc-1",
+                                title = "春节非遗精选",
+                                subtitle = "与春节相关的非遗项目合集",
+                                itemCount = 12,
+                            ),
+                        ),
+                        regionAtlas = RegionAtlasDto(
+                            totals = RegionAtlasTotalsDto(
+                                directoryItemCount = 1234,
+                                inheritorCount = 567,
+                                regionCount = 34,
+                            ),
+                        ),
+                    ),
+                ),
+                serendipityItem = DiscoveryItemDto(
+                    id = "ser-1",
+                    type = "directoryItem",
+                    title = "龙舟制作技艺",
+                    summary = "集木工、雕刻、彩绘于一体的传统技艺。",
+                    category = "传统技艺",
+                    region = "广东",
+                ),
+            ),
+            onRefresh = {},
+            onSearchSubmit = {},
+            onTopicClick = {},
+            onLearningPathClick = {},
+            onCollectionClick = {},
+            onRegionAtlasClick = {},
+            onTimelineClick = {},
+            onKnowledgeGraphClick = {},
+            onLearningRoutesClick = {},
+            onSpacetimeClick = {},
+            onRankingsClick = {},
+            onSerendipityClick = {},
+            onTrendingItemClick = {},
+            onWeeklyItemClick = {},
+            onTodayItemClick = {},
+            onDeepDiveClick = {},
+            onTaxonomyClick = {},
+            onStoriesClick = {},
+            onRetryToday = {},
+            onRetryTrending = {},
+            onRetryWeekly = {},
+            onRetryClassic = {},
+        )
+    }
+}
+
+@Preview(name = "Discovery dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DiscoveryScreenDarkPreview() {
+    DiscoveryScreenPreview()
+}
+
+@Preview(name = "Discovery loading", showBackground = true)
+@Composable
+private fun DiscoveryScreenLoadingPreview() {
+    HeritageTheme {
+        DiscoveryScreen(
+            uiState = DiscoveryUiState(
+                today = DiscoverySectionState(isLoading = true),
+                trending = DiscoverySectionState(isLoading = true),
+                weekly = DiscoverySectionState(isLoading = true),
+                classic = DiscoverySectionState(isLoading = true),
+            ),
+            onRefresh = {},
+            onSearchSubmit = {},
+            onTopicClick = {},
+            onLearningPathClick = {},
+            onCollectionClick = {},
+            onRegionAtlasClick = {},
+            onTimelineClick = {},
+            onKnowledgeGraphClick = {},
+            onLearningRoutesClick = {},
+            onSpacetimeClick = {},
+            onRankingsClick = {},
+            onSerendipityClick = {},
+            onTrendingItemClick = {},
+            onWeeklyItemClick = {},
+            onTodayItemClick = {},
+            onDeepDiveClick = {},
+            onTaxonomyClick = {},
+            onStoriesClick = {},
+            onRetryToday = {},
+            onRetryTrending = {},
+            onRetryWeekly = {},
+            onRetryClassic = {},
+        )
     }
 }

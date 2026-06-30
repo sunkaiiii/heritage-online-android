@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.database.entity.SavedContentEntity
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphTrailStepDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyItemDto
@@ -21,16 +22,20 @@ import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.duckylife.heritage.modern.core.runCatchingCancellable
+import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toApiFailure
 import com.duckylife.heritage.modern.ui.error.toErrorKind
-import kotlinx.coroutines.ensureActive
 import javax.inject.Inject
 
 /**
@@ -91,6 +96,9 @@ class MyPageViewModel @Inject constructor(
     private val _journeys = MutableStateFlow<JourneysUiState>(JourneysUiState.Loading)
     val journeys: StateFlow<JourneysUiState> = _journeys
 
+    private val _syncEvent = kotlinx.coroutines.flow.MutableSharedFlow<ErrorKind?>()
+    val syncEvent: kotlinx.coroutines.flow.SharedFlow<ErrorKind?> = _syncEvent.asSharedFlow()
+
     private var journeysJob: Job? = null
     private var latestSignals: JourneySignalsDto? = null
 
@@ -108,7 +116,7 @@ class MyPageViewModel @Inject constructor(
 
     private fun loadSignalsThenJourneys() {
         viewModelScope.launch {
-            latestSignals = runCatching { journeyRepository.loadSignals() }.getOrNull()
+            latestSignals = runCatchingCancellable { journeyRepository.loadSignals() }.getOrNull()
             loadJourneys()
         }
     }
@@ -118,9 +126,7 @@ class MyPageViewModel @Inject constructor(
         _journeys.value = JourneysUiState.Loading
         journeysJob = viewModelScope.launch {
             val strategy = _selectedStrategy.value
-            val result = runCatching { journeyRepository.loadJourneys(strategy) }
-            ensureActive()
-            result.fold(
+            runCatchingCancellable { journeyRepository.loadJourneys(strategy) }.fold(
                 onSuccess = { response ->
                     _journeys.value = response.toUiState(latestSignals)
                 },
@@ -137,7 +143,11 @@ class MyPageViewModel @Inject constructor(
 
     fun syncNow() {
         viewModelScope.launch {
-            runCatching { syncRepository.syncNow() }
+            runCatchingCancellable { syncRepository.syncNow() }
+                .onSuccess { _syncEvent.emit(null) }
+                .onFailure { throwable ->
+                    _syncEvent.emit(throwable.toApiFailure().toErrorKind())
+                }
         }
     }
 
@@ -228,25 +238,25 @@ class MyPageViewModel @Inject constructor(
         type: String,
         targetId: String,
         legacy: SavedContentEntity?,
-    ): MyPageDestination? = when (type) {
-        "article" -> MyPageDestination.Article(
+    ): MyPageDestination? = when (SearchResultType.fromWireName(type)) {
+        SearchResultType.Article -> MyPageDestination.Article(
             articleId = targetId,
             sourceId = legacy?.targetSourceId,
             sourceUrl = legacy?.targetSourceUrl,
             category = ArticleCategory.entries.firstOrNull { it.wireName == legacy?.targetCategory }
                 ?: ArticleCategory.News,
         )
-        "directoryItem" -> MyPageDestination.Directory(
+        SearchResultType.DirectoryItem -> MyPageDestination.Directory(
             itemId = targetId,
             sourceId = legacy?.targetSourceId,
             kind = DirectoryItemKind.entries.firstOrNull { it.wireName == legacy?.targetKind }
                 ?: DirectoryItemKind.NationalProject,
         )
-        "inheritor" -> MyPageDestination.Inheritor(
+        SearchResultType.Inheritor -> MyPageDestination.Inheritor(
             inheritorId = targetId,
             sourceId = legacy?.targetSourceId,
         )
-        else -> null
+        SearchResultType.Unknown, null -> null
     }
 }
 

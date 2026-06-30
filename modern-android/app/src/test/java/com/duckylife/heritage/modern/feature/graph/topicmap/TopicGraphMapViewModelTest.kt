@@ -43,7 +43,7 @@ class TopicGraphMapViewModelTest {
     @Test
     fun `init loads topic map`() = runTest {
         fakeRepository.topicGraphMapResult = TopicGraphMapResult(
-            topicType = "category",
+            topicType = GraphNodeType.Category,
             topicKey = "folk-art",
             topicNode = null,
             nodes = emptyList(),
@@ -53,7 +53,7 @@ class TopicGraphMapViewModelTest {
         advanceUntilIdle()
 
         assertFalse(viewModel.uiState.value.isLoading)
-        assertEquals("category", viewModel.uiState.value.result?.topicType)
+        assertEquals(GraphNodeType.Category, viewModel.uiState.value.result?.topicType)
         assertEquals("folk-art", fakeRepository.lastTopicKey)
     }
 
@@ -67,7 +67,7 @@ class TopicGraphMapViewModelTest {
 
         fakeRepository.failure = null
         fakeRepository.topicGraphMapResult = TopicGraphMapResult(
-            topicType = "category",
+            topicType = GraphNodeType.Category,
             topicKey = "folk-art",
             topicNode = null,
             nodes = emptyList(),
@@ -83,7 +83,7 @@ class TopicGraphMapViewModelTest {
     @Test
     fun `selectViewMode updates state`() = runTest {
         fakeRepository.topicGraphMapResult = TopicGraphMapResult(
-            topicType = "category",
+            topicType = GraphNodeType.Category,
             topicKey = "folk-art",
             topicNode = null,
             nodes = emptyList(),
@@ -99,7 +99,7 @@ class TopicGraphMapViewModelTest {
 
     @Test
     fun `blank topic key sets bad request`() = runTest {
-        val viewModel = createViewModel(topicType = "category", topicKey = "")
+        val viewModel = createViewModel(topicType = GraphNodeType.Category, topicKey = "")
         advanceUntilIdle()
 
         assertEquals(ErrorKind.BadRequest, viewModel.uiState.value.errorKind)
@@ -120,7 +120,7 @@ class TopicGraphMapViewModelTest {
     }
 
     private fun createViewModel(
-        topicType: String = "category",
+        topicType: GraphNodeType = GraphNodeType.Category,
         topicKey: String = "folk-art",
     ): TopicGraphMapViewModel = TopicGraphMapViewModel(
         topicType = topicType,
@@ -130,14 +130,14 @@ class TopicGraphMapViewModelTest {
 
     private class FakeKnowledgeGraphRepository : KnowledgeGraphRepository {
         var topicGraphMapResult = TopicGraphMapResult(
-            topicType = "",
+            topicType = GraphNodeType.Unknown,
             topicKey = "",
             topicNode = null,
             nodes = emptyList(),
             edges = emptyList(),
         )
         var failure: Throwable? = null
-        var lastTopicType: String? = null
+        var lastTopicType: GraphNodeType? = null
         var lastTopicKey: String? = null
 
         override suspend fun getCommunities(limit: Int, minSize: Int): List<GraphCommunityUiModel> =
@@ -178,7 +178,7 @@ class TopicGraphMapViewModelTest {
         ): BridgeResult = throw NotImplementedError()
 
         override suspend fun getTopicGraphMap(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             limit: Int,
         ): TopicGraphMapResult {
@@ -202,7 +202,7 @@ class TopicGraphMapViewModelTest {
         ): GraphTrailResult = throw NotImplementedError()
 
         override suspend fun getGraphTrailFromTopic(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             strategy: TrailStrategy,
             limit: Int,

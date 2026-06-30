@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.learningroutes
 
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteSummaryUiModel
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 
@@ -30,7 +31,7 @@ data class LearningRoutesSectionState<T>(
 data class LearningRoutesUiState(
     val selectedDifficulty: LearningRouteDifficulty = LearningRouteDifficulty.All,
     val routes: LearningRoutesSectionState<List<LearningRouteSummaryUiModel>> = LearningRoutesSectionState(isLoading = true),
-    val seedType: String? = null,
+    val seedType: LearningRouteSeedType? = null,
     val seedId: String? = null,
     val isBuildingSeed: Boolean = false,
     val buildSeedError: ErrorKind? = null,

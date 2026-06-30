@@ -64,10 +64,9 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopicGraphMapRoute(
-    topicType: String,
+    topicType: GraphNodeType,
     topicKey: String,
     onBack: () -> Unit,
     onContentClick: (DetailContextTarget) -> Unit,
@@ -176,7 +175,7 @@ private fun TopicGraphMapContent(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     HeritageMetaChip(
-                        text = localizedTopicType(result.topicType)
+                        text = localizedTopicType(result.topicType.wireName)
                             .ifBlank { stringResource(R.string.graph_node_type_topic) },
                     )
                     HeritageMetaChip(
@@ -549,7 +548,7 @@ private fun TopicGraphMapScreenPreview() {
         TopicGraphMapScreen(
             uiState = TopicGraphMapUiState(
                 result = TopicGraphMapResult(
-                    topicType = "category",
+                    topicType = GraphNodeType.Category,
                     topicKey = "folk-art",
                     topicNode = GraphNodeUiModel(
                         nodeKey = "category-folk-art",
@@ -589,7 +588,7 @@ private fun TopicGraphMapScreenDarkPreview() {
         TopicGraphMapScreen(
             uiState = TopicGraphMapUiState(
                 result = TopicGraphMapResult(
-                    topicType = "category",
+                    topicType = GraphNodeType.Category,
                     topicKey = "folk-art",
                     topicNode = GraphNodeUiModel(
                         nodeKey = "category-folk-art",

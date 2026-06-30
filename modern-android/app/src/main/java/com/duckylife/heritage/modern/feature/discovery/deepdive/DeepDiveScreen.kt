@@ -26,11 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
 import com.duckylife.heritage.modern.ui.component.HeritageEmptyState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
@@ -38,16 +40,17 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageHeader
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun DeepDiveRoute(
-    seedType: String,
+    seedType: SearchResultType,
     seedId: String,
     onBack: () -> Unit,
     onItemClick: (DiscoveryItemDto) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: DeepDiveViewModel = hiltViewModel<DeepDiveViewModel, DeepDiveViewModel.Factory>(
-        key = "deep-dive-${seedType}-${seedId}",
+        key = "deep-dive-${seedType.wireName}-${seedId}",
         creationCallback = { factory -> factory.create(seedType = seedType, seedId = seedId) },
     ),
 ) {
@@ -199,5 +202,75 @@ private fun DeepDiveErrorContent(
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
         }
+    }
+}
+
+@Preview(name = "Deep dive", showBackground = true)
+@Composable
+private fun DeepDiveScreenPreview() {
+    HeritageTheme {
+        DeepDiveScreen(
+            uiState = DeepDiveUiState(
+                isLoading = false,
+                seed = DiscoveryItemDto(
+                    id = "seed-1",
+                    type = "directoryItem",
+                    title = "龙泉青瓷烧制技艺",
+                    summary = "以龙泉地区为代表的青瓷传统烧制技艺。",
+                    category = "传统技艺",
+                    region = "浙江",
+                ),
+                related = listOf(
+                    DiscoveryItemDto(
+                        id = "rel-1",
+                        type = "directoryItem",
+                        title = "越窑青瓷",
+                        summary = "中国古代最著名的青瓷窑系。",
+                        category = "传统技艺",
+                        region = "浙江",
+                    ),
+                    DiscoveryItemDto(
+                        id = "rel-2",
+                        type = "article",
+                        title = "青瓷之美",
+                        summary = "青如玉、明如镜、声如磬。",
+                        category = "传统技艺",
+                        region = "浙江",
+                    ),
+                    DiscoveryItemDto(
+                        id = "rel-3",
+                        type = "inheritor",
+                        title = "徐朝兴",
+                        summary = "国家级非遗代表性传承人。",
+                        category = "传统技艺",
+                        region = "浙江",
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+            onDeepDiveAgain = {},
+        )
+    }
+}
+
+@Preview(name = "Deep dive dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun DeepDiveScreenDarkPreview() {
+    DeepDiveScreenPreview()
+}
+
+@Preview(name = "Deep dive loading", showBackground = true)
+@Composable
+private fun DeepDiveScreenLoadingPreview() {
+    HeritageTheme {
+        DeepDiveScreen(
+            uiState = DeepDiveUiState(isLoading = true),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+            onDeepDiveAgain = {},
+        )
     }
 }

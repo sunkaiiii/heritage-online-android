@@ -67,7 +67,7 @@ class AdvancedDtoSerializationTest {
         """.trimIndent()
         val dto = HeritageJson.decodeFromString(LocalHistoryDto.serializer(), json)
         assertEquals("h1", dto.id)
-        assertEquals("article", dto.targetType)
+        assertEquals(LocalUserTargetType.Article, dto.targetType)
         assertEquals("a1", dto.targetId)
         assertEquals(1, dto.viewCount)
         assertNull(dto.viewedAt)
@@ -102,7 +102,7 @@ class AdvancedDtoSerializationTest {
         """.trimIndent()
         val dto = HeritageJson.decodeFromString(PagedResult.serializer(LocalFavoriteDto.serializer()), json)
         assertEquals(1, dto.items.size)
-        assertEquals("article", dto.items.first().targetType)
+        assertEquals(LocalUserTargetType.Article, dto.items.first().targetType)
     }
 
     @Test

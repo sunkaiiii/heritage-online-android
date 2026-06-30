@@ -2,6 +2,9 @@ package com.duckylife.heritage.modern.feature.discovery
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import kotlinx.serialization.SerialName
 
 // ---------------------------------------------------------------------------
@@ -13,7 +16,7 @@ internal sealed interface DiscoveryRouteKey {
     data class SearchResults(val query: String) : DiscoveryRouteKey
     data class ExploreTopicDetail(val type: String, val key: String) : DiscoveryRouteKey
     data class LearningPathDetail(val id: String) : DiscoveryRouteKey
-    data class LearningRoutesPage(val seedType: String? = null, val seedId: String? = null) : DiscoveryRouteKey
+    data class LearningRoutesPage(val seedType: LearningRouteSeedType? = null, val seedId: String? = null) : DiscoveryRouteKey
     data class LearningRouteDetailPage(val routeId: String) : DiscoveryRouteKey
     data object SpacetimePage : DiscoveryRouteKey
     data object RankingsPage : DiscoveryRouteKey
@@ -23,16 +26,16 @@ internal sealed interface DiscoveryRouteKey {
     data class RegionDetailPage(val region: String) : DiscoveryRouteKey
     data object TimelinePage : DiscoveryRouteKey
     data object KnowledgeGraphHubPage : DiscoveryRouteKey
-    data class TopicGraphMapPage(val topicType: String, val topicKey: String) : DiscoveryRouteKey
+    data class TopicGraphMapPage(val topicType: GraphNodeType, val topicKey: String) : DiscoveryRouteKey
     data class GraphTrailPage(val source: GraphTrailSource) : DiscoveryRouteKey
     data object TaxonomyPage : DiscoveryRouteKey
     data class TaxonomyDetailPage(val type: String, val key: String) : DiscoveryRouteKey
     data class ComparePage(val type: String? = null, val left: String? = null, val right: String? = null) : DiscoveryRouteKey
     data object StoriesIndexPage : DiscoveryRouteKey
     data class StoryPage(val region: String? = null, val category: String? = null, val year: Int? = null) : DiscoveryRouteKey
-    data class DeepDivePage(val seedType: String, val seedId: String) : DiscoveryRouteKey
+    data class DeepDivePage(val seedType: SearchResultType, val seedId: String) : DiscoveryRouteKey
     data class GraphExplorePage(
-        val type: String,
+        val type: SearchResultType,
         val contentId: String,
         val initialTab: GraphTab = GraphTab.Neighbors,
     ) : DiscoveryRouteKey
@@ -66,7 +69,7 @@ internal sealed interface RouteState {
     @kotlinx.serialization.Serializable data class Search(val query: String = "") : RouteState
     @kotlinx.serialization.Serializable data class ExploreTopic(@kotlinx.serialization.SerialName("topicType") val type: String = "", val key: String = "") : RouteState
     @kotlinx.serialization.Serializable data class LearningPath(val id: String = "") : RouteState
-    @kotlinx.serialization.Serializable data class LearningRoutes(val seedType: String? = null, val seedId: String? = null) : RouteState
+    @kotlinx.serialization.Serializable data class LearningRoutes(val seedType: LearningRouteSeedType? = null, val seedId: String? = null) : RouteState
     @kotlinx.serialization.Serializable data class LearningRouteDetail(val routeId: String = "") : RouteState
     @kotlinx.serialization.Serializable data object Spacetime : RouteState
     @kotlinx.serialization.Serializable data object Rankings : RouteState
@@ -76,15 +79,15 @@ internal sealed interface RouteState {
     @kotlinx.serialization.Serializable data class RegionDetail(val region: String = "") : RouteState
     @kotlinx.serialization.Serializable data object Timeline : RouteState
     @kotlinx.serialization.Serializable data object KnowledgeGraphHub : RouteState
-    @kotlinx.serialization.Serializable data class TopicGraphMap(@kotlinx.serialization.SerialName("topicType") val topicType: String = "", val topicKey: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class TopicGraphMap(@kotlinx.serialization.SerialName("topicType") val topicType: GraphNodeType = GraphNodeType.Unknown, val topicKey: String = "") : RouteState
     @kotlinx.serialization.Serializable data class GraphTrail(val source: GraphTrailSource = GraphTrailSource.Random) : RouteState
     @kotlinx.serialization.Serializable data object Taxonomy : RouteState
     @kotlinx.serialization.Serializable data class TaxonomyDetail(@kotlinx.serialization.SerialName("topicType") val type: String = "", val key: String = "") : RouteState
     @kotlinx.serialization.Serializable data class Compare(@kotlinx.serialization.SerialName("topicType") val type: String? = null, val left: String? = null, val right: String? = null) : RouteState
     @kotlinx.serialization.Serializable data object StoriesIndex : RouteState
     @kotlinx.serialization.Serializable data class Story(val region: String? = null, val category: String? = null, val year: Int? = null) : RouteState
-    @kotlinx.serialization.Serializable data class DeepDive(val seedType: String = "", val seedId: String = "") : RouteState
-    @kotlinx.serialization.Serializable data class GraphExplore(@SerialName("contentType") val type: String = "", @SerialName("contentId") val contentId: String = "", val tab: String = "neighbors") : RouteState
+    @kotlinx.serialization.Serializable data class DeepDive(val seedType: SearchResultType = SearchResultType.Article, val seedId: String = "") : RouteState
+    @kotlinx.serialization.Serializable data class GraphExplore(@SerialName("contentType") val type: SearchResultType = SearchResultType.Article, @SerialName("contentId") val contentId: String = "", val tab: String = "neighbors") : RouteState
     @kotlinx.serialization.Serializable data class ArticleDetail(val id: String? = null, val sourceId: String? = null, val sourceUrl: String? = null, val category: String = "news") : RouteState
     @kotlinx.serialization.Serializable data class DirectoryDetail(val id: String? = null, val sourceId: String? = null, val kind: String = "nationalProject") : RouteState
     @kotlinx.serialization.Serializable data class InheritorDetail(val id: String? = null, val sourceId: String? = null) : RouteState
@@ -113,13 +116,13 @@ sealed interface GraphTrailSource {
     @kotlinx.serialization.Serializable
     data class FromContent(
         @kotlinx.serialization.SerialName("contentType")
-        val type: String,
+        val type: SearchResultType,
         val contentId: String,
     ) : GraphTrailSource
 
     @kotlinx.serialization.Serializable
     data class FromTopic(
-        val topicType: String,
+        val topicType: GraphNodeType,
         val topicKey: String,
     ) : GraphTrailSource
 }

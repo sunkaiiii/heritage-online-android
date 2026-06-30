@@ -75,7 +75,12 @@ data class ResearchArtifactUiModel(
     val mimeType: String,
     val sizeBytes: Long,
     val isViewable: Boolean,
-)
+) {
+    val isTextLike: Boolean
+        get() = mimeType.startsWith("text/") ||
+            mimeType == "application/json" ||
+            mimeType == "application/markdown"
+}
 
 /**
  * 研究报告列表项 UI 模型。

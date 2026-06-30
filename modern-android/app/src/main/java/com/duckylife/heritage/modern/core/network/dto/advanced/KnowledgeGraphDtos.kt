@@ -124,7 +124,7 @@ data class GraphCommunitiesDto(
 @Serializable
 data class GraphCommunityDto(
     val communityKey: String,
-    val topicType: String,
+    val topicType: GraphNodeType,
     val title: String? = null,
     val size: Int = 0,
     val nodes: List<GraphNodeDto> = emptyList(),
@@ -133,7 +133,7 @@ data class GraphCommunityDto(
 
 @Serializable
 data class TopicGraphMapDto(
-    val topicType: String? = null,
+    val topicType: GraphNodeType? = null,
     val topicKey: String? = null,
     val topic: GraphNodeDto? = null,
     val nodes: List<GraphNodeDto> = emptyList(),

@@ -28,13 +28,13 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = GraphExploreViewModel.Factory::class)
 class GraphExploreViewModel @AssistedInject constructor(
-    @Assisted("contentType") private val contentType: String,
+    @Assisted("contentType") private val contentType: SearchResultType,
     @Assisted("contentId") private val contentId: String,
     @Assisted("initialTab") initialTab: GraphTab,
     private val repository: KnowledgeGraphRepository,
 ) : ViewModel() {
 
-    private val contentRef: SearchResultType? = SearchResultType.fromWireName(contentType)
+    private val contentRef: SearchResultType? = contentType.takeIf { it != SearchResultType.Unknown }
 
     private val _uiState = MutableStateFlow(
         GraphExploreUiState(
@@ -354,7 +354,7 @@ class GraphExploreViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("contentType") contentType: String,
+            @Assisted("contentType") contentType: SearchResultType,
             @Assisted("contentId") contentId: String,
             @Assisted("initialTab") initialTab: GraphTab,
         ): GraphExploreViewModel

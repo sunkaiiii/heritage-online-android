@@ -21,6 +21,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -157,6 +160,7 @@ class ContentExportViewModelTest {
             itemCount = 1,
         )
         val viewModel = ContentExportViewModel(fakeRepository)
+        val shareEvent = async { viewModel.shareEvent.first() }
         viewModel.initialize("a1", SearchResultType.Article)
         advanceUntilIdle()
 
@@ -166,7 +170,7 @@ class ContentExportViewModelTest {
         val state = viewModel.uiState.value
         assertFalse(state.exportError.isLoading)
         assertFalse(state.oversizedWarning)
-        assertEquals("# Article", state.shareContent)
+        assertEquals("# Article", shareEvent.await())
 
         with(fakeRepository.capturedExportRequest) {
             assertNotNull(this)
@@ -179,6 +183,8 @@ class ContentExportViewModelTest {
     fun `exportAndShare waits until templates are loaded`() = runTest {
         fakeRepository.templatesDeferred = CompletableDeferred()
         val viewModel = ContentExportViewModel(fakeRepository)
+        val shareEvents = mutableListOf<String>()
+        backgroundScope.launch { viewModel.shareEvent.collect { shareEvents += it } }
 
         viewModel.initialize("a1", SearchResultType.Article)
         advanceUntilIdle()
@@ -186,7 +192,7 @@ class ContentExportViewModelTest {
         advanceUntilIdle()
 
         assertNull(fakeRepository.capturedExportRequest)
-        assertNull(viewModel.uiState.value.shareContent)
+        assertTrue(shareEvents.isEmpty())
     }
 
     @Test
@@ -204,10 +210,11 @@ class ContentExportViewModelTest {
     }
 
     @Test
-    fun `dismiss resets preview and share state`() = runTest {
+    fun `dismiss resets preview and export state`() = runTest {
         fakeRepository.previewResult = ExportPreviewDto(estimatedItemCount = 1)
         fakeRepository.exportResult = ExportContentResultDto(content = "content")
         val viewModel = ContentExportViewModel(fakeRepository)
+        val shareEvent = async { viewModel.shareEvent.first() }
         viewModel.initialize("a1", SearchResultType.Article)
         advanceUntilIdle()
         viewModel.loadPreview()
@@ -218,8 +225,8 @@ class ContentExportViewModelTest {
 
         val state = viewModel.uiState.value
         assertNull(state.preview.data)
-        assertNull(state.shareContent)
         assertFalse(state.oversizedWarning)
+        assertEquals("content", shareEvent.await())
     }
 
     @Test
@@ -267,6 +274,7 @@ class ContentExportViewModelTest {
             itemCount = 1,
         )
         val viewModel = ContentExportViewModel(fakeRepository)
+        val shareEvent = async { viewModel.shareEvent.first() }
         viewModel.initialize("a1", SearchResultType.Article)
         advanceUntilIdle()
 
@@ -275,7 +283,7 @@ class ContentExportViewModelTest {
 
         val state = viewModel.uiState.value
         assertFalse(state.oversizedWarning)
-        assertNotNull(state.shareContent)
+        assertEquals(MAX_EXPORT_CONTENT_BYTES, shareEvent.await().length)
     }
 
     @Test
@@ -286,6 +294,8 @@ class ContentExportViewModelTest {
             itemCount = 1,
         )
         val viewModel = ContentExportViewModel(fakeRepository)
+        val shareEvents = mutableListOf<String>()
+        backgroundScope.launch { viewModel.shareEvent.collect { shareEvents += it } }
         viewModel.initialize("a1", SearchResultType.Article)
         advanceUntilIdle()
 
@@ -294,7 +304,7 @@ class ContentExportViewModelTest {
 
         val state = viewModel.uiState.value
         assertTrue(state.oversizedWarning)
-        assertNull(state.shareContent)
+        assertTrue(shareEvents.isEmpty())
     }
 
     private suspend fun createResponseException(status: HttpStatusCode): ResponseException {

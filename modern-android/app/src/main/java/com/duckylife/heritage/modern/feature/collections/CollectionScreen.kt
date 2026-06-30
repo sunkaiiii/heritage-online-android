@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.CollectionDto
 import com.duckylife.heritage.modern.core.network.dto.CollectionItemDto
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
@@ -80,7 +82,6 @@ fun CollectionRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollectionScreen(
     uiState: CollectionUiState,
@@ -251,6 +252,60 @@ private fun CollectionItemRow(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun CollectionScreenPreview() {
+    HeritageTheme {
+        CollectionScreen(
+            uiState = CollectionUiState(
+                isLoading = false,
+                collection = CollectionDto(
+                    id = "preview-collection",
+                    title = "传统技艺精选",
+                    subtitle = "探索各地传统技艺名录",
+                    type = "category",
+                    tags = listOf("技艺", "推荐"),
+                    generatedAt = "2024-01-01T00:00:00Z",
+                    items = listOf(
+                        CollectionItemDto(
+                            id = "1",
+                            type = "directoryItem",
+                            title = "景泰蓝制作技艺",
+                            summary = "北京传统手工艺，以掐丝珐琅闻名。",
+                            category = "traditionalCraft",
+                            region = "北京",
+                            publishedYear = 2006,
+                        ),
+                        CollectionItemDto(
+                            id = "2",
+                            type = "article",
+                            title = "非遗保护的当代路径",
+                            summary = "探讨非遗项目如何在现代社会传承。",
+                            category = "specialTopic",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+        )
+    }
+}
+
+@Preview(name = "Collection Loading", showBackground = true)
+@Composable
+private fun CollectionScreenLoadingPreview() {
+    HeritageTheme {
+        CollectionScreen(
+            uiState = CollectionUiState(isLoading = true),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+        )
     }
 }
 

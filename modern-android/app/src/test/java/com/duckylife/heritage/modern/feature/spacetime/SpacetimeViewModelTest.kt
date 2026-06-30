@@ -384,5 +384,10 @@ class SpacetimeViewModelTest {
             rankingId: String,
             filters: com.duckylife.heritage.modern.feature.rankings.model.RankingFilters,
         ): com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel = rankingDetail
+
+        override suspend fun getRankingContent(
+            metric: RankingMetric,
+            filters: com.duckylife.heritage.modern.feature.rankings.model.RankingFilters,
+        ): com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel = rankingDetail
     }
 }

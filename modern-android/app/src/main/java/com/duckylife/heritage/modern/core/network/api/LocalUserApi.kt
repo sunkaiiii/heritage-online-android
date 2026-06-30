@@ -13,6 +13,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LocalHistoryDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalLearningProgressDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 
 /**
@@ -30,7 +31,7 @@ interface LocalUserApi {
 
     suspend fun addLocalUserFavorite(request: FavoriteCreateRequestDto): LocalFavoriteDto
 
-    suspend fun removeLocalUserFavorite(targetType: String, targetId: String)
+    suspend fun removeLocalUserFavorite(targetType: LocalUserTargetType, targetId: String)
 
     suspend fun getLocalUserHistory(query: LocalUserHistoryQuery = LocalUserHistoryQuery()): PagedResult<LocalHistoryDto>
 

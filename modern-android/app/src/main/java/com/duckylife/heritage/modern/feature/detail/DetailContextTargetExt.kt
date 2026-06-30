@@ -92,7 +92,7 @@ fun contextItemTargetFromType(type: String?, id: String?): DetailContextTarget? 
         SearchResultType.Article -> DetailContextTarget.Article(safeId)
         SearchResultType.DirectoryItem -> DetailContextTarget.DirectoryItem(safeId)
         SearchResultType.Inheritor -> DetailContextTarget.Inheritor(safeId)
-        null -> {
+        SearchResultType.Unknown, null -> {
             Log.d(TAG, "Unsupported content type $type for id $safeId")
             null
         }

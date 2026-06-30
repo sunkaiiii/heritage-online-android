@@ -15,8 +15,12 @@ class SearchResultTypeTest {
     }
 
     @Test
+    fun `fromWireName returns Unknown for the unknown wire value`() {
+        assertEquals(SearchResultType.Unknown, SearchResultType.fromWireName("unknown"))
+    }
+
+    @Test
     fun `fromWireName returns null for unknown values`() {
-        assertNull(SearchResultType.fromWireName("unknown"))
         assertNull(SearchResultType.fromWireName(""))
         assertNull(SearchResultType.fromWireName("Article"))
         assertNull(SearchResultType.fromWireName("DIRECTORYITEM"))

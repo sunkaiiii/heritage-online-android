@@ -49,6 +49,7 @@ import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
@@ -137,10 +138,11 @@ internal fun JourneysTab(
                         imageLoader = imageLoader,
                         onClick = { onItemClick(toMyPageDestination(item.contentType, item.targetId)) },
                         onViewRelations = {
-                            toMyPageDestination(item.contentType, item.targetId)?.let { dest ->
+                            toMyPageDestination(item.contentType, item.targetId)?.let {
                                 onViewRelations(
                                     MyPageDestination.GraphExplore(
-                                        contentType = item.contentType,
+                                        contentType = SearchResultType.fromWireName(item.contentType)
+                                            ?: SearchResultType.Article,
                                         contentId = item.targetId.orEmpty(),
                                     ),
                                 )
@@ -451,23 +453,23 @@ private fun JourneyErrorCard(
 
 private fun toMyPageDestination(contentType: String?, targetId: String?): MyPageDestination? {
     if (targetId.isNullOrBlank()) return null
-    return when (contentType) {
-        "article" -> MyPageDestination.Article(
+    return when (SearchResultType.fromWireName(contentType)) {
+        SearchResultType.Article -> MyPageDestination.Article(
             articleId = targetId,
             sourceId = null,
             sourceUrl = null,
             category = ArticleCategory.News,
         )
-        "directoryItem" -> MyPageDestination.Directory(
+        SearchResultType.DirectoryItem -> MyPageDestination.Directory(
             itemId = targetId,
             sourceId = null,
             kind = DirectoryItemKind.NationalProject,
         )
-        "inheritor" -> MyPageDestination.Inheritor(
+        SearchResultType.Inheritor -> MyPageDestination.Inheritor(
             inheritorId = targetId,
             sourceId = null,
         )
-        else -> null
+        SearchResultType.Unknown, null -> null
     }
 }
 

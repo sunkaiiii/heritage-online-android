@@ -47,6 +47,9 @@ import com.duckylife.heritage.modern.ui.component.MetricPill
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun TaxonomyRoute(
@@ -65,7 +68,6 @@ fun TaxonomyRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaxonomyScreen(
     uiState: TaxonomyUiState,
@@ -289,5 +291,101 @@ private fun TaxonomyErrorContent(
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
         }
+    }
+}
+
+@Preview(name = "Taxonomy Screen")
+@Composable
+private fun TaxonomyScreenPreview() {
+    HeritageTheme {
+        TaxonomyScreen(
+            uiState = TaxonomyUiState(
+                isLoading = false,
+                categories = listOf(
+                    TaxonomyTopicDto(
+                        type = "category",
+                        key = "traditional-crafts",
+                        title = "传统技艺",
+                        subtitle = "手工艺与制作技艺",
+                        directoryItemCount = 48,
+                        inheritorCount = 120,
+                        total = 204,
+                    ),
+                    TaxonomyTopicDto(
+                        type = "category",
+                        key = "folk-art",
+                        title = "民间美术",
+                        subtitle = null,
+                        directoryItemCount = 36,
+                        inheritorCount = 88,
+                        total = 156,
+                    ),
+                ),
+                regions = listOf(
+                    TaxonomyTopicDto(
+                        type = "region",
+                        key = "zhejiang",
+                        title = "浙江",
+                        subtitle = "东南沿海",
+                        directoryItemCount = 128,
+                        inheritorCount = 256,
+                        total = 448,
+                    ),
+                ),
+                kinds = listOf(
+                    TaxonomyKindDto(
+                        key = "nationalProject",
+                        title = "国家级项目",
+                        directoryItemCount = 100,
+                        inheritorCount = 200,
+                        total = 300,
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onTopicClick = { _, _ -> },
+        )
+    }
+}
+
+@Preview(name = "Taxonomy Screen - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun TaxonomyScreenDarkPreview() {
+    HeritageTheme {
+        TaxonomyScreen(
+            uiState = TaxonomyUiState(
+                isLoading = false,
+                categories = listOf(
+                    TaxonomyTopicDto(
+                        type = "category",
+                        key = "traditional-crafts",
+                        title = "传统技艺",
+                        subtitle = "手工艺与制作技艺",
+                        directoryItemCount = 48,
+                        inheritorCount = 120,
+                        total = 204,
+                    ),
+                ),
+                regions = emptyList(),
+                kinds = emptyList(),
+            ),
+            onBack = {},
+            onRetry = {},
+            onTopicClick = { _, _ -> },
+        )
+    }
+}
+
+@Preview(name = "Taxonomy Screen - Loading")
+@Composable
+private fun TaxonomyScreenLoadingPreview() {
+    HeritageTheme {
+        TaxonomyScreen(
+            uiState = TaxonomyUiState(isLoading = true),
+            onBack = {},
+            onRetry = {},
+            onTopicClick = { _, _ -> },
+        )
     }
 }

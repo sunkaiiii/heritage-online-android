@@ -88,7 +88,6 @@ import com.duckylife.heritage.modern.ui.text.formatIsoDate
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesRoute(
     onSettingsSelected: () -> Unit,
@@ -120,7 +119,6 @@ fun ArticlesRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticlesScreen(
     uiState: ArticlesUiState,

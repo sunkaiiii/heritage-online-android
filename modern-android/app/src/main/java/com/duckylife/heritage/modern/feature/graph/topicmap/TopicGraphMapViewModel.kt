@@ -3,6 +3,7 @@ package com.duckylife.heritage.modern.feature.graph.topicmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.ui.error.toUiError
 import dagger.assisted.Assisted
@@ -17,7 +18,7 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel(assistedFactory = TopicGraphMapViewModel.Factory::class)
 class TopicGraphMapViewModel @AssistedInject constructor(
-    @Assisted("topicType") private val topicType: String,
+    @Assisted("topicType") private val topicType: GraphNodeType,
     @Assisted("topicKey") private val topicKey: String,
     private val repository: KnowledgeGraphRepository,
 ) : ViewModel() {
@@ -36,7 +37,7 @@ class TopicGraphMapViewModel @AssistedInject constructor(
     }
 
     private fun load() {
-        if (topicType.isBlank() || topicKey.isBlank()) {
+        if (topicType == GraphNodeType.Unknown || topicKey.isBlank()) {
             _uiState.update {
                 it.copy(isLoading = false, errorKind = com.duckylife.heritage.modern.ui.error.ErrorKind.BadRequest)
             }
@@ -63,7 +64,7 @@ class TopicGraphMapViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("topicType") topicType: String,
+            @Assisted("topicType") topicType: GraphNodeType,
             @Assisted("topicKey") topicKey: String,
         ): TopicGraphMapViewModel
     }

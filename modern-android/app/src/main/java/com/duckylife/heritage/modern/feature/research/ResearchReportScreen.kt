@@ -45,6 +45,10 @@ import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
 import com.duckylife.heritage.modern.ui.text.formatIsoDate
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.feature.research.model.ResearchEvidenceUiModel
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun ResearchReportRoute(
@@ -419,6 +423,113 @@ private fun ReportLoadingPlaceholder(modifier: Modifier = Modifier) {
             text = stringResource(R.string.content_loading),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Preview(name = "Research Report - Detail")
+@Composable
+private fun ResearchReportScreenPreview() {
+    HeritageTheme {
+        ResearchReportScreen(
+            uiState = ResearchReportUiState(
+                reportId = "rep-1",
+                detail = AsyncState(
+                    data = ResearchReportDetailUiModel(
+                        reportId = "rep-1",
+                        packageId = "pkg-1",
+                        title = "传统技艺传承调研报告",
+                        status = ResearchTaskStatus.Succeeded,
+                        createdAt = "2026-06-21T09:00:00Z",
+                        executiveSummary = "本报告基于图谱 RAG 技术，对传统技艺传承的非遗项目、传承人及地区分布进行了系统分析，识别出关键传承节点与潜在风险。",
+                        findings = listOf(
+                            ResearchFindingUiModel(
+                                number = 1,
+                                title = "传承人老龄化趋势明显",
+                                body = "超过 60% 的国家级代表性传承人年龄在 60 岁以上，年轻一代传承人数量不足。",
+                                confidence = 0.92,
+                                evidence = listOf(
+                                    ResearchEvidenceUiModel(evidenceId = "e1", title = "国家级传承人名录"),
+                                    ResearchEvidenceUiModel(evidenceId = "e2", title = "年度统计报告"),
+                                ),
+                                limitations = emptyList(),
+                            ),
+                            ResearchFindingUiModel(
+                                number = 2,
+                                title = "地区分布高度集中",
+                                body = "东部沿海地区传统技艺类项目数量显著高于中西部地区，区域发展不均衡。",
+                                confidence = 0.85,
+                                evidence = emptyList(),
+                                limitations = listOf("部分县级数据缺失"),
+                            ),
+                        ),
+                        sourceCount = 56,
+                        limitations = listOf("分析基于公开数据，未覆盖所有私人收藏"),
+                        warnings = listOf("模型生成内容可能存在偏差"),
+                        followUpQuestions = listOf(
+                            "如何提升年轻群体对传统技艺的关注？",
+                            "区域发展不均衡的主要成因是什么？",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+        )
+    }
+}
+
+@Preview(name = "Research Report - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ResearchReportScreenDarkPreview() {
+    HeritageTheme {
+        ResearchReportScreen(
+            uiState = ResearchReportUiState(
+                reportId = "rep-1",
+                detail = AsyncState(
+                    data = ResearchReportDetailUiModel(
+                        reportId = "rep-1",
+                        packageId = "pkg-1",
+                        title = "传统技艺传承调研报告",
+                        status = ResearchTaskStatus.Succeeded,
+                        createdAt = "2026-06-21T09:00:00Z",
+                        executiveSummary = "本报告基于图谱 RAG 技术，对传统技艺传承的非遗项目、传承人及地区分布进行了系统分析。",
+                        findings = listOf(
+                            ResearchFindingUiModel(
+                                number = 1,
+                                title = "传承人老龄化趋势明显",
+                                body = "超过 60% 的国家级代表性传承人年龄在 60 岁以上。",
+                                confidence = 0.92,
+                                evidence = listOf(
+                                    ResearchEvidenceUiModel(evidenceId = "e1", title = "国家级传承人名录"),
+                                ),
+                                limitations = emptyList(),
+                            ),
+                        ),
+                        sourceCount = 56,
+                        limitations = emptyList(),
+                        warnings = emptyList(),
+                        followUpQuestions = emptyList(),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+        )
+    }
+}
+
+@Preview(name = "Research Report - Loading")
+@Composable
+private fun ResearchReportScreenLoadingPreview() {
+    HeritageTheme {
+        ResearchReportScreen(
+            uiState = ResearchReportUiState(
+                reportId = "rep-1",
+                detail = AsyncState(isLoading = true),
+            ),
+            onBack = {},
+            onRetry = {},
         )
     }
 }

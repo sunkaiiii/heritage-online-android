@@ -58,7 +58,7 @@ class GraphTrailViewModelTest {
     fun `from content loads with parsed type`() = runTest {
         fakeRepository.trailResult = trailResult("content-1")
         val viewModel = createViewModel(
-            GraphTrailSource.FromContent(type = "directoryItem", contentId = "d1"),
+            GraphTrailSource.FromContent(type = SearchResultType.DirectoryItem, contentId = "d1"),
         )
         advanceUntilIdle()
 
@@ -72,12 +72,12 @@ class GraphTrailViewModelTest {
     fun `from topic loads with topic params`() = runTest {
         fakeRepository.trailResult = trailResult("topic-1")
         val viewModel = createViewModel(
-            GraphTrailSource.FromTopic(topicType = "region", topicKey = "zhejiang"),
+            GraphTrailSource.FromTopic(topicType = GraphNodeType.Region, topicKey = "zhejiang"),
         )
         advanceUntilIdle()
 
         assertEquals("topic-1", viewModel.uiState.value.trail?.trailId)
-        assertEquals("region", fakeRepository.lastTopicType)
+        assertEquals(GraphNodeType.Region, fakeRepository.lastTopicType)
         assertEquals("zhejiang", fakeRepository.lastTopicKey)
     }
 
@@ -181,7 +181,7 @@ class GraphTrailViewModelTest {
         var delayNextLoad = false
         var lastContentType: SearchResultType? = null
         var lastContentId: String? = null
-        var lastTopicType: String? = null
+        var lastTopicType: GraphNodeType? = null
         var lastTopicKey: String? = null
 
         override suspend fun getCommunities(limit: Int, minSize: Int): List<GraphCommunityUiModel> =
@@ -222,7 +222,7 @@ class GraphTrailViewModelTest {
         ): BridgeResult = throw NotImplementedError()
 
         override suspend fun getTopicGraphMap(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             limit: Int,
         ): TopicGraphMapResult = throw NotImplementedError()
@@ -253,7 +253,7 @@ class GraphTrailViewModelTest {
         }
 
         override suspend fun getGraphTrailFromTopic(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             strategy: TrailStrategy,
             limit: Int,

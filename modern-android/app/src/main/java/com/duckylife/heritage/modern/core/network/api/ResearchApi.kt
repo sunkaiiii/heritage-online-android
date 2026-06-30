@@ -19,6 +19,8 @@ interface ResearchApi {
 
     suspend fun getResearchArtifact(query: ResearchArtifactQuery): String
 
+    suspend fun getResearchArtifactBytes(query: ResearchArtifactQuery): ByteArray
+
     suspend fun getResearchReports(): ResearchReportListResultDto
 
     suspend fun getResearchReportDetail(query: ResearchReportDetailQuery): ResearchReportDto

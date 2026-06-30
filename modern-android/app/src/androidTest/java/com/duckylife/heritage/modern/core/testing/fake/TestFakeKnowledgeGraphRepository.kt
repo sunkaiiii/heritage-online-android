@@ -38,7 +38,7 @@ class TestFakeKnowledgeGraphRepository : KnowledgeGraphRepository {
     )
     var bridgeResult: BridgeResult = BridgeResult(emptyList())
     var topicGraphMapResult: TopicGraphMapResult = TopicGraphMapResult(
-        topicType = "",
+        topicType = GraphNodeType.Unknown,
         topicKey = "",
         topicNode = null,
         nodes = emptyList(),
@@ -120,7 +120,7 @@ class TestFakeKnowledgeGraphRepository : KnowledgeGraphRepository {
     }
 
     override suspend fun getTopicGraphMap(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         limit: Int,
     ): TopicGraphMapResult {
@@ -148,7 +148,7 @@ class TestFakeKnowledgeGraphRepository : KnowledgeGraphRepository {
     }
 
     override suspend fun getGraphTrailFromTopic(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         strategy: TrailStrategy,
         limit: Int,

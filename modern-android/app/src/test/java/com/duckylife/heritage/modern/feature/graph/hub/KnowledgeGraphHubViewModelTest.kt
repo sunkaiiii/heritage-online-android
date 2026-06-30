@@ -40,7 +40,7 @@ class KnowledgeGraphHubViewModelTest {
         fakeRepository.communitiesResult = listOf(
             GraphCommunityUiModel(
                 communityKey = "c1",
-                topicType = "category",
+                topicType = GraphNodeType.Category,
                 title = "传统技艺",
                 topicChips = emptyList(),
                 contentCount = 2,
@@ -92,7 +92,7 @@ class KnowledgeGraphHubViewModelTest {
         fakeRepository.communitiesResult = listOf(
             GraphCommunityUiModel(
                 communityKey = "c1",
-                topicType = "category",
+                topicType = GraphNodeType.Category,
                 title = "传统技艺",
                 topicChips = emptyList(),
                 contentCount = 1,
@@ -182,7 +182,7 @@ class KnowledgeGraphHubViewModelTest {
             limit: Int,
         ) = throw NotImplementedError()
 
-        override suspend fun getTopicGraphMap(topicType: String, topicKey: String, limit: Int) =
+        override suspend fun getTopicGraphMap(topicType: GraphNodeType, topicKey: String, limit: Int) =
             throw NotImplementedError()
 
         override suspend fun getRandomGraphTrail(
@@ -199,7 +199,7 @@ class KnowledgeGraphHubViewModelTest {
         ) = throw NotImplementedError()
 
         override suspend fun getGraphTrailFromTopic(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
             limit: Int,

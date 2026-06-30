@@ -2,7 +2,9 @@
 
 package com.duckylife.heritage.modern.feature.research
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,10 +53,14 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.feature.research.model.ResearchDataScope
+import com.duckylife.heritage.modern.feature.research.model.ResearchSourceType
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.ui.text.formatIsoDate
 import com.duckylife.heritage.modern.ui.text.localizedResearchDataScopeList
 import com.duckylife.heritage.modern.ui.text.localizedResearchSource
-import java.io.File
 
 @Composable
 fun ResearchPackageRoute(
@@ -73,13 +79,33 @@ fun ResearchPackageRoute(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.shareEvent.collect { content ->
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, content)
+        viewModel.shareEvent.collect { payload ->
+            val intent = when (payload) {
+                is SharePayload.Text -> Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, payload.content)
+                }
+
+                is SharePayload.File -> {
+                    val authority = "${context.packageName}.fileprovider"
+                    val uri = FileProvider.getUriForFile(context, authority, payload.file)
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = payload.mimeType
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
+                }
             }
             val chooser = Intent.createChooser(intent, context.getString(R.string.research_package_artifact_share))
-            context.startActivity(chooser)
+            try {
+                context.startActivity(chooser)
+            } catch (_: ActivityNotFoundException) {
+                Toast.makeText(
+                    context,
+                    R.string.research_package_share_no_app,
+                    Toast.LENGTH_SHORT,
+                ).show()
+            }
         }
     }
 
@@ -443,5 +469,123 @@ private fun formatArtifactSize(sizeBytes: Long): String {
         stringResource(R.string.research_artifact_size_format, mb)
     } else {
         stringResource(R.string.research_artifact_size_kb_format, kb.coerceAtLeast(1.0))
+    }
+}
+
+@Preview(name = "Research Package - Detail")
+@Composable
+private fun ResearchPackageScreenPreview() {
+    HeritageTheme {
+        ResearchPackageScreen(
+            uiState = ResearchPackageUiState(
+                packageId = "pkg-1",
+                detail = AsyncState(
+                    data = ResearchPackageDetailUiModel(
+                        packageId = "pkg-1",
+                        title = "传统技艺传承调研包",
+                        querySummary = "传统技艺、传承人、地区分布",
+                        sourceType = ResearchSourceType.GraphRagPack,
+                        sourceDetail = "GraphRAG",
+                        dataScope = listOf(ResearchDataScope.Content, ResearchDataScope.Evidence),
+                        createdAt = "2026-06-20T10:00:00Z",
+                        status = ResearchTaskStatus.Succeeded,
+                        nodeCount = 128,
+                        edgeCount = 342,
+                        sourceCount = 56,
+                        evidenceCount = 89,
+                        artifacts = listOf(
+                            ResearchArtifactUiModel(
+                                name = "summary.md",
+                                displayName = "研究摘要",
+                                artifactType = "markdown",
+                                mimeType = "text/markdown",
+                                sizeBytes = 12_345,
+                                isViewable = true,
+                            ),
+                            ResearchArtifactUiModel(
+                                name = "graph.json",
+                                displayName = "知识图谱数据",
+                                artifactType = "json",
+                                mimeType = "application/json",
+                                sizeBytes = 1_048_576,
+                                isViewable = true,
+                            ),
+                        ),
+                        hasReport = true,
+                        reportId = "rep-1",
+                        warnings = listOf("部分来源置信度较低"),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onViewArtifact = {},
+            onViewReport = {},
+            onShareArtifact = {},
+        )
+    }
+}
+
+@Preview(name = "Research Package - Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ResearchPackageScreenDarkPreview() {
+    HeritageTheme {
+        ResearchPackageScreen(
+            uiState = ResearchPackageUiState(
+                packageId = "pkg-1",
+                detail = AsyncState(
+                    data = ResearchPackageDetailUiModel(
+                        packageId = "pkg-1",
+                        title = "传统技艺传承调研包",
+                        querySummary = null,
+                        sourceType = ResearchSourceType.Snapshot,
+                        sourceDetail = "快照导出",
+                        dataScope = listOf(ResearchDataScope.Content),
+                        createdAt = "2026-06-20T10:00:00Z",
+                        status = ResearchTaskStatus.Succeeded,
+                        nodeCount = 128,
+                        edgeCount = 342,
+                        sourceCount = 56,
+                        evidenceCount = 89,
+                        artifacts = listOf(
+                            ResearchArtifactUiModel(
+                                name = "summary.md",
+                                displayName = "研究摘要",
+                                artifactType = "markdown",
+                                mimeType = "text/markdown",
+                                sizeBytes = 12_345,
+                                isViewable = true,
+                            ),
+                        ),
+                        hasReport = false,
+                        reportId = null,
+                        warnings = emptyList(),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onViewArtifact = {},
+            onViewReport = {},
+            onShareArtifact = {},
+        )
+    }
+}
+
+@Preview(name = "Research Package - Loading")
+@Composable
+private fun ResearchPackageScreenLoadingPreview() {
+    HeritageTheme {
+        ResearchPackageScreen(
+            uiState = ResearchPackageUiState(
+                packageId = "pkg-1",
+                detail = AsyncState(isLoading = true),
+            ),
+            onBack = {},
+            onRetry = {},
+            onViewArtifact = {},
+            onViewReport = {},
+            onShareArtifact = {},
+        )
     }
 }

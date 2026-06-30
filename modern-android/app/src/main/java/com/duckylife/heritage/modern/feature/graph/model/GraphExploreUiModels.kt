@@ -8,6 +8,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSour
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphExploreDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNeighborsDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphSimilarItemDto
@@ -28,7 +29,7 @@ import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
  */
 data class GraphCommunityUiModel(
     val communityKey: String,
-    val topicType: String,
+    val topicType: GraphNodeType,
     val title: String,
     val topicChips: List<String>,
     val contentCount: Int,
@@ -266,7 +267,7 @@ data class BridgeItemUiModel(
  * 主题图谱地图结果。
  */
 data class TopicGraphMapResult(
-    val topicType: String,
+    val topicType: GraphNodeType,
     val topicKey: String,
     val topicNode: GraphNodeUiModel?,
     val nodes: List<GraphNodeUiModel>,
@@ -376,7 +377,7 @@ fun TopicGraphMapDto.toTopicGraphMapResult(): TopicGraphMapResult {
     val nodeMap = allNodes.associateBy { it.nodeKey }
     val availableKeys = nodeMap.keys
     return TopicGraphMapResult(
-        topicType = topicType ?: "",
+        topicType = topicType ?: GraphNodeType.Unknown,
         topicKey = topicKey ?: "",
         topicNode = topic?.toGraphNodeUiModel(),
         nodes = allNodes,

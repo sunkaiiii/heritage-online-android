@@ -22,6 +22,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val MAX_INLINE_ARTIFACT_BYTES = 1_000_000
+
+sealed interface SharePayload {
+    data class Text(val content: String) : SharePayload
+    data class File(val file: java.io.File, val mimeType: String) : SharePayload
+}
+
 private const val KEY_PACKAGE_ID = "research_package_id"
 
 /**
@@ -47,8 +54,8 @@ class ResearchPackageViewModel @Inject constructor(
     private var artifactJob: Job? = null
     private var shareJob: Job? = null
 
-    private val _shareEvent = Channel<String>(Channel.BUFFERED)
-    val shareEvent: Flow<String> = _shareEvent.receiveAsFlow()
+    private val _shareEvent = Channel<SharePayload>(Channel.BUFFERED)
+    val shareEvent: Flow<SharePayload> = _shareEvent.receiveAsFlow()
 
     init {
         if (_uiState.value.packageId.isNotBlank()) {
@@ -117,10 +124,23 @@ class ResearchPackageViewModel @Inject constructor(
         if (currentId.isBlank()) return
         shareJob?.cancel()
         shareJob = viewModelScope.launch {
-            runCatchingCancellable { repository.getArtifactContent(currentId, artifact.name) }
-                .onSuccess { content ->
+            val useTextPath = artifact.isTextLike && artifact.sizeBytes < MAX_INLINE_ARTIFACT_BYTES
+            runCatchingCancellable {
+                if (useTextPath) {
+                    val content = repository.getArtifactContent(currentId, artifact.name)
+                    SharePayload.Text(content)
+                } else {
+                    val bytes = repository.getArtifactBytes(currentId, artifact.name)
+                    val file = repository.saveArtifactToCache(currentId, artifact.name, bytes)
+                    SharePayload.File(
+                        file = file,
+                        mimeType = artifact.mimeType.takeIf { it.isNotBlank() } ?: "application/octet-stream",
+                    )
+                }
+            }
+                .onSuccess { payload ->
                     if (_uiState.value.packageId == currentId) {
-                        _shareEvent.trySend(content)
+                        _shareEvent.trySend(payload)
                     }
                 }
                 .onFailure { throwable ->

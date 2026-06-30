@@ -19,13 +19,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private fun searchResultTypeFromWire(wireName: String): SearchResultType =
-    SearchResultType.entries.firstOrNull { it.wireName == wireName }
-        ?: SearchResultType.Article
-
 @HiltViewModel(assistedFactory = DeepDiveViewModel.Factory::class)
 class DeepDiveViewModel @AssistedInject constructor(
-    @Assisted("seedType") private val seedType: String,
+    @Assisted("seedType") private val seedType: SearchResultType,
     @Assisted("seedId") private val seedId: String,
     private val repository: HeritageRepository,
 ) : ViewModel() {
@@ -40,11 +36,14 @@ class DeepDiveViewModel @AssistedInject constructor(
     }
 
     fun load() {
-        loadWithSeed(searchResultTypeFromWire(seedType), seedId)
+        loadWithSeed(seedType, seedId)
     }
 
     fun deepDiveAgain(item: DiscoveryItemDto) {
-        loadWithSeed(searchResultTypeFromWire(item.type), item.id.orEmpty())
+        loadWithSeed(
+            SearchResultType.fromWireName(item.type) ?: SearchResultType.Article,
+            item.id.orEmpty(),
+        )
     }
 
     private fun loadWithSeed(seedType: SearchResultType, seedId: String) {
@@ -79,7 +78,7 @@ class DeepDiveViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            @Assisted("seedType") seedType: String,
+            @Assisted("seedType") seedType: SearchResultType,
             @Assisted("seedId") seedId: String,
         ): DeepDiveViewModel
     }

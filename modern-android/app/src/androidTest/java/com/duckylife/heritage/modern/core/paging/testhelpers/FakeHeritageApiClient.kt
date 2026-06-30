@@ -58,6 +58,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.FavoriteCreateReq
 import com.duckylife.heritage.modern.core.network.dto.advanced.HistoryRecordRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyResponseDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneySignalsDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressUpdateDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalFavoriteDto
@@ -172,63 +173,64 @@ class FakeHeritageApiClient : HeritageApiClient {
     override suspend fun currentProfileId(): String = "android_test_profile"
 
     // Statistics
-    override suspend fun getDirectoryStatisticsOverview(kind: DirectoryItemKind) = TODO()
-    override suspend fun getDirectoryStatisticsBreakdown(kind: DirectoryItemKind, dimension: DirectoryStatisticDimension, limit: Int) = TODO()
+    override suspend fun getDirectoryStatisticsOverview(kind: DirectoryItemKind) = throw NotImplementedError("FakeHeritageApiClient.getDirectoryStatisticsOverview not implemented")
+    override suspend fun getDirectoryStatisticsBreakdown(kind: DirectoryItemKind, dimension: DirectoryStatisticDimension, limit: Int) = throw NotImplementedError("FakeHeritageApiClient.getDirectoryStatisticsBreakdown not implemented")
 
     // Content Intelligence
-    override suspend fun getV3ContentPage(query: V3ContentPageQuery) = TODO()
-    override suspend fun getContentIntelligence(query: ContentIntelligenceQuery) = TODO()
-    override suspend fun getArticleAiCard(id: String) = TODO()
-    override suspend fun getDirectoryItemAiCard(id: String) = TODO()
-    override suspend fun getInheritorAiCard(id: String) = TODO()
+    override suspend fun getV3ContentPage(query: V3ContentPageQuery) = throw NotImplementedError("FakeHeritageApiClient.getV3ContentPage not implemented")
+    override suspend fun getContentIntelligence(query: ContentIntelligenceQuery) = throw NotImplementedError("FakeHeritageApiClient.getContentIntelligence not implemented")
+    override suspend fun getArticleAiCard(id: String) = throw NotImplementedError("FakeHeritageApiClient.getArticleAiCard not implemented")
+    override suspend fun getDirectoryItemAiCard(id: String) = throw NotImplementedError("FakeHeritageApiClient.getDirectoryItemAiCard not implemented")
+    override suspend fun getInheritorAiCard(id: String) = throw NotImplementedError("FakeHeritageApiClient.getInheritorAiCard not implemented")
 
     // Knowledge Graph
-    override suspend fun intelligentSearch(query: IntelligentSearchQuery) = TODO()
-    override suspend fun getGraphNeighbors(query: KnowledgeGraphNeighborsQuery) = TODO()
-    override suspend fun getGraphSimilar(query: KnowledgeGraphSimilarQuery) = TODO()
-    override suspend fun getGraphExplore(query: KnowledgeGraphExploreQuery) = TODO()
-    override suspend fun getGraphEvidence(query: KnowledgeGraphEvidenceQuery) = TODO()
-    override suspend fun getAiInferredEdges(query: KnowledgeGraphAiInferredQuery) = TODO()
-    override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery) = TODO()
-    override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery) = TODO()
-    override suspend fun getGraphCommunities(query: KnowledgeGraphCommunitiesQuery) = TODO()
-    override suspend fun getTopicGraphMap(query: TopicGraphMapQuery) = TODO()
-    override suspend fun getRandomGraphTrail(query: GraphTrailRandomQuery) = TODO()
-    override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery) = TODO()
-    override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery) = TODO()
+    override suspend fun intelligentSearch(query: IntelligentSearchQuery) = throw NotImplementedError("FakeHeritageApiClient.intelligentSearch not implemented")
+    override suspend fun getGraphNeighbors(query: KnowledgeGraphNeighborsQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphNeighbors not implemented")
+    override suspend fun getGraphSimilar(query: KnowledgeGraphSimilarQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphSimilar not implemented")
+    override suspend fun getGraphExplore(query: KnowledgeGraphExploreQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphExplore not implemented")
+    override suspend fun getGraphEvidence(query: KnowledgeGraphEvidenceQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphEvidence not implemented")
+    override suspend fun getAiInferredEdges(query: KnowledgeGraphAiInferredQuery) = throw NotImplementedError("FakeHeritageApiClient.getAiInferredEdges not implemented")
+    override suspend fun getGraphBridge(query: KnowledgeGraphBridgeQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphBridge not implemented")
+    override suspend fun explainPath(query: KnowledgeGraphPathExplainQuery) = throw NotImplementedError("FakeHeritageApiClient.explainPath not implemented")
+    override suspend fun getGraphCommunities(query: KnowledgeGraphCommunitiesQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphCommunities not implemented")
+    override suspend fun getTopicGraphMap(query: TopicGraphMapQuery) = throw NotImplementedError("FakeHeritageApiClient.getTopicGraphMap not implemented")
+    override suspend fun getRandomGraphTrail(query: GraphTrailRandomQuery) = throw NotImplementedError("FakeHeritageApiClient.getRandomGraphTrail not implemented")
+    override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphTrailFromContent not implemented")
+    override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery) = throw NotImplementedError("FakeHeritageApiClient.getGraphTrailFromTopic not implemented")
 
     // Learning Routes
-    override suspend fun getLearningRoutes(query: LearningRoutesListQuery) = TODO()
-    override suspend fun getLearningRouteDetail(query: LearningRouteDetailQuery) = TODO()
-    override suspend fun buildLearningRoute(query: LearningRouteBuildQuery) = TODO()
-    override suspend fun getLearningRouteNextStep(query: LearningRouteNextQuery) = TODO()
+    override suspend fun getLearningRoutes(query: LearningRoutesListQuery) = throw NotImplementedError("FakeHeritageApiClient.getLearningRoutes not implemented")
+    override suspend fun getLearningRouteDetail(query: LearningRouteDetailQuery) = throw NotImplementedError("FakeHeritageApiClient.getLearningRouteDetail not implemented")
+    override suspend fun buildLearningRoute(query: LearningRouteBuildQuery) = throw NotImplementedError("FakeHeritageApiClient.buildLearningRoute not implemented")
+    override suspend fun getLearningRouteNextStep(query: LearningRouteNextQuery) = throw NotImplementedError("FakeHeritageApiClient.getLearningRouteNextStep not implemented")
 
     // Spacetime
-    override suspend fun getSpacetimeOverview(query: SpacetimeOverviewQuery) = TODO()
-    override suspend fun getSpacetimeHeatmap(query: SpacetimeHeatmapQuery) = TODO()
-    override suspend fun getSpacetimeRegionTimeline(query: SpacetimeRegionTimelineQuery) = TODO()
-    override suspend fun getSpacetimeYearMap(query: SpacetimeYearMapQuery) = TODO()
-    override suspend fun getSpacetimeCategoryTimeline(query: SpacetimeCategoryTimelineQuery) = TODO()
+    override suspend fun getSpacetimeOverview(query: SpacetimeOverviewQuery) = throw NotImplementedError("FakeHeritageApiClient.getSpacetimeOverview not implemented")
+    override suspend fun getSpacetimeHeatmap(query: SpacetimeHeatmapQuery) = throw NotImplementedError("FakeHeritageApiClient.getSpacetimeHeatmap not implemented")
+    override suspend fun getSpacetimeRegionTimeline(query: SpacetimeRegionTimelineQuery) = throw NotImplementedError("FakeHeritageApiClient.getSpacetimeRegionTimeline not implemented")
+    override suspend fun getSpacetimeYearMap(query: SpacetimeYearMapQuery) = throw NotImplementedError("FakeHeritageApiClient.getSpacetimeYearMap not implemented")
+    override suspend fun getSpacetimeCategoryTimeline(query: SpacetimeCategoryTimelineQuery) = throw NotImplementedError("FakeHeritageApiClient.getSpacetimeCategoryTimeline not implemented")
 
     // Analytics
-    override suspend fun getAnalyticsFacets(query: AnalyticsFacetsQuery) = TODO()
-    override suspend fun getAnalyticsBreakdown(query: AnalyticsBreakdownQuery) = TODO()
-    override suspend fun getAnalyticsCrosstab(query: AnalyticsCrosstabQuery) = TODO()
-    override suspend fun getAnalyticsCompare(query: AnalyticsCompareQuery) = TODO()
-    override suspend fun getAnalyticsOutliers(query: AnalyticsOutliersQuery) = TODO()
+    override suspend fun getAnalyticsFacets(query: AnalyticsFacetsQuery) = throw NotImplementedError("FakeHeritageApiClient.getAnalyticsFacets not implemented")
+    override suspend fun getAnalyticsBreakdown(query: AnalyticsBreakdownQuery) = throw NotImplementedError("FakeHeritageApiClient.getAnalyticsBreakdown not implemented")
+    override suspend fun getAnalyticsCrosstab(query: AnalyticsCrosstabQuery) = throw NotImplementedError("FakeHeritageApiClient.getAnalyticsCrosstab not implemented")
+    override suspend fun getAnalyticsCompare(query: AnalyticsCompareQuery) = throw NotImplementedError("FakeHeritageApiClient.getAnalyticsCompare not implemented")
+    override suspend fun getAnalyticsOutliers(query: AnalyticsOutliersQuery) = throw NotImplementedError("FakeHeritageApiClient.getAnalyticsOutliers not implemented")
 
     // Rankings
-    override suspend fun getRankings() = TODO()
-    override suspend fun getRankingDetail(query: RankingDetailQuery) = TODO()
-    override suspend fun getRankingContent(query: RankingContentQuery) = TODO()
+    override suspend fun getRankings() = throw NotImplementedError("FakeHeritageApiClient.getRankings not implemented")
+    override suspend fun getRankingDetail(query: RankingDetailQuery) = throw NotImplementedError("FakeHeritageApiClient.getRankingDetail not implemented")
+    override suspend fun getRankingContent(query: RankingContentQuery) = throw NotImplementedError("FakeHeritageApiClient.getRankingContent not implemented")
 
     // Research
-    override suspend fun getResearchPackages() = TODO()
-    override suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery) = TODO()
-    override suspend fun getResearchArtifact(query: ResearchArtifactQuery) = TODO()
-    override suspend fun getResearchReports() = TODO()
-    override suspend fun getResearchReportDetail(query: ResearchReportDetailQuery) = TODO()
-    override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery) = TODO()
+    override suspend fun getResearchPackages() = throw NotImplementedError("FakeHeritageApiClient.getResearchPackages not implemented")
+    override suspend fun getResearchPackageDetail(query: ResearchPackageDetailQuery) = throw NotImplementedError("FakeHeritageApiClient.getResearchPackageDetail not implemented")
+    override suspend fun getResearchArtifact(query: ResearchArtifactQuery) = throw NotImplementedError("FakeHeritageApiClient.getResearchArtifact not implemented")
+    override suspend fun getResearchArtifactBytes(query: ResearchArtifactQuery): ByteArray = throw NotImplementedError("FakeHeritageApiClient.getResearchArtifactBytes not implemented")
+    override suspend fun getResearchReports() = throw NotImplementedError("FakeHeritageApiClient.getResearchReports not implemented")
+    override suspend fun getResearchReportDetail(query: ResearchReportDetailQuery) = throw NotImplementedError("FakeHeritageApiClient.getResearchReportDetail not implemented")
+    override suspend fun getResearchReportByPackage(query: ResearchReportByPackageQuery) = throw NotImplementedError("FakeHeritageApiClient.getResearchReportByPackage not implemented")
 
     // Export
     override suspend fun getExportTemplates(): List<ExportTemplateDto> = emptyList()
@@ -240,7 +242,7 @@ class FakeHeritageApiClient : HeritageApiClient {
     override suspend fun getLocalUserSummary(): LocalUserSummaryDto = LocalUserSummaryDto(profileId = currentProfileId())
     override suspend fun getLocalUserFavorites(query: LocalUserFavoritesQuery): PagedResult<LocalFavoriteDto> = PagedResult()
     override suspend fun addLocalUserFavorite(request: FavoriteCreateRequestDto): LocalFavoriteDto = LocalFavoriteDto(id = "f1", targetType = request.targetType, targetId = request.targetId)
-    override suspend fun removeLocalUserFavorite(targetType: String, targetId: String) = Unit
+    override suspend fun removeLocalUserFavorite(targetType: LocalUserTargetType, targetId: String) = Unit
     override suspend fun getLocalUserHistory(query: LocalUserHistoryQuery): PagedResult<LocalHistoryDto> = PagedResult()
     override suspend fun recordLocalUserHistory(request: HistoryRecordRequestDto): LocalHistoryDto = LocalHistoryDto(id = "h1", targetType = request.targetType, targetId = request.targetId)
     override suspend fun clearLocalUserHistory(): Int = 0

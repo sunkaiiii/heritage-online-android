@@ -16,8 +16,11 @@ import com.duckylife.heritage.modern.ui.state.AsyncState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,7 +41,6 @@ data class ContentExportUiState(
     val includeImages: Boolean = false,
     val includeAiSummary: Boolean = false,
     val preview: AsyncState<ExportPreviewUiModel> = AsyncState(),
-    val shareContent: String? = null,
     val oversizedWarning: Boolean = false,
     val exportError: AsyncState<Unit> = AsyncState(),
 ) {
@@ -65,6 +67,9 @@ class ContentExportViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ContentExportUiState())
     val uiState: StateFlow<ContentExportUiState> = _uiState.asStateFlow()
+
+    private val _shareEvent = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 1)
+    val shareEvent: SharedFlow<String> = _shareEvent.asSharedFlow()
 
     private var templatesJob: Job? = null
     private var previewJob: Job? = null
@@ -161,7 +166,7 @@ class ContentExportViewModel @Inject constructor(
         if (!state.canRequestExport) return
         exportJob?.cancel()
         exportJob = viewModelScope.launch {
-            _uiState.update { it.copy(exportError = AsyncState(isLoading = true), oversizedWarning = false, shareContent = null) }
+            _uiState.update { it.copy(exportError = AsyncState(isLoading = true), oversizedWarning = false) }
             val request = buildRequest(state)
             runCatchingCancellable { repository.exportContent(request) }
                 .onSuccess { result ->
@@ -171,18 +176,16 @@ class ContentExportViewModel @Inject constructor(
                         it.copy(
                             exportError = AsyncState(),
                             oversizedWarning = oversized,
-                            shareContent = if (oversized) null else content,
                         )
+                    }
+                    if (!oversized && content != null) {
+                        _shareEvent.emit(content)
                     }
                 }
                 .onFailure { throwable ->
                     _uiState.update { it.copy(exportError = AsyncState(errorKind = throwable.toUiError().kind)) }
                 }
         }
-    }
-
-    fun onShareConsumed() {
-        _uiState.update { it.copy(shareContent = null) }
     }
 
     fun dismiss() {
@@ -193,7 +196,6 @@ class ContentExportViewModel @Inject constructor(
                 preview = AsyncState(),
                 exportError = AsyncState(),
                 oversizedWarning = false,
-                shareContent = null,
             )
         }
     }

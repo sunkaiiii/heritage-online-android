@@ -51,6 +51,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +63,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -72,6 +74,8 @@ import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.data.ReadingPathEvent
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.network.dto.extractCoverImageUrl
 import com.duckylife.heritage.modern.core.profile.ProfileLearningProgress
 import com.duckylife.heritage.modern.core.profile.ProfileSyncStatus
@@ -113,13 +117,13 @@ sealed interface MyPageDestination {
     ) : MyPageDestination
 
     data class GraphExplore(
-        val contentType: String,
+        val contentType: SearchResultType,
         val contentId: String,
         val initialTabName: String = "similar",
     ) : MyPageDestination
 
     data class LearningRoutes(
-        val seedType: String? = null,
+        val seedType: LearningRouteSeedType? = null,
         val seedId: String? = null,
     ) : MyPageDestination
 
@@ -163,9 +167,18 @@ fun MyPage(
     var showClearReadingPathDialog by remember { mutableStateOf(false) }
     var showSyncSheet by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val imageLoader = rememberHeritageImageLoader()
     val favoriteRemovedMessage = stringResource(R.string.favorite_removed_message)
+
+    LaunchedEffect(Unit) {
+        viewModel.syncEvent.collect { errorKind ->
+            errorKind?.let {
+                snackbarHostState.showSnackbar(context.getString(it.fallbackResId()))
+            }
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         HeritagePageBackground(modifier = Modifier.fillMaxSize()) {

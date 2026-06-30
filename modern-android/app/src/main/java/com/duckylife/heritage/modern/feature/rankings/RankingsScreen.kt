@@ -55,10 +55,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDefinitionUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingFilters
@@ -70,6 +73,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
 import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private const val RANKING_REASONS_MAX_COUNT = 5
 private const val RANKING_METRICS_MAX_COUNT = 10
@@ -82,11 +86,37 @@ fun RankingsRoute(
     viewModel: RankingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var contentMetric by rememberSaveable { mutableStateOf<String?>(null) }
+
+    if (contentMetric != null) {
+        val metric = contentMetric.orEmpty()
+        RankingContentBottomSheet(
+            metric = metric,
+            content = uiState.content,
+            onDismiss = {
+                contentMetric = null
+                viewModel.clearRankingContent()
+            },
+            onRetry = {
+                viewModel.loadRankingContent(
+                    metric = RankingMetric.entries.firstOrNull { it.wireName == metric }
+                        ?: RankingMetric.Unknown,
+                    filters = RankingFilters(),
+                )
+            },
+            onContentClick = {},
+        )
+    }
+
     RankingsScreen(
         uiState = uiState,
         onBack = onBack,
         onRefresh = viewModel::loadRankings,
         onRankingClick = onRankingClick,
+        onViewContent = { metric ->
+            contentMetric = metric.wireName
+            viewModel.loadRankingContent(metric, RankingFilters())
+        },
         modifier = modifier,
     )
 }
@@ -98,6 +128,7 @@ internal fun RankingsScreen(
     onBack: () -> Unit,
     onRefresh: () -> Unit,
     onRankingClick: (String) -> Unit,
+    onViewContent: (RankingMetric) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
@@ -165,6 +196,7 @@ internal fun RankingsScreen(
                                 RankingDefinitionCard(
                                     definition = definition,
                                     onClick = { onRankingClick(definition.rankingId) },
+                                    onViewContent = onViewContent,
                                 )
                             }
                         }
@@ -179,6 +211,7 @@ internal fun RankingsScreen(
 private fun RankingDefinitionCard(
     definition: RankingDefinitionUiModel,
     onClick: () -> Unit,
+    onViewContent: (RankingMetric) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val isClickable = definition.rankingId.isNotBlank()
@@ -212,6 +245,19 @@ private fun RankingDefinitionCard(
                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f),
                 )
             }
+            definition.metric
+                ?.takeIf { it.isNotBlank() && it != RankingMetric.Unknown.wireName }
+                ?.let { metricString ->
+                    val metric = RankingMetric.entries.firstOrNull { it.wireName == metricString }
+                        ?: RankingMetric.Unknown
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextButton(
+                        onClick = { onViewContent(metric) },
+                        modifier = Modifier.align(Alignment.End),
+                    ) {
+                        Text(stringResource(R.string.ranking_view_content))
+                    }
+                }
         }
     }
 }
@@ -529,6 +575,213 @@ private fun RankingMetricsList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun RankingContentBottomSheet(
+    metric: String,
+    content: AsyncState<RankingDetailUiModel>,
+    onDismiss: () -> Unit,
+    onRetry: () -> Unit,
+    onContentClick: (DetailContextTarget) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        modifier = modifier,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 32.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.ranking_view_content),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Text(
+                text = metric,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            when {
+                content.isLoading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                content.errorKind != null -> HeritageErrorState(
+                    errorKind = content.errorKind,
+                    onRetry = onRetry,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                content.data != null -> {
+                    val detail = content.data
+                    if (detail.items.isEmpty()) {
+                        HeritageEmptyState(
+                            message = stringResource(R.string.ranking_empty_title),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    } else {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            detail.items.forEach { item ->
+                                RankingItemCard(
+                                    item = item,
+                                    onClick = {
+                                        item.toDetailContextTarget()?.let(onContentClick)
+                                    },
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview(name = "Rankings", showBackground = true)
+@Composable
+private fun RankingsScreenPreview() {
+    HeritageTheme {
+        RankingsScreen(
+            uiState = RankingsUiState(
+                definitions = AsyncState(
+                    data = listOf(
+                        RankingDefinitionUiModel(
+                            rankingId = "most-viewed",
+                            title = "最多浏览",
+                            description = "近期被浏览次数最多的内容。",
+                            metric = "total",
+                            refreshHint = "每日更新",
+                        ),
+                        RankingDefinitionUiModel(
+                            rankingId = "hidden-gems",
+                            title = "冷门遗珠",
+                            description = "质量高但曝光较少的内容。",
+                            metric = "hiddenGem",
+                        ),
+                        RankingDefinitionUiModel(
+                            rankingId = "richest-media",
+                            title = "图片最丰富",
+                            description = "拥有最多高清图片的内容。",
+                            metric = "imageRichness",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onRankingClick = {},
+            onViewContent = {},
+        )
+    }
+}
+
+@Preview(name = "Rankings dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RankingsScreenDarkPreview() {
+    RankingsScreenPreview()
+}
+
+@Preview(name = "Ranking detail", showBackground = true)
+@Composable
+private fun RankingDetailScreenPreview() {
+    HeritageTheme {
+        RankingDetailScreen(
+            rankingId = "most-viewed",
+            uiState = RankingDetailUiState(
+                rankingId = "most-viewed",
+                detail = AsyncState(
+                    data = RankingDetailUiModel(
+                        rankingId = "most-viewed",
+                        title = "最多浏览",
+                        description = "近期被浏览次数最多的内容排行。",
+                        metric = "total",
+                        items = listOf(
+                            RankingItemUiModel(
+                                rank = 1,
+                                targetType = ContentTargetType.Article,
+                                targetId = "art-1",
+                                title = "中国剪纸",
+                                subtitle = "传统美术 · 陕西",
+                                score = 9876.5,
+                                metrics = listOf(
+                                    RankingMetricUiModel(key = "views", label = "浏览量", value = 9876.0),
+                                    RankingMetricUiModel(key = "shares", label = "分享数", value = 432.0),
+                                ),
+                                reasons = listOf("春节期间搜索量激增", "被列入多份学习路线"),
+                                contentId = "art-1",
+                                contentType = "article",
+                            ),
+                            RankingItemUiModel(
+                                rank = 2,
+                                targetType = ContentTargetType.DirectoryItem,
+                                targetId = "dir-1",
+                                title = "京剧",
+                                subtitle = "传统戏剧 · 北京",
+                                score = 8654.3,
+                                metrics = listOf(
+                                    RankingMetricUiModel(key = "views", label = "浏览量", value = 8654.0),
+                                ),
+                                reasons = listOf("代表性项目关注度高"),
+                                contentId = "dir-1",
+                                contentType = "directoryItem",
+                            ),
+                            RankingItemUiModel(
+                                rank = 3,
+                                targetType = ContentTargetType.Inheritor,
+                                targetId = "inh-1",
+                                title = "梅兰芳",
+                                subtitle = "传统戏剧 · 北京",
+                                score = 7432.1,
+                                metrics = listOf(
+                                    RankingMetricUiModel(key = "views", label = "浏览量", value = 7432.0),
+                                ),
+                                reasons = emptyList(),
+                                contentId = "inh-1",
+                                contentType = "inheritor",
+                            ),
+                            RankingItemUiModel(
+                                rank = 4,
+                                targetType = ContentTargetType.Article,
+                                targetId = "art-2",
+                                title = "皮影戏",
+                                subtitle = "传统戏剧 · 河北",
+                                score = 6543.0,
+                                metrics = emptyList(),
+                                reasons = emptyList(),
+                                contentId = "art-2",
+                                contentType = "article",
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onFiltersChanged = {},
+            onContentClick = {},
+        )
+    }
+}
+
+@Preview(name = "Ranking detail dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun RankingDetailScreenDarkPreview() {
+    RankingDetailScreenPreview()
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun RankingFilterSheet(
     filters: RankingFilters,
     onFiltersChanged: (RankingFilters) -> Unit,
@@ -554,16 +807,16 @@ private fun RankingFilterSheet(
             )
             Spacer(modifier = Modifier.height(16.dp))
             val targetTypes = listOf(
-                "all" to R.string.ranking_target_type_all,
-                "article" to R.string.ranking_target_type_article,
-                "directoryItem" to R.string.ranking_target_type_directoryItem,
-                "inheritor" to R.string.ranking_target_type_inheritor,
+                ContentTargetType.All to R.string.ranking_target_type_all,
+                ContentTargetType.Article to R.string.ranking_target_type_article,
+                ContentTargetType.DirectoryItem to R.string.ranking_target_type_directoryItem,
+                ContentTargetType.Inheritor to R.string.ranking_target_type_inheritor,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 targetTypes.forEach { (value, labelRes) ->
                     FilterChip(
                         selected = localFilters.targetType == value,
-                        onClick = { localFilters = localFilters.copy(targetType = value) },
+                        onClick = { localFilters = localFilters.copy(targetType = value.takeIf { it != ContentTargetType.All }) },
                         label = { Text(stringResource(labelRes)) },
                     )
                 }

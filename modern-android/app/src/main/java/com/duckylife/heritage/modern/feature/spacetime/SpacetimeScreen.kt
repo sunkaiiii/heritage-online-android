@@ -71,6 +71,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -86,6 +87,7 @@ import com.duckylife.heritage.modern.feature.spacetime.model.AnalyticsFacetBucke
 import com.duckylife.heritage.modern.feature.spacetime.model.AnalyticsFacetsUiModel
 import com.duckylife.heritage.modern.feature.spacetime.model.AnalyticsOutlierUiModel
 import com.duckylife.heritage.modern.feature.spacetime.model.NamedCountUiModel
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeFilters
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeHeatmapCellUiModel
 import com.duckylife.heritage.modern.feature.spacetime.model.SpacetimeHeatmapUiModel
@@ -98,6 +100,7 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.text.localizedHeritageFacetLabel
 import com.duckylife.heritage.modern.ui.state.AsyncState
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 private const val MAX_TIMELINE_ROWS = 20
 private const val MAX_COMPARE_OPTIONS = 20
@@ -1205,6 +1208,21 @@ private fun SpacetimeFilterSheet(
                     label = { Text(stringResource(R.string.spacetime_filter_kind)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
+                val targetTypes = listOf(
+                    ContentTargetType.All to R.string.ranking_target_type_all,
+                    ContentTargetType.Article to R.string.ranking_target_type_article,
+                    ContentTargetType.DirectoryItem to R.string.ranking_target_type_directoryItem,
+                    ContentTargetType.Inheritor to R.string.ranking_target_type_inheritor,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    targetTypes.forEach { (value, labelRes) ->
+                        FilterChip(
+                            selected = localFilters.targetType == value,
+                            onClick = { localFilters = localFilters.copy(targetType = value.takeIf { it != ContentTargetType.All }) },
+                            label = { Text(stringResource(labelRes)) },
+                        )
+                    }
+                }
                 val currentFilters = localFilters
                 val valid = currentFilters.fromYear == null || currentFilters.toYear == null ||
                     currentFilters.fromYear <= currentFilters.toYear
@@ -1457,6 +1475,209 @@ private fun AnalyticsDimension.labelRes(): Int = when (this) {
     AnalyticsDimension.Kind -> R.string.dimension_kind
     AnalyticsDimension.TargetType -> R.string.dimension_target_type
     AnalyticsDimension.Unknown -> R.string.dimension_unknown
+}
+
+@Preview(name = "Spacetime overview", showBackground = true)
+@Composable
+private fun SpacetimeScreenOverviewPreview() {
+    HeritageTheme {
+        SpacetimeScreen(
+            uiState = SpacetimeUiState(
+                overview = AsyncState(
+                    data = SpacetimeOverviewUiModel(
+                        total = 15420,
+                        articleCount = 3210,
+                        directoryItemCount = 9876,
+                        inheritorCount = 2334,
+                        topRegions = listOf(
+                            NamedCountUiModel(key = "zhejiang", label = "浙江", count = 1234),
+                            NamedCountUiModel(key = "jiangsu", label = "江苏", count = 1120),
+                            NamedCountUiModel(key = "beijing", label = "北京", count = 980),
+                        ),
+                        topCategories = listOf(
+                            NamedCountUiModel(key = "traditional-craft", label = "传统技艺", count = 2100),
+                            NamedCountUiModel(key = "traditional-art", label = "传统美术", count = 1850),
+                            NamedCountUiModel(key = "folk-custom", label = "民俗", count = 1420),
+                        ),
+                        yearTimeline = listOf(
+                            YearCountUiModel(year = 2006, count = 518),
+                            YearCountUiModel(year = 2008, count = 510),
+                            YearCountUiModel(year = 2011, count = 191),
+                            YearCountUiModel(year = 2014, count = 153),
+                        ),
+                    ),
+                ),
+                heatmap = AsyncState(
+                    data = SpacetimeHeatmapUiModel(
+                        x = SpacetimeDimension.Region,
+                        y = SpacetimeDimension.Category,
+                        cells = listOf(
+                            SpacetimeHeatmapCellUiModel(xKey = "zhejiang", yKey = "traditional-craft", total = 120),
+                            SpacetimeHeatmapCellUiModel(xKey = "zhejiang", yKey = "traditional-art", total = 85),
+                            SpacetimeHeatmapCellUiModel(xKey = "jiangsu", yKey = "traditional-craft", total = 95),
+                            SpacetimeHeatmapCellUiModel(xKey = "jiangsu", yKey = "traditional-art", total = 110),
+                        ),
+                    ),
+                ),
+                facets = AsyncState(
+                    data = AnalyticsFacetsUiModel(
+                        regions = listOf(
+                            AnalyticsFacetBucketUiModel(key = "zhejiang", label = "浙江", count = 1234),
+                            AnalyticsFacetBucketUiModel(key = "jiangsu", label = "江苏", count = 1120),
+                        ),
+                        categories = listOf(
+                            AnalyticsFacetBucketUiModel(key = "traditional-craft", label = "传统技艺", count = 2100),
+                            AnalyticsFacetBucketUiModel(key = "traditional-art", label = "传统美术", count = 1850),
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onSelectTab = {},
+            onFiltersChanged = {},
+            onHeatmapDimensionsChanged = { _, _ -> },
+            onRegionClick = {},
+            onCategoryClick = {},
+            onYearClick = {},
+            onClearDrilldown = {},
+            onBreakdownDimensionChanged = {},
+            onCompareDimensionChanged = {},
+            onCompareKeyToggled = {},
+            onCompareMetricChanged = {},
+            onRunCompare = {},
+            onCrosstabDimensionsChanged = { _, _ -> },
+            onRunCrosstab = {},
+        )
+    }
+}
+
+@Preview(name = "Spacetime analytics", showBackground = true)
+@Composable
+private fun SpacetimeScreenAnalyticsPreview() {
+    HeritageTheme {
+        SpacetimeScreen(
+            uiState = SpacetimeUiState(
+                selectedTab = 1,
+                facets = AsyncState(
+                    data = AnalyticsFacetsUiModel(
+                        regions = listOf(
+                            AnalyticsFacetBucketUiModel(key = "zhejiang", label = "浙江", count = 1234),
+                            AnalyticsFacetBucketUiModel(key = "jiangsu", label = "江苏", count = 1120),
+                            AnalyticsFacetBucketUiModel(key = "beijing", label = "北京", count = 980),
+                        ),
+                        categories = listOf(
+                            AnalyticsFacetBucketUiModel(key = "traditional-craft", label = "传统技艺", count = 2100),
+                            AnalyticsFacetBucketUiModel(key = "traditional-art", label = "传统美术", count = 1850),
+                        ),
+                    ),
+                ),
+                breakdown = AsyncState(
+                    data = AnalyticsBreakdownUiModel(
+                        groupBy = AnalyticsDimension.Region,
+                        buckets = listOf(
+                            AnalyticsBreakdownUiModel.Bucket(key = "zhejiang", label = "浙江", total = 1234),
+                            AnalyticsBreakdownUiModel.Bucket(key = "jiangsu", label = "江苏", total = 1120),
+                            AnalyticsBreakdownUiModel.Bucket(key = "beijing", label = "北京", total = 980),
+                        ),
+                    ),
+                ),
+                compare = CompareSelectionState(
+                    dimension = AnalyticsDimension.Region,
+                    selectedKeys = listOf("zhejiang", "jiangsu"),
+                    metric = RankingMetric.Total,
+                ),
+                compareResult = AsyncState(
+                    data = AnalyticsCompareUiModel(
+                        dimension = AnalyticsDimension.Region,
+                        metric = RankingMetric.Total,
+                        items = listOf(
+                            AnalyticsCompareItemUiModel(key = "zhejiang", label = "浙江", value = 1234.0),
+                            AnalyticsCompareItemUiModel(key = "jiangsu", label = "江苏", value = 1120.0),
+                        ),
+                        winnerKey = "zhejiang",
+                    ),
+                ),
+                outliers = AsyncState(
+                    data = listOf(
+                        AnalyticsOutlierUiModel(
+                            dimension = AnalyticsDimension.Category,
+                            key = "folk-custom",
+                            label = "民俗",
+                            metric = RankingMetric.Total,
+                            value = 420.0,
+                            average = 210.0,
+                            ratioToAverage = 2.0,
+                            reason = "春节期间相关内容访问量显著上升。",
+                        ),
+                    ),
+                ),
+                crosstabResult = AsyncState(
+                    data = AnalyticsCrosstabUiModel(
+                        x = AnalyticsDimension.Region,
+                        y = AnalyticsDimension.Category,
+                        cells = listOf(
+                            AnalyticsCrosstabUiModel.Cell(xKey = "zhejiang", yKey = "traditional-craft", total = 120),
+                            AnalyticsCrosstabUiModel.Cell(xKey = "zhejiang", yKey = "traditional-art", total = 85),
+                            AnalyticsCrosstabUiModel.Cell(xKey = "jiangsu", yKey = "traditional-craft", total = 95),
+                            AnalyticsCrosstabUiModel.Cell(xKey = "jiangsu", yKey = "traditional-art", total = 110),
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onSelectTab = {},
+            onFiltersChanged = {},
+            onHeatmapDimensionsChanged = { _, _ -> },
+            onRegionClick = {},
+            onCategoryClick = {},
+            onYearClick = {},
+            onClearDrilldown = {},
+            onBreakdownDimensionChanged = {},
+            onCompareDimensionChanged = {},
+            onCompareKeyToggled = {},
+            onCompareMetricChanged = {},
+            onRunCompare = {},
+            onCrosstabDimensionsChanged = { _, _ -> },
+            onRunCrosstab = {},
+        )
+    }
+}
+
+@Preview(name = "Spacetime dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun SpacetimeScreenDarkPreview() {
+    SpacetimeScreenOverviewPreview()
+}
+
+@Preview(name = "Spacetime loading", showBackground = true)
+@Composable
+private fun SpacetimeScreenLoadingPreview() {
+    HeritageTheme {
+        SpacetimeScreen(
+            uiState = SpacetimeUiState(
+                overview = AsyncState(isLoading = true),
+                heatmap = AsyncState(isLoading = true),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onSelectTab = {},
+            onFiltersChanged = {},
+            onHeatmapDimensionsChanged = { _, _ -> },
+            onRegionClick = {},
+            onCategoryClick = {},
+            onYearClick = {},
+            onClearDrilldown = {},
+            onBreakdownDimensionChanged = {},
+            onCompareDimensionChanged = {},
+            onCompareKeyToggled = {},
+            onCompareMetricChanged = {},
+            onRunCompare = {},
+            onCrosstabDimensionsChanged = { _, _ -> },
+            onRunCrosstab = {},
+        )
+    }
 }
 
 private fun RankingMetric.labelRes(): Int = when (this) {

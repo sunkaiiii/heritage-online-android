@@ -1321,5 +1321,27 @@ class KtorHeritageApiClientTest {
         assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
     }
 
+    @Test
+    fun pathSegmentUsesUrlPathEncoding() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """{"id":"中/文","category":"news","title":"标题","summary":"","publishedAt":"2026-01-01T00:00:00Z","sourceUrl":"https://example.test/source"}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+            install(profileHeaderPlugin(fakeProfileRepository))
+        }
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        api.getArticle("中/文")
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/articles/%E4%B8%AD%2F%E6%96%87", request.url.encodedPath)
+    }
+
     // endregion
 }

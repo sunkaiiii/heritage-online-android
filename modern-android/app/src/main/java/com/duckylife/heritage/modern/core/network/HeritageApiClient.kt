@@ -117,6 +117,7 @@ import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.encodeURLPathPart
 import io.ktor.serialization.kotlinx.json.json
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -616,7 +617,7 @@ class KtorHeritageApiClient(
 
     override suspend fun getLocalUserFavorites(query: LocalUserFavoritesQuery): PagedResult<LocalFavoriteDto> =
         httpClient.get(endpoint("api/local-user/favorites")) {
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("page", query.page)
             optionalParameter("pageSize", query.pageSize)
         }.body()
@@ -627,15 +628,15 @@ class KtorHeritageApiClient(
             setBody(request)
         }.body()
 
-    override suspend fun removeLocalUserFavorite(targetType: String, targetId: String) {
+    override suspend fun removeLocalUserFavorite(targetType: LocalUserTargetType, targetId: String) {
         httpClient.delete(
-            endpoint("api/local-user/favorites/${pathSegment(targetType)}/${pathSegment(targetId)}")
+            endpoint("api/local-user/favorites/${pathSegment(targetType.wireName)}/${pathSegment(targetId)}")
         )
     }
 
     override suspend fun getLocalUserHistory(query: LocalUserHistoryQuery): PagedResult<LocalHistoryDto> =
         httpClient.get(endpoint("api/local-user/history")) {
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("page", query.page)
             optionalParameter("pageSize", query.pageSize)
         }.body()
@@ -793,7 +794,7 @@ class KtorHeritageApiClient(
 
     override suspend fun getTopicGraphMap(query: TopicGraphMapQuery): TopicGraphMapDto =
         httpClient.get(
-            endpoint("api/knowledge-graph/topics/${pathSegment(query.topicType)}/${pathSegment(query.topicKey)}/map")
+            endpoint("api/knowledge-graph/topics/${pathSegment(query.topicType.wireName)}/${pathSegment(query.topicKey)}/map")
         ) {
             optionalParameter("limit", query.limit)
         }.body()
@@ -816,7 +817,7 @@ class KtorHeritageApiClient(
 
     override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery): GraphTrailDto =
         httpClient.get(
-            endpoint("api/knowledge-graph/trails/topic/${pathSegment(query.topicType)}/${pathSegment(query.topicKey)}")
+            endpoint("api/knowledge-graph/trails/topic/${pathSegment(query.topicType.wireName)}/${pathSegment(query.topicKey)}")
         ) {
             optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
             optionalParameter("limit", query.limit)
@@ -865,7 +866,7 @@ class KtorHeritageApiClient(
             optionalParameter("region", query.region)
             optionalParameter("category", query.category)
             optionalParameter("kind", query.kind)
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("limit", query.limit)
         }.body()
 
@@ -873,7 +874,7 @@ class KtorHeritageApiClient(
         httpClient.get(endpoint("api/spacetime/heatmap")) {
             optionalParameter("x", query.x.takeIf { it != SpacetimeDimension.Unknown }?.wireName)
             optionalParameter("y", query.y.takeIf { it != SpacetimeDimension.Unknown }?.wireName)
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("fromYear", query.fromYear)
             optionalParameter("toYear", query.toYear)
             optionalParameter("limit", query.limit)
@@ -929,7 +930,7 @@ class KtorHeritageApiClient(
 
     override suspend fun getRankingDetail(query: RankingDetailQuery): RankingDetailDto =
         httpClient.get(endpoint("api/rankings/${pathSegment(query.rankingId)}")) {
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("region", query.region)
             optionalParameter("category", query.category)
             optionalParameter("year", query.year)
@@ -939,7 +940,7 @@ class KtorHeritageApiClient(
     override suspend fun getRankingContent(query: RankingContentQuery): RankingDetailDto =
         httpClient.get(endpoint("api/rankings/content")) {
             optionalParameter("metric", query.metric.takeIf { it != RankingMetric.Unknown }?.wireName)
-            optionalParameter("targetType", query.targetType)
+            optionalParameter("targetType", query.targetType?.wireName)
             optionalParameter("region", query.region)
             optionalParameter("category", query.category)
             optionalParameter("year", query.year)
@@ -958,6 +959,11 @@ class KtorHeritageApiClient(
         httpClient.get(
             endpoint("api/research-packages/${pathSegment(query.packageId)}/artifacts/${pathSegment(query.artifactName)}")
         ).bodyAsText()
+
+    override suspend fun getResearchArtifactBytes(query: ResearchArtifactQuery): ByteArray =
+        httpClient.get(
+            endpoint("api/research-packages/${pathSegment(query.packageId)}/artifacts/${pathSegment(query.artifactName)}")
+        ).body<ByteArray>()
 
     override suspend fun getResearchReports(): ResearchReportListResultDto =
         httpClient.get(endpoint("api/research-reports")).body()
@@ -989,18 +995,17 @@ class KtorHeritageApiClient(
 
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
 
-    private fun pathSegment(value: String): String =
-        java.net.URLEncoder.encode(value, "UTF-8")
-            .replace("+", "%20")
+    private fun pathSegment(value: String): String = value.encodeURLPathPart()
 
     private fun v3PagePath(type: SearchResultType): String = when (type) {
         SearchResultType.Article -> "article"
         SearchResultType.DirectoryItem -> "directory-item"
         SearchResultType.Inheritor -> "inheritor"
+        SearchResultType.Unknown -> "article"
     }
 
     private fun HttpRequestBuilder.applyAnalyticsFilters(filters: AnalyticsFilters) {
-        optionalParameter("targetType", filters.targetType)
+        optionalParameter("targetType", filters.targetType?.wireName)
         optionalParameter("region", filters.region)
         optionalParameter("category", filters.category)
         optionalParameter("year", filters.year)

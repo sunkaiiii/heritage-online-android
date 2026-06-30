@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicItemDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicLinkDto
 import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
@@ -367,6 +369,75 @@ private fun FeaturedItemCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun LearningPathScreenPreview() {
+    HeritageTheme {
+        LearningPathScreen(
+            uiState = LearningPathUiState(
+                isLoading = false,
+                path = LearningPathDetailDto(
+                    id = "preview-path",
+                    title = "非遗入门之旅",
+                    subtitle = "从传统技艺到民间文学",
+                    description = "按照由浅入深的顺序，带你了解非物质文化遗产的核心门类。",
+                    tags = listOf("入门", "系统", "推荐"),
+                    steps = listOf(
+                        LearningPathStepDto(
+                            id = "s1",
+                            title = "认识非遗",
+                            subtitle = "什么是非物质文化遗产",
+                            items = listOf(
+                                ExploreTopicItemDto(
+                                    id = "1",
+                                    type = "article",
+                                    title = "非遗保护公约",
+                                ),
+                                ExploreTopicItemDto(
+                                    id = "2",
+                                    type = "directoryItem",
+                                    title = "中国非遗名录体系",
+                                ),
+                            ),
+                        ),
+                        LearningPathStepDto(
+                            id = "s2",
+                            title = "传统技艺",
+                            subtitle = "动手体验匠心",
+                            items = listOf(
+                                ExploreTopicItemDto(
+                                    id = "3",
+                                    type = "directoryItem",
+                                    title = "景泰蓝制作技艺",
+                                ),
+                            ),
+                        ),
+                    ),
+                    featuredItems = listOf(
+                        ExploreTopicItemDto(
+                            id = "f1",
+                            type = "directoryItem",
+                            title = "苏州缂丝",
+                            summary = "织中之圣",
+                        ),
+                    ),
+                    relatedTopics = listOf(
+                        ExploreTopicLinkDto(
+                            type = "category",
+                            key = "folkArt",
+                            title = "民间美术",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+            onRelatedTopicClick = {},
+        )
     }
 }
 

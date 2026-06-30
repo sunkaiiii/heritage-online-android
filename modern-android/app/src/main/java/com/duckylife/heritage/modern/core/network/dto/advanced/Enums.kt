@@ -240,3 +240,31 @@ enum class SectionStatus(override val wireName: String) : WireNamed {
 
 object SectionStatusSerializer :
     KSerializer<SectionStatus> by enumWithUnknownSerializer("SectionStatus", SectionStatus.Unknown)
+
+@Serializable(with = ContentTargetTypeSerializer::class)
+enum class ContentTargetType(override val wireName: String) : WireNamed {
+    @SerialName("all") All("all"),
+    @SerialName("article") Article("article"),
+    @SerialName("directoryItem") DirectoryItem("directoryItem"),
+    @SerialName("inheritor") Inheritor("inheritor"),
+    @SerialName("unknown") Unknown("unknown");
+}
+
+object ContentTargetTypeSerializer :
+    KSerializer<ContentTargetType> by enumWithUnknownSerializer(
+        "ContentTargetType", ContentTargetType.Unknown
+    )
+
+@Serializable(with = LocalUserTargetTypeSerializer::class)
+enum class LocalUserTargetType(override val wireName: String) : WireNamed {
+    @SerialName("all") All("all"),
+    @SerialName("article") Article("article"),
+    @SerialName("directoryItem") DirectoryItem("directoryItem"),
+    @SerialName("inheritor") Inheritor("inheritor"),
+    @SerialName("unknown") Unknown("unknown");
+}
+
+object LocalUserTargetTypeSerializer :
+    KSerializer<LocalUserTargetType> by enumWithUnknownSerializer(
+        "LocalUserTargetType", LocalUserTargetType.Unknown
+    )

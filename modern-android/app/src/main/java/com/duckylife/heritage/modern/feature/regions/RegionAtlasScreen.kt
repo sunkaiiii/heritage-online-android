@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
 import com.duckylife.heritage.modern.core.network.dto.RegionAtlasItemDto
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
@@ -61,7 +63,6 @@ fun RegionAtlasRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegionAtlasScreen(
     uiState: RegionAtlasUiState,
@@ -240,6 +241,57 @@ private fun RegionCard(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun RegionAtlasScreenPreview() {
+    HeritageTheme {
+        RegionAtlasScreen(
+            uiState = RegionAtlasUiState(
+                isLoading = false,
+                atlas = RegionAtlasDto(
+                    totals = com.duckylife.heritage.modern.core.network.dto.RegionAtlasTotalsDto(
+                        directoryItemCount = 1550,
+                        inheritorCount = 3200,
+                        regionCount = 34,
+                    ),
+                    regions = listOf(
+                        RegionAtlasItemDto(
+                            region = "北京",
+                            displayName = "北京",
+                            directoryItemCount = 120,
+                            inheritorCount = 85,
+                            total = 247,
+                            topCategories = listOf(
+                                com.duckylife.heritage.modern.core.network.dto.FacetBucketDto("traditionalOpera", 24),
+                                com.duckylife.heritage.modern.core.network.dto.FacetBucketDto("traditionalCraft", 18),
+                            ),
+                            topKinds = listOf(
+                                com.duckylife.heritage.modern.core.network.dto.FacetBucketDto("nationalProject", 112),
+                            ),
+                        ),
+                        RegionAtlasItemDto(
+                            region = "江苏",
+                            displayName = "江苏",
+                            directoryItemCount = 210,
+                            inheritorCount = 165,
+                            total = 412,
+                            topCategories = listOf(
+                                com.duckylife.heritage.modern.core.network.dto.FacetBucketDto("traditionalCraft", 45),
+                            ),
+                            topKinds = listOf(
+                                com.duckylife.heritage.modern.core.network.dto.FacetBucketDto("nationalProject", 198),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onRegionSelected = {},
+        )
     }
 }
 

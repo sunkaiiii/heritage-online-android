@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.core.network
 
 import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
 import org.junit.Assert.assertEquals
@@ -205,14 +206,14 @@ class SpacetimeAnalyticsQueryTest {
     fun `RankingDetailQuery clamps limit and accepts filters`() {
         val query = RankingDetailQuery(
             rankingId = "top-regions",
-            targetType = "article",
+            targetType = ContentTargetType.Article,
             region = "浙江",
             category = "传统技艺",
             year = 2024,
             limit = 100,
         )
         assertEquals("top-regions", query.rankingId)
-        assertEquals("article", query.targetType)
+        assertEquals(ContentTargetType.Article, query.targetType)
         assertEquals("浙江", query.region)
         assertEquals(2024, query.year)
         assertEquals(100, query.limit)
@@ -232,7 +233,7 @@ class SpacetimeAnalyticsQueryTest {
     fun `RankingContentQuery requires metric and clamps limit`() {
         val query = RankingContentQuery(
             metric = RankingMetric.Connectivity,
-            targetType = "all",
+            targetType = ContentTargetType.All,
             limit = 50,
         )
         assertEquals(RankingMetric.Connectivity, query.metric)

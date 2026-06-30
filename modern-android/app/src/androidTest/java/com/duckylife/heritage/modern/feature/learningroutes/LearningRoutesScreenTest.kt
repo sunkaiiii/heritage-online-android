@@ -134,7 +134,7 @@ class LearningRoutesScreenTest {
             HeritageTheme {
                 LearningRoutesScreen(
                     uiState = LearningRoutesUiState(
-                        seedType = "article",
+                        seedType = com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType.Content,
                         seedId = "a1",
                         routes = LearningRoutesSectionState(data = emptyList()),
                     ),

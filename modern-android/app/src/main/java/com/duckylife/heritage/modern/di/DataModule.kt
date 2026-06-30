@@ -32,9 +32,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.io.File
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 private val Context.profileDataStore by preferencesDataStore(name = "heritage_profile")
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CacheDir
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -108,5 +114,10 @@ abstract class DataModule {
         @Singleton
         fun provideProfileDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
             context.profileDataStore
+
+        @Provides
+        @Singleton
+        @CacheDir
+        fun provideCacheDir(@ApplicationContext context: Context): File = context.cacheDir
     }
 }

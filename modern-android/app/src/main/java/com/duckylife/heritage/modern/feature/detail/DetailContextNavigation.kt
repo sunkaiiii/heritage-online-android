@@ -17,7 +17,7 @@ fun contextItemTarget(id: String?, type: String?): DetailContextTarget? {
         SearchResultType.Article -> DetailContextTarget.Article(safeId)
         SearchResultType.DirectoryItem -> DetailContextTarget.DirectoryItem(safeId)
         SearchResultType.Inheritor -> DetailContextTarget.Inheritor(safeId)
-        null -> null
+        SearchResultType.Unknown, null -> null
     }
 }
 

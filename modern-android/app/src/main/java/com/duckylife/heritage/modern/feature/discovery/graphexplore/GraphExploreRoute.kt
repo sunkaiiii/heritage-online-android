@@ -83,6 +83,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSour
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.feature.discovery.DiscoverySectionState
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.feature.discovery.GraphTab
 import com.duckylife.heritage.modern.feature.graph.format.GraphRelationFormatter
 import com.duckylife.heritage.modern.feature.graph.model.AiInferredEdgeUiModel
@@ -117,7 +118,7 @@ private const val MAX_SIMILAR_REASONS = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GraphExploreRoute(
-    contentType: String,
+    contentType: SearchResultType,
     contentId: String,
     initialTab: GraphTab,
     onBack: () -> Unit,
@@ -1039,7 +1040,6 @@ private fun SimilarResultCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ExploreTabHeader(
     selectedDepth: Int,

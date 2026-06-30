@@ -57,7 +57,7 @@ class LearningRoutesViewModel @Inject constructor(
     /**
      * 设置从详情页带过来的 seed；应在 route 初始化时调用一次。
      */
-    fun setSeed(seedType: String?, seedId: String?) {
+    fun setSeed(seedType: LearningRouteSeedType?, seedId: String?) {
         _uiState.update { it.copy(seedType = seedType, seedId = seedId) }
     }
 
@@ -119,7 +119,8 @@ class LearningRoutesViewModel @Inject constructor(
      * 当 seed 存在时，用户点击“为当前内容生成学习路线”触发 build。
      */
     fun buildFromSeed() {
-        val seedType = _uiState.value.seedType?.takeIf { it.isNotBlank() } ?: return
+        val seedType = _uiState.value.seedType ?: return
+        if (seedType == LearningRouteSeedType.Unknown) return
         val seedId = _uiState.value.seedId?.takeIf { it.isNotBlank() } ?: return
         val difficulty = _uiState.value.selectedDifficulty
             .takeIf { it != LearningRouteDifficulty.All && it != LearningRouteDifficulty.Unknown }
@@ -133,10 +134,9 @@ class LearningRoutesViewModel @Inject constructor(
                 )
             }
             runCatchingCancellable {
-                val buildSeed = seedType.toBuildSeed(seedId)
                 val detail = repository.buildRoute(
-                    seedType = buildSeed.type,
-                    seedKey = buildSeed.key,
+                    seedType = seedType,
+                    seedKey = seedId.trim(),
                     difficulty = difficulty,
                     limit = BUILD_LIMIT,
                 )
@@ -163,25 +163,6 @@ class LearningRoutesViewModel @Inject constructor(
         }
     }
 
-    private fun String.toBuildSeed(seedId: String): BuildSeed {
-        val normalizedType = trim()
-        val normalizedId = seedId.trim()
-        if (normalizedType in CONTENT_SEED_TYPES) {
-            return BuildSeed(
-                type = LearningRouteSeedType.Content,
-                key = "$normalizedType:$normalizedId",
-            )
-        }
-        val seedTypeEnum = LearningRouteSeedType.entries.firstOrNull { it.wireName == normalizedType }
-            ?.takeIf { it != LearningRouteSeedType.Unknown }
-            ?: LearningRouteSeedType.Content
-        return BuildSeed(type = seedTypeEnum, key = normalizedId)
-    }
-
-    private data class BuildSeed(
-        val type: LearningRouteSeedType,
-        val key: String,
-    )
 
     /**
      * 清除 build seed 错误提示。
@@ -193,6 +174,5 @@ class LearningRoutesViewModel @Inject constructor(
     companion object {
         private const val LIST_LIMIT = 20
         private const val BUILD_LIMIT = 8
-        private val CONTENT_SEED_TYPES = setOf("article", "directoryItem", "inheritor")
     }
 }

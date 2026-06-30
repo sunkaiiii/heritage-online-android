@@ -42,7 +42,7 @@ class GraphExploreViewModelTest {
 
     @Test
     fun `invalid route does not load anything`() = runTest {
-        val viewModel = createViewModel(contentType = "unknown", contentId = "x")
+        val viewModel = createViewModel(contentType = SearchResultType.Unknown, contentId = "x")
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isInvalidRoute)
@@ -449,7 +449,7 @@ class GraphExploreViewModelTest {
     }
 
     private fun createViewModel(
-        contentType: String = "article",
+        contentType: SearchResultType = SearchResultType.Article,
         contentId: String = "a1",
         initialTab: GraphTab = GraphTab.Neighbors,
     ): GraphExploreViewModel = GraphExploreViewModel(
@@ -587,7 +587,7 @@ class GraphExploreViewModelTest {
             return bridgeResult
         }
 
-        override suspend fun getTopicGraphMap(topicType: String, topicKey: String, limit: Int) =
+        override suspend fun getTopicGraphMap(topicType: GraphNodeType, topicKey: String, limit: Int) =
             throw NotImplementedError()
 
         override suspend fun getRandomGraphTrail(
@@ -604,7 +604,7 @@ class GraphExploreViewModelTest {
         ) = throw NotImplementedError()
 
         override suspend fun getGraphTrailFromTopic(
-            topicType: String,
+            topicType: GraphNodeType,
             topicKey: String,
             strategy: com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy,
             limit: Int,

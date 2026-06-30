@@ -20,12 +20,18 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
 class ResearchRepositoryTest {
 
+    @get:Rule
+    val tempFolder = TemporaryFolder()
+
     private val fakeApi = FakeResearchApi()
-    private val repository: ResearchRepository = DefaultResearchRepository(api = fakeApi)
+    private val repository: ResearchRepository
+        get() = DefaultResearchRepository(api = fakeApi, cacheDir = tempFolder.root)
 
     @Test
     fun `getPackages maps all status branches and only succeeded is clickable`() = runTest {
@@ -289,6 +295,7 @@ class ResearchRepositoryTest {
             status = ResearchTaskStatus.Unknown,
         )
         var artifactContent: String = ""
+        var artifactBytes: ByteArray = ByteArray(0)
 
         var capturedPackageDetailQuery: ResearchPackageDetailQuery? = null
         var capturedArtifactQuery: ResearchArtifactQuery? = null
@@ -306,6 +313,11 @@ class ResearchRepositoryTest {
         override suspend fun getResearchArtifact(query: ResearchArtifactQuery): String {
             capturedArtifactQuery = query
             return artifactContent
+        }
+
+        override suspend fun getResearchArtifactBytes(query: ResearchArtifactQuery): ByteArray {
+            capturedArtifactQuery = query
+            return artifactBytes
         }
 
         override suspend fun getResearchReports(): ResearchReportListResultDto =

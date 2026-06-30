@@ -1,10 +1,13 @@
 package com.duckylife.heritage.modern.core.network.dto
 
+import com.duckylife.heritage.modern.core.network.dto.advanced.WireNamed
+import com.duckylife.heritage.modern.core.network.dto.advanced.enumWithUnknownSerializer
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@Serializable
-enum class SearchResultType(val wireName: String) {
+@Serializable(with = SearchResultTypeSerializer::class)
+enum class SearchResultType(override val wireName: String) : WireNamed {
     @SerialName("article")
     Article("article"),
 
@@ -12,13 +15,21 @@ enum class SearchResultType(val wireName: String) {
     DirectoryItem("directoryItem"),
 
     @SerialName("inheritor")
-    Inheritor("inheritor");
+    Inheritor("inheritor"),
+
+    @SerialName("unknown")
+    Unknown("unknown");
 
     companion object {
         fun fromWireName(value: String?): SearchResultType? =
             entries.firstOrNull { it.wireName == value }
     }
 }
+
+object SearchResultTypeSerializer :
+    KSerializer<SearchResultType> by enumWithUnknownSerializer(
+        "SearchResultType", SearchResultType.Unknown
+    )
 
 @Serializable
 data class SearchFacetsDto(

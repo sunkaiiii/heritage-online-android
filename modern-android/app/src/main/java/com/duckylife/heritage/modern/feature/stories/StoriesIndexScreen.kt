@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
@@ -316,6 +318,68 @@ private fun StoriesIndexErrorContent(
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
         }
+    }
+}
+
+@Preview
+@Composable
+private fun StoriesIndexScreenPreview() {
+    HeritageTheme {
+        StoriesIndexScreen(
+            uiState = StoriesIndexUiState(
+                isLoading = false,
+                regions = listOf(
+                    TaxonomyTopicDto(
+                        type = "region",
+                        key = "北京",
+                        title = "北京",
+                        subtitle = "京剧与传统技艺",
+                        total = 247,
+                    ),
+                    TaxonomyTopicDto(
+                        type = "region",
+                        key = "江苏",
+                        title = "江苏",
+                        subtitle = "苏绣与昆曲",
+                        total = 412,
+                    ),
+                ),
+                categories = listOf(
+                    TaxonomyTopicDto(
+                        type = "category",
+                        key = "traditionalCraft",
+                        title = "传统技艺",
+                        subtitle = "匠心传承",
+                        total = 128,
+                    ),
+                ),
+                years = listOf(
+                    TimelineYearBucketDto(year = 2024, total = 12),
+                    TimelineYearBucketDto(year = 2023, total = 28),
+                    TimelineYearBucketDto(year = 2022, total = 35),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onRegionStoryClick = {},
+            onCategoryStoryClick = {},
+            onYearStoryClick = {},
+        )
+    }
+}
+
+@Preview(name = "Stories Index Empty")
+@Composable
+private fun StoriesIndexScreenEmptyPreview() {
+    HeritageTheme {
+        StoriesIndexScreen(
+            uiState = StoriesIndexUiState(isLoading = false),
+            onBack = {},
+            onRetry = {},
+            onRegionStoryClick = {},
+            onCategoryStoryClick = {},
+            onYearStoryClick = {},
+        )
     }
 }
 

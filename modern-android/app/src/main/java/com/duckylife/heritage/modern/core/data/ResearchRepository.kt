@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.core.data
 
+import java.io.File
 import com.duckylife.heritage.modern.core.network.ResearchArtifactQuery
 import com.duckylife.heritage.modern.core.network.ResearchPackageDetailQuery
 import com.duckylife.heritage.modern.core.network.ResearchReportByPackageQuery
@@ -20,6 +21,7 @@ import com.duckylife.heritage.modern.feature.research.model.ResearchPackageItemU
 import com.duckylife.heritage.modern.feature.research.model.ResearchReportDetailUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchReportItemUiModel
 import com.duckylife.heritage.modern.feature.research.model.ResearchSourceType
+import com.duckylife.heritage.modern.di.CacheDir
 import javax.inject.Inject
 
 /**
@@ -29,6 +31,8 @@ interface ResearchRepository {
     suspend fun getPackages(): List<ResearchPackageItemUiModel>
     suspend fun getPackageDetail(packageId: String): ResearchPackageDetailUiModel
     suspend fun getArtifactContent(packageId: String, artifactName: String): String
+    suspend fun getArtifactBytes(packageId: String, artifactName: String): ByteArray
+    suspend fun saveArtifactToCache(packageId: String, artifactName: String, bytes: ByteArray): File
     suspend fun getReports(): List<ResearchReportItemUiModel>
     suspend fun getReportDetail(reportId: String): ResearchReportDetailUiModel
     suspend fun getReportByPackage(packageId: String): ResearchReportDetailUiModel
@@ -36,6 +40,7 @@ interface ResearchRepository {
 
 class DefaultResearchRepository @Inject constructor(
     private val api: ResearchApi,
+    @param:CacheDir private val cacheDir: File,
 ) : ResearchRepository {
 
     override suspend fun getPackages(): List<ResearchPackageItemUiModel> =
@@ -49,6 +54,20 @@ class DefaultResearchRepository @Inject constructor(
             "artifactName must be a safe file name (no path separators, control chars, or traversal, 1-128 chars)"
         }
         return api.getResearchArtifact(ResearchArtifactQuery(packageId = packageId, artifactName = artifactName))
+    }
+
+    override suspend fun getArtifactBytes(packageId: String, artifactName: String): ByteArray {
+        require(isAllowedArtifactName(artifactName)) {
+            "artifactName must be a safe file name (no path separators, control chars, or traversal, 1-128 chars)"
+        }
+        return api.getResearchArtifactBytes(ResearchArtifactQuery(packageId = packageId, artifactName = artifactName))
+    }
+
+    override suspend fun saveArtifactToCache(packageId: String, artifactName: String, bytes: ByteArray): File {
+        val dir = File(cacheDir, "artifacts").apply { mkdirs() }
+        val file = File(dir, "$packageId-$artifactName")
+        file.writeBytes(bytes)
+        return file
     }
 
     override suspend fun getReports(): List<ResearchReportItemUiModel> =

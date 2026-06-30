@@ -1,6 +1,7 @@
 package com.duckylife.heritage.modern.feature.spacetime.model
 
 import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
 
@@ -13,13 +14,13 @@ data class SpacetimeFilters(
     val region: String? = null,
     val category: String? = null,
     val kind: String? = null,
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val limit: Int = 20,
     val heatmapLimit: Int = 50,
 ) : java.io.Serializable {
     val isEmpty: Boolean
         get() = fromYear == null && toYear == null && region.isNullOrBlank() &&
-            category.isNullOrBlank() && kind.isNullOrBlank() && targetType.isNullOrBlank()
+            category.isNullOrBlank() && kind.isNullOrBlank() && targetType == null
 }
 
 data class SpacetimeOverviewUiModel(
@@ -60,7 +61,7 @@ data class YearCountUiModel(
 data class SpacetimeHeatmapUiModel(
     val x: SpacetimeDimension = SpacetimeDimension.Unknown,
     val y: SpacetimeDimension = SpacetimeDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val cells: List<SpacetimeHeatmapCellUiModel> = emptyList(),
     val generatedAt: String? = null,
 )
@@ -113,7 +114,7 @@ data class AnalyticsFacetBucketUiModel(
 
 data class AnalyticsBreakdownUiModel(
     val groupBy: AnalyticsDimension = AnalyticsDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val buckets: List<Bucket> = emptyList(),
     val total: Int = 0,
     val generatedAt: String? = null,
@@ -131,7 +132,7 @@ data class AnalyticsBreakdownUiModel(
 data class AnalyticsCrosstabUiModel(
     val x: AnalyticsDimension = AnalyticsDimension.Unknown,
     val y: AnalyticsDimension = AnalyticsDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val cells: List<Cell> = emptyList(),
     val xBuckets: List<String> = emptyList(),
     val yBuckets: List<String> = emptyList(),

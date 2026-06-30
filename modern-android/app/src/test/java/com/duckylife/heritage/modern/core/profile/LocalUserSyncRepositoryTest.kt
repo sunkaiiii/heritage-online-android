@@ -5,6 +5,7 @@ import com.duckylife.heritage.modern.core.database.dao.ProfileFavoriteDao
 import com.duckylife.heritage.modern.core.database.dao.ProfileHistoryDao
 import com.duckylife.heritage.modern.core.database.dao.ProfileLearningProgressDao
 import com.duckylife.heritage.modern.core.database.dao.ProfileStateDao
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -68,7 +69,7 @@ class LocalUserSyncRepositoryTest {
 
         api.addFavoriteResult = com.duckylife.heritage.modern.core.network.dto.advanced.LocalFavoriteDto(
             id = "remote:a1",
-            targetType = "article",
+            targetType = LocalUserTargetType.Article,
             targetId = "a1",
             titleSnapshot = "Article",
         )

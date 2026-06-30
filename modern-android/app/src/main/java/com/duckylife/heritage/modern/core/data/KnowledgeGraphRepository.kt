@@ -77,7 +77,7 @@ interface KnowledgeGraphRepository {
     ): BridgeResult
 
     suspend fun getTopicGraphMap(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         limit: Int = 50,
     ): TopicGraphMapResult
@@ -96,7 +96,7 @@ interface KnowledgeGraphRepository {
     ): GraphTrailResult
 
     suspend fun getGraphTrailFromTopic(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         strategy: TrailStrategy = TrailStrategy.Representative,
         limit: Int = 6,
@@ -206,7 +206,7 @@ class DefaultKnowledgeGraphRepository @Inject constructor(
     ).toBridgeResult()
 
     override suspend fun getTopicGraphMap(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         limit: Int,
     ): TopicGraphMapResult = api.getTopicGraphMap(
@@ -244,7 +244,7 @@ class DefaultKnowledgeGraphRepository @Inject constructor(
     ).toGraphTrailResult()
 
     override suspend fun getGraphTrailFromTopic(
-        topicType: String,
+        topicType: GraphNodeType,
         topicKey: String,
         strategy: TrailStrategy,
         limit: Int,

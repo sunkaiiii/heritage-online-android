@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.DataExploreRepository
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDefinitionUiModel
 import com.duckylife.heritage.modern.feature.rankings.model.RankingDetailUiModel
@@ -27,6 +28,7 @@ private const val KEY_FILTERS = "ranking_detail_filters"
  */
 data class RankingsUiState(
     val definitions: AsyncState<List<RankingDefinitionUiModel>> = AsyncState(),
+    val content: AsyncState<RankingDetailUiModel> = AsyncState(),
 )
 
 /**
@@ -68,6 +70,24 @@ class RankingsViewModel @Inject constructor(
 
     fun retry() {
         loadRankings()
+    }
+
+    fun loadRankingContent(metric: RankingMetric, filters: RankingFilters) {
+        loadJob?.cancel()
+        loadJob = viewModelScope.launch {
+            _uiState.update { it.copy(content = AsyncState(isLoading = true)) }
+            runCatchingCancellable { repository.getRankingContent(metric, filters) }
+                .onSuccess { content ->
+                    _uiState.update { it.copy(content = AsyncState(data = content)) }
+                }
+                .onFailure { throwable ->
+                    _uiState.update { it.copy(content = AsyncState(errorKind = throwable.toUiError().kind)) }
+                }
+        }
+    }
+
+    fun clearRankingContent() {
+        _uiState.update { it.copy(content = AsyncState()) }
     }
 }
 

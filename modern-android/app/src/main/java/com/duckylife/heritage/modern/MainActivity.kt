@@ -44,6 +44,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.annotation.StringRes
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.settings.AppLanguageMode
 import com.duckylife.heritage.modern.core.settings.AppThemeMode
 import com.duckylife.heritage.modern.core.settings.ThemeSettingsRepository
@@ -174,7 +176,7 @@ private fun HeritageApp(
         showSettings = false
         showMyPage = false
         myPageDestination = MyPageDestination.GraphExplore(
-            contentType = contentType,
+            contentType = SearchResultType.fromWireName(contentType) ?: SearchResultType.Article,
             contentId = contentId,
             initialTabName = initialTabName,
         )
@@ -183,8 +185,13 @@ private fun HeritageApp(
     val navigateToLearningRoutes: (String?, String?) -> Unit = { seedType, seedId ->
         showSettings = false
         showMyPage = false
+        val seedTypeEnum = when (seedType) {
+            null -> null
+            "content" -> LearningRouteSeedType.Content
+            else -> LearningRouteSeedType.entries.firstOrNull { it.wireName == seedType }
+        }
         myPageDestination = MyPageDestination.LearningRoutes(
-            seedType = seedType,
+            seedType = seedTypeEnum,
             seedId = seedId,
         )
         selectedDestination = HomeDestination.Discovery

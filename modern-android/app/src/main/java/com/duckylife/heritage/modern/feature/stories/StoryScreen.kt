@@ -34,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
 import com.duckylife.heritage.modern.core.network.dto.DataStoryItemDto
@@ -73,7 +75,6 @@ fun StoryRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StoryScreen(
     uiState: StoryUiState,
@@ -257,6 +258,60 @@ private fun DataStoryItemDto.toDiscoveryItemDto(): DiscoveryItemDto = DiscoveryI
     coverImage = coverImage,
     sourceUrl = sourceUrl,
 )
+
+@Preview
+@Composable
+private fun StoryScreenPreview() {
+    HeritageTheme {
+        StoryScreen(
+            uiState = StoryUiState(
+                isLoading = false,
+                story = DataStoryDto(
+                    id = "preview-story",
+                    title = "北京非遗故事",
+                    subtitle = "从历史走向未来",
+                    heroImage = com.duckylife.heritage.modern.core.network.dto.MediaAssetDto(
+                        displayUrl = "https://example.com/beijing.jpg",
+                        altText = "北京非遗",
+                    ),
+                    sections = listOf(
+                        DataStorySectionDto(
+                            id = "sec1",
+                            title = "京剧的诞生",
+                            type = "text",
+                            body = "京剧形成于北京，是中国影响最大的戏曲剧种。",
+                            items = listOf(
+                                DataStoryItemDto(
+                                    type = "directoryItem",
+                                    id = "d1",
+                                    title = "京剧",
+                                    summary = "中国国粹",
+                                ),
+                            ),
+                        ),
+                        DataStorySectionDto(
+                            id = "sec2",
+                            title = "传统技艺",
+                            type = "text",
+                            body = "景泰蓝、雕漆等传统技艺在北京世代传承。",
+                        ),
+                    ),
+                    relatedTopics = listOf(
+                        ExploreTopicInfoDto(
+                            type = "region",
+                            key = "北京",
+                            title = "北京",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+            onTopicClick = { _, _ -> },
+        )
+    }
+}
 
 @Composable
 private fun StoryErrorContent(

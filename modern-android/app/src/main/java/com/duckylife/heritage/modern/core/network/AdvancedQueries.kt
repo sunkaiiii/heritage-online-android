@@ -3,6 +3,7 @@ package com.duckylife.heritage.modern.core.network
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportFormat
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportScopeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphEvidenceSource
@@ -11,6 +12,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphRelationType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
 import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
@@ -19,7 +21,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
  * 本地用户相关查询参数。
  */
 data class LocalUserFavoritesQuery(
-    val targetType: String? = null,
+    val targetType: LocalUserTargetType? = null,
     val page: Int = 1,
     val pageSize: Int = 20,
 ) {
@@ -30,7 +32,7 @@ data class LocalUserFavoritesQuery(
 }
 
 data class LocalUserHistoryQuery(
-    val targetType: String? = null,
+    val targetType: LocalUserTargetType? = null,
     val page: Int = 1,
     val pageSize: Int = 20,
 ) {
@@ -263,12 +265,12 @@ data class KnowledgeGraphCommunitiesQuery(
 }
 
 data class TopicGraphMapQuery(
-    val topicType: String,
+    val topicType: GraphNodeType,
     val topicKey: String,
     val limit: Int = 50,
 ) {
     init {
-        require(topicType.isNotBlank()) { "topicType must not be blank" }
+        require(topicType != GraphNodeType.Unknown) { "topicType must be specified" }
         require(topicKey.isNotBlank()) { "topicKey must not be blank" }
         require(limit in 1..100) { "limit must be in 1..100" }
     }
@@ -298,13 +300,13 @@ data class GraphTrailFromContentQuery(
 }
 
 data class GraphTrailFromTopicQuery(
-    val topicType: String,
+    val topicType: GraphNodeType,
     val topicKey: String,
     val strategy: TrailStrategy = TrailStrategy.Representative,
     val limit: Int = 6,
 ) {
     init {
-        require(topicType.isNotBlank()) { "topicType must not be blank" }
+        require(topicType != GraphNodeType.Unknown) { "topicType must be specified" }
         require(topicKey.isNotBlank()) { "topicKey must not be blank" }
         require(limit in 3..10) { "limit must be in 3..10" }
     }
@@ -319,7 +321,7 @@ data class SpacetimeOverviewQuery(
     val region: String? = null,
     val category: String? = null,
     val kind: String? = null,
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val limit: Int = 20,
 ) {
     init {
@@ -333,7 +335,7 @@ data class SpacetimeOverviewQuery(
 data class SpacetimeHeatmapQuery(
     val x: SpacetimeDimension,
     val y: SpacetimeDimension,
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val fromYear: Int? = null,
     val toYear: Int? = null,
     val limit: Int = 50,
@@ -375,7 +377,7 @@ data class SpacetimeCategoryTimelineQuery(
 }
 
 data class AnalyticsFilters(
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val region: String? = null,
     val category: String? = null,
     val year: Int? = null,
@@ -443,7 +445,7 @@ data class AnalyticsOutliersQuery(
  */
 data class RankingDetailQuery(
     val rankingId: String,
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val region: String? = null,
     val category: String? = null,
     val year: Int? = null,
@@ -457,7 +459,7 @@ data class RankingDetailQuery(
 
 data class RankingContentQuery(
     val metric: RankingMetric,
-    val targetType: String? = "all",
+    val targetType: ContentTargetType? = null,
     val region: String? = null,
     val category: String? = null,
     val year: Int? = null,

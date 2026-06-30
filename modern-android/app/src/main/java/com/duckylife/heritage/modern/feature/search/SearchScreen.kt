@@ -141,7 +141,7 @@ fun SearchRoute(
 // Screen
 // ---------------------------------------------------------------------------
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchScreen(
     uiState: SearchUiState,

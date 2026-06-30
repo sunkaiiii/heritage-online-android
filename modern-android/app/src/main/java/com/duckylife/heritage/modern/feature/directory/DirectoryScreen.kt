@@ -372,7 +372,6 @@ private val DirectoryReferenceDto.isInheritorReference: Boolean
     get() = kind.equals("inheritor", ignoreCase = true) ||
         detailUrl?.contains("/ccr_detail/", ignoreCase = true) == true
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DirectoryListRoute(
     onItemSelected: (DirectoryItemSummaryDto) -> Unit,
@@ -401,7 +400,6 @@ private fun DirectoryListRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DirectoryScreen(
     uiState: DirectoryUiState,

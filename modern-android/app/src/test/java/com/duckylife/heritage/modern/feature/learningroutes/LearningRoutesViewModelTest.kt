@@ -156,7 +156,7 @@ class LearningRoutesViewModelTest {
             relatedRoutes = emptyList(),
         )
         val viewModel = createViewModel()
-        viewModel.setSeed(seedType = "article", seedId = "a1")
+        viewModel.setSeed(seedType = LearningRouteSeedType.Content, seedId = "article:a1")
         advanceUntilIdle()
 
         var navigationEvent: String? = null
@@ -192,7 +192,7 @@ class LearningRoutesViewModelTest {
             relatedRoutes = emptyList(),
         )
         val viewModel = createViewModel()
-        viewModel.setSeed(seedType = "content", seedId = "article:a1")
+        viewModel.setSeed(seedType = LearningRouteSeedType.Content, seedId = "article:a1")
         advanceUntilIdle()
 
         viewModel.buildFromSeed()
@@ -215,7 +215,7 @@ class LearningRoutesViewModelTest {
             relatedRoutes = emptyList(),
         )
         val viewModel = createViewModel()
-        viewModel.setSeed(seedType = "region", seedId = "浙江")
+        viewModel.setSeed(seedType = LearningRouteSeedType.Region, seedId = "浙江")
         advanceUntilIdle()
 
         viewModel.buildFromSeed()
@@ -239,7 +239,7 @@ class LearningRoutesViewModelTest {
         )
         fakeSyncRepository.updateProgressFailure = RuntimeException("db locked")
         val viewModel = createViewModel()
-        viewModel.setSeed(seedType = "article", seedId = "a1")
+        viewModel.setSeed(seedType = LearningRouteSeedType.Content, seedId = "article:a1")
         advanceUntilIdle()
 
         var navigationEvent: String? = null
@@ -270,7 +270,7 @@ class LearningRoutesViewModelTest {
         )
         val savedStateHandle = SavedStateHandle()
         val viewModel = createViewModel(savedStateHandle = savedStateHandle)
-        viewModel.setSeed(seedType = "article", seedId = "a1")
+        viewModel.setSeed(seedType = LearningRouteSeedType.Content, seedId = "article:a1")
         viewModel.selectDifficulty(LearningRouteDifficulty.All)
         advanceUntilIdle()
 

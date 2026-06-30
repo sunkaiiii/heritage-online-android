@@ -48,6 +48,17 @@ import com.duckylife.heritage.modern.ui.component.MetricPill
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.text.localizedDirectoryKind
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.core.network.dto.CollectionItemDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryCountDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionCountDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyStatDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun TaxonomyDetailRoute(
@@ -83,7 +94,6 @@ fun TaxonomyDetailRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaxonomyDetailScreen(
     uiState: TaxonomyDetailUiState,
@@ -673,5 +683,145 @@ private fun TaxonomyDetailErrorContent(
         Button(onClick = onRetry) {
             Text(text = stringResource(R.string.action_retry))
         }
+    }
+}
+
+@Preview(name = "Taxonomy Detail - Category")
+@Composable
+private fun TaxonomyDetailScreenPreview() {
+    HeritageTheme {
+        TaxonomyDetailScreen(
+            uiState = TaxonomyDetailUiState(
+                isLoading = false,
+                categoryDetail = TaxonomyCategoryDetailDto(
+                    topic = TaxonomyTopicDto(
+                        type = "category",
+                        key = "traditional-crafts",
+                        title = "传统技艺",
+                        subtitle = "手工艺与制作技艺",
+                        directoryItemCount = 48,
+                        inheritorCount = 120,
+                        articleCount = 36,
+                        total = 204,
+                    ),
+                    stats = TaxonomyStatDto(
+                        directoryItemCount = 48,
+                        inheritorCount = 120,
+                        articleCount = 36,
+                        total = 204,
+                    ),
+                    topRegions = listOf(
+                        TaxonomyRegionCountDto(region = "浙江", count = 32),
+                        TaxonomyRegionCountDto(region = "江苏", count = 24),
+                    ),
+                    articles = listOf(
+                        ArticleSummaryDto(
+                            id = "a1",
+                            title = "传统技艺的数字化转型",
+                            summary = "探讨如何利用数字技术记录和传播传统技艺。",
+                        ),
+                    ),
+                    directoryItems = listOf(
+                        DirectoryItemSummaryDto(
+                            id = "d1",
+                            kind = DirectoryItemKind.NationalProject,
+                            title = "某某剪纸",
+                            region = "浙江",
+                        ),
+                    ),
+                    inheritors = listOf(
+                        InheritorSummaryDto(
+                            id = "i1",
+                            name = "张某某",
+                            projectName = "某某剪纸",
+                            region = "浙江",
+                        ),
+                    ),
+                    relatedCategories = listOf("民间美术", "传统音乐"),
+                    recommendedCollections = listOf(
+                        CollectionItemDto(
+                            id = "c1",
+                            title = "华东地区传统技艺精选",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onArticleSelected = {},
+            onDirectoryItemSelected = {},
+            onInheritorSelected = {},
+            onRelatedTopicClick = { _, _ -> },
+            onViewStory = {},
+            onCompare = {},
+            onCollectionSelected = {},
+        )
+    }
+}
+
+@Preview(name = "Taxonomy Detail - Region Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun TaxonomyDetailScreenDarkPreview() {
+    HeritageTheme {
+        TaxonomyDetailScreen(
+            uiState = TaxonomyDetailUiState(
+                isLoading = false,
+                regionDetail = TaxonomyRegionDetailDto(
+                    topic = TaxonomyTopicDto(
+                        type = "region",
+                        key = "zhejiang",
+                        title = "浙江",
+                        subtitle = "东南沿海非遗大省",
+                        directoryItemCount = 128,
+                        inheritorCount = 256,
+                        articleCount = 64,
+                        total = 448,
+                    ),
+                    stats = TaxonomyStatDto(
+                        directoryItemCount = 128,
+                        inheritorCount = 256,
+                        articleCount = 64,
+                        total = 448,
+                    ),
+                    topCategories = listOf(
+                        TaxonomyCategoryCountDto(category = "传统技艺", count = 32),
+                        TaxonomyCategoryCountDto(category = "民间美术", count = 28),
+                    ),
+                    articles = emptyList(),
+                    directoryItems = emptyList(),
+                    inheritors = emptyList(),
+                    relatedRegions = listOf("江苏", "福建"),
+                    recommendedCollections = emptyList(),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onArticleSelected = {},
+            onDirectoryItemSelected = {},
+            onInheritorSelected = {},
+            onRelatedTopicClick = { _, _ -> },
+            onViewStory = {},
+            onCompare = {},
+            onCollectionSelected = {},
+        )
+    }
+}
+
+@Preview(name = "Taxonomy Detail - Loading")
+@Composable
+private fun TaxonomyDetailScreenLoadingPreview() {
+    HeritageTheme {
+        TaxonomyDetailScreen(
+            uiState = TaxonomyDetailUiState(isLoading = true),
+            onBack = {},
+            onRetry = {},
+            onArticleSelected = {},
+            onDirectoryItemSelected = {},
+            onInheritorSelected = {},
+            onRelatedTopicClick = { _, _ -> },
+            onViewStory = {},
+            onCompare = {},
+            onCollectionSelected = {},
+        )
     }
 }

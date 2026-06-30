@@ -20,6 +20,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningProgressU
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalFavoriteDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalHistoryDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalLearningProgressDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import com.duckylife.heritage.modern.ui.error.toApiFailure
 import com.duckylife.heritage.modern.ui.error.toUiErrorMessage
 import java.time.Instant
@@ -203,6 +204,9 @@ class DefaultLocalUserSyncRepository @Inject constructor(
         scheduler.scheduleImmediate()
     }
 
+    private fun String.toLocalUserTargetType(): LocalUserTargetType =
+        LocalUserTargetType.entries.firstOrNull { it.wireName == this } ?: LocalUserTargetType.Unknown
+
     override suspend fun recordHistory(
         type: String,
         id: String,
@@ -340,7 +344,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
                 val payload = decodePayload<AddFavoritePayload>(operation.payloadJson)
                 val remote = api.addLocalUserFavorite(
                     FavoriteCreateRequestDto(
-                        targetType = payload.targetType,
+                        targetType = payload.targetType.toLocalUserTargetType(),
                         targetId = payload.targetId,
                         tags = payload.tags,
                         note = payload.note,
@@ -353,7 +357,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
 
             PendingOperationKind.RemoveFavorite -> {
                 val payload = decodePayload<RemoveFavoritePayload>(operation.payloadJson)
-                api.removeLocalUserFavorite(payload.targetType, payload.targetId)
+                api.removeLocalUserFavorite(payload.targetType.toLocalUserTargetType(), payload.targetId)
                 favoriteDao.deleteByTarget(profileId, payload.targetType, payload.targetId)
             }
 
@@ -361,7 +365,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
                 val payload = decodePayload<RecordHistoryPayload>(operation.payloadJson)
                 val remote = api.recordLocalUserHistory(
                     HistoryRecordRequestDto(
-                        targetType = payload.targetType,
+                        targetType = payload.targetType.toLocalUserTargetType(),
                         targetId = payload.targetId,
                         lastPosition = payload.lastPosition,
                     ),
@@ -426,7 +430,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
                 LocalUserFavoritesQuery(page = page, pageSize = SYNC_PAGE_SIZE),
             )
             result.items.forEach {
-                remoteKeys.add(it.targetType to it.targetId)
+                remoteKeys.add(it.targetType.wireName to it.targetId)
                 favoriteDao.upsert(it.toEntity(profileId, ProfileSyncStatus.Synced))
             }
             hasMore = result.hasMore
@@ -452,7 +456,7 @@ class DefaultLocalUserSyncRepository @Inject constructor(
                 LocalUserHistoryQuery(page = page, pageSize = SYNC_PAGE_SIZE),
             )
             result.items.forEach {
-                remoteKeys.add(it.targetType to it.targetId)
+                remoteKeys.add(it.targetType.wireName to it.targetId)
                 historyDao.upsert(it.toEntity(profileId, ProfileSyncStatus.Synced))
             }
             hasMore = result.hasMore
@@ -553,7 +557,7 @@ private fun ProfileLearningProgressEntity.toProfileLearningProgress() = ProfileL
 private fun LocalFavoriteDto.toEntity(profileId: String, status: ProfileSyncStatus) = ProfileFavoriteEntity(
     id = id,
     profileId = profileId,
-    targetType = targetType,
+    targetType = targetType.wireName,
     targetId = targetId,
     titleSnapshot = titleSnapshot,
     coverImageUrlSnapshot = coverImageUrlSnapshot,
@@ -567,7 +571,7 @@ private fun LocalFavoriteDto.toEntity(profileId: String, status: ProfileSyncStat
 private fun LocalHistoryDto.toEntity(profileId: String, status: ProfileSyncStatus) = ProfileHistoryEntity(
     id = id,
     profileId = profileId,
-    targetType = targetType,
+    targetType = targetType.wireName,
     targetId = targetId,
     titleSnapshot = titleSnapshot,
     viewedAt = viewedAt,

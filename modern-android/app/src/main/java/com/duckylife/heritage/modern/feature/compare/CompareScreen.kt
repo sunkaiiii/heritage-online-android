@@ -45,12 +45,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import android.content.res.Configuration
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.network.CompareType
 import com.duckylife.heritage.modern.core.network.dto.CollectionItemDto
 import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
 import com.duckylife.heritage.modern.core.network.dto.CompareSideDto
+import com.duckylife.heritage.modern.core.network.dto.CompareSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.ui.component.DiscoveryItemRow
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.feature.directory.labelRes
@@ -99,7 +103,6 @@ fun CompareRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompareScreen(
     uiState: CompareUiState,
@@ -585,6 +588,118 @@ private fun CompareChipSection(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun CompareScreenPreview() {
+    HeritageTheme {
+        CompareScreen(
+            uiState = CompareUiState(
+                isLoading = false,
+                selectedType = CompareType.Region,
+                leftInput = "北京",
+                rightInput = "上海",
+                result = CompareResultDto(
+                    left = CompareSideDto(
+                        key = "北京",
+                        title = "北京",
+                        directoryItemCount = 120,
+                        inheritorCount = 85,
+                        articleCount = 42,
+                        total = 247,
+                    ),
+                    right = CompareSideDto(
+                        key = "上海",
+                        title = "上海",
+                        directoryItemCount = 98,
+                        inheritorCount = 64,
+                        articleCount = 37,
+                        total = 199,
+                    ),
+                    summary = CompareSummaryDto(
+                        winnerByTotal = "北京",
+                        winnerByDirectoryItems = "北京",
+                        winnerByInheritors = "北京",
+                        winnerByArticles = "北京",
+                    ),
+                    sharedCategories = listOf("传统音乐", "传统舞蹈"),
+                    leftUniqueCategories = listOf("京剧", "景泰蓝"),
+                    rightUniqueCategories = listOf("沪剧", "海派剪纸"),
+                    sharedRegions = listOf("华北地区"),
+                    leftUniqueRegions = listOf("北京"),
+                    rightUniqueRegions = listOf("上海"),
+                    leftFeaturedItems = listOf(
+                        CollectionItemDto(
+                            id = "l1",
+                            type = "directoryItem",
+                            title = "京剧",
+                            summary = "中国国粹，综合性的表演艺术。",
+                            region = "北京",
+                        ),
+                    ),
+                    rightFeaturedItems = listOf(
+                        CollectionItemDto(
+                            id = "r1",
+                            type = "directoryItem",
+                            title = "沪剧",
+                            summary = "上海地方戏曲剧种。",
+                            region = "上海",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onTypeChange = {},
+            onLeftChange = {},
+            onRightChange = {},
+            onCompare = {},
+            onItemClick = {},
+        )
+    }
+}
+
+@Preview(name = "Compare Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun CompareScreenDarkPreview() {
+    HeritageTheme {
+        CompareScreen(
+            uiState = CompareUiState(
+                isLoading = false,
+                selectedType = CompareType.Region,
+                leftInput = "北京",
+                rightInput = "上海",
+                result = CompareResultDto(
+                    left = CompareSideDto(
+                        key = "北京",
+                        title = "北京",
+                        directoryItemCount = 120,
+                        inheritorCount = 85,
+                        articleCount = 42,
+                        total = 247,
+                    ),
+                    right = CompareSideDto(
+                        key = "上海",
+                        title = "上海",
+                        directoryItemCount = 98,
+                        inheritorCount = 64,
+                        articleCount = 37,
+                        total = 199,
+                    ),
+                    summary = CompareSummaryDto(winnerByTotal = "北京"),
+                    sharedCategories = listOf("传统音乐"),
+                    leftUniqueCategories = listOf("京剧"),
+                    rightUniqueCategories = listOf("沪剧"),
+                ),
+            ),
+            onBack = {},
+            onTypeChange = {},
+            onLeftChange = {},
+            onRightChange = {},
+            onCompare = {},
+            onItemClick = {},
+        )
     }
 }
 

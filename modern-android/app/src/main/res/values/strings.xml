@@ -186,6 +186,7 @@
     <string name="research_package_section_artifacts">可用文件</string>
     <string name="research_package_artifact_view">查看</string>
     <string name="research_package_artifact_share">分享</string>
+    <string name="research_package_share_no_app">没有可处理此文件的应用</string>
     <string name="research_package_artifact_download">保存</string>
     <string name="research_package_node_count_format">%1$d 个节点</string>
     <string name="research_package_edge_count_format">%1$d 条关系</string>
@@ -740,6 +741,7 @@
     <string name="ranking_top_2_content_description">第二名</string>
     <string name="ranking_top_3_content_description">第三名</string>
     <string name="ranking_filter_title">排行榜筛选</string>
+    <string name="ranking_view_content">查看内容排行</string>
     <string name="ranking_reasons_title">上榜理由</string>
     <string name="ranking_target_type_all">全部</string>
     <string name="ranking_target_type_article">文章</string>

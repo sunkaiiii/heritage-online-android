@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.core.runCatchingCancellable
 import com.duckylife.heritage.modern.feature.discovery.GraphTrailSource
@@ -73,18 +74,17 @@ class GraphTrailViewModel @AssistedInject constructor(
     private suspend fun loadTrail() = when (source) {
         is GraphTrailSource.Random -> loadRandomTrail()
         is GraphTrailSource.FromContent -> {
-            val contentType = SearchResultType.fromWireName(source.type)
-            if (contentType == null || source.contentId.isBlank()) {
+            if (source.contentId.isBlank()) {
                 throw IllegalArgumentException("Invalid content source")
             }
             repository.getGraphTrailFromContent(
-                contentType = contentType,
+                contentType = source.type,
                 contentId = source.contentId,
                 limit = 6,
             )
         }
         is GraphTrailSource.FromTopic -> {
-            if (source.topicType.isBlank() || source.topicKey.isBlank()) {
+            if (source.topicType == GraphNodeType.Unknown || source.topicKey.isBlank()) {
                 throw IllegalArgumentException("Invalid topic source")
             }
             repository.getGraphTrailFromTopic(
@@ -105,7 +105,7 @@ class GraphTrailViewModel @AssistedInject constructor(
             TrailStrategy.Representative,
             TrailStrategy.Diverse,
         )
-        val types = listOf(null) + SearchResultType.entries
+        val types = listOf(null) + SearchResultType.entries.filter { it != SearchResultType.Unknown }
         var lastResult: GraphTrailResult? = null
         var attempts = 0
         val maxAttempts = 4

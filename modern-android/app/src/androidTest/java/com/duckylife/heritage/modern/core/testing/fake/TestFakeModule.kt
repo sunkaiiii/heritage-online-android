@@ -18,8 +18,10 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ExportRequestDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.ExportTemplateDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.IntelligentSearchResponseDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.ResearchTaskStatus
 import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
+import java.io.File
 import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentSnapshot
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
@@ -236,6 +238,11 @@ private class TestFakeDataExploreRepository : DataExploreRepository {
         rankingId: String,
         filters: RankingFilters,
     ): RankingDetailUiModel = RankingDetailUiModel(rankingId = rankingId, title = "")
+
+    override suspend fun getRankingContent(
+        metric: RankingMetric,
+        filters: RankingFilters,
+    ): RankingDetailUiModel = RankingDetailUiModel(rankingId = "", title = "")
 }
 
 private class TestFakeResearchRepository : ResearchRepository {
@@ -261,6 +268,9 @@ private class TestFakeResearchRepository : ResearchRepository {
         )
 
     override suspend fun getArtifactContent(packageId: String, artifactName: String): String = ""
+    override suspend fun getArtifactBytes(packageId: String, artifactName: String): ByteArray = ByteArray(0)
+    override suspend fun saveArtifactToCache(packageId: String, artifactName: String, bytes: ByteArray): File =
+        File("/dev/null/$packageId-$artifactName")
     override suspend fun getReports(): List<ResearchReportItemUiModel> = emptyList()
     override suspend fun getReportDetail(reportId: String): ResearchReportDetailUiModel =
         ResearchReportDetailUiModel(

@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,6 +52,7 @@ import coil3.ImageLoader
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.image.rememberHeritageImageLoader
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteSummaryUiModel
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageListImage
@@ -59,10 +61,11 @@ import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.text.localizedLearningRouteDifficulty
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun LearningRoutesRoute(
-    seedType: String?,
+    seedType: LearningRouteSeedType?,
     seedId: String?,
     onBack: () -> Unit,
     onRouteClick: (String) -> Unit,
@@ -463,3 +466,98 @@ private fun Modifier.shimmerPlaceholder(): Modifier =
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
         shape = MaterialTheme.shapes.small,
     )
+
+@Preview(name = "Learning routes", showBackground = true)
+@Composable
+private fun LearningRoutesScreenPreview() {
+    HeritageTheme {
+        LearningRoutesScreen(
+            uiState = LearningRoutesUiState(
+                selectedDifficulty = LearningRouteDifficulty.All,
+                routes = LearningRoutesSectionState(
+                    data = listOf(
+                        LearningRouteSummaryUiModel(
+                            routeId = "lr-1",
+                            title = "非遗入门：传统美术巡礼",
+                            subtitle = "适合初学者的传统美术主题路线",
+                            description = "从剪纸、皮影到年画，快速了解传统美术门类。",
+                            difficulty = LearningRouteDifficulty.Beginner,
+                            estimatedMinutes = 45,
+                            stepCount = 6,
+                            tags = listOf("传统美术", "入门"),
+                            coverImageUrl = null,
+                        ),
+                        LearningRouteSummaryUiModel(
+                            routeId = "lr-2",
+                            title = "京剧艺术深度学习",
+                            subtitle = "从唱腔到身段，系统了解京剧艺术",
+                            description = "包含京剧历史、行当、唱腔与代表剧目。",
+                            difficulty = LearningRouteDifficulty.Deep,
+                            estimatedMinutes = 120,
+                            stepCount = 12,
+                            tags = listOf("传统戏剧", "京剧"),
+                            coverImageUrl = null,
+                        ),
+                        LearningRouteSummaryUiModel(
+                            routeId = "lr-3",
+                            title = "江浙手工艺之旅",
+                            subtitle = "探索江浙地区的传统手工艺项目",
+                            description = "涵盖苏绣、宜兴紫砂、龙泉青瓷等。",
+                            difficulty = LearningRouteDifficulty.Intermediate,
+                            estimatedMinutes = 90,
+                            stepCount = 8,
+                            tags = listOf("传统技艺", "江浙"),
+                            coverImageUrl = null,
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onDifficultySelected = {},
+            onRouteClick = {},
+            onBuildFromSeed = {},
+        )
+    }
+}
+
+@Preview(name = "Learning routes dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun LearningRoutesScreenDarkPreview() {
+    LearningRoutesScreenPreview()
+}
+
+@Preview(name = "Learning routes empty", showBackground = true)
+@Composable
+private fun LearningRoutesScreenEmptyPreview() {
+    HeritageTheme {
+        LearningRoutesScreen(
+            uiState = LearningRoutesUiState(
+                selectedDifficulty = LearningRouteDifficulty.Deep,
+                routes = LearningRoutesSectionState(data = emptyList()),
+            ),
+            onBack = {},
+            onRetry = {},
+            onDifficultySelected = {},
+            onRouteClick = {},
+            onBuildFromSeed = {},
+        )
+    }
+}
+
+@Preview(name = "Learning routes loading", showBackground = true)
+@Composable
+private fun LearningRoutesScreenLoadingPreview() {
+    HeritageTheme {
+        LearningRoutesScreen(
+            uiState = LearningRoutesUiState(
+                routes = LearningRoutesSectionState(isLoading = true),
+            ),
+            onBack = {},
+            onRetry = {},
+            onDifficultySelected = {},
+            onRouteClick = {},
+            onBuildFromSeed = {},
+        )
+    }
+}

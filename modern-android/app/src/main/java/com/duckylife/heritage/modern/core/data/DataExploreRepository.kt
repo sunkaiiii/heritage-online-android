@@ -101,6 +101,7 @@ interface DataExploreRepository {
 
     suspend fun getRankings(): List<RankingDefinitionUiModel>
     suspend fun getRankingDetail(rankingId: String, filters: RankingFilters): RankingDetailUiModel
+    suspend fun getRankingContent(metric: RankingMetric, filters: RankingFilters): RankingDetailUiModel
 }
 
 class DefaultDataExploreRepository @Inject constructor(
@@ -211,6 +212,18 @@ class DefaultDataExploreRepository @Inject constructor(
                 limit = filters.limit,
             ),
         ).toUiModel()
+
+    override suspend fun getRankingContent(metric: RankingMetric, filters: RankingFilters): RankingDetailUiModel =
+        api.getRankingContent(
+            RankingContentQuery(
+                metric = metric,
+                targetType = filters.targetType,
+                region = filters.region,
+                category = filters.category,
+                year = filters.year,
+                limit = filters.limit,
+            ),
+        ).toUiModel()
 }
 
 // ---------------------------------------------------------------------------
@@ -278,7 +291,7 @@ private val NamedCountDto.displayKey: String
         ?: regionKey?.takeIf { it.isNotBlank() }
         ?: categoryKey?.takeIf { it.isNotBlank() }
         ?: kindKey?.takeIf { it.isNotBlank() }
-        ?: targetType?.takeIf { it.isNotBlank() }
+        ?: targetType?.wireName?.takeIf { it.isNotBlank() }
         ?: ""
 
 private val NamedCountDto.displayLabel: String?

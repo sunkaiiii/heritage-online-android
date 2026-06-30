@@ -2,8 +2,11 @@ package com.duckylife.heritage.modern.ui.error
 
 import com.duckylife.heritage.modern.core.network.HeritageJson
 import com.duckylife.heritage.modern.core.network.dto.ProblemDetailsDto
+import com.duckylife.heritage.modern.core.runCatchingCancellable
 import io.ktor.client.plugins.ResponseException
 import io.ktor.client.statement.bodyAsText
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -77,7 +80,9 @@ suspend fun Throwable.toApiFailure(): ApiFailure = when (this) {
 }
 
 private suspend fun ResponseException.toApiFailureHttp(): ApiFailure.Http {
-    val bodyText = runCatching { response.bodyAsText() }.getOrNull().orEmpty()
+    currentCoroutineContext().ensureActive()
+    val bodyText = runCatchingCancellable { response.bodyAsText() }.getOrNull().orEmpty()
+    currentCoroutineContext().ensureActive()
     val problem = runCatching {
         bodyText.takeIf { it.isNotBlank() }
             ?.let { HeritageJson.decodeFromString<ProblemDetailsDto>(it) }

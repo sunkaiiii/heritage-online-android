@@ -38,6 +38,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
+import com.duckylife.heritage.modern.core.network.dto.FacetBucketDto
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.TimelineItemDto
 import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
@@ -80,7 +84,6 @@ fun TimelineRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimelineScreen(
     uiState: TimelineUiState,
@@ -379,6 +382,85 @@ private fun TimelineEmptyContent(
             text = message,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TimelineScreenPreview() {
+    HeritageTheme {
+        TimelineScreen(
+            uiState = TimelineUiState(
+                isLoading = false,
+                years = listOf(
+                    TimelineYearBucketDto(year = 2024, total = 12),
+                    TimelineYearBucketDto(year = 2023, total = 28),
+                    TimelineYearBucketDto(year = 2022, total = 35),
+                ),
+                selectedYear = 2024,
+                items = listOf(
+                    TimelineItemDto(
+                        id = "t1",
+                        type = "article",
+                        title = "非遗保护新动态",
+                        summary = "2024 年非遗保护工作的最新进展。",
+                        category = "news",
+                        year = 2024,
+                    ),
+                    TimelineItemDto(
+                        id = "t2",
+                        type = "directoryItem",
+                        title = "新增国家级非遗项目",
+                        summary = "第五批国家级代表性项目名录公布。",
+                        kind = "nationalProject",
+                        year = 2024,
+                    ),
+                ),
+                facets = listOf(
+                    FacetBucketDto("article", 8),
+                    FacetBucketDto("directoryItem", 4),
+                ),
+                selectedTypes = setOf(SearchResultType.Article),
+                hasMore = true,
+            ),
+            onBack = {},
+            onRetry = {},
+            onYearSelected = {},
+            onToggleType = {},
+            onLoadMore = {},
+            onItemClick = {},
+            onClearError = {},
+        )
+    }
+}
+
+@Preview(name = "Timeline Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun TimelineScreenDarkPreview() {
+    HeritageTheme {
+        TimelineScreen(
+            uiState = TimelineUiState(
+                isLoading = false,
+                years = listOf(TimelineYearBucketDto(year = 2024, total = 12)),
+                selectedYear = 2024,
+                items = listOf(
+                    TimelineItemDto(
+                        id = "t1",
+                        type = "article",
+                        title = "非遗保护新动态",
+                        year = 2024,
+                    ),
+                ),
+                facets = listOf(FacetBucketDto("article", 8)),
+            ),
+            onBack = {},
+            onRetry = {},
+            onYearSelected = {},
+            onToggleType = {},
+            onLoadMore = {},
+            onItemClick = {},
+            onClearError = {},
         )
     }
 }

@@ -59,7 +59,6 @@ import com.duckylife.heritage.modern.ui.text.localizedContentType
 import com.duckylife.heritage.modern.ui.text.localizedTrailStrategy
 import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GraphTrailRoute(
     source: GraphTrailSource,

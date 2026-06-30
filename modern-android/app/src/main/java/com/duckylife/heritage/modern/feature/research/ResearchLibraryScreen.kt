@@ -52,6 +52,9 @@ import com.duckylife.heritage.modern.ui.component.HeritageErrorState
 import com.duckylife.heritage.modern.ui.component.HeritageMetaChip
 import com.duckylife.heritage.modern.ui.component.HeritagePageBackground
 import com.duckylife.heritage.modern.ui.state.AsyncState
+import android.content.res.Configuration
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 @Composable
 fun ResearchLibraryRoute(
@@ -407,6 +410,114 @@ private fun LoadingPlaceholder(modifier: Modifier = Modifier) {
             text = stringResource(R.string.content_loading),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Preview(name = "Research Library - Packages")
+@Composable
+private fun ResearchLibraryScreenPreview() {
+    HeritageTheme {
+        ResearchLibraryScreen(
+            uiState = ResearchLibraryUiState(
+                selectedTab = ResearchLibraryTab.Packages,
+                packages = AsyncState(
+                    data = listOf(
+                        ResearchPackageItemUiModel(
+                            packageId = "pkg-1",
+                            title = "传统技艺传承调研包",
+                            subtitle = "基于图谱 RAG 的专题研究",
+                            createdAt = "2026-06-20T10:00:00Z",
+                            status = ResearchTaskStatus.Succeeded,
+                            isClickable = true,
+                            artifactCount = 12,
+                            includesContent = true,
+                            includesEvidence = true,
+                            includesAiResults = false,
+                            includesAiInferred = false,
+                        ),
+                        ResearchPackageItemUiModel(
+                            packageId = "pkg-2",
+                            title = "京剧艺术数字化研究",
+                            subtitle = null,
+                            createdAt = "2026-06-22T08:30:00Z",
+                            status = ResearchTaskStatus.Running,
+                            isClickable = false,
+                            artifactCount = 0,
+                            includesContent = true,
+                            includesEvidence = false,
+                            includesAiResults = true,
+                            includesAiInferred = true,
+                        ),
+                    ),
+                ),
+                reports = AsyncState(
+                    data = listOf(
+                        ResearchReportItemUiModel(
+                            reportId = "rep-1",
+                            packageId = "pkg-1",
+                            title = "传统技艺传承调研报告",
+                            status = ResearchTaskStatus.Succeeded,
+                            createdAt = "2026-06-21T09:00:00Z",
+                            modelName = "gpt-4o",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onTabSelected = {},
+            onPackageClick = {},
+            onReportClick = {},
+        )
+    }
+}
+
+@Preview(name = "Research Library - Reports Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun ResearchLibraryScreenDarkPreview() {
+    HeritageTheme {
+        ResearchLibraryScreen(
+            uiState = ResearchLibraryUiState(
+                selectedTab = ResearchLibraryTab.Reports,
+                packages = AsyncState(),
+                reports = AsyncState(
+                    data = listOf(
+                        ResearchReportItemUiModel(
+                            reportId = "rep-2",
+                            packageId = "pkg-2",
+                            title = "京剧艺术数字化研究报告",
+                            status = ResearchTaskStatus.Succeeded,
+                            createdAt = "2026-06-23T07:00:00Z",
+                            modelName = "claude-sonnet-4",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onTabSelected = {},
+            onPackageClick = {},
+            onReportClick = {},
+        )
+    }
+}
+
+@Preview(name = "Research Library - Loading")
+@Composable
+private fun ResearchLibraryScreenLoadingPreview() {
+    HeritageTheme {
+        ResearchLibraryScreen(
+            uiState = ResearchLibraryUiState(
+                selectedTab = ResearchLibraryTab.Packages,
+                packages = AsyncState(isLoading = true),
+                reports = AsyncState(isLoading = true),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onTabSelected = {},
+            onPackageClick = {},
+            onReportClick = {},
         )
     }
 }

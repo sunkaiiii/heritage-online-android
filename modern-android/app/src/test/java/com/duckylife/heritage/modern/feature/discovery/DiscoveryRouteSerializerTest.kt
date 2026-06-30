@@ -2,6 +2,9 @@ package com.duckylife.heritage.modern.feature.discovery
 
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -104,22 +107,22 @@ class DiscoveryRouteSerializerTest {
             DiscoveryRouteKey.RegionDetailPage(region = "浙江"),
             DiscoveryRouteKey.TimelinePage,
             DiscoveryRouteKey.KnowledgeGraphHubPage,
-            DiscoveryRouteKey.TopicGraphMapPage(topicType = "category", topicKey = "传统技艺"),
+            DiscoveryRouteKey.TopicGraphMapPage(topicType = GraphNodeType.Category, topicKey = "传统技艺"),
             DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.Random),
-            DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.FromContent(type = "article", contentId = "a1")),
-            DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.FromTopic(topicType = "region", topicKey = "浙江")),
+            DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.FromContent(type = SearchResultType.Article, contentId = "a1")),
+            DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.FromTopic(topicType = GraphNodeType.Region, topicKey = "浙江")),
             DiscoveryRouteKey.TaxonomyPage,
             DiscoveryRouteKey.TaxonomyDetailPage(type = "category", key = "传统技艺"),
             DiscoveryRouteKey.ComparePage(type = "kind", left = "nationalProject", right = "unescoEntry"),
             DiscoveryRouteKey.StoriesIndexPage,
             DiscoveryRouteKey.StoryPage(region = "云南", year = 2024),
-            DiscoveryRouteKey.DeepDivePage(seedType = "article", seedId = "seed1"),
+            DiscoveryRouteKey.DeepDivePage(seedType = SearchResultType.Article, seedId = "seed1"),
             DiscoveryRouteKey.GraphExplorePage(
-                type = "article",
+                type = SearchResultType.Article,
                 contentId = "a1",
                 initialTab = GraphTab.Similar,
             ),
-            DiscoveryRouteKey.LearningRoutesPage(seedType = "article", seedId = "a1"),
+            DiscoveryRouteKey.LearningRoutesPage(seedType = LearningRouteSeedType.Content, seedId = "article:a1"),
             DiscoveryRouteKey.LearningRouteDetailPage(routeId = "route-1"),
             DiscoveryRouteKey.SpacetimePage,
             DiscoveryRouteKey.RankingsPage,

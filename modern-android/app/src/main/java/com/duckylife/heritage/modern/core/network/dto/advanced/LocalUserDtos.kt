@@ -28,7 +28,7 @@ data class LocalUserSummaryDto(
 @Serializable
 data class LocalFavoriteDto(
     val id: String,
-    val targetType: String,
+    val targetType: LocalUserTargetType,
     val targetId: String,
     val titleSnapshot: String? = null,
     val coverImageUrlSnapshot: String? = null,
@@ -40,7 +40,7 @@ data class LocalFavoriteDto(
 
 @Serializable
 data class FavoriteCreateRequestDto(
-    val targetType: String,
+    val targetType: LocalUserTargetType,
     val targetId: String,
     val tags: List<String> = emptyList(),
     val note: String? = null,
@@ -49,7 +49,7 @@ data class FavoriteCreateRequestDto(
 @Serializable
 data class LocalHistoryDto(
     val id: String,
-    val targetType: String,
+    val targetType: LocalUserTargetType,
     val targetId: String,
     val titleSnapshot: String? = null,
     val viewedAt: String? = null,
@@ -61,7 +61,7 @@ typealias LocalViewHistoryDto = LocalHistoryDto
 
 @Serializable
 data class HistoryRecordRequestDto(
-    val targetType: String,
+    val targetType: LocalUserTargetType,
     val targetId: String,
     val lastPosition: String? = null,
 )

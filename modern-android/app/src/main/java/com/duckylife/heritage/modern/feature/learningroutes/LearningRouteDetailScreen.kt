@@ -55,10 +55,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDifficulty
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteDetailUiModel
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteSectionUiModel
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteStepUiModel
@@ -70,6 +72,7 @@ import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
 import com.duckylife.heritage.modern.feature.detail.toDetailContextTarget
 import com.duckylife.heritage.modern.ui.text.localizedLearningRouteDifficulty
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 
 /**
  * 学习路线详情页入口。
@@ -707,5 +710,158 @@ private fun formatDetailMessage(message: LearningRouteDetailMessage): String {
         stringResource(message.resId)
     } else {
         stringResource(message.resId, *message.args.toTypedArray())
+    }
+}
+
+@Preview(name = "Learning route detail", showBackground = true)
+@Composable
+private fun LearningRouteDetailScreenPreview() {
+    val sectionId = "section-1"
+    val step1 = LearningRouteStepUiModel(
+        stepId = "step-1",
+        order = 1,
+        title = "了解京剧的历史起源",
+        description = "京剧形成于北京，距今已有二百多年历史。",
+        targetType = "article",
+        targetId = "art-1",
+        reason = "历史背景是学习京剧艺术的基础。",
+        estimatedMinutes = 15,
+        required = true,
+    )
+    val step2 = LearningRouteStepUiModel(
+        stepId = "step-2",
+        order = 2,
+        title = "认识京剧四大行当",
+        description = "生、旦、净、丑四大行当各具特色。",
+        targetType = "article",
+        targetId = "art-2",
+        reason = "行当是理解京剧表演的关键。",
+        estimatedMinutes = 20,
+        required = true,
+    )
+    val step3 = LearningRouteStepUiModel(
+        stepId = "step-3",
+        order = 3,
+        title = "欣赏京剧代表剧目",
+        description = "观看《霸王别姬》《贵妃醉酒》等经典片段。",
+        targetType = "directoryItem",
+        targetId = "dir-1",
+        reason = "通过剧目加深对京剧艺术的体会。",
+        estimatedMinutes = 30,
+        required = false,
+    )
+    HeritageTheme {
+        LearningRouteDetailScreen(
+            uiState = LearningRouteDetailUiState(
+                route = LearningRouteDetailUiModel(
+                    routeId = "lr-preview",
+                    title = "京剧艺术深度学习路线",
+                    description = "从京剧历史、行当到代表剧目，系统了解这门传统戏剧艺术。",
+                    difficulty = LearningRouteDifficulty.Intermediate,
+                    estimatedMinutes = 120,
+                    sections = listOf(
+                        LearningRouteSectionUiModel(
+                            sectionId = sectionId,
+                            title = "京剧基础",
+                            description = "历史与行当入门",
+                            stepIds = listOf(step1.stepId, step2.stepId),
+                        ),
+                        LearningRouteSectionUiModel(
+                            sectionId = "section-2",
+                            title = "剧目欣赏",
+                            description = "经典剧目与表演赏析",
+                            stepIds = listOf(step3.stepId),
+                        ),
+                    ),
+                    steps = listOf(step1, step2, step3),
+                    relatedRoutes = emptyList(),
+                ),
+                completedStepIds = setOf(step1.stepId),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onStepChecked = { _, _ -> },
+            onStepContentClick = {},
+            onLoadNextStep = {},
+            onShowRestartConfirmation = {},
+            onDismissRestartConfirmation = {},
+            onConfirmRestart = {},
+        )
+    }
+}
+
+@Preview(name = "Learning route detail dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun LearningRouteDetailScreenDarkPreview() {
+    LearningRouteDetailScreenPreview()
+}
+
+@Preview(name = "Learning route detail completed", showBackground = true)
+@Composable
+private fun LearningRouteDetailScreenCompletedPreview() {
+    val step1 = LearningRouteStepUiModel(
+        stepId = "step-1",
+        order = 1,
+        title = "了解京剧的历史起源",
+        description = "京剧形成于北京，距今已有二百多年历史。",
+        targetType = "article",
+        targetId = "art-1",
+        reason = "历史背景是学习京剧艺术的基础。",
+        estimatedMinutes = 15,
+        required = true,
+    )
+    val step2 = LearningRouteStepUiModel(
+        stepId = "step-2",
+        order = 2,
+        title = "认识京剧四大行当",
+        description = "生、旦、净、丑四大行当各具特色。",
+        targetType = "article",
+        targetId = "art-2",
+        reason = "行当是理解京剧表演的关键。",
+        estimatedMinutes = 20,
+        required = true,
+    )
+    HeritageTheme {
+        LearningRouteDetailScreen(
+            uiState = LearningRouteDetailUiState(
+                route = LearningRouteDetailUiModel(
+                    routeId = "lr-preview",
+                    title = "京剧艺术深度学习路线",
+                    description = "从京剧历史、行当到代表剧目，系统了解这门传统戏剧艺术。",
+                    difficulty = LearningRouteDifficulty.Intermediate,
+                    estimatedMinutes = 120,
+                    sections = emptyList(),
+                    steps = listOf(step1, step2),
+                    relatedRoutes = emptyList(),
+                ),
+                completedStepIds = setOf(step1.stepId, step2.stepId),
+            ),
+            onBack = {},
+            onRefresh = {},
+            onStepChecked = { _, _ -> },
+            onStepContentClick = {},
+            onLoadNextStep = {},
+            onShowRestartConfirmation = {},
+            onDismissRestartConfirmation = {},
+            onConfirmRestart = {},
+        )
+    }
+}
+
+@Preview(name = "Learning route detail loading", showBackground = true)
+@Composable
+private fun LearningRouteDetailScreenLoadingPreview() {
+    HeritageTheme {
+        LearningRouteDetailScreen(
+            uiState = LearningRouteDetailUiState(isLoading = true),
+            onBack = {},
+            onRefresh = {},
+            onStepChecked = { _, _ -> },
+            onStepContentClick = {},
+            onLoadNextStep = {},
+            onShowRestartConfirmation = {},
+            onDismissRestartConfirmation = {},
+            onConfirmRestart = {},
+        )
     }
 }

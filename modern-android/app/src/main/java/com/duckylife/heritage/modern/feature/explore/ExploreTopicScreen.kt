@@ -41,6 +41,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicItemDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicSectionDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicStatDto
@@ -91,7 +93,6 @@ fun ExploreTopicRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExploreTopicScreen(
     uiState: ExploreTopicUiState,
@@ -384,6 +385,73 @@ private fun RelatedTopicsRow(
                 label = { Text(topic.title.orEmpty()) },
             )
         }
+    }
+}
+
+@Preview
+@Composable
+private fun ExploreTopicScreenPreview() {
+    HeritageTheme {
+        ExploreTopicScreen(
+            uiState = ExploreTopicUiState(
+                isLoading = false,
+                topic = ExploreTopicV2Dto(
+                    topic = com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto(
+                        type = "category",
+                        key = "traditionalCraft",
+                        title = "传统技艺",
+                        subtitle = "匠心传承",
+                    ),
+                    stats = listOf(
+                        ExploreTopicStatDto(name = "名录", value = 128),
+                        ExploreTopicStatDto(name = "文章", value = 56),
+                        ExploreTopicStatDto(name = "传承人", value = 312),
+                    ),
+                    sections = listOf(
+                        ExploreTopicSectionDto(
+                            title = "精选名录",
+                            items = listOf(
+                                ExploreTopicItemDto(
+                                    id = "1",
+                                    type = "directoryItem",
+                                    title = "景泰蓝制作技艺",
+                                    summary = "北京传统手工艺",
+                                    category = "traditionalCraft",
+                                    region = "北京",
+                                ),
+                                ExploreTopicItemDto(
+                                    id = "2",
+                                    type = "directoryItem",
+                                    title = "苏绣",
+                                    summary = "苏州刺绣技艺",
+                                    category = "traditionalCraft",
+                                    region = "江苏",
+                                ),
+                            ),
+                        ),
+                    ),
+                    timeline = listOf(
+                        ExploreTopicItemDto(
+                            id = "3",
+                            type = "article",
+                            title = "传统技艺保护元年",
+                            year = 2006,
+                        ),
+                    ),
+                    relatedTopics = listOf(
+                        ExploreTopicLinkDto(
+                            type = "category",
+                            key = "folkArt",
+                            title = "民间美术",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onItemClick = {},
+            onRelatedTopicClick = {},
+        )
     }
 }
 

@@ -14,6 +14,7 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LocalHistoryDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalLearningProgressDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -61,7 +62,7 @@ class FakeLocalUserApi : LocalUserApi {
         )
     }
 
-    override suspend fun removeLocalUserFavorite(targetType: String, targetId: String) = Unit
+    override suspend fun removeLocalUserFavorite(targetType: LocalUserTargetType, targetId: String) = Unit
 
     override suspend fun getLocalUserHistory(
         query: LocalUserHistoryQuery,

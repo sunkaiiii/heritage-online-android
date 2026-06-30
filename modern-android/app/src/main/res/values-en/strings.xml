@@ -168,6 +168,7 @@
     <string name="research_package_section_artifacts">Available Files</string>
     <string name="research_package_artifact_view">View</string>
     <string name="research_package_artifact_share">Share</string>
+    <string name="research_package_share_no_app">No app can handle this file</string>
     <string name="research_package_artifact_download">Save</string>
     <string name="research_package_node_count_format">%1$d nodes</string>
     <string name="research_package_edge_count_format">%1$d relations</string>
@@ -672,6 +673,7 @@
     <string name="ranking_top_2_content_description">Second place</string>
     <string name="ranking_top_3_content_description">Third place</string>
     <string name="ranking_filter_title">Ranking filters</string>
+    <string name="ranking_view_content">View content ranking</string>
     <string name="ranking_reasons_title">Why it ranks</string>
     <string name="ranking_target_type_all">All</string>
     <string name="ranking_target_type_article">Article</string>

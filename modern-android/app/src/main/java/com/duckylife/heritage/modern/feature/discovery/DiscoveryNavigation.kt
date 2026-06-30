@@ -16,6 +16,9 @@ import androidx.navigation3.ui.NavDisplay
 import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
 import com.duckylife.heritage.modern.feature.collections.CollectionRoute
 import com.duckylife.heritage.modern.feature.compare.CompareRoute
@@ -225,7 +228,12 @@ fun DiscoveryNavHost(
                         onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onDeepDiveClick = { item ->
                             if (!item.id.isNullOrBlank()) {
-                                backStack.add(DiscoveryRouteKey.DeepDivePage(seedType = item.type, seedId = item.id))
+                                backStack.add(
+                                    DiscoveryRouteKey.DeepDivePage(
+                                        seedType = SearchResultType.fromWireName(item.type) ?: SearchResultType.Article,
+                                        seedId = item.id,
+                                    ),
+                                )
                             }
                         },
                         onTaxonomyClick = {
@@ -418,7 +426,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "article",
+                                        type = SearchResultType.Article,
                                         contentId = it,
                                         initialTab = GraphTab.Neighbors,
                                     ),
@@ -429,7 +437,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "article",
+                                        type = SearchResultType.Article,
                                         contentId = it,
                                         initialTab = GraphTab.Similar,
                                     ),
@@ -440,8 +448,8 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.LearningRoutesPage(
-                                        seedType = "article",
-                                        seedId = it,
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "article:$it",
                                     ),
                                 )
                             }
@@ -483,7 +491,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "directoryItem",
+                                        type = SearchResultType.DirectoryItem,
                                         contentId = it,
                                         initialTab = GraphTab.Neighbors,
                                     ),
@@ -494,7 +502,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "directoryItem",
+                                        type = SearchResultType.DirectoryItem,
                                         contentId = it,
                                         initialTab = GraphTab.Similar,
                                     ),
@@ -505,8 +513,8 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.LearningRoutesPage(
-                                        seedType = "directoryItem",
-                                        seedId = it,
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "directoryItem:$it",
                                     ),
                                 )
                             }
@@ -546,7 +554,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "inheritor",
+                                        type = SearchResultType.Inheritor,
                                         contentId = it,
                                         initialTab = GraphTab.Neighbors,
                                     ),
@@ -557,7 +565,7 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.GraphExplorePage(
-                                        type = "inheritor",
+                                        type = SearchResultType.Inheritor,
                                         contentId = it,
                                         initialTab = GraphTab.Similar,
                                     ),
@@ -568,8 +576,8 @@ fun DiscoveryNavHost(
                             contentId?.let {
                                 backStack.add(
                                     DiscoveryRouteKey.LearningRoutesPage(
-                                        seedType = "inheritor",
-                                        seedId = it,
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "inheritor:$it",
                                     ),
                                 )
                             }
@@ -699,7 +707,8 @@ fun DiscoveryNavHost(
                         onTopicClick = { topicType, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
-                                    topicType = topicType,
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == topicType }
+                                        ?: GraphNodeType.Unknown,
                                     topicKey = topicKey,
                                 ),
                             )
@@ -715,7 +724,8 @@ fun DiscoveryNavHost(
                         onTopicClick = { topicType, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
-                                    topicType = topicType,
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == topicType }
+                                        ?: GraphNodeType.Unknown,
                                     topicKey = topicKey,
                                 ),
                             )
@@ -726,7 +736,10 @@ fun DiscoveryNavHost(
                         onRecentTrailClick = { type, id ->
                             backStack.add(
                                 DiscoveryRouteKey.GraphTrailPage(
-                                    GraphTrailSource.FromContent(type, id),
+                                    GraphTrailSource.FromContent(
+                                        SearchResultType.fromWireName(type) ?: SearchResultType.Article,
+                                        id,
+                                    ),
                                 ),
                             )
                         },
@@ -744,7 +757,8 @@ fun DiscoveryNavHost(
                         onTopicClick = { type, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
-                                    topicType = type,
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == type }
+                                        ?: GraphNodeType.Unknown,
                                     topicKey = topicKey,
                                 ),
                             )
@@ -762,7 +776,8 @@ fun DiscoveryNavHost(
                         onTopicClick = { type, topicKey ->
                             backStack.add(
                                 DiscoveryRouteKey.TopicGraphMapPage(
-                                    topicType = type,
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == type }
+                                        ?: GraphNodeType.Unknown,
                                     topicKey = topicKey,
                                 ),
                             )
@@ -843,7 +858,12 @@ fun DiscoveryNavHost(
                         onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
                         onDeepDiveClick = { item ->
                             if (!item.id.isNullOrBlank()) {
-                                backStack.add(DiscoveryRouteKey.DeepDivePage(seedType = item.type, seedId = item.id))
+                                backStack.add(
+                                    DiscoveryRouteKey.DeepDivePage(
+                                        seedType = SearchResultType.fromWireName(item.type) ?: SearchResultType.Article,
+                                        seedId = item.id,
+                                    ),
+                                )
                             }
                         },
                         onTaxonomyClick = {

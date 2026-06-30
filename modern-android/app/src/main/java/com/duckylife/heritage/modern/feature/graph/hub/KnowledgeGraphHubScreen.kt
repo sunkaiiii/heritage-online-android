@@ -46,6 +46,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
 import com.duckylife.heritage.modern.core.data.RecentContentRef
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
 import com.duckylife.heritage.modern.ui.component.HeritageContentCard
 import com.duckylife.heritage.modern.ui.component.HeritageSectionHeader
 import com.duckylife.heritage.modern.ui.error.ErrorKind
@@ -175,7 +176,7 @@ private fun KnowledgeGraphHubContent(
                         community = community,
                         onClick = {
                             community.primaryTopicKey?.takeIf { it.isNotBlank() }?.let { topicKey ->
-                                onTopicClick(community.topicType, topicKey)
+                                onTopicClick(community.topicType.wireName, topicKey)
                             }
                         },
                     )
@@ -224,7 +225,7 @@ private fun CommunityCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val enabled = !community.primaryTopicKey.isNullOrBlank() && community.topicType.isNotBlank()
+    val enabled = !community.primaryTopicKey.isNullOrBlank() && community.topicType != GraphNodeType.Unknown
     val displayTitle = localizedHeritageFacetLabel(community.title) ?: community.title
     HeritageContentCard(
         onClick = onClick.takeIf { enabled },

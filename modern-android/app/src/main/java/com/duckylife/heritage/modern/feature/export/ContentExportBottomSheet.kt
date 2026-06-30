@@ -74,8 +74,8 @@ fun ContentExportBottomSheet(
         viewModel.initialize(contentId, targetType)
     }
 
-    LaunchedEffect(uiState.shareContent) {
-        uiState.shareContent?.let { content ->
+    LaunchedEffect(Unit) {
+        viewModel.shareEvent.collect { content ->
             val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
                 type = "text/plain"
                 putExtra(android.content.Intent.EXTRA_TEXT, content)
@@ -93,7 +93,6 @@ fun ContentExportBottomSheet(
                     Toast.LENGTH_SHORT,
                 ).show()
             }
-            viewModel.onShareConsumed()
         }
     }
 
@@ -254,7 +253,6 @@ internal fun ContentExportSheetContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FormatSelector(
     formats: List<ExportFormat>,

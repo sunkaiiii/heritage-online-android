@@ -46,7 +46,7 @@ private const val KEYWORD_MAX_COUNT = 6
  * 只处理 V3 content page 的 AI 板块；digest、graph、recommendations 仍由现有
  * [com.duckylife.heritage.modern.ui.component.DetailExploreSection] 消费，避免步骤 23 之前重复请求。
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailIntelligenceSection(
     uiState: ContentIntelligenceUiState,
@@ -118,7 +118,6 @@ private fun SkeletonBox(width: androidx.compose.ui.unit.Dp, height: androidx.com
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AiCard(
     card: AiCardDto,

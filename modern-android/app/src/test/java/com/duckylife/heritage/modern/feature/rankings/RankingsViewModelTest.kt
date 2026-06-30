@@ -160,9 +160,12 @@ class RankingsViewModelTest {
     private class FakeDataExploreRepository : DataExploreRepository {
         var rankings: List<RankingDefinitionUiModel> = emptyList()
         var rankingDetail: RankingDetailUiModel = RankingDetailUiModel(rankingId = "", title = "")
+        var rankingContent: RankingDetailUiModel = RankingDetailUiModel(rankingId = "", title = "")
         var rankingsFailure: Throwable? = null
         var rankingDetailFailure: Throwable? = null
+        var rankingContentFailure: Throwable? = null
         var lastRankingFilters: RankingFilters? = null
+        var lastRankingContentRequest: Pair<RankingMetric, RankingFilters>? = null
 
         override suspend fun getSpacetimeOverview(filters: SpacetimeFilters): SpacetimeOverviewUiModel =
             throw NotImplementedError()
@@ -218,6 +221,15 @@ class RankingsViewModelTest {
             lastRankingFilters = filters
             rankingDetailFailure?.let { throw it }
             return rankingDetail
+        }
+
+        override suspend fun getRankingContent(
+            metric: RankingMetric,
+            filters: RankingFilters,
+        ): RankingDetailUiModel {
+            lastRankingContentRequest = metric to filters
+            rankingContentFailure?.let { throw it }
+            return rankingContent
         }
     }
 }

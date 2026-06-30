@@ -10,10 +10,9 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.ContentRefDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNeighborsDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatus
 import com.duckylife.heritage.modern.core.runCatchingCancellable
+import com.duckylife.heritage.modern.core.network.isBadRequest
 import com.duckylife.heritage.modern.ui.error.ErrorKind
 import com.duckylife.heritage.modern.ui.error.toUiError
-import io.ktor.client.plugins.ResponseException
-import io.ktor.http.HttpStatusCode
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -123,9 +122,7 @@ internal class DefaultContentIntelligenceViewModelDelegate(
     }
 
     private fun handleFailure(throwable: Throwable) {
-        val isBadRequest = throwable is ResponseException &&
-            throwable.response.status == HttpStatusCode.BadRequest
-        if (isBadRequest) {
+        if (throwable.isBadRequest()) {
             // 400 通常是来源路由尚未解析为 ObjectId 或缺少 profileId；按需求跳过增强层。
             _uiState.update {
                 it.copy(

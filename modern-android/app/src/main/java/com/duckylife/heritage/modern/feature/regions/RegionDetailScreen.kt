@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.duckylife.heritage.modern.R
+import androidx.compose.ui.tooling.preview.Preview
+import com.duckylife.heritage.modern.ui.theme.HeritageTheme
 import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
 import com.duckylife.heritage.modern.core.network.dto.ExploreTopicItemDto
@@ -82,7 +84,6 @@ fun RegionDetailRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegionDetailScreen(
     uiState: RegionDetailUiState,
@@ -487,6 +488,71 @@ private fun ArticleRow(
                 )
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun RegionDetailScreenPreview() {
+    HeritageTheme {
+        RegionDetailScreen(
+            uiState = RegionDetailUiState(
+                isLoading = false,
+                detail = RegionAtlasDetailDto(
+                    region = "北京",
+                    displayName = "北京",
+                    stats = com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailStatsDto(
+                        directoryItemCount = 120,
+                        inheritorCount = 85,
+                        total = 247,
+                    ),
+                    categoryBreakdown = listOf(
+                        FacetBucketDto("traditionalOpera", 24),
+                        FacetBucketDto("traditionalCraft", 18),
+                        FacetBucketDto("folkArt", 15),
+                    ),
+                    kindBreakdown = listOf(
+                        FacetBucketDto("nationalProject", 112),
+                        FacetBucketDto("unescoEntry", 8),
+                    ),
+                    featuredDirectoryItems = listOf(
+                        DirectoryItemSummaryDto(
+                            id = "d1",
+                            title = "京剧",
+                            region = "北京",
+                        ),
+                    ),
+                    featuredInheritors = listOf(
+                        InheritorSummaryDto(
+                            id = "i1",
+                            name = "梅兰芳",
+                            projectName = "京剧",
+                            region = "北京",
+                        ),
+                    ),
+                    relatedArticles = listOf(
+                        ArticleSummaryDto(
+                            id = "a1",
+                            title = "京剧艺术传承发展",
+                            summary = "京剧作为中国国粹的传承与创新。",
+                        ),
+                    ),
+                    relatedRegions = listOf(
+                        ExploreTopicLinkDto(
+                            type = "region",
+                            key = "天津",
+                            title = "天津",
+                        ),
+                    ),
+                ),
+            ),
+            onBack = {},
+            onRetry = {},
+            onArticleSelected = {},
+            onDirectoryItemSelected = {},
+            onInheritorSelected = {},
+            onRelatedRegionSelected = {},
+        )
     }
 }
 

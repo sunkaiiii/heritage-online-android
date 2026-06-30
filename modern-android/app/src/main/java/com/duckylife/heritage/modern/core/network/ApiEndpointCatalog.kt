@@ -119,7 +119,7 @@ object ApiEndpointCatalog {
      * | GET | `/api/analytics/outliers` | [AnalyticsOutliers][com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsOutliersDto] | 值得留意 |
      * | GET | `/api/rankings` | [RankingDefinition][com.duckylife.heritage.modern.core.network.dto.advanced.RankingDefinitionDto] | 发现 -> 排行榜 |
      * | GET | `/api/rankings/{rankingId}` | [RankingDetail][com.duckylife.heritage.modern.core.network.dto.advanced.RankingDetailDto] | 排行榜详情 |
-     * | GET | `/api/rankings/content` | [RankingContent][com.duckylife.heritage.modern.core.network.dto.advanced.RankingContentDto] | 排行榜详情筛选 |
+     * | GET | `/api/rankings/content` | [RankingDetail][com.duckylife.heritage.modern.core.network.dto.advanced.RankingDetailDto] | 按指标查看内容排行 |
      */
     object DataExplore
 

@@ -15,6 +15,8 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDiff
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserProfileDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.AnalyticsDimension
+import com.duckylife.heritage.modern.core.network.dto.advanced.ContentTargetType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LocalUserTargetType
 import com.duckylife.heritage.modern.core.network.dto.advanced.RankingMetric
 import com.duckylife.heritage.modern.core.network.dto.advanced.SpacetimeDimension
 import io.ktor.client.plugins.api.createClientPlugin
@@ -137,7 +139,7 @@ class AdvancedApiClientTest {
         val api = createApiClient(client)
 
         val result = api.getLocalUserFavorites(
-            LocalUserFavoritesQuery(targetType = "article", page = 1, pageSize = 10),
+            LocalUserFavoritesQuery(targetType = LocalUserTargetType.Article, page = 1, pageSize = 10),
         )
 
         assertEquals(1, result.items.size)
@@ -169,7 +171,7 @@ class AdvancedApiClientTest {
         val api = createApiClient(client)
 
         val result = api.recordLocalUserHistory(
-            HistoryRecordRequestDto(targetType = "article", targetId = "a1", lastPosition = "p1"),
+            HistoryRecordRequestDto(targetType = LocalUserTargetType.Article, targetId = "a1", lastPosition = "p1"),
         )
 
         assertEquals("h1", result.id)
@@ -731,7 +733,7 @@ class AdvancedApiClientTest {
             SpacetimeHeatmapQuery(
                 x = SpacetimeDimension.Region,
                 y = SpacetimeDimension.Category,
-                targetType = "article",
+                targetType = ContentTargetType.Article,
             ),
         )
 
@@ -844,7 +846,7 @@ class AdvancedApiClientTest {
             AnalyticsCrosstabQuery(
                 x = AnalyticsDimension.Region,
                 y = AnalyticsDimension.Year,
-                filters = AnalyticsFilters(targetType = "all"),
+                filters = AnalyticsFilters(targetType = ContentTargetType.All),
             ),
         )
 
@@ -946,7 +948,7 @@ class AdvancedApiClientTest {
         api.getRankingDetail(
             RankingDetailQuery(
                 rankingId = "top-regions",
-                targetType = "article",
+                targetType = ContentTargetType.Article,
                 region = "浙江",
                 limit = 50,
             ),
@@ -975,7 +977,7 @@ class AdvancedApiClientTest {
         api.getRankingContent(
             RankingContentQuery(
                 metric = RankingMetric.Connectivity,
-                targetType = "all",
+                targetType = ContentTargetType.All,
                 limit = 30,
             ),
         )

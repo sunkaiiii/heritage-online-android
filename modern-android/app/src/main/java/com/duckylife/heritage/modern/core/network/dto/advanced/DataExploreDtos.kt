@@ -31,7 +31,7 @@ data class SpacetimeFilterDto(
     val region: String? = null,
     val category: String? = null,
     val kind: String? = null,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
 )
 
 @Serializable(with = SpacetimeMetricsDtoSerializer::class)
@@ -124,7 +124,7 @@ data class NamedCountDto(
     val categoryLabel: String? = null,
     val kindKey: String? = null,
     val kindLabel: String? = null,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val targetTypeLabel: String? = null,
     val articleCount: Int = 0,
     val directoryItemCount: Int = 0,
@@ -145,7 +145,7 @@ data class YearCountDto(
 data class SpacetimeHeatmapDto(
     val x: SpacetimeDimension = SpacetimeDimension.Unknown,
     val y: SpacetimeDimension = SpacetimeDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val cells: List<SpacetimeHeatmapCellDto> = emptyList(),
     val generatedAt: String? = null,
 )
@@ -202,7 +202,7 @@ data class AnalyticsFacetBucketDto(
 @Serializable
 data class AnalyticsBreakdownDto(
     val groupBy: AnalyticsDimension = AnalyticsDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val filters: AnalyticsFilterSnapshotDto? = null,
     val buckets: List<AnalyticsBreakdownBucketDto> = emptyList(),
     val total: Int = 0,
@@ -225,7 +225,7 @@ data class AnalyticsFilterSnapshotDto(
     val category: String? = null,
     val year: Int? = null,
     val kind: String? = null,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val hasImage: Boolean? = null,
     val hasAiResult: Boolean? = null,
 )
@@ -234,7 +234,7 @@ data class AnalyticsFilterSnapshotDto(
 data class AnalyticsCrosstabDto(
     val x: AnalyticsDimension = AnalyticsDimension.Unknown,
     val y: AnalyticsDimension = AnalyticsDimension.Unknown,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val cells: List<AnalyticsCrosstabCellDto> = emptyList(),
     val xBuckets: List<String> = emptyList(),
     val yBuckets: List<String> = emptyList(),
@@ -292,7 +292,7 @@ data class RankingDefinitionDto(
     val title: String? = null,
     val description: String? = null,
     val metric: String? = null,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val refreshHint: String? = null,
 )
 
@@ -309,7 +309,7 @@ data class RankingDetailDto(
 @Serializable
 data class RankingItemDto(
     val rank: Int = 0,
-    val targetType: String? = null,
+    val targetType: ContentTargetType? = null,
     val targetId: String? = null,
     val title: String? = null,
     val subtitle: String? = null,

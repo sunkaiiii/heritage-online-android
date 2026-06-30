@@ -57,7 +57,7 @@ class KnowledgeGraphRepositoryTest {
             communities = listOf(
                 GraphCommunityDto(
                     communityKey = "c1",
-                    topicType = "category",
+                    topicType = GraphNodeType.Category,
                     title = "传统技艺",
                     size = 3,
                     nodes = listOf(
@@ -259,7 +259,7 @@ class KnowledgeGraphRepositoryTest {
     @Test
     fun `getTopicGraphMap encodes topic and clamps limit`() = runTest {
         fakeApi.topicGraphMapResult = TopicGraphMapDto(
-            topicType = "category",
+            topicType = GraphNodeType.Category,
             topicKey = "folk-art",
             topic = GraphNodeDto(nodeKey = "category-folk-art", type = GraphNodeType.Category, id = "folk-art", title = "民间美术"),
             nodes = listOf(
@@ -268,9 +268,9 @@ class KnowledgeGraphRepositoryTest {
             edges = emptyList(),
         )
 
-        repository.getTopicGraphMap(topicType = "category", topicKey = "folk-art", limit = 200)
+        repository.getTopicGraphMap(topicType = GraphNodeType.Category, topicKey = "folk-art", limit = 200)
 
-        assertEquals("category", fakeApi.capturedTopicGraphMapQuery?.topicType)
+        assertEquals(GraphNodeType.Category, fakeApi.capturedTopicGraphMapQuery?.topicType)
         assertEquals("folk-art", fakeApi.capturedTopicGraphMapQuery?.topicKey)
         assertEquals(100, fakeApi.capturedTopicGraphMapQuery?.limit)
     }
@@ -305,9 +305,9 @@ class KnowledgeGraphRepositoryTest {
     fun `getGraphTrailFromTopic maps topic source`() = runTest {
         fakeApi.graphTrailResult = GraphTrailDto(trailId = "trail-3", steps = emptyList())
 
-        repository.getGraphTrailFromTopic("region", "zhejiang", limit = 20)
+        repository.getGraphTrailFromTopic(GraphNodeType.Region, "zhejiang", limit = 20)
 
-        assertEquals("region", fakeApi.capturedTrailFromTopicQuery?.topicType)
+        assertEquals(GraphNodeType.Region, fakeApi.capturedTrailFromTopicQuery?.topicType)
         assertEquals("zhejiang", fakeApi.capturedTrailFromTopicQuery?.topicKey)
         assertEquals(10, fakeApi.capturedTrailFromTopicQuery?.limit)
     }
