@@ -15,7 +15,7 @@
 
     <style name="project_item_sub_desc_style" parent="Widget.AppCompat.TextView">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">#E37A3C</item>
+        <item name="android:textColor">@color/material_dynamic_primary60</item>
         <item name="android:background">@drawable/project_list_sub_desc_background</item>
         <item name="android:paddingStart">12dp</item>
         <item name="android:paddingEnd">12dp</item>

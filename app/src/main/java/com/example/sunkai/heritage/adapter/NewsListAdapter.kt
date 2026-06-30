@@ -18,7 +18,6 @@ import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.databinding.BottomFolkNewsLayoutBinding
 import com.example.sunkai.heritage.entity.response.NewsListResponse
 import com.example.sunkai.heritage.tools.ViewImageUtils
-import com.example.sunkai.heritage.tools.getThemeColor
 import com.example.sunkai.heritage.tools.loadImageFromServer
 
 /**
@@ -67,7 +66,6 @@ class NewsListAdapter(private val glide: RequestManager, private var listner: On
         holder.title.text = data.title
         holder.time.text = data.date
         holder.newsAuthor.text = "作者："
-        holder.readMark.setBackgroundColor(getThemeColor())
         holder.readMark.visibility = if (data.isRead) View.VISIBLE else View.GONE
         holder.imgContainer.visibility = View.GONE
         if (!data.img.isNullOrEmpty()) {

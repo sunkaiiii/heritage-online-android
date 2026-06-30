@@ -1,8 +1,8 @@
 package com.example.sunkai.heritage.entity
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.switchMap
 import com.example.sunkai.heritage.logic.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,7 +12,7 @@ class ProjectDetailViewModel @Inject constructor(val repository: Repository):Vie
 
     private val projectDetailLink = MutableLiveData<String>()
 
-    val projectDetail=Transformations.switchMap(projectDetailLink){link->
+    val projectDetail=projectDetailLink.switchMap{link->
         repository.getProjectDetail(link)
     }
 

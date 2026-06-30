@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.sunkai.heritage.views.tools.FollowThemeToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
+    android:background="@color/material_dynamic_primary90"
     android:layout_height="?attr/actionBarSize"
     app:menu="@menu/common_share_menu"
     app:navigationIcon="@drawable/general_arrow_back" />

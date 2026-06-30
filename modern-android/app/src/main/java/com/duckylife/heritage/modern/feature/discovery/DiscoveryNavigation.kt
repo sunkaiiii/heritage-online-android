@@ -1,0 +1,889 @@
+package com.duckylife.heritage.modern.feature.discovery
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeType
+import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
+import com.duckylife.heritage.modern.feature.articles.detail.ArticleDetailRoute
+import com.duckylife.heritage.modern.feature.collections.CollectionRoute
+import com.duckylife.heritage.modern.feature.compare.CompareRoute
+import com.duckylife.heritage.modern.feature.detail.DetailContextTarget
+import com.duckylife.heritage.modern.feature.discovery.graphexplore.GraphExploreRoute
+import com.duckylife.heritage.modern.feature.my.MyPageDestination
+import com.duckylife.heritage.modern.feature.directory.detail.DirectoryDetailRoute
+import com.duckylife.heritage.modern.feature.discovery.deepdive.DeepDiveRoute
+import com.duckylife.heritage.modern.feature.explore.ExploreTopicRoute
+import com.duckylife.heritage.modern.feature.inheritors.detail.InheritorDetailRoute
+import com.duckylife.heritage.modern.feature.learning.LearningPathRoute
+import com.duckylife.heritage.modern.feature.learningroutes.LearningRouteDetailRoute
+import com.duckylife.heritage.modern.feature.learningroutes.LearningRoutesRoute
+import com.duckylife.heritage.modern.feature.rankings.RankingDetailRoute
+import com.duckylife.heritage.modern.feature.rankings.RankingsRoute
+import com.duckylife.heritage.modern.feature.spacetime.SpacetimeRoute
+import com.duckylife.heritage.modern.feature.graph.hub.KnowledgeGraphHubRoute
+import com.duckylife.heritage.modern.feature.graph.topicmap.TopicGraphMapRoute
+import com.duckylife.heritage.modern.feature.graph.trail.GraphTrailRoute
+import com.duckylife.heritage.modern.feature.regions.RegionAtlasRoute
+import com.duckylife.heritage.modern.feature.regions.RegionDetailRoute
+import com.duckylife.heritage.modern.feature.search.SearchRoute
+import com.duckylife.heritage.modern.feature.stories.StoriesIndexRoute
+import com.duckylife.heritage.modern.feature.stories.StoryRoute
+import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyDetailRoute
+import com.duckylife.heritage.modern.feature.taxonomy.TaxonomyRoute
+import com.duckylife.heritage.modern.feature.timeline.TimelineRoute
+
+// NavDisplay key 的智能转换辅助函数
+private fun Any.asRouteKey(): DiscoveryRouteKey? = this as? DiscoveryRouteKey
+
+// ---------------------------------------------------------------------------
+// 辅助函数
+// ---------------------------------------------------------------------------
+
+private fun navigateToDiscoveryItem(
+    item: DiscoveryItemDto,
+    backStack: MutableList<Any>,
+) {
+    val id = item.id
+    if (id.isNullOrBlank()) return
+    when (item.type) {
+        "article" -> backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+        "directoryItem" -> backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+        "inheritor" -> backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+        else -> return // 未知类型不导航，避免错误跳转
+    }
+}
+
+private fun navigateToDetailContextTarget(
+    target: DetailContextTarget,
+    backStack: MutableList<Any>,
+) {
+    when (target) {
+        is DetailContextTarget.Article ->
+            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = target.id))
+        is DetailContextTarget.DirectoryItem ->
+            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = target.id))
+        is DetailContextTarget.Inheritor ->
+            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = target.id))
+        is DetailContextTarget.Collection ->
+            backStack.add(DiscoveryRouteKey.CollectionDetail(id = target.id))
+        is DetailContextTarget.Topic ->
+            backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = target.type, key = target.key))
+    }
+}
+
+private fun DiscoveryRouteKey.DiscoveryArticleDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private fun DiscoveryRouteKey.DiscoveryDirectoryDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+private fun DiscoveryRouteKey.DiscoveryInheritorDetail.continueExploreContentId(): String? =
+    id?.takeIf { it.isNotBlank() } ?: sourceId?.takeIf { it.isNotBlank() }
+
+// ---------------------------------------------------------------------------
+// NavHost
+// ---------------------------------------------------------------------------
+
+@Composable
+fun DiscoveryNavHost(
+    onSecondaryDestinationChanged: (Boolean) -> Unit,
+    resetToHomeRequest: Int = 0,
+    pendingNavigation: MyPageDestination? = null,
+    onPendingNavigationConsumed: () -> Unit = {},
+    pendingSearchQuery: String? = null,
+    onPendingSearchConsumed: () -> Unit = {},
+    modifier: Modifier = Modifier,
+) {
+    var savedStack by rememberSaveable { mutableStateOf("") }
+    val backStack = remember {
+        mutableStateListOf<Any>().also {
+            it.addAll(deserializeDiscoveryRoutes(savedStack))
+        }
+    }
+    LaunchedEffect(backStack.toList()) {
+        savedStack = serializeDiscoveryRoutes(backStack.filterIsInstance<DiscoveryRouteKey>())
+    }
+    LaunchedEffect(resetToHomeRequest) {
+        if (resetToHomeRequest > 0) {
+            backStack.clear()
+            backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        }
+    }
+    val popBackStack: () -> Unit = {
+        if (backStack.size > 1) {
+            backStack.removeLastOrNull()
+        } else if (backStack.isEmpty()) {
+            backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        }
+    }
+    val isInDetail = backStack.isNotEmpty() && backStack.lastOrNull() !is DiscoveryRouteKey.DiscoveryIndex
+    LaunchedEffect(isInDetail) {
+        onSecondaryDestinationChanged(isInDetail)
+    }
+
+    LaunchedEffect(pendingNavigation) {
+        val destination = pendingNavigation ?: return@LaunchedEffect
+        backStack.clear()
+        backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        when (destination) {
+            is MyPageDestination.GraphExplore -> {
+                backStack.add(
+                    DiscoveryRouteKey.GraphExplorePage(
+                        type = destination.contentType,
+                        contentId = destination.contentId,
+                        initialTab = GraphTab.entries.firstOrNull { it.wireName == destination.initialTabName }
+                            ?: GraphTab.Similar,
+                    ),
+                )
+            }
+            is MyPageDestination.LearningRoutes -> {
+                backStack.add(
+                    DiscoveryRouteKey.LearningRoutesPage(
+                        seedType = destination.seedType,
+                        seedId = destination.seedId,
+                    ),
+                )
+            }
+            is MyPageDestination.LearningRouteDetail -> {
+                val routeId = destination.routeId.takeIf { it.isNotBlank() } ?: return@LaunchedEffect
+                backStack.add(
+                    DiscoveryRouteKey.LearningRouteDetailPage(routeId = routeId),
+                )
+            }
+            else -> {
+                // 其他 destination 类型不应进入 DiscoveryNavHost；安全起见直接消费。
+            }
+        }
+        onPendingNavigationConsumed()
+    }
+    LaunchedEffect(pendingSearchQuery) {
+        val query = pendingSearchQuery?.trim().orEmpty()
+        if (query.isEmpty()) return@LaunchedEffect
+        backStack.clear()
+        backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+        onPendingSearchConsumed()
+    }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = popBackStack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        entryProvider = entryProvider@{ entryKey ->
+            val key = entryKey.asRouteKey() ?: DiscoveryRouteKey.DiscoveryIndex
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
+            when (key) {
+                // ---- Discovery Index ----
+                is DiscoveryRouteKey.DiscoveryIndex -> NavEntry(entryKey) {
+                    DiscoveryRoute(
+                        onSearchSubmit = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
+                        onTopicClick = { topic ->
+                            if (!topic.type.isNullOrBlank() && !topic.key.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = topic.type, key = topic.key))
+                            }
+                        },
+                        onLearningPathClick = { path ->
+                            if (!path.id.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.LearningPathDetail(id = path.id))
+                            }
+                        },
+                        onCollectionClick = { collection ->
+                            if (!collection.id.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.CollectionDetail(id = collection.id))
+                            }
+                        },
+                        onRegionAtlasClick = {
+                            backStack.add(DiscoveryRouteKey.RegionAtlasPage)
+                        },
+                        onTimelineClick = {
+                            backStack.add(DiscoveryRouteKey.TimelinePage)
+                        },
+                        onKnowledgeGraphClick = {
+                            backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
+                        },
+                        onLearningRoutesClick = {
+                            backStack.add(DiscoveryRouteKey.LearningRoutesPage())
+                        },
+                        onSpacetimeClick = {
+                            backStack.add(DiscoveryRouteKey.SpacetimePage)
+                        },
+                        onRankingsClick = {
+                            backStack.add(DiscoveryRouteKey.RankingsPage)
+                        },
+                        onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onDeepDiveClick = { item ->
+                            if (!item.id.isNullOrBlank()) {
+                                backStack.add(
+                                    DiscoveryRouteKey.DeepDivePage(
+                                        seedType = SearchResultType.fromWireName(item.type) ?: SearchResultType.Article,
+                                        seedId = item.id,
+                                    ),
+                                )
+                            }
+                        },
+                        onTaxonomyClick = {
+                            backStack.add(DiscoveryRouteKey.TaxonomyPage)
+                        },
+                        onStoriesClick = {
+                            backStack.add(DiscoveryRouteKey.StoriesIndexPage)
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Search ----
+                is DiscoveryRouteKey.SearchResults -> NavEntry(entryKey) {
+                    SearchRoute(
+                        initialQuery = key.query,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Explore Topic ----
+                is DiscoveryRouteKey.ExploreTopicDetail -> NavEntry(entryKey) {
+                    ExploreTopicRoute(
+                        type = key.type,
+                        key = key.key,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        onRelatedTopicSelected = { type, topicKey ->
+                            backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = type, key = topicKey))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Learning Path ----
+                is DiscoveryRouteKey.LearningPathDetail -> NavEntry(entryKey) {
+                    LearningPathRoute(
+                        id = key.id,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        onRelatedTopicSelected = { type, topicKey ->
+                            backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = type, key = topicKey))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Learning Routes ----
+                is DiscoveryRouteKey.LearningRoutesPage -> NavEntry(entryKey) {
+                    LearningRoutesRoute(
+                        seedType = key.seedType,
+                        seedId = key.seedId,
+                        onBack = popBackStack,
+                        onRouteClick = { routeId ->
+                            if (routeId.isNotBlank()) {
+                                backStack.add(DiscoveryRouteKey.LearningRouteDetailPage(routeId = routeId))
+                            }
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Learning Route Detail ----
+                is DiscoveryRouteKey.LearningRouteDetailPage -> NavEntry(entryKey) {
+                    LearningRouteDetailRoute(
+                        routeId = key.routeId,
+                        onBack = popBackStack,
+                        onStepContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Collection ----
+                is DiscoveryRouteKey.CollectionDetail -> NavEntry(entryKey) {
+                    CollectionRoute(
+                        id = key.id,
+                        type = key.type,
+                        topicKey = key.key,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Region Atlas ----
+                is DiscoveryRouteKey.RegionAtlasPage -> NavEntry(entryKey) {
+                    RegionAtlasRoute(
+                        onBack = popBackStack,
+                        onRegionSelected = { region ->
+                            backStack.add(DiscoveryRouteKey.RegionDetailPage(region = region))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Region Detail ----
+                is DiscoveryRouteKey.RegionDetailPage -> NavEntry(entryKey) {
+                    RegionDetailRoute(
+                        region = key.region,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        onRelatedRegionSelected = { region ->
+                            backStack.add(DiscoveryRouteKey.RegionDetailPage(region = region))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Timeline ----
+                is DiscoveryRouteKey.TimelinePage -> NavEntry(entryKey) {
+                    TimelineRoute(
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Article Detail ----
+                is DiscoveryRouteKey.DiscoveryArticleDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
+                    ArticleDetailRoute(
+                        articleId = key.id,
+                        sourceId = key.sourceId,
+                        sourceUrl = key.sourceUrl,
+                        category = key.category,
+                        onBack = popBackStack,
+                        onRelatedArticleSelected = { reference, category ->
+                            backStack.add(
+                                DiscoveryRouteKey.DiscoveryArticleDetail(
+                                    sourceId = reference.sourceId,
+                                    sourceUrl = reference.detailUrl,
+                                    category = category,
+                                ),
+                            )
+                        },
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.Article,
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.Article,
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "article:$it",
+                                    ),
+                                )
+                            }
+                        },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Directory Detail ----
+                is DiscoveryRouteKey.DiscoveryDirectoryDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
+                    DirectoryDetailRoute(
+                        itemId = key.id,
+                        sourceId = key.sourceId,
+                        kind = key.kind,
+                        onBack = popBackStack,
+                        onRelatedProjectSelected = { reference, kind ->
+                            backStack.add(
+                                DiscoveryRouteKey.DiscoveryDirectoryDetail(
+                                    sourceId = reference.sourceId,
+                                    kind = kind,
+                                ),
+                            )
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            backStack.add(
+                                DiscoveryRouteKey.DiscoveryInheritorDetail(
+                                    sourceId = reference.sourceId,
+                                ),
+                            )
+                        },
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.DirectoryItem,
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.DirectoryItem,
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "directoryItem:$it",
+                                    ),
+                                )
+                            }
+                        },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Inheritor Detail ----
+                is DiscoveryRouteKey.DiscoveryInheritorDetail -> NavEntry(entryKey) {
+                    val contentId = key.continueExploreContentId()
+                    InheritorDetailRoute(
+                        inheritorId = key.id,
+                        sourceId = key.sourceId,
+                        onBack = popBackStack,
+                        onRelatedProjectSelected = { reference ->
+                            backStack.add(
+                                DiscoveryRouteKey.DiscoveryDirectoryDetail(
+                                    sourceId = reference.sourceId,
+                                ),
+                            )
+                        },
+                        onRelatedInheritorSelected = { reference ->
+                            backStack.add(
+                                DiscoveryRouteKey.DiscoveryInheritorDetail(
+                                    sourceId = reference.sourceId,
+                                ),
+                            )
+                        },
+                        onExploreTargetClick = { click ->
+                            navigateToDetailContextTarget(click.target, backStack)
+                        },
+                        onGraphExploreClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.Inheritor,
+                                        contentId = it,
+                                        initialTab = GraphTab.Neighbors,
+                                    ),
+                                )
+                            }
+                        },
+                        onSimilarClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.GraphExplorePage(
+                                        type = SearchResultType.Inheritor,
+                                        contentId = it,
+                                        initialTab = GraphTab.Similar,
+                                    ),
+                                )
+                            }
+                        },
+                        onLearningRoutesClick = {
+                            contentId?.let {
+                                backStack.add(
+                                    DiscoveryRouteKey.LearningRoutesPage(
+                                        seedType = LearningRouteSeedType.Content,
+                                        seedId = "inheritor:$it",
+                                    ),
+                                )
+                            }
+                        },
+                        onKeywordSearch = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Taxonomy ----
+                is DiscoveryRouteKey.TaxonomyPage -> NavEntry(entryKey) {
+                    TaxonomyRoute(
+                        onBack = popBackStack,
+                        onTopicClick = { type, topicKey ->
+                            if (type == "kind") {
+                                backStack.add(DiscoveryRouteKey.ComparePage(type = "kind", left = topicKey))
+                            } else {
+                                backStack.add(DiscoveryRouteKey.TaxonomyDetailPage(type = type, key = topicKey))
+                            }
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Taxonomy Detail ----
+                is DiscoveryRouteKey.TaxonomyDetailPage -> NavEntry(entryKey) {
+                    TaxonomyDetailRoute(
+                        type = key.type,
+                        key = key.key,
+                        onBack = popBackStack,
+                        onArticleSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryArticleDetail(id = id))
+                        },
+                        onDirectoryItemSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryDirectoryDetail(id = id))
+                        },
+                        onInheritorSelected = { id ->
+                            backStack.add(DiscoveryRouteKey.DiscoveryInheritorDetail(id = id))
+                        },
+                        onRelatedTopicClick = { type, topicKey ->
+                            backStack.add(DiscoveryRouteKey.TaxonomyDetailPage(type = type, key = topicKey))
+                        },
+                        onViewStory = {
+                            when (key.type) {
+                                "category" -> backStack.add(DiscoveryRouteKey.StoryPage(category = key.key))
+                                "region" -> backStack.add(DiscoveryRouteKey.StoryPage(region = key.key))
+                            }
+                        },
+                        onCompare = {
+                            when (key.type) {
+                                "category" -> backStack.add(DiscoveryRouteKey.ComparePage(type = "category", left = key.key))
+                                "region" -> backStack.add(DiscoveryRouteKey.ComparePage(type = "region", left = key.key))
+                            }
+                        },
+                        onCollectionSelected = { collectionId ->
+                            backStack.add(DiscoveryRouteKey.CollectionDetail(id = collectionId))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Compare ----
+                is DiscoveryRouteKey.ComparePage -> NavEntry(entryKey) {
+                    CompareRoute(
+                        initialType = key.type,
+                        initialLeft = key.left,
+                        initialRight = key.right,
+                        onBack = popBackStack,
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Stories Index ----
+                is DiscoveryRouteKey.StoriesIndexPage -> NavEntry(entryKey) {
+                    StoriesIndexRoute(
+                        onBack = popBackStack,
+                        onRegionStoryClick = { region ->
+                            backStack.add(DiscoveryRouteKey.StoryPage(region = region))
+                        },
+                        onCategoryStoryClick = { category ->
+                            backStack.add(DiscoveryRouteKey.StoryPage(category = category))
+                        },
+                        onYearStoryClick = { year ->
+                            backStack.add(DiscoveryRouteKey.StoryPage(year = year))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Story ----
+                is DiscoveryRouteKey.StoryPage -> NavEntry(entryKey) {
+                    StoryRoute(
+                        region = key.region,
+                        category = key.category,
+                        year = key.year,
+                        onBack = popBackStack,
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = type, key = topicKey))
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Deep Dive ----
+                is DiscoveryRouteKey.DeepDivePage -> NavEntry(entryKey) {
+                    DeepDiveRoute(
+                        seedType = key.seedType,
+                        seedId = key.seedId,
+                        onBack = popBackStack,
+                        onItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Graph Explore ----
+                is DiscoveryRouteKey.GraphExplorePage -> NavEntry(entryKey) {
+                    GraphExploreRoute(
+                        contentType = key.type,
+                        contentId = key.contentId,
+                        initialTab = key.initialTab,
+                        onBack = popBackStack,
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        onTopicClick = { topicType, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == topicType }
+                                        ?: GraphNodeType.Unknown,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Knowledge Graph Hub ----
+                is DiscoveryRouteKey.KnowledgeGraphHubPage -> NavEntry(entryKey) {
+                    KnowledgeGraphHubRoute(
+                        onBack = popBackStack,
+                        onTopicClick = { topicType, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == topicType }
+                                        ?: GraphNodeType.Unknown,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
+                        onRandomTrailClick = {
+                            backStack.add(DiscoveryRouteKey.GraphTrailPage(GraphTrailSource.Random))
+                        },
+                        onRecentTrailClick = { type, id ->
+                            backStack.add(
+                                DiscoveryRouteKey.GraphTrailPage(
+                                    GraphTrailSource.FromContent(
+                                        SearchResultType.fromWireName(type) ?: SearchResultType.Article,
+                                        id,
+                                    ),
+                                ),
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Topic Graph Map ----
+                is DiscoveryRouteKey.TopicGraphMapPage -> NavEntry(entryKey) {
+                    TopicGraphMapRoute(
+                        topicType = key.topicType,
+                        topicKey = key.topicKey,
+                        onBack = popBackStack,
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == type }
+                                        ?: GraphNodeType.Unknown,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Graph Trail ----
+                is DiscoveryRouteKey.GraphTrailPage -> NavEntry(entryKey) {
+                    GraphTrailRoute(
+                        source = key.source,
+                        onBack = popBackStack,
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        onTopicClick = { type, topicKey ->
+                            backStack.add(
+                                DiscoveryRouteKey.TopicGraphMapPage(
+                                    topicType = GraphNodeType.entries.firstOrNull { it.wireName == type }
+                                        ?: GraphNodeType.Unknown,
+                                    topicKey = topicKey,
+                                ),
+                            )
+                        },
+                        modifier = modifier,
+                    )
+                }
+
+                // ---- Fallback ----
+                is DiscoveryRouteKey.SpacetimePage -> NavEntry(entryKey) {
+                    SpacetimeRoute(
+                        onBack = popBackStack,
+                        modifier = modifier,
+                    )
+                }
+
+                is DiscoveryRouteKey.RankingsPage -> NavEntry(entryKey) {
+                    RankingsRoute(
+                        onBack = popBackStack,
+                        onRankingClick = { rankingId ->
+                            if (rankingId.isNotBlank()) {
+                                backStack.add(DiscoveryRouteKey.RankingDetailPage(rankingId = rankingId))
+                            }
+                        },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                is DiscoveryRouteKey.RankingDetailPage -> NavEntry(entryKey) {
+                    RankingDetailRoute(
+                        rankingId = key.rankingId,
+                        onBack = popBackStack,
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
+                        modifier = modifier,
+                    )
+                }
+
+                else -> NavEntry(Unit) {
+                    DiscoveryRoute(
+                        onSearchSubmit = { query ->
+                            backStack.add(DiscoveryRouteKey.SearchResults(query = query))
+                        },
+                        onTopicClick = { topic ->
+                            if (!topic.type.isNullOrBlank() && !topic.key.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.ExploreTopicDetail(type = topic.type, key = topic.key))
+                            }
+                        },
+                        onLearningPathClick = { path ->
+                            if (!path.id.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.LearningPathDetail(id = path.id))
+                            }
+                        },
+                        onCollectionClick = { collection ->
+                            if (!collection.id.isNullOrBlank()) {
+                                backStack.add(DiscoveryRouteKey.CollectionDetail(id = collection.id))
+                            }
+                        },
+                        onRegionAtlasClick = {
+                            backStack.add(DiscoveryRouteKey.RegionAtlasPage)
+                        },
+                        onTimelineClick = {
+                            backStack.add(DiscoveryRouteKey.TimelinePage)
+                        },
+                        onKnowledgeGraphClick = {
+                            backStack.add(DiscoveryRouteKey.KnowledgeGraphHubPage)
+                        },
+                        onLearningRoutesClick = {
+                            backStack.add(DiscoveryRouteKey.LearningRoutesPage())
+                        },
+                        onSpacetimeClick = {
+                            backStack.add(DiscoveryRouteKey.SpacetimePage)
+                        },
+                        onRankingsClick = {
+                            backStack.add(DiscoveryRouteKey.RankingsPage)
+                        },
+                        onTrendingItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onWeeklyItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onTodayItemClick = { item -> navigateToDiscoveryItem(item, backStack) },
+                        onDeepDiveClick = { item ->
+                            if (!item.id.isNullOrBlank()) {
+                                backStack.add(
+                                    DiscoveryRouteKey.DeepDivePage(
+                                        seedType = SearchResultType.fromWireName(item.type) ?: SearchResultType.Article,
+                                        seedId = item.id,
+                                    ),
+                                )
+                            }
+                        },
+                        onTaxonomyClick = {
+                            backStack.add(DiscoveryRouteKey.TaxonomyPage)
+                        },
+                        onStoriesClick = {
+                            backStack.add(DiscoveryRouteKey.StoriesIndexPage)
+                        },
+                        modifier = modifier,
+                    )
+                }
+            }
+        },
+    )
+}

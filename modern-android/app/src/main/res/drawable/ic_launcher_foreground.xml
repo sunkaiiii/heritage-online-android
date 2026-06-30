@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 第二版抽象印记：去掉内框，让图标在圆形裁切下更干净。 -->
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,33h40c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,49h31c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M30,65h40c2.8,0 5,2.2 5,5s-2.2,5 -5,5H30c-2.8,0 -5,-2.2 -5,-5s2.2,-5 5,-5z" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M74,34c8,9 8,20 0,29c-3,3.4 -3,7.4 0.6,10.5c2.8,2.4 6.6,3.9 10.4,4.6"
+        android:strokeWidth="6.5"
+        android:strokeColor="#F8E9DD"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+    <path
+        android:fillColor="#F8E9DD"
+        android:pathData="M80,24c3,0 5.5,2.5 5.5,5.5S83,35 80,35s-5.5,-2.5 -5.5,-5.5S77,24 80,24z" />
+    <path
+        android:fillColor="#C66B4E"
+        android:fillAlpha="0.32"
+        android:pathData="M29,82h48c2.2,0 4,1.8 4,4s-1.8,4 -4,4H29c-2.2,0 -4,-1.8 -4,-4s1.8,-4 4,-4z" />
+</vector>

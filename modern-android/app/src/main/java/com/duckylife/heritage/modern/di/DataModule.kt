@@ -1,0 +1,123 @@
+package com.duckylife.heritage.modern.di
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.duckylife.heritage.modern.core.data.ContentExportRepository
+import com.duckylife.heritage.modern.core.data.ContentIntelligenceRepository
+import com.duckylife.heritage.modern.core.data.DataExploreRepository
+import com.duckylife.heritage.modern.core.data.DefaultContentExportRepository
+import com.duckylife.heritage.modern.core.data.DefaultContentIntelligenceRepository
+import com.duckylife.heritage.modern.core.data.DefaultDataExploreRepository
+import com.duckylife.heritage.modern.core.data.DefaultHeritageRepository
+import com.duckylife.heritage.modern.core.data.HeritageRepository
+import com.duckylife.heritage.modern.core.data.DefaultIntelligentSearchRepository
+import com.duckylife.heritage.modern.core.data.IntelligentSearchRepository
+import com.duckylife.heritage.modern.core.data.DefaultKnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.DefaultResearchRepository
+import com.duckylife.heritage.modern.core.data.ResearchRepository
+import com.duckylife.heritage.modern.core.data.KnowledgeGraphRepository
+import com.duckylife.heritage.modern.core.data.DefaultLearningRoutesRepository
+import com.duckylife.heritage.modern.core.data.LearningRoutesRepository
+import com.duckylife.heritage.modern.core.data.DefaultRecentContentProvider
+import com.duckylife.heritage.modern.core.data.RecentContentProvider
+import com.duckylife.heritage.modern.core.profile.DataStoreLocalProfileRepository
+import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
+import com.duckylife.heritage.modern.feature.detail.intelligence.ContentIntelligenceViewModelDelegateFactory
+import com.duckylife.heritage.modern.feature.detail.intelligence.DefaultContentIntelligenceViewModelDelegateFactory
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import java.io.File
+import javax.inject.Qualifier
+import javax.inject.Singleton
+
+private val Context.profileDataStore by preferencesDataStore(name = "heritage_profile")
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CacheDir
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataModule {
+    @Binds
+    @Singleton
+    abstract fun bindHeritageRepository(repository: DefaultHeritageRepository): HeritageRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindContentExportRepository(
+        repository: DefaultContentExportRepository,
+    ): ContentExportRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindContentIntelligenceRepository(
+        repository: DefaultContentIntelligenceRepository,
+    ): ContentIntelligenceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindIntelligentSearchRepository(
+        repository: DefaultIntelligentSearchRepository,
+    ): IntelligentSearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindKnowledgeGraphRepository(
+        repository: DefaultKnowledgeGraphRepository,
+    ): KnowledgeGraphRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLearningRoutesRepository(
+        repository: DefaultLearningRoutesRepository,
+    ): LearningRoutesRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDataExploreRepository(
+        repository: DefaultDataExploreRepository,
+    ): DataExploreRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindResearchRepository(
+        repository: DefaultResearchRepository,
+    ): ResearchRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindRecentContentProvider(
+        provider: DefaultRecentContentProvider,
+    ): RecentContentProvider
+
+    @Binds
+    @Singleton
+    abstract fun bindContentIntelligenceViewModelDelegateFactory(
+        factory: DefaultContentIntelligenceViewModelDelegateFactory,
+    ): ContentIntelligenceViewModelDelegateFactory
+
+    @Binds
+    @Singleton
+    abstract fun bindLocalProfileRepository(
+        repository: DataStoreLocalProfileRepository,
+    ): LocalProfileRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideProfileDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+            context.profileDataStore
+
+        @Provides
+        @Singleton
+        @CacheDir
+        fun provideCacheDir(@ApplicationContext context: Context): File = context.cacheDir
+    }
+}

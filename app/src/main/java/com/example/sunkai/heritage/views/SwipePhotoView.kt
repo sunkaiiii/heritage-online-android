@@ -7,13 +7,13 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
-import com.github.chrisbanes.photoview.PhotoView
+import androidx.appcompat.widget.AppCompatImageView
 import java.util.*
 import kotlin.math.abs
 
 class SwipePhotoView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : PhotoView(context, attrs, defStyleAttr) {
+) : AppCompatImageView(context, attrs, defStyleAttr) {
     private val TAG = javaClass.name
     private var firstX = Integer.MIN_VALUE
     private var firstY = Integer.MIN_VALUE
@@ -28,6 +28,7 @@ class SwipePhotoView @JvmOverloads constructor(
     private var onDragListner: OnDragListner? = null
     private var onClickListener: OnClickListener? = null
     private var onLongClickListener: OnLongClickListener? = null
+    public var scale=1f
 
     private var longClickHandler = Handler(Looper.getMainLooper()) {
         onLongClickListener?.onLongClick(this)
@@ -178,6 +179,9 @@ class SwipePhotoView @JvmOverloads constructor(
     }
 
     fun isMoved() = offsetX != Int.MIN_VALUE || offsetY != Int.MIN_VALUE
+    fun setScale(fl: Float, b: Boolean) {
+        scale=fl
+    }
 
 
     interface OnDragListner {

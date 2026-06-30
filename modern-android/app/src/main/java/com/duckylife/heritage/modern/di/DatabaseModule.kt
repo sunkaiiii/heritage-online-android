@@ -1,0 +1,84 @@
+package com.duckylife.heritage.modern.di
+
+import android.content.Context
+import androidx.room.Room
+import com.duckylife.heritage.modern.core.database.HeritageDatabase
+import com.duckylife.heritage.modern.core.database.HeritageMigrations
+import com.duckylife.heritage.modern.core.data.DefaultReadingPathRepository
+import com.duckylife.heritage.modern.core.data.ReadingPathRepository
+import com.duckylife.heritage.modern.core.database.dao.PendingProfileOperationDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileFavoriteDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileHistoryDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileLearningProgressDao
+import com.duckylife.heritage.modern.core.database.dao.ProfileStateDao
+import com.duckylife.heritage.modern.core.database.dao.ReadingPathDao
+import com.duckylife.heritage.modern.core.saved.RoomSavedContentRepository
+import com.duckylife.heritage.modern.core.saved.SavedContentRepository
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+    @Provides
+    @Singleton
+    fun provideHeritageDatabase(
+        @ApplicationContext context: Context,
+    ): HeritageDatabase =
+        Room.databaseBuilder(
+            context,
+            HeritageDatabase::class.java,
+            "heritage-modern.db",
+        )
+            .addMigrations(*HeritageMigrations.ALL)
+            .build()
+
+    @Provides
+    fun provideReadingPathDao(database: HeritageDatabase): ReadingPathDao =
+        database.readingPathDao()
+
+    @Provides
+    fun provideProfileStateDao(database: HeritageDatabase): ProfileStateDao =
+        database.profileStateDao()
+
+    @Provides
+    fun provideProfileFavoriteDao(database: HeritageDatabase): ProfileFavoriteDao =
+        database.profileFavoriteDao()
+
+    @Provides
+    fun provideProfileHistoryDao(database: HeritageDatabase): ProfileHistoryDao =
+        database.profileHistoryDao()
+
+    @Provides
+    fun provideProfileLearningProgressDao(database: HeritageDatabase): ProfileLearningProgressDao =
+        database.profileLearningProgressDao()
+
+    @Provides
+    fun providePendingProfileOperationDao(database: HeritageDatabase): PendingProfileOperationDao =
+        database.pendingProfileOperationDao()
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class SavedContentModule {
+    @Binds
+    @Singleton
+    abstract fun bindSavedContentRepository(
+        impl: RoomSavedContentRepository,
+    ): SavedContentRepository
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class ReadingPathModule {
+    @Binds
+    @Singleton
+    abstract fun bindReadingPathRepository(
+        impl: DefaultReadingPathRepository,
+    ): ReadingPathRepository
+}

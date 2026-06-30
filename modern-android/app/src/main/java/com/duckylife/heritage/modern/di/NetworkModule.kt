@@ -1,0 +1,82 @@
+package com.duckylife.heritage.modern.di
+
+import com.duckylife.heritage.modern.BuildConfig
+import com.duckylife.heritage.modern.core.network.HeritageApiClient
+import com.duckylife.heritage.modern.core.network.HeritageApiConfig
+import com.duckylife.heritage.modern.core.network.KtorHeritageApiClient
+import com.duckylife.heritage.modern.core.network.api.ContentExportApi
+import com.duckylife.heritage.modern.core.network.api.ContentIntelligenceApi
+import com.duckylife.heritage.modern.core.network.api.DataExploreApi
+import com.duckylife.heritage.modern.core.network.api.KnowledgeGraphApi
+import com.duckylife.heritage.modern.core.network.api.LearningRoutesApi
+import com.duckylife.heritage.modern.core.network.api.LocalUserApi
+import com.duckylife.heritage.modern.core.network.api.ResearchApi
+import com.duckylife.heritage.modern.core.network.createHeritageHttpClient
+import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import io.ktor.client.HttpClient
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+    @Provides
+    @Singleton
+    fun provideHeritageApiConfig(): HeritageApiConfig =
+        HeritageApiConfig(
+            baseUrl = BuildConfig.HERITAGE_API_BASE_URL,
+            trustSelfSignedCertificates = BuildConfig.HERITAGE_TRUST_SELF_SIGNED_CERTS,
+        )
+
+    @Provides
+    @Singleton
+    fun provideHttpClient(
+        config: HeritageApiConfig,
+        profileRepository: LocalProfileRepository,
+    ): HttpClient =
+        createHeritageHttpClient(config, profileRepository)
+
+    @Provides
+    @Singleton
+    fun provideHeritageApiClient(
+        httpClient: HttpClient,
+        config: HeritageApiConfig,
+        profileRepository: LocalProfileRepository,
+    ): HeritageApiClient =
+        KtorHeritageApiClient(
+            httpClient = httpClient,
+            baseUrl = config.baseUrl,
+            profileRepository = profileRepository,
+        )
+
+    @Provides
+    @Singleton
+    fun provideLocalUserApi(client: HeritageApiClient): LocalUserApi = client
+
+    @Provides
+    @Singleton
+    fun provideContentIntelligenceApi(client: HeritageApiClient): ContentIntelligenceApi = client
+
+    @Provides
+    @Singleton
+    fun provideKnowledgeGraphApi(client: HeritageApiClient): KnowledgeGraphApi = client
+
+    @Provides
+    @Singleton
+    fun provideLearningRoutesApi(client: HeritageApiClient): LearningRoutesApi = client
+
+    @Provides
+    @Singleton
+    fun provideDataExploreApi(client: HeritageApiClient): DataExploreApi = client
+
+    @Provides
+    @Singleton
+    fun provideResearchApi(client: HeritageApiClient): ResearchApi = client
+
+    @Provides
+    @Singleton
+    fun provideContentExportApi(client: HeritageApiClient): ContentExportApi = client
+}

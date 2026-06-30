@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.example.sunkai.heritage.tools.forEachAndTintViews
 import com.example.sunkai.heritage.value.CHANGE_THEME
 import android.graphics.PorterDuff
 
@@ -64,9 +63,6 @@ abstract class BaseGlideFragment : Fragment() {
 
     protected open fun changeWidgeTheme() {
         val view = view
-        if (view is ViewGroup) {
-            forEachAndTintViews(view)
-        }
         changeSpecificViewTheme()
     }
 

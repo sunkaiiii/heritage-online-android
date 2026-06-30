@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/selectableItemBackground"
     android:padding="8dp"
     android:layout_height="wrap_content">
@@ -13,7 +14,7 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:src="@drawable/baseline_restore_24"
-        android:tint="@color/deepGrey" />
+        app:tint="@color/deepGrey" />
 
     <ImageView
         android:id="@+id/searchHistoryClearIcon"
@@ -22,7 +23,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:src="@drawable/baseline_clear_24"
-        android:tint="@color/normalGrey" />
+        app:tint="@color/normalGrey" />
 
     <TextView
         android:id="@+id/searchHistoryTextView"

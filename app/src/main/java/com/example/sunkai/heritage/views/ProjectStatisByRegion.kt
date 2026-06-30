@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.example.sunkai.heritage.R
 import com.example.sunkai.heritage.entity.ProjectStatisticsViewModel
 import com.example.sunkai.heritage.entity.response.HeritageProjectStatisticsItem
+import com.example.sunkai.heritage.tools.getResourceColorCompose
 
 @ExperimentalFoundationApi
 @Composable
@@ -39,7 +40,7 @@ fun ProjectStatisticsByRegion(
             Row(horizontalArrangement = Arrangement.Center) {
                 val modifier = Modifier.weight(1f)
                 val maxValue = statisByRegion.maxOf { it.value }.toInt()
-                val maxColor = Color(0XFF99FFBE)
+                val maxColor = getResourceColorCompose(R.color.material_dynamic_primary80)
                 StatisitcsRegionColumn(
                         startIndex = 0,
                         statisByRegion = statisByRegion,

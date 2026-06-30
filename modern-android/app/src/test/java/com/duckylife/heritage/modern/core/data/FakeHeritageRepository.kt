@@ -1,0 +1,466 @@
+package com.duckylife.heritage.modern.core.data
+
+import androidx.paging.PagingData
+import com.duckylife.heritage.modern.core.network.ArticleQuery
+import com.duckylife.heritage.modern.core.network.BlendedRecommendationQuery
+import com.duckylife.heritage.modern.core.network.DirectoryItemQuery
+import com.duckylife.heritage.modern.core.network.DiscoveryDeepDiveQuery
+import com.duckylife.heritage.modern.core.network.DiscoverySerendipityQuery
+import com.duckylife.heritage.modern.core.network.InheritorQuery
+import com.duckylife.heritage.modern.core.network.SearchV2Query
+import com.duckylife.heritage.modern.core.network.TaxonomyRegionSort
+import com.duckylife.heritage.modern.core.network.TimelineV2Query
+import com.duckylife.heritage.modern.core.network.dto.ArticleCategory
+import com.duckylife.heritage.modern.core.network.dto.ArticleDetailDto
+import com.duckylife.heritage.modern.core.network.dto.ArticleSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.BlendedRecommendationResponseDto
+import com.duckylife.heritage.modern.core.network.dto.CollectionDto
+import com.duckylife.heritage.modern.core.network.dto.CompareResultDto
+import com.duckylife.heritage.modern.core.network.dto.ContentDigestDto
+import com.duckylife.heritage.modern.core.network.dto.DataStoryDto
+import com.duckylife.heritage.modern.core.network.dto.DetailContextDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemDetailDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
+import com.duckylife.heritage.modern.core.network.dto.DirectoryItemSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimensionDto
+import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticsOverviewDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryDeepDiveDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryItemDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTodayDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryTrendingDto
+import com.duckylife.heritage.modern.core.network.dto.DiscoveryWeeklyDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreIndexDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicInfoDto
+import com.duckylife.heritage.modern.core.network.dto.ExploreTopicV2Dto
+import com.duckylife.heritage.modern.core.network.dto.FeaturedCollectionDto
+import com.duckylife.heritage.modern.core.network.dto.HomeBannerDto
+import com.duckylife.heritage.modern.core.network.dto.HomeFeedDto
+import com.duckylife.heritage.modern.core.network.dto.InheritorDetailDto
+import com.duckylife.heritage.modern.core.network.dto.InheritorSummaryDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDetailDto
+import com.duckylife.heritage.modern.core.network.dto.LearningPathDto
+import com.duckylife.heritage.modern.core.network.dto.PagedResult
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDetailDto
+import com.duckylife.heritage.modern.core.network.dto.RegionAtlasDto
+import com.duckylife.heritage.modern.core.network.dto.SearchResultType
+import com.duckylife.heritage.modern.core.network.dto.SearchSuggestionDto
+import com.duckylife.heritage.modern.core.network.dto.SearchV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyCategoryDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyIndexDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyKindDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyRegionDetailDto
+import com.duckylife.heritage.modern.core.network.dto.TaxonomyTopicDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineV2ResponseDto
+import com.duckylife.heritage.modern.core.network.dto.TimelineYearBucketDto
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+
+class FakeHeritageRepository(
+    private val banners: List<HomeBannerDto> = emptyList(),
+    private val articles: List<ArticleSummaryDto> = emptyList(),
+    private val directoryItems: List<DirectoryItemSummaryDto> = emptyList(),
+    private val directoryStatisticsOverview: DirectoryStatisticsOverviewDto = DirectoryStatisticsOverviewDto(),
+    private val directoryStatisticsBreakdowns: Map<DirectoryStatisticDimension, DirectoryStatisticDimensionDto> = emptyMap(),
+    private val inheritors: List<InheritorSummaryDto> = emptyList(),
+    private val articleDetails: Map<String, ArticleDetailDto> = emptyMap(),
+    private val articleDetailsBySourceId: Map<String, ArticleDetailDto> = emptyMap(),
+    private val articleDetailsBySourceUrl: Map<String, ArticleDetailDto> = emptyMap(),
+    private val cachedArticleDetails: Map<ArticleDetailLookup, ArticleDetailDto?> = emptyMap(),
+    private val directoryDetails: Map<String, DirectoryItemDetailDto> = emptyMap(),
+    private val directoryDetailsBySourceId: Map<String, DirectoryItemDetailDto> = emptyMap(),
+    private val cachedDirectoryDetails: Map<DirectoryDetailLookup, DirectoryItemDetailDto?> = emptyMap(),
+    private val inheritorDetails: Map<String, InheritorDetailDto> = emptyMap(),
+    private val inheritorDetailsBySourceId: Map<String, InheritorDetailDto> = emptyMap(),
+    private val cachedInheritorDetails: Map<InheritorDetailLookup, InheritorDetailDto?> = emptyMap(),
+    private val searchV2Response: SearchV2ResponseDto = SearchV2ResponseDto(),
+    private val timelineV2Response: TimelineV2ResponseDto = TimelineV2ResponseDto(),
+    private val timelineYearsList: List<TimelineYearBucketDto> = emptyList(),
+    private val failure: Throwable? = null,
+) : HeritageRepository {
+    val pagedArticleQueries = mutableListOf<ArticleQuery>()
+    val pagedDirectoryItemQueries = mutableListOf<DirectoryItemQuery>()
+    val pagedInheritorQueries = mutableListOf<InheritorQuery>()
+    val articleSourceIdQueries = mutableListOf<Pair<String, ArticleCategory>>()
+    val articleSourceUrlQueries = mutableListOf<Pair<String, ArticleCategory>>()
+    val directorySourceIdQueries = mutableListOf<Pair<String, DirectoryItemKind>>()
+    val directoryStatisticsOverviewQueries = mutableListOf<DirectoryItemKind>()
+    val directoryStatisticsBreakdownQueries = mutableListOf<Triple<DirectoryItemKind, DirectoryStatisticDimension, Int>>()
+    val inheritorSourceIdQueries = mutableListOf<String>()
+
+    override suspend fun homeBanners(): List<HomeBannerDto> {
+        failure?.let { throw it }
+        return banners
+    }
+
+    override fun cachedHomeBanners(): Flow<List<HomeBannerDto>> = flowOf(banners)
+
+    override suspend fun refreshHomeBanners(): List<HomeBannerDto> {
+        failure?.let { throw it }
+        return banners
+    }
+
+    override suspend fun homeFeed(): HomeFeedDto {
+        failure?.let { throw it }
+        return HomeFeedDto()
+    }
+
+    override suspend fun articles(query: ArticleQuery): PagedResult<ArticleSummaryDto> {
+        failure?.let { throw it }
+        return PagedResult(
+            items = articles,
+            page = query.page,
+            pageSize = query.pageSize,
+        )
+    }
+
+    override fun pagedArticles(query: ArticleQuery): Flow<PagingData<ArticleSummaryDto>> {
+        pagedArticleQueries.add(query)
+        return flowOf(PagingData.from(articles))
+    }
+
+    override suspend fun article(id: String): ArticleDetailDto {
+        failure?.let { throw it }
+        return articleDetails[id] ?: error("Missing article detail for $id")
+    }
+
+    override suspend fun articleBySourceId(
+        sourceId: String,
+        category: ArticleCategory,
+    ): ArticleDetailDto {
+        failure?.let { throw it }
+        articleSourceIdQueries.add(sourceId to category)
+        return articleDetailsBySourceId[sourceId] ?: error("Missing article detail for source id $sourceId")
+    }
+
+    override suspend fun articleBySourceUrl(
+        sourceUrl: String,
+        category: ArticleCategory,
+    ): ArticleDetailDto {
+        failure?.let { throw it }
+        articleSourceUrlQueries.add(sourceUrl to category)
+        return articleDetailsBySourceUrl[sourceUrl] ?: error("Missing article detail for source url $sourceUrl")
+    }
+
+    override fun cachedArticleDetail(lookup: ArticleDetailLookup): Flow<ArticleDetailDto?> =
+        flowOf(cachedArticleDetails[lookup])
+
+    override suspend fun refreshArticleDetail(lookup: ArticleDetailLookup): ArticleDetailDto =
+        when {
+            !lookup.articleId.isNullOrBlank() -> article(lookup.articleId)
+            !lookup.sourceId.isNullOrBlank() -> articleBySourceId(lookup.sourceId, lookup.category)
+            !lookup.sourceUrl.isNullOrBlank() -> articleBySourceUrl(lookup.sourceUrl, lookup.category)
+            else -> error("Missing article lookup key")
+        }
+
+    override suspend fun articleContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
+
+    override suspend fun directoryItems(
+        query: DirectoryItemQuery,
+    ): PagedResult<DirectoryItemSummaryDto> {
+        failure?.let { throw it }
+        return PagedResult(
+            items = directoryItems,
+            page = query.page,
+            pageSize = query.pageSize,
+        )
+    }
+
+    override fun pagedDirectoryItems(query: DirectoryItemQuery): Flow<PagingData<DirectoryItemSummaryDto>> {
+        pagedDirectoryItemQueries.add(query)
+        return flowOf(PagingData.from(directoryItems))
+    }
+
+    override suspend fun directoryStatisticsOverview(kind: DirectoryItemKind): DirectoryStatisticsOverviewDto {
+        failure?.let { throw it }
+        directoryStatisticsOverviewQueries.add(kind)
+        return directoryStatisticsOverview
+    }
+
+    override suspend fun directoryStatisticsBreakdown(
+        kind: DirectoryItemKind,
+        dimension: DirectoryStatisticDimension,
+        limit: Int,
+    ): DirectoryStatisticDimensionDto {
+        failure?.let { throw it }
+        directoryStatisticsBreakdownQueries.add(Triple(kind, dimension, limit))
+        return directoryStatisticsBreakdowns[dimension]
+            ?: DirectoryStatisticDimensionDto(dimension = dimension.wireName)
+    }
+
+    override suspend fun directoryItem(id: String): DirectoryItemDetailDto {
+        failure?.let { throw it }
+        return directoryDetails[id] ?: error("Missing directory detail for $id")
+    }
+
+    override suspend fun directoryItemBySourceId(
+        sourceId: String,
+        kind: DirectoryItemKind,
+    ): DirectoryItemDetailDto {
+        failure?.let { throw it }
+        directorySourceIdQueries.add(sourceId to kind)
+        return directoryDetailsBySourceId[sourceId] ?: error("Missing directory detail for source id $sourceId")
+    }
+
+    override fun cachedDirectoryDetail(lookup: DirectoryDetailLookup): Flow<DirectoryItemDetailDto?> =
+        flowOf(cachedDirectoryDetails[lookup])
+
+    override suspend fun refreshDirectoryDetail(lookup: DirectoryDetailLookup): DirectoryItemDetailDto =
+        when {
+            !lookup.itemId.isNullOrBlank() -> directoryItem(lookup.itemId)
+            !lookup.sourceId.isNullOrBlank() -> directoryItemBySourceId(lookup.sourceId, lookup.kind)
+            else -> error("Missing directory lookup key")
+        }
+
+    override suspend fun directoryItemContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
+
+    override suspend fun inheritors(query: InheritorQuery): PagedResult<InheritorSummaryDto> {
+        failure?.let { throw it }
+        return PagedResult(
+            items = inheritors,
+            page = query.page,
+            pageSize = query.pageSize,
+        )
+    }
+
+    override fun pagedInheritors(query: InheritorQuery): Flow<PagingData<InheritorSummaryDto>> {
+        pagedInheritorQueries.add(query)
+        return flowOf(PagingData.from(inheritors))
+    }
+
+    override suspend fun inheritor(id: String): InheritorDetailDto {
+        failure?.let { throw it }
+        return inheritorDetails[id] ?: error("Missing inheritor detail for $id")
+    }
+
+    override suspend fun inheritorBySourceId(sourceId: String): InheritorDetailDto {
+        failure?.let { throw it }
+        inheritorSourceIdQueries.add(sourceId)
+        return inheritorDetailsBySourceId[sourceId] ?: error("Missing inheritor detail for source id $sourceId")
+    }
+
+    override fun cachedInheritorDetail(lookup: InheritorDetailLookup): Flow<InheritorDetailDto?> =
+        flowOf(cachedInheritorDetails[lookup])
+
+    override suspend fun refreshInheritorDetail(lookup: InheritorDetailLookup): InheritorDetailDto =
+        when {
+            !lookup.inheritorId.isNullOrBlank() -> inheritor(lookup.inheritorId)
+            !lookup.sourceId.isNullOrBlank() -> inheritorBySourceId(lookup.sourceId)
+            else -> error("Missing inheritor lookup key")
+        }
+
+    override suspend fun inheritorContext(id: String): DetailContextDto {
+        failure?.let { throw it }
+        return DetailContextDto()
+    }
+
+    override suspend fun searchV2(query: SearchV2Query): SearchV2ResponseDto {
+        failure?.let { throw it }
+        return searchV2Response
+    }
+
+    override suspend fun searchSuggestions(prefix: String, limit: Int): List<SearchSuggestionDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun timelineV2(query: TimelineV2Query): TimelineV2ResponseDto {
+        failure?.let { throw it }
+        return timelineV2Response
+    }
+
+    override suspend fun timelineYears(): List<TimelineYearBucketDto> {
+        failure?.let { throw it }
+        return timelineYearsList
+    }
+
+    override suspend fun exploreIndex(): ExploreIndexDto {
+        failure?.let { throw it }
+        return ExploreIndexDto()
+    }
+
+    override suspend fun exploreTopics(type: String?, limit: Int): List<ExploreTopicInfoDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun exploreTopic(type: String, key: String, limit: Int): ExploreTopicV2Dto {
+        failure?.let { throw it }
+        return ExploreTopicV2Dto()
+    }
+
+    override suspend fun learningPaths(): List<LearningPathDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun learningPathDetail(id: String, limit: Int): LearningPathDetailDto {
+        failure?.let { throw it }
+        return LearningPathDetailDto()
+    }
+
+    override suspend fun regionAtlas(): RegionAtlasDto {
+        failure?.let { throw it }
+        return RegionAtlasDto()
+    }
+
+    override suspend fun regionAtlasDetail(region: String, limit: Int): RegionAtlasDetailDto {
+        failure?.let { throw it }
+        return RegionAtlasDetailDto()
+    }
+
+    override suspend fun featuredCollections(): List<FeaturedCollectionDto> {
+        failure?.let { throw it }
+        return emptyList()
+    }
+
+    override suspend fun collection(id: String, limit: Int): CollectionDto {
+        failure?.let { throw it }
+        return CollectionDto()
+    }
+
+    override suspend fun topicCollection(type: String, key: String, limit: Int): CollectionDto {
+        failure?.let { throw it }
+        return CollectionDto()
+    }
+
+    // Discovery v2
+    override suspend fun discoveryToday(): DiscoveryTodayDto {
+        failure?.let { throw it }
+        return DiscoveryTodayDto()
+    }
+
+    override suspend fun discoveryRandom(type: SearchResultType): DiscoveryItemDto {
+        failure?.let { throw it }
+        return DiscoveryItemDto()
+    }
+
+    override suspend fun discoveryTrending(limit: Int): DiscoveryTrendingDto {
+        failure?.let { throw it }
+        return DiscoveryTrendingDto()
+    }
+
+    override suspend fun discoveryWeekly(): DiscoveryWeeklyDto {
+        failure?.let { throw it }
+        return DiscoveryWeeklyDto()
+    }
+
+    override suspend fun discoverySerendipity(query: DiscoverySerendipityQuery): DiscoveryItemDto {
+        failure?.let { throw it }
+        return DiscoveryItemDto()
+    }
+
+    override suspend fun discoveryDeepDive(query: DiscoveryDeepDiveQuery): DiscoveryDeepDiveDto {
+        failure?.let { throw it }
+        return DiscoveryDeepDiveDto()
+    }
+
+    // Data Stories
+    override suspend fun regionStory(region: String): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    override suspend fun categoryStory(category: String): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    override suspend fun yearStory(year: Int): DataStoryDto {
+        failure?.let { throw it }
+        return DataStoryDto()
+    }
+
+    // Taxonomy
+    override suspend fun taxonomyCategories(limit: Int): TaxonomyIndexDto<TaxonomyTopicDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyRegions(
+        limit: Int,
+        sort: TaxonomyRegionSort,
+    ): TaxonomyIndexDto<TaxonomyTopicDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyKinds(): TaxonomyIndexDto<TaxonomyKindDto> {
+        failure?.let { throw it }
+        return TaxonomyIndexDto()
+    }
+
+    override suspend fun taxonomyCategoryDetail(
+        category: String,
+        limit: Int,
+    ): TaxonomyCategoryDetailDto {
+        failure?.let { throw it }
+        return TaxonomyCategoryDetailDto()
+    }
+
+    override suspend fun taxonomyRegionDetail(
+        region: String,
+        limit: Int,
+    ): TaxonomyRegionDetailDto {
+        failure?.let { throw it }
+        return TaxonomyRegionDetailDto()
+    }
+
+    // Compare
+    override suspend fun compareRegions(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    override suspend fun compareCategories(
+        left: String,
+        right: String,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    override suspend fun compareKinds(
+        left: DirectoryItemKind,
+        right: DirectoryItemKind,
+        limit: Int,
+    ): CompareResultDto {
+        failure?.let { throw it }
+        return CompareResultDto()
+    }
+
+    // Content Digest
+    override suspend fun articleDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    override suspend fun directoryItemDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    override suspend fun inheritorDigest(id: String): ContentDigestDto {
+        failure?.let { throw it }
+        return ContentDigestDto()
+    }
+
+    // Blended Recommendations
+    override suspend fun blendedRecommendations(
+        query: BlendedRecommendationQuery,
+    ): BlendedRecommendationResponseDto {
+        failure?.let { throw it }
+        return BlendedRecommendationResponseDto()
+    }
+}
