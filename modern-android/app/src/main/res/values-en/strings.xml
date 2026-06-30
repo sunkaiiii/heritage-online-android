@@ -65,8 +65,8 @@
     <string name="category_forum">Forum</string>
     <string name="category_special_topic">Specials</string>
 
-    <string name="collection_type_static">Static</string>
-    <string name="collection_type_special_topic">Special Topic</string>
+    <string name="collection_type_static">Content Collection</string>
+    <string name="collection_type_special_topic">Topic Collection</string>
     <string name="article_load_failed">Failed to load articles</string>
     <string name="article_append_failed">Failed to load more</string>
     <string name="banner_load_failed">Failed to load banners</string>

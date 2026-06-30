@@ -771,7 +771,7 @@ private fun InheritorFilterSheet(
     onClear: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var draftRegion by rememberSaveable { mutableStateOf(initialRegion) }
     var draftCategory by rememberSaveable { mutableStateOf(initialCategory) }
     var draftYear by rememberSaveable { mutableStateOf(initialYear) }
@@ -787,66 +787,74 @@ private fun InheritorFilterSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .navigationBarsPadding()
                 .imePadding()
                 .padding(horizontal = 24.dp)
                 .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = stringResource(R.string.filter_title),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-            OutlinedTextField(
-                value = draftRegion,
-                onValueChange = { draftRegion = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.filter_field_region)) },
-                placeholder = { Text(stringResource(R.string.filter_placeholder_region)) },
-                singleLine = true,
-            )
-            OutlinedTextField(
-                value = draftCategory,
-                onValueChange = { draftCategory = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.filter_field_category)) },
-                placeholder = { Text(stringResource(R.string.directory_field_category)) },
-                singleLine = true,
-            )
-            OutlinedTextField(
-                value = draftYear,
-                onValueChange = { draftYear = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.filter_field_year)) },
-                placeholder = { Text(stringResource(R.string.filter_placeholder_year)) },
-                singleLine = true,
-                isError = yearError,
-                supportingText = if (yearError) {
-                    { Text(stringResource(R.string.filter_invalid_year)) }
-                } else {
-                    null
-                },
-            )
-            Text(
-                text = stringResource(R.string.filter_field_gender),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            val genderOptions = InheritorGender.entries
-            val selectedIndex = genderOptions.indexOfFirst { it.wireValue == draftGender }.takeIf { it >= 0 } ?: 0
-            SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                genderOptions.forEachIndexed { index, option ->
-                    SegmentedButton(
-                        selected = index == selectedIndex,
-                        onClick = { draftGender = option.wireValue },
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = genderOptions.size,
-                        ),
-                    ) {
-                        Text(stringResource(option.labelRes))
+            val scrollState = rememberScrollState()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f, fill = false)
+                    .verticalScroll(scrollState),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.filter_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                OutlinedTextField(
+                    value = draftRegion,
+                    onValueChange = { draftRegion = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.filter_field_region)) },
+                    placeholder = { Text(stringResource(R.string.filter_placeholder_region)) },
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = draftCategory,
+                    onValueChange = { draftCategory = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.filter_field_category)) },
+                    placeholder = { Text(stringResource(R.string.directory_field_category)) },
+                    singleLine = true,
+                )
+                OutlinedTextField(
+                    value = draftYear,
+                    onValueChange = { draftYear = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.filter_field_year)) },
+                    placeholder = { Text(stringResource(R.string.filter_placeholder_year)) },
+                    singleLine = true,
+                    isError = yearError,
+                    supportingText = if (yearError) {
+                        { Text(stringResource(R.string.filter_invalid_year)) }
+                    } else {
+                        null
+                    },
+                )
+                Text(
+                    text = stringResource(R.string.filter_field_gender),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                val genderOptions = InheritorGender.entries
+                val selectedIndex = genderOptions.indexOfFirst { it.wireValue == draftGender }.takeIf { it >= 0 } ?: 0
+                SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+                    genderOptions.forEachIndexed { index, option ->
+                        SegmentedButton(
+                            selected = index == selectedIndex,
+                            onClick = { draftGender = option.wireValue },
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = genderOptions.size,
+                            ),
+                        ) {
+                            Text(stringResource(option.labelRes))
+                        }
                     }
                 }
             }
