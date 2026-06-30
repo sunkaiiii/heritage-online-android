@@ -82,6 +82,7 @@ private const val RANKING_METRICS_MAX_COUNT = 10
 fun RankingsRoute(
     onBack: () -> Unit,
     onRankingClick: (String) -> Unit,
+    onContentClick: (com.duckylife.heritage.modern.feature.detail.DetailContextTarget) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: RankingsViewModel = hiltViewModel(),
 ) {
@@ -104,7 +105,7 @@ fun RankingsRoute(
                     filters = RankingFilters(),
                 )
             },
-            onContentClick = {},
+            onContentClick = onContentClick,
         )
     }
 
@@ -815,7 +816,7 @@ private fun RankingFilterSheet(
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 targetTypes.forEach { (value, labelRes) ->
                     FilterChip(
-                        selected = localFilters.targetType == value,
+                        selected = (localFilters.targetType ?: ContentTargetType.All) == value,
                         onClick = { localFilters = localFilters.copy(targetType = value.takeIf { it != ContentTargetType.All }) },
                         label = { Text(stringResource(labelRes)) },
                     )

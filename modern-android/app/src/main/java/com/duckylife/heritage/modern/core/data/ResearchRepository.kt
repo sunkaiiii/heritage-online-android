@@ -64,8 +64,16 @@ class DefaultResearchRepository @Inject constructor(
     }
 
     override suspend fun saveArtifactToCache(packageId: String, artifactName: String, bytes: ByteArray): File {
+        require(isAllowedArtifactName(artifactName)) {
+            "artifactName must be a safe file name (no path separators, control chars, or traversal, 1-128 chars)"
+        }
         val dir = File(cacheDir, "artifacts").apply { mkdirs() }
-        val file = File(dir, "$packageId-$artifactName")
+        val safePackageId = sanitizeFileName(packageId)
+        val file = File(dir, "$safePackageId-$artifactName")
+        val baseDir = dir.canonicalPath
+        require(file.canonicalPath.startsWith("$baseDir${File.separator}")) {
+            "resolved cache file escaped artifacts directory"
+        }
         file.writeBytes(bytes)
         return file
     }
@@ -224,4 +232,15 @@ internal fun ResearchReportDto.toDetailUiModel(): ResearchReportDetailUiModel =
 private fun ResearchReportFindingDto.resolveFindingTitle(): String? {
     val firstLine = claim.lines().firstOrNull()?.trim().orEmpty()
     return firstLine.takeIf { it.isNotBlank() }?.take(80)
+}
+
+/**
+ * 将任意标识符转换为可在文件系统中安全使用的名称：移除路径分隔符、折叠连续点号，
+ * 避免 `../` 等遍历片段。最终仍会通过 [File.canonicalPath] 二次校验。
+ */
+private fun sanitizeFileName(value: String): String {
+    return value.replace(Regex("[/\\\\]"), "_")
+        .replace(Regex("\\.{2,}"), "_")
+        .trim()
+        .takeIf { it.isNotEmpty() } ?: "_"
 }

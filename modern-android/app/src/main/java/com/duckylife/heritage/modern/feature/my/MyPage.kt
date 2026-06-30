@@ -173,10 +173,12 @@ fun MyPage(
     val favoriteRemovedMessage = stringResource(R.string.favorite_removed_message)
 
     LaunchedEffect(Unit) {
-        viewModel.syncEvent.collect { errorKind ->
-            errorKind?.let {
-                snackbarHostState.showSnackbar(context.getString(it.fallbackResId()))
+        viewModel.syncEvent.collect { event ->
+            val message = when (event) {
+                is SyncEvent.Success -> context.getString(R.string.sync_status_success)
+                is SyncEvent.Error -> context.getString(event.errorKind.fallbackResId())
             }
+            snackbarHostState.showSnackbar(message)
         }
     }
 

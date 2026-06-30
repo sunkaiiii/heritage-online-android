@@ -48,15 +48,16 @@ class RankingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(RankingsUiState())
     val uiState: StateFlow<RankingsUiState> = _uiState.asStateFlow()
 
-    private var loadJob: Job? = null
+    private var definitionsJob: Job? = null
+    private var contentJob: Job? = null
 
     init {
         loadRankings()
     }
 
     fun loadRankings() {
-        loadJob?.cancel()
-        loadJob = viewModelScope.launch {
+        definitionsJob?.cancel()
+        definitionsJob = viewModelScope.launch {
             _uiState.update { it.copy(definitions = AsyncState(isLoading = true)) }
             runCatchingCancellable { repository.getRankings() }
                 .onSuccess { definitions ->
@@ -73,8 +74,8 @@ class RankingsViewModel @Inject constructor(
     }
 
     fun loadRankingContent(metric: RankingMetric, filters: RankingFilters) {
-        loadJob?.cancel()
-        loadJob = viewModelScope.launch {
+        contentJob?.cancel()
+        contentJob = viewModelScope.launch {
             _uiState.update { it.copy(content = AsyncState(isLoading = true)) }
             runCatchingCancellable { repository.getRankingContent(metric, filters) }
                 .onSuccess { content ->

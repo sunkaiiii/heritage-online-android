@@ -22,13 +22,14 @@ import com.duckylife.heritage.modern.core.saved.SavedContentRepository
 import com.duckylife.heritage.modern.core.saved.SavedContentTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.duckylife.heritage.modern.core.runCatchingCancellable
@@ -37,6 +38,14 @@ import com.duckylife.heritage.modern.ui.error.fallbackResId
 import com.duckylife.heritage.modern.ui.error.toApiFailure
 import com.duckylife.heritage.modern.ui.error.toErrorKind
 import javax.inject.Inject
+
+/**
+ * 同步事件，用于一次性 Snackbar 反馈。
+ */
+sealed interface SyncEvent {
+    data object Success : SyncEvent
+    data class Error(val errorKind: ErrorKind) : SyncEvent
+}
 
 /**
  * “我的学习空间”的 UI 模型。
@@ -96,8 +105,8 @@ class MyPageViewModel @Inject constructor(
     private val _journeys = MutableStateFlow<JourneysUiState>(JourneysUiState.Loading)
     val journeys: StateFlow<JourneysUiState> = _journeys
 
-    private val _syncEvent = kotlinx.coroutines.flow.MutableSharedFlow<ErrorKind?>()
-    val syncEvent: kotlinx.coroutines.flow.SharedFlow<ErrorKind?> = _syncEvent.asSharedFlow()
+    private val _syncEvent = kotlinx.coroutines.channels.Channel<SyncEvent>(kotlinx.coroutines.channels.Channel.BUFFERED)
+    val syncEvent: kotlinx.coroutines.flow.Flow<SyncEvent> = _syncEvent.receiveAsFlow()
 
     private var journeysJob: Job? = null
     private var latestSignals: JourneySignalsDto? = null
@@ -144,9 +153,9 @@ class MyPageViewModel @Inject constructor(
     fun syncNow() {
         viewModelScope.launch {
             runCatchingCancellable { syncRepository.syncNow() }
-                .onSuccess { _syncEvent.emit(null) }
+                .onSuccess { _syncEvent.trySend(SyncEvent.Success) }
                 .onFailure { throwable ->
-                    _syncEvent.emit(throwable.toApiFailure().toErrorKind())
+                    _syncEvent.trySend(SyncEvent.Error(throwable.toApiFailure().toErrorKind()))
                 }
         }
     }

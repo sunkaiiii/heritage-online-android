@@ -1217,7 +1217,7 @@ private fun SpacetimeFilterSheet(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     targetTypes.forEach { (value, labelRes) ->
                         FilterChip(
-                            selected = localFilters.targetType == value,
+                            selected = (localFilters.targetType ?: ContentTargetType.All) == value,
                             onClick = { localFilters = localFilters.copy(targetType = value.takeIf { it != ContentTargetType.All }) },
                             label = { Text(stringResource(labelRes)) },
                         )

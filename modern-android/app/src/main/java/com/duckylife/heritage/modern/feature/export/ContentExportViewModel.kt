@@ -16,12 +16,12 @@ import com.duckylife.heritage.modern.ui.state.AsyncState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -68,8 +68,8 @@ class ContentExportViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ContentExportUiState())
     val uiState: StateFlow<ContentExportUiState> = _uiState.asStateFlow()
 
-    private val _shareEvent = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 1)
-    val shareEvent: SharedFlow<String> = _shareEvent.asSharedFlow()
+    private val _shareEvent = Channel<String>(Channel.BUFFERED)
+    val shareEvent: Flow<String> = _shareEvent.receiveAsFlow()
 
     private var templatesJob: Job? = null
     private var previewJob: Job? = null
@@ -179,7 +179,7 @@ class ContentExportViewModel @Inject constructor(
                         )
                     }
                     if (!oversized && content != null) {
-                        _shareEvent.emit(content)
+                        _shareEvent.trySend(content)
                     }
                 }
                 .onFailure { throwable ->

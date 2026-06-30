@@ -20,7 +20,8 @@ data class SpacetimeFilters(
 ) : java.io.Serializable {
     val isEmpty: Boolean
         get() = fromYear == null && toYear == null && region.isNullOrBlank() &&
-            category.isNullOrBlank() && kind.isNullOrBlank() && targetType == null
+            category.isNullOrBlank() && kind.isNullOrBlank() &&
+            (targetType == null || targetType == ContentTargetType.All)
 }
 
 data class SpacetimeOverviewUiModel(

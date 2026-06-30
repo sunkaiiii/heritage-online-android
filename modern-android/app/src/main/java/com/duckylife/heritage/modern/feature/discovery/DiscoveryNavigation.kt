@@ -802,6 +802,7 @@ fun DiscoveryNavHost(
                                 backStack.add(DiscoveryRouteKey.RankingDetailPage(rankingId = rankingId))
                             }
                         },
+                        onContentClick = { target -> navigateToDetailContextTarget(target, backStack) },
                         modifier = modifier,
                     )
                 }
