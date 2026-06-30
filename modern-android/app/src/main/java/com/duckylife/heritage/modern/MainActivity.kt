@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -163,6 +164,15 @@ private fun HeritageApp(
     var discoveryInDetail by remember { mutableStateOf(false) }
     var myPageDestination by remember { mutableStateOf<MyPageDestination?>(null) }
     var pendingDiscoverySearch by rememberSaveable { mutableStateOf<String?>(null) }
+    var discoveryHomeRequest by rememberSaveable { mutableIntStateOf(0) }
+    val navigateToDiscoveryHome: () -> Unit = {
+        showSettings = false
+        showMyPage = false
+        myPageDestination = null
+        pendingDiscoverySearch = null
+        selectedDestination = HomeDestination.Discovery
+        discoveryHomeRequest += 1
+    }
     val openDiscoverySearch: (String) -> Unit = { rawQuery ->
         val query = rawQuery.trim()
         if (query.isNotEmpty()) {
@@ -259,6 +269,8 @@ private fun HeritageApp(
                         is MyPageDestination.LearningRouteDetail -> HomeDestination.Discovery
                     }
                 },
+                onNavigateToDiscovery = navigateToDiscoveryHome,
+                onNavigateToLearningRoutes = { navigateToLearningRoutes(null, null) },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(contentPadding),
@@ -321,6 +333,7 @@ private fun HeritageApp(
 
             HomeDestination.Discovery -> DiscoveryNavHost(
                 onSecondaryDestinationChanged = { discoveryInDetail = it },
+                resetToHomeRequest = discoveryHomeRequest,
                 pendingNavigation = myPageDestination,
                 onPendingNavigationConsumed = { myPageDestination = null },
                 pendingSearchQuery = pendingDiscoverySearch,

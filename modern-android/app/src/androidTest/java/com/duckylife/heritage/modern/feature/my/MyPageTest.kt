@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -117,9 +118,55 @@ class MyPageTest {
             .assertIsDisplayed()
     }
 
+    @Test
+    fun favoritesEmptyGoDiscover_invokesDiscoveryCallback() {
+        var navigationCount = 0
+        renderMyPage(onNavigateToDiscovery = { navigationCount += 1 })
+
+        composeRule.onNodeWithText(string(R.string.action_go_discover))
+            .performScrollTo()
+            .performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, navigationCount)
+        }
+    }
+
+    @Test
+    fun learningEmptyBrowseRoutes_invokesLearningRoutesCallback() {
+        var navigationCount = 0
+        renderMyPage(onNavigateToLearningRoutes = { navigationCount += 1 })
+
+        composeRule.onNodeWithText(string(R.string.learning_tab)).performClick()
+        composeRule.onNodeWithText(string(R.string.action_browse_learning_routes))
+            .performScrollTo()
+            .performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, navigationCount)
+        }
+    }
+
+    @Test
+    fun journeysEmptyGoDiscover_invokesDiscoveryCallback() {
+        var navigationCount = 0
+        renderMyPage(onNavigateToDiscovery = { navigationCount += 1 })
+
+        composeRule.onNodeWithText(string(R.string.journeys_tab)).performClick()
+        composeRule.onNodeWithText(string(R.string.action_go_discover))
+            .performScrollTo()
+            .performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(1, navigationCount)
+        }
+    }
+
     private fun renderMyPage(
         sync: FakeLocalUserSyncRepository = FakeLocalUserSyncRepository(),
         savedContent: FakeSavedContentRepository = FakeSavedContentRepository(),
+        onNavigateToDiscovery: () -> Unit = {},
+        onNavigateToLearningRoutes: () -> Unit = {},
     ) {
         val viewModel = MyPageViewModel(
             savedContentRepository = savedContent,
@@ -132,6 +179,8 @@ class MyPageTest {
             MyPage(
                 onBack = {},
                 onNavigate = {},
+                onNavigateToDiscovery = onNavigateToDiscovery,
+                onNavigateToLearningRoutes = onNavigateToLearningRoutes,
                 viewModel = viewModel,
                 readingPathViewModel = readingPathViewModel,
             )

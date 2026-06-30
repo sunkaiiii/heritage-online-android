@@ -102,6 +102,7 @@ private fun DiscoveryRouteKey.DiscoveryInheritorDetail.continueExploreContentId(
 @Composable
 fun DiscoveryNavHost(
     onSecondaryDestinationChanged: (Boolean) -> Unit,
+    resetToHomeRequest: Int = 0,
     pendingNavigation: MyPageDestination? = null,
     onPendingNavigationConsumed: () -> Unit = {},
     pendingSearchQuery: String? = null,
@@ -116,6 +117,12 @@ fun DiscoveryNavHost(
     }
     LaunchedEffect(backStack.toList()) {
         savedStack = serializeDiscoveryRoutes(backStack.filterIsInstance<DiscoveryRouteKey>())
+    }
+    LaunchedEffect(resetToHomeRequest) {
+        if (resetToHomeRequest > 0) {
+            backStack.clear()
+            backStack.add(DiscoveryRouteKey.DiscoveryIndex)
+        }
     }
     val popBackStack: () -> Unit = {
         if (backStack.size > 1) {
