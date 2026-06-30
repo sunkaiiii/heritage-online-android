@@ -115,10 +115,15 @@ import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.encodeURLPathPart
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
@@ -804,7 +809,7 @@ class KtorHeritageApiClient(
             optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
             optionalParameter("type", query.type?.wireName)
             optionalParameter("limit", query.limit)
-        }.body()
+        }.bodyAsGraphTrail()
 
     override suspend fun getGraphTrailFromContent(query: GraphTrailFromContentQuery): GraphTrailDto =
         httpClient.get(
@@ -813,7 +818,7 @@ class KtorHeritageApiClient(
             optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
             optionalParameter("limit", query.limit)
             optionalParameter("includeTopics", query.includeTopics)
-        }.body()
+        }.bodyAsGraphTrail()
 
     override suspend fun getGraphTrailFromTopic(query: GraphTrailFromTopicQuery): GraphTrailDto =
         httpClient.get(
@@ -821,7 +826,7 @@ class KtorHeritageApiClient(
         ) {
             optionalParameter("strategy", query.strategy.takeIf { it != TrailStrategy.Unknown }?.wireName)
             optionalParameter("limit", query.limit)
-        }.body()
+        }.bodyAsGraphTrail()
 
     // ── LearningRoutes API ──
 
@@ -996,6 +1001,15 @@ class KtorHeritageApiClient(
     private fun endpoint(path: String): String = "${baseUrl.trimEnd('/')}/${path.trimStart('/')}"
 
     private fun pathSegment(value: String): String = value.encodeURLPathPart()
+
+    private suspend fun HttpResponse.bodyAsGraphTrail(): GraphTrailDto {
+        val element = body<JsonElement>()
+        val trailElement = (element as? JsonObject)
+            ?.get("trail")
+            ?.takeUnless { it is JsonNull }
+            ?: element
+        return HeritageJson.decodeFromJsonElement(GraphTrailDto.serializer(), trailElement)
+    }
 
     private fun v3PagePath(type: SearchResultType): String = when (type) {
         SearchResultType.Article -> "article"

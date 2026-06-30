@@ -6,6 +6,7 @@ import com.duckylife.heritage.modern.core.network.dto.DirectoryItemKind
 import com.duckylife.heritage.modern.core.network.dto.DirectoryStatisticDimension
 import com.duckylife.heritage.modern.core.network.dto.SearchResultType
 import com.duckylife.heritage.modern.core.network.dto.advanced.JourneyStrategy
+import com.duckylife.heritage.modern.core.network.dto.advanced.TrailStrategy
 import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
@@ -1297,6 +1298,117 @@ class KtorHeritageApiClientTest {
         assertEquals("12", request.url.parameters["limit"])
         assertEquals("false", request.url.parameters["includeAiInferred"])
         assertEquals("true", request.url.parameters["includeTrail"])
+    }
+
+    @Test
+    fun getRandomGraphTrail_decodesWrappedTrailAndAppliesQuery() = runTest {
+        var capturedRequest: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            capturedRequest = request
+            respond(
+                content = """
+                    {
+                      "trail": {
+                        "trailId": "trail-1",
+                        "strategy": "mixed",
+                        "title": "随机漫游",
+                        "steps": [
+                          {
+                            "order": 1,
+                            "node": {
+                              "nodeKey": "article:a1",
+                              "type": "article",
+                              "mongoId": "a1",
+                              "title": "起点"
+                            },
+                            "stepType": "start"
+                          }
+                        ],
+                        "nodes": [
+                          {
+                            "nodeKey": "article:a1",
+                            "type": "article",
+                            "mongoId": "a1",
+                            "title": "起点"
+                          }
+                        ],
+                        "edges": [],
+                        "topicLabels": ["非遗"],
+                        "score": 0.8
+                      }
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+            install(profileHeaderPlugin(fakeProfileRepository))
+        }
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getRandomGraphTrail(
+            GraphTrailRandomQuery(
+                strategy = TrailStrategy.Mixed,
+                type = SearchResultType.Article,
+                limit = 6,
+            ),
+        )
+
+        assertEquals("trail-1", result.trailId)
+        assertEquals("随机漫游", result.title)
+        assertEquals(1, result.steps.size)
+        assertEquals("起点", result.steps.first().node?.title)
+        assertEquals(1, result.nodes.size)
+
+        val request = requireNotNull(capturedRequest)
+        assertEquals("/api/knowledge-graph/trails/random", request.url.encodedPath)
+        assertEquals("mixed", request.url.parameters["strategy"])
+        assertEquals("article", request.url.parameters["type"])
+        assertEquals("6", request.url.parameters["limit"])
+    }
+
+    @Test
+    fun getRandomGraphTrail_decodesFlatTrailForCompatibility() = runTest {
+        val engine = MockEngine {
+            respond(
+                content = """
+                    {
+                      "trailId": "flat-trail",
+                      "strategy": "mixed",
+                      "title": "兼容漫游",
+                      "steps": [
+                        {
+                          "order": 0,
+                          "node": {
+                            "nodeKey": "article:a1",
+                            "type": "article",
+                            "id": "a1",
+                            "title": "起点"
+                          },
+                          "stepType": "start"
+                        }
+                      ],
+                      "nodes": [],
+                      "edges": [],
+                      "topicLabels": [],
+                      "score": 0.5
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = HttpClient(engine) {
+            install(ContentNegotiation) { json(HeritageJson) }
+            install(profileHeaderPlugin(fakeProfileRepository))
+        }
+        val api = createApiClient(httpClient = client, baseUrl = "https://example.test")
+
+        val result = api.getRandomGraphTrail(GraphTrailRandomQuery())
+
+        assertEquals("flat-trail", result.trailId)
+        assertEquals("兼容漫游", result.title)
+        assertEquals("起点", result.steps.first().node?.title)
     }
 
     @Test

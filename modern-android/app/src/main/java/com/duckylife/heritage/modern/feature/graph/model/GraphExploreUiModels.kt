@@ -407,7 +407,9 @@ fun GraphTrailDto.toGraphTrailResult(): GraphTrailResult {
                 .firstOrNull { it.wireName == step.viaRelationType }
                 ?: GraphRelationType.Unknown,
         )
-    }.sortedBy { it.order }
+    }
+        .sortedBy { it.order }
+        .mapIndexed { index, step -> step.copy(order = index) }
     // 后端某些漫游接口只返回 nodes 而不返回 steps，用 nodes 兜底生成可浏览的步骤
     val effectiveSteps = mappedSteps.takeIf { it.isNotEmpty() }
         ?: nodes.mapIndexed { index, nodeDto ->

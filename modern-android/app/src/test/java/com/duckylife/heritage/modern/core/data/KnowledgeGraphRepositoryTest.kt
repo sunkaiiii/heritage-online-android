@@ -291,6 +291,31 @@ class KnowledgeGraphRepositoryTest {
     }
 
     @Test
+    fun `getRandomGraphTrail normalizes one based steps for UI`() = runTest {
+        fakeApi.graphTrailResult = GraphTrailDto(
+            trailId = "trail-1",
+            strategy = TrailStrategy.Mixed,
+            steps = listOf(
+                GraphTrailStepDto(
+                    order = 1,
+                    node = GraphNodeDto(
+                        nodeKey = "article:a1",
+                        type = GraphNodeType.Article,
+                        title = "起点",
+                    ),
+                    stepType = "start",
+                ),
+            ),
+        )
+
+        val result = repository.getRandomGraphTrail(strategy = TrailStrategy.Mixed, limit = 6)
+
+        assertEquals(0, result.steps.first().order)
+        assertEquals("a1", result.steps.first().node.id)
+        assertEquals("起点", result.steps.first().node.title)
+    }
+
+    @Test
     fun `getGraphTrailFromContent maps source`() = runTest {
         fakeApi.graphTrailResult = GraphTrailDto(trailId = "trail-2", steps = emptyList())
 
