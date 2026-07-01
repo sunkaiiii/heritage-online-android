@@ -1,6 +1,8 @@
 # Heritage Online Modern Android
 
-This is the clean, modern Android shell for the next version of E迹.
+English | [简体中文](README_CN.md)
+
+This is the clean, modern Android shell for the next version of **E迹** (Heritage Online).
 
 The legacy app in the repository root remains untouched as a functional reference. This project is intentionally independent so the new client can move to current Android tooling without dragging the old Gradle setup along.
 
@@ -9,12 +11,15 @@ The legacy app in the repository root remains untouched as a functional referenc
 - Gradle 9.5.1
 - Android Gradle Plugin 9.2.1
 - Kotlin 2.3.21
-- Compose BOM 2026.05.00
+- Compose BOM 2026.05.01
 - Material 3
-- Navigation 3 dependencies prepared for the next slice
-- Ktor Client 3.4.3
+- Navigation 3 with typed back stack
+- Ktor Client 3.5.0
 - kotlinx.serialization 1.11.0
-- Flow/StateFlow-first architecture planned
+- Hilt 2.59.2
+- Room 2.8.4
+- Paging 3.5.0
+- Flow / StateFlow-first UI state
 
 ## Run
 
@@ -25,60 +30,65 @@ cd modern-android
 
 ## API Contract Layer
 
-The first network contract layer is in place:
+The network contract layer lives under `app/src/main/java/com/duckylife/heritage/modern/core/network`:
 
-- DTOs: `app/src/main/java/com/duckylife/heritage/modern/core/network/dto`
-- API client: `app/src/main/java/com/duckylife/heritage/modern/core/network/HeritageApiClient.kt`
-- Repository boundary: `app/src/main/java/com/duckylife/heritage/modern/core/data/HeritageRepository.kt`
+- DTOs: `core/network/dto`
+- API client: `core/network/HeritageApiClient.kt`
+- Repository boundary: `core/data/HeritageRepository.kt`
 - Base URL configured via `BuildConfig.HERITAGE_API_BASE_URL` (default `https://tuantuan.myds.me:28887`)
 
-The contract maps the local Swagger document:
+Endpoints include (but are not limited to):
 
 - `/api/home-banners`
 - `/api/articles`
 - `/api/directory-items`
 - `/api/inheritors`
+- `/api/search/v2`
+- `/api/learning-routes`
+- `/api/rankings`
+- `/api/spacetime`
+- `/api/research`
 
 ## Local Verification
 
-本项目不做远端 CI。每次大改后，按改动范围跑对应命令即可确认项目没坏。
+This project does not use remote CI. Run the appropriate commands locally after significant changes.
 
-### 快速检查（推荐日常开发）
+### Quick check (recommended for daily development)
 
 ```bash
 cd modern-android
 ./gradlew :app:verifyLocal
 ```
 
-等价于 `testDebugUnitTest` + `assembleDebug`，不依赖模拟器。
+Equivalent to `testDebugUnitTest` + `assembleDebug`; no emulator required.
 
-### 改动分级检查表
+### Verification by change scope
 
-| 改动范围 | 需要跑的命令 |
-|---------|------------|
-| UI 布局、文案、样式 | `./gradlew :app:verifyLocal` |
-| Repository、Room、Paging、导航 | `./gradlew :app:verifyLocal`<br>`./gradlew :app:connectedDebugAndroidTest`（需模拟器在线） |
-| Release、签名、Gradle 配置 | `./gradlew :app:verifyLocal`<br>无签名参数跑 `:app:assembleRelease` 应失败<br>有签名参数跑 `:app:assembleRelease` 应成功 |
-| 后端 API、Mock 数据 | `./gradlew :app:connectedDebugAndroidTest`（模拟器 UI 验收） |
+| Scope | Commands |
+|-------|----------|
+| UI layout, copy, styles | `./gradlew :app:verifyLocal` |
+| Repository, Room, Paging, navigation | `./gradlew :app:verifyLocal`<br>`./gradlew :app:connectedDebugAndroidTest` (emulator/device required) |
+| Release, signing, Gradle config | `./gradlew :app:verifyLocal`<br>`./gradlew :app:assembleRelease` should fail without signing<br>`./gradlew :app:assembleRelease` should succeed with signing |
+| Backend API / mock data | `./gradlew :app:connectedDebugAndroidTest` |
 
-### 单步命令
+### Individual commands
 
 ```bash
-# 单元测试 + debug 构建
+# Unit tests + debug build
 ./gradlew :app:verifyLocal
 
-# Instrumentation 测试（39 个，需模拟器在线）
+# Instrumentation tests (101 tests, emulator/device required)
 ./gradlew :app:connectedDebugAndroidTest
 
-# Release（需先配置签名，见下方）
+# Release (requires signing configuration, see below)
 ./gradlew :app:assembleRelease
 ```
 
 ## Release Signing
 
-Release 构建**必须**签名。缺少签名配置时，`assembleRelease` 会失败并提示具体缺少哪几项。
+Release builds **must** be signed. `assembleRelease` will fail with a clear message if the signing configuration is missing.
 
-首先生成 keystore（仅一次）：
+Generate a keystore once:
 
 ```bash
 keytool -genkey -v -keystore ~/.gradle/heritage-release.jks \
@@ -86,7 +96,7 @@ keytool -genkey -v -keystore ~/.gradle/heritage-release.jks \
   -alias heritage-release
 ```
 
-然后在 `~/.gradle/gradle.properties`（或仓库级 `gradle.properties`）中加入：
+Then add to `~/.gradle/gradle.properties` (or a repository-level `gradle.properties` that is not committed):
 
 ```properties
 heritageReleaseStoreFile=~/.gradle/heritage-release.jks
@@ -95,30 +105,30 @@ heritageReleaseKeyAlias=heritage-release
 heritageReleaseKeyPassword=<your-key-password>
 ```
 
-`~` 路径会自动展开；构建时会校验 keystore 文件确实存在。
+The `~` path is expanded automatically, and the build validates that the keystore file exists.
 
 ## Install
 
 ```bash
-# Debug（不需要签名）
+# Debug (no signing required)
 ./gradlew :app:installDebug
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 
-# Release（需先配置签名）
+# Release (requires signing)
 ./gradlew :app:assembleRelease
 adb install -r app/build/outputs/apk/release/app-release.apk
 ```
 
 ## Database Governance
 
-Room schema 已导出到 `app/schemas/`。改 Entity 时必须遵循：
+Room schemas are exported to `app/schemas/`. When changing an entity:
 
-1. 升版本号（`HeritageDatabase.version`）
-2. 在 `HeritageMigrations.kt` 补对应的 `Migration`
-3. 跑 `assembleDebug` 生成新 schema JSON
-4. 跑 migration test 确认迁移正确
+1. Bump the version in `HeritageDatabase`.
+2. Add the corresponding `Migration` in `HeritageMigrations.kt`.
+3. Run `./gradlew :app:assembleDebug` to generate the new schema JSON.
+4. Run the migration tests to confirm correctness.
 
-已移除 `.fallbackToDestructiveMigration(true)`。想重建数据库：卸载 App 或在系统设置里清除应用数据。
+`.fallbackToDestructiveMigration(true)` has been removed. To reset the database, uninstall the app or clear app data in system settings.
 
 ## Network Configuration
 
@@ -129,27 +139,27 @@ The base URL and HTTPS trust settings are injected at build time via `BuildConfi
 | `HERITAGE_API_BASE_URL` | `-PheritageApiBaseUrl=...` | `https://tuantuan.myds.me:28887` |
 | `HERITAGE_TRUST_SELF_SIGNED_CERTS` | `-PheritageTrustSelfSigned=...` | `true` (debug) / `false` (release) |
 
-### Emulator / 本地开发
+### Emulator / local development
 
-Android 模拟器将宿主机的 `localhost` 映射为 `10.0.2.2`。当后端运行在本机时，可通过 Gradle property 显式指定：
+The Android emulator maps host `localhost` to `10.0.2.2`. When the backend runs on the host machine, override via Gradle property:
 
 ```bash
 ./gradlew :app:assembleDebug -PheritageApiBaseUrl=https://10.0.2.2:5078
 ```
 
-不要把 `localhost`、`127.0.0.1` 或内网 IP 写入仓库；这些地址仅在构建命令或本机 `~/.gradle/gradle.properties` 中作为覆盖值使用。
+Do not commit `localhost`, `127.0.0.1`, or LAN IPs to the repository. Use them only in local build commands or `~/.gradle/gradle.properties`.
 
-### 局域网真机
+### LAN device
 
-使用本机局域网 IP，让真机访问同一网络下的后端：
+Use the host's LAN IP so a physical device on the same network can reach the backend:
 
 ```bash
 ./gradlew :app:assembleDebug -PheritageApiBaseUrl=https://192.168.x.x:5078
 ```
 
-### 公开 HTTPS 服务（推荐用于发布）
+### Public HTTPS (recommended for release)
 
-发布构建必须通过公开可信证书访问后端。在 `~/.gradle/gradle.properties` 或 CI 中配置：
+Release builds must use a publicly trusted certificate:
 
 ```properties
 heritageApiBaseUrl=https://your-public-domain/
@@ -160,15 +170,15 @@ heritageTrustSelfSigned=false
 ./gradlew :app:assembleRelease
 ```
 
-Release 构建会校验：基地址必须是 `https://`，且 `heritageTrustSelfSigned` 必须为 `false`。若使用 `http://` 或启用 trust-all，构建/启动将明确失败，不会静默发送明文请求。
+Release builds validate that the base URL is `https://` and that `heritageTrustSelfSigned` is `false`. Using `http://` or enabling trust-all will fail explicitly rather than silently sending plaintext requests.
 
-### 自签名证书
+### Self-signed certificates
 
-Debug 构建默认信任自签名证书，方便本地后端调试。Release 构建默认不信任自签名证书；**不要**为了绕过证书问题在 release 中启用 trust-all。
+Debug builds trust self-signed certificates by default to simplify local backend debugging. Release builds do **not** trust self-signed certificates; do not enable trust-all in release.
 
 ```bash
-# 仅 debug 可用
+# Debug only
 ./gradlew :app:assembleDebug -PheritageTrustSelfSigned=true
 ```
 
-当 `HERITAGE_TRUST_SELF_SIGNED_CERTS` 为 `false` 时，OkHttp 引擎会拒绝系统信任库之外的证书。
+When `HERITAGE_TRUST_SELF_SIGNED_CERTS` is `false`, the OkHttp engine rejects certificates not in the system trust store.
