@@ -36,12 +36,14 @@ import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.int
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
 import io.ktor.client.plugins.ResponseException
 import io.ktor.http.HttpStatusCode
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -238,7 +240,6 @@ class AdvancedApiClientTest {
                 includeRecommendations = true,
                 includeLocalState = true,
                 includeDigest = false,
-                profileId = "profile-42",
             ),
         )
 
@@ -249,7 +250,8 @@ class AdvancedApiClientTest {
         assertEquals("true", request.url.parameters["includeRecommendations"])
         assertEquals("true", request.url.parameters["includeLocalState"])
         assertEquals("false", request.url.parameters["includeDigest"])
-        assertEquals("profile-42", request.url.parameters["profileId"])
+        assertNull(request.url.parameters["profileId"])
+        assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
     }
 
     @Test
@@ -378,7 +380,7 @@ class AdvancedApiClientTest {
     }
 
     @Test
-    fun `buildLearningRoute sends seed params as GET query`() = runTest {
+    fun `buildLearningRoute sends seed params as POST body`() = runTest {
         var captured: HttpRequestData? = null
         val engine = MockEngine { request ->
             captured = request
@@ -411,16 +413,23 @@ class AdvancedApiClientTest {
 
         assertEquals("built-1", result.routeId)
         val request = requireNotNull(captured)
+        assertEquals("POST", request.method.value)
         assertEquals("/api/learning-routes/build", request.url.encodedPath)
-        assertEquals("content", request.url.parameters["seedType"])
-        assertEquals("article:中文", request.url.parameters["seedKey"])
-        assertEquals("beginner", request.url.parameters["difficulty"])
-        assertEquals("8", request.url.parameters["limit"])
-        assertEquals("true", request.url.parameters["includeArticles"])
+        assertTrue(request.url.parameters.isEmpty())
+
+        val raw = request.bodyText()
+        val json = HeritageJson.decodeFromString<JsonObject>(raw)
+        assertEquals("content", json["seedType"]?.jsonPrimitive?.content)
+        assertEquals("article:中文", json["seedKey"]?.jsonPrimitive?.content)
+        assertEquals("beginner", json["difficulty"]?.jsonPrimitive?.content)
+        assertEquals(8, json["limit"]?.jsonPrimitive?.int)
+        assertEquals(true, json["includeArticles"]?.jsonPrimitive?.boolean)
+        assertEquals(true, json["includeDirectoryItems"]?.jsonPrimitive?.boolean)
+        assertEquals(true, json["includeInheritors"]?.jsonPrimitive?.boolean)
     }
 
     @Test
-    fun `getLearningRouteNextStep passes profileId and completedStepIds`() = runTest {
+    fun `getLearningRouteNextStep passes completedStepIds via header identity`() = runTest {
         var captured: HttpRequestData? = null
         val engine = MockEngine { request ->
             captured = request
@@ -442,15 +451,15 @@ class AdvancedApiClientTest {
             LearningRouteNextQuery(
                 routeId = "route-1",
                 completedStepIds = listOf("step1", "step2"),
-                profileId = "android_test_profile",
             ),
         )
 
         assertEquals("step2", result.nextStep?.stepId)
         val request = requireNotNull(captured)
         assertEquals("/api/learning-routes/route-1/next", request.url.encodedPath)
-        assertEquals("android_test_profile", request.url.parameters["profileId"])
+        assertNull(request.url.parameters["profileId"])
         assertEquals("step1,step2", request.url.parameters["completedStepIds"])
+        assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
     }
 
     @Test
@@ -614,6 +623,51 @@ class AdvancedApiClientTest {
         assertEquals("csv", json["format"]?.jsonPrimitive?.content)
         assertEquals("陶瓷", json["query"]?.jsonPrimitive?.content)
         assertEquals(10, json["limit"]?.jsonPrimitive?.int)
+        assertEquals(false, json["includeSources"]?.jsonPrimitive?.boolean)
+        assertEquals(false, json["includeImages"]?.jsonPrimitive?.boolean)
+    }
+
+    @Test
+    fun `previewExport serializes default UI choices explicitly`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """
+                    {
+                        "scopeType": "ids",
+                        "format": "markdown",
+                        "estimatedItemCount": 1,
+                        "estimatedBytes": 512
+                    }
+                """.trimIndent(),
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        val request = ExportRequestDto(
+            scopeType = ExportScopeType.Ids,
+            format = ExportFormat.Markdown,
+            targetType = "article",
+            ids = listOf("article-1"),
+            includeSources = true,
+            includeImages = false,
+            limit = 1,
+        )
+        val result = api.previewExport(request)
+
+        assertEquals(ExportFormat.Markdown, result.format)
+
+        val raw = requireNotNull(captured).bodyText()
+        val json = HeritageJson.decodeFromString<JsonObject>(raw)
+        assertEquals("ids", json["scopeType"]?.jsonPrimitive?.content)
+        assertEquals("markdown", json["format"]?.jsonPrimitive?.content)
+        assertEquals("article", json["targetType"]?.jsonPrimitive?.content)
+        assertEquals("article-1", json["ids"]?.jsonArray?.firstOrNull()?.jsonPrimitive?.content)
+        assertEquals(true, json["includeSources"]?.jsonPrimitive?.boolean)
+        assertEquals(false, json["includeImages"]?.jsonPrimitive?.boolean)
     }
 
     @Test
@@ -650,8 +704,11 @@ class AdvancedApiClientTest {
         val raw = requireNotNull(captured).bodyText()
         val json = HeritageJson.decodeFromString<JsonObject>(raw)
         assertEquals("ids", json["scopeType"]?.jsonPrimitive?.content)
+        assertEquals("markdown", json["format"]?.jsonPrimitive?.content)
         assertEquals("article", json["targetType"]?.jsonPrimitive?.content)
         assertEquals("article-1", json["ids"]?.jsonArray?.firstOrNull()?.jsonPrimitive?.content)
+        assertEquals(false, json["includeSources"]?.jsonPrimitive?.boolean)
+        assertEquals(false, json["includeImages"]?.jsonPrimitive?.boolean)
     }
 
     @Test(expected = ResponseException::class)

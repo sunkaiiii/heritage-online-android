@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.core.network.dto.advanced
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -57,3 +58,23 @@ data class LearningRouteNextDto(
     val nextStep: LearningRouteStepDto? = null,
     val relatedRoutes: List<LearningRouteSummaryDto> = emptyList(),
 )
+
+@Serializable
+data class LearningRouteBuildRequestDto(
+    val seedType: LearningRouteSeedType,
+    val seedKey: String,
+    @EncodeDefault val difficulty: LearningRouteDifficulty = LearningRouteDifficulty.Beginner,
+    @EncodeDefault val limit: Int = 8,
+    @EncodeDefault val includeArticles: Boolean = true,
+    @EncodeDefault val includeDirectoryItems: Boolean = true,
+    @EncodeDefault val includeInheritors: Boolean = true,
+) {
+    init {
+        require(seedType != LearningRouteSeedType.Unknown) { "seedType must be specified" }
+        require(seedKey.isNotBlank()) { "seedKey must not be blank" }
+        require(difficulty != LearningRouteDifficulty.All && difficulty != LearningRouteDifficulty.Unknown) {
+            "difficulty must be beginner/intermediate/deep"
+        }
+        require(limit in 1..20) { "limit must be in 1..20" }
+    }
+}

@@ -65,6 +65,19 @@ class ContentExportViewModelTest {
     }
 
     @Test
+    fun `initial UI state defaults to Markdown with sources enabled`() = runTest {
+        val viewModel = ContentExportViewModel(fakeRepository)
+
+        viewModel.initialize("a1", SearchResultType.Article)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertEquals(ExportFormat.Markdown, state.selectedFormat)
+        assertEquals(true, state.includeSources)
+        assertEquals(false, state.includeImages)
+    }
+
+    @Test
     fun `selectFormat ignores unsupported formats`() = runTest {
         fakeRepository.templates = listOf(
             ExportTemplateDto(

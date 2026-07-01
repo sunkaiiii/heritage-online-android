@@ -84,7 +84,6 @@ data class LearningRouteBuildQuery(
 data class LearningRouteNextQuery(
     val routeId: String,
     val completedStepIds: List<String> = emptyList(),
-    val profileId: String? = null,
 ) {
     init {
         require(routeId.isNotBlank()) { "routeId must not be blank" }
@@ -97,7 +96,6 @@ data class LearningRouteNextQuery(
 data class V3ContentPageQuery(
     val contentType: SearchResultType,
     val id: String,
-    val profileId: String? = null,
     val includeAi: Boolean = true,
     val includeGraph: Boolean = true,
     val includeRecommendations: Boolean = true,
@@ -111,9 +109,6 @@ data class V3ContentPageQuery(
         require(id.isNotBlank()) { "id must not be blank" }
         require(recommendationLimit in 1..20) { "recommendationLimit must be in 1..20" }
         require(neighborLimit in 1..30) { "neighborLimit must be in 1..30" }
-        if (includeLocalState) {
-            require(!profileId.isNullOrBlank()) { "profileId is required when includeLocalState=true" }
-        }
     }
 }
 

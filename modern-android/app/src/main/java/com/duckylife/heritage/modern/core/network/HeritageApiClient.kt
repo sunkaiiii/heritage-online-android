@@ -687,7 +687,6 @@ class KtorHeritageApiClient(
 
     override suspend fun getV3ContentPage(query: V3ContentPageQuery): V3ContentPageDto =
         httpClient.get(endpoint("api/v3/pages/${v3PagePath(query.contentType)}/${pathSegment(query.id)}")) {
-            optionalParameter("profileId", query.profileId)
             optionalParameter("includeAi", query.includeAi)
             optionalParameter("includeGraph", query.includeGraph)
             optionalParameter("includeRecommendations", query.includeRecommendations)
@@ -843,15 +842,21 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun buildLearningRoute(query: LearningRouteBuildQuery): LearningRouteDetailDto =
-        httpClient.get(endpoint("api/learning-routes/build")) {
-            optionalParameter("seedType", query.seedType.takeIf { it != LearningRouteSeedType.Unknown }?.wireName)
-            optionalParameter("seedKey", query.seedKey)
-            optionalParameter("difficulty", query.difficulty.takeIf { it != LearningRouteDifficulty.Unknown }?.wireName)
-            optionalParameter("limit", query.limit)
-            optionalParameter("includeArticles", query.includeArticles)
-            optionalParameter("includeDirectoryItems", query.includeDirectoryItems)
-            optionalParameter("includeInheritors", query.includeInheritors)
+        httpClient.post(endpoint("api/learning-routes/build")) {
+            contentType(ContentType.Application.Json)
+            setBody(query.toRequestDto())
         }.body()
+
+    private fun LearningRouteBuildQuery.toRequestDto(): LearningRouteBuildRequestDto =
+        LearningRouteBuildRequestDto(
+            seedType = seedType,
+            seedKey = seedKey,
+            difficulty = difficulty,
+            limit = limit,
+            includeArticles = includeArticles,
+            includeDirectoryItems = includeDirectoryItems,
+            includeInheritors = includeInheritors,
+        )
 
     override suspend fun getLearningRouteNextStep(query: LearningRouteNextQuery): LearningRouteNextDto =
         httpClient.get(endpoint("api/learning-routes/${pathSegment(query.routeId)}/next")) {
@@ -859,7 +864,6 @@ class KtorHeritageApiClient(
                 "completedStepIds",
                 query.completedStepIds.takeIf { it.isNotEmpty() }?.joinToString(",") { it },
             )
-            optionalParameter("profileId", query.profileId)
         }.body()
 
     // ── DataExplore API ──

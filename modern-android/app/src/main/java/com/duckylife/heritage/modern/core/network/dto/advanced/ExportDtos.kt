@@ -1,5 +1,6 @@
 package com.duckylife.heritage.modern.core.network.dto.advanced
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -53,8 +54,8 @@ data class ExportContentResultDto(
 @Serializable
 data class ExportRequestDto(
     val scopeType: ExportScopeType = ExportScopeType.Unknown,
-    val format: ExportFormat = ExportFormat.Markdown,
-    val targetType: String? = "all",
+    @EncodeDefault val format: ExportFormat = ExportFormat.Json,
+    @EncodeDefault val targetType: String? = "all",
     val ids: List<String> = emptyList(),
     val query: String? = null,
     val topicType: String? = null,
@@ -63,8 +64,8 @@ data class ExportRequestDto(
     val routeId: String? = null,
     val profileId: String? = null,
     val includeAiSummary: Boolean = false,
-    val includeSources: Boolean = true,
-    val includeImages: Boolean = false,
+    @EncodeDefault val includeSources: Boolean = false,
+    @EncodeDefault val includeImages: Boolean = false,
     val limit: Int = 20,
 ) {
     init {

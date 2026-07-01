@@ -16,7 +16,6 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatus
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatusDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.V3ContentPageDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.V3PageWarningDto
-import com.duckylife.heritage.modern.core.profile.FakeLocalProfileRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respondError
@@ -44,10 +43,7 @@ class ContentIntelligenceRepositoryTest {
                 digest = ContentDigestSectionDto(summary = "人工摘要"),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(id = "android_test_profile"),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -84,10 +80,7 @@ class ContentIntelligenceRepositoryTest {
                 ),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -112,10 +105,7 @@ class ContentIntelligenceRepositoryTest {
                 ),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1"),
@@ -133,10 +123,7 @@ class ContentIntelligenceRepositoryTest {
                 digest = ContentDigestSectionDto(summary = "摘要"),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.DirectoryItem, "item-1"),
@@ -159,10 +146,7 @@ class ContentIntelligenceRepositoryTest {
                 ),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -182,10 +166,7 @@ class ContentIntelligenceRepositoryTest {
                 ),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1"),
@@ -209,10 +190,7 @@ class ContentIntelligenceRepositoryTest {
                 ),
             ),
         )
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -231,10 +209,7 @@ class ContentIntelligenceRepositoryTest {
         val api = FakeContentIntelligenceApi().apply {
             failure = serviceUnavailableException()
         }
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -249,12 +224,9 @@ class ContentIntelligenceRepositoryTest {
     }
 
     @Test
-    fun sendsProfileIdForLocalState() = runTest {
+    fun requestsLocalState() = runTest {
         val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
-        val repository = DefaultContentIntelligenceRepository(
-            api = api,
-            profileRepository = FakeLocalProfileRepository(id = "android_profile_42"),
-        )
+        val repository = DefaultContentIntelligenceRepository(api = api)
 
         repository.loadContentPage(
             ContentIntelligenceRef(SearchResultType.Article, "article-1"),
@@ -263,7 +235,6 @@ class ContentIntelligenceRepositoryTest {
         val query = api.queries.single()
         assertEquals(SearchResultType.Article, query.contentType)
         assertEquals("article-1", query.id)
-        assertEquals("android_profile_42", query.profileId)
         assertEquals(true, query.includeLocalState)
     }
 }

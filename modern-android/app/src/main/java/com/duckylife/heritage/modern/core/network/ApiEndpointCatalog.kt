@@ -42,8 +42,8 @@ object ApiEndpointCatalog {
      *
      * V3 智能详情页、AI 卡片、内容智能与智能搜索。
      *
-     * 身份方式：V3 page 的 `includeLocalState=true` 通过 **query 参数** `profileId` 传入；
-     * AI card / intelligence / intelligent search 使用 `X-Heritage-Profile-Id` header。
+     * 身份方式：V3 page 的 `includeLocalState=true` 通过 `X-Heritage-Profile-Id` header 传入；
+     * 旧 query 参数 `profileId` 仅作为兼容来源保留。AI card / intelligence / intelligent search 同样使用 header。
      *
      * | 方法 | 路径 | 主要 DTO | UI 入口 |
      * |---|---|---|---|
@@ -87,13 +87,13 @@ object ApiEndpointCatalog {
      *
      * 带进度与下一步的新学习路线。
      *
-     * 身份方式：`/next` 通过 query 参数 `profileId` 读取；其余端点使用 `X-Heritage-Profile-Id` header。
+     * 身份方式：`/next` 通过 `X-Heritage-Profile-Id` header 读取用户进度；旧 query 参数 `profileId` 仅作为兼容来源保留。
      *
      * | 方法 | 路径 | 主要 DTO | UI 入口 |
      * |---|---|---|---|
      * | GET | `/api/learning-routes` | [LearningRouteSummary][com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSummaryDto] | 学习路线首页 |
      * | GET | `/api/learning-routes/{routeId}` | [LearningRouteDetail][com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDetailDto] | 路线详情 |
-     * | GET | `/api/learning-routes/build` | [LearningRouteDetail][com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDetailDto] | 详情页“从此开始学习” |
+     * | POST | `/api/learning-routes/build` | [LearningRouteDetail][com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteDetailDto] | 详情页“从此开始学习” |
      * | GET | `/api/learning-routes/{routeId}/next` | [LearningRouteNext][com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteNextDto] | 路线详情“继续下一步” |
      */
     object LearningRoutes

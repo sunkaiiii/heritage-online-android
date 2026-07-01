@@ -11,7 +11,6 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteNext
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeedType
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteStepDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSummaryDto
-import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteDetailUiModel
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteNextUiModel
 import com.duckylife.heritage.modern.feature.learningroutes.model.LearningRouteSectionUiModel
@@ -52,7 +51,6 @@ interface LearningRoutesRepository {
 
 class DefaultLearningRoutesRepository @Inject constructor(
     private val api: LearningRoutesApi,
-    private val profileRepository: LocalProfileRepository,
 ) : LearningRoutesRepository {
 
     override suspend fun getRoutes(
@@ -95,7 +93,6 @@ class DefaultLearningRoutesRepository @Inject constructor(
             LearningRouteNextQuery(
                 routeId = routeId,
                 completedStepIds = completedStepIds,
-                profileId = profileRepository.currentProfileId(),
             ),
         ).toNextUiModel()
 }

@@ -23,7 +23,6 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.GraphNodeDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LocalStateSectionDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.SectionStatus
 import com.duckylife.heritage.modern.core.network.dto.advanced.V3ContentPageDto
-import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import javax.inject.Inject
 
 /**
@@ -101,17 +100,14 @@ interface ContentIntelligenceRepository {
 
 class DefaultContentIntelligenceRepository @Inject constructor(
     private val api: ContentIntelligenceApi,
-    private val profileRepository: LocalProfileRepository,
 ) : ContentIntelligenceRepository {
 
     override suspend fun loadContentPage(ref: ContentIntelligenceRef): ContentIntelligencePage {
-        val profileId = profileRepository.currentProfileId()
         return try {
             api.getV3ContentPage(
                 V3ContentPageQuery(
                     contentType = ref.type,
                     id = ref.id,
-                    profileId = profileId,
                     includeAi = true,
                     includeGraph = true,
                     includeRecommendations = true,

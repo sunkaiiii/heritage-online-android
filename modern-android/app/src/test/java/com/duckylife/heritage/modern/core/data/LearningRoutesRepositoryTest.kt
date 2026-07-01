@@ -12,22 +12,16 @@ import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSeed
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSectionDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteStepDto
 import com.duckylife.heritage.modern.core.network.dto.advanced.LearningRouteSummaryDto
-import com.duckylife.heritage.modern.core.profile.LocalProfileRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class LearningRoutesRepositoryTest {
 
     private val fakeApi = FakeLearningRoutesApi()
-    private val fakeProfileRepository = FakeLocalProfileRepository()
-    private val repository: LearningRoutesRepository = DefaultLearningRoutesRepository(
-        api = fakeApi,
-        profileRepository = fakeProfileRepository,
-    )
+    private val repository: LearningRoutesRepository = DefaultLearningRoutesRepository(api = fakeApi)
 
     @Test
     fun `getRoutes maps summaries and applies difficulty query`() = runTest {
@@ -113,8 +107,7 @@ class LearningRoutesRepositoryTest {
     }
 
     @Test
-    fun `getNextStep passes profileId and completedStepIds`() = runTest {
-        fakeProfileRepository.currentProfileIdValue = "android_test_profile"
+    fun `getNextStep passes completedStepIds`() = runTest {
         fakeApi.nextResult = LearningRouteNextDto(
             routeId = "r1",
             completed = false,
@@ -129,18 +122,16 @@ class LearningRoutesRepositoryTest {
         with(fakeApi.capturedNextQuery) {
             assertEquals("r1", this?.routeId)
             assertEquals(listOf("step1"), this?.completedStepIds)
-            assertEquals("android_test_profile", this?.profileId)
         }
     }
 
     @Test
-    fun `getNextStep with empty completedStepIds still passes profileId`() = runTest {
+    fun `getNextStep with empty completedStepIds`() = runTest {
         fakeApi.nextResult = LearningRouteNextDto(routeId = "r1", completed = true)
 
         val result = repository.getNextStep(routeId = "r1")
 
         assertTrue(result.completed)
-        assertEquals("android_default_profile", fakeApi.capturedNextQuery?.profileId)
         assertTrue(fakeApi.capturedNextQuery?.completedStepIds.isNullOrEmpty())
     }
 
@@ -175,12 +166,4 @@ class LearningRoutesRepositoryTest {
         }
     }
 
-    private class FakeLocalProfileRepository : LocalProfileRepository {
-        var currentProfileIdValue: String = "android_default_profile"
-
-        override val profileId: kotlinx.coroutines.flow.Flow<String>
-            get() = kotlinx.coroutines.flow.flowOf(currentProfileIdValue)
-
-        override suspend fun currentProfileId(): String = currentProfileIdValue
-    }
 }
