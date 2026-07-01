@@ -1,0 +1,30 @@
+{
+  "routeId": "route-papercut-101",
+  "completed": false,
+  "nextStep": {
+    "stepId": "step-002",
+    "order": 2,
+    "title": "团花剪纸基础",
+    "description": "学习团花折叠与镂空技法。",
+    "targetType": "directoryItem",
+    "targetId": "507f1f77bcf86cd799439012",
+    "content": {
+      "type": "directoryItem",
+      "id": "507f1f77bcf86cd799439012",
+      "title": "团花剪纸"
+    },
+    "reason": "继续学习",
+    "estimatedMinutes": 20,
+    "required": true
+  },
+  "relatedRoutes": [
+    {
+      "routeId": "route-papercut-201",
+      "title": "剪纸进阶：刻纸与染色",
+      "difficulty": "intermediate",
+      "estimatedMinutes": 60,
+      "stepCount": 4,
+      "tags": ["剪纸", "进阶"]
+    }
+  ]
+}

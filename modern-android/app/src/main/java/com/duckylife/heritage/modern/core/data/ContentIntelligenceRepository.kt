@@ -103,6 +103,9 @@ class DefaultContentIntelligenceRepository @Inject constructor(
 ) : ContentIntelligenceRepository {
 
     override suspend fun loadContentPage(ref: ContentIntelligenceRef): ContentIntelligencePage {
+        if (ref.type == SearchResultType.Unknown || !isObjectId(ref.id)) {
+            return unavailableContentPage(ref)
+        }
         return try {
             api.getV3ContentPage(
                 V3ContentPageQuery(
@@ -366,3 +369,7 @@ private fun List<ContentRefDto>.toListSection(
         data = takeIf { effectiveStatus == SectionStatus.Ready },
     )
 }
+
+private val ObjectIdRegex = Regex("^[0-9a-fA-F]{24}$")
+
+private fun isObjectId(value: String): Boolean = ObjectIdRegex.matches(value)

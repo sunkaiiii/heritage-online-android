@@ -192,14 +192,20 @@ private class TestFakeDataExploreRepository : DataExploreRepository {
         filters: SpacetimeFilters,
     ): SpacetimeHeatmapUiModel = SpacetimeHeatmapUiModel(x = x, y = y)
 
-    override suspend fun getRegionTimeline(region: String): SpacetimeTimelineUiModel =
-        SpacetimeTimelineUiModel(key = region)
+    override suspend fun getRegionTimeline(
+        region: String,
+        filters: SpacetimeFilters,
+    ): SpacetimeTimelineUiModel = SpacetimeTimelineUiModel(key = region)
 
-    override suspend fun getYearMap(year: Int): SpacetimeRegionMapUiModel =
-        SpacetimeRegionMapUiModel(year = year)
+    override suspend fun getYearMap(
+        year: Int,
+        filters: SpacetimeFilters,
+    ): SpacetimeRegionMapUiModel = SpacetimeRegionMapUiModel(year = year)
 
-    override suspend fun getCategoryTimeline(category: String): SpacetimeTimelineUiModel =
-        SpacetimeTimelineUiModel(key = category)
+    override suspend fun getCategoryTimeline(
+        category: String,
+        filters: SpacetimeFilters,
+    ): SpacetimeTimelineUiModel = SpacetimeTimelineUiModel(key = category)
 
     override suspend fun getAnalyticsFacets(
         filters: com.duckylife.heritage.modern.core.network.AnalyticsFilters,

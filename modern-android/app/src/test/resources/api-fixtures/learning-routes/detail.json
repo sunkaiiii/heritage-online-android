@@ -1,0 +1,57 @@
+{
+  "routeId": "route-papercut-101",
+  "title": "剪纸艺术入门",
+  "description": "从民间工艺到非遗名录",
+  "difficulty": "beginner",
+  "estimatedMinutes": 45,
+  "sections": [
+    {
+      "sectionId": "sec-history",
+      "title": "历史渊源",
+      "description": "了解剪纸的起源与演变",
+      "stepIds": ["step-001"]
+    },
+    {
+      "sectionId": "sec-practice",
+      "title": "技艺实践",
+      "description": "基础纹样与折叠剪法",
+      "stepIds": ["step-002"]
+    }
+  ],
+  "steps": [
+    {
+      "stepId": "step-001",
+      "order": 1,
+      "title": "剪纸的起源",
+      "description": "剪纸最早可追溯至汉代。",
+      "targetType": "article",
+      "targetId": "507f1f77bcf86cd799439011",
+      "content": {
+        "type": "article",
+        "id": "507f1f77bcf86cd799439011",
+        "title": "剪纸的起源"
+      },
+      "reason": "建立历史背景",
+      "estimatedMinutes": 10,
+      "required": true
+    },
+    {
+      "stepId": "step-002",
+      "order": 2,
+      "title": "团花剪纸基础",
+      "description": "学习团花折叠与镂空技法。",
+      "targetType": "directoryItem",
+      "targetId": "507f1f77bcf86cd799439012",
+      "content": {
+        "targetType": "directoryItem",
+        "targetId": "507f1f77bcf86cd799439012",
+        "title": "团花剪纸"
+      },
+      "reason": "动手实践",
+      "estimatedMinutes": 20,
+      "required": true
+    }
+  ],
+  "relatedRoutes": [],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

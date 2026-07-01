@@ -1,0 +1,58 @@
+{
+  "filters": {
+    "fromYear": 1900,
+    "toYear": 2026,
+    "targetType": "all"
+  },
+  "metrics": {
+    "total": 1240,
+    "articleCount": 820,
+    "directoryItemCount": 310,
+    "inheritorCount": 110
+  },
+  "topRegions": [
+    {
+      "key": "浙江",
+      "label": "浙江",
+      "count": 210,
+      "articleCount": 140,
+      "directoryItemCount": 50,
+      "inheritorCount": 20
+    },
+    {
+      "key": "江苏",
+      "label": "江苏",
+      "count": 185,
+      "articleCount": 120,
+      "directoryItemCount": 45,
+      "inheritorCount": 20
+    }
+  ],
+  "topCategories": [
+    {
+      "key": "剪纸",
+      "label": "剪纸",
+      "count": 156,
+      "articleCount": 100,
+      "directoryItemCount": 40,
+      "inheritorCount": 16
+    }
+  ],
+  "yearTimeline": [
+    {
+      "year": 2006,
+      "count": 12,
+      "articleCount": 8,
+      "directoryItemCount": 3,
+      "inheritorCount": 1
+    },
+    {
+      "year": 2008,
+      "count": 24,
+      "articleCount": 16,
+      "directoryItemCount": 6,
+      "inheritorCount": 2
+    }
+  ],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

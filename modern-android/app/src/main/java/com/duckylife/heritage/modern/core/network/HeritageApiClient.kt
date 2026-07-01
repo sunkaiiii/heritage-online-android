@@ -890,13 +890,28 @@ class KtorHeritageApiClient(
         }.body()
 
     override suspend fun getSpacetimeRegionTimeline(query: SpacetimeRegionTimelineQuery): SpacetimeTimelineDto =
-        httpClient.get(endpoint("api/spacetime/regions/${pathSegment(query.region)}/timeline")).body()
+        httpClient.get(endpoint("api/spacetime/regions/${pathSegment(query.region)}/timeline")) {
+            optionalParameter("targetType", query.targetType?.wireName)
+            optionalParameter("fromYear", query.fromYear)
+            optionalParameter("toYear", query.toYear)
+            optionalParameter("category", query.category)
+            optionalParameter("kind", query.kind)
+        }.body()
 
     override suspend fun getSpacetimeYearMap(query: SpacetimeYearMapQuery): SpacetimeRegionMapDto =
-        httpClient.get(endpoint("api/spacetime/years/${query.year}/map")).body()
+        httpClient.get(endpoint("api/spacetime/years/${query.year}/map")) {
+            optionalParameter("targetType", query.targetType?.wireName)
+            optionalParameter("category", query.category)
+            optionalParameter("kind", query.kind)
+        }.body()
 
     override suspend fun getSpacetimeCategoryTimeline(query: SpacetimeCategoryTimelineQuery): SpacetimeTimelineDto =
-        httpClient.get(endpoint("api/spacetime/categories/${pathSegment(query.category)}/timeline")).body()
+        httpClient.get(endpoint("api/spacetime/categories/${pathSegment(query.category)}/timeline")) {
+            optionalParameter("targetType", query.targetType?.wireName)
+            optionalParameter("fromYear", query.fromYear)
+            optionalParameter("toYear", query.toYear)
+            optionalParameter("kind", query.kind)
+        }.body()
 
     override suspend fun getAnalyticsFacets(query: AnalyticsFacetsQuery): AnalyticsFacetsDto =
         httpClient.get(endpoint("api/analytics/facets")) {
@@ -1019,7 +1034,7 @@ class KtorHeritageApiClient(
         SearchResultType.Article -> "article"
         SearchResultType.DirectoryItem -> "directory-item"
         SearchResultType.Inheritor -> "inheritor"
-        SearchResultType.Unknown -> "article"
+        SearchResultType.Unknown -> throw IllegalArgumentException("V3 content page does not support Unknown content type")
     }
 
     private fun HttpRequestBuilder.applyAnalyticsFilters(filters: AnalyticsFilters) {

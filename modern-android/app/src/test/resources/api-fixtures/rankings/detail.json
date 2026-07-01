@@ -1,0 +1,58 @@
+{
+  "rankingId": "most-connected",
+  "title": "最多关联内容",
+  "description": "在知识图谱中与其他内容关联最紧密的条目。",
+  "metric": "connectivity",
+  "items": [
+    {
+      "rank": 1,
+      "targetType": "article",
+      "targetId": "507f1f77bcf86cd799439011",
+      "title": "剪纸艺术",
+      "subtitle": "中国传统民间艺术",
+      "score": 96.5,
+      "metrics": [
+        {
+          "key": "connectivity",
+          "label": "关联度",
+          "value": 96.5,
+          "weight": 1.0
+        },
+        {
+          "key": "completeness",
+          "label": "完整度",
+          "value": 88.0,
+          "weight": 0.5
+        }
+      ],
+      "reasons": ["关联项目与传承人丰富", "多篇相关文章引用"],
+      "content": {
+        "type": "article",
+        "id": "507f1f77bcf86cd799439011",
+        "title": "剪纸艺术"
+      }
+    },
+    {
+      "rank": 2,
+      "targetType": "directoryItem",
+      "targetId": "507f1f77bcf86cd799439013",
+      "title": "某国家级剪纸项目",
+      "score": 84.0,
+      "metrics": [
+        {
+          "key": "connectivity",
+          "label": "关联度",
+          "value": 84.0,
+          "weight": 1.0
+        }
+      ],
+      "reasons": [],
+      "content": {
+        "targetType": "directoryItem",
+        "targetId": "507f1f77bcf86cd799439013",
+        "title": "某国家级剪纸项目"
+      }
+    }
+  ],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

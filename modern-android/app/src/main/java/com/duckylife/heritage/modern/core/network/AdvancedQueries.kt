@@ -349,25 +349,46 @@ data class SpacetimeHeatmapQuery(
 
 data class SpacetimeRegionTimelineQuery(
     val region: String,
+    val targetType: ContentTargetType? = null,
+    val fromYear: Int? = null,
+    val toYear: Int? = null,
+    val category: String? = null,
+    val kind: String? = null,
 ) {
     init {
         require(region.isNotBlank()) { "region must not be blank" }
+        if (fromYear != null && toYear != null) {
+            require(fromYear <= toYear) { "fromYear must be <= toYear" }
+        }
     }
 }
 
 data class SpacetimeYearMapQuery(
     val year: Int,
+    val targetType: ContentTargetType? = null,
+    val category: String? = null,
+    val kind: String? = null,
 ) {
     init {
-        require(year in 1..3000) { "year must be in 1..3000" }
+        val currentYear = java.time.Year.now().value
+        require(year in 1900..currentYear + 1) {
+            "year must be in 1900..${currentYear + 1}"
+        }
     }
 }
 
 data class SpacetimeCategoryTimelineQuery(
     val category: String,
+    val targetType: ContentTargetType? = null,
+    val fromYear: Int? = null,
+    val toYear: Int? = null,
+    val kind: String? = null,
 ) {
     init {
         require(category.isNotBlank()) { "category must not be blank" }
+        if (fromYear != null && toYear != null) {
+            require(fromYear <= toYear) { "fromYear must be <= toYear" }
+        }
     }
 }
 

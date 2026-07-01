@@ -1,0 +1,72 @@
+{
+  "pageType": "article",
+  "content": {
+    "title": "剪纸艺术",
+    "sourceUrl": "https://example.com/articles/507f1f77bcf86cd799439011"
+  },
+  "digest": {
+    "summary": "剪纸是中国传统民间艺术，以纸为媒，通过剪、刻、镂空表现吉祥图案。",
+    "highlights": ["历史悠久", "分布广泛", "题材丰富"],
+    "keyFacts": [
+      {"label": "级别", "value": "国家级非物质文化遗产"},
+      {"label": "地区", "value": "浙江"}
+    ],
+    "keywords": ["剪纸", "民间艺术", "传统美术"]
+  },
+  "aiCard": {
+    "hasAi": true,
+    "status": "ready",
+    "summary": "AI 生成的剪纸艺术摘要。",
+    "shortSummary": "剪纸艺术摘要",
+    "keywords": ["剪纸", "传统美术"],
+    "highlights": ["要点一", "要点二"],
+    "entities": [
+      {"name": "剪纸", "type": "技艺"},
+      {"name": "浙江", "type": "地区"}
+    ],
+    "isStale": false
+  },
+  "graph": {
+    "center": "article:507f1f77bcf86cd799439011",
+    "nodes": [
+      {
+        "nodeKey": "article:507f1f77bcf86cd799439011",
+        "type": "article",
+        "id": "507f1f77bcf86cd799439011",
+        "title": "剪纸艺术"
+      }
+    ],
+    "edges": []
+  },
+  "recommendations": [
+    {
+      "type": "article",
+      "id": "507f1f77bcf86cd799439012",
+      "title": "年画艺术"
+    }
+  ],
+  "relatedContent": [
+    {
+      "targetType": "directoryItem",
+      "targetId": "507f1f77bcf86cd799439013",
+      "title": "国家级剪纸项目"
+    }
+  ],
+  "localState": {
+    "isFavorite": true,
+    "viewCount": 5,
+    "learningProgressPercent": 25.0
+  },
+  "exportHints": ["可导出为 Markdown", "可加入学习路线"],
+  "sectionStatus": [
+    {"section": "aiCard", "status": "ready"},
+    {"section": "digest", "status": "ready"},
+    {"section": "graph", "status": "empty"},
+    {"section": "recommendations", "status": "ready"},
+    {"section": "relatedContent", "status": "ready"}
+  ],
+  "warnings": [
+    {"code": "ai_partial", "message": "AI 摘要基于部分内容生成", "severity": "info"}
+  ],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

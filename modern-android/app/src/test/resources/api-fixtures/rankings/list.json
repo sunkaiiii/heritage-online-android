@@ -1,0 +1,18 @@
+[
+  {
+    "rankingId": "most-connected",
+    "title": "最多关联内容",
+    "description": "在知识图谱中与其他内容关联最紧密的条目。",
+    "metric": "connectivity",
+    "targetType": "all",
+    "refreshHint": "每日更新"
+  },
+  {
+    "rankingId": "hidden-gems",
+    "title": "冷门瑰宝",
+    "description": "关联度高但浏览量较低的内容。",
+    "metric": "hiddenGem",
+    "targetType": "article",
+    "refreshHint": "每周更新"
+  }
+]

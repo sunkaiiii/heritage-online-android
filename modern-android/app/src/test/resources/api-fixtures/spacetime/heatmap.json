@@ -1,0 +1,30 @@
+{
+  "x": "region",
+  "y": "category",
+  "targetType": "all",
+  "cells": [
+    {
+      "xKey": "浙江",
+      "xLabel": "浙江",
+      "yKey": "剪纸",
+      "yLabel": "剪纸",
+      "articleCount": 42,
+      "directoryItemCount": 15,
+      "inheritorCount": 6,
+      "total": 63,
+      "intensity": 0.92
+    },
+    {
+      "xKey": "江苏",
+      "xLabel": "江苏",
+      "yKey": "苏绣",
+      "yLabel": "苏绣",
+      "articleCount": 35,
+      "directoryItemCount": 10,
+      "inheritorCount": 4,
+      "total": 49,
+      "intensity": 0.78
+    }
+  ],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

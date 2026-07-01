@@ -34,7 +34,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun loadPublishesSuccessState() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.Article, "article-1")
+        val ref = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011")
         repository.given(ref, page(ref))
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
@@ -52,7 +52,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun loadSkipsDuplicateRef() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.Article, "article-1")
+        val ref = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011")
         repository.given(ref, page(ref))
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
@@ -67,7 +67,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun retryRepeatsLastRef() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.DirectoryItem, "item-1")
+        val ref = ContentIntelligenceRef(SearchResultType.DirectoryItem, "507f1f77bcf86cd799439013")
         repository.given(ref, page(ref))
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
@@ -82,8 +82,8 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun switchesRefAndCancelsPreviousJob() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val first = ContentIntelligenceRef(SearchResultType.Article, "first")
-        val second = ContentIntelligenceRef(SearchResultType.Article, "second")
+        val first = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439016")
+        val second = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439017")
         repository.given(first, page(first))
         repository.given(second, page(second))
         repository.hangOn(first)
@@ -101,8 +101,8 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun switchingRefImmediatelyClearsPreviousContentActions() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val first = ContentIntelligenceRef(SearchResultType.Article, "first")
-        val second = ContentIntelligenceRef(SearchResultType.Article, "second")
+        val first = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439016")
+        val second = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439017")
         repository.given(first, page(first))
         repository.given(second, page(second))
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
@@ -123,7 +123,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun badRequestSkipsIntelligenceLayer() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.Article, "article-1")
+        val ref = ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011")
         repository.given(ref, badRequestException())
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
@@ -139,7 +139,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun serverErrorDegradesSectionsWithoutFatalError() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1")
+        val ref = ContentIntelligenceRef(SearchResultType.Inheritor, "507f1f77bcf86cd799439015")
         repository.given(ref, serviceUnavailableException())
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 
@@ -160,7 +160,7 @@ class ContentIntelligenceViewModelDelegateTest {
     @Test
     fun networkErrorDegradesSectionsWithoutFatalError() = runTest {
         val repository = FakeContentIntelligenceRepository()
-        val ref = ContentIntelligenceRef(SearchResultType.DirectoryItem, "item-1")
+        val ref = ContentIntelligenceRef(SearchResultType.DirectoryItem, "507f1f77bcf86cd799439013")
         repository.given(ref, UnknownHostException("no network"))
         val delegate = DefaultContentIntelligenceViewModelDelegate(this, repository)
 

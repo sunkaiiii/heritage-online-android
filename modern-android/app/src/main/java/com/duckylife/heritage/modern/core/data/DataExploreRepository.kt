@@ -67,9 +67,9 @@ interface DataExploreRepository {
         filters: SpacetimeFilters,
     ): SpacetimeHeatmapUiModel
 
-    suspend fun getRegionTimeline(region: String): SpacetimeTimelineUiModel
-    suspend fun getYearMap(year: Int): SpacetimeRegionMapUiModel
-    suspend fun getCategoryTimeline(category: String): SpacetimeTimelineUiModel
+    suspend fun getRegionTimeline(region: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel
+    suspend fun getYearMap(year: Int, filters: SpacetimeFilters): SpacetimeRegionMapUiModel
+    suspend fun getCategoryTimeline(category: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel
 
     suspend fun getAnalyticsFacets(filters: AnalyticsFilters): AnalyticsFacetsUiModel
     suspend fun getAnalyticsBreakdown(
@@ -137,14 +137,38 @@ class DefaultDataExploreRepository @Inject constructor(
             ),
         ).toUiModel()
 
-    override suspend fun getRegionTimeline(region: String): SpacetimeTimelineUiModel =
-        api.getSpacetimeRegionTimeline(SpacetimeRegionTimelineQuery(region = region)).toUiModel()
+    override suspend fun getRegionTimeline(region: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel =
+        api.getSpacetimeRegionTimeline(
+            SpacetimeRegionTimelineQuery(
+                region = region,
+                targetType = filters.targetType,
+                fromYear = filters.fromYear,
+                toYear = filters.toYear,
+                category = filters.category,
+                kind = filters.kind,
+            ),
+        ).toUiModel()
 
-    override suspend fun getYearMap(year: Int): SpacetimeRegionMapUiModel =
-        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = year)).toUiModel()
+    override suspend fun getYearMap(year: Int, filters: SpacetimeFilters): SpacetimeRegionMapUiModel =
+        api.getSpacetimeYearMap(
+            SpacetimeYearMapQuery(
+                year = year,
+                targetType = filters.targetType,
+                category = filters.category,
+                kind = filters.kind,
+            ),
+        ).toUiModel()
 
-    override suspend fun getCategoryTimeline(category: String): SpacetimeTimelineUiModel =
-        api.getSpacetimeCategoryTimeline(SpacetimeCategoryTimelineQuery(category = category)).toUiModel()
+    override suspend fun getCategoryTimeline(category: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel =
+        api.getSpacetimeCategoryTimeline(
+            SpacetimeCategoryTimelineQuery(
+                category = category,
+                targetType = filters.targetType,
+                fromYear = filters.fromYear,
+                toYear = filters.toYear,
+                kind = filters.kind,
+            ),
+        ).toUiModel()
 
     override suspend fun getAnalyticsFacets(filters: AnalyticsFilters): AnalyticsFacetsUiModel =
         api.getAnalyticsFacets(AnalyticsFacetsQuery(filters = filters)).toUiModel()

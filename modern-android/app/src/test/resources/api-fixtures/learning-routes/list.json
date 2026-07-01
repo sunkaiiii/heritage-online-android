@@ -1,0 +1,13 @@
+[
+  {
+    "routeId": "route-papercut-101",
+    "title": "剪纸艺术入门",
+    "subtitle": "从民间工艺到非遗名录",
+    "description": "一条适合初学者的剪纸主题学习路线。",
+    "difficulty": "beginner",
+    "estimatedMinutes": 45,
+    "stepCount": 5,
+    "tags": ["剪纸", "传统美术", "民间工艺"],
+    "coverImageUrl": "https://example.com/papercut-cover.jpg"
+  }
+]

@@ -1,0 +1,33 @@
+{
+  "scopeType": "ids",
+  "format": "markdown",
+  "estimatedItemCount": 3,
+  "estimatedBytes": 2048,
+  "warnings": ["包含 AI 生成摘要，请核对原始资料"],
+  "sampleItems": [
+    {
+      "targetType": "article",
+      "targetId": "507f1f77bcf86cd799439011",
+      "title": "剪纸艺术",
+      "subtitle": "中国传统民间艺术",
+      "sourceUrl": "https://example.com/articles/507f1f77bcf86cd799439011",
+      "summary": "剪纸是中国古老的民间艺术形式。",
+      "aiSummary": "剪纸艺术以纸为媒，通过剪、刻、镂空等技法表现吉祥图案。",
+      "region": "浙江",
+      "category": "剪纸",
+      "year": 2006,
+      "kind": "传统美术"
+    },
+    {
+      "targetType": "directoryItem",
+      "targetId": "507f1f77bcf86cd799439013",
+      "title": "国家级剪纸项目",
+      "sourceUrl": "https://example.com/directory/507f1f77bcf86cd799439013",
+      "summary": "首批国家级非物质文化遗产名录项目。",
+      "region": "浙江",
+      "category": "剪纸",
+      "year": 2006,
+      "kind": "传统美术"
+    }
+  ]
+}

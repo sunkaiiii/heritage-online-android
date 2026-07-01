@@ -259,8 +259,9 @@ class SpacetimeViewModel @Inject constructor(
         when (state) {
             is DrilldownState.RegionTimeline -> {
                 drilldownJob = viewModelScope.launch {
+                    val filters = _uiState.value.filters
                     _uiState.update { it.copy(drilldown = AsyncState(isLoading = true)) }
-                    runCatchingCancellable { repository.getRegionTimeline(state.region) }
+                    runCatchingCancellable { repository.getRegionTimeline(state.region, filters) }
                         .onSuccess { result ->
                             _uiState.update { it.copy(drilldown = AsyncState(data = result)) }
                         }
@@ -272,8 +273,9 @@ class SpacetimeViewModel @Inject constructor(
 
             is DrilldownState.CategoryTimeline -> {
                 drilldownJob = viewModelScope.launch {
+                    val filters = _uiState.value.filters
                     _uiState.update { it.copy(drilldown = AsyncState(isLoading = true)) }
-                    runCatchingCancellable { repository.getCategoryTimeline(state.category) }
+                    runCatchingCancellable { repository.getCategoryTimeline(state.category, filters) }
                         .onSuccess { result ->
                             _uiState.update { it.copy(drilldown = AsyncState(data = result)) }
                         }
@@ -285,8 +287,9 @@ class SpacetimeViewModel @Inject constructor(
 
             is DrilldownState.YearMap -> {
                 regionMapJob = viewModelScope.launch {
+                    val filters = _uiState.value.filters
                     _uiState.update { it.copy(regionMap = AsyncState(isLoading = true)) }
-                    runCatchingCancellable { repository.getYearMap(state.year) }
+                    runCatchingCancellable { repository.getYearMap(state.year, filters) }
                         .onSuccess { result ->
                             _uiState.update { it.copy(regionMap = AsyncState(data = result)) }
                         }

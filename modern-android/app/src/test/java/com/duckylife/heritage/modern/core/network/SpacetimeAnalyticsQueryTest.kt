@@ -76,15 +76,40 @@ class SpacetimeAnalyticsQueryTest {
         SpacetimeRegionTimelineQuery(region = " ")
     }
 
+    @Test(expected = IllegalArgumentException::class)
+    fun `SpacetimeRegionTimelineQuery rejects inverted year range`() {
+        SpacetimeRegionTimelineQuery(
+            region = "浙江",
+            fromYear = 2020,
+            toYear = 2000,
+        )
+    }
+
     @Test
     fun `SpacetimeYearMapQuery validates year range`() {
-        val query = SpacetimeYearMapQuery(year = 1850)
-        assertEquals(1850, query.year)
+        val query = SpacetimeYearMapQuery(year = 1900)
+        assertEquals(1900, query.year)
+    }
+
+    @Test
+    fun `SpacetimeYearMapQuery accepts current year plus one`() {
+        // 一次性读取年份，避免测试内部多次调用 Year.now() 在跨年瞬间产生不一致。
+        val currentYear = java.time.Year.now().value
+        val expectedYear = currentYear + 1
+        val query = SpacetimeYearMapQuery(year = expectedYear)
+        assertEquals(expectedYear, query.year)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `SpacetimeYearMapQuery rejects invalid year`() {
-        SpacetimeYearMapQuery(year = 0)
+    fun `SpacetimeYearMapQuery rejects 1899`() {
+        SpacetimeYearMapQuery(year = 1899)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `SpacetimeYearMapQuery rejects current year plus two`() {
+        // 一次性读取年份，降低跨年瞬间的 flake 概率。
+        val currentYear = java.time.Year.now().value
+        SpacetimeYearMapQuery(year = currentYear + 2)
     }
 
     @Test
@@ -96,6 +121,15 @@ class SpacetimeAnalyticsQueryTest {
     @Test(expected = IllegalArgumentException::class)
     fun `SpacetimeCategoryTimelineQuery rejects blank category`() {
         SpacetimeCategoryTimelineQuery(category = "")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `SpacetimeCategoryTimelineQuery rejects inverted year range`() {
+        SpacetimeCategoryTimelineQuery(
+            category = "传统技艺",
+            fromYear = 2020,
+            toYear = 2000,
+        )
     }
 
     // -----------------------------------------------------------------------

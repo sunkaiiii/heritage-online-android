@@ -1,0 +1,50 @@
+{
+  "center": "article:507f1f77bcf86cd799439011",
+  "nodes": [
+    {
+      "nodeKey": "article:507f1f77bcf86cd799439011",
+      "type": "article",
+      "id": "507f1f77bcf86cd799439011",
+      "title": "剪纸艺术",
+      "category": "剪纸",
+      "region": "浙江"
+    },
+    {
+      "nodeKey": "directoryItem:507f1f77bcf86cd799439013",
+      "type": "directoryItem",
+      "id": "507f1f77bcf86cd799439013",
+      "title": "国家级剪纸项目",
+      "category": "剪纸",
+      "region": "浙江"
+    },
+    {
+      "nodeKey": "inheritor:507f1f77bcf86cd799439015",
+      "type": "inheritor",
+      "id": "507f1f77bcf86cd799439015",
+      "title": "张奶奶",
+      "category": "剪纸",
+      "region": "浙江"
+    }
+  ],
+  "edges": [
+    {
+      "from": "article:507f1f77bcf86cd799439011",
+      "to": "directoryItem:507f1f77bcf86cd799439013",
+      "type": "RELATED_TO",
+      "label": "相关名录项目",
+      "reason": "同属剪纸主题",
+      "source": "explicit",
+      "weight": 0.9
+    },
+    {
+      "from": "directoryItem:507f1f77bcf86cd799439013",
+      "to": "inheritor:507f1f77bcf86cd799439015",
+      "type": "INHERITS_PROJECT",
+      "label": "代表性传承人",
+      "reason": "该项目代表性传承人",
+      "source": "explicit",
+      "weight": 0.95
+    }
+  ],
+  "generatedAt": "2026-07-01T10:00:00Z"
+}

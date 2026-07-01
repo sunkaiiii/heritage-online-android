@@ -176,9 +176,9 @@ class RankingsViewModelTest {
             filters: SpacetimeFilters,
         ): SpacetimeHeatmapUiModel = throw NotImplementedError()
 
-        override suspend fun getRegionTimeline(region: String): SpacetimeTimelineUiModel = throw NotImplementedError()
-        override suspend fun getYearMap(year: Int): SpacetimeRegionMapUiModel = throw NotImplementedError()
-        override suspend fun getCategoryTimeline(category: String): SpacetimeTimelineUiModel = throw NotImplementedError()
+        override suspend fun getRegionTimeline(region: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel = throw NotImplementedError()
+        override suspend fun getYearMap(year: Int, filters: SpacetimeFilters): SpacetimeRegionMapUiModel = throw NotImplementedError()
+        override suspend fun getCategoryTimeline(category: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel = throw NotImplementedError()
         override suspend fun getAnalyticsFacets(filters: com.duckylife.heritage.modern.core.network.AnalyticsFilters): AnalyticsFacetsUiModel =
             throw NotImplementedError()
 

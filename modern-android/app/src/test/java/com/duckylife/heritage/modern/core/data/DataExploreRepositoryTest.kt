@@ -131,46 +131,82 @@ class DataExploreRepositoryTest {
     }
 
     @Test
-    fun `getRegionTimeline maps key and buckets`() = runTest {
+    fun `getRegionTimeline maps key and buckets and preserves filters`() = runTest {
         fakeApi.regionTimelineResult = SpacetimeTimelineDto(
             key = "浙江",
             label = "浙江",
             buckets = listOf(YearCountDto(year = 2024, count = 2)),
         )
 
-        val result = repository.getRegionTimeline("浙江")
+        val filters = SpacetimeFilters(
+            targetType = ContentTargetType.DirectoryItem,
+            fromYear = 2006,
+            toYear = 2024,
+            category = "传统技艺",
+            kind = "传统美术",
+        )
+        val result = repository.getRegionTimeline("浙江", filters)
 
         assertEquals("浙江", result.key)
         assertEquals(1, result.buckets.size)
-        assertEquals(fakeApi.capturedRegionTimelineQuery?.region, "浙江")
+        with(fakeApi.capturedRegionTimelineQuery) {
+            assertEquals("浙江", this?.region)
+            assertEquals(ContentTargetType.DirectoryItem, this?.targetType)
+            assertEquals(2006, this?.fromYear)
+            assertEquals(2024, this?.toYear)
+            assertEquals("传统技艺", this?.category)
+            assertEquals("传统美术", this?.kind)
+        }
     }
 
     @Test
-    fun `getYearMap maps year and regions`() = runTest {
+    fun `getYearMap maps year and regions and preserves filters`() = runTest {
         fakeApi.yearMapResult = SpacetimeRegionMapDto(
             year = 2024,
             regions = listOf(NamedCountDto(key = "浙江", count = 2)),
         )
 
-        val result = repository.getYearMap(2024)
+        val filters = SpacetimeFilters(
+            targetType = ContentTargetType.Article,
+            category = "传统音乐",
+            kind = "民间文学",
+        )
+        val result = repository.getYearMap(2024, filters)
 
         assertEquals(2024, result.year)
         assertEquals(1, result.regions.size)
-        assertEquals(fakeApi.capturedYearMapQuery?.year, 2024)
+        with(fakeApi.capturedYearMapQuery) {
+            assertEquals(2024, this?.year)
+            assertEquals(ContentTargetType.Article, this?.targetType)
+            assertEquals("传统音乐", this?.category)
+            assertEquals("民间文学", this?.kind)
+        }
     }
 
     @Test
-    fun `getCategoryTimeline maps category`() = runTest {
+    fun `getCategoryTimeline maps category and preserves filters`() = runTest {
         fakeApi.categoryTimelineResult = SpacetimeTimelineDto(
             key = "传统技艺",
             label = "传统技艺",
             buckets = emptyList(),
         )
 
-        val result = repository.getCategoryTimeline("传统技艺")
+        val filters = SpacetimeFilters(
+            targetType = ContentTargetType.Inheritor,
+            fromYear = 2010,
+            toYear = 2020,
+            kind = "传统技艺",
+        )
+        val result = repository.getCategoryTimeline("传统技艺", filters)
 
         assertEquals("传统技艺", result.key)
-        assertEquals(fakeApi.capturedCategoryTimelineQuery?.category, "传统技艺")
+        with(fakeApi.capturedCategoryTimelineQuery) {
+            assertEquals("传统技艺", this?.category)
+            assertEquals(ContentTargetType.Inheritor, this?.targetType)
+            assertEquals(2010, this?.fromYear)
+            assertEquals(2020, this?.toYear)
+            assertEquals("传统技艺", this?.kind)
+        }
     }
 
     @Test

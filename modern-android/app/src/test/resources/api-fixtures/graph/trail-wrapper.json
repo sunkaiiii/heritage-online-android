@@ -1,0 +1,74 @@
+{
+  "trailId": "trail-papercut-to-newyear",
+  "strategy": "topicLadder",
+  "title": "从剪纸到年画",
+  "subtitle": "传统美术的主题阶梯",
+  "startNode": {
+    "nodeKey": "article:507f1f77bcf86cd799439011",
+    "type": "article",
+    "id": "507f1f77bcf86cd799439011",
+    "title": "剪纸艺术",
+    "category": "剪纸",
+    "region": "浙江"
+  },
+  "endNode": {
+    "nodeKey": "article:507f1f77bcf86cd799439014",
+    "type": "article",
+    "id": "507f1f77bcf86cd799439014",
+    "title": "年画艺术",
+    "category": "年画",
+    "region": "天津"
+  },
+  "steps": [
+    {
+      "order": 1,
+      "node": {
+        "nodeKey": "article:507f1f77bcf86cd799439011",
+        "type": "article",
+        "id": "507f1f77bcf86cd799439011",
+        "title": "剪纸艺术"
+      },
+      "stepType": "start",
+      "reason": "起点内容",
+      "viaRelationType": "RELATED_TO"
+    },
+    {
+      "order": 2,
+      "node": {
+        "nodeKey": "article:507f1f77bcf86cd799439014",
+        "type": "article",
+        "id": "507f1f77bcf86cd799439014",
+        "title": "年画艺术"
+      },
+      "stepType": "end",
+      "reason": "主题递进",
+      "viaRelationType": "TOPIC"
+    }
+  ],
+  "nodes": [
+    {
+      "nodeKey": "article:507f1f77bcf86cd799439011",
+      "type": "article",
+      "id": "507f1f77bcf86cd799439011",
+      "title": "剪纸艺术"
+    },
+    {
+      "nodeKey": "article:507f1f77bcf86cd799439014",
+      "type": "article",
+      "id": "507f1f77bcf86cd799439014",
+      "title": "年画艺术"
+    }
+  ],
+  "edges": [
+    {
+      "from": "article:507f1f77bcf86cd799439011",
+      "to": "article:507f1f77bcf86cd799439014",
+      "type": "TOPIC",
+      "label": "主题关联",
+      "reason": "同属传统美术",
+      "weight": 0.8
+    }
+  ],
+  "topicLabels": ["剪纸", "年画", "传统美术"],
+  "score": 0.85
+}

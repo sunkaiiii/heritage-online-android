@@ -336,9 +336,9 @@ class SpacetimeViewModelTest {
             return heatmap
         }
 
-        override suspend fun getRegionTimeline(region: String): SpacetimeTimelineUiModel = regionTimeline
-        override suspend fun getYearMap(year: Int): SpacetimeRegionMapUiModel = yearMap
-        override suspend fun getCategoryTimeline(category: String): SpacetimeTimelineUiModel = categoryTimeline
+        override suspend fun getRegionTimeline(region: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel = regionTimeline
+        override suspend fun getYearMap(year: Int, filters: SpacetimeFilters): SpacetimeRegionMapUiModel = yearMap
+        override suspend fun getCategoryTimeline(category: String, filters: SpacetimeFilters): SpacetimeTimelineUiModel = categoryTimeline
         override suspend fun getAnalyticsFacets(filters: com.duckylife.heritage.modern.core.network.AnalyticsFilters): AnalyticsFacetsUiModel = facets
 
         override suspend fun getAnalyticsBreakdown(

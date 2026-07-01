@@ -234,7 +234,7 @@ class AdvancedApiClientTest {
         api.getV3ContentPage(
             V3ContentPageQuery(
                 contentType = SearchResultType.Article,
-                id = "article-1",
+                id = "507f1f77bcf86cd799439011",
                 includeAi = true,
                 includeGraph = false,
                 includeRecommendations = true,
@@ -244,7 +244,7 @@ class AdvancedApiClientTest {
         )
 
         val request = requireNotNull(captured)
-        assertEquals("/api/v3/pages/article/article-1", request.url.encodedPath)
+        assertEquals("/api/v3/pages/article/507f1f77bcf86cd799439011", request.url.encodedPath)
         assertEquals("true", request.url.parameters["includeAi"])
         assertEquals("false", request.url.parameters["includeGraph"])
         assertEquals("true", request.url.parameters["includeRecommendations"])
@@ -252,6 +252,30 @@ class AdvancedApiClientTest {
         assertEquals("false", request.url.parameters["includeDigest"])
         assertNull(request.url.parameters["profileId"])
         assertEquals("android_test_profile", request.headers["X-Heritage-Profile-Id"])
+    }
+
+    @Test
+    fun `getV3ContentPage rejects Unknown content type`() = runTest {
+        val client = createClient(MockEngine { _ ->
+            respond(
+                content = """{"pageType":"article","content":null}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        })
+        val api = createApiClient(client)
+
+        val result = runCatching {
+            api.getV3ContentPage(
+                V3ContentPageQuery(
+                    contentType = SearchResultType.Unknown,
+                    id = "507f1f77bcf86cd799439011",
+                ),
+            )
+        }
+
+        val exception = result.exceptionOrNull()
+        assertTrue(exception is IllegalArgumentException)
+        assertTrue(exception?.message?.contains("Unknown content type") == true)
     }
 
     @Test
@@ -463,22 +487,55 @@ class AdvancedApiClientTest {
     }
 
     @Test
-    fun `getSpacetimeYearMap accepts pre modern year`() = runTest {
+    fun `getSpacetimeYearMap accepts boundary years`() = runTest {
         var captured: HttpRequestData? = null
         val engine = MockEngine { request ->
             captured = request
             respond(
-                content = """{"year":1850,"regions":[]}""",
+                content = """{"year":1900,"regions":[]}""",
                 headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
             )
         }
         val client = createClient(engine)
         val api = createApiClient(client)
 
-        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = 1850))
+        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = 1900))
 
         val request = requireNotNull(captured)
-        assertEquals("/api/spacetime/years/1850/map", request.url.encodedPath)
+        assertEquals("/api/spacetime/years/1900/map", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getSpacetimeYearMap accepts current year plus one`() = runTest {
+        val currentYear = java.time.Year.now().value
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"year":$currentYear,"regions":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = currentYear + 1))
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/years/${currentYear + 1}/map", request.url.encodedPath)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `getSpacetimeYearMap rejects 1899`() = runTest {
+        val api = createApiClient(createClient(MockEngine { respond("{}") }))
+        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = 1899))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `getSpacetimeYearMap rejects current year plus two`() = runTest {
+        val currentYear = java.time.Year.now().value
+        val api = createApiClient(createClient(MockEngine { respond("{}") }))
+        api.getSpacetimeYearMap(SpacetimeYearMapQuery(year = currentYear + 2))
     }
 
     @Test
@@ -837,6 +894,99 @@ class AdvancedApiClientTest {
 
         val request = requireNotNull(captured)
         assertEquals("/api/spacetime/categories/%E4%BC%A0%E7%BB%9F%E6%8A%80%E8%89%BA/timeline", request.url.encodedPath)
+    }
+
+    @Test
+    fun `getSpacetimeRegionTimeline encodes drilldown filters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"key":"浙江","buckets":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeRegionTimeline(
+            SpacetimeRegionTimelineQuery(
+                region = "浙江",
+                targetType = ContentTargetType.DirectoryItem,
+                fromYear = 2006,
+                toYear = 2024,
+                category = "传统技艺",
+                kind = "传统美术",
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/regions/%E6%B5%99%E6%B1%9F/timeline", request.url.encodedPath)
+        assertEquals("directoryItem", request.url.parameters["targetType"])
+        assertEquals("2006", request.url.parameters["fromYear"])
+        assertEquals("2024", request.url.parameters["toYear"])
+        assertEquals("传统技艺", request.url.parameters["category"])
+        assertEquals("传统美术", request.url.parameters["kind"])
+    }
+
+    @Test
+    fun `getSpacetimeYearMap encodes drilldown filters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"year":2024,"regions":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeYearMap(
+            SpacetimeYearMapQuery(
+                year = 2024,
+                targetType = ContentTargetType.Article,
+                category = "传统音乐",
+                kind = "民间文学",
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/years/2024/map", request.url.encodedPath)
+        assertEquals("article", request.url.parameters["targetType"])
+        assertEquals("传统音乐", request.url.parameters["category"])
+        assertEquals("民间文学", request.url.parameters["kind"])
+    }
+
+    @Test
+    fun `getSpacetimeCategoryTimeline encodes drilldown filters`() = runTest {
+        var captured: HttpRequestData? = null
+        val engine = MockEngine { request ->
+            captured = request
+            respond(
+                content = """{"key":"传统技艺","buckets":[]}""",
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+            )
+        }
+        val client = createClient(engine)
+        val api = createApiClient(client)
+
+        api.getSpacetimeCategoryTimeline(
+            SpacetimeCategoryTimelineQuery(
+                category = "传统技艺",
+                targetType = ContentTargetType.Inheritor,
+                fromYear = 2010,
+                toYear = 2020,
+                kind = "传统技艺",
+            ),
+        )
+
+        val request = requireNotNull(captured)
+        assertEquals("/api/spacetime/categories/%E4%BC%A0%E7%BB%9F%E6%8A%80%E8%89%BA/timeline", request.url.encodedPath)
+        assertEquals("inheritor", request.url.parameters["targetType"])
+        assertEquals("2010", request.url.parameters["fromYear"])
+        assertEquals("2020", request.url.parameters["toYear"])
+        assertEquals("传统技艺", request.url.parameters["kind"])
     }
 
     @Test

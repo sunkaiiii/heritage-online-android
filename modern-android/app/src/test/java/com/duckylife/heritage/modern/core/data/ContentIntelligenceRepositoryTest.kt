@@ -25,6 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,7 +47,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         assertEquals(SectionStatus.Ready, page.aiSection.status)
@@ -56,7 +57,7 @@ class ContentIntelligenceRepositoryTest {
         assertEquals(SectionStatus.Ready, page.relatedContentSection.status)
         assertEquals(SectionStatus.Ready, page.digestSection.status)
         assertEquals(SearchResultType.Article, page.pageType)
-        assertEquals("article-1", page.ref.id)
+        assertEquals("507f1f77bcf86cd799439011", page.ref.id)
         assertEquals(true, page.learningRoutesAvailable)
         assertEquals("人工摘要", page.detailDigest?.quickRead)
         assertEquals(2, page.detailRecommendations?.items?.size)
@@ -83,7 +84,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         assertEquals(2, page.detailDigest?.keyFacts?.size)
@@ -108,7 +109,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1"),
+            ContentIntelligenceRef(SearchResultType.Inheritor, "507f1f77bcf86cd799439015"),
         )
 
         assertEquals(listOf("AI 结果缺失"), page.warnings)
@@ -126,7 +127,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.DirectoryItem, "item-1"),
+            ContentIntelligenceRef(SearchResultType.DirectoryItem, "507f1f77bcf86cd799439013"),
         )
 
         assertEquals(SectionStatus.Empty, page.aiSection.status)
@@ -149,7 +150,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         assertEquals(SectionStatus.Ready, page.aiSection.status)
@@ -169,7 +170,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Inheritor, "inheritor-1"),
+            ContentIntelligenceRef(SearchResultType.Inheritor, "507f1f77bcf86cd799439015"),
         )
 
         assertEquals(SectionStatus.Unavailable, page.aiSection.status)
@@ -193,7 +194,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         assertNull(page.detailDigest)
@@ -205,6 +206,50 @@ class ContentIntelligenceRepositoryTest {
     }
 
     @Test
+    fun `rejects Unknown content type without requesting V3 page`() = runTest {
+        val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
+        val repository = DefaultContentIntelligenceRepository(api = api)
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Unknown, "507f1f77bcf86cd799439011"),
+        )
+
+        assertTrue(api.queries.isEmpty())
+        assertEquals(SectionStatus.Unavailable, page.aiSection.status)
+        assertEquals(true, page.legacyFallback.loadDigest)
+    }
+
+    @Test
+    fun `rejects non ObjectId id without requesting V3 page`() = runTest {
+        val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
+        val repository = DefaultContentIntelligenceRepository(api = api)
+
+        val page = repository.loadContentPage(
+            ContentIntelligenceRef(SearchResultType.Article, "source-id-123"),
+        )
+
+        assertTrue(api.queries.isEmpty())
+        assertEquals(SectionStatus.Unavailable, page.aiSection.status)
+        assertEquals(true, page.legacyFallback.loadDigest)
+    }
+
+    @Test
+    fun `rejects ObjectId length and character boundaries`() = runTest {
+        val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
+        val repository = DefaultContentIntelligenceRepository(api = api)
+
+        val tooShort = "507f1f77bcf86cd79943901" // 23 chars
+        val tooLong = "507f1f77bcf86cd7994390111" // 25 chars
+        val invalidHex = "507f1f77bcf86cd79943901g" // 24 chars but contains 'g'
+
+        repository.loadContentPage(ContentIntelligenceRef(SearchResultType.Article, tooShort))
+        repository.loadContentPage(ContentIntelligenceRef(SearchResultType.Article, tooLong))
+        repository.loadContentPage(ContentIntelligenceRef(SearchResultType.Article, invalidHex))
+
+        assertTrue(api.queries.isEmpty())
+    }
+
+    @Test
     fun `V3 503 degrades to unavailable enhancement page without fatal detail error`() = runTest {
         val api = FakeContentIntelligenceApi().apply {
             failure = serviceUnavailableException()
@@ -212,7 +257,7 @@ class ContentIntelligenceRepositoryTest {
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         val page = repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         assertEquals(SectionStatus.Unavailable, page.aiSection.status)
@@ -224,17 +269,34 @@ class ContentIntelligenceRepositoryTest {
     }
 
     @Test
+    fun `propagates non 503 exceptions as fatal detail errors`() = runTest {
+        val api = FakeContentIntelligenceApi().apply {
+            failure = RuntimeException("network failure")
+        }
+        val repository = DefaultContentIntelligenceRepository(api = api)
+
+        val exception = runCatching {
+            repository.loadContentPage(
+                ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
+            )
+        }.exceptionOrNull()
+
+        assertTrue(exception is RuntimeException)
+        assertEquals("network failure", exception?.message)
+    }
+
+    @Test
     fun requestsLocalState() = runTest {
         val api = FakeContentIntelligenceApi(response = V3ContentPageDto())
         val repository = DefaultContentIntelligenceRepository(api = api)
 
         repository.loadContentPage(
-            ContentIntelligenceRef(SearchResultType.Article, "article-1"),
+            ContentIntelligenceRef(SearchResultType.Article, "507f1f77bcf86cd799439011"),
         )
 
         val query = api.queries.single()
         assertEquals(SearchResultType.Article, query.contentType)
-        assertEquals("article-1", query.id)
+        assertEquals("507f1f77bcf86cd799439011", query.id)
         assertEquals(true, query.includeLocalState)
     }
 }
